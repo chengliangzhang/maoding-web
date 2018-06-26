@@ -1,0 +1,9 @@
+target
+logs
+.idea
+.svn
+.depend
+*.iml
+*.7z*
+*.rar*
+services/src/test/java/com/maoding/FileServer/upload_test*.*
