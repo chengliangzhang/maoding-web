@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ProjectTaskRelationEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.task.entity.ProjectTaskRelationEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="from_company_id" property="fromCompanyId" jdbcType="VARCHAR" />
+    <result column="to_company_id" property="toCompanyId" jdbcType="VARCHAR" />
+    <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="relation_status" property="relationStatus" jdbcType="INTEGER" />
+    <result column="relation_type" property="relationType" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, from_company_id, to_company_id, task_id,project_id, relation_status, relation_type, create_date,
+    create_by, update_date, update_by
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_project_task_relation
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByParam" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select a.id, a.from_company_id, a.to_company_id, a.task_id,a.project_id, a.relation_status, a.relation_type, a.create_date
+    from maoding_web_project_task_relation a
+    where relation_status='0'
+    <if test="fromCompanyId != null" >
+      AND a.from_company_id = #{fromCompanyId,jdbcType=VARCHAR}
+    </if>
+    <if test="toCompanyId != null" >
+      AND  a.to_company_id = #{toCompanyId,jdbcType=VARCHAR}
+    </if>
+    <if test="taskId != null" >
+      AND a.task_id = #{taskId,jdbcType=VARCHAR}
+    </if>
+    <if test="projectId != null" >
+      AND a.project_id =  #{projectId,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <select id="getProjectTaskRelationByProjectId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select a.id, a.from_company_id, a.to_company_id, a.task_id, a.project_id,a.relation_status, a.relation_type
+    from maoding_web_project_task_relation a
+    where a.relation_status='0' and a.project_id =  #{projectId}
+  </select>
+
+  <select id="getTakePartCompany" resultType="com.maoding.org.dto.CompanyDataDTO" parameterType="java.lang.String" >
+    select DISTINCT c.*
+    from maoding_web_project a
+    INNER JOIN maoding_web_project_task_relation b on a.id = b.project_id
+    INNER JOIN maoding_web_company c on a.company_id = c.id or b.to_company_id = c.id
+    where b.relation_status='0' and a.id =  #{projectId}
+  </select>
+
+  <select id="getProjectTaskRelationByFromCompanyId" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select a.id, a.from_company_id, a.to_company_id, a.task_id, a.project_id,a.relation_status, a.relation_type
+    from maoding_web_project_task_relation a
+    where a.relation_status='0'
+    and a.project_id =  #{projectId}
+    and a.from_company_id =  #{fromCompanyId}
+    group by a.from_company_id,a.to_company_id
+  </select>
+
+  <select id="getProjectTaskRelationByCompanyId" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select a.id, a.from_company_id, a.to_company_id, a.task_id,a.project_id, a.relation_status, a.relation_type
+    from maoding_web_project_task_relation a
+    where a.relation_status='0'
+    and a.project_id =  #{projectId}
+    and (a.from_company_id =  #{companyId} or a.to_company_id =#{companyId} )
+  </select>
+
+
+  <select id="getProjectRelation" resultType="java.util.Map" parameterType="java.util.Map" >
+    select a.id, a.from_company_id as fromCompanyId, a.to_company_id as toCompanyId, GROUP_CONCAT(a.task_id) as taskId
+    from maoding_web_project_task_relation a
+    where a.relation_status='0'
+    and a.project_id =  #{projectId,jdbcType=VARCHAR}
+    and (a.from_company_id =  #{companyId,jdbcType=VARCHAR} or a.to_company_id =#{companyId,jdbcType=VARCHAR} )
+    GROUP by a.from_company_id,a.to_company_id
+  </select>
+
+
+  <select id="selectByIds" parameterType="java.util.Map" resultType="java.lang.Integer">
+    select count(1) from (SELECT
+    re.id
+    FROM
+    maoding_web_project_task_relation re
+    <where>
+      re.task_id in
+      <foreach collection="ids" item="item" index="index"
+               open="(" separator="," close=")">#{item}</foreach>
+    </where> and re.relation_status='0') relation
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_project_task_relation
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.maoding.task.entity.ProjectTaskRelationEntity" >
+    insert into maoding_web_project_task_relation (id, from_company_id, to_company_id,project_id,
+    task_id, relation_status, relation_type,
+    create_date, create_by, update_date,
+    update_by)
+    values (#{id,jdbcType=VARCHAR}, #{fromCompanyId,jdbcType=VARCHAR}, #{toCompanyId,jdbcType=VARCHAR},#{projectId,jdbcType=VARCHAR},
+    #{taskId,jdbcType=VARCHAR}, #{relationStatus,jdbcType=INTEGER}, #{relationType,jdbcType=INTEGER},
+    now(), #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP},
+    #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.task.entity.ProjectTaskRelationEntity" >
+    update maoding_web_project_task_relation
+    <set >
+      <if test="fromCompanyId != null" >
+        from_company_id = #{fromCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="toCompanyId != null" >
+        to_company_id = #{toCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null" >
+        task_id = #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="relationStatus != null" >
+        relation_status = #{relationStatus,jdbcType=INTEGER},
+      </if>
+      <if test="relationType != null" >
+        relation_type = #{relationType,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="update" parameterType="com.maoding.task.entity.ProjectTaskRelationEntity" >
+    update maoding_web_project_task_relation
+    set from_company_id = #{fromCompanyId,jdbcType=VARCHAR},
+    to_company_id = #{toCompanyId,jdbcType=VARCHAR},
+    task_id = #{taskId,jdbcType=VARCHAR},
+    project_id = #{projectId,jdbcType=VARCHAR},
+    relation_status = #{relationStatus,jdbcType=INTEGER},
+    relation_type = #{relationType,jdbcType=INTEGER},
+    create_date = #{createDate,jdbcType=TIMESTAMP},
+    create_by = #{createBy,jdbcType=VARCHAR},
+    update_date = now(),
+    update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateTaskRelationStatus" parameterType="java.util.Map" >
+    update maoding_web_project_task_relation
+    set relation_status = #{relationStatus,jdbcType=INTEGER}
+    where task_id in
+    <foreach collection="taskIdList" index="index" item="taskId" open="(" separator="," close=")">
+      #{taskId}
+    </foreach>
+  </update>
+
+  <select id="getTaskIssueCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select count(1)
+    from maoding_web_project_task_relation
+    where relation_status='0'
+    and POSITION(task_id in #{taskPath})>0
+    --     and  task_id in
+    <!--<foreach collection="taskIdList" index="index" item="taskId" open="(" separator="," close=")">-->
+    <!--#{taskId}-->
+    <!--</foreach>-->
+  </select>
+
+</mapper>

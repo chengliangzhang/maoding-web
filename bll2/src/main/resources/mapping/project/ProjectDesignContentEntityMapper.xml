@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ProjectDesignContentEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.project.entity.ProjectDesignContentEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="content_id" property="contentId" jdbcType="VARCHAR" />
+    <result column="content_name" property="contentName" jdbcType="VARCHAR" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+    <result column="memo" property="memo" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, project_id, company_id, content_id, content_name, seq, memo, create_date, create_by,
+    update_date, update_by
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_project_design_content
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getProjectContentMaxSeq" resultType="java.lang.Integer">
+    select IFNULL(max(seq),0)+1 from maoding_web_project_design_content
+    where project_id = #{projectId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getProjectDesignContentByProjectId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_project_design_content
+    where project_id = #{projectId,jdbcType=VARCHAR}
+    ORDER BY seq,create_date
+  </select>
+
+  <select id="getProjectDesignContentFroCollaboration" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_project_design_content
+    where project_id = #{projectId,jdbcType=VARCHAR}
+    <if test="syncDate != null">
+      <![CDATA[  and  create_date <= #{syncDate,jdbcType=VARCHAR}  ]]>
+    </if>
+    ORDER BY seq,create_date
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_project_design_content
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.maoding.project.entity.ProjectDesignContentEntity" >
+    insert into maoding_web_project_design_content (id, project_id, company_id, 
+      content_id, content_name, seq,
+      memo, create_date, create_by,
+      update_date, update_by)
+    values (#{id,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR},
+      #{contentId,jdbcType=VARCHAR}, #{contentName,jdbcType=VARCHAR}, #{seq,jdbcType=INTEGER},
+      #{memo,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR},
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.project.entity.ProjectDesignContentEntity" >
+    update maoding_web_project_design_content
+    <set >
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="contentId != null" >
+        content_id = #{contentId,jdbcType=VARCHAR},
+      </if>
+      <if test="contentName != null" >
+        content_name = #{contentName,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="memo != null" >
+        memo = #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+        update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <delete id="deleteDesignContentByProjectId" parameterType="java.lang.String">
+     delete from maoding_web_project_design_content
+    where project_id = #{projectId,jdbcType=VARCHAR}
+  </delete>
+
+</mapper>

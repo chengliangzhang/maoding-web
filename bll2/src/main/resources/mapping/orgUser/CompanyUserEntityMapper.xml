@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="CompanyUserEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.org.entity.CompanyUserEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="relation_type" property="relationType" jdbcType="VARCHAR" />
+    <result column="audit_status" property="auditStatus" jdbcType="VARCHAR" />
+    <result column="employee_type" property="employeeType" jdbcType="VARCHAR" />
+    <result column="employee_status" property="employeeStatus" jdbcType="VARCHAR" />
+    <result column="entry_time" property="entryTime" jdbcType="DATE" />
+    <result column="departure_time" property="departureTime" jdbcType="DATE" />
+    <result column="illustration" property="illustration" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+    <result column="departure_reason" property="departureReason" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="pin_yin" property="pinYin" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, company_id, user_id, user_name, relation_type, audit_status, employee_type, employee_status, pin_yin,
+    entry_time, departure_time, illustration, phone, email, seq,departure_reason,remark, create_date,
+    create_by, update_date, update_by
+  </sql>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_company_user
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getCompanyUserLiteDTO" resultType="com.maoding.org.dto.CompanyUserLiteDTO" parameterType="java.util.Map" >
+    select
+    a.company_id,a.id as company_user_id,a.user_name as company_user_name,e.id as account_id,e.cellphone , e.email,
+    f.oss_file_path as head_img
+    from maoding_web_company_user a
+    LEFT JOIN maoding_web_user e on a.user_id = e.id
+    LEFT JOIN (<include refid="UserAttachEntityMapper.getHeadImg" /> ) f on f.user_id=e.id AND f.attach_type=5
+    where a.user_id = #{accountId,jdbcType=VARCHAR} and a.company_id = #{companyId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getCompanyByUserId"  resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_company_user  where user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getCompanyUserByUserIdAndCompanyId" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_company_user
+    where user_id = #{userId,jdbcType=VARCHAR} and company_id = #{companyId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getCompanyUserByCompanyId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_company_user
+    where  company_id = #{companyId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getCompanyUserForCollaboration" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_company_user
+    where  company_id = #{companyId,jdbcType=VARCHAR}
+
+    <if test="syncDate != null">
+      <![CDATA[  and create_date <= #{syncDate,jdbcType=VARCHAR}  ]]>
+    </if>
+  </select>
+
+  <select id="getCompanyUserByParam" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_company_user
+    where  company_id = #{companyId,jdbcType=VARCHAR}
+    <if test="userId != null">
+      AND user_id = #{userId,jdbcType=VARCHAR}
+    </if>
+    <if test="auditStatus!=null">
+      AND audit_status= #{auditStatus,jdbcType=VARCHAR}
+    </if>
+  </select>
+  
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_company_user
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.maoding.org.entity.CompanyUserEntity" >
+    insert into maoding_web_company_user (id, company_id, user_id, 
+      user_name, relation_type, audit_status, 
+      employee_type, employee_status, entry_time, 
+      departure_time, illustration, phone, seq,pin_yin,
+      email, departure_reason,remark, create_date,
+      create_by, update_date, update_by
+      )
+    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{userName,jdbcType=VARCHAR}, #{relationType,jdbcType=VARCHAR}, #{auditStatus,jdbcType=VARCHAR}, 
+      #{employeeType,jdbcType=VARCHAR}, #{employeeStatus,jdbcType=VARCHAR}, #{entryTime,jdbcType=DATE},
+      #{departureTime,jdbcType=DATE}, #{illustration,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+      #{seq,jdbcType=INTEGER}, #{pinYin,jdbcType=VARCHAR},
+      #{email,jdbcType=VARCHAR}, #{departureReason,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR}, now(),
+      #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.org.entity.CompanyUserEntity" >
+    update maoding_web_company_user
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="pinYin != null" >
+        pin_yin = #{pinYin,jdbcType=VARCHAR},
+      </if>
+      <if test="relationType != null" >
+        relation_type = #{relationType,jdbcType=VARCHAR},
+      </if>
+      <if test="auditStatus != null" >
+        audit_status = #{auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeType != null" >
+        employee_type = #{employeeType,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeStatus != null" >
+        employee_status = #{employeeStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="entryTime != null" >
+        entry_time = #{entryTime,jdbcType=DATE},
+      </if>
+      <if test="departureTime != null" >
+        departure_time = #{departureTime,jdbcType=DATE},
+      </if>
+      <if test="illustration != null" >
+        illustration = #{illustration,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="departureReason != null" >
+        departure_reason = #{departureReason,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null and seq!=0" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+        update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="update" parameterType="com.maoding.org.entity.CompanyUserEntity" >
+    update maoding_web_company_user
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      pin_yin = #{pinYin,jdbcType=VARCHAR},
+      relation_type = #{relationType,jdbcType=VARCHAR},
+      audit_status = #{auditStatus,jdbcType=VARCHAR},
+      employee_type = #{employeeType,jdbcType=VARCHAR},
+      employee_status = #{employeeStatus,jdbcType=VARCHAR},
+      entry_time = #{entryTime,jdbcType=DATE},
+      departure_time = #{departureTime,jdbcType=DATE},
+      illustration = #{illustration,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      departure_reason = #{departureReason,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = now(),
+      seq = #{seq,jdbcType=INTEGER},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <!-- 查询用户所在团队列表及信息 -->
+  <select id="selectPersonalInGroupAndInfo" resultType="java.util.Map" parameterType="java.util.Map">
+    SELECT
+    cu.id AS 'cuid',
+    cu.company_id AS 'companyId',
+    c.company_name AS 'companyName',
+    c.company_short_name AS 'companyShortName',
+    cu.user_name AS 'name',
+    cu.phone,
+    GROUP_CONCAT(CONCAT_WS('-',IFNULL(d.depart_name,c.company_short_name),ou.server_station) ORDER BY d.depart_name) AS 'ds',
+    cu.email,
+    cu.entry_time AS 'entryTime'
+    FROM maoding_web_company_user cu
+    LEFT JOIN maoding_web_company c ON cu.company_id=c.id
+    LEFT JOIN maoding_web_org_user ou ON (cu.company_id=ou.company_id AND cu.user_id=ou.user_id AND ou.cu_id=cu.id)
+    LEFT JOIN maoding_web_depart d ON ou.org_id=d.id
+    WHERE cu.user_id=#{userId,jdbcType=VARCHAR} AND c.status='0'and cu.audit_status='1'
+    GROUP BY cu.company_id
+  </select>
+  <select id="getMaxCompanyUserSeq" resultType="java.lang.Integer">
+    select IFNULL(max(seq),0)+1 from maoding_web_company_user
+  </select>
+
+
+  <select id="getPersonByIds" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select a.id,a.user_id,a.user_name
+    from maoding_web_company_user a
+    where 1=1
+    <if test="_parameter.containsKey('ids')">
+      and a.id in
+      <foreach collection="ids" index="index" item="id" open="(" separator="," close=")">
+        #{id}
+      </foreach>
+    </if>
+    <if test="companyId != null">
+      and company_id = #{companyId,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <select id="getUserByDepartId" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select a.id,a.user_id,a.user_name
+    from maoding_web_company_user a
+    LEFT JOIN maoding_web_org_user d ON a.id = d.cu_id AND a.company_id = d.company_id AND a.user_id = d.user_id
+    WHERE 1=1
+     and a.audit_status = 1
+    <if test="departId != null">
+      and  d.org_id = #{departId,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <select id="getUserByKeyWord" parameterType="java.util.Map" resultType="java.util.Map">
+    select a.id,a.user_id,a.user_name,a.phone
+    from maoding_web_company_user a
+     WHERE 1=1
+     and a.audit_status = 1
+    <if test="companyId != null">
+     and a.company_id = #{companyId,jdbcType=VARCHAR}
+    </if>
+    <if test="keyword != null">
+      and (a.user_name like '%' #{keyword,jdbcType=VARCHAR} '%' or a.pin_yin like '%' #{keyword,jdbcType=VARCHAR} '%')
+    </if>
+    limit 30
+  </select>
+
+  <select id="getAllCompanyUser" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_company_user
+  </select>
+
+</mapper>

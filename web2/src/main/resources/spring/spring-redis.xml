@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxTotal" value="${redis.pool.maxTotal}"/>
+        <property name="maxIdle" value="${redis.pool.maxIdle}"/>
+        <property name="minIdle" value="${redis.pool.minIdle}"/>
+        <property name="minEvictableIdleTimeMillis" value="${redis.pool.minEvictableIdleTimeMillis}"/>
+        <property name="maxWaitMillis" value="${redis.pool.maxWaitMillis}"/>
+        <property name="testOnBorrow" value="${redis.pool.testOnBorrow}"/>
+        <property name="testOnReturn" value="${redis.pool.testOnReturn}"/>
+        <property name="testWhileIdle" value="${redis.pool.testWhileIdle}"/>
+    </bean>
+
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+        <constructor-arg index="0" ref="jedisPoolConfig"/>
+        <constructor-arg index="1" value="${redis.host}" type="java.lang.String"/>
+        <constructor-arg index="2" value="${redis.port}" type="int"/>
+        <constructor-arg index="3" value="${redis.timeout}" type="int"/>
+        <constructor-arg index="4" value="${redis.password}" type="java.lang.String"/>
+    </bean>
+
+    <bean id="jedisUtils" class="com.maoding.core.util.JedisUtils">
+        <property name="jedisPool" ref="jedisPool"/>
+    </bean>
+
+    <!--协同同步专用-->
+    <bean name="redissonUtils_corp" class="com.maoding.core.util.RedissonUtils" init-method="createClient">
+        <property name="configFile" value="classpath:redissonConfig-corp.json"/>
+    </bean>
+
+    <!--Sesson专用-->
+    <bean name="redissonUtils_session" class="com.maoding.core.util.RedissonUtils" init-method="createClient">
+        <property name="configFile" value="classpath:redissonConfig-session.json"/>
+    </bean>
+</beans>

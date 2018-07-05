@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetOrgAuthMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.org.dto.OrgAuthenticationDataDTO" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="org_name" property="orgName" jdbcType="VARCHAR" />
+    <result column="authentication_status" property="authenticationStatus" jdbcType="BIT" />
+    <result column="operator_name" property="operatorName" jdbcType="VARCHAR" />
+    <result column="reject_reason" property="rejectReason" jdbcType="VARCHAR" />
+    <result column="legal_representative" property="legalRepresentative" jdbcType="VARCHAR" />
+    <result column="business_license_number" property="businessLicenseNumber" jdbcType="VARCHAR" />
+    <result column="business_license_type" property="businessLicenseType" jdbcType="SMALLINT" />
+    <result column="apply_date" property="applyDate" jdbcType="DATE" />
+    <result column="expiry_date" property="expiryDate" jdbcType="DATE" />
+    <collection property="attachList" select="ProjectSkyDriveEntityMapper.getOrgAuthenticationAttach" column="id" fetchType="eager" ></collection>
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, org_name, authentication_status, operator_name, reject_reason, legal_representative, 
+    business_license_number, business_license_type, apply_date, expiry_date, deleted, 
+    create_date, create_by, update_date, update_by
+  </sql>
+
+  <select id="getOrgAuthenticationInfo" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_org_auth
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+
+  <select id="listOrgAuthenticationInfo" resultMap="BaseResultMap" parameterType="com.maoding.org.dto.OrgAuthenticationQueryDTO" >
+    select <include refid="CommonMapper.countSQL"/>
+      a.id as id, a.org_name, a.authentication_status, a.operator_name, a.reject_reason, a.legal_representative,
+      a.business_license_number, a.business_license_type, a.apply_date, a.expiry_date
+      ,a.deleted as deleted,a.create_date as create_date, a.create_by as create_by, a.update_date as update_date, a.update_by as update_by
+      ,b.company_name as org_alias
+    from
+      maoding_web_org_auth a
+      INNER JOIN maoding_web_company b on (a.id=b.id)
+    <where>
+      a.deleted=0
+      <if test="id!=null">
+        and a.id=#{id}
+      </if>
+      <if test="authenticationStatus!=null">
+        and a.authentication_status=#{authenticationStatus}
+      </if>
+      <if test="expiryDateBefore">
+        and #{expiryDateBefore}>=a.expiry_date
+      </if>
+      <if test="orgNameMask!=null">
+        and position(#{orgNameMask},a.org_name)>0
+      </if>
+      <if test="orgAliasMask!=null">
+        and position(#{orgAliasMask},b.company_name)>0
+      </if>
+    </where>
+    <include refid="CommonMapper.limitSQL"/>
+  </select>
+</mapper>

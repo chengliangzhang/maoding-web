@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetTaskStateMapper" >
+
+    <sql id="task_state_table">
+        select
+        e.id as task_id,
+        max(e.complete_date) as complete_date,
+        count(*) as responsibler_count,
+        sum(e.not_complete) as not_complete_count
+        from
+        ( SELECT
+        e1.id as id,
+        e2.complete_date as complete_date,
+        if(e2.complete_date is null,1,0) as not_complete
+        FROM
+        ( select id
+        from maoding_web_project_task
+        where ((task_status='0') and (id=#{taskId} or task_pid=#{taskId}))
+        ) e1
+        inner join maoding_web_project_task e2 on ((e2.task_type=0 or e2.task_type=1 or e2.task_type=2) and e2.task_status='0' and (POSITION(e1.id IN e2.task_path)>0))
+        inner join  maoding_web_project_member e3 ON (e3.target_id = e2.id and e3.member_type=3 and e3.deleted=0 )
+        ) e
+        group by e.id
+    </sql>
+
+    <sql id="task_state_table3">
+        select
+        e.id as task_id,
+        max(e.complete_date) as complete_date,
+        count(*) as responsibler_count,
+        sum(e.not_complete) as not_complete_count
+        from
+        ( SELECT
+        e1.id as id,
+        e2.complete_date as complete_date,
+        if(e2.complete_date is null,1,0) as not_complete
+        FROM
+        ( select id
+        from maoding_web_project_task
+        where id=#{taskId}
+        ) e1
+        inner join maoding_web_project_task e2 on (e2.project_id = #{projectId} and (e2.task_type=0 or e2.task_type=1 or e2.task_type=2) and e2.task_status='0' and (POSITION(e1.id IN e2.task_path)>0))
+        inner join  maoding_web_project_member e3 ON (e3.project_id = #{projectId} and  e3.target_id = e2.id and e3.member_type=3 and e3.deleted=0 )
+        ) e
+        group by e.id
+    </sql>
+
+    <select id="getTaskState" parameterType="java.util.Map" resultType="int">
+        select
+        if(#{startTime} is null,0,
+        if(ifnull(a3.responsibler_count,0)=0,10,
+        if(ifnull(a3.not_complete_count,1)=0,if(datediff(a3.complete_date,#{endTime})>0,4,3),
+        if(date(#{startTime})>current_date(),5,
+        if(datediff(current_date(),date(#{endTime}))>0,2,
+        if((10*datediff(current_date(),date(#{startTime})))>(9*datediff(date(#{endTime}),date(#{startTime}))),6,1)))))) as task_state
+        from
+        (   select id
+        from maoding_web_project_task
+        where task_status='0' and id=#{taskId}) a1
+        left join (<include refid="task_state_table"/>) a3 on (a1.id=a3.task_id)
+        limit 1
+    </select>
+
+    <select id="getTaskState2" parameterType="java.util.Map" resultType="int">
+
+        select
+        <![CDATA[
+         if(a1.task_type = 3 and a1.task_status = 2,7,
+        if(a3.responsibler_count > 0 and a3.not_complete_count = 0,
+        if(datediff(date(a3.complete_date),date(if(#{startTime} is null and #{endTime} is null,a1.end_time,#{endTime})))>0, 4,3),
+        if(datediff(current_date(),date(if(#{startTime} is null and #{endTime} is null,a1.start_time,#{startTime})))<0, 5,
+        if(datediff(current_date(),date(if(#{startTime} is null and #{endTime} is null,a1.end_time,#{endTime})))>0,2,1)))) as task_state
+        ]]>
+        from
+        (   select id,start_time,end_time,task_type,task_status
+        from maoding_web_project_task
+        where task_status!='1' and id=#{taskId}) a1
+        left join (<include refid="task_state_table"/>) a3 on (a1.id=a3.task_id)
+        limit 1
+    </select>
+
+    <select id="getTaskState3" parameterType="java.util.Map" resultType="java.util.Map">
+        select
+        <![CDATA[
+        if(a1.task_type = 5,if(a1.complete_date is null,1,3),if(ifnull(#{taskStatus},a1.task_status) = 2,7,
+        if(a3.responsibler_count > 0 and a3.not_complete_count = 0,
+        if(datediff(date(a3.complete_date),date(if(#{startTime} is null and #{endTime} is null,a1.end_time,#{endTime})))>0, 4,3),
+        if(datediff(current_date(),date(if(#{startTime} is null and #{endTime} is null,a1.start_time,#{startTime})))<0, 5,
+        if(datediff(current_date(),date(if(#{startTime} is null and #{endTime} is null,a1.end_time,#{endTime})))>0,2,1))))) as taskState,
+        if(a1.task_type = 5,a1.complete_date,a3.complete_date) as completeDate
+        ]]>
+        from
+        (   select id,start_time,end_time,task_type,task_status,complete_date
+        from maoding_web_project_task
+        where id=#{taskId}) a1
+        left join (<include refid="task_state_table3"/>) a3 on (a1.id=a3.task_id)
+        limit 1
+    </select>
+
+    <select id="getTaskStateByProjectId" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select IF(count(1)=0,0,1) from
+        (SELECT * from(
+            select a.id,a.task_type,a.complete_date, b.start_time ,b.end_time
+            FROM maoding_web_project_task a
+            LEFT JOIN maoding_web_project_process_time b on a.id = b.target_id
+            where task_status = 0
+            AND project_id = #{projectId}
+            ORDER by b.create_date DESC
+            )t1
+        GROUP by t1.id
+        )t
+        LEFT JOIN maoding_web_project_task_relation c on t.id = c.task_id
+        where  (t.task_type = 0 or (t.task_type = 2 and c.id is null))
+        and t.complete_date is null
+        and datediff(DATE_FORMAT(NOW(),'%Y-%m-%d'),t.end_time)>0
+    </select>
+</mapper>

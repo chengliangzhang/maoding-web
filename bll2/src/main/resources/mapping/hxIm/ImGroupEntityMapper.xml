@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ImGroupEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.hxIm.entity.ImGroupEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="group_no" property="groupNo" jdbcType="VARCHAR" />
+    <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+    <result column="group_type" property="groupType" jdbcType="TINYINT" />
+    <result column="group_owner" property="groupOwner" jdbcType="VARCHAR" />
+    <result column="group_status" property="groupStatus" jdbcType="TINYINT" />
+    <result column="group_img" property="groupImg" jdbcType="VARCHAR" />
+    <result column="root_org_id" property="rootOrgId" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="top_hold" property="topHold" jdbcType="TINYINT" />
+    <result column="last_queue_no" property="lastQueueNo" jdbcType="BIGINT" />
+    <result column="up_version" property="upVersion" jdbcType="BIGINT" />
+    <result column="deleted" property="deleted" jdbcType="TINYINT" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="node_id" property="nodeId" jdbcType="VARCHAR" />
+
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, group_no, group_name, group_type, group_owner, group_status, group_img, root_org_id,
+    org_id, top_hold, last_queue_no, up_version, deleted, create_date, create_by, update_date,
+    update_by,node_id
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_im_group
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_im_group
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteByGroupId" parameterType="java.lang.String" >
+    delete from maoding_im_group
+    where groupId = #{groupId,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.maoding.hxIm.entity.ImGroupEntity" >
+    replace into  maoding_im_group (id, group_no, group_name,
+    group_type, group_owner, group_status,
+    group_img, root_org_id, org_id,
+    top_hold, last_queue_no, up_version,
+    deleted, create_date, create_by,
+    update_date, update_by,node_id)
+    values (#{id,jdbcType=VARCHAR}, #{groupNo,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR},
+    #{groupType,jdbcType=TINYINT}, #{groupOwner,jdbcType=VARCHAR}, #{groupStatus,jdbcType=TINYINT},
+    #{groupImg,jdbcType=VARCHAR}, #{rootOrgId,jdbcType=VARCHAR}, #{orgId,jdbcType=VARCHAR},
+    #{topHold,jdbcType=TINYINT}, #{lastQueueNo,jdbcType=BIGINT}, #{upVersion,jdbcType=BIGINT},
+    #{deleted,jdbcType=TINYINT}, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR},
+    #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR},#{nodeId,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.hxIm.entity.ImGroupEntity" >
+    update maoding_im_group
+    <set >
+      <if test="groupNo != null" >
+        group_no = #{groupNo,jdbcType=VARCHAR},
+      </if>
+      <if test="groupName != null" >
+        group_name = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="groupType != null" >
+        group_type = #{groupType,jdbcType=TINYINT},
+      </if>
+      <if test="groupOwner != null" >
+        group_owner = #{groupOwner,jdbcType=VARCHAR},
+      </if>
+      <if test="groupStatus != null" >
+        group_status = #{groupStatus,jdbcType=TINYINT},
+      </if>
+      <if test="groupImg != null" >
+        group_img = #{groupImg,jdbcType=VARCHAR},
+      </if>
+      <if test="rootOrgId != null" >
+        root_org_id = #{rootOrgId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        org_id = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="topHold != null" >
+        top_hold = #{topHold,jdbcType=TINYINT},
+      </if>
+      <if test="lastQueueNo != null" >
+        last_queue_no = #{lastQueueNo,jdbcType=BIGINT},
+      </if>
+      <if test="upVersion != null" >
+        up_version = #{upVersion,jdbcType=BIGINT},
+      </if>
+      <if test="deleted != null" >
+        deleted = #{deleted,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeId != null" >
+        node_id = #{nodeId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.maoding.hxIm.entity.ImGroupEntity" >
+    update maoding_im_group
+    set group_no = #{groupNo,jdbcType=VARCHAR},
+    group_name = #{groupName,jdbcType=VARCHAR},
+    group_type = #{groupType,jdbcType=TINYINT},
+    group_owner = #{groupOwner,jdbcType=VARCHAR},
+    group_status = #{groupStatus,jdbcType=TINYINT},
+    group_img = #{groupImg,jdbcType=VARCHAR},
+    root_org_id = #{rootOrgId,jdbcType=VARCHAR},
+    org_id = #{orgId,jdbcType=VARCHAR},
+    top_hold = #{topHold,jdbcType=TINYINT},
+    last_queue_no = #{lastQueueNo,jdbcType=BIGINT},
+    up_version = #{upVersion,jdbcType=BIGINT},
+    deleted = #{deleted,jdbcType=TINYINT},
+    node_id = #{nodeId,jdbcType=VARCHAR},
+    create_date = #{createDate,jdbcType=TIMESTAMP},
+    create_by = #{createBy,jdbcType=VARCHAR},
+    update_date = #{updateDate,jdbcType=TIMESTAMP},
+    update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <!-- 查询 -->
+  <select id="selectByParam" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_im_group
+    where  1=1
+    <if test="orgId != null" >
+      and org_id = #{orgId,jdbcType=VARCHAR}
+    </if>
+    <if test="groupNo != null" >
+      and group_no = #{groupNo,jdbcType=VARCHAR}
+    </if>
+    <if test="name != null" >
+      and  group_name = #{name,jdbcType=VARCHAR}
+    </if>
+    <if test="groupType != null" >
+      and  group_type = #{groupType,jdbcType=VARCHAR}
+    </if>
+    <if test="nodeId != null" >
+      and  node_id = #{nodeId,jdbcType=VARCHAR}
+    </if>
+    <if test="rootOrgId != null" >
+      and (root_org_id is null or root_org_id = '')
+    </if>
+  </select>
+
+</mapper>

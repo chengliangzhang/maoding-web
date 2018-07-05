@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="CompanyRelationAuditEntityMapper">
+	<resultMap id="BaseResultMap"
+		type="com.maoding.org.entity.CompanyRelationAuditEntity">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="org_id" property="orgId" jdbcType="VARCHAR" />
+		<result column="audit_status" property="auditStatus" jdbcType="VARCHAR" />
+		<result column="org_pid" property="orgPid" jdbcType="VARCHAR" />
+		<result column="relation_type" property="relationType" jdbcType="VARCHAR" />
+		<result column="company_type" property="companyType" jdbcType="VARCHAR" />
+		<result column="join_date" property="joinDate" jdbcType="DATE" />
+		<result column="pass_date" property="passDate" jdbcType="DATE" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="create_by" property="createBy" jdbcType="VARCHAR" />
+		<result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+		<result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+		<result column="company_name" property="companyName" jdbcType="VARCHAR" />
+		<result column="pCompany_name" property="pCompanyName" jdbcType="VARCHAR" />
+		<result column="ctype" property="ctype" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, orgId, audit_status,relation_type, org_pid, join_date, pass_date,type,
+		create_date, create_by,
+		update_date, update_by
+	</sql>
+	
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from maoding_web_company_relation_audit
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+
+	<delete id="deleteById" parameterType="java.lang.String">
+		delete from maoding_web_company_relation_audit
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deleteByCompanyIdAndPid" parameterType="java.util.Map">
+		delete from maoding_web_company_relation_audit
+		where org_id= #{orgId,jdbcType=VARCHAR} and
+			  org_pid= #{orgPid,jdbcType=VARCHAR}
+	</delete>
+
+	<delete id="deleteByOrgId" parameterType="java.util.Map">
+		delete from maoding_web_company_relation_audit
+		where org_id = #{orgId,jdbcType=VARCHAR} or org_pid = #{orgId,jdbcType=VARCHAR}
+	</delete>
+
+	<!-- 申请加盟，邀请加盟 -->
+	<insert id="insert"
+		parameterType="com.maoding.org.entity.CompanyRelationAuditEntity">
+		insert into maoding_web_company_relation_audit (id, org_id,audit_status,
+		org_pid, join_date, pass_date, relation_type, extra_comment,type,
+		create_date, create_by, update_date,
+		update_by)
+		values (#{id,jdbcType=VARCHAR}, #{orgId,jdbcType=VARCHAR},
+		#{auditStatus,jdbcType=VARCHAR},
+		#{orgPid,jdbcType=VARCHAR}, #{joinDate,jdbcType=DATE}, #{passDate,jdbcType=DATE},
+		#{relationType,jdbcType=VARCHAR}, #{extraComment,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
+		now(), #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP},
+		#{updateBy,jdbcType=VARCHAR})
+	</insert>
+
+	<!-- 修改加盟信息，审核加盟 ， 同意加盟 -->
+	<update id="updateById"
+		parameterType="com.maoding.org.entity.CompanyRelationAuditEntity">
+		update maoding_web_company_relation_audit
+		<set>
+			<if test="orgId != null">
+				org_id = #{orgId,jdbcType=VARCHAR},
+			</if>
+			<if test="auditStatus != null">
+				audit_status = #{auditStatus,jdbcType=VARCHAR},
+			</if>
+			<if test="orgPid != null">
+				org_pid = #{orgPid,jdbcType=VARCHAR},
+			</if>
+			<if test="relationType != null">
+			 relation_type=#{relationType,jdbcType=VARCHAR},
+			</if>
+			<if test="joinDate != null">
+				join_date = #{joinDate,jdbcType=DATE},
+			</if>
+			<if test="passDate != null">
+				pass_date = #{passDate,jdbcType=DATE},
+			</if>
+			<if test="type != null">
+				type = #{type,jdbcType=VARCHAR},
+			</if>			
+			update_date = now(),
+			<if test="updateBy != null">
+				update_by = #{updateBy,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	
+</mapper>

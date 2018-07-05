@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetExpMainPageMapper">
+    <resultMap id="BaseResultMap" type="com.maoding.financial.dto.ExpMainDTO">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="company_user_id" property="companyUserId" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="exp_date" property="expDate" jdbcType="DATE"/>
+        <result column="approve_status" property="approveStatus" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
+        <result column="depart_id" property="departId" jdbcType="VARCHAR"/>
+        <result column="depart_name" property="departName" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="audit_person_name" property="auditPersonName" jdbcType="VARCHAR"/>
+        <result column="audit_person" property="auditPerson" jdbcType="VARCHAR"/>
+        <result column="exp_type_name" property="expTypeName" jdbcType="VARCHAR"/>
+        <result column="approve_date" property="approveDate" jdbcType="VARCHAR"/>
+        <result column="is_new" property="isNew" jdbcType="VARCHAR"/>
+        <result column="exp_use" property="expUse" jdbcType="VARCHAR"/>
+        <result column="detail_count" property="detailCount" jdbcType="INTEGER"/>
+        <result column="exp_sum_amount" property="expSumAmount" jdbcType="DECIMAL"/>
+        <result column="version_num" property="versionNum" jdbcType="INTEGER"/>
+        <result column="exp_no" property="expNo" jdbcType="VARCHAR"/>
+        <result column="exp_flag" property="expFlag" jdbcType="INTEGER" />
+        <result column="exp_name" property="expName" jdbcType="VARCHAR" />
+        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="project_name" property="projectName" jdbcType="VARCHAR"/>
+        <result column="allocation_date" property="allocationDate" jdbcType="DATE"/>
+    </resultMap>
+
+
+    <select id="getExpMainPage" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT a.exp_flag,a.version_num,a.exp_no,a.type,a.id,a.company_id,a.company_user_id,e.user_name as user_name,a.exp_date,a.allocation_date,
+        b.audit_person,c.user_name as audit_person_name,a.approve_status,b.approve_date ,
+        (select s.exp_use from maoding_web_exp_detail s where s.main_id=a.id ORDER BY s.seq LIMIT 1) AS  exp_use,d.exp_type as expType,
+        (select m.is_new from maoding_web_exp_audit m where m.main_id=a.id and m.audit_person=b.audit_person ORDER BY m.create_date  DESC  LIMIT 1) AS is_new,
+        (select sum(m.exp_amount) from maoding_web_exp_detail m where m.main_id=a.id) as exp_sum_amount,(select COUNT(1) from maoding_web_exp_detail m where m.main_id=a.id)  as detail_count
+        from maoding_web_exp_main a
+        INNER JOIN maoding_web_exp_detail d on a.id = d.main_id
+        LEFT JOIN maoding_web_exp_audit b on a.id = b.main_id <if test="isHave==null">and b.is_new='Y'</if>
+        LEFT JOIN maoding_web_company_user c on b.audit_person = c.id and c.company_id = a.company_id
+        LEFT JOIN maoding_web_company_user e on a.company_user_id = e.id and e.company_id = a.company_id
+        WHERE 1=1 AND a.approve_status != '4'
+        <include refid="getExpMainPageCond"/>
+        GROUP BY a.id order by a.create_date DESC
+        <if test="startPage!=null">
+            LIMIT #{startPage},#{endPage}
+        </if>
+    </select>
+
+
+    <select id="getExpMainPageCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT COUNT(1)
+        from maoding_web_exp_main a
+        LEFT JOIN maoding_web_exp_audit b on a.id = b.main_id <if test="isHave==null">and b.is_new='Y'</if>
+        <if test="approveUserName!=null">
+        LEFT JOIN maoding_web_company_user c on b.audit_person = c.id and c.company_id = a.company_id
+        </if>
+        <if test="applyUserName!=null">
+            LEFT JOIN maoding_web_company_user e on a.company_user_id = e.id and e.company_id = a.company_id
+        </if>
+        WHERE 1=1
+        and (a.type = 1 or a.type = 2)
+        AND a.approve_status != '4'
+        <include refid="getExpMainPageCond"/>
+    </select>
+
+    <sql id="getExpMainPageCond">
+
+        <if test="type!=null and type!=''">
+            AND a.type =#{type}
+        </if>
+        <if test="approveStartDate!=null and approveStartDate!=''">
+            and b.approve_date &gt;= #{approveStartDate}
+        </if>
+
+        <if test="approveEndDate!=null and approveEndDate!=''">
+            and b.approve_date &lt;= #{approveEndDate}
+        </if>
+
+        <if test="allocationStartDate!=null and allocationStartDate!=''">
+            AND a.allocation_date &gt;= #{allocationStartDate,jdbcType=VARCHAR}
+        </if>
+
+        <if test="allocationEndDate!=null and allocationEndDate!=''">
+            and a.allocation_date &lt;= #{allocationEndDate}
+        </if>
+
+        <if test="allocationStatus!=null and allocationStatus=='1'.toString()">
+            and a.allocation_date is not null
+        </if>
+        <if test="allocationStatus!=null and allocationStatus=='0'.toString()">
+            and a.allocation_date is null
+        </if>
+
+        <if test="_parameter.containsKey('companyUserId') and companyUserId!=null">
+            <if test="companyUserId!=''.toString()">
+                AND a.company_user_id =#{companyUserId,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('companyId')">
+            <if test="companyId!=''.toString()">
+                AND a.company_Id =#{companyId,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('auditPerson')">
+            <if test="auditPerson!=''.toString()">
+                AND b.audit_person =#{auditPerson,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('approveStatus')">
+            <if test="approveStatus!=null and approveStatus!=''">
+                AND a.approve_status =#{approveStatus,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('departId')">
+            <if test="departId!=null and departId!=''">
+                AND a.depart_id =#{departId,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('startDate')">
+            <if test="startDate!=null and startDate!=''">
+                AND a.exp_date &gt;= #{startDate,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('endDate')">
+            <if test="endDate!=null and endDate!=''">
+                AND a.exp_date &lt;= #{endDate,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('defaultApproveStatus')">
+            <if test="defaultApproveStatus!=null and defaultApproveStatus!=''">
+                AND a.approve_status in ${defaultApproveStatus}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('expNo')">
+            <if test="expNo!=null and expNo!=''">
+                AND a.exp_no LIKE '%' #{expNo} '%'
+            </if>
+        </if>
+        <if test="approveUserName!=null and approveUserName!=''">
+            AND c.user_name LIKE '%' #{approveUserName} '%'
+        </if>
+
+    </sql>
+
+
+    <select id="getExpMainPageForSummary" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT a.exp_flag,a.type,group_concat(d.exp_allname) as exp_type_name,d.exp_pname,d.exp_type,a.exp_no,a.id,a.company_id,a.company_user_id,e.user_name as user_name,
+        a.exp_date,a.allocation_date,b.audit_person,c.user_name as audit_person_name,
+        a.approve_status,b.approve_date ,
+        (select s.exp_use from maoding_web_exp_detail s where s.main_id=a.id ORDER BY s.seq LIMIT 1) AS  exp_use,
+        sum(d.exp_amount) as exp_sum_amount,COUNT(1) as detail_count,
+        ifnull(depart_name,company_name) as depart_name
+        from maoding_web_exp_main a
+        INNER JOIN maoding_web_exp_detail d on a.id = d.main_id
+        LEFT JOIN maoding_web_exp_audit b on a.id = b.main_id and b.is_new='Y'
+        LEFT JOIN maoding_web_company_user c on b.audit_person = c.id
+        LEFT JOIN maoding_web_company_user e on a.company_user_id = e.id
+        left join maoding_web_company company on (company.id = a.company_id)
+        left join maoding_web_depart depart on (depart.id =a.depart_id)
+        WHERE 1=1
+        <include refid="getExpMainPageForSummaryCond"/>
+          <!--添加拨款时间排序-->
+        <choose>
+
+            <when test="allocationOrder!=null and allocationOrder==0">
+                GROUP BY a.id ORDER BY a.`allocation_date` ASC
+            </when>
+            <when test="allocationOrder!=null and allocationOrder==1">
+                GROUP BY a.id ORDER BY a.`allocation_date` DESC
+            </when>
+            <otherwise>
+                GROUP BY a.id order by a.create_date DESC
+            </otherwise>
+        </choose>
+        <if test="startPage!=null">
+            LIMIT #{startPage},#{endPage}
+        </if>
+    </select>
+
+    <resultMap id="ExpSummaryDTOMap" type="com.maoding.financial.dto.ExpSummaryDTO">
+        <id column="exp_sum_amount" property="expSumAmount" jdbcType="DECIMAL"/>
+        <result column="financial_allocation_sum_amount" property="financialAllocationSumAmount" jdbcType="DECIMAL"/>
+        <collection property="companyList" ofType="java.util.Map" fetchType="eager">
+            <result column="company_name" property="companyName" jdbcType="DECIMAL"/>
+            <result column="depart_id" property="companyId" jdbcType="DECIMAL"/>
+        </collection>
+    </resultMap>
+    <select id="summaryExpMain" resultMap="ExpSummaryDTOMap" parameterType="java.util.Map">
+        SELECT sum(d.exp_amount) as exp_sum_amount,sum(if(a.approve_status!='6',0,d.exp_amount)) as financial_allocation_sum_amount
+        ,ifnull(depart_name,company_name) as company_name
+        ,ifnull(a.depart_id,a.company_id) as company_id
+        from maoding_web_exp_main a
+        INNER JOIN maoding_web_exp_detail d on a.id = d.main_id
+        LEFT JOIN maoding_web_exp_audit b on a.id = b.main_id and b.is_new='Y'
+        <if test="applyUserName!=null">
+        LEFT JOIN maoding_web_company_user e on a.company_user_id = e.id
+        </if>
+        left join maoding_web_company company on (company.id = a.company_id)
+        left join maoding_web_depart depart on (depart.id =a.depart_id)
+        <where>
+            <include refid="getExpMainPageForSummaryCond"/>
+        </where>
+    </select>
+
+    <select id="listExpFilterCompany" resultType="com.maoding.org.dto.CompanyRelationDTO" parameterType="java.util.Map">
+        SELECT distinct ifnull(a.depart_id,a.company_id) as company_id,ifnull(depart_name,company_name) as company_name
+        from maoding_web_exp_main a
+        INNER JOIN maoding_web_exp_detail d on a.id = d.main_id
+        LEFT JOIN maoding_web_exp_audit b on a.id = b.main_id and b.is_new='Y'
+        <if test="applyUserName!=null">
+        LEFT JOIN maoding_web_company_user e on a.company_user_id = e.id
+        </if>
+        left join maoding_web_company company on (company.id = a.company_id)
+        left join maoding_web_depart depart on (depart.id =a.depart_id)
+        <where>
+            <include refid="getExpMainPageForSummaryCondition"/>
+        </where>
+    </select>
+
+
+    <select id="getExpMainPageForSummaryCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT count(DISTINCT a.id)
+        from maoding_web_exp_main a
+        INNER JOIN maoding_web_exp_detail d on a.id = d.main_id
+        LEFT JOIN maoding_web_exp_audit b on a.id = b.main_id and b.is_new='Y'
+        <if test="applyUserName!=null">
+            LEFT JOIN maoding_web_company_user e on a.company_user_id = e.id
+        </if>
+        <if test="applyCompanyName!=null">
+            left join maoding_web_company company on (company.id = a.company_id)
+            left join maoding_web_depart depart on (depart.id =a.depart_id)
+        </if>
+        WHERE 1=1
+        <include refid="getExpMainPageForSummaryCond"/>
+    </select>
+
+    <sql id="getExpMainPageForSummaryCond">
+        AND (a.approve_status = '1' or a.approve_status = '6')
+        <if test="type!=null and type!=''">
+            AND a.type =#{type}
+        </if>
+
+        <if test="approveStartDate!=null and approveStartDate!=''">
+            and b.approve_date &gt;= #{approveStartDate}
+        </if>
+        <if test="approveEndDate!=null  and approveEndDate!=''">
+            and b.approve_date &lt;= #{approveEndDate}
+        </if>
+        <if test="allocationStartDate!=null and allocationStartDate!=''">
+            AND a.allocation_date &gt;= #{allocationStartDate,jdbcType=VARCHAR}
+        </if>
+
+        <if test="allocationEndDate!=null and allocationEndDate!=''">
+            and a.allocation_date &lt;= #{allocationEndDate}
+        </if>
+        <if test="allocationStatus!=null and allocationStatus=='1'.toString()">
+            and a.allocation_date is not null
+        </if>
+        <if test="allocationStatus!=null and allocationStatus=='0'.toString()">
+            and a.allocation_date is null
+        </if>
+
+        <if test="_parameter.containsKey('companyUserId') and companyUserId!=null">
+            <if test="companyUserId!=''.toString()">
+                AND a.company_user_id =#{companyUserId,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('companyId')">
+            <if test="companyId!=''.toString()">
+                AND a.company_Id =#{companyId,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('companyIdList')">
+            <if test="companyIdList!=null">
+                and a.company_id in
+                <foreach collection="companyIdList" item="oneCompanyId" open="(" close=")" separator=",">
+                    #{oneCompanyId,jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </if>
+        <if test="_parameter.containsKey('departId')">
+            <if test="departId!=null and departId!=''">
+                AND a.depart_id =#{departId,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('startDate')">
+            <if test="startDate!=null and startDate!=''">
+                AND a.exp_date &gt;= #{startDate,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('endDate')">
+            <if test="endDate!=null and endDate!=''">
+                AND a.exp_date &lt;= #{endDate,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('expType')">
+            <if test="expType!=null and expType!=''">
+                and exists (select 1 from maoding_web_exp_detail c where c.main_id = a.id and c.exp_type = d.exp_type
+                and c.exp_type = #{expType,jdbcType=VARCHAR})
+            </if>
+        </if>
+        <if test="_parameter.containsKey('expParentType')">
+            <if test="expParentType!=null and expParentType!=''">
+                and exists (select 1 from maoding_web_exp_detail c where c.main_id = a.id and c.exp_type = d.exp_type
+                and exists (select 1 from maoding_web_exp_category cc where cc.pid = #{expParentType,jdbcType=VARCHAR}
+                and cc.id = c.exp_type)
+                )
+            </if>
+        </if>
+        <if test="_parameter.containsKey('expName')">
+            <if test="expName!=null and expName!=''">
+                and d.exp_name = #{expName,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('expPName')">
+            <if test="expPName!=null and expPName!=''">
+                and d.exp_pname = #{expPName,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('expNo')">
+            <if test="expNo!=null and expNo!=''">
+                AND a.exp_no LIKE '%' #{expNo} '%'
+            </if>
+        </if>
+        <if test="applyUserName!=null and applyUserName!=''">
+            AND e.user_name LIKE '%' #{applyUserName} '%'
+        </if>
+        <if test="applyCompanyName!=null and applyCompanyName!=''">
+            AND ifnull(depart_name,company_name) LIKE '%' #{applyCompanyName} '%'
+        </if>
+    </sql>
+    <!-- 报销汇总  end-->
+    <!--获取查询条件-->
+    <sql id="getExpMainPageForSummaryCondition">
+        AND (a.approve_status = '1' or a.approve_status = '6')
+        <if test="type!=null and type!=''">
+            AND a.type =#{type}
+        </if>
+
+        <if test="approveStartDate!=null and approveStartDate!=''">
+            and b.approve_date &gt;= #{approveStartDate}
+        </if>
+        <if test="approveEndDate!=null  and approveEndDate!=''">
+            and b.approve_date &lt;= #{approveEndDate}
+        </if>
+        <if test="allocationStartDate!=null and allocationStartDate!=''">
+            AND a.allocation_date &gt;= #{allocationStartDate,jdbcType=VARCHAR}
+        </if>
+
+        <if test="allocationEndDate!=null and allocationEndDate!=''">
+            and a.allocation_date &lt;= #{allocationEndDate}
+        </if>
+        <if test="allocationStatus!=null and allocationStatus=='1'.toString()">
+            and a.allocation_date is not null
+        </if>
+        <if test="allocationStatus!=null and allocationStatus=='0'.toString()">
+            and a.allocation_date is null
+        </if>
+
+        <if test="_parameter.containsKey('companyUserId') and companyUserId!=null">
+            <if test="companyUserId!=''.toString()">
+                AND a.company_user_id =#{companyUserId,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('companyId')">
+            <if test="companyId!=''.toString()">
+                AND a.company_Id =#{companyId,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('companyIdList')">
+            <if test="companyIdList!=null">
+                and a.company_id in
+                <foreach collection="companyIdList" item="oneCompanyId" open="(" close=")" separator=",">
+                    #{oneCompanyId,jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </if>
+        <if test="_parameter.containsKey('departId')">
+            <if test="departId!=null and departId!=''">
+                AND a.depart_id =#{departId,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('startDate')">
+            <if test="startDate!=null and startDate!=''">
+                AND a.exp_date &gt;= #{startDate,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('endDate')">
+            <if test="endDate!=null and endDate!=''">
+                AND a.exp_date &lt;= #{endDate,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('expType')">
+            <if test="expType!=null and expType!=''">
+                and exists (select 1 from maoding_web_exp_detail c where c.main_id = a.id and c.exp_type = d.exp_type
+                and c.exp_type = #{expType,jdbcType=VARCHAR})
+            </if>
+        </if>
+        <if test="_parameter.containsKey('expParentType')">
+            <if test="expParentType!=null and expParentType!=''">
+                and exists (select 1 from maoding_web_exp_detail c where c.main_id = a.id and c.exp_type = d.exp_type
+                and exists (select 1 from maoding_web_exp_category cc where cc.pid = #{expParentType,jdbcType=VARCHAR}
+                and cc.id = c.exp_type)
+                )
+            </if>
+        </if>
+        <if test="_parameter.containsKey('expName')">
+            <if test="expName!=null and expName!=''">
+                and d.exp_name = #{expName,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('expPName')">
+            <if test="expPName!=null and expPName!=''">
+                and d.exp_pname = #{expPName,jdbcType=VARCHAR}
+            </if>
+        </if>
+        <if test="_parameter.containsKey('expNo')">
+            <if test="expNo!=null and expNo!=''">
+                AND a.exp_no LIKE '%' #{expNo} '%'
+            </if>
+        </if>
+        <if test="applyUserName!=null and applyUserName!=''">
+            AND e.user_name LIKE '%' #{applyUserName} '%'
+        </if>
+    </sql>
+    <!--获取查询条件-->
+
+    <select id="selectExpMainDetail" resultMap="BaseResultMap" parameterType="java.lang.String">
+                SELECT
+            a.* ,(
+                SELECT
+                    SUM(b.exp_amount)
+                FROM
+                    maoding_web_exp_detail b
+                WHERE
+                    b.main_id = a.id
+            ) AS exp_sum_amount,
+            IFNULL(
+                (
+                    SELECT
+                        c.company_name
+                    FROM
+                        maoding_web_company c
+                    WHERE
+                        c.id = a.depart_id
+                ),
+                (
+                    SELECT
+                        d.depart_name
+                    FROM
+                        maoding_web_depart d
+                    WHERE
+                        d.id = a.depart_id
+                )
+            ) AS depart_name,
+            (
+                SELECT
+                  GROUP_CONCAT(e.exp_name SEPARATOR '、')
+                FROM
+                    maoding_web_exp_detail e
+                WHERE
+                    e.main_id = a.id
+            ) AS exp_name
+        FROM
+            maoding_web_exp_main a
+        WHERE
+            a.id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getByMainIdForMyTask" parameterType="java.lang.String" resultMap="BaseResultMap">
+         SELECT a.exp_flag,a.exp_no,group_concat(d.exp_use ORDER BY d.create_date separator',') as exp_type_name,d.exp_type,a.id,a.company_id, a.exp_date,
+        a.approve_status,c.user_name as user_name,
+        GROUP_concat(CONCAT(d.exp_pname,'-',d.exp_name)) as exp_pname,
+       GROUP_concat(DISTINCT e.project_name) as project_name,
+        sum(d.exp_amount) as exp_sum_amount,COUNT(1) as detail_count
+        from maoding_web_exp_main a
+        INNER JOIN maoding_web_exp_detail d on a.id = d.main_id
+        LEFT JOIN maoding_web_company_user c on a.company_user_id = c.id
+        LEFT JOIN maoding_web_project e on d.project_id = e.id
+        where a.id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getMaxExpNo" resultType="java.lang.String" parameterType="java.util.Map">
+        select IFNULL(max(m.exp_no),1000)+1 from maoding_web_exp_main m where 1=1
+        <if test="companyId!=null">
+            AND m.company_id =#{companyId,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="getTotalAmountByMainId" resultType="java.lang.String" parameterType="java.lang.String">
+        select sum(exp_amount) as exp_sum_amount from maoding_web_exp_detail where main_id = #{mainId}
+    </select>
+</mapper>

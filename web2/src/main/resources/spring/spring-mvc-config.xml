@@ -1,0 +1,159 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd ">
+
+
+    <!-- 自动扫描且只扫描@Controller -->
+    <context:component-scan base-package="com.maoding" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:include-filter type="annotation"
+                                expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+    </context:component-scan>
+    <!-- 和<mvc:annotation-driven/>前后顺序不能改变 -->
+    <bean
+            class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <bean
+                        class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                    <property name="prefixJson" value="false"/>
+                    <property name="supportedMediaTypes">
+                        <list>
+                            <value>application/json</value>
+                            <value>text/json</value> <!-- firefox上传图片需要 -->
+                        </list>
+                    </property>
+                </bean>
+                <bean
+                        class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+                <bean
+                        class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.FormHttpMessageConverter"/>
+                <bean
+                        class="org.springframework.http.converter.StringHttpMessageConverter">
+                    <property name="supportedMediaTypes" value="text/html;charset=UTF-8"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <bean
+            class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass"
+                  value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!-- 容器默认的DefaultServletHandler处理 所有静态内容与无RequestMapping处理的URL-->
+    <mvc:default-servlet-handler/>
+
+    <!-- 配置文件上传 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+    <mvc:resources mapping="/resources/**" location="/resources/"/>
+    <mvc:annotation-driven/>
+    <!-- 短信发送 -->
+    <bean id="smsSenderFactory" class="com.maoding.core.component.sms.SmsSenderFactory" factory-method="getInstance">
+        <constructor-arg>
+            <value>${SMS.type}</value>
+        </constructor-arg>
+        <property name="initProperties">
+            <map>
+                <!-- 上海创蓝传播有限公司短信平台配置参数 -->
+                <entry key="url_cl">
+                    <value>${SMS.url_cl}</value>
+                </entry>
+                <entry key="account">
+                    <value>${SMS.account}</value>
+                </entry>
+                <entry key="pswd">
+                    <value>${SMS.pswd}</value>
+                </entry>
+                <entry key="product">
+                    <value>${SMS.product}</value>
+                </entry>
+                <entry key="extno">
+                    <value>${SMS.extno}</value>
+                </entry>
+                <!-- 云片网络短信平台配置参数 -->
+                <entry key="url_yp">
+                    <value>${SMS.url_yp}</value>
+                </entry>
+                <entry key="apikey">
+                    <value>${SMS.apikey}</value>
+                </entry>
+                <entry key="extend">
+                    <value>${SMS.extend}</value>
+                </entry>
+                <entry key="uid">
+                    <value>${SMS.uid}</value>
+                </entry>
+                <entry key="callback_url">
+                    <value>${SMS.callback_url}</value>
+                </entry>
+            </map>
+        </property>
+    </bean>
+    <bean id="smsSender" class="com.maoding.core.component.sms.SmsSender" factory-bean="smsSenderFactory"
+          factory-method="createSmsSender"/>
+
+    <!--发送邮件 -->
+    <bean id="mailSenderFactory" class="com.maoding.core.component.mail.MailSenderFactory"
+          init-method="init" factory-method="getInstance">
+        <property name="server">
+            <value>${mail.server}</value>
+        </property>
+        <property name="port">
+            <value>${mail.port}</value>
+        </property>
+        <property name="username">
+            <value>${mail.username}</value>
+        </property>
+        <property name="password">
+            <value>${mail.password}</value>
+        </property>
+        <property name="fromname">
+            <value>${mail.fromname}</value>
+        </property>
+        <property name="mCount">
+            <value>${mail.count}</value>
+        </property>
+    </bean>
+
+    <bean id="mailSender" class="com.maoding.core.component.mail.MailSender"
+          factory-bean="mailSenderFactory" factory-method="getMailSender"/>
+    <!-- FastDFS -->
+    <bean id="storageClientFactory" class="com.maoding.core.component.fastdfs.StorageClientFactory"
+          factory-method="getInstance">
+        <property name="initProperties">
+            <map>
+                <entry key="connect_timeout">
+                    <value>${fastdfs.connect_timeout}</value>
+                </entry>
+                <entry key="network_timeout">
+                    <value>${fastdfs.network_timeout}</value>
+                </entry>
+                <entry key="charset">
+                    <value>${fastdfs.charset}</value>
+                </entry>
+                <entry key="tracker_http_port">
+                    <value>${fastdfs.tracker_http_port}</value>
+                </entry>
+                <entry key="anti_steal_token">
+                    <value>${fastdfs.anti_steal_token}</value>
+                </entry>
+                <entry key="secret_key">
+                    <value>${fastdfs.secret_key}</value>
+                </entry>
+                <entry key="tracker_server">
+                    <value>${fastdfs.tracker_server}</value>
+                </entry>
+            </map>
+        </property>
+    </bean>
+</beans>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetMessageMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.message.dto.MessageDTO" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="message_title" property="messageTitle" jdbcType="VARCHAR" />
+    <result column="message_content" property="messageContent" jdbcType="VARCHAR" />
+    <result column="message_type" property="messageType" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="target_id" property="targetId" jdbcType="VARCHAR" />
+    <result column="send_date" property="sendDate" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="param1" property="param1" jdbcType="VARCHAR" />
+    <result column="param2" property="param2" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="head_img" property="headImg" jdbcType="VARCHAR" />
+    <result column="send_user_name" property="sendUserName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, message_title, message_content, message_type, company_id, user_id, project_id,
+    target_id, create_date, create_by, update_date, update_by, param1, param2
+  </sql>
+
+  <select id="getMessage" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select a. id, message_title, message_content, message_type, a.company_id, a.user_id, project_id,a.status,
+    target_id,ifnull(c.nick_name,b.company_name) as company_name,DATE_FORMAT(a.create_date,'%Y-%m-%d') as send_date,a.create_date,
+    d.oss_file_path as head_img,e.user_name as send_user_name
+    from maoding_web_message a
+    LEFT JOIN maoding_web_company b on a.send_company_id = b.id
+    LEFT JOIN maoding_web_business_partner c on b.id = c.company_id and c.type = 3
+    LEFT JOIN ( <include refid="UserAttachEntityMapper.getHeadImg" /> ) d on a.create_by = d.user_id and d.attach_type = 5
+    LEFT JOIN maoding_web_company_user e on a.send_company_id = e.company_id and a.create_by = e.user_id
+    where a.user_id = #{userId,jdbcType=VARCHAR}
+    ORDER BY create_date DESC
+    <if test="_parameter.containsKey('startPage')">
+      limit #{startPage},#{endPage}
+    </if>
+
+  </select>
+
+
+  <select id="getMessageCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select COUNT(1)
+    from maoding_web_message a
+    where user_id = #{userId,jdbcType=VARCHAR}
+    <if test="param2 != null" ><!--搜索未读数量-->
+      and param2= #{param2,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+</mapper>

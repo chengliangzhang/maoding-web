@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetCompanyByUserIdMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.org.dto.CompanyDTO" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="major_type" property="majorType" jdbcType="VARCHAR" />
+    <result column="certificate" property="certificate" jdbcType="VARCHAR" />
+    <result column="main_field" property="mainField" jdbcType="VARCHAR" />
+    <result column="is_authentication" property="isAuthentication" jdbcType="VARCHAR" />
+    <result column="operator_name" property="operatorName" jdbcType="VARCHAR" />
+    <result column="reject_reason" property="rejectReason" jdbcType="VARCHAR" />
+    <result column="company_type" property="companyType" jdbcType="VARCHAR" />
+    <result column="company_email" property="companyEmail" jdbcType="VARCHAR" />
+    <result column="company_short_name" property="companyShortName" jdbcType="VARCHAR" />
+    <result column="company_fax" property="companyFax" jdbcType="VARCHAR" />
+    <result column="server_type" property="serverType" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="county" property="county" jdbcType="VARCHAR" />
+    <result column="legal_representative" property="legalRepresentative" jdbcType="VARCHAR" />
+    <result column="company_phone" property="companyPhone" jdbcType="VARCHAR" />
+    <result column="company_address" property="companyAddress" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="business_license_number" property="businessLicenseNumber" jdbcType="VARCHAR" />
+    <result column="organization_code_number" property="organizationCodeNumber" jdbcType="VARCHAR" />
+    <result column="micro_url" property="microUrl" jdbcType="VARCHAR" />
+    <result column="micro_template" property="microTemplate" jdbcType="VARCHAR" />
+    <result column="file_path" property="filePath" jdbcType="VARCHAR" />
+      <result column="file_group" property="fileGroup" jdbcType="VARCHAR" />
+    <result column="company_comment" property="companyComment" jdbcType="VARCHAR" />
+      <result column="relation_type" property="relationType" jdbcType="VARCHAR" />
+      <result column="sys_role" property="sysRole" jdbcType="VARCHAR" />
+  </resultMap> 
+  
+  <!-- 查找当前用户所在的公司（组织切换） -->
+	<select id="getCompanyByUserId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        SELECT
+            a.id,
+            ifnull(p.nick_name,a.company_name) as company_name,
+            company_short_name,
+            company_type,
+            server_type,
+            province,
+            city,
+            company_phone,
+            company_email,
+            company_fax,
+            company_address,
+            file_group,
+            file_path,
+            b.relation_type,
+            (SELECT tp.id from maoding_web_team_operater tp where tp.company_id=b.company_id AND tp.user_id=b.user_id) AS  sys_role,
+            company_comment,
+            a.status
+        from maoding_web_company a
+            left join maoding_web_company_user b on a.id=b.company_id
+            LEFT JOIN maoding_web_business_partner p on a.id = p.company_id and p.type=3
+            left join maoding_web_company_attach c on a.id = c.company_id and c.file_type = '4'
+        where a.status='0' and b.audit_status='1' and b.user_id=#{userId,jdbcType=VARCHAR}
+        order by a.create_date
+	</select>
+
+
+    <!-- 查找当前用户所在的公司（组织切换） -->
+    <select id="getCompanyByUserIdForCollaboration" resultMap="BaseResultMap" parameterType="java.util.Map" >
+        SELECT
+        a.id,
+        company_name,
+        company_short_name,
+        company_type,
+        server_type,
+        province,
+        city,
+        county,
+        company_phone,
+        company_email,
+        company_fax,
+        company_address,
+        file_path,
+        file_group,
+        b.relation_type,
+        (SELECT tp.id from maoding_web_team_operater tp where tp.company_id=b.company_id AND tp.user_id=b.user_id) AS  sys_role,
+        company_comment,
+        a.status
+        from maoding_web_company a
+        left join maoding_web_company_user b on a.id=b.company_id
+        left join maoding_web_company_attach c on a.id = c.company_id and c.file_type = '4'
+        where a.status='0' and b.audit_status='1' and b.user_id=#{userId,jdbcType=VARCHAR}
+        <if test="syncDate != null">
+            <![CDATA[  and a.create_date <= #{syncDate,jdbcType=VARCHAR}  ]]>
+        </if>
+    </select>
+
+</mapper>

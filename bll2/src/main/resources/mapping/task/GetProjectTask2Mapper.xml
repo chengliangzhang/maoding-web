@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetProjectTask2Mapper" >
+
+    <resultMap id="BaseResultMap" type="com.maoding.task.dto.ProjectTaskDataDTO" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+        <result column="task_pid" property="taskPid" jdbcType="VARCHAR" />
+        <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+        <result column="task_type" property="taskType" jdbcType="INTEGER" />
+        <result column="task_name" property="taskName" jdbcType="VARCHAR" />
+        <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+        <result column="flag" property="flag" jdbcType="INTEGER" />
+        <result column="task_level" property="taskLevel" jdbcType="INTEGER" />
+        <result column="start_time" property="startTime" jdbcType="VARCHAR" />
+        <result column="end_time" property="endTime" jdbcType="VARCHAR" />
+        <result column="task_path" property="taskPath" jdbcType="LONGVARCHAR" />
+        <result column="child_count" property="childCount" jdbcType="INTEGER" />
+        <result column="task_remark" property="taskRemark" jdbcType="VARCHAR" />
+        <result column="task_full_name" property="taskFullName" jdbcType="VARCHAR" />
+    </resultMap>
+
+
+    <!-- 根据id查询 -->
+    <select id="getProjectTaskById" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select a.id ,a.task_pid,a.project_id,a.task_level,a.company_id,a.task_type,a.task_name,a.task_path,b.company_name,a.task_remark,
+        a.start_time,a.end_time,
+         (SELECT GROUP_CONCAT(dd.task_name ORDER BY dd.create_date SEPARATOR ' — ') FROM maoding_web_project_task dd WHERE a.task_path LIKE CONCAT('%',dd.id,'%'))  as task_full_name
+        FROM maoding_web_project_task a
+        LEFT JOIN maoding_web_company b on a.company_id = b.id
+        where a.id = #{id,jdbcType=VARCHAR}
+      --  and a.task_status='0'
+        order by a.seq,a.create_date
+    </select>
+
+    <!-- 根据Pid查询 或许taskPath-->
+    <select id="getProjectTaskByPid" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select a.id ,a.task_pid,a.project_id,a.task_level,a.company_id,a.task_type,a.task_name,b.company_name as manager,a.task_remark,a.start_time,a.end_time
+        FROM maoding_web_project_task a
+        LEFT JOIN maoding_web_company b on a.company_id = b.id
+        where  a.task_status='0'
+        <if test="taskPid != null" >
+            AND  a.task_pid=#{taskPid,jdbcType=VARCHAR}
+        </if>
+        <if test="taskPath != null" >
+            AND  a.task_path  LIKE '%' #{taskPath} '%'
+        </if>
+        order by a.seq,a.create_date
+    </select>
+
+
+    <select id="getTastRelation" resultType="java.util.Map" parameterType="java.lang.String">
+        select
+        a.id as toPath,
+        a.task_pid as fromPath
+        from maoding_web_project_task a
+        where 1=1 and  task_status='0'
+        and a.project_id = #{projectId,jdbcType=VARCHAR}
+    </select>
+</mapper>

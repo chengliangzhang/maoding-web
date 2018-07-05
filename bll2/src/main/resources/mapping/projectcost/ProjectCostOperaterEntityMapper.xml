@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ProjectCostOperaterEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.projectcost.entity.ProjectCostOperaterEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="cost_detail_id" property="costDetailId" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="company_user_id" property="companyUserId" jdbcType="VARCHAR" />
+    <result column="operater_date" property="operaterDate" jdbcType="TIMESTAMP" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="field1" property="field1" jdbcType="VARCHAR" />
+    <result column="field2" property="field2" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, cost_detail_id,  type, company_user_id,  operater_date, create_date,
+    create_by, update_date, update_by,field1,field2
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_project_cost_operater
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByType" resultMap="BaseResultMap" parameterType="com.maoding.projectcost.entity.ProjectCostOperaterEntity" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_project_cost_operater
+    where cost_detail_id = #{costDetailId} and type = #{type}
+  </select>
+  
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_project_cost_operater
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteByCostDetailId" parameterType="java.lang.String" >
+    delete from maoding_web_project_cost_operater
+    where cost_detail_id = #{costDetailId,jdbcType=VARCHAR}
+  </delete>
+
+
+  <insert id="insert" parameterType="com.maoding.projectcost.entity.ProjectCostOperaterEntity" >
+    insert into maoding_web_project_cost_operater (
+     id, cost_detail_id,  type, company_user_id,  operater_date, create_date,
+    create_by, update_date, update_by
+      )
+    values (#{id,jdbcType=VARCHAR}, #{costDetailId,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
+     #{companyUserId,jdbcType=VARCHAR},now(), now(),
+      #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.projectcost.entity.ProjectCostEntity" >
+    update maoding_web_project_cost_operater
+    <set >
+      <if test="costDetailId != null" >
+        cost_detail_id = #{costDetailId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="companyUserId != null" >
+        company_user_id = #{companyUserId,jdbcType=DECIMAL},
+      </if>
+      <if test="operaterDate != null" >
+        operater_date = #{operaterDate,jdbcType=VARCHAR},
+      </if>
+        update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

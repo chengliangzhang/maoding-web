@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ProjectPropertyEntityMapper" >
+
+  <select id="listProperty" resultType="com.maoding.project.dto.CustomProjectPropertyDTO" parameterType="java.lang.String">
+    select a.id,a.field_name,a.field_value,a.unit_name,a.sequencing,0 as change_status
+    from maoding_web_project_property a
+    where a.deleted!=1 and a.project_id=#{projectId}
+    order by a.sequencing
+  </select>
+
+  <select id="selectById" resultType="com.maoding.project.entity.ProjectPropertyEntity" parameterType="java.lang.String" >
+    select *
+    from maoding_web_project_property
+    where id = #{id}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_project_property
+    where id = #{id}
+  </delete>
+
+  <update id="fakeDeleteById" parameterType="java.lang.String" >
+    update maoding_web_project_property
+    set deleted=1
+    where id = #{id}
+  </update>
+
+  <insert id="insert" parameterType="com.maoding.project.entity.ProjectPropertyEntity" >
+    insert into maoding_web_project_property (id, project_id, field_name,
+                                              unit_name, field_value, sequencing,
+                                              create_date, create_by)
+    values (
+            <choose><when test="id!=null">#{id}</when><otherwise>replace(uuid(),'-','')</otherwise></choose>
+            ,#{projectId},#{fieldName},#{unitName},#{fieldValue},#{sequencing}
+            ,<choose><when test="createDate!=null">#{createDate}</when><otherwise>now()</otherwise></choose>
+            ,#{createBy}
+    )
+  </insert>
+
+  <insert id="insertDefaultProperty" parameterType="java.util.Map" >
+    insert into maoding_web_project_property (id, project_id, field_name,
+                                              unit_name, field_value, sequencing,
+                                              create_date, create_by)
+    values
+    <foreach collection="propertyList" index="idx" item="pty" separator=",">
+      <if test="pty.changeStatus>=0">
+        (
+          replace(uuid(),'-','')
+          ,#{projectId},#{pty.fieldName},#{pty.unitName},null,#{idx}
+          ,<choose><when test="createDate!=null">#{createDate}</when><otherwise>now()</otherwise></choose>
+          ,<choose><when test="createBy!=null">#{createBy}</when><otherwise>null</otherwise></choose>
+        )
+      </if>
+    </foreach>
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.project.entity.ProjectPropertyEntity" >
+    update maoding_web_project_property
+    <set>
+      <if test="fieldName!=null">
+        field_name=#{fieldName},
+      </if>
+      <if test="unitName!=null">
+        unit_name=#{unitName},
+      </if>
+      <if test="fieldValue!=null">
+        field_value=#{fieldValue},
+      </if>
+      <if test="sequencing!=null">
+        sequencing=#{sequencing},
+      </if>
+      <if test="deleted!=null">
+        deleted=#{deleted}
+      </if>
+      <choose>
+        <when test="updateDate!=null">
+          update_date=#{updateDate},
+        </when>
+        <otherwise>
+          update_date=now(),
+        </otherwise>
+      </choose>
+      <if test="updateBy!=null">
+        update_by=#{updateBy},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+
+</mapper>

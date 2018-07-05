@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetExpFixedMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.financial.dto.ExpFixedMainDTO" >
+    <id column="exp_date" property="expDate" jdbcType="VARCHAR" />
+    <id column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <collection property="fixedList" ofType="com.maoding.financial.dto.ExpFixedDTO">
+      <id column="exp_type_parent_name" property="expTypeName" jdbcType="VARCHAR" />
+      <result column="parent_exp_type" property="expType" jdbcType="VARCHAR" />
+      <collection property="detailList" ofType="com.maoding.financial.dto.ExpFixedDTO">
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="code" property="code" jdbcType="VARCHAR" />
+        <result column="exp_type" property="expType" jdbcType="VARCHAR" />
+        <result column="exp_type_parent_name" property="expTypeParentName" jdbcType="VARCHAR" />
+        <result column="exp_type_name" property="expTypeName" jdbcType="VARCHAR" />
+        <result column="exp_amount" property="expAmount" jdbcType="DECIMAL" />
+        <result column="seq" property="seq" jdbcType="INTEGER" />
+        <!--<result column="depart_id" property="departId" jdbcType="VARCHAR" />-->
+        <!--<result column="remark" property="remark" jdbcType="VARCHAR" />-->
+      </collection>
+    </collection>
+  </resultMap>
+
+  <select id="getExpFixed" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    SELECT ifnull(c.exp_date, #{expDate}) as exp_date,#{companyId} as company_id,c.user_id,d.user_name,
+    c.exp_type_parent_name,c.exp_type_name,c.seq,
+    c.id,c.exp_amount,c.remark,c.depart_id
+    from maoding_web_exp_fixed c
+    LEFT JOIN maoding_web_company_user d on c.user_id = d.user_id and c.company_id = d.company_id or d.id = c.user_id
+    where c.company_id = #{companyId}
+    and c.exp_date = #{expDate}
+    order by c.seq
+  </select>
+
+  <select id="getExpFixedByMonth" resultType="com.maoding.financial.dto.ExpFixedAmountDTO" parameterType="java.util.Map">
+    SELECT exp_date as expDate,b.user_name as userName,
+    sum(if(a.exp_type_parent_name='其他业务收入',IFNULL(a.exp_amount,0),0)) as incomeAmount,
+    sum(if(a.exp_type_parent_name!='其他业务收入',IFNULL(a.exp_amount,0),0)) as expAmount
+    -- sum(IFNULL(a.exp_amount,0)) as amount
+    from maoding_web_exp_fixed a
+    LEFT JOIN maoding_web_company_user b on a.user_id = b.user_id and a.company_id = b.company_id or a.user_id = b.id
+    where a.company_id = #{companyId}
+    and a.exp_date in
+    <foreach collection="months" index="i" item="month" open="(" separator="," close=")">
+      #{month}
+    </foreach>
+    GROUP BY exp_date
+  </select>
+
+  <!--利润报表财务管理，费用录入模块-->
+  <select id="getExpFixedDefault" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    SELECT #{expDate} as exp_date,#{companyId} as company_id,
+    a.id as parent_exp_type,a.name as exp_type_parent_name,
+    b.id as exp_type,b.name as exp_type_name,
+    CONCAT(a.seq,b.seq) as seq
+    from maoding_web_exp_category a
+    INNER JOIN maoding_web_exp_category b on a.id = b.pid
+    INNER JOIN maoding_web_exp_category_relation c on b.id = c.category_type_id
+    where b.company_id = #{rootCompanyId}
+    and (b.category_type = 2 or b.category_type = 3)
+	and c.company_id = #{companyId}
+    and b.status = 0
+    order by a.seq,b.seq
+  </select>
+
+</mapper>

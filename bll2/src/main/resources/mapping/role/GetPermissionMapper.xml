@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetPermissionMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.role.dto.PermissionDTO" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="pid" property="pid" jdbcType="VARCHAR" />
+    <result column="root_id" property="rootId" jdbcType="VARCHAR" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+
+    <!-- 一对多的关系 -->
+    <collection property="childList" ofType="com.maoding.role.dto.PermissionDTO">
+      <result column="child_id" property="id" jdbcType="VARCHAR" />
+      <result column="child_code" property="code" jdbcType="VARCHAR" />
+      <result column="child_name" property="name" jdbcType="VARCHAR" />
+      <result column="child_pid" property="pid" jdbcType="VARCHAR" />
+      <result column="child_root_id" property="rootId" jdbcType="VARCHAR" />
+      <result column="child_seq" property="seq" jdbcType="INTEGER" />
+      <result column="permission_id" property="permissionId" jdbcType="VARCHAR" />
+      <result column="type" property="type" jdbcType="INTEGER" />
+    </collection>
+  </resultMap>
+
+    <resultMap id="BaseResultMap2" type="com.maoding.role.dto.PermissionDTO" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="pid" property="pid" jdbcType="VARCHAR" />
+    <result column="root_id" property="rootId" jdbcType="VARCHAR" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+    </resultMap>
+
+  <select id="getAllPermission" resultMap="BaseResultMap" >
+    select a.id,a.code,a.name,a.pid,a.root_id,a.seq,
+    b.id as child_id,b.code as child_code,b.name as child_name,b.pid as child_pid,b.root_id as child_root_id,b.seq as child_seq
+    from maoding_web_permission a
+    LEFT JOIN maoding_web_permission b on a.id = b.pid
+    where a.pid is null
+    order by a.seq,b.seq
+  </select>
+
+
+  <!-- 获取用户权限 只拥有的权限的code值-->
+  <select id="getPermissionCodeByUserId" resultType="java.lang.String" parameterType="java.util.Map">
+    SELECT GROUP_CONCAT(DISTINCT b.CODE)
+    from maoding_web_role_permission a
+    INNER JOIN maoding_web_permission b on a.permission_id = b.id
+    INNER JOIN maoding_web_user_permission c on a.permission_id = c.permission_id and a.company_id = c.company_id
+    where 1=1
+    and c.user_id = #{userId}
+    and a.company_id = #{companyId}
+    and b.`status` = 0
+    <if test="typeId!=null">
+      and (not FIND_IN_SET(#{typeId},a.forbid_relation_type_id) or a.forbid_relation_type_id is null)
+    </if>
+  </select>
+
+</mapper>

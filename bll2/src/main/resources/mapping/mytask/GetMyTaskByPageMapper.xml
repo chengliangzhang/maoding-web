@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetMyTaskByPage" >
+    <resultMap id="BaseResultMap" type="com.maoding.mytask.dto.MyTaskDTO" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="task_title" property="taskTitle" jdbcType="VARCHAR" />
+        <result column="task_type" property="taskType" jdbcType="INTEGER" />
+        <result column="handler_id" property="handlerId" jdbcType="VARCHAR" />
+        <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+        <result column="param1" property="param1" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="VARCHAR" />
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+        <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+        <!--<result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />-->
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+        <result column="target_id" property="targetId" jdbcType="VARCHAR" />
+        <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+        <result column="task_content" property="taskContent" jdbcType="LONGVARCHAR" />
+    </resultMap>
+
+    <resultMap id="BaseResultMap2" type="com.maoding.mytask.dto.MyTaskListDTO" >
+        <id column="id" property="projectId" jdbcType="VARCHAR" />
+        <result column="project_name" property="projectName" jdbcType="VARCHAR" />
+        <result column="total_num" property="totalNum" jdbcType="INTEGER" />
+        <result column="complete_num" property="completeNum" jdbcType="INTEGER" />
+        <result column="handler_id" property="handlerId" jdbcType="VARCHAR" />
+        <result column="is_handler" property="isHandler" jdbcType="INTEGER" />
+        <collection property="taskList" select="getMyTaskByProjectId" column="{handlerId=handler_id,projectId = id,is_handler=isHandler}" fetchType="eager" ></collection>
+    </resultMap>
+
+    <resultMap id="BaseResultMap3" type="com.maoding.mytask.dto.MyTaskListDTO" >
+        <id column="id" property="projectId" jdbcType="VARCHAR" />
+        <result column="project_name" property="projectName" jdbcType="VARCHAR" />
+        <result column="total_num" property="totalNum" jdbcType="INTEGER" />
+        <result column="complete_num" property="completeNum" jdbcType="INTEGER" />
+        <result column="handler_id" property="handlerId" jdbcType="VARCHAR" />
+        <result column="task_content" property="taskContent" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <resultMap id="BaseResultMap4" type="com.maoding.mytask.dto.MyTaskList2DTO" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+        <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+        <result column="task_type" property="taskType" jdbcType="INTEGER" />
+        <result column="project_name" property="projectName" jdbcType="VARCHAR" />
+        <result column="task_name" property="taskName" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="handler_id" property="handlerId" jdbcType="VARCHAR" />
+        <result column="task_content" property="taskContent" jdbcType="VARCHAR" />
+        <result column="target_id" property="targetId" jdbcType="VARCHAR" />
+        <result column="param1" property="param1" jdbcType="VARCHAR" />
+        <result column="start_time" property="planStartTime" jdbcType="VARCHAR" />
+        <result column="end_time" property="planEndTime" jdbcType="VARCHAR" />
+        <result column="complete_date" property="completeDate" jdbcType="VARCHAR" />
+        <result column="type_column" property="type" jdbcType="INTEGER" />
+        <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+        <discriminator javaType="int" column="type_column">
+            <case value="1" resultType="com.maoding.mytask.dto.MyTaskList2DTO" >
+                <association property="stateMap" select="GetTaskStateMapper.getTaskState3" column="{projectId= project_id,taskId=target_id}"  fetchType="eager" />
+            </case>
+            <case value ="2" resultType="com.maoding.mytask.dto.MyTaskList2DTO" >
+                <association property="stateMap" select="GetTaskStateMapper.getTaskState3" column="{projectId= project_id,taskId=param1}"  fetchType="eager"/>
+            </case>
+            <case value ="3" resultType="com.maoding.mytask.dto.MyTaskList2DTO" >
+                <association property="description" select="GetProjectCostPointMapper.getProjectPointDesc" column="{param1=param1,targetId=target_id}"  fetchType="eager"/>
+            </case>
+        </discriminator>
+    </resultMap>
+
+
+    <!-- 根据不同的参数查询我的任务 -->
+    <select id="getMyTaskByParam" resultMap="BaseResultMap" parameterType="java.util.Map" >
+        select
+            a.id as id, a.task_title, a.task_content,a.task_type, a.handler_id, a.company_id, a.status, param1, a.create_by,
+            a.update_date, a.update_by, a.target_id, a.project_id,a.create_date
+        from
+            maoding_web_my_task a
+            left join maoding_web_project b on (a.project_id=b.id)
+        <where>
+            a.param4= '0'
+            <if test="handlerId != null" >
+                AND a.handler_id = #{handlerId,jdbcType=VARCHAR}
+            </if>
+            <if test="targetId != null" >
+                AND a.target_id = #{targetId,jdbcType=VARCHAR}
+            </if>
+            <if test="companyId != null" >
+                AND a.company_id = #{companyId,jdbcType=VARCHAR}
+            </if>
+            <if test="taskType != null" >
+                AND a.task_type = #{taskType}
+            </if>
+            <if test="status != null" >
+                <choose>
+                    <when test="status =='0'.toString()">
+                        AND (a.status ='0' or a.status='3')
+                    </when>
+                    <otherwise>
+                        AND a.status = #{status,jdbcType=VARCHAR}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="typeList != null" >
+                and a.task_type in
+                <foreach collection="typeList" index="index" item="type" open="(" separator="," close=")">
+                    #{type}
+                </foreach>
+            </if>
+            <if test="projectNameMask!=null">
+                and b.project_name like concat('%',#{projectNameMask},'%')
+            </if>
+        </where>
+        ORDER BY a.create_date
+            <choose>
+                <when test="asc!=null and asc!=0">
+                    ASC
+                </when>
+                <otherwise>
+                    DESC
+                </otherwise>
+            </choose>
+        <if test="startPage!=null">
+            LIMIT #{startPage},#{endPage}
+        </if>
+    </select>
+
+    <select id="getMyTaskList4" resultMap="BaseResultMap4" parameterType="java.util.Map" >
+        select
+        a.id, a.task_title, a.task_content,a.task_type, a.handler_id, a.company_id,  param1, a.target_id,
+        a.project_id, b.project_name,
+        if(a.task_type=11 or a.task_type = 23,a.task_title,c.task_name) as task_name,
+        c.task_remark as description,
+        c.start_time,c.end_time,c.complete_date,
+        <![CDATA[  if(a.task_type=13 or a.task_type=22,1,
+        if(a.task_type=3,2,
+        if(a.task_type =10 or a.task_type =4 or a.task_type =6 or a.task_type >15 and a.task_type<22,3,0))) as type_column, ]]>
+        DATE_FORMAT(a.create_date,'%Y-%m-%d') AS create_date
+        from maoding_web_my_task a
+        left join maoding_web_project b on a.project_id=b.id
+        LEFT JOIN maoding_web_project_task c on if(a.task_type=3,a.param1,a.target_id) = c.id
+        <where>
+            1=1
+            <if test="companyId != null" >
+                AND a.company_id = #{companyId,jdbcType=VARCHAR}
+            </if>
+            AND a.task_type !=11 AND a.task_type != 23 AND a.task_type != 24 AND a.task_type != 100
+            and a.param4= '0'
+            and (
+            (
+            a.handler_id =  #{handlerId,jdbcType=VARCHAR}
+            and ((b.id is null ) or (b.id is not null and b.pstatus='0'))
+            )
+            <if test="isHandler!=null">
+                or (a.param3=1 and a.handler_id is NULL )
+            </if>
+            <if test="isHandlerReceive!=null">
+                or (a.param3=2 and a.handler_id is NULL )
+            </if>
+            )
+
+            <if test="taskType != null" >
+                AND a.task_type = #{taskType}
+            </if>
+            <if test="status != null" >
+                <choose>
+                    <when test="status =='0'.toString()">
+                        AND (a.status ='0' or a.status='3')
+                    </when>
+                    <otherwise>
+                        AND a.status = #{status,jdbcType=VARCHAR}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="typeList != null" >
+                and a.task_type in
+                <foreach collection="typeList" index="index" item="type" open="(" separator="," close=")">
+                    #{type}
+                </foreach>
+            </if>
+            <if test="projectNameMask!=null">
+                and b.project_name like concat('%',#{projectNameMask},'%')
+            </if>
+        </where>
+        group by a.id
+        ORDER BY a.create_date desc
+        <if test="startPage!=null">
+            LIMIT #{startPage},#{endPage}
+        </if>
+    </select>
+
+    <!-- 根据不同的参数查询我的任务 -->
+    <select id="getMyTaskByParamCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
+        select
+            count(DISTINCT a.id)
+        from
+            maoding_web_my_task a
+            left join maoding_web_project b on (a.project_id=b.id)
+        <where>
+            a.task_type !=11 AND a.task_type != 23 AND a.task_type != 24 AND a.task_type != 100
+            and a.param4= '0'
+            <if test="handlerId != null" >
+                and (
+                (
+                a.handler_id =  #{handlerId,jdbcType=VARCHAR}
+                and ((b.id is null) or (b.id is not null and b.pstatus='0'))
+                )
+                <if test="isHandler!=null">
+                    or (a.param3=1 and a.handler_id is NULL )
+                </if>
+                <if test="isHandlerReceive!=null">
+                    or (a.param3=2 and a.handler_id is NULL )
+                </if>
+                )
+            </if>
+            <if test="companyId != null" >
+                AND a.company_id = #{companyId,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null" >
+                <choose>
+                    <when test="status =='0'.toString()">
+                        AND (a.status ='0' or a.status='3')
+                    </when>
+                    <otherwise>
+                        AND a.status = #{status,jdbcType=VARCHAR}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="typeList != null" >
+                and a.task_type in
+                <foreach collection="typeList" index="index" item="type" open="(" separator="," close=")">
+                    #{type}
+                </foreach>
+            </if>
+            <if test="projectNameMask!=null">
+                and b.project_name like concat('%',#{projectNameMask},'%')
+            </if>
+        </where>
+    </select>
+
+
+    <select id="getMyTaskList" resultMap="BaseResultMap2" parameterType="java.util.Map">
+        SELECT b.id,IFNULL(b.project_name,'报销审批') as project_name,
+        COUNT(a.id) as total_num,
+        sum(CASE WHEN a.status='1'  THEN 1 ELSE 0 END) AS complete_num,
+        #{handlerId,jdbcType=VARCHAR} as handler_id,
+        #{isHandler,jdbcType=VARCHAR} as is_handler
+        from maoding_web_my_task a
+        LEFT JOIN maoding_web_project b on a.project_id = b.id
+        where (a.`status` = 1 or a.`status` = '0')
+        and a.handler_id =  #{handlerId,jdbcType=VARCHAR}
+        and ((b.id is null and a.`status` = '0') or (b.id is not null and b.pstatus='0'))
+        GROUP BY b.id
+        order by IFNULL(b.create_date,now()) desc
+        <if test="startPage!=null">
+            LIMIT #{startPage},#{endPage}
+        </if>
+    </select>
+
+    <select id="getMyTaskList2" resultMap="BaseResultMap3" parameterType="java.util.Map">
+        SELECT b.id,IFNULL(b.project_name,'报销审批') as project_name,
+        COUNT(a.id) as total_num,
+        sum(CASE WHEN a.status='1'  THEN 1 ELSE 0 END) AS complete_num,
+        #{handlerId,jdbcType=VARCHAR} as handler_id
+        from maoding_web_my_task a,maoding_web_project b
+        where a.project_id = b.id and a.`status` = '0' and a.param4=0
+        <if test="null != status">
+            and b.status=#{status}
+        </if>
+
+        and a.company_id = #{companyId,jdbcType=VARCHAR}
+        and (
+              (
+                a.handler_id =  #{handlerId,jdbcType=VARCHAR}
+                and ((b.id is null and a.`status` = '0') or (b.id is not null and b.pstatus='0'))
+              )
+            <if test="isHandler!=null">
+                or (a.param3=1 and a.handler_id is NULL )
+            </if>
+            <if test="isHandlerReceive!=null">
+                or (a.param3=2 and a.handler_id is NULL )
+            </if>
+            )
+        GROUP BY b.id
+        order by IFNULL(b.create_date,now()) desc
+        <if test="startPage!=null">
+            LIMIT #{startPage},#{endPage}
+        </if>
+    </select>
+
+    <!-- 根据不同的参数查询我的任务 -->
+    <select id="getMyTaskByProjectId" resultMap="BaseResultMap" parameterType="java.util.Map" >
+        select *
+        from maoding_web_my_task
+        where status!='2' and param4 = '0'
+        and company_id = #{companyId,jdbcType=VARCHAR}
+        AND
+        (
+        handler_id = #{handlerId,jdbcType=VARCHAR}
+        <if test="isHandler!=null">
+            or (param3=1 and handler_id is NULL )
+        </if>
+        <if test="isHandlerReceive!=null">
+            or (param3=2 and handler_id is NULL )
+        </if>
+        )
+        <if test="projectId != null" >
+            AND project_id = #{projectId,jdbcType=VARCHAR}
+        </if>
+        <if test="projectId == null" >
+            AND task_type = 11 and status='0'
+        </if>
+        order by status,create_date desc
+        <if test="startPage!=null">
+            LIMIT #{startPage},#{endPage}
+        </if>
+    </select>
+    <select id="getMyProductionTaskDTO" resultType="com.maoding.mytask.dto.MyProductionTaskDTO" parameterType="java.util.Map">
+        SELECT
+          t.id,
+          (CASE
+          WHEN t.task_type=13 THEN '任务负责人'
+          WHEN t.task_type=3  THEN CONCAT(t.task_content,'人')
+          END) AS taskContent,
+           (CASE
+          WHEN t.task_type=13 THEN '13'
+          WHEN t.task_type=3 and CONCAT(t.task_content)='设计' THEN 3
+          WHEN t.task_type=3 and CONCAT(t.task_content)='校对' THEN 4
+          WHEN t.task_type=3 and CONCAT(t.task_content)='审核' THEN 5
+          END) AS memberType
+        FROM
+          maoding_web_my_task t
+        WHERE (
+            t.target_id = #{taskId,jdbcType=VARCHAR}
+            OR param1 = #{taskId,jdbcType=VARCHAR}
+          )
+          AND STATUS = 0
+          AND param4 = 0
+          AND handler_id = #{handlerId,jdbcType=VARCHAR}
+          AND t.task_type IN(13,3)
+    </select>
+    <select id="getCompleteTaskId" resultType="java.lang.String" parameterType="java.util.Map">
+        SELECT
+          t.id
+        FROM
+          maoding_web_my_task t,
+          maoding_web_project_member pm
+        WHERE pm.id = #{id}
+          AND pm.target_id = t.target_id
+          AND pm.node_id = t.param1
+          AND t.status=#{status}
+
+    </select>
+</mapper>

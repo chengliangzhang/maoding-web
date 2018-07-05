@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="CompanyMapper">
+    <select id="getCompanyUserIdByCompanyIdAndUserId" parameterType="java.util.Map" resultType="java.lang.String">
+        SELECT a.id
+        FROM
+            maoding_web_company_user a
+        WHERE
+            a.company_id = #{companyId} AND a.user_id = #{userId}
+        LIMIT 1
+    </select>
+    <select id="listUserIdByCompanyIdAndPermissionId" parameterType="java.util.Map" resultType="java.lang.String">
+        SELECT a.user_id
+        FROM
+            maoding_web_user_permission a
+        WHERE
+            a.company_id = #{companyId} AND a.permission_id = #{permissionId}
+        ORDER BY a.seq
+    </select>
+    <select id="getCompanyUserByCompanyNameAndUserName" parameterType="java.util.Map"
+            resultType="com.maoding.org.dto.CompanyUserDTO">
+        SELECT
+            a.id AS id,
+            h.id AS company_id,
+            b.id AS user_id
+        FROM
+            maoding_web_company_user a
+            INNER JOIN maoding_web_account b ON (a.user_id = b.id)
+            INNER JOIN maoding_web_company h ON (a.company_id = h.id)
+            LEFT JOIN maoding_web_business_partner i ON (h.id = i.company_id)
+            LEFT JOIN maoding_web_org_auth j ON ((j.deleted IS NULL OR j.deleted = 0) AND h.id = j.id)
+        WHERE
+            (b.status IS NULL OR b.status = '0')
+            AND (h.status IS NULL OR h.status = '0')
+            AND (a.user_name = #{userName} OR b.user_name = #{userName})
+            AND
+            (h.company_name = #{companyName} OR h.company_short_name = #{companyName} OR i.nick_name = #{companyName} OR
+             j.org_name = #{companyName})
+        LIMIT 1
+    </select>
+    <select id="getCompanyIdByCompanyNameAndUserName" parameterType="java.util.Map" resultType="java.lang.String">
+        SELECT h.id
+        FROM
+            maoding_web_company_user a
+            INNER JOIN maoding_web_account b ON (a.user_id = b.id)
+            INNER JOIN maoding_web_company h ON (a.company_id = h.id)
+            LEFT JOIN maoding_web_business_partner i ON (h.id = i.company_id)
+            LEFT JOIN maoding_web_org_auth j ON ((j.deleted IS NULL OR j.deleted = 0) AND h.id = j.id)
+        WHERE
+            (b.status IS NULL OR b.status = '0')
+            AND (h.status IS NULL OR h.status = '0')
+            AND (a.user_name = #{userName} OR b.user_name = #{userName})
+            AND
+            (h.company_name = #{companyName} OR h.company_short_name = #{companyName} OR i.nick_name = #{companyName} OR
+             j.org_name = #{companyName})
+        LIMIT 1
+    </select>
+    <select id="getCompanyIdByCompanyNameForA" parameterType="java.util.Map" resultType="java.lang.String">
+        SELECT a.id
+        FROM
+            maoding_web_project_construct a
+        WHERE
+            (a.company_name = #{companyName}) AND (a.company_id = #{relateCompanyId})
+        LIMIT 1
+    </select>
+    <select id="getCompanyIdByCompanyNameForB" parameterType="java.util.Map" resultType="java.lang.String">
+        SELECT h.id
+        FROM
+            (SELECT
+                 x.id                 AS id,
+                 x.company_name       AS company_name,
+                 x.company_short_name AS company_short_name
+             FROM
+                 maoding_web_company x
+             WHERE (x.status IS NULL OR x.status = '0')
+             UNION
+             SELECT
+                 x.id                 AS id,
+                 x.company_name       AS company_name,
+                 x.company_short_name AS company_short_name
+             FROM
+                 maoding_web_company_relation a
+                 INNER JOIN maoding_web_company x ON (a.org_pid = x.id)
+             WHERE
+                 (x.status IS NULL OR x.status = '0')
+             UNION
+             SELECT
+                 x.id                 AS id,
+                 x.company_name       AS company_name,
+                 x.company_short_name AS company_short_name
+             FROM
+                 maoding_web_company_relation a
+                 INNER JOIN maoding_web_company_relation b ON (a.org_pid = b.org_id)
+                 INNER JOIN maoding_web_company x ON (b.org_pid = x.id)
+             WHERE
+                 (x.status IS NULL OR x.status = '0')
+             UNION
+             SELECT
+                 x.id                 AS id,
+                 x.company_name       AS company_name,
+                 x.company_short_name AS company_short_name
+             FROM
+                 maoding_web_company_relation a
+                 INNER JOIN maoding_web_company_relation b ON (a.org_pid = b.org_id)
+                 INNER JOIN maoding_web_company_relation c ON (b.org_pid = c.org_id)
+                 INNER JOIN maoding_web_company x ON (c.org_pid = x.id)
+             WHERE
+                 (x.status IS NULL OR x.status = '0')
+            ) h
+            LEFT JOIN maoding_web_business_partner i ON (h.id = i.company_id)
+            LEFT JOIN maoding_web_org_auth j ON ((j.deleted IS NULL OR j.deleted = 0) AND h.id = j.id)
+        WHERE
+            (h.company_name = #{companyName} OR h.company_short_name = #{companyName} OR i.nick_name = #{companyName} OR
+             j.org_name = #{companyName})
+        LIMIT 1
+    </select>
+    <select id="getRootCompanyId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT h.id
+        FROM
+            (SELECT
+                 x.id                 AS id,
+                 0                    AS search_deep,
+                 x.company_name       AS company_name,
+                 x.company_short_name AS company_short_name
+             FROM
+                 maoding_web_company x
+             WHERE (x.status IS NULL OR x.status = '0')
+                   AND (x.id = #{relateCompanyId})
+             UNION
+             SELECT
+                 x.id                   AS id,
+                 if(x.id IS NULL, 0, 1) AS search_deep,
+                 x.company_name         AS company_name,
+                 x.company_short_name   AS company_short_name
+             FROM
+                 maoding_web_company_relation a
+                 INNER JOIN maoding_web_company x ON (a.org_pid = x.id)
+             WHERE
+                 (x.status IS NULL OR x.status = '0')
+                 AND (a.org_id = #{relateCompanyId})
+             UNION
+             SELECT
+                 x.id                   AS id,
+                 if(x.id IS NULL, 0, 2) AS search_deep,
+                 x.company_name         AS company_name,
+                 x.company_short_name   AS company_short_name
+             FROM
+                 maoding_web_company_relation a
+                 INNER JOIN maoding_web_company_relation b ON (a.org_pid = b.org_id)
+                 INNER JOIN maoding_web_company x ON (b.org_pid = x.id)
+             WHERE
+                 (x.status IS NULL OR x.status = '0')
+                 AND (a.org_id = #{relateCompanyId})
+             UNION
+             SELECT
+                 x.id                   AS id,
+                 if(x.id IS NULL, 0, 3) AS search_deep,
+                 x.company_name         AS company_name,
+                 x.company_short_name   AS company_short_name
+             FROM
+                 maoding_web_company_relation a
+                 INNER JOIN maoding_web_company_relation b ON (a.org_pid = b.org_id)
+                 INNER JOIN maoding_web_company_relation c ON (b.org_pid = c.org_id)
+                 INNER JOIN maoding_web_company x ON (c.org_pid = x.id)
+             WHERE
+                 (x.status IS NULL OR x.status = '0')
+                 AND (a.org_id = #{relateCompanyId})
+            ) h
+        ORDER BY h.search_deep DESC
+        LIMIT 1
+    </select>
+    <select id="getCompanyIdByOrgPidAndCompanyId" parameterType="java.util.Map" resultType="java.lang.String">
+        SELECT t.id
+        FROM
+            maoding_web_company t
+            LEFT JOIN `maoding_web_company_relation` re
+                ON t.`id` = re.`org_id`
+        WHERE re.org_pid = #{orgPid}
+              AND t.`company_name` = #{companyName}
+    </select>
+    <select id="getParentCompanyByName" parameterType="java.lang.String"
+            resultType="com.maoding.org.entity.CompanyEntity">
+        SELECT
+            t.id,
+            t.company_name
+        FROM
+            maoding_web_company t
+        WHERE t.company_name = #{companyName} LIMIT 1
+    </select>
+</mapper>

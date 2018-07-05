@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.ccloomi.com"
+	xmlns="http://www.ccloomi.com"
+	elementFormDefault="qualified">
+	<xsd:element name="configuration">
+		<xsd:annotation>
+			<xsd:documentation>
+				<![CDATA[ Container for <appender> and other elements,typicall the root element int the document. ]]>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element minOccurs="0" ref="description"/>
+				<xsd:choice minOccurs="0" maxOccurs="unbounded">
+					<xsd:element ref="appender"/>
+					<xsd:element ref="logger"/>
+					<xsd:element ref="root"/>
+					<xsd:element name="contextName" type="xsd:string" default="default"/>
+					<xsd:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="strict"/>
+				</xsd:choice>
+				<xsd:element minOccurs="0" ref="configuration" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="scan" type="xsd:boolean" default="true"/>
+			<xsd:attribute name="scanPeriod" type="xsd:string"/>
+			<xsd:attribute name="debug" type="xsd:boolean" default="false"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="appender">
+		<xsd:annotation>
+			<xsd:documentation>
+				<![CDATA[ descriptions ]]>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element minOccurs="0" ref="description"/>
+				<xsd:choice minOccurs="0" maxOccurs="unbounded">
+					<xsd:element ref="encoder"/>
+					<xsd:element ref="file"/>
+					<xsd:element ref="rollingPolicy"/>
+					<xsd:element ref="layout"/>
+					<xsd:element ref="connectionSource"/>
+					<xsd:element ref="insertHeaders"/>
+					<xsd:element ref="smtpHost"/>
+					<xsd:element ref="from"/>
+					<xsd:element ref="subject"/>
+				</xsd:choice>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string"/>
+			<xsd:attribute name="class" type="xsd:string"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="encoder">
+		<xsd:annotation>
+			<xsd:documentation>
+				<![CDATA[ property descriptions ]]>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="pattern" type="xsd:string"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="property">
+		<xsd:annotation>
+			<xsd:documentation>
+				<![CDATA[ property descriptions ]]>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="name" type="xsd:string"/>
+			<xsd:attribute name="value" type="xsd:string"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="logger">
+		<xsd:annotation>
+			<xsd:documentation>
+				<![CDATA[ logger descriptions ]]>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element minOccurs="0" ref="description"/>
+				<xsd:element ref="appender-ref"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string"/>
+			<xsd:attribute name="level">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="TRACE"/>
+						<xsd:enumeration value="DEBUG"/>
+						<xsd:enumeration value="INFO"/>
+						<xsd:enumeration value="WARN"/>
+						<xsd:enumeration value="ERROR"/>
+						<xsd:enumeration value="ALL"/>
+						<xsd:enumeration value="OFF"/>
+						<xsd:enumeration value="INHERITED"/>
+						<xsd:enumeration value="NULL"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="addtivity" type="xsd:boolean"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="file" type="xsd:string"></xsd:element>
+	<xsd:element name="rollingPolicy"></xsd:element>
+	<xsd:element name="fileNamePattern" type="xsd:string"></xsd:element>
+	<xsd:element name="layout"></xsd:element>
+	<xsd:element name="connectionSource"></xsd:element>
+	<xsd:element name="dataSource"></xsd:element>
+	<xsd:element name="driverClassName"></xsd:element>
+	<xsd:element name="url" type="xsd:string"></xsd:element>
+	<xsd:element name="user" type="xsd:string"></xsd:element>
+	<xsd:element name="password" type="xsd:string"></xsd:element>
+	<xsd:element name="insertHeaders"></xsd:element>
+	<xsd:element name="smtpHost" type="xsd:string"></xsd:element>
+	<xsd:element name="to" type="xsd:string"></xsd:element>
+	<xsd:element name="from" type="xsd:string"></xsd:element>
+	<xsd:element name="subject" type="xsd:string"></xsd:element>
+	<xsd:element name="appender-ref"></xsd:element>
+	<xsd:element name="root"></xsd:element>
+	<xsd:element name="description">
+		<xsd:annotation>
+			<xsd:documentation>
+				<![CDATA[ Contains informative text ]]>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType mixed="true">
+			<xsd:choice minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:attribute name="name" type="xsd:string"/>
+	<xsd:attribute name="class" type="xsd:string"/>
+	<xsd:attribute name="value" type="xsd:string"/>
+</xsd:schema>

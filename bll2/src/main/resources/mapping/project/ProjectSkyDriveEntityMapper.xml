@@ -1,0 +1,875 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ProjectSkyDriveEntityMapper">
+    <resultMap id="BaseResultMap" type="com.maoding.project.entity.ProjectSkyDriveEntity">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="project_id" property="projectId" jdbcType="VARCHAR"/>
+        <result column="pid" property="pid" jdbcType="VARCHAR"/>
+        <result column="sky_drive_path" property="skyDrivePath" jdbcType="VARCHAR"/>
+        <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+        <result column="file_path" property="filePath" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="file_size" property="fileSize" jdbcType="BIGINT"/>
+        <result column="file_group" property="fileGroup" jdbcType="VARCHAR"/>
+        <result column="is_customize" property="isCustomize" jdbcType="INTEGER"/>
+        <result column="file_ext_name" property="fileExtName" jdbcType="VARCHAR"/>
+        <result column="param4" property="param4" jdbcType="INTEGER"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="task_id" property="taskId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="target_id" property="targetId" jdbcType="VARCHAR"/>
+        <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+        <result column="from_company_id" property="fromCompanyId" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap id="BaseResultMap1" type="com.maoding.project.entity.ProjectSkyDriveEntity">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="sky_drive_path" property="skyDrivePath" jdbcType="VARCHAR"/>
+        <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, project_id, pid, sky_drive_path, file_name, file_path, company_id, type, file_size,
+        file_group, is_customize, file_ext_name, param4, task_id, status, target_id,
+        create_date, create_by, update_date, update_by
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_project_sky_drive
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getNetFileByParam" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_project_sky_drive
+        WHERE status='0'
+        <if test="projectId != null">
+            AND project_id = #{projectId,jdbcType=VARCHAR}
+        </if>
+        <if test="companyId != null">
+            AND company_id = #{companyId,jdbcType=VARCHAR}
+        </if>
+        <if test="targetId != null">
+            AND target_id = #{targetId,jdbcType=VARCHAR}
+        </if>
+        <if test="type != null">
+            AND type = #{type,jdbcType=VARCHAR}
+        </if>
+        <if test="param4 != null">
+            AND param4 = #{param4,jdbcType=VARCHAR}
+        </if>
+        <if test="pid != null">
+            <choose>
+                <when test="pid == '-'.toString()">
+                    AND pid is null
+                </when>
+                <otherwise>
+                    AND pid = #{pid,jdbcType=VARCHAR}
+                </otherwise>
+            </choose>
+        </if>
+        <if test="fileName != null">
+            AND file_name = #{fileName,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="getSkyDriveByPidAndFileName" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_project_sky_drive
+        where (type = 0 or type = 1 or type=30 or type=40 or type=41) and project_id = #{projectId,jdbcType=VARCHAR}
+        AND file_name = #{fileName,jdbcType=VARCHAR}
+        <if test="pid != null">
+            AND pid = #{pid,jdbcType=VARCHAR}
+        </if>
+        <if test="pid == null">
+            AND pid is NULL
+        </if>
+        <if test="companyId != null">
+            AND company_id=#{companyId}
+        </if>
+        <if test="status != null">
+            AND status=#{status}
+        </if>
+    </select>
+
+    <select id="getSkyDriveByPid" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_project_sky_drive
+        where status='0' and (type = 0 or type = 1) and project_id = #{projectId,jdbcType=VARCHAR}
+        <if test="pid != null">
+            AND pid = #{pid,jdbcType=VARCHAR}
+        </if>
+        <if test="pid == null">
+            AND pid is NULL
+        </if>
+        order by create_date desc
+    </select>
+
+    <select id="getSkyDriveByTaskId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_project_sky_drive
+        where status='0' and (type = 0 or type = 1)
+        AND task_id = #{taskId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getSkyDriveByParam" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        a.id,
+        a.project_id,
+        a.pid,
+        a.sky_drive_path,
+        a.file_name,
+        a.file_path,
+        a.company_id,
+        a.type,
+        a.file_size,
+        a.file_group,
+        a.is_customize,
+        a.file_ext_name,
+        a.param4,
+        a.task_id,
+        a.status,
+        a.create_date,
+        a.update_date,
+        a.update_by,
+        a.task_id,
+        (select cu.user_name from maoding_web_company_user cu where user_id = a.update_by and company_id = a.company_id)
+        AS create_by,company.company_name
+        from maoding_web_project_sky_drive a
+        LEFT JOIN maoding_web_company company
+        ON company.id=a.`company_id`
+        where a.status='0'
+        <choose>
+            <when test="type!=null">
+                and  (type = 0 or type = 1 or type = 2)
+            </when>
+            <otherwise>
+                and  (type = 0  or type = 2 or type = 30  or type = 40 or type = 41 or type=50)
+            </otherwise>
+        </choose>
+        <if test="projectId != null">
+            AND project_id = #{projectId,jdbcType=VARCHAR}
+        </if>
+        <if test="companyId != null">
+            AND a.company_id= #{companyId,jdbcType=VARCHAR}
+        </if>
+        <if test="pid != null">
+            AND pid = #{pid,jdbcType=VARCHAR}
+        </if>
+        <if test="pid == null">
+            AND pid is NULL
+        </if>
+        <if test="fileNames != null">
+            and (
+            <foreach collection="fileNames" item="fileName" separator="or">
+                file_name=#{fileName}
+            </foreach>
+            )
+        </if>
+        order by param4, create_date
+    </select>
+    <select id="getSkyDriveByParamList" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        a.id,
+        a.project_id,
+        a.pid,
+        a.sky_drive_path,
+        a.file_name,
+        a.file_path,
+        a.company_id,
+        a.type,
+        a.file_size,
+        a.file_group,
+        a.is_customize,
+        a.file_ext_name,
+        a.param4,
+        a.task_id,
+        a.status,
+        a.create_date,
+        a.update_date,
+        a.update_by,
+        a.task_id,
+        (select cu.user_name from maoding_web_company_user cu where user_id = a.update_by and company_id = a.company_id)
+        AS create_by,company.company_name
+        from maoding_web_project_sky_drive a
+        LEFT JOIN maoding_web_company company
+        ON company.id=a.`company_id`
+        where a.status='0'
+        <choose>
+            <when test="type!=null and type!=0">
+                and  (type = 0 or type = 1 or type = 2)
+            </when>
+            <otherwise>
+                and  (type = 0 or type = 1 or type = 2 or type = 30  or type = 40 or type = 41 or type=50)
+            </otherwise>
+        </choose>
+        <if test="projectId != null">
+            AND project_id = #{projectId,jdbcType=VARCHAR}
+        </if>
+        <if test="companyId != null">
+            AND a.company_id= #{companyId,jdbcType=VARCHAR}
+        </if>
+        <if test="pid != null">
+            AND pid = #{pid,jdbcType=VARCHAR}
+        </if>
+        <if test="pid == null">
+            AND pid is NULL
+        </if>
+        <if test="fileNames != null">
+            and (
+            <foreach collection="fileNames" item="fileName" separator="or">
+                file_name=#{fileName}
+            </foreach>
+            )
+        </if>
+        order by param4, create_date
+    </select>
+
+    <select id="getSkyDriveByParamPid" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        t.id,
+        t.project_id,
+        t.pid,
+        t.sky_drive_path,
+        t.file_name,
+        t.file_path,
+        t.company_id,
+        t.type,
+        t.file_size,
+        t.file_group,
+        t.is_customize,
+        t.file_ext_name,
+        t.param4,
+        t.task_id,
+        t.status,
+        t.create_date,
+        t.update_date,
+        t.update_by,
+        t.task_id,
+        (SELECT
+        cu.user_name
+        FROM
+        maoding_web_company_user cu
+        WHERE user_id = t.update_by
+        AND company_id = t.company_id) AS create_by,
+        company.company_name
+        FROM
+        maoding_web_project_sky_drive t
+        LEFT JOIN maoding_web_company company
+        ON company.id = t.`company_id`
+        WHERE t.pid IN
+        (SELECT
+        t1.id
+        FROM
+        maoding_web_project_sky_drive t1
+        WHERE t1.file_name =
+        (SELECT
+        t2.file_name
+        FROM
+        maoding_web_project_sky_drive t2
+        WHERE t2.id = #{pid,jdbcType=VARCHAR})
+        AND t1.pid IN
+        (SELECT
+        tt.id
+        FROM
+        maoding_web_project_sky_drive tt
+        WHERE file_name = '设计成果'
+        AND project_id = #{projectId,jdbcType=VARCHAR}))
+        order by param4, create_date
+    </select>
+    <select id="getSkyDriveByParamId" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+            t.id,
+            t.project_id,
+            t.pid,
+            t.sky_drive_path,
+            t.file_name,
+            t.file_path,
+            t.company_id,
+            t.type,
+            t.file_size,
+            t.file_group,
+            t.is_customize,
+            t.file_ext_name,
+            t.param4,
+            t.task_id,
+            t.status,
+            t.create_date,
+            t.update_date,
+            t.update_by,
+            t.task_id,
+            (SELECT
+                 cu.user_name
+             FROM
+                 maoding_web_company_user cu
+             WHERE user_id = t.update_by
+                   AND company_id = t.company_id) AS create_by,
+            company.company_name
+        FROM
+            maoding_web_project_sky_drive t
+            LEFT JOIN maoding_web_company company
+                ON company.id = t.`company_id`
+        WHERE t.pid IN
+              (SELECT
+                   t1.id
+               FROM
+                   maoding_web_project_sky_drive t1
+               WHERE t1.file_name =
+                     (SELECT
+                          t2.file_name
+                      FROM
+                          maoding_web_project_sky_drive t2
+                      WHERE t2.id = #{pid,jdbcType=VARCHAR})
+                     AND t1.project_id =#{projectId,jdbcType=VARCHAR})
+                     AND pid IN
+                         (SELECT
+                              t3.id
+                          FROM
+                              maoding_web_project_sky_drive t3
+                          WHERE t3.`file_name` = '设计成果'
+                                AND t3.`project_id` = #{projectId,jdbcType=VARCHAR})
+              AND company_id != #{companyId,jdbcType=VARCHAR}
+        order by param4, create_date
+    </select>
+
+    <select id="getSkyDriveByProjectId" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        id, project_id, pid, sky_drive_path, file_name, file_path, company_id, type, file_size,
+        file_group, is_customize, file_ext_name, param4, task_id,status,create_date, update_date,
+        (select cu.user_name from maoding_web_company_user cu where user_id = a.update_by and company_id = a.company_id)
+        AS create_by
+        from maoding_web_project_sky_drive a
+        where a.status='0' and (type = 0 or type = 1)
+        <if test="projectId != null">
+            AND project_id = #{projectId,jdbcType=VARCHAR}
+        </if>
+
+        <if test="pid != null">
+            AND pid = #{pid,jdbcType=VARCHAR}
+        </if>
+
+        <if test="syncDate != null">
+            <![CDATA[  and a.create_date <= #{syncDate,jdbcType=VARCHAR}  ]]>
+        </if>
+        order by create_date desc
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+        DELETE FROM maoding_web_project_sky_drive
+        WHERE id = #{id,jdbcType=VARCHAR}
+    </delete>
+
+    <delete id="deleteSysDriveByIds" parameterType="java.util.Map">
+        DELETE FROM maoding_web_project_sky_drive
+        where id in
+        <foreach collection="ids" item="ids"  open="(" close=")" separator=",">
+           #{ids}
+        </foreach>
+    </delete>
+
+    <select id="getOrgAuthenticationAttach" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_project_sky_drive
+        where status='0'
+        AND company_id = #{id}
+        and (type = 5 or type = 8 or type = 9 or type = 10)
+    </select>
+
+    <insert id="insert" parameterType="com.maoding.project.entity.ProjectSkyDriveEntity">
+        INSERT INTO maoding_web_project_sky_drive (id, project_id, pid,
+                                                   sky_drive_path, file_name, file_path,
+                                                   company_id, type, file_size, task_id, status,
+                                                   file_group, is_customize, file_ext_name,
+                                                   param4, target_id, create_date, create_by,
+                                                   update_date, update_by)
+        VALUES (#{id,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR}, #{pid,jdbcType=VARCHAR},
+                                        #{skyDrivePath,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR},
+                                        #{filePath,jdbcType=VARCHAR},
+                                        #{companyId,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},
+                                        #{fileSize,jdbcType=BIGINT},
+                                        #{taskId,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
+                #{fileGroup,jdbcType=VARCHAR}, #{isCustomize,jdbcType=VARCHAR}, #{fileExtName,jdbcType=VARCHAR},
+                #{param4,jdbcType=INTEGER}, #{targetId,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR},
+                now(), #{updateBy,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="renameById" parameterType="com.maoding.project.dto.ProjectSkyDriveRenameDTO">
+        update maoding_web_project_sky_drive
+        <set>
+            file_name = #{fileName,jdbcType=VARCHAR},
+            update_date = now(),
+            update_by = #{accountId,jdbcType=VARCHAR}
+        </set>
+        <where>
+            id = #{id,jdbcType=VARCHAR}
+        </where>
+    </update>
+
+    <update id="updateSkyDrive" parameterType="com.maoding.project.dto.SkyDriveUpdateDTO">
+        update maoding_web_project_sky_drive sky
+        <set>
+            sky.type = #{data.type}
+        </set>
+        <where>
+            <if test="query.fileIdList != null and query.fileIdList.size() > 0">
+                sky.id in
+                <foreach collection="query.fileIdList" open="(" close=")" item="id" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </update>
+
+    <update id="updateById" parameterType="com.maoding.project.entity.ProjectSkyDriveEntity">
+        update maoding_web_project_sky_drive
+        <set>
+            <if test="projectId != null">
+                project_id = #{projectId,jdbcType=VARCHAR},
+            </if>
+            <if test="pid != null">
+                pid = #{pid,jdbcType=VARCHAR},
+            </if>
+            <if test="skyDrivePath != null">
+                sky_drive_path = #{skyDrivePath,jdbcType=VARCHAR},
+            </if>
+            <if test="fileName != null">
+                file_name = #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="filePath != null">
+                file_path = #{filePath,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null">
+                company_id = #{companyId,jdbcType=VARCHAR},
+            </if>
+            <!--<if test="type != null" >-->
+            <!--type = #{type,jdbcType=INTEGER},-->
+            <!--</if>-->
+            <if test="fileSize != null">
+                file_size = #{fileSize,jdbcType=BIGINT},
+            </if>
+            <if test="fileGroup != null">
+                file_group = #{fileGroup,jdbcType=VARCHAR},
+            </if>
+            <if test="isCustomize != null">
+                is_customize = #{isCustomize,jdbcType=VARCHAR},
+            </if>
+            <if test="fileExtName != null">
+                file_ext_name = #{fileExtName,jdbcType=VARCHAR},
+            </if>
+            <if test="param4 != null and param4!=0">
+                param4 = #{param4,jdbcType=INTEGER},
+            </if>
+            <if test="targetId != null">
+                target_id = #{targetId,jdbcType=VARCHAR},
+            </if>
+            <if test="taskId != null">
+                task_id = #{taskId,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            update_date = now(),
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+
+    <update id="updateSkyDriveStatus" parameterType="java.util.Map">
+        update maoding_web_project_sky_drive
+        <set>
+            status='1',
+            update_date = now(),
+            update_by = #{accountId,jdbcType=VARCHAR}
+        </set>
+        <where>
+            sky_drive_path like '%' #{skyDrivePath} '%'
+        </where>
+    </update>
+
+
+    <!-- 获取设计成果文件中是否存在该公司的文件 -->
+    <select id="getProjectSkyByCompanyId" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT a.*
+        FROM maoding_web_project_sky_drive a
+            LEFT JOIN maoding_web_project_sky_drive b ON a.pid = b.id
+        WHERE a.status = '0' AND (type = 0 OR type = 1) AND b.project_id = #{projectId,jdbcType=VARCHAR}
+              AND b.pid IS NULL
+              AND b.file_name = '设计成果'
+              AND a.company_id = #{companyId,jdbcType=VARCHAR} AND a.type = '0'
+    </select>
+
+    <!--项目文档第二层目录获取sql-->
+    <select id="getProjectSkyDriveEntityById" parameterType="java.util.Map" resultMap="BaseResultMap1">
+        SELECT
+            t.id,
+            t.`sky_drive_path`,
+            t.`file_name`
+        FROM
+            `maoding_web_project_sky_drive` t
+        WHERE t.`company_id` = #{companyId,jdbcType=VARCHAR}
+              AND project_id = #{projectId,jdbcType=VARCHAR}
+              AND pid IS NULL
+    </select>
+
+    <!--根据projectId，fileName，task_id查询-->
+    <select id="getSkyDriveByProjectIdAndFileNameAndTaskId" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        t.id,t.sky_drive_path
+        FROM
+        `maoding_web_project_sky_drive` t
+        LEFT JOIN maoding_web_project_sky_drive dri
+        ON t.`project_id` = dri.`project_id`
+        WHERE t.project_id = #{projectId,jdbcType=VARCHAR}
+        AND t.`pid` = dri.`id`
+        AND dri.`file_name` = #{fileName}
+        <if test="taskId != null">
+            AND t.`task_id` = #{taskId}
+        </if>
+        <if test="companyId != null">
+            AND t.`company_id` = #{companyId}
+        </if>
+    </select>
+    <!--更新文件夹状态-->
+    <update id="updateSkyDriveForStatus" parameterType="java.util.Map">
+        update maoding_web_project_sky_drive
+        <set>
+            status=#{status},
+            update_date = now(),
+            update_by=#{accountId}
+        </set>
+        <where>
+            id=#{id}
+        </where>
+    </update>
+    <!--查询归档文件夹是否已发布-->
+    <select id="getProjectSkyDriveEntityByProjectIdAndFileName" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+            t.id,
+            t.pid,
+            t.sky_drive_path,
+            t.type
+        FROM
+            maoding_web_project_sky_drive t
+            LEFT JOIN maoding_web_project_sky_drive dev
+                ON t.`pid` = dev.id
+        WHERE dev.`file_name` = #{fileName}
+              AND t.`project_id` = #{projectId}
+              AND t.`status` = '0'
+        <if test="companyId!=null">
+            AND t.company_id = #{companyId}
+        </if>
+    </select>
+    <!--生产安排，给该公司创建文件夹（归档文件）-->
+    <select id="getProjectSkyDriveEntityByProductionFile" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+            t.id,
+            t.pid,
+            t.sky_drive_path
+        FROM
+            maoding_web_project_sky_drive t
+            LEFT JOIN maoding_web_project_sky_drive dev
+                ON t.`pid` = dev.id
+            LEFT JOIN maoding_web_project_sky_drive dev1
+                ON dev.`pid` = dev1.id
+            LEFT JOIN maoding_web_project_sky_drive dev2
+                ON dev1.`pid` = dev2.id
+            LEFT JOIN maoding_web_project_sky_drive dev3
+                ON dev2.`pid` = dev3.id
+            LEFT JOIN maoding_web_project_sky_drive dev4
+                ON dev3.`pid` = dev4.id
+        WHERE t.`project_id` = #{projectId}
+              AND t.`status` = '0'
+              AND (dev.`file_name` = '归档文件' OR dev1.`file_name` = '归档文件'
+                   OR dev2.`file_name` = '归档文件' OR dev3.`file_name` = '归档文件'
+                   OR dev4.`file_name` = '归档文件')
+              AND t.`task_id` = #{taskId}
+        <if test="companyId">
+            and t.company_id=#{companyId}
+        </if>
+    </select>
+    <!--更新文件夹名称-->
+    <update id="updateSkyDriveForFileName" parameterType="java.util.Map">
+        update maoding_web_project_sky_drive
+        <set>
+            file_name=#{fileName},
+            update_date = now(),
+            update_by=#{accountId}
+        </set>
+        <where>
+            task_id=#{taskId} and project_id=#{projectId} and company_id=#{companyId}
+        </where>
+    </update>
+    <select id="getProjectSkyDriveEntityByProjectIdAndCompanyId" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+            t.id,
+            t.pid,
+            t.sky_drive_path
+        FROM
+            maoding_web_project_sky_drive t
+        WHERE t.`file_name` =#{fileName}
+              AND t.`project_id` = #{projectId}
+             <if test="status!=null">
+              AND t.`status` = #{status}
+             </if>
+              AND t.company_id =#{companyId}
+    </select>
+
+    <select id="getSkyDriveByFileAndProIdAndComId" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+            maoding_web_project_sky_drive t
+        WHERE t.pid IN
+              (SELECT
+                   tt.id
+               FROM
+                   maoding_web_project_sky_drive tt
+               WHERE tt.pid IN
+                     (SELECT
+                          id
+                      FROM
+                          maoding_web_project_sky_drive ttt
+                      WHERE ttt.`file_name` = #{fileName}
+                            AND ttt.`project_id` = #{projectId}
+                            AND ttt.`company_id` = #{companyId}))
+              AND t.`task_id` = #{taskId}
+
+    </select>
+    <!--查询归档通知下的所有文件夹和文件-->
+    <select id="getProjectFileFirst" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+            `maoding_web_project_sky_drive` t
+        WHERE t.project_id =#{projectId}
+              AND t.company_id = #{companyId}
+              AND t.pid = #{id}
+    </select>
+    <select id="getOwnerProjectFileFirst" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `maoding_web_project_sky_drive` t
+        WHERE t.project_id =#{projectId}
+        AND t.company_id = #{companyId}
+        AND t.id = #{id}
+    </select>
+    <select id="getProjectFileSecond" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        `maoding_web_project_sky_drive` t where 1=1
+        AND t.pid in
+        <foreach collection="ids" item="ids"  open="(" close=")" separator=",">
+            #{ids}
+        </foreach>
+        AND t.project_id = #{projectId}
+        AND t.company_id = #{companyId}
+    </select>
+    <!--获取成果文件夹-->
+    <select id="getResultsFolder" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+            maoding_web_project_sky_drive t
+        WHERE t.file_name =
+              (SELECT
+                   drive.`file_name`
+               FROM
+                   maoding_web_project_sky_drive drive
+               WHERE id = #{pid})
+            <if test="projectId!=null">
+              AND t.project_id = #{projectId}
+            </if>
+          <if test="companyId!=null">
+              AND t.company_id = #{companyId}
+          </if>
+              AND t.id != #{pid}
+              AND t.pid != #{pid}
+    </select>
+    <!--获取甲方组织id-->
+    <select id="getOwnerProject" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        task.id,
+        task.company_id,
+        task.`from_company_id`,
+        task.project_id,
+        task.`task_name` AS file_name,
+        company.`company_name`
+        FROM
+        maoding_web_project_task task
+        LEFT JOIN maoding_web_project_sky_drive t
+        ON t.`company_id` = task.`from_company_id`
+        LEFT JOIN maoding_web_project_sky_drive t1
+        ON t.`file_name` = t1.file_name
+        LEFT JOIN maoding_web_project_sky_drive t2
+        ON t1.pid = t2.id
+        LEFT JOIN `maoding_web_company` company
+        ON task.`from_company_id` = company.`id`
+        WHERE task.company_id = #{companyId}
+        AND task.project_id =  #{projectId}
+        AND task.`task_name` = t.`file_name`
+        AND t.`project_id` = #{projectId}
+        AND t1.id = #{pid}
+        AND task.from_company_id !=  #{companyId}
+        GROUP BY from_company_id
+    </select>
+    <!--发送成果文件乙方自己建的节点信息-->
+    <select id="getSendResults" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        task.id,
+        task.company_id,
+        task.`from_company_id`,
+        task.project_id,
+        task.`task_name` AS file_name,
+        company.`company_name`
+        FROM
+        maoding_web_project_task task
+        LEFT JOIN maoding_web_project_sky_drive t
+        ON t.`company_id` = task.`from_company_id`
+        LEFT JOIN maoding_web_project_sky_drive t1
+        ON t.`file_name` = t1.file_name
+        LEFT JOIN maoding_web_project_sky_drive t2
+        ON t1.pid = t2.id
+        LEFT JOIN `maoding_web_company` company
+        ON task.`from_company_id` = company.`id`
+        WHERE task.company_id = #{companyId}
+        AND task.project_id =  #{projectId}
+        AND task.`task_name` = t.`file_name`
+        AND t.`project_id` = #{projectId}
+        AND t1.id = #{pid}
+        GROUP BY from_company_id
+    </select>
+    <!--获取成果文件发给甲方的文件夹-->
+    <select id="getOwnerProjectFile" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        maoding_web_project_sky_drive t
+        WHERE t.`file_name` = #{fileName}
+        AND company_id = #{companyId}
+        AND t.pid IN
+        (SELECT
+        t.id
+        FROM
+        maoding_web_project_sky_drive t
+        WHERE t.pid IN
+        (SELECT
+        t.id
+        FROM
+        maoding_web_project_sky_drive t
+        WHERE t.`file_name` = '归档文件'
+        AND t.company_id = #{companyId}
+        AND t.project_id = #{projectId}))
+
+    </select>
+    <!--获取成果文件发给甲方的文件夹-->
+    <select id="getOwnerProjectFileByPid" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        maoding_web_project_sky_drive t
+        WHERE t.`file_name` = #{fileName}
+        AND company_id = #{companyId}
+        AND t.pid IN
+        (SELECT
+        t.pid
+        FROM
+        maoding_web_project_sky_drive t
+        WHERE t.pid IN
+        (SELECT
+        t.id
+        FROM
+        maoding_web_project_sky_drive t
+        WHERE t.`file_name` = '归档文件'
+        AND t.company_id = #{companyId}
+        AND t.project_id = #{projectId}))
+
+    </select>
+    <select id="getDirectoryDTOList" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        maoding_web_project_sky_drive t
+        where  1=1
+        and (
+        <foreach collection="id" item="id" separator="or">
+            pid=#{id}
+        </foreach>
+        )
+        <if test="companyId != null">
+            and company_id=#{companyId}
+        </if>
+        <if test="projectId != null">
+            and project_id=#{projectId}
+        </if>
+        <if test="ids != null">
+            and (
+            <foreach collection="ids" item="id" separator="or">
+                pid=#{id}
+            </foreach>
+            )
+        </if>
+    </select>
+    <!--项目文档全文搜索-->
+    <select id="getProjectFileByFileName" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        t.id,t.project_id,t.pid,t.sky_drive_path,t.file_name,t.file_path,t.company_id,t.type,t.file_size,
+        t.file_group,t.is_customize,t.file_ext_name,t.param4,t.task_id,t.status,t.target_id,t.create_date,
+        t.update_date,t.update_by,us.`user_name` AS create_by
+        FROM
+        maoding_web_project_sky_drive t
+        LEFT JOIN maoding_web_company_user us
+        ON t.`create_by`=us.`user_id`
+        AND t.`company_id`=us.`company_id`
+        where  status=0
+        <if test="projectId != null">
+            and t.project_id=#{projectId}
+        </if>
+        <if test="fileName != null">
+            and t.file_name like '%' #{fileName} '%'
+        </if>
+        <if test="companyId != null">
+            and t.company_id=#{companyId}
+        </if>
+        <if test="startPage!=null">
+            LIMIT #{startPage},#{endPage}
+        </if>
+    </select>
+    <!--项目文档全文搜索分页总页数-->
+    <select id="getProjectFileTotil" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT
+        COUNT(DISTINCT t.id)
+        FROM
+        maoding_web_project_sky_drive t
+        where  status=0
+        <if test="projectId != null">
+            and t.project_id=#{projectId}
+        </if>
+        <if test="fileName != null">
+            and t.file_name like '%' #{fileName} '%'
+        </if>
+        <if test="companyId != null">
+            and company_id=#{companyId}
+        </if>
+    </select>
+</mapper>

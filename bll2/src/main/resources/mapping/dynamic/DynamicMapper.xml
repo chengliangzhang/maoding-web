@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maoding.dynamic.dao.DynamicDAO">
+  <select id="listDynamic" resultType="com.maoding.dynamic.dto.DynamicDTO" parameterType="com.maoding.dynamic.dto.QueryDynamicDTO">
+    select <include refid="CommonMapper.countSQL"/>
+      ifnull(b.user_name,ifnull(c.nick_name,c.user_name)) as operator_name,
+      a.node_name,
+      a.content as extra,
+      d.content as template,
+      a.create_date
+    from
+      ( select company_user_id,node_name,content,type,create_date
+        from maoding_web_dynamic
+        <where>
+          deleted=0
+          <if test="projectId != null">
+            and project_id=#{projectId}
+          </if>
+        </where>
+      )a
+      inner join maoding_web_company_user b on (a.company_user_id=b.id)
+      inner join maoding_web_account c on (b.user_id=c.id)
+      left join maoding_web_const d on (d.type=7 and a.type=d.value)
+    order by a.create_date desc
+    <include refid="CommonMapper.limitSQL"/>
+  </select>
+
+  <insert id="insert" parameterType="com.maoding.dynamic.entity.DynamicDO" >
+    insert into maoding_web_dynamic
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      id,
+      <if test="companyUserId != null" >
+        company_user_id,
+      </if>
+      <if test="projectId != null" >
+        project_id,
+      </if>
+      <if test="companyId != null" >
+        company_id,
+      </if>
+      <if test="targetType != null" >
+        target_type,
+      </if>
+      <if test="targetId != null" >
+        target_id,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="nodeName != null" >
+        node_name,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="deleted != null" >
+        deleted,
+      </if>
+      <if test="createBy != null" >
+        create_by,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="updateBy != null" >
+        update_by,
+      </if>
+      <if test="updateDate != null" >
+        update_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <choose>
+        <when test="id != null">
+          #{id},
+        </when>
+        <otherwise>
+          replace(UUID(),'-',''),
+        </otherwise>
+      </choose>
+      <if test="companyUserId != null" >
+        #{companyUserId},
+      </if>
+      <if test="projectId != null" >
+        #{projectId},
+      </if>
+      <if test="companyId != null" >
+        #{companyId},
+      </if>
+      <if test="targetType != null" >
+        #{targetType},
+      </if>
+      <if test="targetId != null" >
+        #{targetId},
+      </if>
+      <if test="type != null" >
+        #{type},
+      </if>
+      <if test="nodeName != null" >
+        #{nodeName},
+      </if>
+      <if test="content != null" >
+        #{content},
+      </if>
+      <if test="deleted != null" >
+        #{deleted},
+      </if>
+      <if test="createBy != null" >
+        #{createBy},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        #{updateBy},
+      </if>
+      <if test="updateDate != null" >
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>

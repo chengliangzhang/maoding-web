@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ExpCategoryEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.financial.entity.ExpCategoryEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="pid" property="pid" jdbcType="VARCHAR" />
+    <result column="root_id" property="rootId" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+    <result column="category_type" property="categoryType" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="exptype_memo" property="expTypeMemo" jdbcType="VARCHAR" />
+    <result column="pay_type" property="payType" jdbcType="INTEGER" />
+    <result column="relation_company_id" property="relationCompanyId" jdbcType="VARCHAR" />
+    <result column="show_status" property="showStatus" jdbcType="INTEGER" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, name, code, pid, root_id, company_id, status, seq,category_type, create_date, create_by, update_date,
+    update_by,exptype_memo,company_id,pay_type,show_status,relation_company_id
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_exp_category
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByName" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_exp_category
+    where pid= #{pid,jdbcType=VARCHAR} and binary  name = #{name,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_exp_category
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByPid" parameterType="java.util.Map" >
+    delete from maoding_web_exp_category
+    where pid = #{pid,jdbcType=VARCHAR}
+    <if test="companyId != null" >
+      and company_id = #{companyId,jdbcType=VARCHAR}
+    </if>
+  </delete>
+
+  <insert id="insert" parameterType="com.maoding.financial.entity.ExpCategoryEntity" >
+    insert into maoding_web_exp_category (id, name, code, 
+      pid, root_id, company_id, 
+      status, seq, category_type,create_date,
+      create_by, update_date, update_by,exptype_memo,
+      pay_type,show_status,relation_company_id
+      )
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{pid,jdbcType=VARCHAR}, #{rootId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{seq,jdbcType=INTEGER},#{categoryType,jdbcType=INTEGER}, now(),
+      #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{expTypeMemo,jdbcType=VARCHAR},
+      #{payType,jdbcType=INTEGER},#{showStatus,jdbcType=INTEGER},#{relationCompanyId,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.financial.entity.ExpCategoryEntity" >
+    update maoding_web_exp_category
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="expTypeMemo != null" >
+        exptype_memo = #{expTypeMemo,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null" >
+        pid = #{pid,jdbcType=VARCHAR},
+      </if>
+      <if test="rootId != null" >
+        root_id = #{rootId,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null and seq!=0" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="categoryType != null and categoryType!=0" >
+        category_type = #{categoryType,jdbcType=INTEGER},
+      </if>
+      <if test="payType != null and payType!=0" >
+        pay_type = #{payType,jdbcType=INTEGER},
+      </if>
+      <if test="showStatus != null and showStatus!=0" >
+        show_status = #{showStatus,jdbcType=INTEGER},
+      </if>
+      <if test="relationCompanyId != null" >
+        relation_company_id = #{relationCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="update" parameterType="com.maoding.financial.entity.ExpCategoryEntity" >
+    update maoding_web_exp_category
+    set name = #{name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      pid = #{pid,jdbcType=VARCHAR},
+      exptype_memo = #{expTypeMemo,jdbcType=VARCHAR},
+      root_id = #{rootId,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      seq = #{seq,jdbcType=INTEGER},
+      category_type = #{categoryType,jdbcType=INTEGER},
+      pay_type = #{payType,jdbcType=INTEGER},
+      show_status = #{showStatus,jdbcType=INTEGER},
+      relation_company_id = #{relationCompanyId,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <!-- 根据相关参数查找 -->
+  <select id="selectByParemeter" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_exp_category
+    where 1=1
+    <if test="pid != null and pid!=''">
+      and pid=#{pid,jdbcType=VARCHAR}
+    </if>
+    <if test="pid != null and pid==''">
+      and (pid is NULL or pid ='')
+    </if>
+    <if test="rootId != null">
+      and root_id=#{rootId,jdbcType=VARCHAR}
+    </if>
+    <if test="code != null and isLike =='true'">
+      AND code LIKE '%' #{code} '%'
+    </if>
+    <if test="code != null and (isLike==null || isLike =='false')">
+      AND code =#{code,jdbcType=VARCHAR}
+    </if>
+    <if test="status!= null">
+      and status='0'
+    </if>
+    <if test="companyId != null">
+      and company_id =#{companyId,jdbcType=VARCHAR}
+    </if>
+    <if test="categoryType != null">
+      and category_type=#{categoryType,jdbcType=VARCHAR}
+    </if>
+    order by seq
+  </select>
+
+  <select id="getMaxExpCategorySeq" resultType="java.lang.Integer" parameterType="java.lang.String">
+    select IFNULL(max(seq),0)+1 from maoding_web_exp_category where company_id = #{companyId}
+  </select>
+
+  <resultMap id="BaseResultMap2" type="com.maoding.financial.dto.ExpCategoryDataDTO" >
+    <id column="parentName" property="name" />
+    <result column="pid" property="id" />
+    <result column="parentCode" property="code" />
+    <result column="parentShowStatus" property="showStatus" />
+    <result column="parentCategoryType" property="categoryType" />
+    <result column="parentExpTypeMemo" property="expTypeMemo" />
+    <collection property="childList" ofType="com.maoding.financial.dto.ExpCategoryDataDTO" >
+      <id column="name" property="name" />
+      <result column="id" property="id" />
+      <result column="code" property="code" />
+      <result column="pid" property="pid" />
+      <result column="show_status" property="showStatus" />
+      <result column="category_type" property="categoryType" />
+        <result column="exptype_memo" property="expTypeMemo" />
+    </collection>
+  </resultMap>
+
+  <select id="getExpCategoryList" resultMap="BaseResultMap2" parameterType="com.maoding.financial.dto.QueryExpCategoryDTO">
+    SELECT a.id as pid,a.code as parentCode,a.show_status as parentShowStatus,
+      a.category_type as parentCategoryType,a.exptype_memo as parentExpTypeMemo,
+    b.id, a.name as parentName, b.name,b.code,if(c.id is not null,1,0) as show_status,b.category_type,b.exptype_memo
+    from maoding_web_exp_category a
+    INNER JOIN maoding_web_exp_category b on a.id = b.pid
+    LEFT JOIN maoding_web_exp_category_relation c on b.id = c.category_type_id and c.company_id = #{companyId}
+    where 1=1
+    and a.status = 0
+    and b.status = 0
+    <if test="categoryType!=null">
+      and b.company_id = #{rootCompanyId}
+      and b.category_type = #{categoryType}
+    </if>
+    <if test="categoryType==null">
+      and (b.company_id = #{rootCompanyId}
+      <if test="isContainSystemType!=null">
+        or b.company_id is null
+      </if>
+      )
+    </if>
+    <if test="showStatus!=null">
+      and b.show_status = #{showStatus}
+    </if>
+    and a.pid is null
+    order by  a.seq,b.seq,a.category_type
+  </select>
+
+  <select id="getExpCategoryListByType" resultMap="BaseResultMap2" parameterType="com.maoding.financial.dto.QueryExpCategoryDTO">
+    SELECT a.id as pid,a.code as parentCode,a.show_status as parentShowStatus,
+    a.category_type as parentCategoryType,a.exptype_memo as parentExpTypeMemo,
+    b.id, a.name as parentName, b.name,b.code,b.show_status,b.category_type,b.exptype_memo
+    from maoding_web_exp_category a
+    INNER JOIN maoding_web_exp_category b on a.id = b.pid
+    INNER JOIN maoding_web_exp_category_relation c on b.id = c.category_type_id
+    where 1=1
+    and a.status = 0
+    and b.status = 0
+    <if test="rootCompanyId!=null">
+      and b.company_id = #{rootCompanyId}
+    </if>
+    <if test="companyId!=null">
+      and c.company_id = #{companyId}
+    </if>
+    <if test="categoryType!=null">
+      and b.category_type = #{categoryType}
+    </if>
+    <if test="companyIdList!=null and companyIdList.size()>0">
+      and c.company_id in
+      <foreach collection="companyIdList" item="id" index="i" open="(" separator="," close=")">
+        #{id}
+      </foreach>
+    </if>
+    and a.pid is null
+    order by  a.seq,b.seq,a.category_type
+  </select>
+
+
+  <select id="getExpTypeListForProfitReport" resultMap="BaseResultMap2" parameterType="java.util.Map">
+    SELECT a.id as pid,a.code as parentCode,a.show_status as parentShowStatus,
+    a.category_type as parentCategoryType,a.exptype_memo as parentExpTypeMemo,
+    b.id, a.name as parentName, b.name,b.code,b.show_status,b.category_type,b.exptype_memo
+    from maoding_web_exp_category a
+    INNER JOIN maoding_web_exp_category b on a.id = b.pid
+    where 1=1
+    and a.status = 0
+    and b.status = 0
+    and (b.company_id = #{companyId}
+    and  b.id in (select category_type_id from maoding_web_exp_category_relation
+                  where 1=1
+                  <if test="subCompanyId!=null">
+                    and company_id = #{subCompanyId}
+                  </if>
+                  <if test="companyIdList!=null and companyIdList.size()>0">
+                    and company_id in
+                    <foreach collection="companyIdList" item="id" index="i" open="(" separator="," close=")">
+                      #{id}
+                    </foreach>
+                  </if>
+    )
+    or b.company_id is null)
+    <!--<if test="subCompanyId==null">-->
+      <!--and (b.company_id = #{companyId} or b.company_id is null)-->
+    <!--</if>-->
+    <!--<if test="subCompanyId!=null">-->
+      <!--and (b.company_id = #{companyId} or b.company_id is null or (b.company_id = #{subCompanyId} and b.category_type = 3)) -->
+    <!--</if>-->
+    and a.pid is null
+    order by  a.seq,b.seq,a.category_type
+  </select>
+
+  <update id="saveExpCategoryShowStatus" parameterType="com.maoding.financial.dto.SaveExpCategoryShowStatusDTO">
+      update maoding_web_exp_category
+      <set>
+          <if test="showStatus != null" >
+              show_status = #{showStatus},
+          </if>
+          <if test="relationCompanyId != null" >
+              relation_company_id = #{relationCompanyId},
+          </if>
+      </set>
+      where 1=1
+      <if test="categoryType!=null">
+          and company_id = #{companyId}
+          and category_type = #{categoryType}
+      </if>
+      <if test="categoryType==null">
+          and (company_id = #{companyId})
+          and  3> category_type
+      </if>
+    <if test="ids != null">
+      and FIND_IN_SET(id,#{ids})
+    </if>
+  </update>
+  
+  <select id="getExpCategoryByCompanyId" resultType="com.maoding.financial.dto.ExpCountDTO" parameterType="java.lang.String">
+     select ifnull(sum(if(category_type=1,1,0)),0) as exp
+     ,ifnull(sum(if(category_type=2,1,0)),0) as fix
+     ,ifnull(sum(if(category_type=3,1,0)),0) as share
+     from maoding_web_exp_category where company_id = #{companyId} and status = 0
+  </select>
+
+
+  <select id="getCategoryTypeRelationCompanyId" resultType="java.lang.String" parameterType="java.lang.String">
+    SELECT DISTINCT relation_company_id
+    from maoding_web_exp_category
+    where company_id = #{companyId}
+    and relation_company_id is not null
+    limit 1
+  </select>
+</mapper>

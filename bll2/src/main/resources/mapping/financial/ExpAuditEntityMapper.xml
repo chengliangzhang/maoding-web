@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ExpAuditEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.financial.entity.ExpAuditEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="VARCHAR" />
+    <result column="is_new" property="isNew" jdbcType="VARCHAR" />
+    <result column="main_id" property="mainId" jdbcType="VARCHAR" />
+    <result column="approve_status" property="approveStatus" jdbcType="VARCHAR" />
+    <result column="approve_date" property="approveDate" jdbcType="DATE" />
+    <result column="audit_person" property="auditPerson" jdbcType="VARCHAR" />
+    <result column="audit_message" property="auditMessage" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, parent_id, is_new, main_id, approve_status, approve_date, audit_person, audit_message, 
+    create_date, create_by, update_date, update_by
+  </sql>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_exp_audit
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_exp_audit
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maoding.financial.entity.ExpAuditEntity" >
+    insert into maoding_web_exp_audit (id, parent_id, is_new, 
+      main_id, approve_status, approve_date, 
+      audit_person, audit_message, create_date, 
+      create_by, update_date, update_by
+      )
+    values (#{id,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, #{isNew,jdbcType=VARCHAR}, 
+      #{mainId,jdbcType=VARCHAR}, #{approveStatus,jdbcType=VARCHAR}, #{approveDate,jdbcType=DATE}, 
+      #{auditPerson,jdbcType=VARCHAR}, #{auditMessage,jdbcType=VARCHAR}, now(),
+      #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.financial.entity.ExpAuditEntity" >
+    update maoding_web_exp_audit
+    <set >
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="isNew != null" >
+        is_new = #{isNew,jdbcType=VARCHAR},
+      </if>
+      <if test="mainId != null" >
+        main_id = #{mainId,jdbcType=VARCHAR},
+      </if>
+      <if test="approveStatus != null" >
+        approve_status = #{approveStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="approveDate != null" >
+        approve_date = #{approveDate,jdbcType=DATE},
+      </if>
+      <if test="auditPerson != null" >
+        audit_person = #{auditPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="auditMessage != null" >
+        audit_message = #{auditMessage,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+        update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maoding.financial.entity.ExpAuditEntity" >
+    update maoding_web_exp_audit
+    set parent_id = #{parentId,jdbcType=VARCHAR},
+      is_new = #{isNew,jdbcType=VARCHAR},
+      main_id = #{mainId,jdbcType=VARCHAR},
+      approve_status = #{approveStatus,jdbcType=VARCHAR},
+      approve_date = #{approveDate,jdbcType=DATE},
+      audit_person = #{auditPerson,jdbcType=VARCHAR},
+      audit_message = #{auditMessage,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateIsNewByMainId" parameterType="java.lang.String">
+    update maoding_web_exp_audit
+    set is_new = 'N' where main_id = #{mainId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByMainId" parameterType="com.maoding.financial.entity.ExpAuditEntity">
+    update maoding_web_exp_audit
+    <set >
+      <if test="approveStatus != null" >
+        approve_status = #{approveStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="auditMessage != null" >
+        audit_message = #{auditMessage,jdbcType=VARCHAR},
+      </if>
+      update_date = now(), approve_date = now()
+    </set>
+     where main_id = #{mainId,jdbcType=VARCHAR} and is_new = 'Y'
+    <if test="versionNum != null" >
+      and (SELECT version_num FROM maoding_web_exp_main WHERE id = #{mainId,jdbcType=VARCHAR}) = #{versionNum,jdbcType=INTEGER};
+    </if>
+  </update>
+
+  <update id="transAuditPer" parameterType="com.maoding.financial.entity.ExpAuditEntity">
+    update maoding_web_exp_audit
+    set approve_status = #{approveStatus,jdbcType=VARCHAR}, update_date = now(), is_new = 'N', approve_date = now()
+    where main_id = #{mainId,jdbcType=VARCHAR} and is_new = 'Y'
+  </update>
+
+  <select id="selectByMainId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_exp_audit
+    where main_id = #{mainId,jdbcType=VARCHAR} and is_new = 'Y'
+  </select>
+
+  <select id="selectAuditPersonByMainId" parameterType="java.lang.String" resultType="com.maoding.financial.dto.ExpAuditDTO">
+    select a.id,a.audit_person as auditPerson,b.user_name as auditPersonName
+    from maoding_web_exp_audit a
+    LEFT JOIN maoding_web_company_user b on a.audit_person = b.id
+    where main_id = #{mainId,jdbcType=VARCHAR} and is_new = 'Y'
+  </select>
+
+  <select id="selectAuditDetailByMainId" resultType="com.maoding.financial.dto.ExpMainDTO"  parameterType="java.lang.String">
+    select a.id,c.id as companyUserId,c.user_name as userName,a.approve_date as expDate,a.audit_message as remark
+      ,a.approve_status as approveStatus,a.is_new as isNew,
+      company.company_name as companyName,company.id as companyId
+    from maoding_web_exp_main  b
+    inner join maoding_web_exp_audit a on a.main_id = b.id
+    inner join maoding_web_company_user c on a.audit_person = c.id
+    inner join maoding_web_company company on (company.id = c.company_id)
+    where b.id = #{id,jdbcType=VARCHAR} order by a.create_date
+  </select>
+  <select id="selectDetailByMainId"  parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT t.id, t.parent_id, t.is_new, t.main_id, t.approve_status, t.approve_date, user.user_name as audit_person, t.audit_message,
+      t.create_date, t.create_by, t.update_date, t.update_by FROM maoding_web_exp_audit t
+    LEFT JOIN maoding_web_company_user USER
+     ON t.`audit_person`=user.`id`
+    where
+      t.approve_status=1
+      and t.main_id = #{mainId,jdbcType=VARCHAR}
+    ORDER BY t.create_date ASC
+  </select>
+
+
+  <select id="selectByParam" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_exp_audit
+    where 1=1
+    <if test="mainId != null" >
+      and main_id = #{mainId,jdbcType=VARCHAR}
+    </if>
+    <if test="approveStatus != null" >
+      and approve_status = #{approveStatus,jdbcType=VARCHAR}
+    </if>
+    <if test="auditPerson != null" >
+      and audit_person = #{auditPerson,jdbcType=VARCHAR}
+    </if>
+    <if test="isNew!=null">
+      and is_new = #{isNew}
+    </if>
+  </select>
+
+  <select id="selectLastRecallAudit" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_exp_audit
+    where 1=1
+    and main_id = #{mainId,jdbcType=VARCHAR}
+    and approve_status = 2
+    order by create_date desc
+    limit 1
+  </select>
+
+</mapper>

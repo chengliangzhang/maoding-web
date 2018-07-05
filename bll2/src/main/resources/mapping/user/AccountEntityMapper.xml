@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="AccountEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.user.entity.AccountEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <id column="cellphone" property="cellphone" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="cellphone" property="cellphone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="default_company_id" property="defaultCompanyId" jdbcType="VARCHAR" />
+    <result column="signature" property="signature" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="emial_code" property="emialCode" jdbcType="VARCHAR" />
+    <result column="active_time" property="activeTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, cellphone, user_name, nick_name, cellphone,password, email, default_company_id, signature, emial_code,active_time,
+    status, create_date, create_by, update_date, update_by
+  </sql>
+  
+  <select id="getAccountByCellphoneOrEmail" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_account
+    where  cellphone = #{cellphone,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_account
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByIdForCollaboration" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_account
+    where id = #{id,jdbcType=VARCHAR}
+    <if test="syncDate != null">
+      <![CDATA[  and create_date <= #{syncDate,jdbcType=VARCHAR}  ]]>
+    </if>
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap"  >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_account where status = '0'
+  </select>
+  
+  <delete id="deleteById" parameterType="com.maoding.user.entity.AccountEntity" >
+    delete from maoding_web_account
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.maoding.user.entity.AccountEntity" >
+    insert into maoding_web_account (id, cellphone, user_name, 
+      nick_name, password, email, active_time,
+      default_company_id, signature, status, 
+      create_date, create_by, update_date, 
+      update_by, emial_code)
+    values (#{id,jdbcType=VARCHAR}, #{cellphone,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{nickName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},  #{activeTime,jdbcType=TIMESTAMP},
+      #{defaultCompanyId,jdbcType=VARCHAR}, #{signature,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      now(), #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP},
+      #{updateBy,jdbcType=VARCHAR}, #{emialCode,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.user.entity.AccountEntity" >
+    update maoding_web_account
+    <set >
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="nickName != null" >
+        nick_name = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="cellphone != null" >
+        cellphone = #{cellphone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="defaultCompanyId != null" >
+        default_company_id = #{defaultCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="signature != null" >
+        signature = #{signature,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="activeTime != null" >
+        active_time = #{activeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+        update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="emialCode != null" >
+        emial_code = #{emialCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="update" parameterType="com.maoding.user.entity.AccountEntity" >
+    update maoding_web_account
+    set user_name = #{userName,jdbcType=VARCHAR},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      default_company_id = #{defaultCompanyId,jdbcType=VARCHAR},
+      signature = #{signature,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      update_date = now(),
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      emial_code = #{emialCode,jdbcType=VARCHAR}
+      where id = #{id,jdbcType=VARCHAR}
+      and cellphone = #{cellphone,jdbcType=VARCHAR}
+  </update>
+  
+  	<!-- 批量修改默认组织，把默认组织为 defaultCompanyId都设置为null,解散组织的时候使用-->
+	<update id="updatedeAllfaultCompanyId" parameterType="java.lang.String">
+		update maoding_web_account
+		set default_company_id = null
+		where default_company_id = #{defaultCompanyId,jdbcType=VARCHAR}
+	</update>
+</mapper>

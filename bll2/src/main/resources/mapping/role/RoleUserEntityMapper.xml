@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="RoleUserEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.role.entity.RoleUserEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="role_id" property="roleId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, company_id, role_id, user_id, org_id, type, create_date, create_by, update_date, 
+    update_by
+  </sql>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_role_user
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllRoleUser" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_role_user
+  </select>
+
+
+  <select id="selectUserRole" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_role_user
+    where company_id=#{companyId,jdbcType=VARCHAR}
+    <if test="roleId != null">
+      and role_id = #{roleId,jdbcType=VARCHAR}
+    </if>
+    <if test="userId != null">
+      and user_id = #{userId,jdbcType=VARCHAR}
+    </if>
+    <if test="orgId != null">
+      and	org_id = #{orgId,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_role_user
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+
+  <!-- 删除个人所在公司的角色 -->
+  <delete id="deleteUserRole" parameterType="java.util.Map">
+    delete from maoding_web_role_user
+    where company_id=#{companyId,jdbcType=VARCHAR}
+    <if test="roleId != null">
+      and role_id = #{roleId,jdbcType=VARCHAR}
+    </if>
+    <if test="userId != null">
+      and user_id = #{userId,jdbcType=VARCHAR}
+    </if>
+    <if test="orgId != null">
+      and	org_id = #{orgId,jdbcType=VARCHAR}
+    </if>
+    <if test="roleIds != null">
+      and role_id in
+      <foreach collection="roleIds" index="i" item="roleId" open="(" separator="," close=")">
+        #{roleId}
+      </foreach>
+    </if>
+
+  </delete>
+
+
+  <insert id="insert" parameterType="com.maoding.role.entity.RoleUserEntity" >
+    insert into maoding_web_role_user (id, company_id, role_id, 
+      user_id, org_id, type, 
+      create_date, create_by, update_date, 
+      update_by)
+    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=VARCHAR}, #{orgId,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+      now(), #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateById" parameterType="com.maoding.role.entity.RoleUserEntity" >
+    update maoding_web_role_user
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null" >
+        role_id = #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        org_id = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+        update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="update" parameterType="com.maoding.role.entity.RoleUserEntity" >
+    update maoding_web_role_user
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      role_id = #{roleId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      org_id = #{orgId,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

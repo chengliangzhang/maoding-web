@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetProjectCostPaymentDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.projectcost.dto.ProjectCostPaymentDetailDTO" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="point_detail_id" property="pointDetailId" jdbcType="VARCHAR" />
+    <result column="fee" property="fee" jdbcType="DECIMAL" />
+    <result column="invoice" property="invoice" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="paid_date" property="paidDate" jdbcType="VARCHAR" />
+    <result column="pay_date" property="payDate" jdbcType="VARCHAR" />
+    <result column="totalPaidFee" property="totalPaidFee" jdbcType="DECIMAL" />
+    <result column="notReceiveFee" property="notReceiveFee" jdbcType="DECIMAL" />
+    <result column="totalFee" property="totalFee" jdbcType="DECIMAL" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, project_id, point_detail_id,fee, invoice,create_date,
+    create_by, update_date, update_by,paid_date,pay_date
+  </sql>
+
+
+  <select id="selectByPointDetailId" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT d.id, d.project_id, d.point_detail_id,d.fee,  d.invoice,
+    d.paid_date,d.pay_date
+    from maoding_web_project_cost_payment_detail d
+    where d.status='0' and d.point_detail_id=#{pointDetailId,jdbcType=VARCHAR}
+    order by d.create_date
+  </select>
+
+  <select id="getSumPaidFee" parameterType="java.lang.String" resultType="java.lang.Double" >
+    SELECT sum(fee)
+    from maoding_web_project_cost_payment_detail
+    where status='0' and project_id=#{projectId,jdbcType=VARCHAR}
+  </select>
+
+
+  <select id="getSumFee" parameterType="java.lang.String" resultType="java.lang.Double" >
+    SELECT IFNULL(sum(fee),0)
+    from maoding_web_project_cost_payment_detail
+    where status='0' and  point_detail_id=#{pointDetailId,jdbcType=VARCHAR}
+  </select>
+
+</mapper>

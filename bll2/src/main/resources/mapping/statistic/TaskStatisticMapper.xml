@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="TaskStatisticMapper" >
+
+    <select id="listUserTaskStatistic" resultType="com.maoding.statistic.dto.UserTaskStaticDTO" parameterType="java.util.Map">
+        SELECT SQL_CALC_FOUND_ROWS
+        COUNT(DISTINCT b.project_id) as projectCount,
+        count(DISTINCT b.id) as taskCount,
+        sum((CASE b.`status` WHEN '0' then 1 ELSE 0 END )) as notCompleteCount,
+        a.id as companyUserId,
+        a.user_name as userName,
+        a.company_id as companyId,
+        e.oss_file_path as headImg
+        from maoding_web_company_user a
+        LEFT JOIN maoding_web_my_task b on (b.handler_id = a.id and (b.task_type = 1 or b.task_type = 3 or b.task_type = 13) and  b.`status` != '2' and b.param4 = '0')
+        LEFT JOIN  maoding_web_project c on b.project_id = c.id and c.pstatus = '0' and c.`status` !='2'
+        LEFT JOIN (<include refid="UserAttachEntityMapper.getHeadImg" /> ) e on a.user_id = e.user_id and e.attach_type = '5'
+        <if test="orgId!=null">
+        LEFT JOIN maoding_web_org_user d on a.id = d.cu_id
+        </if>
+        where a.company_id = #{companyId} and a.audit_status = '1'
+        <if test="orgId!=null">
+          and d.org_id = #{orgId}
+        </if>
+        <if test="projectId!=null">
+            AND b.project_id = #{projectId}
+        </if>
+        GROUP BY a.id
+        <choose>
+            <when test="orderAsc==1">
+                ORDER BY sum((CASE b.`status` WHEN '0' then 1 ELSE 0 END ))
+            </when>
+            <otherwise>
+                ORDER BY sum((CASE b.`status` WHEN '0' then 1 ELSE 0 END )) DESC
+            </otherwise>
+        </choose>
+        <if test="startPage!=null">
+            LIMIT #{startPage},#{endPage}
+        </if>
+    </select>
+
+    <select id="getUserTaskStatisticCount" resultType="java.lang.Integer">
+        SELECT FOUND_ROWS()
+    </select>
+</mapper>

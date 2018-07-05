@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetDepartByRoleMapper" >
+
+    <!-- 查询有权限的独立部门 (项目统计使用)-->
+    <select id="getDepartByRole" resultType="com.maoding.org.dto.DepartRoleDTO" parameterType="java.util.Map">
+        SELECT a.id,a.depart_name as departName,c.role
+        FROM maoding_web_depart a
+        LEFT JOIN maoding_web_org_user b ON a.id = b.org_id
+        LEFT JOIN (
+            SELECT org_id,user_id, GROUP_CONCAT(r.`code`) AS CODE, GROUP_CONCAT(r.`name`) AS role
+            FROM
+            maoding_web_role_user r1,
+            maoding_web_role r
+            WHERE
+            r1.role_id = r.id
+            GROUP BY
+            r1.org_id,
+            r1.user_id
+        ) c ON a.id = c.org_id and b.user_id=c.user_id
+        where b.company_id = #{companyId,jdbcType=VARCHAR}
+        and b.user_id = #{userId,jdbcType=VARCHAR}
+        and a.status='0'
+        <if test="orgId != null">
+            and a.id=#{orgId,jdbcType=VARCHAR}
+        </if>
+        <if test="roleList != null">
+            and
+            <foreach collection="roleList" index="i" item="role" open="(" separator=" or " close=")">
+                c.CODE like '%' #{role,jdbcType=VARCHAR} '%'
+            </foreach>
+        </if>
+    </select>
+
+    <!-- 查询有组织权限 (项目详情界面使用)-->
+    <select id="getOrgRole" resultType="com.maoding.org.dto.DepartRoleDTO" parameterType="java.util.Map">
+        SELECT a.org_id as id,GROUP_CONCAT(b.code) as code
+        FROM maoding_web_role_user a
+        LEFT JOIN  maoding_web_role b on  a.role_id = b.id
+        where a.company_id = #{companyId,jdbcType=VARCHAR}
+        and a.user_id = #{userId,jdbcType=VARCHAR}
+        GROUP BY a.org_id
+    </select>
+</mapper>

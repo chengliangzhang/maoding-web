@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="OrgUserEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.org.entity.OrgUserEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="cu_id" property="cuId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="server_station" property="serverStation" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, company_id,user_id, org_id, cu_id,server_station,seq, create_date, create_by, update_date, update_by
+  </sql>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_org_user
+    where  id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <!-- 根据部门orgIds（orgIds为list）查询 -->
+  <select id="selectByParam" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_org_user
+    where  1=1
+    <if test="cuId != null" >
+        and cu_id = #{cuId,jdbcType=VARCHAR}
+    </if>
+    <if test="orgId != null" >
+        and org_id = #{orgId,jdbcType=VARCHAR}
+    </if>
+    <if test="companyId != null" >
+        and  company_id = #{companyId,jdbcType=VARCHAR}
+    </if>
+    <if test="orgIds != null" ><!-- 根据orgIds-->
+      and org_id in
+      <foreach collection="orgIds" index="i" item="orgId" open="(" separator="," close=")">
+        #{orgId}
+      </foreach>
+    </if>
+  </select>
+  
+   <delete id="deleteOrgUserByParam" parameterType="java.util.Map" >
+    delete from maoding_web_org_user
+    where 1=1
+    <if test="companyId != null" >
+      and  company_id = #{companyId,jdbcType=VARCHAR}
+    </if>
+    <if test="orgId != null" >
+       and org_id = #{orgId,jdbcType=VARCHAR}
+    </if>
+    <if test="cuId != null" >
+       and cu_id = #{cuId,jdbcType=VARCHAR}
+    </if>
+     <if test="userId != null" >
+       and user_id = #{userId,jdbcType=VARCHAR}
+    </if>
+    <if test="orgIds != null" ><!-- 根据orgIds批量删除-->
+       and org_id in
+       <foreach collection="orgIds" index="i" item="orgId" open="(" separator="," close=")">
+         #{orgId}
+       </foreach>
+    </if>
+  </delete>
+  
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_org_user
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.maoding.org.entity.OrgUserEntity" >
+    insert into maoding_web_org_user (id, company_id, org_id, user_id,server_station,
+      cu_id,seq, create_date, create_by,
+      update_date, update_by)
+    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{orgId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{serverStation,jdbcType=VARCHAR},#{cuId,jdbcType=VARCHAR}, #{seq,jdbcType=INTEGER},now(), #{createBy,jdbcType=VARCHAR},
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="updateById" parameterType="com.maoding.org.entity.OrgUserEntity" >
+    update maoding_web_org_user
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        org_id = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="cuId != null" >
+        cu_id = #{cuId,jdbcType=VARCHAR},
+      </if>
+       <if test="userId != null" >
+       	 user_id =  #{userId,jdbcType=VARCHAR}, 
+      </if>
+       <if test="serverStation != null" >
+       	 server_station =  #{serverStation,jdbcType=VARCHAR}, 
+      </if>
+     <if test="seq != null and seq!=0" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+        update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+    <select id="getMaxOrgUserSeq" resultType="java.lang.Integer" >
+        select IFNULL(max(seq),0)+1 from maoding_web_org_user
+    </select>
+</mapper>

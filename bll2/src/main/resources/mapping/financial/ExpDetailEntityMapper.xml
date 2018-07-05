@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ExpDetailEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.financial.entity.ExpDetailEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="main_id" property="mainId" jdbcType="VARCHAR" />
+    <result column="exp_type" property="expType" jdbcType="VARCHAR" />
+    <result column="exp_use" property="expUse" jdbcType="VARCHAR" />
+    <result column="exp_amount" property="expAmount" jdbcType="DECIMAL" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="exp_name" property="expName" jdbcType="VARCHAR" />
+    <result column="exp_pname" property="expPName" jdbcType="VARCHAR" />
+    <result column="exp_allname" property="expAllName" jdbcType="VARCHAR" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, main_id, exp_type, exp_use,exp_name,exp_pname, exp_amount, project_id,seq, create_date, create_by, update_date,
+    update_by
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_exp_detail
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_exp_detail
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <select id="selectByMainId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_exp_detail
+    where main_id = #{mainId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectDetailDTOByMainId" resultType="com.maoding.financial.dto.ExpDetailDTO" parameterType="java.lang.String" >
+    select a.id as id,a.exp_amount as expAmount,a.exp_allname as expTypeName,a.exp_allname as expAllName,a.exp_type as expType,
+    a.exp_use as expUse,a.project_id as projectId,a.exp_pname as expTypeParentName,
+    d.project_name as projectName,(SELECT SUM(aa.exp_amount) FROM maoding_web_exp_detail aa
+    WHERE aa.main_id = #{mainId,jdbcType=VARCHAR}) AS totalExpAmount
+    from maoding_web_exp_detail a
+    LEFT JOIN maoding_web_project d on a.project_id = d.id
+    where main_id = #{mainId,jdbcType=VARCHAR}
+    order by a.seq
+  </select>
+
+  <insert id="insert" parameterType="com.maoding.financial.entity.ExpDetailEntity" >
+    insert into maoding_web_exp_detail (id, main_id, exp_type, exp_name,exp_pname,exp_allname,
+      exp_use, exp_amount, project_id, seq,
+      create_date, create_by, update_date, 
+      update_by)
+    values (#{id,jdbcType=VARCHAR}, #{mainId,jdbcType=VARCHAR}, #{expType,jdbcType=VARCHAR},  #{expName,jdbcType=VARCHAR},#{expPName,jdbcType=VARCHAR},#{expAllName,jdbcType=VARCHAR},
+      #{expUse,jdbcType=VARCHAR}, #{expAmount,jdbcType=DECIMAL}, #{projectId,jdbcType=VARCHAR}, #{seq,jdbcType=INTEGER},
+      now(), #{createBy,jdbcType=VARCHAR}, now(),
+      #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.financial.entity.ExpDetailEntity" >
+    update maoding_web_exp_detail
+    <set >
+      <if test="mainId != null" >
+        main_id = #{mainId,jdbcType=VARCHAR},
+      </if>
+      <if test="expType != null" >
+        exp_type = #{expType,jdbcType=VARCHAR},
+      </if>
+      <if test="expUse != null" >
+        exp_use = #{expUse,jdbcType=VARCHAR},
+      </if>
+      <if test="expAmount != null" >
+        exp_amount = #{expAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+        update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="update" parameterType="com.maoding.financial.entity.ExpDetailEntity" >
+    update maoding_web_exp_detail
+    set main_id = #{mainId,jdbcType=VARCHAR},
+      exp_type = #{expType,jdbcType=VARCHAR},
+      exp_name = #{expName,jdbcType=VARCHAR},
+      exp_use = #{expUse,jdbcType=VARCHAR},
+      exp_amount = #{expAmount,jdbcType=DECIMAL},
+      project_id = #{projectId,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <delete id="deleteByMainId" parameterType="java.lang.String" >
+    delete from maoding_web_exp_detail
+    where main_id = #{mainId,jdbcType=VARCHAR}
+  </delete>
+
+</mapper>

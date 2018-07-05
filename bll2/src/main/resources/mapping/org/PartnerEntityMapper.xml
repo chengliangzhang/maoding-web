@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="PartnerEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.org.entity.PartnerEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="from_company_id" property="fromCompanyId" jdbcType="VARCHAR" />
+    <result column="from_user_id" property="fromUserId" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id,phone, company_id, project_id, from_company_id, from_user_id, type, nick_name, create_date,
+    create_by, update_date, update_by
+  </sql>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_partner
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getOuterCooperatorFlag" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    select if(count(1)=0,0,1)
+    from maoding_web_partner a
+    INNER JOIN maoding_web_project_task b on a.project_id = b.project_id
+    where b.task_status=0 and b.company_id = a.company_id and (b.task_type = 0 or b.task_type=2)
+    and a.project_id = #{project_id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_partner
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.maoding.org.entity.PartnerEntity" >
+    insert into maoding_web_partner (id,phone, company_id, project_id,
+      from_company_id, from_user_id, type, 
+      nick_name, create_date, create_by,
+      update_date, update_by)
+    values (#{id,jdbcType=VARCHAR},#{phone,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR},
+      #{fromCompanyId,jdbcType=VARCHAR}, #{fromUserId,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, 
+      #{nickName,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR},
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.org.entity.PartnerEntity" >
+    update maoding_web_partner
+    <set >
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="fromCompanyId != null" >
+        from_company_id = #{fromCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="fromUserId != null" >
+        from_user_id = #{fromUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="nickName != null" >
+        nick_name = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="update" parameterType="com.maoding.org.entity.PartnerEntity" >
+    update maoding_web_partner
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      project_id = #{projectId,jdbcType=VARCHAR},
+      from_company_id = #{fromCompanyId,jdbcType=VARCHAR},
+      from_user_id = #{fromUserId,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

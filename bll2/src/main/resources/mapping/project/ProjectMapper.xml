@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ProjectMapper">
+    <resultMap id="projectDetailsMap" type="com.maoding.project.dto.ProjectDetailsDTO" autoMapping="true">
+        <id column="id" property="id"/>
+        <association property="projectType" javaType="com.maoding.system.dto.ConstDTO">
+            <result column="project_type" property="id"/>
+            <result column="project_type" property="content"/>
+        </association>
+        <association property="projectStatus" javaType="com.maoding.system.dto.ConstDTO">
+            <result column="status" jdbcType="VARCHAR" property="valueId" javaType="INT"/>
+        </association>
+        <association property="creatorCompany" javaType="com.maoding.org.dto.CompanyDTO">
+            <result column="company_id" property="id"/>
+        </association>
+        <association property="partyACompany" javaType="com.maoding.org.dto.CompanyDTO">
+            <result column="construct_company" property="id"/>
+        </association>
+        <association property="partyBCompany" javaType="com.maoding.org.dto.CompanyDTO">
+            <result column="company_bid" property="id"/>
+        </association>
+        <association property="projectLocation" javaType="com.maoding.project.dto.LocationDTO" autoMapping="true"/>
+
+    </resultMap>
+
+    <select id="getProject" parameterType="com.maoding.project.dto.ProjectQueryDTO" resultType="com.maoding.project.entity.ProjectEntity">
+        select *
+        from maoding_web_project a
+        where
+            a.pstatus='0'
+            <if test="id!=null">
+                and a.id=#{id}
+            </if>
+            <if test="companyId!=null">
+                and a.company_id=#{companyId}
+            </if>
+            <if test="projectNo!=null">
+                and a.project_no=#{projectNo}
+            </if>
+            <if test="projectName!=null">
+                and a.project_name=#{projectName}
+            </if>
+            <if test="createDate!=null">
+                and a.project_create_date=#{createDate}
+            </if>
+        <include refid="CommonMapper.limitSQL"/>
+    </select>
+
+    <select id="getProjectDetailsById" parameterType="java.lang.String" resultMap="projectDetailsMap">
+        select a.id,a.project_no,a.project_name,a.contract_date,a.project_type,a.status,a.company_id
+          ,a.construct_company,a.company_bid,a.contract_date,a.province,a.city,a.county,a.detail_address,a.built_type
+        from maoding_web_project a
+        where
+            a.pstatus='0'
+            and a.id=#{id}
+        limit 1
+    </select>
+
+    <select id="listBuiltTypeConst" resultType="com.maoding.commonModule.dto.ContentDTO" parameterType="com.maoding.project.dto.QueryProjectDTO">
+        select
+            if(built_type.id is null,null,1) as is_default,
+            if(find_in_set(built_type.id,project.built_type),1,0) as is_selected,
+            built_type.type_name as name,
+            built_type.*
+        from maoding_web_project project
+            inner join md_type_built_const built_type
+        <where>
+            project.pstatus = '0'
+            <if test="id != null">
+                and find_in_set(project.id,#{id})
+            </if>
+            <if test="memberProjects != null and memberProjects.size()>0">
+                and project.id in
+                <foreach collection="memberProjects" item="projectId" index="i" open="(" separator="," close=")">
+                    #{projectId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="listBuiltTypeCustom" resultType="com.maoding.commonModule.dto.ContentDTO" parameterType="com.maoding.project.dto.QueryProjectDTO">
+        select
+            if(built_type.id is null,null,0) as is_default,
+            if(find_in_set(built_type.id,project.built_type),1,0) as is_selected,
+            built_type.type_name as name,
+            built_type.*
+        from maoding_web_project project
+            inner join md_type_built_custom built_type on (find_in_set(built_type.id,project.built_type))
+        <where>
+            project.pstatus = '0'
+            <if test="id != null">
+                and find_in_set(project.id,#{id})
+            </if>
+            <if test="memberProjects != null and memberProjects.size()>0">
+                and project.id in
+                <foreach collection="memberProjects" item="projectId" index="i" open="(" separator="," close=")">
+                    #{projectId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="listBuildTypeByName" resultType="com.maoding.commonModule.dto.ContentDTO" parameterType="com.maoding.project.dto.QueryProjectDTO">
+        SELECT id,name from maoding_data_dictionary
+        where name in
+        <foreach collection="buildTypeNames" item="name" index="i" open="(" separator="," close=")">
+            #{name}
+        </foreach>
+        UNION
+        SELECT id,title as name from md_list_const_custom
+        where classic_id = '33'
+        and title in
+        <foreach collection="buildTypeNames" item="name" index="i" open="(" separator="," close=")">
+            #{name}
+        </foreach>
+    </select>
+</mapper>

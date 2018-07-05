@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ProjectProcessTimeEntityMapper">
+  <resultMap id="BaseResultMap" type="com.maoding.task.entity.ProjectProcessTimeEntity">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="start_time" jdbcType="DATE" property="startTime" />
+    <result column="end_time" jdbcType="DATE" property="endTime" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="memo" jdbcType="VARCHAR" property="memo" />
+    <result column="target_id" jdbcType="VARCHAR" property="targetId" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id,company_id, start_time, end_time, type, memo, target_id, create_date, create_by, update_date,
+    update_by
+  </sql>
+
+  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_project_process_time
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String">
+    delete from maoding_web_project_process_time
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.maoding.task.entity.ProjectProcessTimeEntity">
+    insert into maoding_web_project_process_time (id, company_id, start_time, end_time,
+      type, memo, target_id, 
+      create_date, create_by, update_date, 
+      update_by)
+    values (#{id,jdbcType=VARCHAR},#{companyId,jdbcType=VARCHAR}, #{startTime,jdbcType=DATE}, #{endTime,jdbcType=DATE},
+      #{type,jdbcType=INTEGER}, #{memo,jdbcType=VARCHAR}, #{targetId,jdbcType=VARCHAR},
+    <if test="createDate == null" >
+     now()
+    </if>
+    <if test="createDate != null" >
+      #{createDate,jdbcType=TIMESTAMP}
+    </if>,
+    #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP},
+      #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <select id="selectByParam" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_project_process_time
+    where 1=1
+    <if test="companyId != null">
+      and  company_id = #{companyId,jdbcType=VARCHAR}
+    </if>
+    <!--<if test="type != null">-->
+      <!--and  type = #{type,jdbcType=INTEGER}-->
+    <!--</if>-->
+    <if test="memo != null">
+      and   memo = #{memo,jdbcType=VARCHAR}
+    </if>
+
+    <if test="targetId != null">
+      and  target_id = #{targetId,jdbcType=VARCHAR}
+    </if>
+    ORDER  BY  create_date ASC
+  </select>
+
+  <select id="listTimeHistory" parameterType="java.util.Map" resultType="com.maoding.task.dto.ProjectProcessTimeDTO">
+    select
+      time_his.create_date as changedTime,
+      account.user_name as userName,
+      time_his.*
+    from maoding_web_project_process_time time_his
+      left join maoding_web_account account on (account.status = '0' and account.id = time_his.create_by)
+    where 1=1
+      <if test="companyId != null">
+        and time_his.company_id = #{companyId,jdbcType=VARCHAR}
+      </if>
+      <if test="memo != null">
+        and time_his.memo = #{memo,jdbcType=VARCHAR}
+      </if>
+      <if test="targetId != null">
+        and time_his.target_id = #{targetId,jdbcType=VARCHAR}
+      </if>
+    ORDER  BY time_his.create_date ASC
+  </select>
+
+  <select id="selectByTargetId" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_project_process_time
+    where   target_id = #{targetId,jdbcType=VARCHAR}
+    <if test="type != null and type==2">
+      <if test="companyId != null"><!-- 根任务没有 companyId-->
+      and company_id = #{companyId,jdbcType=VARCHAR}
+      </if>
+      and type = #{type,jdbcType=INTEGER}
+    </if>
+    <if test="type != null and type==1">
+      and (
+      (company_id != #{companyId,jdbcType=VARCHAR} and type = '2')
+      or (company_id = #{companyId,jdbcType=VARCHAR} and type = '1')
+      )
+    </if>
+    ORDER BY create_date DESC
+    limit 1
+  </select>
+
+  <delete id="deleteByTargetId" parameterType="java.util.Map">
+    delete from maoding_web_project_process_time
+    where target_id = #{targetId,jdbcType=VARCHAR} and type=#{type,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteByTaskId" parameterType="java.lang.String">
+    delete from maoding_web_project_process_time
+    where target_id = #{taskId,jdbcType=VARCHAR}
+  </delete>
+
+  <update id="updateById" parameterType="com.maoding.task.entity.ProjectProcessTimeEntity">
+    update maoding_web_project_process_time
+    <set>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null">
+        start_time = if(unix_timestamp(#{startTime,jdbcType=DATE})=0,null,#{startTime,jdbcType=DATE}),
+      </if>
+      <if test="endTime != null">
+        end_time = if(unix_timestamp(#{endTime,jdbcType=DATE})=0,null,#{endTime,jdbcType=DATE}),
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="memo != null">
+        memo = #{memo,jdbcType=VARCHAR},
+      </if>
+      <if test="targetId != null">
+        target_id = #{targetId,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="update" parameterType="com.maoding.task.entity.ProjectProcessTimeEntity">
+    update maoding_web_project_process_time
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=DATE},
+      end_time = #{endTime,jdbcType=DATE},
+      type = #{type,jdbcType=INTEGER},
+      memo = #{memo,jdbcType=VARCHAR},
+      target_id = #{targetId,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

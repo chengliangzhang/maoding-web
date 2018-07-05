@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maoding.dynamic.dao.ZInfoDAO" >
+  <select id="getCompanyNameByCompanyId" resultType="java.lang.String" parameterType="java.lang.String">
+    SELECT
+      company_name
+    FROM
+      maoding_web_company
+    WHERE
+      status='0' and id=#{companyId}
+    LIMIT 1
+  </select>
+  <select id="getContractCompanyNameByCompanyId" resultType="java.lang.String" parameterType="java.lang.String">
+    SELECT
+      company_name
+    FROM
+      maoding_web_project_construct
+    WHERE
+      id=#{companyId}
+    LIMIT 1
+  </select>
+  <select id="getUserNameByUserId" resultType="java.lang.String" parameterType="java.lang.String">
+    SELECT
+      ifnull(nick_name,user_name) as user_name
+    FROM
+      maoding_web_account
+    WHERE
+      status='0' and id=#{userId}
+    LIMIT 1
+  </select>
+  <select id="getUserNameByCompanyUserId" resultType="java.lang.String" parameterType="java.lang.String">
+    SELECT
+      ifnull(a.user_name,ifnull(b.nick_name,b.user_name)) as user_name
+    FROM
+      ( SELECT user_id,user_name
+        FROM
+          maoding_web_company_user
+        WHERE
+          id=#{companyUserId}
+        LIMIT 1
+      ) a
+      INNER JOIN maoding_web_account b on (b.status='0' and a.user_id=b.id)
+    LIMIT 1
+  </select>
+  <select id="getCompanyUserIdByCompanyIdAndUserId" resultType="java.lang.String" parameterType="java.util.Map">
+    SELECT
+      id
+    FROM
+      maoding_web_company_user
+    WHERE
+      company_id=#{companyId} and user_id=#{userId}
+    LIMIT 1
+  </select>
+  <select id="getProjectNameByProjectId" resultType="java.lang.String" parameterType="java.lang.String">
+    SELECT
+      project_name
+    FROM
+      maoding_web_project
+    WHERE
+      pstatus='0' and id=#{projectId}
+    LIMIT 1
+  </select>
+  <select id="getUserIdByCompanyUserId" resultType="java.lang.String" parameterType="java.lang.String">
+    SELECT
+      user_id
+    FROM
+      maoding_web_company_user
+    WHERE
+      id=#{companyUserId}
+    LIMIT 1
+  </select>
+  <select id="getCompanyNameByTaskId" resultType="java.lang.String" parameterType="java.lang.String">
+    SELECT
+      if((c.depart_name is null),b.company_name,concat(b.company_name,'(',c.depart_name,')')) as company_name
+    FROM
+      ( SELECT company_id,org_id
+        FROM
+          maoding_web_project_task
+        WHERE
+          task_status!='1' and id=#{taskId}
+        LIMIT 1
+      ) a
+      INNER JOIN maoding_web_company b on (b.status='0' and a.company_id=b.id)
+      LEFT JOIN maoding_web_depart c on (c.status='0' and a.org_id=c.id and a.company_id=c.company_id)
+    LIMIT 1
+  </select>
+  <select id="getCompanyIdByTaskId" resultType="java.lang.String" parameterType="java.lang.String">
+    SELECT company_id
+    FROM
+      maoding_web_project_task
+    WHERE
+      task_status!='1' and id=#{taskId}
+    LIMIT 1
+  </select>
+  <select id="getProduceTaskFullNameByTask" resultType="java.lang.String" parameterType="com.maoding.task.entity.ProjectTaskEntity">
+    SELECT
+      concat(a.task_full_name,
+        if(c.leader_name IS NOT NULL,concat(' 任务负责人：',c.leader_name),''),
+        if((a.start_time IS NOT NULL) OR (a.end_time IS NOT NULL),
+          concat(' 进度计划：',date_format(a.start_time, '%Y/%m/%d'),' — ',date_format(a.end_time, '%Y/%m/%d')),''),
+        if(d.members IS NOT NULL,concat(' 参与人员：',d.members),'')
+      ) AS task_full_name
+    FROM
+      (<include refid="task_with_full_name_table_by_task"/>) a
+      LEFT JOIN (<include refid="task_responsible_table_by_id"/>) c on (a.id=c.task_id)
+      LEFT JOIN (<include refid="process_responsible_table_by_id"/>) d on (a.id=d.task_id)
+    LIMIT 1
+  </select>
+  <select id="getTaskByTaskId" resultType="com.maoding.task.dto.TaskWithFullNameDTO" parameterType="java.lang.String">
+    SELECT
+      a.id as id,
+      a.project_id as project_id,
+      a.task_type as task_type,
+      if (a.id is null,'',
+        (case a.task_type when 0 then '设计任务' when 1 then '设计内容' else '设计任务' end)) as type_name,
+      if(a.task_type=0,a.task_full_name,a.task_name) as task_name,
+      concat(a.task_full_name,
+        if(a.task_type=0 and c.leader_name IS NOT NULL,concat(' 任务负责人：',c.leader_name),''),
+        if((a.start_time IS NOT NULL) OR (a.end_time IS NOT NULL),
+          concat(' ',if(a.task_type=1,'合同时间：','进度计划：'),
+            date_format(a.start_time, '%Y/%m/%d'),' — ',date_format(a.end_time, '%Y/%m/%d')),''),
+        if(a.task_type=2 and e.company_name is not null,concat(' 设计组织：',e.company_name),''),
+        if(a.task_type=0 and d.members IS NOT NULL,concat(' 参与人员：',d.members),'')
+      ) AS task_full_name,
+      ifnull(c.leader_name,'') as leader_name,
+      if((a.start_time IS NOT NULL) OR (a.end_time IS NOT NULL),
+        concat(date_format(a.start_time, '%Y/%m/%d'),' — ',date_format(a.end_time, '%Y/%m/%d')),''
+      ) as task_period,
+      ifnull(d.members,'') as members,
+      e.company_id as to_company_id,
+      ifnull(e.company_name,'') as to_company_name
+    FROM
+      (<include refid="task_with_full_name_table_by_task_id"/>) a
+      LEFT JOIN (<include refid="task_responsible_table_by_task_id"/>) c on (a.id=c.task_id)
+      LEFT JOIN (<include refid="process_responsible_table_by_task_id"/>) d on (a.id=d.task_id)
+      LEFT JOIN (<include refid="task_to_company_table_by_task_id"/>) e on (a.id=e.id)
+    LIMIT 1
+  </select>
+  <select id="getTaskByTask" resultType="com.maoding.task.dto.TaskWithFullNameDTO" parameterType="com.maoding.task.entity.ProjectTaskEntity">
+    SELECT
+      a.id as id,
+      a.project_id as project_id,
+      a.task_type as task_type,
+      if (a.id is null,'',
+        (case a.task_type when 0 then '设计任务' when 1 then '设计内容' else '设计任务' end)) as type_name,
+      if(a.task_type=0,a.task_full_name,a.task_name) as task_name,
+      concat(a.task_full_name,
+        if(a.task_type=0 and c.leader_name IS NOT NULL,concat(' 任务负责人：',c.leader_name),''),
+        if((a.start_time IS NOT NULL) OR (a.end_time IS NOT NULL),
+          concat(' ',if(a.task_type=1,'合同时间：','进度计划：'),
+            date_format(a.start_time, '%Y/%m/%d'),' — ',date_format(a.end_time, '%Y/%m/%d')),''),
+        if(a.task_type=2 and e.company_name is not null,concat(' 设计组织：',e.company_name),''),
+        if(a.task_type=0 and d.members IS NOT NULL,concat(' 参与人员：',d.members),'')
+      ) AS task_full_name,
+      ifnull(c.leader_name,'') as leader_name,
+      if((a.start_time IS NOT NULL) OR (a.end_time IS NOT NULL),
+        concat(date_format(a.start_time, '%Y/%m/%d'),' — ',date_format(a.end_time, '%Y/%m/%d')),''
+      ) as task_period,
+      ifnull(d.members,'') as members,
+      e.company_id as to_company_id,
+      ifnull(e.company_name,'') as to_company_name,
+      a.complete_date as complete_date
+    FROM
+      (<include refid="task_with_full_name_table_by_task"/>) a
+      LEFT JOIN (<include refid="task_responsible_table_by_id"/>) c on (a.id=c.task_id)
+      LEFT JOIN (<include refid="process_responsible_table_by_id"/>) d on (a.id=d.task_id)
+      LEFT JOIN (<include refid="task_to_company_table_by_id"/>) e on (a.id=e.id)
+    LIMIT 1
+  </select>
+  <select id="getTaskByTime" resultType="com.maoding.task.dto.TaskWithFullNameDTO" parameterType="com.maoding.task.entity.ProjectProcessTimeEntity">
+    SELECT
+      b.id as id,
+      b.project_id as project_id,
+      b.task_type as task_type,
+      if (b.id is null,'',
+        (case b.task_type when 0 then '设计任务' when 1 then '设计内容' else '设计任务' end)) as type_name,
+      if(b.task_type=0,b.task_full_name,b.task_name) as task_name,
+      concat(b.task_full_name,
+        if(b.task_type=0 and c.leader_name IS NOT NULL,concat(' 任务负责人：',c.leader_name),''),
+        if((#{startTime} IS NOT NULL) OR (#{endTime} IS NOT NULL) OR (a.start_time IS NOT NULL) OR (a.end_time IS NOT NULL),
+          concat(' ',if(b.task_type=1,'合同时间：','进度计划：'),
+            date_format(ifnull(#{startTime},a.start_time), '%Y/%m/%d'),' — ',date_format(ifnull(#{endTime},a.end_time), '%Y/%m/%d')),''),
+        if(b.task_type=2 and e.company_name is not null,concat(' 设计组织：',e.company_name),''),
+        if(b.task_type=0 and d.members IS NOT NULL,concat(' 参与人员：',d.members),'')
+      ) AS task_full_name,
+      ifnull(c.leader_name,'') as leader_name,
+      if((#{startTime} IS NOT NULL) OR (#{endTime} IS NOT NULL) OR (a.start_time IS NOT NULL) OR (a.end_time IS NOT NULL),
+        concat(date_format(ifnull(#{startTime},a.start_time), '%Y/%m/%d'),' — ',date_format(ifnull(#{endTime},a.end_time), '%Y/%m/%d')),''
+      ) as task_period,
+      ifnull(d.members,'') as members,
+      if((f.depart_name is null),e.company_name,concat(e.company_name,'(',f.depart_name,')')) as company_name,
+      b.complete_date as complete_date
+    FROM
+      ( SELECT * from maoding_web_project_process_time where id=#{id}) a
+      INNER JOIN (<include refid="task_with_full_name_table_by_target_id"/>) b on (a.target_id=b.id)
+      LEFT JOIN (<include refid="task_responsible_table_by_target_id"/>) c on (b.id=c.task_id)
+      LEFT JOIN (<include refid="process_responsible_table_by_target_id"/>) d on (b.id=d.task_id)
+      INNER JOIN maoding_web_company e on (e.status='0' and b.company_id=e.id)
+      LEFT JOIN maoding_web_depart f on (f.status='0' and b.org_id=f.id and b.company_id=f.company_id)
+    LIMIT 1
+  </select>
+  <select id="getProcessNodeByProcessNode" resultType="com.maoding.dynamic.dto.ZProcessNodeDTO" parameterType="com.maoding.project.entity.ProjectProcessNodeEntity">
+    SELECT
+      b1.project_id as project_id,
+      b1.task_name as task_name,
+      concat( group_concat(b2.task_name ORDER BY length(b2.task_path) SEPARATOR '_'),
+        if((b1.start_time IS NOT NULL) OR (b1.end_time IS NOT NULL),
+           concat(' ','进度计划：',date_format(b1.start_time, '%Y/%m/%d'),' — ',date_format(b1.end_time, '%Y/%m/%d')),'')) as task_full_name,
+      b1.node_name as node_name,
+      ifnull(b3.user_name,ifnull(b4.nick_name,b4.user_name)) as user_name,
+      date(b1.complete_time)   AS complete_date
+    FROM
+      ( SELECT
+          a3.project_id as project_id,
+          #{nodeName}       AS node_name,
+          #{companyUserId} AS company_user_id,
+          #{completeTime}   AS complete_time,
+          a3.task_path       AS task_path,
+          a3.task_name       AS task_name,
+          a4.start_time      AS start_time,
+          a4.end_time        AS end_time
+        FROM
+          (SELECT * FROM maoding_web_project_process_node WHERE status = 0 AND id = #{id}) a1
+          INNER JOIN maoding_web_project_member a2 ON (a2.deleted = 0 AND (a2.target_id = a1.id or a2.node_id = a1.id))
+          INNER JOIN maoding_web_project_task a3 ON (a3.task_status != '1' AND a3.id = a2.node_id)
+          LEFT JOIN maoding_web_project_process_time a4 ON (a3.id = a4.target_id)
+        ORDER BY a4.create_date DESC
+        LIMIT 1
+      ) b1
+      INNER JOIN maoding_web_project_task b2 ON (POSITION(b2.id IN b1.task_path))
+      INNER JOIN maoding_web_company_user b3 ON (b3.id=b1.company_user_id)
+      INNER JOIN maoding_web_account b4 ON (b4.id=b3.user_id)
+    LIMIT 1
+  </select>
+  <select id="getProduceTaskNameByTask" resultType="java.lang.String" parameterType="com.maoding.task.entity.ProjectTaskEntity">
+    SELECT a.task_full_name as task_name
+    FROM (<include refid="task_with_full_name_table_by_task"/>) a
+    LIMIT 1
+  </select>
+  <select id="getProduceTaskNameWithLeaderByTask" resultType="java.lang.String" parameterType="com.maoding.task.entity.ProjectTaskEntity">
+    SELECT
+      concat(a.task_full_name,
+        if(c.leader_name IS NOT NULL,concat(' 任务负责人：',c.leader_name),'')
+      ) AS task_full_name
+    FROM
+      (<include refid="task_with_full_name_table_by_task"/>) a
+      LEFT JOIN (<include refid="task_responsible_table_by_id"/>) c on (a.id=c.task_id)
+    LIMIT 1
+  </select>
+  <select id="getProduceTaskNameWithMembersByTask" resultType="java.lang.String" parameterType="com.maoding.task.entity.ProjectTaskEntity">
+    SELECT
+      concat(a.task_full_name,
+        if(d.members IS NOT NULL,concat(' 参与人员：',d.members),'')
+      ) AS task_full_name
+    FROM
+      (<include refid="task_with_full_name_table_by_task"/>) a
+      LEFT JOIN (<include refid="process_responsible_table_by_id"/>) d on (a.id=d.task_id)
+    LIMIT 1
+  </select>
+  <select id="getMembersByTaskId" resultType="java.lang.String" parameterType="java.lang.String">
+    SELECT
+        d.members
+    FROM
+      (<include refid="process_responsible_table_by_task_id"/>) d
+  </select>
+  <select id="getPhaseTaskFullNameByTask" resultType="java.lang.String" parameterType="com.maoding.task.entity.ProjectTaskEntity">
+    SELECT
+      concat(a.task_name,
+        if((a.start_time is not null) or (a.end_time is not null),
+            concat(' 合同时间：',date_format(a.start_time,'%Y/%m/%d'),' — ',date_format(a.end_time,'%Y/%m/%d')),'')
+      ) as task_full_name
+    FROM
+      (<include refid="task_with_full_name_table_by_task"/>) a
+    LIMIT 1
+  </select>
+  <select id="getPhaseTaskNameByTask" resultType="java.lang.String" parameterType="com.maoding.task.entity.ProjectTaskEntity">
+    SELECT #{taskName} as task_name
+  </select>
+  <select id="getPhaseTaskFullNameByDesignContent" resultType="java.lang.String" parameterType="com.maoding.project.entity.ProjectDesignContentEntity">
+    SELECT
+      concat(a.task_name,
+        if((b.start_time is not null) or (b.end_time is not null),
+            concat(' 合同时间：',date_format(b.start_time,'%Y/%m/%d'),' — ',date_format(b.end_time,'%Y/%m/%d')),'')
+      ) as task_full_name
+    FROM
+      ( SELECT id,content_name as task_name,start_time,end_time
+        FROM maoding_web_project_design_content
+        WHERE id=#{id}
+      ) a
+      LEFT JOIN (<include refid="task_time_table_by_id"/>) b on (a.id=b.target_id)
+    LIMIT 1
+  </select>
+  <select id="getPhaseTaskNameByDesignContent" resultType="java.lang.String" parameterType="com.maoding.project.entity.ProjectDesignContentEntity">
+    SELECT #{contentName} as task_name
+  </select>
+  <select id="getIssueTaskFullNameByTask" resultType="java.lang.String" parameterType="com.maoding.task.entity.ProjectTaskEntity">
+    SELECT
+      concat(a.task_name,
+        if((a.start_time is not null) or (a.end_time is not null),
+            concat(' 计划进度：',date_format(a.start_time,'%Y/%m/%d'),' — ',date_format(a.end_time,'%Y/%m/%d')),''),
+        if(c.company_name is not null,concat(' 设计组织：',c.company_name),'')
+      ) as task_null_name
+    FROM
+      (<include refid="task_with_full_name_table_by_task"/>) a
+      LEFT JOIN (<include refid="task_to_company_table_by_id"/>) c on (a.id=c.id)
+    LIMIT 1
+  </select>
+  <select id="getIssueTaskNameByTask" resultType="java.lang.String" parameterType="com.maoding.task.entity.ProjectTaskEntity">
+    SELECT #{taskName} as task_name
+  </select>
+  <select id="getIssueTaskNameWithPlanByTask" resultType="java.lang.String" parameterType="com.maoding.task.entity.ProjectTaskEntity">
+    SELECT
+      concat(a.task_name,
+        if((a.start_time is not null) or (a.end_time is not null),
+            concat(' 计划进度：',date_format(a.start_time,'%Y/%m/%d'),' — ',date_format(a.end_time,'%Y/%m/%d')),'')
+      ) as task_null_name
+    FROM
+      (<include refid="task_with_full_name_table_by_task"/>) a
+    LIMIT 1
+  </select>
+  <select id="getIssueTaskNameWithToCompanyByTask" resultType="java.lang.String" parameterType="com.maoding.task.entity.ProjectTaskEntity">
+    SELECT
+      concat(a.task_name,
+        if(a.company_name is not null,concat(' 设计组织：',a.company_name),'')
+      ) as task_null_name,
+      a.start_time as start_time,
+      a.end_time as end_time
+    FROM
+      (<include refid="task_with_full_name_table_by_task"/>) a
+    LIMIT 1
+  </select>
+  <sql id="task_with_full_name_table_by_task">
+    SELECT
+      ifnull(#{id},a1.id) as id,
+      ifnull(#{projectId},a1.project_id) as project_id,
+      if(a1.task_type=2 and a3.task_id is null,0,a1.task_type) as task_type,
+      ifnull(#{taskName},a1.task_name) as task_name,
+      concat_ws('_',GROUP_CONCAT(a2.task_name ORDER BY length(a2.task_path) SEPARATOR '_'),ifnull(#{taskName},a1.task_name)) as task_full_name,
+      ifnull(#{startTime},a1.start_time) as start_time,
+      ifnull(#{endTime},a1.end_time) as end_time,
+      ifnull(#{completeDate},a1.complete_date) as complete_date
+    FROM
+      ( SELECT id,task_type,task_name,task_path,project_id,complete_date,start_time,end_time
+        FROM
+          maoding_web_project_task
+        WHERE
+          task_type=#{taskType} AND id=#{id}
+        LIMIT 1
+      ) a1
+      INNER JOIN maoding_web_project_task a2 on (a2.id!=a1.id and POSITION(a2.id IN a1.task_path))
+      LEFT JOIN maoding_web_project_task_relation a3 on (a3.task_id=a1.id)
+  </sql>
+  <sql id="task_with_full_name_table_by_id">
+    SELECT
+      a1.id as id,
+      a1.project_id as project_id,
+      if(a1.task_type=2 and a3.task_id is null,0,a1.task_type) as task_type,
+      a1.start_time as start_time,
+      a1.end_time as end_time,
+      a1.task_name as task_name,
+      GROUP_CONCAT(a2.task_name ORDER BY length(a2.task_path) SEPARATOR '_') as task_full_name
+    FROM
+      ( SELECT id,task_type,task_name,task_path,project_id,is_operater_task,start_time,end_time
+        FROM
+          maoding_web_project_task
+        WHERE
+          task_status!='1' AND id=#{id}
+        LIMIT 1
+      ) a1
+      INNER JOIN maoding_web_project_task a2 on (POSITION(a2.id IN a1.task_path))
+      LEFT JOIN maoding_web_project_task_relation a3 on (a3.task_id=a1.id)
+  </sql>
+  <sql id="task_with_full_name_table_by_task_id">
+    SELECT
+      a1.id as id,
+      a1.project_id as project_id,
+      if(a1.task_type=2 and a3.task_id is null,0,a1.task_type) as task_type,
+      a1.task_name as task_name,
+      a1.start_time as start_time,
+      a1.end_time as end_time,
+      GROUP_CONCAT(a2.task_name ORDER BY length(a2.task_path) SEPARATOR '_') as task_full_name
+    FROM
+      ( SELECT id,task_type,task_name,task_path,project_id,is_operater_task,start_time,end_time
+        FROM
+          maoding_web_project_task
+        WHERE
+          task_status!='1' AND id=#{taskId}
+        LIMIT 1
+      ) a1
+      INNER JOIN maoding_web_project_task a2 on (POSITION(a2.id IN a1.task_path))
+      LEFT JOIN maoding_web_project_task_relation a3 on (a3.task_id=a1.id)
+  </sql>
+  <sql id="task_with_full_name_table_by_target_id">
+    SELECT
+      a1.id as id,
+      a1.project_id as project_id,
+      if(a1.task_type=2 and a3.task_id is null,0,a1.task_type) as task_type,
+      a1.start_time as start_time,
+      a1.end_time as end_time,
+      a1.task_name as task_name,
+      GROUP_CONCAT(a2.task_name ORDER BY length(a2.task_path) SEPARATOR '_') as task_full_name,
+      a1.complete_date as complete_date,
+      a1.company_id as company_id,
+      a1.org_id as org_id
+    FROM
+      ( SELECT id,task_type,task_name,task_path,project_id,complete_date,company_id,org_id,start_time,end_time
+        FROM
+          maoding_web_project_task
+        WHERE
+          task_status!='1' AND id=#{targetId}
+        LIMIT 1
+      ) a1
+      INNER JOIN maoding_web_project_task a2 on (POSITION(a2.id IN a1.task_path))
+      LEFT JOIN maoding_web_project_task_relation a3 on (a3.task_id=a1.id)
+  </sql>
+  <sql id="task_time_table_by_id">
+    select *
+    from (<include refid="ProjectTaskEntityMapper.task_time_table"/>) a1
+    where target_id=#{id}
+  </sql>
+  <sql id="task_time_table_by_task_id">
+    select *
+    from maoding_web_project_task a1
+    where id=#{taskId}
+  </sql>
+  <sql id="task_time_table_by_design_content_id">
+    select *
+    from (<include refid="ProjectTaskEntityMapper.task_time_table"/>) a1
+    where target_id=#{designContentId}
+  </sql>
+  <sql id="task_responsible_table_by_id">
+    SELECT
+      a1.target_id as task_id,
+      ifnull(a2.user_name,ifnull(a3.nick_name,a3.user_name)) as leader_name
+    FROM
+      ( SELECT target_id,company_user_id
+        FROM maoding_web_project_member
+        WHERE deleted = 0 AND member_type=3 AND target_id = #{id}
+      ) a1
+      INNER JOIN maoding_web_company_user a2 on (a2.id=a1.company_user_id)
+      INNER JOIN maoding_web_account a3 on (a3.status='0' and a3.id=a2.user_id)
+  </sql>
+  <sql id="task_responsible_table_by_task_id">
+    SELECT
+      a1.target_id as task_id,
+      ifnull(a2.user_name,ifnull(a3.nick_name,a3.user_name)) as leader_name
+    FROM
+      ( SELECT target_id,company_user_id
+        FROM maoding_web_project_member
+        WHERE deleted = 0 AND member_type=3 AND target_id = #{taskId}
+      ) a1
+      INNER JOIN maoding_web_company_user a2 on (a2.id=a1.company_user_id)
+      INNER JOIN maoding_web_account a3 on (a3.status='0' and a3.id=a2.user_id)
+  </sql>
+  <sql id="task_responsible_table_by_target_id">
+    SELECT
+      a1.target_id as task_id,
+      ifnull(a2.user_name,ifnull(a3.nick_name,a3.user_name)) as leader_name
+    FROM
+      ( SELECT target_id,company_user_id
+        FROM maoding_web_project_member
+        WHERE deleted = 0 AND member_type=3 AND target_id = #{targetId}
+      ) a1
+      INNER JOIN maoding_web_company_user a2 on (a2.id=a1.company_user_id)
+      INNER JOIN maoding_web_account a3 on (a3.status='0' and a3.id=a2.user_id)
+  </sql>
+  <sql id="process_responsible_table_by_id">
+    SELECT task_id,
+      group_concat(concat(node_name,'：',members) SEPARATOR ' ') as members
+    FROM
+      ( SELECT task_id,node_name,
+          group_concat(DISTINCT user_name ORDER BY seq SEPARATOR ' ') AS members
+        FROM
+          (SELECT
+             a1.node_id AS task_id,
+             ifnull(a2.user_name, ifnull(a3.nick_name, a3.user_name)) AS user_name,
+             a1.member_type AS member_type,
+             (CASE a1.member_type WHEN 4 THEN '设计' WHEN 5 THEN '校对' WHEN 6 THEN '审核' ELSE a1.member_type END) as node_name,
+             a1.seq AS seq
+           FROM
+             (  SELECT node_id,member_type,company_user_id,seq
+                FROM maoding_web_project_member
+                WHERE deleted = 0 AND node_id = #{id}
+             ) a1
+             INNER JOIN maoding_web_company_user a2 ON (a2.id = a1.company_user_id)
+             INNER JOIN maoding_web_account a3 ON (a3.status = '0' AND a3.id = a2.user_id)
+          ) b1
+        GROUP BY task_id,member_type
+        ORDER BY task_id,member_type
+      ) c1
+    GROUP BY task_id
+  </sql>
+  <sql id="process_responsible_table_by_task_id">
+    SELECT task_id,
+      group_concat(concat(node_name,'：',members) SEPARATOR ' ') as members
+    FROM
+      ( SELECT task_id,node_name,
+          group_concat(DISTINCT user_name ORDER BY seq SEPARATOR ' ') AS members
+        FROM
+          (SELECT
+             a1.node_id AS task_id,
+             ifnull(a2.user_name, ifnull(a3.nick_name, a3.user_name)) AS user_name,
+             a1.member_type AS member_type,
+             (CASE a1.member_type WHEN 4 THEN '设计' WHEN 5 THEN '校对' WHEN 6 THEN '审核' ELSE a1.member_type END) as node_name,
+             a1.seq AS seq
+           FROM
+             (  SELECT node_id,member_type,company_user_id,seq
+                FROM maoding_web_project_member
+                WHERE deleted = 0 AND node_id = #{taskId}
+             ) a1
+             INNER JOIN maoding_web_company_user a2 ON (a2.id = a1.company_user_id)
+             INNER JOIN maoding_web_account a3 ON (a3.status = '0' AND a3.id = a2.user_id)
+          ) b1
+        GROUP BY task_id,member_type
+        ORDER BY task_id,member_type
+      ) c1
+    GROUP BY task_id
+  </sql>
+  <sql id="process_responsible_table_by_target_id">
+    SELECT task_id,
+      group_concat(concat(node_name,'：',members) SEPARATOR ' ') as members
+    FROM
+      ( SELECT task_id,node_name,
+          group_concat(DISTINCT user_name ORDER BY seq SEPARATOR ' ') AS members
+        FROM
+          (SELECT
+             a1.node_id AS task_id,
+             ifnull(a2.user_name, ifnull(a3.nick_name, a3.user_name)) AS user_name,
+             a1.member_type AS member_type,
+             (CASE a1.member_type WHEN 4 THEN '设计' WHEN 5 THEN '校对' WHEN 6 THEN '审核' ELSE a1.member_type END) as node_name,
+             a1.seq AS seq
+           FROM
+             (  SELECT node_id,member_type,company_user_id,seq
+                FROM maoding_web_project_member
+                WHERE deleted = 0 AND node_id = #{targetId}
+             ) a1
+             INNER JOIN maoding_web_company_user a2 ON (a2.id = a1.company_user_id)
+             INNER JOIN maoding_web_account a3 ON (a3.status = '0' AND a3.id = a2.user_id)
+          ) b1
+        GROUP BY task_id,member_type
+        ORDER BY task_id,member_type
+      ) c1
+    GROUP BY task_id
+  </sql>
+  <sql id="task_to_company_table_by_id">
+    SELECT
+      a1.id as id,
+      a2.id as company_id,
+      if((a3.depart_name is null),a2.company_name,concat(a2.company_name,'(',a3.depart_name,')')) as company_name
+    FROM
+      ( SELECT id,company_id,org_id
+        FROM maoding_web_project_task
+        WHERE task_status!='1' and ((task_type=2 AND id = #{id}) OR (task_type=3 AND be_modify_id=#{id}) OR (task_type=4 AND be_modify_id=#{id}))
+        LIMIT 1
+      ) a1
+      INNER JOIN maoding_web_company a2 on (a2.status='0' and a1.company_id=a2.id)
+      LEFT JOIN maoding_web_depart a3 on (a3.status='0' and a1.org_id=a3.id and a1.company_id=a3.company_id)
+  </sql>
+  <sql id="task_to_company_table_by_task_id">
+    SELECT
+      a1.id as id,
+      a2.id as company_id,
+      if((a3.depart_name is null),a2.company_name,concat(a2.company_name,'(',a3.depart_name,')')) as company_name
+    FROM
+      ( SELECT id,company_id,org_id
+        FROM maoding_web_project_task
+        WHERE task_status!='1' and ((task_type=2 AND id = #{taskId}) OR (task_type=3 AND be_modify_id=#{taskId}) OR (task_type=4 AND be_modify_id=#{taskId}))
+        LIMIT 1
+      ) a1
+      INNER JOIN maoding_web_company a2 on (a2.status='0' and a1.company_id=a2.id)
+      LEFT JOIN maoding_web_depart a3 on (a3.status='0' and a1.org_id=a3.id and a1.company_id=a3.company_id)
+  </sql>
+  <select id="getPeriodByTaskId" resultType="java.lang.String" parameterType="java.lang.String">
+    SELECT concat(date_format(b.start_time,'%Y/%m/%d'),' — ',date_format(b.end_time,'%Y/%m/%d')) as period
+    FROM maoding_web_project_task b
+    LIMIT 1
+  </select>
+  <select id="getTimeByTaskId" resultType="com.maoding.task.entity.ProjectProcessTimeEntity" parameterType="java.lang.String">
+    <include refid="task_time_table_by_task_id"/>
+    LIMIT 1
+  </select>
+  <select id="getPeriodByDesignContentId" resultType="java.lang.String" parameterType="java.lang.String">
+    SELECT concat(date_format(b.start_time,'%Y/%m/%d'),' — ',date_format(b.end_time,'%Y/%m/%d')) as period
+    FROM (<include refid="task_time_table_by_design_content_id"/>) b
+    LIMIT 1
+  </select>
+   <select id="getCostByDetail" resultType="com.maoding.dynamic.dto.ZCostDTO" parameterType="com.maoding.projectcost.entity.ProjectCostPointDetailEntity">
+    SELECT
+      a.id as id,
+      b.fee_description as point_name,
+      b.type as point_type,
+      (case b.type when '1' then '合同回款' when '2' then '技术审查费' when '3' then '合作设计费' else '其他' end) as point_type_name,
+      convert(b.fee_proportion,decimal(5,2)) as point_rate,
+      b.fee as point_cost,
+      #{fee} as detail_cost
+    FROM
+      ( SELECT id,fee,point_id
+        FROM maoding_web_project_cost_point_detail
+        WHERE status='0' and id=#{id}
+        LIMIT 1
+      ) a
+      INNER JOIN maoding_web_project_cost_point b on (b.status='0' and a.point_id=b.id)
+    LIMIT 1
+  </select>
+  <select id="getCostByPay" resultType="com.maoding.dynamic.dto.ZCostDTO" parameterType="com.maoding.projectcost.entity.ProjectCostPaymentDetailEntity">
+    SELECT
+      a.id as id,
+      c.fee_description as point_name,
+      c.type as point_type,
+      (case c.type when '1' then '合同回款' when '2' then '技术审查费' when '3' then '合作设计费' else '其他' end) as point_type_name,
+      convert(c.fee_proportion,decimal(5,2)) as point_rate,
+      c.fee as point_cost,
+      b.fee as detail_cost,
+      #{fee} as paid_cost,
+      #{payDate} as pay_date,
+      ifnull(d.nick_name,d.user_name) as pay_user_name,
+      #{paidDate} as paid_date,
+      ifnull(e.nick_name,e.user_name) as paid_user_name
+    FROM
+      ( SELECT id,fee,point_detail_id,create_by,update_by,pay_date,paid_date
+        FROM maoding_web_project_cost_payment_detail
+        WHERE status='0' and id=#{id}
+        LIMIT 1
+      ) a
+      INNER JOIN maoding_web_project_cost_point_detail b on (b.status='0' and a.point_detail_id=b.id)
+      INNER JOIN maoding_web_project_cost_point c on (c.status='0' and b.point_id=c.id)
+      LEFT JOIN maoding_web_account d on (d.status='0' and a.create_by=d.id)
+      LEFT JOIN maoding_web_account e on (e.status='0' and a.update_by=e.id)
+    LIMIT 1
+  </select>
+  <select id="getProjectByProject" resultType="com.maoding.dynamic.dto.ZProjectDTO" parameterType="com.maoding.project.entity.ProjectEntity">
+    SELECT
+      a.id as id,
+      group_concat(DISTINCT b.design_range ORDER BY b.seq SEPARATOR ' ') as ranges,
+      group_concat(DISTINCT c.name ORDER BY c.seq SEPARATOR ' ') as functions,
+      a.contract_date as sign_date
+    FROM
+      ( SELECT *
+        FROM maoding_web_project
+        WHERE pstatus='0' and id=#{id}
+      ) a
+      LEFT JOIN maoding_web_project_design_range b on (b.status='0' and a.id=b.project_id)
+      LEFT JOIN maoding_data_dictionary c on (position(c.id in a.built_type))
+    LIMIT 1
+  </select>
+
+</mapper>

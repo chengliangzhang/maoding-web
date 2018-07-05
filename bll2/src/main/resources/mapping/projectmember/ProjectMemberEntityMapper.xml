@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ProjectMemberEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.projectmember.entity.ProjectMemberEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="account_id" property="accountId" jdbcType="VARCHAR" />
+    <result column="company_user_id" property="companyUserId" jdbcType="VARCHAR" />
+    <result column="member_type" property="memberType" jdbcType="INTEGER" />
+    <result column="target_id" property="targetId" jdbcType="VARCHAR" />
+    <result column="node_id" property="nodeId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="deleted" property="deleted" jdbcType="INTEGER" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+    <result column="param1" property="param1" jdbcType="VARCHAR" />
+    <result column="param2" property="param2" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, project_id, company_id, account_id, company_user_id, member_type, target_id, 
+    node_id, status, deleted, seq, param1, param2, create_date, create_by, update_date, 
+    update_by
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_project_member
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectProjectCreator" resultType="java.lang.String" parameterType="java.lang.String" >
+    select b.user_name
+    from maoding_web_project_member a
+    INNER JOIN maoding_web_company_user b on a.company_user_id = b.id
+    where project_id = #{id,jdbcType=VARCHAR} and member_type = 0
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_project_member
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maoding.projectmember.entity.ProjectMemberEntity" >
+    insert into maoding_web_project_member (id, project_id, company_id, 
+      account_id, company_user_id, member_type, 
+      target_id, node_id, status, 
+      deleted, seq, param1, 
+      param2, create_date, create_by, 
+      update_date, update_by)
+    values (#{id,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, 
+      #{accountId,jdbcType=VARCHAR}, #{companyUserId,jdbcType=VARCHAR}, #{memberType,jdbcType=INTEGER}, 
+      #{targetId,jdbcType=VARCHAR}, #{nodeId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{deleted,jdbcType=INTEGER}, #{seq,jdbcType=INTEGER}, #{param1,jdbcType=VARCHAR}, 
+      #{param2,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.projectmember.entity.ProjectMemberEntity" >
+    update maoding_web_project_member
+    <set >
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="accountId != null" >
+        account_id = #{accountId,jdbcType=VARCHAR},
+      </if>
+      <if test="companyUserId != null" >
+        company_user_id = #{companyUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="memberType != null" >
+        member_type = #{memberType,jdbcType=INTEGER},
+      </if>
+      <if test="targetId != null" >
+        target_id = #{targetId,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeId != null" >
+        node_id = #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="deleted != null" >
+        deleted = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="seq != null" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="param1 != null" >
+        param1 = #{param1,jdbcType=VARCHAR},
+      </if>
+      <if test="param2 != null" >
+        param2 = #{param2,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="update" parameterType="com.maoding.projectmember.entity.ProjectMemberEntity" >
+    update maoding_web_project_member
+    set project_id = #{projectId,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      account_id = #{accountId,jdbcType=VARCHAR},
+      company_user_id = #{companyUserId,jdbcType=VARCHAR},
+      member_type = #{memberType,jdbcType=INTEGER},
+      target_id = #{targetId,jdbcType=VARCHAR},
+      node_id = #{nodeId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      deleted = #{deleted,jdbcType=INTEGER},
+      seq = #{seq,jdbcType=INTEGER},
+      param1 = #{param1,jdbcType=VARCHAR},
+      param2 = #{param2,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <select id="listProjectMember" parameterType="com.maoding.projectmember.dto.MemberQueryDTO" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM maoding_web_project_member
+    <where >
+      deleted = 0
+    <include refid="whereExample" />
+    </where>
+  </select>
+
+  <select id="listProjectMemberByTaskId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM maoding_web_project_member
+    <where >
+      deleted = 0
+      and (target_id = #{taskId,jdbcType=VARCHAR} or node_id = #{taskId,jdbcType=VARCHAR})
+    </where>
+  </select>
+
+  <select id="listDesignerMemberByTaskPid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    a.*
+    FROM maoding_web_project_member a
+    INNER JOIN maoding_web_project_task b on (a.target_id = b.id or a.node_id = b.id)
+    <where >
+      deleted = 0
+      and a.member_type = 3
+      and b.task_pid = #{taskId,jdbcType=VARCHAR}
+    </where>
+  </select>
+
+  <select id="listParentDesigner" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT
+    a.*
+    FROM maoding_web_project_member a
+    INNER JOIN maoding_web_project_task b on (a.target_id = b.id or a.node_id = b.id)
+    <where >
+      deleted = 0
+      and a.member_type = 3
+      and a.project_id = #{projectId}
+      and a.company_id = #{companyId}
+      <if test="taskPathList!=null and taskPathList.size()>0">
+        and b.id in
+        <foreach collection="taskPathList"  item="tasId" index="i" open="(" separator="," close=")">
+          #{taskId}
+        </foreach>
+      </if>
+      <if test="companyUserId != null" >
+        AND a.company_user_id = #{companyUserId,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+
+
+  <update id="deleteProjectMember" parameterType="com.maoding.projectmember.entity.ProjectMemberEntity">
+    UPDATE
+     maoding_web_project_member set deleted=1
+    <where >
+      1=1
+      <include refid="whereExample" />
+    </where>
+  </update>
+
+  <update id="updateProjectMemberStatus" parameterType="com.maoding.projectmember.entity.ProjectMemberEntity">
+    UPDATE
+    maoding_web_project_member set status=1
+    <where >
+      1=1
+      <include refid="whereExample" />
+    </where>
+  </update>
+  
+  <sql id="whereExample">
+    <if test="projectId != null" >
+      AND project_id = #{projectId,jdbcType=VARCHAR}
+    </if>
+    <if test="companyId != null" >
+      AND company_id = #{companyId,jdbcType=VARCHAR}
+    </if>
+    <if test="accountId != null" >
+      AND account_id = #{accountId,jdbcType=VARCHAR}
+    </if>
+    <if test="companyUserId != null" >
+      AND company_user_id = #{companyUserId,jdbcType=VARCHAR}
+    </if>
+    <if test="memberType != null" >
+      AND member_type = #{memberType,jdbcType=INTEGER}
+    </if>
+    <if test="targetId != null" >
+      AND (target_id = #{targetId,jdbcType=VARCHAR} or node_id = #{targetId,jdbcType=VARCHAR})
+    </if>
+    <if test="nodeId != null" >
+      AND node_id = #{nodeId,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null" >
+      AND status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="deleted != null" >
+      AND deleted = #{deleted,jdbcType=INTEGER}
+    </if>
+    <if test="seq != null" >
+      AND seq = #{seq,jdbcType=INTEGER}
+    </if>
+    <if test="param1 != null" >
+      AND param1 = #{param1,jdbcType=VARCHAR}
+    </if>
+    <if test="param2 != null" >
+      AND param2 = #{param2,jdbcType=VARCHAR}
+    </if>
+  </sql>
+</mapper>

@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ProjectProcessNodeEntityMapper">
+  <resultMap id="BaseResultMap" type="com.maoding.project.entity.ProjectProcessNodeEntity">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="process_id" jdbcType="VARCHAR" property="processId" />
+    <result column="node_name" jdbcType="VARCHAR" property="nodeName" />
+    <result column="seq" jdbcType="INTEGER" property="seq" />
+    <result column="node_seq" jdbcType="INTEGER" property="nodeSeq" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="company_user_id" jdbcType="VARCHAR" property="companyUserId" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="complete_time" jdbcType="VARCHAR" property="completeTime" />
+
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, process_id, node_name, seq, node_seq,company_user_id,status, create_date, create_by, update_date,
+    update_by,complete_time
+  </sql>
+  <sql id="BaseDto_Column_List">
+    id, process_id, node_name, seq, node_seq,status,company_user_id,complete_time
+  </sql>
+
+
+  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_project_process_node
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByProcessId"  parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="BaseDto_Column_List" />
+    from maoding_web_project_process_node
+    where process_id = #{processId,jdbcType=VARCHAR}
+    order by seq,node_seq
+  </select>
+
+  <select id="selectLastByProcessId"  parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_project_process_node
+    where process_id = #{processId,jdbcType=VARCHAR}
+    order by seq DESC
+    limit 1
+  </select>
+
+  <select id="selectBySeq" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    <include refid="BaseDto_Column_List" />
+    from maoding_web_project_process_node
+    where process_id = #{processId,jdbcType=VARCHAR} and seq= #{seq,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectHandOkNodeByTaskManageId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    a.*
+    from maoding_web_project_process_node a
+    where a.process_id = #{taskManageId,jdbcType=VARCHAR} and a.status ='1'
+  </select>
+
+  <select id="selectNodeByTaskManageId" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    a.*
+    from maoding_web_project_process_node a
+    where  1=1
+    <if test="taskManageId != null">
+      and ( a.process_id = #{taskManageId,jdbcType=VARCHAR})
+    </if>
+    <if test="litterSeq != null">
+      <![CDATA[ and a.seq < #{litterSeq}  ]]> <!-- 查询小于这个流程节点的节点 -->
+    </if>
+    <if test="notComplete != null">
+      and a.complete_time is null
+    </if>
+    <if test="seq != null">
+      and a.seq = #{seq}
+    </if>
+    order BY a.seq
+  </select>
+
+  <select id="selectNodeByTaskId" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select a.*
+    from maoding_web_project_process_node a
+    INNER JOIN maoding_web_project_task b on a.process_id = b.id
+    where  1=1
+    <if test="taskId != null">
+      and  b.task_pid = #{taskId}
+    </if>
+    <if test="companyUserId!=null">
+      and a.company_user_id =  #{companyUserId}
+    </if>
+      and a.complete_time is null
+  </select>
+
+  <select id="getNodeByCompanyUserAndSeq" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    <include refid="BaseDto_Column_List" />
+    from maoding_web_project_process_node
+    where  process_id = #{processId,jdbcType=VARCHAR}
+    and company_user_id =  #{companyUserId,jdbcType=VARCHAR}
+    and seq = #{seq,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String">
+    delete from maoding_web_project_process_node
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteNodeByParam" parameterType="java.util.Map">
+    delete from maoding_web_project_process_node
+    where process_id = #{processId,jdbcType=VARCHAR}
+    <if test="idList != null">
+      and id not IN
+      <foreach collection="idList" index="i" item="id" open="(" separator="," close=")">
+        #{id,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+  </delete>
+
+  <insert id="insert" parameterType="com.maoding.project.entity.ProjectProcessNodeEntity">
+    insert into maoding_web_project_process_node (id, process_id, node_name, status,complete_time,
+      seq, node_seq,company_user_id, create_date,
+      create_by, update_date, update_by
+      )
+    values (#{id,jdbcType=VARCHAR}, #{processId,jdbcType=VARCHAR}, #{nodeName,jdbcType=VARCHAR},
+     #{status,jdbcType=INTEGER}, #{completeTime,jdbcType=VARCHAR},
+      #{seq,jdbcType=INTEGER}, #{nodeSeq,jdbcType=INTEGER}, #{companyUserId,jdbcType=VARCHAR}, now(),
+      #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.project.entity.ProjectProcessNodeEntity">
+    update maoding_web_project_process_node
+    <set>
+      <if test="processId != null">
+        process_id = #{processId,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeName != null">
+        node_name = #{nodeName,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null">
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="nodeSeq != null">
+        node_seq = #{nodeSeq,jdbcType=INTEGER},
+      </if>
+      <if test="status != null and status!=0" >
+        status = #{status,jdbcType=INTEGER},
+        complete_time = now(),
+      </if>
+      <if test="status != null and status ==0" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="companyUserId != null">
+        company_user_id = #{companyUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+        update_date = now(),
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="update" parameterType="com.maoding.project.entity.ProjectProcessNodeEntity">
+    update maoding_web_project_process_node
+    set process_id = #{processId,jdbcType=VARCHAR},
+      node_name = #{nodeName,jdbcType=VARCHAR},
+      seq = #{seq,jdbcType=INTEGER},
+      node_seq = #{nodeSeq,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      company_user_id = #{companyUserId,jdbcType=VARCHAR},
+      complete_time = #{completeTime,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateProcessNodeComplete" parameterType="java.util.Map">
+    update maoding_web_project_process_node
+    set   complete_time = now()
+    where 1=1
+    <if test="id != null">
+      and id = #{id}
+    </if>
+    <if test="taskId!=null">
+      and process_id = #{taskId}
+    </if>
+    <if test="companyUserId != null">
+      and company_user_id = #{companyUserId}
+    </if>
+  </update>
+
+  <update id="updateProcessNodeCompleteForDesignTask" parameterType="java.util.Map">
+    update maoding_web_project_process_node a ,maoding_web_project_task b
+    set a.complete_time= now()
+    where a.process_id = b.id
+    and b.task_pid = #{taskId}
+    and a.company_user_id =  #{companyUserId}
+  </update>
+
+  <!-- 分解的所有设计任务已经完成，对应的父任务的设计任务完成 -->
+  <update id="updateCompleteForParentTask" parameterType="java.util.Map">
+    update maoding_web_project_process_node a
+    INNER JOIN maoding_web_project_task b on a.process_id = b.task_pid
+    LEFT JOIN maoding_web_my_task c on c.target_id = a.id and c.task_type = 3
+    set a.complete_time= now(),c.status = 1
+    where 1=1
+    and b.id = #{taskId}
+    and a.company_user_id =  #{companyUserId}
+  </update>
+
+  <update id="clearProcessNodeComplete" parameterType="java.lang.String">
+    update maoding_web_project_process_node
+    set   complete_time = NULL
+    where process_id = #{pid,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

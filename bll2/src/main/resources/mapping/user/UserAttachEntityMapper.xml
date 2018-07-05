@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="UserAttachEntityMapper">
+    <resultMap id="BaseResultMap" type="com.maoding.user.entity.UserAttachEntity">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="attach_name" property="attachName" jdbcType="VARCHAR"/>
+        <result column="attach_type" property="attachType" jdbcType="VARCHAR"/>
+        <result column="attach_path" property="attachPath" jdbcType="VARCHAR"/>
+        <result column="file_group" property="fileGroup" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, user_id, attach_name, attach_type, attach_path, create_date, create_by, update_date, file_group,
+    update_by
+  </sql>
+
+    <sql id ="getHeadImg">
+        SELECT id, user_id,attach_name,attach_type,CONCAT(file_group,'/',attach_path) as oss_file_path  from maoding_web_user_attach
+    </sql>
+
+    <select id="getHeadImgUrl"  resultType="java.lang.String" parameterType="java.lang.String" >
+        SELECT oss_file_path from 
+        (<include refid="getHeadImg" />) a
+        where a.attach_type = 5 and a.user_id = #{userId}
+    </select>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_user_attach
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByType" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_user_attach
+        where user_id = #{userId,jdbcType=VARCHAR} and attach_type =
+        #{attachType,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByUserId" resultMap="BaseResultMap"
+            parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_user_attach
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+    delete from maoding_web_user_attach
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+    <insert id="insert" parameterType="com.maoding.user.entity.UserAttachEntity">
+    insert into maoding_web_user_attach (id, user_id, attach_name, 
+      attach_type, attach_path, create_date, file_group,
+      create_by, update_date, update_by
+      )
+    values (#{id,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{attachName,jdbcType=VARCHAR}, 
+      #{attachType,jdbcType=VARCHAR}, #{attachPath,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{fileGroup,jdbcType=VARCHAR},
+      #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+    <update id="updateById" parameterType="com.maoding.user.entity.UserAttachEntity">
+        update maoding_web_user_attach
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="attachName != null">
+                attach_name = #{attachName,jdbcType=VARCHAR},
+            </if>
+            <if test="attachType != null">
+                attach_type = #{attachType,jdbcType=VARCHAR},
+            </if>
+            <if test="attachPath != null">
+                attach_path = #{attachPath,jdbcType=VARCHAR},
+            </if>
+            <if test="fileGroup != null">
+                file_group = #{fileGroup,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="update" parameterType="com.maoding.user.entity.UserAttachEntity">
+    update maoding_web_user_attach
+    set user_id = #{userId,jdbcType=VARCHAR},
+      attach_name = #{attachName,jdbcType=VARCHAR},
+      attach_type = #{attachType,jdbcType=VARCHAR},
+      attach_path = #{attachPath,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

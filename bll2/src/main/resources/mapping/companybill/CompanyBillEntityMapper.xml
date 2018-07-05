@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="CompanyBillEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.companybill.entity.CompanyBillEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="fee" property="fee" jdbcType="DECIMAL" />
+    <result column="fee_type" property="feeType" jdbcType="INTEGER" />
+    <result column="pay_type" property="payType" jdbcType="INTEGER" />
+    <result column="fee_unit" property="feeUnit" jdbcType="INTEGER" />
+    <result column="bill_description" property="billDescription" jdbcType="VARCHAR" />
+    <result column="payer_name" property="payerName" jdbcType="VARCHAR" />
+    <result column="payee_name" property="payeeName" jdbcType="VARCHAR" />
+    <result column="project_name" property="projectName" jdbcType="VARCHAR" />
+    <result column="payment_date" property="paymentDate" jdbcType="VARCHAR" />
+    <result column="operator_name" property="operatorName" jdbcType="VARCHAR" />
+    <result column="invoice_no" property="invoiceNo" jdbcType="VARCHAR" />
+    <result column="deleted" property="deleted" jdbcType="INTEGER" />
+    <result column="param_v1" property="paramV1" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, company_id, fee, fee_type, pay_type, fee_unit, bill_description, payer_name, 
+    payee_name, project_name, payment_date, operator_name, invoice_no, deleted, param_v1, 
+    create_date, create_by, update_date, update_by
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_company_bill
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getCompanyBill" resultMap="BaseResultMap" parameterType="com.maoding.companybill.dto.SaveCompanyBillDTO" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_company_bill
+    where company_id = #{companyId}
+    and pay_type = #{payType}
+    and fee_type = #{feeType}
+    and payment_date = #{paymentDate}
+  </select>
+
+  <select id="getCompanyBillIgnoreCompanyRelation" resultMap="BaseResultMap" parameterType="com.maoding.companybill.dto.SaveCompanyBillDTO" >
+    select a.*
+    from maoding_web_company_bill a
+    INNER JOIN maoding_web_company_bill_relation b on a.id = b.id
+    where deleted = 0
+    <if test="companyId!=null">
+      and a.company_id = #{companyId}
+    </if>
+    <if test="fromCompanyId!=null">
+      and b.from_company_id = #{fromCompanyId}
+    </if>
+    <if test="fromCompanyId==null and ignoreCompanyId!=null">
+      and b.from_company_id is null
+    </if>
+    <if test="toCompanyId!=null">
+      and b.to_company_id = #{toCompanyId}
+    </if>
+    <if test="toCompanyId==null and ignoreCompanyId!=null">
+      and b.to_company_id is null
+    </if>
+    <if test="payType!=null">
+      and a.pay_type = #{payType}
+    </if>
+    <if test="feeType!=null">
+      and a.fee_type = #{feeType}
+    </if>
+  and a.payment_date = #{paymentDate}
+</select>
+
+  <select id="getCompanyBillByTargetId" resultMap="BaseResultMap" parameterType="com.maoding.companybill.dto.SaveCompanyBillDTO" >
+    select a.*
+    from maoding_web_company_bill a
+    INNER JOIN maoding_web_company_bill_relation b on a.id = b.id
+    where a.deleted = 0
+    <if test="companyId!=null">
+      and a.company_id = #{companyId}
+    </if>
+    <if test="payType!=null">
+      and pay_type = #{payType}
+    </if>
+    <if test="feeType!=null">
+      and fee_type = #{feeType}
+    </if>
+    <if test="targetId!=null">
+      and target_id = #{targetId}
+    </if>
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_company_bill
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.maoding.companybill.entity.CompanyBillEntity" >
+    insert into maoding_web_company_bill (id, company_id, fee, 
+      fee_type, pay_type, fee_unit, 
+      bill_description, payer_name, payee_name, 
+      project_name, payment_date, operator_name, 
+      invoice_no, deleted, param_v1, 
+      create_date, create_by, update_date, 
+      update_by)
+    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{fee,jdbcType=DECIMAL}, 
+      #{feeType,jdbcType=INTEGER}, #{payType,jdbcType=INTEGER}, #{feeUnit,jdbcType=INTEGER},
+      #{billDescription,jdbcType=VARCHAR}, #{payerName,jdbcType=VARCHAR}, #{payeeName,jdbcType=VARCHAR}, 
+      #{projectName,jdbcType=VARCHAR}, #{paymentDate,jdbcType=VARCHAR}, #{operatorName,jdbcType=VARCHAR}, 
+      #{invoiceNo,jdbcType=VARCHAR}, #{deleted,jdbcType=INTEGER}, #{paramV1,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.companybill.entity.CompanyBillEntity" >
+    update maoding_web_company_bill
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="fee != null" >
+        fee = #{fee,jdbcType=DECIMAL},
+      </if>
+      <if test="feeType != null" >
+        fee_type = #{feeType,jdbcType=INTEGER},
+      </if>
+      <if test="payType != null" >
+        pay_type = #{payType,jdbcType=INTEGER},
+      </if>
+      <if test="feeUnit != null" >
+        fee_unit = #{feeUnit,jdbcType=INTEGER},
+      </if>
+      <if test="billDescription != null" >
+        bill_description = #{billDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="payerName != null" >
+        payer_name = #{payerName,jdbcType=VARCHAR},
+      </if>
+      <if test="payeeName != null" >
+        payee_name = #{payeeName,jdbcType=VARCHAR},
+      </if>
+      <if test="projectName != null" >
+        project_name = #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentDate != null" >
+        payment_date = #{paymentDate,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorName != null" >
+        operator_name = #{operatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceNo != null" >
+        invoice_no = #{invoiceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null" >
+        deleted = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="paramV1 != null" >
+        param_v1 = #{paramV1,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="update" parameterType="com.maoding.companybill.entity.CompanyBillEntity" >
+    update maoding_web_company_bill
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      fee = #{fee,jdbcType=DECIMAL},
+      fee_type = #{feeType,jdbcType=INTEGER},
+      pay_type = #{payType,jdbcType=INTEGER},
+      fee_unit = #{feeUnit,jdbcType=INTEGER},
+      bill_description = #{billDescription,jdbcType=VARCHAR},
+      payer_name = #{payerName,jdbcType=VARCHAR},
+      payee_name = #{payeeName,jdbcType=VARCHAR},
+      project_name = #{projectName,jdbcType=VARCHAR},
+      payment_date = #{paymentDate,jdbcType=VARCHAR},
+      operator_name = #{operatorName,jdbcType=VARCHAR},
+      invoice_no = #{invoiceNo,jdbcType=VARCHAR},
+      deleted = #{deleted,jdbcType=INTEGER},
+      param_v1 = #{paramV1,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="deletedCompanyBill" parameterType = "java.lang.String">
+    update maoding_web_company_bill a
+    INNER  join maoding_web_company_bill_relation b on a.id = b.id
+    set a.deleted = 1
+    where b.target_id = #{targetId}
+  </update>
+</mapper>

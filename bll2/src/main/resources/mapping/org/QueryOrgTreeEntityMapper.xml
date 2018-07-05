@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="QueryOrgTreeEntityMapper">
+	<resultMap id="BaseResultMap" type="com.maoding.org.entity.CompanyEntity" >
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="company_name" property="companyName" jdbcType="VARCHAR" />
+		<result column="major_type" property="majorType" jdbcType="VARCHAR" />
+		<result column="certificate" property="certificate" jdbcType="VARCHAR" />
+		<result column="main_field" property="mainField" jdbcType="VARCHAR" />
+		<result column="is_authentication" property="isAuthentication" jdbcType="VARCHAR" />
+		<result column="operator_name" property="operatorName" jdbcType="VARCHAR" />
+		<result column="reject_reason" property="rejectReason" jdbcType="VARCHAR" />
+		<result column="company_type" property="companyType" jdbcType="VARCHAR" />
+		<result column="company_email" property="companyEmail" jdbcType="VARCHAR" />
+		<result column="company_short_name" property="companyShortName" jdbcType="VARCHAR" />
+		<result column="company_fax" property="companyFax" jdbcType="VARCHAR" />
+		<result column="server_type" property="serverType" jdbcType="VARCHAR" />
+		<result column="province" property="province" jdbcType="VARCHAR" />
+		<result column="city" property="city" jdbcType="VARCHAR" />
+		<result column="county" property="county" jdbcType="VARCHAR" />
+		<result column="legal_representative" property="legalRepresentative" jdbcType="VARCHAR" />
+		<result column="company_phone" property="companyPhone" jdbcType="VARCHAR" />
+		<result column="company_address" property="companyAddress" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="VARCHAR" />
+		<result column="group_index" property="groupIndex" jdbcType="INTEGER" />
+		<result column="index_show" property="indexShow" jdbcType="VARCHAR" />
+		<result column="business_license_number" property="businessLicenseNumber" jdbcType="VARCHAR" />
+		<result column="organization_code_number" property="organizationCodeNumber" jdbcType="VARCHAR" />
+		<result column="micro_url" property="microUrl" jdbcType="VARCHAR" />
+		<result column="micro_template" property="microTemplate" jdbcType="VARCHAR" />
+		<result column="group_id" property="groupId" jdbcType="VARCHAR" />
+		<result column="company_comment" property="companyComment" jdbcType="LONGVARCHAR" />
+		<result column="alias_name" property="aliasName" jdbcType="LONGVARCHAR" />
+		<result column="relation_type" property="relationType" jdbcType="VARCHAR" />
+	</resultMap>
+
+
+	<sql id="Base_Column_List" >
+		id, company_name, major_type, certificate, main_field, is_authentication, operator_name,
+		reject_reason, company_type, company_email, company_short_name, company_fax, server_type,
+		province, city, county,legal_representative, company_phone, company_address, status, group_index,
+		index_show, business_license_number, organization_code_number, micro_url, micro_template,
+		group_id, company_comment
+	</sql>
+
+		<!-- 查询公司的父公司 （one）-->
+	<select id="getParentCompany" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		SELECT a.*
+		from maoding_web_company a
+		LEFT JOIN maoding_web_company_relation b on a.id =  b.org_pid
+		where a.status='0' and  b.org_id=#{id,jdbcType=VARCHAR}
+	</select>
+
+	<!-- 查询公司的子公司 （list）-->
+	<select id="getChildrenCompany" resultMap="BaseResultMap"
+			parameterType="java.lang.String">
+		SELECT a.id,a.company_name,a.company_short_name,a.province,a.city,a.county,c.org_type as company_type,server_type,d.nick_name as alias_name
+		,b.type_id as relation_type
+		from maoding_web_company a
+		LEFT JOIN maoding_web_company_relation b on a.id =  b.org_id
+		LEFT JOIN maoding_web_org c on b.id=c.id
+		LEFT JOIN maoding_web_business_partner d on a.id = d.company_id and d.type = 3
+		where a.status='0' and b.org_pid=#{id,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectAllCompanyEdges" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT
+		DISTINCT
+		ccr.org_id AS 'from',
+		ccr.org_pid AS 'to',
+		IFNULL(o.org_type,0) AS 'type'
+		FROM maoding_web_company_relation ccr
+		LEFT JOIN maoding_web_org o on ccr.id = o.id
+		WHERE o.org_status=0
+		<if test="null!=companyIds">
+		and ccr.org_pid in
+		<foreach collection="companyIds" index="i" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+		</if>
+		order by o.org_type,o.create_date
+	</select>
+
+</mapper>

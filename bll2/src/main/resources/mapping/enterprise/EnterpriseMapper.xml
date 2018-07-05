@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="EnterpriseMapper" >
+  <select id="getEnterpriseName" parameterType="java.lang.String" resultType="java.lang.String">
+    select a.corpname from maoding_web_enterprise a
+    where a.id = #{enterpriseOrgId}
+  </select>
+
+  <select id="getEnterpriseNameByProjectId" parameterType="java.lang.String" resultType="java.lang.String">
+    select a.corpname
+    from maoding_web_enterprise a
+    INNER JOIN maoding_web_project c on c.construct_company = a.id
+    where c.id = #{projectId}
+    limit 1
+  </select>
+
+</mapper>

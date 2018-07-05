@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetProjectProductTaskOverviewMapper">
+
+    <resultMap id="BaseResultMap" type="com.maoding.task.dto.ProjectProductTaskDTO">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="project_id" property="projectId" jdbcType="VARCHAR"/>
+        <result column="task_name" property="taskName" jdbcType="VARCHAR"/>
+        <result column="task_pid" property="taskPid" jdbcType="VARCHAR"/>
+        <result column="plan_start_time" property="planStartTime" jdbcType="DATE"/>
+        <result column="plan_end_time" property="planEndTime" jdbcType="DATE"/>
+        <result column="designer_names" property="designerNames" jdbcType="VARCHAR"/>
+        <result column="person_in_charge_name" property="personInChargeName" jdbcType="VARCHAR"/>
+        <collection property="childList" column="id" select="getChildList" fetchType="eager">
+
+        </collection>
+    </resultMap>
+    <resultMap id="childListResultMap" type="com.maoding.task.dto.ProjectProductTaskDTO">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="task_pid" property="taskPid" jdbcType="VARCHAR"/>
+        <result column="task_type" property="taskType" jdbcType="INTEGER"/>
+        <result column="task_name" property="taskName" jdbcType="VARCHAR"/>
+        <result column="task_path" property="taskPath" jdbcType="VARCHAR"/>
+        <result column="company_name" property="companyName" jdbcType="VARCHAR"/>
+        <result column="depart_name" property="departName" jdbcType="VARCHAR"/>
+        <result column="plan_start_time" property="planStartTime" jdbcType="DATE"/>
+        <result column="plan_end_time" property="planEndTime" jdbcType="DATE"/>
+        <result column="complete_date" property="completeDate" jdbcType="DATE"/>
+        <result column="task_remark" property="taskRemark" jdbcType="VARCHAR"/>
+        <result column="person_in_charge_name" property="personInChargeName" jdbcType="VARCHAR"/>
+        <association property="designerNames" select="GetProjectMemberMapper.getDesignUser" column="id"
+                     fetchType="eager"/>
+    </resultMap>
+    <!--新增获取成产安排列表-->
+    <resultMap id="productTaskOverviewNewMap" type="com.maoding.task.dto.ProjectProducttaskViewDTO">
+        <result column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="task_name" property="taskName" jdbcType="VARCHAR"/>
+        <result column="task_remark" property="taskRemark" jdbcType="VARCHAR"/>
+        <result column="company_name" property="companyName" jdbcType="VARCHAR"/>
+        <result column="task_pid" property="taskPid" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
+        <result column="project_id" property="projectId" jdbcType="VARCHAR"/>
+        <result column="task_status" property="taskStatus" jdbcType="VARCHAR"/>
+        <result column="start_time" property="planStartTime" jdbcType="DATE"/>
+        <result column="end_time" property="planEndTime" jdbcType="DATE"/>
+        <association property="taskState" select="GetTaskStateMapper.getTaskState2" column="{taskId=id}" fetchType="eager"/>
+        <association property="personInChargeName" select = "GetProjectMemberMapper.getTaskDesignerName" column="{taskId=id,projectId=project_id,companyId=company_id}" fetchType="eager" />
+        <collection property="designersList"   ofType="com.maoding.project.dto.ProjectDesignUser">
+            <result column="member_type" property="memberType" jdbcType="VARCHAR"/>
+            <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+            <result column="company_user_id" property="companyUserId" jdbcType="VARCHAR"/>
+            <result column="complete_time"  property="completeTime" jdbcType="VARCHAR"/>
+
+        </collection>
+      <!--  <collection property="designersList" select="GetProjectMemberMapper.listDesignMember" ofType="com.maoding.project.dto.ProjectDesignUser" />-->
+    </resultMap>
+
+    <select id="getProductTaskList" parameterType="com.maoding.task.dto.QueryProjectTaskDTO" resultMap="BaseResultMap">
+        SELECT
+            t.id,t.task_name,t.task_pid
+        FROM
+            maoding_web_project_task t
+        WHERE
+            t.company_id = #{companyId,jdbcType=VARCHAR}
+        AND t.project_id = #{projectId,jdbcType=VARCHAR}
+        AND t.task_pid IS NULL
+        AND t.task_status = '0'
+        AND t.task_type = 1
+        ORDER BY t.seq ASC
+    </select>
+    <select id="getChildList" resultMap="childListResultMap">
+        SELECT
+			t.id,
+			t.task_pid,
+			t.task_type,
+			t.task_name,
+			t.task_path,
+			k.start_time AS plan_start_time,
+			k.end_time AS plan_end_time,
+			(SELECT e.company_name FROM maoding_web_company e WHERE e.id = t.company_id ) AS company_name,
+			(SELECT d.depart_name FROM maoding_web_depart d WHERE d.id = t.org_id ) AS depart_name,
+			(SELECT u.user_name FROM maoding_web_project_member f LEFT JOIN maoding_web_company_user u ON f.company_user_id = u.id WHERE f.target_id = t.id and f.member_type=3 ) AS person_in_charge_name
+		FROM
+			maoding_web_project_task t
+            LEFT JOIN maoding_web_project_task p ON (p.task_type=3 and p.be_modify_id=t.id)
+            LEFT JOIN maoding_web_project_task_relation r ON (r.relation_status=0 and t.id = r.task_id)
+            LEFT JOIN (SELECT target_id, start_time, end_time FROM ( SELECT target_id, start_time, end_time FROM maoding_web_project_process_time ORDER BY create_date DESC ) t GROUP BY target_id ) k ON t.id = k.target_id
+		WHERE
+			t.task_path LIKE '%' #{id} '%'
+		AND t.task_pid IS NOT NULL
+		AND t.task_status = '0'
+		AND (
+			t.task_type = '0'
+			OR (t.task_type = 2 AND r.id IS NULL)
+		)
+		ORDER BY
+			ifnull(p.create_date,t.create_date) ASC
+    </select>
+    <!--新增获取成产安排列表-->
+    <select id="getProductTaskOverviewNew" parameterType="com.maoding.task.dto.QueryProjectTaskDTO"  resultMap="productTaskOverviewNewMap">
+        SELECT
+            t.id,
+            t.task_name,
+            t.task_remark,
+            mwc.company_name,
+            t.task_pid,
+            t.company_id,
+            t.project_id,
+            t.task_status,
+            t.start_time,
+            t.end_time,
+            mpm.member_type,
+            mpm.company_user_id,
+            c.complete_time,
+            mwcu.user_name
+           -- (SELECT  u.user_name  FROM maoding_web_project_member f LEFT JOIN maoding_web_company_user u ON f.company_user_id = u.id WHERE f.target_id = t.id AND f.member_type = 3) AS person_in_charge_name
+        FROM maoding_web_project_task t
+      LEFT JOIN maoding_web_company mwc
+        ON t.company_id = mwc.id
+      LEFT JOIN maoding_web_project_member mpm
+        ON t.id = mpm.node_id and  mpm.deleted=0
+      LEFT JOIN maoding_web_company_user mwcu
+       ON mpm.company_user_id = mwcu.id
+        LEFT JOIN maoding_web_project_process_node c
+        ON c.id = mpm.target_id
+      WHERE t.project_id = #{projectId,jdbcType=VARCHAR}
+        AND (t.task_type =0 or t.task_type =1 or t.task_type =2)
+        AND t.task_status = '0'
+      ORDER BY t.task_level,t.seq ASC
+    </select>
+</mapper>

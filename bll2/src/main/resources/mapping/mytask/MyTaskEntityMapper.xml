@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="MyTaskEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.mytask.entity.MyTaskEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="task_title" property="taskTitle" jdbcType="VARCHAR" />
+    <result column="task_type" property="taskType" jdbcType="INTEGER" />
+    <result column="handler_id" property="handlerId" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="target_id" property="targetId" jdbcType="VARCHAR" />
+    <result column="param1" property="param1" jdbcType="VARCHAR" />
+    <result column="param2" property="param2" jdbcType="VARCHAR" />
+    <result column="param3" property="param3" jdbcType="VARCHAR" />
+    <result column="param4" property="param4" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="task_content" property="taskContent" jdbcType="LONGVARCHAR" />
+    <result column="send_company_id" property="sendCompanyId" jdbcType="VARCHAR" />
+    <result column="deadline" property="deadline" jdbcType="DATE" />
+    <result column="complete_date" property="completeDate" jdbcType="DATE"/>
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, task_title, task_content,task_type, handler_id, company_id, status, create_date, create_by,
+    update_date, update_by, target_id, param1, param2, param3, param4, project_id,send_company_id,deadline,complete_date
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_my_task
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+
+  <!-- 根据不同的参数查询我的任务 -->
+  <select id="getMyTaskByParam" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select SQL_CALC_FOUND_ROWS
+    <include refid="Base_Column_List" />
+    from maoding_web_my_task
+    where 1=1 and param4='0' and status!='2'
+    <if test="handlerId != null" >
+     AND handler_id = #{handlerId,jdbcType=VARCHAR}
+    </if>
+    <if test="companyId != null" >
+     AND company_id = #{companyId,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null and ignoreStatus == null" >
+      AND status = #{status,jdbcType=VARCHAR}
+   </if>
+    <if test="targetId != null" >
+     AND target_id = #{targetId,jdbcType=VARCHAR}
+    </if>
+    <if test="projectId != null" >
+      AND project_id = #{projectId,jdbcType=VARCHAR}
+    </if>
+    <if test="taskType != null" >
+      AND task_type = #{taskType,jdbcType=INTEGER}
+    </if>
+    <if test="typeList != null" >
+      and task_type in
+      <foreach collection="typeList" index="index" item="type" open="(" separator="," close=")">
+        #{type}
+      </foreach>
+    </if>
+    order by status,create_date desc
+    <if test="startPage!=null">
+      LIMIT #{startPage},#{endPage}
+    </if>
+  </select>
+
+  <select id="getMyTaskCount" resultType="java.lang.Integer">
+        SELECT FOUND_ROWS()
+  </select>
+  <!-- 根据不同的参数查询我的任务 -->
+  <select id="getMyTaskByParamCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select
+    count(1)
+    from maoding_web_my_task
+    where 1=1 and param4='0'
+    <if test="handlerId != null" >
+      AND handler_id = #{handlerId,jdbcType=VARCHAR}
+    </if>
+    <if test="companyId != null" >
+      AND company_id = #{companyId,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null" >
+       AND status = #{status,jdbcType=VARCHAR}
+    </if>
+    <if test="targetId != null" >
+      AND target_id = #{targetId,jdbcType=VARCHAR}
+    </if>
+    <if test="projectId != null" >
+      AND project_id = #{projectId,jdbcType=VARCHAR}
+    </if>
+    <if test="taskType != null" >
+      AND task_type = #{taskType,jdbcType=INTEGER}
+    </if>
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_my_task
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.maoding.mytask.entity.MyTaskEntity" >
+    insert into maoding_web_my_task (id, task_title, task_type, 
+      handler_id, company_id, status, 
+      create_date, create_by, update_date, 
+      update_by, target_id, param1, 
+      param2, param3, param4, 
+      project_id, task_content,send_company_id,deadline,complete_date)
+    values (#{id,jdbcType=VARCHAR}, #{taskTitle,jdbcType=VARCHAR}, #{taskType,jdbcType=INTEGER},
+      #{handlerId,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, '0',now(),
+      #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP},
+      #{updateBy,jdbcType=VARCHAR}, #{targetId,jdbcType=VARCHAR}, #{param1,jdbcType=VARCHAR}, 
+      '0', #{param3,jdbcType=VARCHAR}, '0',
+      #{projectId,jdbcType=VARCHAR}, #{taskContent,jdbcType=LONGVARCHAR},
+       #{sendCompanyId,jdbcType=VARCHAR}, #{deadline,jdbcType=DATE}, #{completeDate,jdbcType=DATE})
+  </insert>
+
+
+  <update id="updateById" parameterType="com.maoding.mytask.entity.MyTaskEntity" >
+    update maoding_web_my_task
+    <set >
+      <if test="taskTitle != null" >
+        task_title = #{taskTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="taskType != null and taskType!=0" >
+        task_type = #{taskType,jdbcType=INTEGER},
+      </if>
+      <if test="handlerId != null" >
+        handler_id = #{handlerId,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+        update_date =now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="targetId != null" >
+        target_id = #{targetId,jdbcType=VARCHAR},
+      </if>
+      <if test="param1 != null" >
+        param1 = #{param1,jdbcType=VARCHAR},
+      </if>
+      <if test="param2 != null" >
+        param2 = #{param2,jdbcType=VARCHAR},
+      </if>
+      <if test="param3 != null" >
+        param3 = #{param3,jdbcType=VARCHAR},
+      </if>
+      <if test="param4 != null" >
+        param4 = #{param4,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskContent != null" >
+        task_content = #{taskContent,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="sendCompanyId != null" >
+        send_company_id = #{sendCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="deadline != null" >
+        deadline = #{deadline,jdbcType=DATE},
+      </if>
+      <if test="completeDate != null" >
+        complete_date = #{completeDate,jdbcType=DATE},
+      </if>
+      <if test="status != null and status=='1'.toString() and completeDate == null" >
+        complete_date = now(),
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByTargetId"  parameterType="java.util.Map">
+    update maoding_web_my_task
+    <set >
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="param2 != null" >
+        param2 = #{param2,jdbcType=VARCHAR},<!-- 报销单使用：1：已经同意，2：已退回 -->
+      </if>
+      <if test="param4 != null" >
+        param4 = #{param4,jdbcType=VARCHAR},<!-- 删除标识 -->
+      </if>
+      <if test="status != null and status=='1'.toString()" >
+        complete_date = now(),
+      </if>
+      update_date = now(),
+    </set>
+    where 1=1
+      <if test="ignoreStatus == null">
+        and status='0'
+      </if>
+     <if test="targetId != null">
+        and target_id = #{targetId,jdbcType=VARCHAR}
+     </if>
+     <if test="taskType != null ">
+       and  task_type=#{taskType,jdbcType=INTEGER}
+     </if>
+    <if test="taskStatus != null">
+      and  status!=#{taskStatus,jdbcType=VARCHAR}
+    </if>
+    <if test="companyId != null">
+       and  company_id=#{companyId,jdbcType=VARCHAR}
+    </if>
+    <if test="projectId != null">
+       and  project_id=#{projectId,jdbcType=VARCHAR}
+    </if>
+    <if test="handlerId != null" >
+      and handler_id = #{handlerId,jdbcType=VARCHAR}
+   </if>
+    <if test="typeList != null" >
+      and task_type in
+      <foreach collection="typeList" index="index" item="type" open="(" separator="," close=")">
+        #{type}
+      </foreach>
+    </if>
+  </update>
+
+
+  <!-- 用于项目删除 -->
+  <update id="deleteProjectTask"  parameterType="java.lang.String">
+    update maoding_web_my_task
+    set param4 = '1',
+    update_date = now()
+    where 1=1
+    and (target_id = #{targetId,jdbcType=VARCHAR}
+    or  project_id=#{targetId,jdbcType=VARCHAR})
+  </update>
+
+  <update id="update" parameterType="com.maoding.mytask.entity.MyTaskEntity" >
+    update maoding_web_my_task
+    set task_title = #{taskTitle,jdbcType=VARCHAR},
+      task_content = #{taskContent,jdbcType=LONGVARCHAR},
+      task_type = #{taskType,jdbcType=INTEGER},
+      handler_id = #{handlerId,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = now(),
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      target_id = #{targetId,jdbcType=VARCHAR},
+      param1 = #{param1,jdbcType=VARCHAR},
+      param2 = #{param2,jdbcType=VARCHAR},
+      param3 = #{param3,jdbcType=VARCHAR},
+      param4 = #{param4,jdbcType=VARCHAR},
+      project_id = #{projectId,jdbcType=VARCHAR},
+      deadline = #{deadline,jdbcType=DATE},
+      complete_date = #{completeDate,jdbcType=DATE},
+      send_company_id = #{sendCompanyId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByTargetId2"  parameterType="com.maoding.mytask.entity.MyTaskEntity">
+    update maoding_web_my_task
+    SET
+    <if test="status != null" >
+      status = #{status,jdbcType=VARCHAR},
+  </if>
+    <if test="param2 != null" >
+      param2 = #{param2,jdbcType=VARCHAR},<!-- 报销单使用：1：已经同意，2：已退回 -->
+    </if>
+    <if test="param4 != null" >
+      param4 = #{param4,jdbcType=VARCHAR},<!-- 删除标识 -->
+    </if>
+    <if test="status != null and status=='1'.toString()" >
+      complete_date = now(),
+    </if>
+    update_date = now()
+    where status ='0'
+    <if test="targetId != null">
+      and target_id = #{targetId,jdbcType=VARCHAR}
+    </if>
+    <if test="taskType != null and taskType!=0">
+      and  task_type=#{taskType,jdbcType=INTEGER}
+    </if>
+    <if test="companyId != null">
+      and  company_id=#{companyId,jdbcType=VARCHAR}
+    </if>
+    <if test="projectId != null">
+      and  project_id=#{projectId,jdbcType=VARCHAR}
+    </if>
+    <if test="handlerId != null" >
+      and handler_id = #{handlerId,jdbcType=VARCHAR}
+    </if>
+  </update>
+
+  <!-- 用于项目删除 -->
+  <update id="deleteMyTask"  parameterType="java.util.Map">
+    update maoding_web_my_task
+    set param4 = '1',
+    update_date = now()
+    where 1=1
+    <if test="targetId != null">
+      and target_id = #{targetId,jdbcType=VARCHAR}
+    </if>
+    <if test="taskType != null">
+      and  task_type=#{taskType,jdbcType=INTEGER}
+    </if>
+    <if test="companyId != null">
+      and  company_id=#{companyId,jdbcType=VARCHAR}
+    </if>
+    <if test="projectId != null">
+      and  project_id=#{projectId,jdbcType=VARCHAR}
+    </if>
+    <if test="handlerId != null" >
+      and handler_id = #{handlerId,jdbcType=VARCHAR}
+    </if>
+  </update>
+
+  <update id="finishMyTaskByTaskId"  parameterType="java.util.Map">
+    update
+        maoding_web_my_task my_task
+        inner join maoding_web_project_process_node task_node on (task_node.id = my_task.target_id)
+    set my_task.complete_date=now(),my_task.`status`='1'
+    <where>
+      <if test="taskId != null">
+        (task_node.process_id = #{taskId})
+      </if>
+      <if test="ignoreId != null">
+        and (my_task.id != #{ignoreId})
+      </if>
+    </where>
+  </update>
+</mapper>

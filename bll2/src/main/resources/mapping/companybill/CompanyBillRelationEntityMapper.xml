@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="CompanyBillRelationEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.companybill.entity.CompanyBillRelationEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="from_company_id" property="fromCompanyId" jdbcType="VARCHAR" />
+    <result column="to_company_id" property="toCompanyId" jdbcType="VARCHAR" />
+    <result column="operator_id" property="operatorId" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="target_id" property="targetId" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, from_company_id, to_company_id, operator_id, project_id, target_id, create_date, 
+    create_by, update_date, update_by
+  </sql>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_company_bill_relation
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_company_bill_relation
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.maoding.companybill.entity.CompanyBillRelationEntity" >
+    insert into maoding_web_company_bill_relation (id, from_company_id, to_company_id, 
+      operator_id, project_id, target_id, 
+      create_date, create_by, update_date, 
+      update_by)
+    values (#{id,jdbcType=VARCHAR}, #{fromCompanyId,jdbcType=VARCHAR}, #{toCompanyId,jdbcType=VARCHAR}, 
+      #{operatorId,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR}, #{targetId,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.companybill.entity.CompanyBillRelationEntity" >
+    update maoding_web_company_bill_relation
+    <set >
+      <if test="fromCompanyId != null" >
+        from_company_id = #{fromCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="toCompanyId != null" >
+        to_company_id = #{toCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorId != null" >
+        operator_id = #{operatorId,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="targetId != null" >
+        target_id = #{targetId,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="update" parameterType="com.maoding.companybill.entity.CompanyBillRelationEntity" >
+    update maoding_web_company_bill_relation
+    set from_company_id = #{fromCompanyId,jdbcType=VARCHAR},
+      to_company_id = #{toCompanyId,jdbcType=VARCHAR},
+      operator_id = #{operatorId,jdbcType=VARCHAR},
+      project_id = #{projectId,jdbcType=VARCHAR},
+      target_id = #{targetId,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

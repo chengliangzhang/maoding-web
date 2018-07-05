@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetPermissionUserMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.role.dto.PermissionDTO" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="pid" property="pid" jdbcType="VARCHAR" />
+    <result column="root_id" property="rootId" jdbcType="VARCHAR" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+
+    <!-- 一对多的关系 -->
+    <collection property="companyUserList" ofType="com.maoding.role.dto.UserPermissionDTO">
+      <result column="user_permisssion_id" property="id" jdbcType="VARCHAR" />
+      <result column="company_user_id" property="companyUserId" jdbcType="VARCHAR" />
+      <result column="user_id" property="userId" jdbcType="VARCHAR" />
+      <result column="user_name" property="userName" jdbcType="VARCHAR" />
+      <result column="user_permission_seq" property="seq" jdbcType="INTEGER" />
+      <result column="permission_id" property="permissionId" jdbcType="VARCHAR" />
+    </collection>
+  </resultMap>
+
+    <resultMap id="BaseResultMap2" type="com.maoding.role.dto.PermissionDTO" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="code" property="code" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="pid" property="pid" jdbcType="VARCHAR" />
+        <result column="root_id" property="rootId" jdbcType="VARCHAR" />
+        <result column="seq" property="seq" jdbcType="INTEGER" />
+        <result column="type" property="type" jdbcType="INTEGER" />
+    </resultMap>
+
+  <!-- 角色-权限 只查询角色对应的权限-->
+  <select id="getPermissionByRole2" resultMap="BaseResultMap" parameterType="java.util.Map">
+      SELECT
+      a.id,
+      a.code,
+      a.name,
+      a.pid,
+      a.root_id,
+      a.seq,
+      a.description,
+      c.id as user_permisssion_id,
+      c.company_user_id,
+      c.permission_id,
+      c.user_name,
+      c.user_id,
+      c.seq as user_permission_seq
+    FROM
+      maoding_web_permission a
+    LEFT JOIN maoding_web_role_permission b ON a.id = b.permission_id
+    LEFT JOIN (
+      SELECT
+          c.id,
+          u.id as company_user_id,
+          c.permission_id,
+          c.seq,
+          u.company_id,
+          u.user_id,
+          u.user_name
+      FROM
+          maoding_web_user_permission c,
+          maoding_web_company_user u
+      WHERE
+          c.user_id = u.user_id
+      AND c.company_id = u.company_id
+      and u.company_id=#{companyId,jdbcType=VARCHAR}
+      GROUP by c.company_id,c.user_id,c.permission_id
+  ) c ON b.permission_id = c.permission_id
+      where a.status!='1' AND b.role_id=#{roleId} and b.company_id=#{companyId}
+      <if test="typeId!=null">
+          and (not FIND_IN_SET(#{typeId},b.forbid_relation_type_id) or b.forbid_relation_type_id is null)
+      </if>
+      order by a.seq,c.seq
+  </select>
+
+  <!-- 扩展查看角色权限，根据组织关系类型添加是否有效字段 -->
+    <select id="getPermissionByRole3" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select x.*,if(find_in_set(x.id,relation_type.content_extra),1,0) as invalid from (
+    SELECT
+    a.id,
+    a.code,
+    a.name,
+    a.pid,
+    a.root_id,
+    a.seq,
+    a.description,
+    c.id as user_permisssion_id,
+    c.company_user_id,
+    c.permission_id,
+    c.user_name,
+    c.user_id,
+    c.seq as user_permission_seq,
+    c.company_id
+    FROM
+    maoding_web_permission a
+    LEFT JOIN maoding_web_role_permission b ON a.id = b.permission_id
+    LEFT JOIN (
+    SELECT
+    c.id,
+    u.id as company_user_id,
+    c.permission_id,
+    c.seq,
+    u.company_id,
+    u.user_id,
+    u.user_name
+    FROM
+    maoding_web_user_permission c,
+    maoding_web_company_user u
+    WHERE
+    c.user_id = u.user_id
+    AND c.company_id = u.company_id
+    and u.company_id=#{companyId,jdbcType=VARCHAR}
+    GROUP by c.company_id,c.user_id,c.permission_id
+    ) c ON b.permission_id = c.permission_id
+    where a.status!='1'  and b.role_id=#{roleId,jdbcType=VARCHAR} and b.company_id=#{companyId,jdbcType=VARCHAR}
+    order by a.seq,c.seq
+    ) x
+    left join maoding_web_company_relation org_relation on (x.company_id = org_relation.org_id)
+    left join maoding_const relation_type on (relation_type.classic_id = 28 and org_relation.type_id = relation_type.value_id)
+  </select>
+
+    <!-- 角色-权限 只查询角色对应的权限 userId-->
+    <select id="getPermissionByRoleAndUserForApp" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        DISTINCT a.id,
+        a.code,
+        a.name,
+        a.pid
+        FROM
+        maoding_web_permission a
+        LEFT JOIN maoding_web_role_permission b ON a.id = b.permission_id
+        LEFT JOIN maoding_web_user_permission c on b.permission_id = c.permission_id
+        where a.status='0'
+        and b.role_id=#{roleId}
+        and b.company_id=#{companyId}
+        and c.user_id=#{userId}
+        and c.company_id=#{companyId}
+        <if test="typeId!=null">
+            and (not FIND_IN_SET(#{typeId},b.forbid_relation_type_id) or b.forbid_relation_type_id is null)
+        </if>
+        order by a.seq
+    </select>
+
+    <select id="getPermissionByRoleAndUser" resultMap="BaseResultMap2" parameterType="java.util.Map">
+        SELECT
+        DISTINCT a.id,
+        a.code,
+        a.name,
+        a.pid,
+        a.root_id,
+        a.seq,
+        c.type
+        FROM
+        maoding_web_permission a
+        LEFT JOIN maoding_web_role_permission b ON a.id = b.permission_id
+        LEFT JOIN ( SELECT DISTINCT up.permission_id,'1' as type
+                    FROM maoding_web_user_permission up
+                    WHERE user_id=#{userId} AND company_id=#{companyId})c on b.permission_id = c.permission_id
+        where a.status!='1' AND b.role_id=#{roleId}
+        and b.company_id=#{companyId}
+        <if test="typeId!=null">
+            and (not FIND_IN_SET(#{typeId},b.forbid_relation_type_id) or b.forbid_relation_type_id is null)
+        </if>
+        order by a.seq
+    </select>
+
+    <!--获取项目总览的权限-->
+    <select id="getProjectUserPermission" resultMap="BaseResultMap2" parameterType="java.util.Map">
+        SELECT
+            b.id as id,
+            b.permission_id as type
+        FROM
+            maoding_web_company_user a
+            INNER JOIN maoding_web_user_permission b ON a.user_id = b.user_id and a.company_id = b.company_id
+            INNER JOIN maoding_web_role_permission c on b.company_id = c.company_id and b.permission_id = c.permission_id
+            INNER JOIN maoding_web_permission d
+                ON d.id = b.permission_id
+        WHERE d.status = 0
+        AND a.id = #{companyUserId}
+        <if test="typeId!=null">
+          and (not FIND_IN_SET(#{typeId},c.forbid_relation_type_id) or c.forbid_relation_type_id is null)
+        </if>
+        AND (
+          <foreach collection="codes" item="code" index="index"  separator="or">
+             d.code =#{code}
+          </foreach>
+        )
+        GROUP BY b.permission_id
+    </select>
+</mapper>

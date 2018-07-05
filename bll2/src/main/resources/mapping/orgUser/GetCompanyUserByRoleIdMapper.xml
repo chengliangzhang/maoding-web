@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetCompanyUserByRoleIdMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.org.dto.CompanyUserTableDTO" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="cellphone" property="cellphone" jdbcType="VARCHAR" />
+    <result column="relation_type" property="relationType" jdbcType="VARCHAR" />
+    <result column="audit_status" property="auditStatus" jdbcType="VARCHAR" />
+    <result column="employee_type" property="employeeType" jdbcType="VARCHAR" />
+    <result column="employee_status" property="employeeStatus" jdbcType="VARCHAR" />
+    <result column="entry_time" property="entryTime" jdbcType="DATE" />
+    <result column="departure_time" property="departureTime" jdbcType="DATE" />
+    <result column="illustration" property="illustration" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+	<result column="sex" property="sex" jdbcType="VARCHAR" />
+	<result column="seq" property="seq" jdbcType="INTEGER" />
+	<result column="org_server_station" property="orgServerStation" jdbcType="VARCHAR" />
+    <result column="departure_reason" property="departureReason" jdbcType="VARCHAR" />
+    <result column="occupation_registration" property="occupationRegistration" jdbcType="VARCHAR" />
+    <result column="positional_title" property="positionalTitle" jdbcType="VARCHAR" />
+	<result column="admin_flag" property="adminFlag" jdbcType="VARCHAR" />
+	<result column="role_ids" property="roleIds" jdbcType="VARCHAR" />
+	<result column="role_names" property="roleNames" jdbcType="VARCHAR" />
+
+  </resultMap>
+
+
+	<!-- 根据角色id查询相应的人员-->
+	<select id="getCompanyUserByRoleId" resultMap="BaseResultMap" parameterType="java.util.Map">
+		SELECT
+		a.id, a.company_id, a.user_id, a.user_name,b.cellphone
+		FROM maoding_web_company_user a
+		LEFT JOIN maoding_web_account b ON b.id=a.user_id
+		LEFT JOIN maoding_web_role_user d on  a.company_id = d.org_id and a.user_id = d.user_id
+		WHERE 1=1 and a.audit_status='1' and a.company_id = #{companyId,jdbcType=VARCHAR}
+		<if test="roleId!=null">
+			and d.role_id = #{roleId,jdbcType=VARCHAR}
+		</if>
+
+		<if test="startPage!=null">
+			LIMIT #{startPage},#{endPage}
+		</if>
+	</select>
+
+	<!-- 根据权限id查询相应的人员-->
+	<select id="getCompanyUserByPermissionId" resultMap="BaseResultMap" parameterType="java.util.Map">
+		SELECT
+		a.id, a.company_id, a.user_id, a.user_name,b.cellphone
+		FROM maoding_web_company_user a
+		LEFT JOIN maoding_web_account b ON b.id=a.user_id
+		LEFT JOIN maoding_web_user_permission d on  a.company_id = d.company_id and a.user_id = d.user_id
+		WHERE 1=1 and a.audit_status='1' and a.company_id = #{companyId,jdbcType=VARCHAR}
+		<if test="permissionId!=null">
+			and d.permission_id = #{permissionId,jdbcType=VARCHAR}
+		</if>
+		<if test="userId!=null">
+			and d.user_id = #{userId,jdbcType=VARCHAR}
+		</if>
+		<if test="companyUserId!=null">
+			and a.id = #{companyUserId,jdbcType=VARCHAR}
+		</if>
+		--	group by a.id
+		<if test="startPage!=null">
+			LIMIT #{startPage},#{endPage}
+		</if>
+		group by a.id
+		order by d.seq
+	</select>
+
+
+</mapper>

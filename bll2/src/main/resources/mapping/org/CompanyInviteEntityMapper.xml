@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="CompanyInviteEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.org.entity.CompanyInviteEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="invite_cellphone" property="inviteCellphone" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="effective_time" property="effectiveTime" jdbcType="DATE" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, invite_cellphone, company_id, effective_time, url,type,project_id, create_date,
+    create_by, update_date, update_by
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_company_invite
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_company_invite
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.maoding.org.entity.CompanyInviteEntity" >
+    insert into maoding_web_company_invite (id, invite_cellphone, company_id,url,type,project_id,
+    effective_time,  create_date, create_by,
+    update_date, update_by)
+    values (#{id,jdbcType=VARCHAR}, #{inviteCellphone,jdbcType=INTEGER}, #{companyId,jdbcType=VARCHAR},
+    #{url,jdbcType=VARCHAR},#{type,jdbcType=VARCHAR},#{projectId,jdbcType=VARCHAR},
+    #{effectiveTime,jdbcType=TIMESTAMP}, now(),  #{createBy,jdbcType=VARCHAR},
+    #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.org.entity.CompanyInviteEntity" >
+    update maoding_web_company_invite
+    <set >
+      <if test="inviteCellphone != null" >
+        invite_cellphone = #{inviteCellphone,jdbcType=INTEGER},
+      </if>
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="effectiveTime != null" >
+        effective_time = #{effectiveTime,jdbcType=DATE},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <select id="getMaxinviteCellphone" resultType="java.lang.Integer" >
+        select IFNULL(max(invite_cellphone),1000)+1 from maoding_web_company_invite
+    </select>
+
+  <!-- v2查询 -->
+  <select id="selectByParam" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    i.*
+    from maoding_web_company_invite i
+    WHERE 1=1
+    <if test="companyId != null" >
+      and company_id = #{companyId,jdbcType=VARCHAR}
+    </if>
+    <if test="inviteCellphone != null" >
+      and invite_cellphone = #{inviteCellphone,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+</mapper>

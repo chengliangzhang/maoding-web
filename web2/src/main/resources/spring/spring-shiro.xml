@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans	http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 会话Cookie模板 -->
+    <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="sid"/>
+        <property name="httpOnly" value="true"/>
+        <property name="maxAge" value="-1"/>
+    </bean>
+
+    <!-- 自定义Session工厂方法 返回会标识是否修改主要字段的自定义Session-->
+    <bean id="sessionFactory" class="com.maoding.shiro.ShiroSessionFactory"/>
+
+    <!-- 普通持久化接口，不会被缓存 每次doReadSession会被反复调用 -->
+    <!-- 使用可被缓存的Dao ，本地缓存减轻网络压力 -->
+    <!-- 可缓存Dao，操作自定义Session,添加标识位，减少doUpdate方法中Redis的连接次数来减轻网络压力 -->
+    <bean id="sessionDao" class="com.maoding.shiro.ShiroSessionDao">
+        <property name="prefix" value="_shiro_session_"/>
+        <!-- 注意中央缓存有效时间要比本地缓存有效时间长-->
+        <property name="timeoutSeconds" value="604800"/>
+        <property name="enableRedisCache" value="true"/>
+    </bean>
+
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <!-- 设置全局会话超时时间，默认30分钟(1800000) -->
+        <property name="globalSessionTimeout" value="1800000"/>
+        <!-- 是否在会话过期后会调用SessionDAO的delete方法删除会话 默认true-->
+        <property name="deleteInvalidSessions" value="false"/>
+        <!-- 是否开启会话验证器任务 默认true -->
+        <property name="sessionValidationSchedulerEnabled" value="false"/>
+        <!-- 会话验证器调度时间 -->
+        <property name="sessionValidationInterval" value="604800000"/>
+        <property name="sessionFactory" ref="sessionFactory"/>
+        <property name="sessionDAO" ref="sessionDao"/>
+        <!-- 默认JSESSIONID，同tomcat/jetty在cookie中缓存标识相同，修改用于防止访问404页面时，容器生成的标识把shiro的覆盖掉 -->
+        <property name="sessionIdCookie">
+            <bean class="org.apache.shiro.web.servlet.SimpleCookie">
+                <constructor-arg name="name" value="SHRIOSESSIONID"/>
+            </bean>
+        </property>
+        <property name="sessionValidationScheduler" ref="sessionValidationScheduler"/>
+        <property name="sessionListeners">
+            <list>
+                <bean class="com.maoding.shiro.ShiroSessionListener"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--定时清理僵尸session，Shiro会启用一个后台守护线程定时执行清理操作用户直接关闭浏览器造成的孤立会话-->
+    <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.ExecutorServiceSessionValidationScheduler">
+        <property name="interval" value="3600000"/><!-- 1个小时 -->
+        <property name="sessionManager" ref="sessionManager"/>
+    </bean>
+
+    <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="rememberMe"/>
+        <property name="httpOnly" value="true"/>
+        <property name="maxAge" value="2592000"/><!-- 30天 -->
+    </bean>
+
+    <!-- rememberMe管理器 -->
+    <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+        <!-- rememberMe cookie加密的密钥 建议每个项目都不一样 默认AES算法 密钥长度（128 256 512 位）-->
+        <property name="cipherKey" value="#{T(org.apache.shiro.codec.Base64).decode('4AvVhmFLUs0KTA3Kprsdag==')}"/>
+        <property name="cookie" ref="rememberMeCookie"/>
+    </bean>
+
+    <bean id="userRealm" class="com.maoding.shiro.realm.UserRealm"/>
+
+    <!-- 用户授权信息Cache, 采用EhCache，本地缓存最长时间应比中央缓存时间短一些，以确保Session中doReadSession方法调用时更新中央缓存过期时间 -->
+    <bean id="shiroCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <property name="cacheManager" ref="ehCacheManager" />
+    </bean>
+
+    <!-- Shiro默认会使用Servlet容器的Session,可通过sessionMode属性来指定使用Shiro原生Session -->
+    <!--  即<property name="sessionMode" value="native"/>,详细说明见官方文 档 -->
+    <!-- 这里主要是设置自定义的单Realm应用,若有多个Realm,可使用'realms'属性代替 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="userRealm"/>
+        <property name="rememberMeManager" ref="rememberMeManager"/>
+        <property name="cacheManager" ref="shiroCacheManager" />
+        <property name="sessionManager" ref="sessionManager"/>
+    </bean>
+
+
+    <!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+    <!-- 开启Shiro的注解(如@RequiresRoles,@RequiresPermissions),需借助SpringAOP扫描使用Shiro注解 的类,并在必要时进行安全逻辑验证 -->
+    <!-- 配置以下两个bean即可实现此功能 -->
+    <!-- Enable Shiro Annotations for Spring-configured beans. Only run after the lifecycleBeanProcessor has run -->
+    <!--此处导致AOP配置冲突
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor"/>
+    -->
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
+    <!-- Shiro Filter -->
+    <bean id="appFilter" class="com.maoding.shiro.filter.APPFilter"/>
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <!-- Shiro的核心安全接口,这个属性是必须的 -->
+        <property name="securityManager" ref="securityManager"/>
+        <property name="loginUrl" value="/iWork/sys/login"/>
+        <property name="successUrl" value="/"/>
+        <property name="unauthorizedUrl" value="/"/>
+        <!-- Shiro连接约束配置,即过滤链的定义 -->
+        <!--  此处可配合我的这篇文章来理解各个过滤连的作用http://blog.csdn.net/jadyer/article/details /12172839 -->
+        <!--  下面value值的第一个'/'代表的路径是相对于HttpServletRequest.getContextPath()的值来 的 -->
+        <!-- anon： 它对应的过滤器里面是空的,什么都没做,这里.do和.jsp后面的*表示参数,比方说login.jsp?main这 种 -->
+        <!-- authc： 该过滤器下的页面必须验证后才能访问,它是Shiro内置的一个拦截器 org.apache.shiro.web.filter.authc.FormAuthenticationFilter -->
+        <property name="filters">
+            <map>
+                <entry key="authApp" value-ref="appFilter"/>
+            </map>
+        </property>
+        <property name="filterChainDefinitions">
+            <value>
+                /=anon
+                /na/**=anon
+                /home/**=anon
+                /corpserver/**=anon
+                /iWork/sys/**=anon
+                /iWork/collaboration/**=anon
+                /iAdmin/sys/**=anon
+                /assets/**=anon
+                /views/**=anon
+                /mobile/**=anon
+                /nav/**=anon
+                /admin/**=anon
+                /companyDisk/**=anon
+                /** = authApp
+            </value>
+        </property>
+    </bean>
+</beans>

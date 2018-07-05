@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetUserByOrgIdForNoticeMapper" >
+
+  	
+  	<!-- 推送消息的人员id -->
+  	<select id="getUserByOrgIdForNotice" resultType="java.lang.String" parameterType="java.util.Map">
+  		SELECT DISTINCT user_id from maoding_web_org_user
+		where company_id in (
+			SELECT id from maoding_web_org where org_type=0 and id in
+			<foreach collection="orgList" index="i" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		)
+		or org_id in (
+			SELECT id from maoding_web_org where   org_type=1 and id in
+			<foreach collection="orgList" index="i" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		)
+  	</select>
+
+	<!-- 推送消息的人员id -->
+	<select id="getUserByCompanyForSendMsg" resultType="java.lang.String" parameterType="java.util.Map">
+		SELECT DISTINCT user_id from maoding_web_company_user
+		where audit_status = '1' and company_id in
+		<foreach collection="companyList" index="i" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
+</mapper>

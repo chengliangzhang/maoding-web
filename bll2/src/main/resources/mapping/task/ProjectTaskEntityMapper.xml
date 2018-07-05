@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ProjectTaskEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.task.entity.ProjectTaskEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="from_company_id" property="fromCompanyId" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="task_name" property="taskName" jdbcType="VARCHAR" />
+    <result column="task_pid" property="taskPid" jdbcType="VARCHAR" />
+    <result column="task_path" property="taskPath" jdbcType="VARCHAR"/>
+    <result column="task_type" property="taskType" jdbcType="INTEGER" />
+    <result column="task_level" property="taskLevel" jdbcType="INTEGER" />
+    <result column="task_status" property="taskStatus" jdbcType="VARCHAR" />
+    <result column="task_remark" property="taskRemark" jdbcType="VARCHAR" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+    <result column="is_operater_task" property="isOperaterTask" jdbcType="INTEGER" />
+    <result column="complete_date" property="completeDate" jdbcType="DATE"/>
+    <result column="start_time"  property="startTime" jdbcType="DATE"/>
+    <result column="end_time" property="endTime" jdbcType="DATE"/>
+    <result column="be_modify_id" property="beModifyId" jdbcType="VARCHAR" />
+    <result column="completion" property="completion" jdbcType="VARCHAR" />
+    <result column="end_status" property="endStatus" jdbcType="INTEGER" />
+    <result column="priority" property="priority" jdbcType="SMALLINT" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, company_id,from_company_id, project_id, org_id,task_name, task_pid, task_type, task_level, task_status,task_path,complete_date,
+    task_remark, seq, create_date, create_by, update_date, update_by, is_operater_task,be_modify_id,start_time, end_time,end_status,completion
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_project_task
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="listTaskByPid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_project_task
+    where task_pid = #{taskPid,jdbcType=VARCHAR} and task_status !=1
+  </select>
+
+  <select id="getTaskByBeModifyId" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_project_task
+    where be_modify_id = #{beModifyId}
+    <if test="fromCompanyId != null">
+    and from_company_id =  #{fromCompanyId}
+    </if>
+    order by create_date
+  </select>
+
+  <select id="getProjectTaskMaxSeq" resultType="java.lang.Integer" parameterType="java.util.Map">
+    select IFNULL(max(seq),0)+1 from maoding_web_project_task
+    where project_id = #{projectId,jdbcType=VARCHAR}
+    and task_status!='1'
+    <if test="taskPid != null" >
+      and task_pid = #{taskPid,jdbcType=VARCHAR}
+    </if>
+    <if test="taskPid == null" >
+      and task_pid is null
+    </if>
+  </select>
+
+  <select id="getNotSetResponsibleTask" resultMap="BaseResultMap" parameterType="java.util.Map" >
+   select a.id,a.task_name,a.project_id,a.company_id
+   from maoding_web_project_task a
+   LEFT JOIN maoding_web_project_task_relation b on a.id = b.task_id and b.relation_status='0'
+    LEFT JOIN maoding_web_project_member c on a.id = c.target_id and c.member_type=3 and c.deleted=0
+   where a.task_status='0' AND a.task_type != 3 and  b.id is null and c.id is null and a.task_pid is not null
+   and a.project_id = #{projectId,jdbcType=VARCHAR}
+   and a.company_id = #{companyId,jdbcType=VARCHAR}
+  </select>
+
+
+    <!-- 获取我负责的任务-->
+  <select id="getMyResponsibleTask" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select a.id,a.task_name,a.project_id,a.company_id
+    from maoding_web_project_task a
+    INNER JOIN maoding_web_project_member c on a.id = c.target_id and c.member_type=3 and c.deleted=0
+    where a.task_status='0'
+    AND (a.task_type = 0 or a.task_type = 2 or a.task_type = 1)
+    and a.project_id = #{projectId,jdbcType=VARCHAR}
+    and a.company_id = #{companyId,jdbcType=VARCHAR}
+    and c.company_user_id = #{companyUserId,jdbcType=VARCHAR}
+    <if test="notComplete != null" >
+      and a.complete_date is null
+    </if>
+  </select>
+
+  <select id="getProjectTaskByPidAndTaskName" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+      a.id as be_modify_id, a.company_id, a.project_id, a.org_id,a.task_name, a.task_pid, a.task_type, a.task_level, a.task_status,a.task_path,a.complete_date,
+      a.task_remark, a.seq, a.is_operater_task,ifnull(b.id,a.id) as id
+    from maoding_web_project_task a
+    LEFT JOIN maoding_web_project_task b on a.id = b.be_modify_id
+    where  a.task_status!='1'
+    <if test="projectId != null" >
+        and a.project_id = #{projectId,jdbcType=VARCHAR}
+    </if>
+    <if test="fromCompanyId != null" >
+        and a.from_company_id = #{fromCompanyId,jdbcType=VARCHAR}
+    </if>
+    <if test="companyId != null" >
+        and a.company_id = #{companyId,jdbcType=VARCHAR}
+    </if>
+    <if test="taskPid != null" >
+        and a.task_pid = #{taskPid,jdbcType=VARCHAR}
+    </if>
+    <if test="taskPid == null" >
+        and a.task_pid is null
+    </if>
+    and ((binary (a.task_name = #{taskName,jdbcType=VARCHAR}))
+        or (b.task_type = 3 and binary (b.task_name = #{taskName,jdbcType=VARCHAR})))
+  </select>
+
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_project_task
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.maoding.task.entity.ProjectTaskEntity" >
+    insert into maoding_web_project_task (id, company_id,from_company_id,
+      project_id, org_id,
+      task_name, task_pid, task_type, complete_date,be_modify_id,
+      task_level, task_status, task_remark, 
+      seq, create_date, create_by,
+      update_date, update_by, is_operater_task,
+      start_time, end_time,
+      task_path,end_status,completion,priority)
+    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{fromCompanyId,jdbcType=VARCHAR},
+      #{projectId,jdbcType=VARCHAR}, #{orgId,jdbcType=VARCHAR},
+      #{taskName,jdbcType=VARCHAR}, #{taskPid,jdbcType=VARCHAR}, #{taskType,jdbcType=INTEGER},
+      #{completeDate,jdbcType=DATE}, #{beModifyId,jdbcType=VARCHAR},
+      <choose><when test="taskLevel!=null">#{taskLevel,jdbcType=INTEGER}</when><otherwise>'0'</otherwise></choose>,
+      <choose><when test="taskStatus!=null">#{taskStatus,jdbcType=VARCHAR}</when><otherwise>'0'</otherwise></choose>,
+      #{taskRemark,jdbcType=VARCHAR},
+      <choose><when test="seq!=null">#{seq,jdbcType=INTEGER}</when><otherwise>1</otherwise></choose>,
+      now(), #{createBy,jdbcType=VARCHAR},
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR},
+      <choose><when test="isOperaterTask!=null">#{isOperaterTask,jdbcType=INTEGER}</when><otherwise>0</otherwise></choose>,
+      #{startTime,jdbcType=DATE}, #{endTime,jdbcType=DATE},
+      #{taskPath,jdbcType=LONGVARCHAR},#{endStatus,jdbcType=VARCHAR},#{completion,jdbcType=VARCHAR},
+      #{priority,jdbcType=SMALLINT})
+  </insert>
+
+
+  <update id="finishSubDesignTask" parameterType="java.lang.String" >
+    update maoding_web_project_task sub_design
+    set sub_design.complete_date = date(now()),sub_design.end_status = '3'
+    where sub_design.task_pid = #{_parameter}
+        and sub_design.task_type = 5
+  </update>
+
+  <update id="updateById" parameterType="com.maoding.task.entity.ProjectTaskEntity" >
+    update maoding_web_project_task
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="fromCompanyId != null" >
+        from_company_id = #{fromCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        org_id = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null" >
+        task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskPid != null" >
+        task_pid = #{taskPid,jdbcType=VARCHAR},
+      </if>
+      <if test="taskType != null" >
+        task_type = #{taskType,jdbcType=INTEGER},
+      </if>
+      <if test="taskLevel != null and taskLevel!=0" >
+        task_level = #{taskLevel,jdbcType=INTEGER},
+      </if>
+      <if test="completeDate != null"  >
+        complete_date = #{completeDate,jdbcType=DATE},
+      </if>
+      <if test="beModifyId != null" >
+        be_modify_id = #{beModifyId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskStatus != null" >
+        task_status = #{taskStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="taskRemark != null" >
+        task_remark = #{taskRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null  and seq!=0" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+        update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="isOperaterTask != null" >
+        is_operater_task = #{isOperaterTask,jdbcType=INTEGER},
+      </if>
+      <if test="taskPath != null" >
+        task_path = #{taskPath,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=DATE},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=DATE},
+      </if>
+      <if test="completion != null" >
+        completion = #{completion,jdbcType=VARCHAR},
+      </if>
+      <if test="endStatus != null" >
+        end_status = #{endStatus,jdbcType=INTEGER},
+        <if test="endStatus==0">
+          complete_date = null
+        </if>
+      </if>
+      <if test="priority != null">
+        priority = #{priority,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByIdOrModifyId" parameterType="com.maoding.task.entity.ProjectTaskEntity" >
+    update maoding_web_project_task a,maoding_web_project_task b
+    <set>
+      <if test="companyId != null" >
+        a.company_id=#{companyId,jdbcType=VARCHAR},b.company_id=#{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="fromCompanyId != null" >
+        a.from_company_id=#{fromCompanyId,jdbcType=VARCHAR},b.from_company_id=#{fromCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        a.org_id = #{orgId,jdbcType=VARCHAR},b.org_id = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null" >
+        a.project_id = #{projectId,jdbcType=VARCHAR},b.project_id = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null" >
+        a.task_name = #{taskName,jdbcType=VARCHAR},b.task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskPid != null" >
+        a.task_pid = #{taskPid,jdbcType=VARCHAR},b.task_pid = #{taskPid,jdbcType=VARCHAR},
+      </if>
+      <if test="taskType != null" >
+        a.task_type = #{taskType,jdbcType=INTEGER},b.task_type = #{taskType,jdbcType=INTEGER},
+      </if>
+      <if test="taskLevel != null and taskLevel!=0" >
+        a.task_level = #{taskLevel,jdbcType=INTEGER},b.task_level = #{taskLevel,jdbcType=INTEGER},
+      </if>
+      <if test="completeDate != null" >
+        a.complete_date = #{completeDate,jdbcType=DATE},b.complete_date = #{completeDate,jdbcType=DATE},
+      </if>
+      <if test="beModifyId != null" >
+        a.be_modify_id = #{beModifyId,jdbcType=VARCHAR},b.be_modify_id = #{beModifyId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskStatus != null" >
+        a.task_status = #{taskStatus,jdbcType=VARCHAR},b.task_status = #{taskStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="taskRemark != null" >
+        a.task_remark = #{taskRemark,jdbcType=VARCHAR},b.task_remark = #{taskRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null  and seq!=0" >
+        a.seq = #{seq,jdbcType=INTEGER},b.seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        a.create_date = #{createDate,jdbcType=TIMESTAMP},b.create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        a.create_by = #{createBy,jdbcType=VARCHAR},b.create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      a.update_date = now(),b.update_date = now(),
+      <if test="updateBy != null" >
+        a.update_by = #{updateBy,jdbcType=VARCHAR},b.update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="isOperaterTask != null" >
+        a.is_operater_task = #{isOperaterTask,jdbcType=INTEGER},b.is_operater_task = #{isOperaterTask,jdbcType=INTEGER},
+      </if>
+      <if test="taskPath != null" >
+        a.task_path = #{taskPath,jdbcType=LONGVARCHAR},b.task_path = #{taskPath,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="startTime != null">
+        a.start_time = #{startTime,jdbcType=DATE},b.start_time = #{startTime,jdbcType=DATE},
+      </if>
+      <if test="endTime != null">
+        a.end_time = #{endTime,jdbcType=DATE},b.end_time = #{endTime,jdbcType=DATE},
+      </if>
+      <if test="endStatus != null" >
+        a.end_status = #{endStatus,jdbcType=INTEGER},b.end_status = #{endStatus,jdbcType=INTEGER},
+      </if>
+      <if test="priority != null" >
+        a.priority = #{priority,jdbcType=SMALLINT},b.priority = #{priority,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where ((b.id=a.be_modify_id) or (b.be_modify_id=a.be_modify_id) or (b.be_modify_id=a.id)) and (a.id=#{id,jdbcType=VARCHAR})
+  </update>
+
+
+  <update id="updateByTaskId" parameterType="com.maoding.task.entity.ProjectTaskEntity" >
+    update maoding_web_project_task
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="fromCompanyId != null" >
+        from_company_id = #{fromCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        org_id = #{orgId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null" >
+        task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskPid != null" >
+        task_pid = #{taskPid,jdbcType=VARCHAR},
+      </if>
+      <if test="taskStatus != null" >
+        task_status = #{taskStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="taskRemark != null" >
+        task_remark = #{taskRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="taskPath != null" >
+        task_path = #{taskPath,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="startTime != null">
+        start_time = if(unix_timestamp(#{startTime,jdbcType=DATE})=0,null,#{startTime,jdbcType=DATE}),
+      </if>
+      <if test="endTime != null">
+        end_time = if(unix_timestamp(#{endTime,jdbcType=DATE})=0,null,#{endTime,jdbcType=DATE}),
+      </if>
+      <if test="endStatus != null" >
+        end_status = #{endStatus,jdbcType=INTEGER},
+      </if>
+      <if test="completion != null" >
+      completion = #{completion,jdbcType=VARCHAR},
+      </if>
+      <if test="priority != null" >
+        priority = #{priority,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByParam"  parameterType="java.util.Map" >
+    update maoding_web_project_task
+    <set >
+    <if test="taskStatus != null" >
+       task_status= #{taskStatus,jdbcType=VARCHAR},
+    </if>
+    <if test="taskStatus == null" >
+       task_status= 1,
+    </if>
+      <if test="isOperaterTask != null" >
+        is_operater_task= #{isOperaterTask,jdbcType=INTEGER},
+      </if>
+        <if test="beModifyIdIsNull != null" >
+          be_modify_id = null,
+        </if>
+      <if test="priority != null" >
+        priority = #{priority,jdbcType=SMALLINT},
+      </if>
+    </set>
+    WHERE 1=1
+    <if test="companyId != null" >
+      AND  company_id = #{companyId,jdbcType=VARCHAR}
+    </if>
+    <if test="fromCompanyId != null" >
+      AND from_company_id = #{fromCompanyId,jdbcType=VARCHAR}
+    </if>
+    <if test="projectId != null" >
+      AND  project_id = #{projectId,jdbcType=VARCHAR}
+    </if>
+    <if test="taskName != null" >
+      AND task_name = #{taskName,jdbcType=VARCHAR}
+    </if>
+    <if test="taskPid != null" >
+      AND  task_pid = #{taskPid,jdbcType=VARCHAR}
+    </if>
+    <if test="taskType != null " >
+        AND   task_type = #{taskType,jdbcType=INTEGER}
+    </if>
+    <if test="taskLevel != null  and taskLevel!=0 " >
+       AND  task_level = #{taskLevel,jdbcType=INTEGER}
+    </if>
+    <if test="beModifyId != null" >
+      AND be_modify_id = #{beModifyId,jdbcType=VARCHAR}
+    </if>
+    <if test="taskRemark != null" >
+      AND  task_remark = #{taskRemark,jdbcType=VARCHAR}
+    </if>
+    <if test="taskPath != null" >
+      AND  task_path  LIKE '%' #{taskPath} '%'
+    </if>
+    <if test="seq != null" >
+      AND  seq = #{seq,jdbcType=INTEGER}
+    </if>
+  </update>
+
+  <update id="update" parameterType="com.maoding.task.entity.ProjectTaskEntity" >
+    update maoding_web_project_task
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      from_company_id = #{fromCompanyId,jdbcType=VARCHAR},
+      project_id = #{projectId,jdbcType=VARCHAR},
+      task_name = #{taskName,jdbcType=VARCHAR},
+      task_pid = #{taskPid,jdbcType=VARCHAR},
+      org_id = #{orgId,jdbcType=VARCHAR},
+      task_type = #{taskType,jdbcType=INTEGER},
+      task_level = #{taskLevel,jdbcType=INTEGER},
+      task_status = #{taskStatus,jdbcType=VARCHAR},
+      task_remark = #{taskRemark,jdbcType=VARCHAR},
+      seq = #{seq,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=DATE},
+      end_time = #{endTime,jdbcType=DATE},
+      task_path = #{taskPath,jdbcType=LONGVARCHAR},
+      completion = #{completion,jdbcType=VARCHAR},
+      end_status = #{endStatus,jdbcType=INTEGER},
+      priority = #{priority,jdbcType=SMALLINT}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateProjectTaskStatus" parameterType="com.maoding.task.entity.ProjectTaskEntity" >
+    update maoding_web_project_task
+    set task_status = #{taskStatus,jdbcType=VARCHAR}
+    where task_path LIKE '%' #{taskPath,jdbcType=VARCHAR} '%' or be_modify_id = #{taskPath}
+  </update>
+
+  <update id="updateModifyTaskPid" parameterType="java.util.Map" >
+    update maoding_web_project_task
+    set task_pid = #{taskPid,jdbcType=VARCHAR}, task_path = CONCAT(#{parentPath,jdbcType=VARCHAR},id)
+    where task_pid = #{publishId,jdbcType=VARCHAR} and task_type=4 and be_modify_id is null
+  </update>
+
+  <select id="selectByParam" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM maoding_web_project_task
+    WHERE 1=1 and    task_Type!='3' and  task_Type!='4'
+    <if test="taskStatusFlag == null" >
+    and task_status='0'
+    </if>
+    <if test="taskStatusFlag != null" >
+      and task_status !=1
+    </if>
+    <if test="companyId != null" >
+      AND  company_id = #{companyId,jdbcType=VARCHAR}
+    </if>
+    <if test="fromCompanyId != null" >
+      AND  from_company_id = #{fromCompanyId,jdbcType=VARCHAR}
+    </if>
+    <if test="projectId != null" >
+      AND  project_id = #{projectId,jdbcType=VARCHAR}
+    </if>
+    <if test="beModifyId != null" >
+      AND  be_modify_id = #{beModifyId,jdbcType=VARCHAR}
+    </if>
+    <if test="taskName != null" >
+      AND task_name = #{taskName,jdbcType=VARCHAR}
+    </if>
+    <if test="taskPid != null" >
+      AND  task_pid = #{taskPid,jdbcType=VARCHAR}
+    </if>
+    <if test="taskType != null" >
+      AND   task_type = #{taskType,jdbcType=INTEGER}
+    </if>
+    <if test="taskLevel != null" >
+      AND  task_level = #{taskLevel,jdbcType=INTEGER}
+    </if>
+    <if test="taskRemark != null" >
+      AND  task_remark = #{taskRemark,jdbcType=VARCHAR}
+    </if>
+    <if test="taskPath != null" >
+      AND  task_path LIKE  '%' #{taskPath} '%'
+    </if>
+    <if test="seq != null" >
+      AND  seq = #{seq,jdbcType=INTEGER}
+    </if>
+    <if test="notIncludeDesignTask != null" >
+      AND  task_Type!='5'
+    </if>
+    <if test="notComplete != null" >
+    --   and id not in (SELECT  task_id from maoding_web_project_task_relation where relation_status='0')
+      AND is_operater_task = 0
+      AND  complete_date is NULL
+    </if>
+    <if test="syncDate != null">
+      <![CDATA[  and task.create_date <= #{syncDate,jdbcType=VARCHAR}  ]]>
+    </if>
+    order by seq
+  </select>
+  <select id="listUnCompletedTask" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+      ifnull(b.id,a.id) as id,
+      ifnull(b.company_id,a.company_id) as company_id,
+      ifnull(b.project_id,a.project_id) as project_id,
+      ifnull(b.org_id,a.org_id) as org_id,
+      ifnull(b.task_name,a.task_name) as task_name,
+      ifnull(b.task_pid,a.task_pid) as task_pid,
+      ifnull(b.task_type,a.task_type) as task_type,
+      ifnull(b.task_level,a.task_level) as task_level,
+      ifnull(b.task_status,a.task_status) as task_status,
+      ifnull(b.task_path,a.task_path) as task_path,
+      ifnull(b.complete_date,a.complete_date) as complete_date,
+      ifnull(b.task_remark,a.task_remark) as task_remark,
+      ifnull(b.seq,a.seq) as seq,
+      ifnull(b.create_date,a.create_date) as create_date,
+      ifnull(b.create_by,a.create_by) as create_by,
+      ifnull(b.update_date,a.update_date) as update_date,
+      ifnull(b.update_by,a.update_by) as update_by,
+      ifnull(b.is_operater_task,a.is_operater_task) as is_operater_task,
+      ifnull(b.be_modify_id,a.be_modify_id) as be_modify_id
+    from
+      ( select * from maoding_web_project_task where task_status='0' and task_type!='3' and task_pid=#{taskPid}) a
+      left join maoding_web_project_task b on (b.task_status='0' and b.task_type!='3' and position(concat(a.task_path,'-') in b.task_path))
+    where (a.complete_date is null) and (b.complete_date is null)
+          and b.is_operater_task = 0
+  </select>
+
+  <select id="listUnCompletedTaskByCompany" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    b.*
+    from
+    ( select t.task_path,t.complete_date from maoding_web_project_task t, maoding_web_project_task_relation r
+    where t.project_id = #{projectId}
+    and t.id = r.task_id and r.relation_status=0
+    and r.from_company_id = #{fromCompanyId}
+    <if test="toCompanyId!=null"> and r.to_company_id = #{toCompanyId}</if>
+    and t.task_status='0' and t.task_type!='3') a
+    INNER JOIN maoding_web_project_task b on (b.task_status='0' and b.task_type!='3' and position(concat(a.task_path) in b.task_path))
+    where 1=1
+    and (a.complete_date is null) and (b.complete_date is null)
+    and b.is_operater_task = 0
+  </select>
+
+  <update id="updateTaskOrgId" parameterType="java.lang.String">
+    update maoding_web_project_task
+    set org_id = null
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="changeCompany" parameterType="com.maoding.task.dto.TaskChangeCompanyDTO">
+    update maoding_web_project_task
+    set company_id = #{changeCompanyId}
+    where project_id = #{projectId}
+    and company_id = #{companyId}
+  </update>
+
+  <update id="changeFromCompany" parameterType="com.maoding.task.dto.TaskChangeCompanyDTO">
+    update maoding_web_project_task
+    set from_company_id = #{changeCompanyId}
+    where project_id = #{projectId}
+    and from_company_id = #{companyId}
+  </update>
+
+  <!-- 查询签发给某组织的所有任务名称（以逗号隔开） -->
+  <select id="getAllTaskNameByToCompanyId" resultMap="BaseResultMap" parameterType="java.util.Map" >
+   SELECT
+        group_concat(t.task_name) AS task_name
+    FROM
+        maoding_web_project_task_relation r
+    LEFT JOIN maoding_web_project_task t ON t.id = r.task_id
+    WHERE
+        t.task_status!='1' AND r.relation_status='0'
+    AND r.to_company_id = #{toCompanyId,jdbcType=VARCHAR}
+    AND r.from_company_id = #{fromCompanyId,jdbcType=VARCHAR}
+    AND t.project_id = #{projectId,jdbcType=VARCHAR}
+    GROUP BY
+	r.to_company_id
+  </select>
+
+  <select id="getTaskByIdList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+        <include refid="Base_Column_List" />
+    from maoding_web_project_task
+    <where>
+        (task_status='0' or task_status='2')
+        and id in
+        <foreach collection="idList" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </where>
+  </select>
+  <update id="deleteTaskByIdList" parameterType="java.util.Map" >
+    update maoding_web_project_task
+    set task_status='1'
+    <where>
+      id in
+      <foreach collection="idList" item="id" open="(" close=")" separator=",">
+          #{id}
+      </foreach>
+    </where>
+  </update>
+
+  <update id="resetTaskCompleteStatus" parameterType="java.lang.String" >
+    update maoding_web_project_task
+    set complete_date=null,end_status = 0,completion=null
+    <where>
+      id = #{taskId}
+      and task_status='0'
+    </where>
+  </update>
+
+  <update id="resetProcessNodeCompleteStatus" parameterType="java.lang.String" >
+    update maoding_web_project_process_node
+    set complete_time=null
+    <where>
+      id = #{processNodeId}
+      and status='0'
+    </where>
+  </update>
+  <sql id="task_time_table">
+    select *
+    from
+      ( select *
+        from maoding_web_project_process_time
+        order by create_date desc
+      ) t
+    group by target_id
+  </sql>
+  <sql id="task_state_table">
+    select
+      e.id as task_id,
+      max(e.complete_date) as complete_date,
+      count(*) as responsibler_count,
+      sum(e.not_complete) as not_complete_count
+    from
+      ( SELECT
+          e1.id as id,
+          e2.complete_date as complete_date,
+          if(e2.complete_date is null,1,0) as not_complete
+        FROM
+          ( select id
+            from maoding_web_project_task
+            where ((task_status='0') and (id=#{taskId} or task_pid=#{taskId}))
+          ) e1
+          inner join maoding_web_project_task e2 on ((e2.task_type=0 or e2.task_type=2) and e2.task_status='0' and (POSITION(e1.id IN e2.task_path)>0))
+          inner join  maoding_web_project_member e3 ON (e3.target_id = e2.id and e3.member_type=3 and e3.deleted=0 )
+      ) e
+      group by e.id
+  </sql>
+  <select id="getTaskState" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select
+      if(a1.start_time is null,0,
+        if(ifnull(a3.responsibler_count,0)=0,10,
+          if(ifnull(a3.not_complete_count,1)=0,if(datediff(a3.complete_date,a1.end_time)>0,4,3),
+            if(date(a1.start_time)>current_date(),5,
+              if(datediff(current_date(),date(a1.end_time))>0,2,
+                if((10*datediff(current_date(),date(a1.start_time)))>(9*datediff(date(a1.end_time),date(a1.start_time))),6,1)))))) as task_state
+    from
+      (   select id,start_time,end_time
+          from maoding_web_project_task
+          where task_status='0' and id=#{taskId}) a1
+      left join (<include refid="task_state_table"/>) a3 on (a1.id=a3.task_id)
+    limit 1
+  </select>
+</mapper>

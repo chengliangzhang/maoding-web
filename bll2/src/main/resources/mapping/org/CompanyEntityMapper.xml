@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="CompanyEntityMapper">
+    <resultMap id="BaseResultMap" type="com.maoding.org.entity.CompanyEntity">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="company_name" property="companyName" jdbcType="VARCHAR"/>
+        <result column="major_type" property="majorType" jdbcType="VARCHAR"/>
+        <result column="certificate" property="certificate" jdbcType="VARCHAR"/>
+        <result column="main_field" property="mainField" jdbcType="VARCHAR"/>
+        <result column="is_authentication" property="isAuthentication" jdbcType="VARCHAR"/>
+        <result column="operator_name" property="operatorName" jdbcType="VARCHAR"/>
+        <result column="reject_reason" property="rejectReason" jdbcType="VARCHAR"/>
+        <result column="company_type" property="companyType" jdbcType="VARCHAR"/>
+        <result column="company_email" property="companyEmail" jdbcType="VARCHAR"/>
+        <result column="company_short_name" property="companyShortName" jdbcType="VARCHAR"/>
+        <result column="company_fax" property="companyFax" jdbcType="VARCHAR"/>
+        <result column="server_type" property="serverType" jdbcType="VARCHAR"/>
+        <result column="province" property="province" jdbcType="VARCHAR"/>
+        <result column="city" property="city" jdbcType="VARCHAR"/>
+        <result column="county" property="county" jdbcType="VARCHAR"/>
+        <result column="legal_representative" property="legalRepresentative" jdbcType="VARCHAR"/>
+        <result column="company_phone" property="companyPhone" jdbcType="VARCHAR"/>
+        <result column="company_address" property="companyAddress" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="group_index" property="groupIndex" jdbcType="INTEGER"/>
+        <result column="index_show" property="indexShow" jdbcType="VARCHAR"/>
+        <result column="business_license_number" property="businessLicenseNumber" jdbcType="VARCHAR"/>
+        <result column="organization_code_number" property="organizationCodeNumber" jdbcType="VARCHAR"/>
+        <result column="micro_url" property="microUrl" jdbcType="VARCHAR"/>
+        <result column="micro_template" property="microTemplate" jdbcType="VARCHAR"/>
+        <result column="group_id" property="groupId" jdbcType="VARCHAR"/>
+        <result column="company_comment" property="companyComment" jdbcType="LONGVARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="alias_name" property="aliasName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, company_name, major_type, certificate, main_field, is_authentication, operator_name,
+        reject_reason, company_type, company_email, company_short_name, company_fax, server_type,
+        province, city, county, legal_representative, company_phone, company_address, status, group_index,
+        index_show, business_license_number, organization_code_number, micro_url, micro_template,
+        group_id, company_comment, create_date, create_by, update_date, update_by
+    </sql>
+
+    <sql id="getCompanyAliasName" >
+        select
+        if(b.nick_name is null or b.nick_name='',a.company_name,b.nick_name) as aliasName,a.id
+        from maoding_web_company a
+        LEFT JOIN maoding_web_business_partner b on a.id = b.company_id and b.type=3
+        GROUP BY a.id
+    </sql>
+
+    <select id="getAliasName" resultType="java.lang.String" parameterType="java.lang.String" >
+        select
+        if(b.nick_name is null or b.nick_name='',a.company_name,b.nick_name) as aliasName
+        from maoding_web_company a
+        LEFT JOIN maoding_web_business_partner b on a.id = b.company_id and b.type=3
+        where a.id = #{id,jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+            a.id,
+            company_name,
+            major_type,
+            certificate,
+            main_field,
+            is_authentication,
+            operator_name,
+            reject_reason,
+            company_type,
+            company_email,
+            company_short_name,
+            company_fax,
+            server_type,
+            province,
+            city,
+            county,
+            legal_representative,
+            company_phone,
+            company_address,
+            status,
+            group_index,
+            index_show,
+            business_license_number,
+            organization_code_number,
+            micro_url,
+            micro_template,
+            group_id,
+            company_comment,
+            b.nick_name AS alias_name
+        FROM maoding_web_company a
+            LEFT JOIN maoding_web_business_partner b ON a.id = b.company_id AND b.type = 3
+        WHERE a.id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_company
+    </select>
+
+    <select id="selectAllIm" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_company d WHERE d.id NOT IN (SELECT orgId FROM maoding_web_im_group WHERE groupType = 0) and
+        d.status = '0'
+    </select>
+    <select id="getCompanyByCompanyName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_company
+        where binary company_name = #{companyName,jdbcType=VARCHAR} and status='0'
+    </select>
+
+    <select id="listCompanyByCompanyName" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select a.*
+        from maoding_web_company a
+        INNER JOIN maoding_web_company_relation b on a.id = org_id
+        INNER JOIN maoding_web_org c on b.id = c.id
+        where b.org_pid = #{orgPid}
+        and c.org_type = #{type}
+        and binary company_name = #{companyName}
+        and a.status='0'
+    </select>
+
+    <select id="getCompanyBySearch" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_company
+        where binary company_name LIKE '%' #{companyName} '%' AND status='0'
+    </select>
+
+    <select id="getAllCompanyBySearch" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_company
+        where binary company_name LIKE '%' #{companyName} '%'
+    </select>
+
+    <select id="getCompanyByCompanyShortName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_company
+        where binary company_short_name = #{companyShortName,jdbcType=VARCHAR} and status='0'
+    </select>
+
+    <!-- 获取项目的外部合作团队 -->
+    <select id="getOuterCooperatorCompany" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+            DISTINCT
+            a.id,
+            a.company_name,
+            a.company_short_name
+        FROM maoding_web_company a
+            LEFT JOIN maoding_web_partner b ON a.id = b.company_id
+            LEFT JOIN maoding_web_partner c ON a.id = c.from_company_id
+        WHERE (b.from_company_id = #{companyId,jdbcType=VARCHAR} AND b.project_id = #{projectId,jdbcType=VARCHAR} OR
+               c.company_id = #{companyId,jdbcType=VARCHAR} AND c.project_id = #{projectId,jdbcType=VARCHAR})
+              AND a.status = '0'
+    </select>
+
+    <select id="getCompanyForProject" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+            DISTINCT d.*
+        FROM maoding_web_project a
+            LEFT JOIN maoding_web_project_task b ON b.project_id = a.id
+            LEFT JOIN maoding_web_project_task_relation c ON b.id = c.task_id AND c.relation_status = '0'
+            LEFT JOIN maoding_web_company d ON d.id = a.company_id
+        WHERE a.pstatus = '0'
+              AND (a.company_id = #{relationCompany,jdbcType=VARCHAR} OR
+                   c.from_company_id = #{relationCompany,jdbcType=VARCHAR} OR
+                   c.to_company_id = #{relationCompany,jdbcType=VARCHAR} OR
+                   a.company_bid = #{relationCompany,jdbcType=VARCHAR})
+    </select>
+    <select id="getCompanyForMyProject" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+            DISTINCT com.*
+        FROM
+            maoding_web_project pro
+            LEFT JOIN maoding_web_project_member m ON pro.id = m.project_id
+            LEFT JOIN maoding_web_company com ON com.id = pro.company_id
+        WHERE
+            (m.company_user_id = #{companyUserId,jdbcType=VARCHAR} AND m.deleted = 0)
+            AND pro.pstatus = '0'
+        GROUP BY
+            pro.id
+        ORDER BY
+            pro.create_date DESC
+    </select>
+    <delete id="deleteById" parameterType="java.lang.String">
+        DELETE FROM maoding_web_company
+        WHERE id = #{id,jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="insert" parameterType="com.maoding.org.entity.CompanyEntity">
+        INSERT INTO maoding_web_company (id, company_name, major_type,
+                                         certificate, main_field, is_authentication,
+                                         operator_name, reject_reason, company_type,
+                                         company_email, company_short_name, company_fax,
+                                         server_type, province, city, county,
+                                         legal_representative, company_phone, company_address,
+                                         status, group_index, index_show,
+                                         business_license_number, organization_code_number,
+                                         micro_url, micro_template, group_id,
+                                         create_date, create_by, update_date,
+                                         update_by, company_comment)
+        VALUES (#{id,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{majorType,jdbcType=VARCHAR},
+                                        #{certificate,jdbcType=VARCHAR}, #{mainField,jdbcType=VARCHAR},
+                                        #{isAuthentication,jdbcType=VARCHAR},
+                                        #{operatorName,jdbcType=VARCHAR}, #{rejectReason,jdbcType=VARCHAR}, '0',
+                                        #{companyEmail,jdbcType=VARCHAR}, #{companyShortName,jdbcType=VARCHAR},
+            #{companyFax,jdbcType=VARCHAR},
+            #{serverType,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR},
+            #{county,jdbcType=VARCHAR},
+            #{legalRepresentative,jdbcType=VARCHAR}, #{companyPhone,jdbcType=VARCHAR},
+            #{companyAddress,jdbcType=VARCHAR},
+            '0', #{groupIndex,jdbcType=INTEGER}, #{indexShow,jdbcType=VARCHAR},
+                                                 #{businessLicenseNumber,jdbcType=VARCHAR},
+                                                 #{organizationCodeNumber,jdbcType=VARCHAR},
+                                                 #{microUrl,jdbcType=VARCHAR}, #{microTemplate,jdbcType=VARCHAR},
+                                                 #{groupId,jdbcType=VARCHAR},
+                                                 now(), #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP},
+                                                 #{updateBy,jdbcType=VARCHAR}, #{companyComment,jdbcType=LONGVARCHAR})
+    </insert>
+
+    <update id="updateById" parameterType="com.maoding.org.entity.CompanyEntity">
+        update maoding_web_company
+        <set>
+            <if test="companyName != null">
+                company_name = #{companyName,jdbcType=VARCHAR},
+            </if>
+            <if test="majorType != null">
+                major_type = #{majorType,jdbcType=VARCHAR},
+            </if>
+            <if test="certificate != null">
+                certificate = #{certificate,jdbcType=VARCHAR},
+            </if>
+            <if test="mainField != null">
+                main_field = #{mainField,jdbcType=VARCHAR},
+            </if>
+            <if test="isAuthentication != null">
+                is_authentication = #{isAuthentication,jdbcType=VARCHAR},
+            </if>
+            <if test="operatorName != null">
+                operator_name = #{operatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="rejectReason != null">
+                reject_reason = #{rejectReason,jdbcType=VARCHAR},
+            </if>
+            <if test="companyType != null">
+                company_type = #{companyType,jdbcType=VARCHAR},
+            </if>
+            <if test="companyEmail != null">
+                company_email = #{companyEmail,jdbcType=VARCHAR},
+            </if>
+            <if test="companyShortName != null">
+                company_short_name = #{companyShortName,jdbcType=VARCHAR},
+            </if>
+            <if test="companyFax != null">
+                company_fax = #{companyFax,jdbcType=VARCHAR},
+            </if>
+            <if test="serverType != null">
+                server_type = #{serverType,jdbcType=VARCHAR},
+            </if>
+            <if test="province != null">
+                province = #{province,jdbcType=VARCHAR},
+            </if>
+            <if test="city != null">
+                city = #{city,jdbcType=VARCHAR},
+            </if>
+            <if test="county != null">
+                county = #{county,jdbcType=VARCHAR},
+            </if>
+            <if test="legalRepresentative != null">
+                legal_representative = #{legalRepresentative,jdbcType=VARCHAR},
+            </if>
+            <if test="companyPhone != null">
+                company_phone = #{companyPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="companyAddress != null">
+                company_address = #{companyAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="groupIndex != null">
+                group_index = #{groupIndex,jdbcType=INTEGER},
+            </if>
+            <if test="indexShow != null">
+                index_show = #{indexShow,jdbcType=VARCHAR},
+            </if>
+            <if test="businessLicenseNumber != null">
+                business_license_number = #{businessLicenseNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="organizationCodeNumber != null">
+                organization_code_number = #{organizationCodeNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="microUrl != null">
+                micro_url = #{microUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="microTemplate != null">
+                micro_template = #{microTemplate,jdbcType=VARCHAR},
+            </if>
+            <if test="groupId != null">
+                group_id = #{groupId,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            update_date = now(),
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="companyComment != null">
+                company_comment = #{companyComment,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="update" parameterType="com.maoding.org.entity.CompanyEntity">
+        UPDATE maoding_web_company
+        SET company_name             = #{companyName,jdbcType=VARCHAR},
+            major_type               = #{majorType,jdbcType=VARCHAR},
+            certificate              = #{certificate,jdbcType=VARCHAR},
+            main_field               = #{mainField,jdbcType=VARCHAR},
+            is_authentication        = #{isAuthentication,jdbcType=VARCHAR},
+            operator_name            = #{operatorName,jdbcType=VARCHAR},
+            reject_reason            = #{rejectReason,jdbcType=VARCHAR},
+            company_type             = #{companyType,jdbcType=VARCHAR},
+            company_email            = #{companyEmail,jdbcType=VARCHAR},
+            company_short_name       = #{companyShortName,jdbcType=VARCHAR},
+            company_fax              = #{companyFax,jdbcType=VARCHAR},
+            server_type              = #{serverType,jdbcType=VARCHAR},
+            province                 = #{province,jdbcType=VARCHAR},
+            city                     = #{city,jdbcType=VARCHAR},
+            county                   = #{county,jdbcType=VARCHAR},
+            legal_representative     = #{legalRepresentative,jdbcType=VARCHAR},
+            company_phone            = #{companyPhone,jdbcType=VARCHAR},
+            company_address          = #{companyAddress,jdbcType=VARCHAR},
+            status                   = #{status,jdbcType=VARCHAR},
+            group_index              = #{groupIndex,jdbcType=INTEGER},
+            index_show               = #{indexShow,jdbcType=VARCHAR},
+            business_license_number  = #{businessLicenseNumber,jdbcType=VARCHAR},
+            organization_code_number = #{organizationCodeNumber,jdbcType=VARCHAR},
+            micro_url                = #{microUrl,jdbcType=VARCHAR},
+            micro_template           = #{microTemplate,jdbcType=VARCHAR},
+            group_id                 = #{groupId,jdbcType=VARCHAR},
+            create_date              = #{createDate,jdbcType=TIMESTAMP},
+            create_by                = #{createBy,jdbcType=VARCHAR},
+            update_date              = now(),
+            update_by                = #{updateBy,jdbcType=VARCHAR},
+            company_comment          = #{companyComment,jdbcType=LONGVARCHAR}
+        WHERE id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getProjectCooperator" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT DISTINCT
+            a.id,
+            a.company_name
+        FROM maoding_web_company a
+            LEFT JOIN (
+                          SELECT DISTINCT
+                              company_id,
+                              project_id,
+                              create_date
+                          FROM maoding_web_project_member
+                          WHERE project_id = #{projectId,jdbcType=VARCHAR}
+                                AND deleted = '0'
+                          ORDER BY create_date
+                      ) b ON a.id = b.company_id
+        WHERE project_id = #{projectId,jdbcType=VARCHAR}
+         ORDER BY b.create_date
+    </select>
+
+    <select id="listCompanyIdByProjectId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT DISTINCT company_id
+        FROM maoding_web_project_task
+        <where>
+            <![CDATA[ project_id = #{projectId} AND task_status = '0' AND task_type < 3 ]]>
+        </where>
+    </select>
+</mapper>

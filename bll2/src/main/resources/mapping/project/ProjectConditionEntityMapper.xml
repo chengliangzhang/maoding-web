@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ProjectConditionEntityMapper">
+    <resultMap id="projectConditionMap" type="com.maoding.project.dto.ProjectConditionDTO" autoMapping="true">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, company_id, user_id, code, type, status, create_date, create_by,
+        update_date, update_by
+    </sql>
+    <sql id="Base_Column_Condition">
+        <if test="companyId!=null">
+            and company_id=#{companyId}
+        </if>
+        <if test="userId!=null">
+            and user_id=#{userId}
+        </if>
+        <!--<if test="code!=null">-->
+        <!--and code=#{code}-->
+        <!--</if>-->
+        <if test="type != null">
+            and type=#{type}
+        </if>
+        <if test="status!=null">
+            and status=#{status}
+        </if>
+
+    </sql>
+    <!--查询项目查询条件-->
+    <select id="selProjectConditionList" parameterType="java.util.Map" resultMap="projectConditionMap">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_project_condition t
+        where 1=1
+        <include refid="Base_Column_Condition"/>
+    </select>
+    <insert id="insert" parameterType="com.maoding.project.entity.ProjectConditionEntity">
+        INSERT INTO `maoding_web_project_condition` (
+            `id`,
+            `company_id`,
+            `user_id`,
+            `code`,
+            `type`,
+            `status`,
+            `create_date`,
+            `create_by`,
+            `update_date`,
+            `update_by`
+        )
+        VALUES
+            (
+                #{id,jdbcType=VARCHAR},
+                #{companyId,jdbcType=VARCHAR},
+                #{userId,jdbcType=VARCHAR},
+                #{code,jdbcType=VARCHAR},
+                #{type,jdbcType=INTEGER},
+                #{status,jdbcType=INTEGER},
+                now(), #{createBy,jdbcType=VARCHAR},
+                #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+            )
+    </insert>
+    <update id="updateById" parameterType="com.maoding.project.entity.ProjectConditionEntity">
+        UPDATE maoding_web_project_condition
+        SET
+            code        = #{code,jdbcType=VARCHAR},
+            update_date = now(),
+            update_by   = #{updateBy,jdbcType=VARCHAR}
+        WHERE id = #{id}
+    </update>
+</mapper>

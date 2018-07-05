@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ExpFixedEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.financial.entity.ExpFixedEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="exp_type" property="expType" jdbcType="VARCHAR" />
+    <result column="exp_date" property="expDate" jdbcType="VARCHAR" />
+    <result column="exp_amount" property="expAmount" jdbcType="DECIMAL" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="depart_id" property="departId" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="relation_company_id" property="relationCompanyId" jdbcType="VARCHAR" />
+    <result column="exp_type_parent_name" property="expTypeParentName" jdbcType="VARCHAR" />
+    <result column="exp_type_name" property="expTypeName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, exp_type, exp_date, exp_amount, user_id, user_name, company_id, depart_id, remark, 
+    create_date, create_by, update_date, update_by,
+    relation_company_id,exp_type_parent_name,exp_type_name
+  </sql>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_exp_fixed
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_exp_fixed
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.maoding.financial.entity.ExpFixedEntity" >
+    insert into maoding_web_exp_fixed (id, exp_type, exp_date, 
+      exp_amount, user_id, user_name, 
+      company_id, depart_id, remark, relation_company_id,
+      exp_type_parent_name,exp_type_name,seq,
+      create_date, create_by, update_date, 
+      update_by)
+    values (#{id,jdbcType=VARCHAR}, #{expType,jdbcType=VARCHAR}, #{expDate,jdbcType=VARCHAR}, 
+      #{expAmount,jdbcType=DECIMAL}, #{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{companyId,jdbcType=VARCHAR}, #{departId,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
+       #{relationCompanyId,jdbcType=VARCHAR}, #{expTypeParentName,jdbcType=VARCHAR},
+       #{expTypeName,jdbcType=VARCHAR}, #{seq,jdbcType=INTEGER},
+      now(), #{createBy,jdbcType=VARCHAR}, now(),
+      #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.financial.entity.ExpFixedEntity" >
+    update maoding_web_exp_fixed
+    <set >
+      <if test="expType != null" >
+        exp_type = #{expType,jdbcType=VARCHAR},
+      </if>
+      <if test="expDate != null" >
+        exp_date = #{expDate,jdbcType=VARCHAR},
+      </if>
+      <if test="expAmount != null" >
+        exp_amount = #{expAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="relationCompanyId != null" >
+        relation_company_id = #{relationCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="expTypeParentName != null" >
+        exp_type_parent_name = #{expTypeParentName,jdbcType=VARCHAR},
+      </if>
+      <if test="expTypeName != null" >
+        exp_type_name = #{expTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="departId != null" >
+        depart_id = #{departId,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null" >
+        seq = #{seq,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+        update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <select id="getExpFixedByExpDate" resultType="com.maoding.financial.dto.ExpFixedDataDTO" parameterType="java.util.Map" >
+    select a.id, a.exp_amount as exp_amount, a.user_id,
+    a.exp_type_name,a.exp_type_parent_name,a.seq
+    from maoding_web_exp_fixed a
+    where 1=1
+    and company_id = #{companyId}
+    and  exp_date = #{expDate}
+    order by a.seq
+  </select>
+
+  <select id="getExpDateCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+    SELECT count(DISTINCT a.id)
+    from maoding_web_exp_fixed a
+    WHERE 1=1 and exp_date = #{expDate,jdbcType=VARCHAR}
+  </select>
+
+
+</mapper>

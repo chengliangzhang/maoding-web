@@ -1,0 +1,2001 @@
+package com.maoding.projectcost.service.impl;
+
+import com.maoding.companybill.dto.SaveCompanyBillDTO;
+import com.maoding.companybill.service.CompanyBalanceService;
+import com.maoding.companybill.service.CompanyBillService;
+import com.maoding.core.base.dto.BaseDTO;
+import com.maoding.core.base.service.GenericService;
+import com.maoding.core.bean.AjaxMessage;
+import com.maoding.core.constant.CompanyBillType;
+import com.maoding.core.constant.SystemParameters;
+import com.maoding.core.util.BeanUtilsEx;
+import com.maoding.core.util.CommonUtil;
+import com.maoding.core.util.DateUtils;
+import com.maoding.core.util.StringUtil;
+import com.maoding.dynamic.dao.ZInfoDAO;
+import com.maoding.dynamic.service.DynamicService;
+import com.maoding.exception.CustomException;
+import com.maoding.message.entity.MessageEntity;
+import com.maoding.message.service.MessageService;
+import com.maoding.mytask.entity.MyTaskEntity;
+import com.maoding.mytask.service.MyTaskService;
+import com.maoding.org.dao.CompanyDao;
+import com.maoding.org.dao.CompanyUserDao;
+import com.maoding.org.dto.CompanyUserTableDTO;
+import com.maoding.org.entity.CompanyEntity;
+import com.maoding.org.entity.CompanyUserEntity;
+import com.maoding.org.service.CompanyUserService;
+import com.maoding.project.dao.ProjectDao;
+import com.maoding.project.entity.ProjectEntity;
+import com.maoding.projectcost.dao.*;
+import com.maoding.projectcost.dto.*;
+import com.maoding.projectcost.entity.*;
+import com.maoding.projectcost.service.ProjectCostService;
+import com.maoding.projectmember.entity.ProjectMemberEntity;
+import com.maoding.projectmember.service.ProjectMemberService;
+import com.maoding.role.service.PermissionService;
+import com.maoding.task.dao.ProjectTaskDao;
+import com.maoding.task.dao.ProjectTaskRelationDao;
+import com.maoding.task.entity.ProjectTaskEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * 深圳市设计同道技术有限公司
+ * 类    名：ProjectCostService
+ * 类描述：费用service
+ * 作    者：MaoSF
+ * 日    期：2016年7月19日-下午5:28:54
+ */
+@Service("projectCostService")
+public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> implements ProjectCostService {
+    @Autowired
+    private ProjectCostDao projectCostDao;
+
+    @Autowired
+    private ProjectCostPaymentDetailDao projectCostPaymentDetailDao;
+
+    @Autowired
+    private ProjectCostOperaterDao projectCostOperaterDao;
+
+    @Autowired
+    private ProjectCostPointDao projectCostPointDao;
+
+    @Autowired
+    private ProjectCostPointDetailDao projectCostPointDetailDao;
+
+    @Autowired
+    private MessageService messageService;
+
+    @Autowired
+    private CompanyUserDao companyUserDao;
+
+    @Autowired
+    private ProjectMemberService projectMemberService;
+
+    @Autowired
+    private CompanyDao companyDao;
+
+    @Autowired
+    private ProjectDao projectDao;
+
+    @Autowired
+    private ProjectTaskRelationDao projectTaskRelationDao;
+
+    @Autowired
+    private MyTaskService myTaskService;
+
+    @Autowired
+    private DynamicService dynamicService;
+
+    @Autowired
+    private ProjectTaskDao projectTaskDao;
+
+    @Autowired
+    private ZInfoDAO zInfoDAO;
+
+    @Autowired
+    private CompanyBillService companyBillService;
+
+    @Autowired
+    private CompanyUserService companyUserService;
+
+    @Autowired
+    private PermissionService permissionService;
+
+    @Autowired
+    private CompanyBalanceService companyBalanceService;
+
+    /**
+     * 方法描述：设置合同总金额/技术审查费
+     * 作者：chenzhujie
+     * 日期：2017/3/1
+     */
+    @Override
+    public AjaxMessage saveOrUpdateProjectCost(ProjectCostDTO projectCostDto) throws Exception {
+        ProjectCostEntity entity = new ProjectCostEntity();
+        BaseDTO.copyFields(projectCostDto, entity);
+        //类型1:合同总金额，2：技术审查费,3合作设计费付款 (字符串)，
+        if ("2".equals(projectCostDto.getType())) {
+            ProjectEntity project = projectDao.selectById(projectCostDto.getProjectId());
+            entity.setFromCompanyId(project.getCompanyId());
+            entity.setToCompanyId(project.getCompanyBid());
+        }
+
+        if ("1".equals(projectCostDto.getType())) {
+            ProjectEntity project = projectDao.selectById(projectCostDto.getProjectId());
+            entity.setToCompanyId(project.getCompanyId());
+        }
+        //新增
+        if (StringUtil.isNullOrEmpty(projectCostDto.getId())) {
+            if(StringUtil.isNullOrEmpty(projectCostDto.getFlag())){
+                entity.setFlag("1");
+            }
+            entity.setId(StringUtil.buildUUID());
+            entity.setCreateBy(projectCostDto.getAccountId());
+            projectCostDao.insert(entity);
+            //添加项目动态
+            dynamicService.addDynamic(null,entity,projectCostDto.getCurrentCompanyId(),projectCostDto.getAccountId());
+        } else {
+            updateCostFee(projectCostDto);
+        }
+        return AjaxMessage.succeed("操作成功");
+    }
+
+    private void updateCostFee(ProjectCostDTO projectCostDto) throws Exception {
+        ProjectCostEntity entity = this.selectById(projectCostDto.getId());
+        ProjectCostEntity origin = new ProjectCostEntity();
+        BeanUtilsEx.copyProperties(entity,origin);
+        entity.setFee(projectCostDto.getFee());
+        this.projectCostDao.updateById(entity);
+        //添加项目动态
+        dynamicService.addDynamic(origin,entity,projectCostDto.getCurrentCompanyId(),projectCostDto.getAccountId());
+        //更新子节点的fee
+
+        if ("1".equals(projectCostDto.getType())  && projectCostDto.getFee()!=null) {
+            this.updateContractFee(projectCostDto.getProjectId(), projectCostDto.getFee(),entity.getFlag());
+        }
+
+        if ("2".equals(projectCostDto.getType()) && projectCostDto.getFee()!=null) {
+            this.updateTechnicalFee(projectCostDto.getProjectId(), projectCostDto.getFee(),entity.getFlag());
+        }
+
+        if ("3".equals(projectCostDto.getType())  && projectCostDto.getFee()!=null) {
+            this.updateDesignFee(projectCostDto.getId(), projectCostDto.getFee(),entity.getFlag());
+        }
+
+    }
+
+    private void updateContractFee(String projectId, BigDecimal amount,String flag) throws Exception {
+        //1.查询子节点
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("projectId", projectId);
+        map.put("type", "1");
+        map.put("flag", flag);
+        List<ProjectCostPointDTO> list = projectCostPointDao.selectByParam(map);
+        if (!CollectionUtils.isEmpty(list)) {
+            for (ProjectCostPointDTO dto : list) {
+                ProjectCostPointEntity entity = new ProjectCostPointEntity();
+                entity.setId(dto.getId());
+                if (!StringUtil.isNullOrEmpty(dto.getFeeProportion())) {
+                    setProjectCostFee(dto, amount);
+                }
+            }
+        }
+    }
+
+
+    private void updateTechnicalFee(String projectId, BigDecimal amount,String flag) throws Exception {
+        //1.查询子节点
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("projectId", projectId);
+        map.put("type", "2");
+        map.put("pidIsNull", "1");//标示，只查父节点
+        map.put("flag", flag);//标示
+        List<ProjectCostPointDTO> list = projectCostPointDao.selectByParam(map);
+        if (!CollectionUtils.isEmpty(list)) {
+            for (ProjectCostPointDTO dto : list) {
+                if (!StringUtil.isNullOrEmpty(dto.getFeeProportion())) {
+                    setProjectCostFee(dto, amount);
+                    //查询子节点
+                    Map<String, Object> param = new HashMap<String, Object>();
+                    param.put("type", dto.getType());
+                    param.put("pid", dto.getId());
+                    List<ProjectCostPointDTO> childList = this.projectCostPointDao.selectByParam(param);
+                    for (ProjectCostPointDTO dto1 : childList) {
+                        if (!StringUtil.isNullOrEmpty(dto.getFeeProportion())) {
+                            setProjectCostFee(dto1, dto.getFee());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateDesignFee(String costId, BigDecimal amount,String flag) throws Exception {
+        //1.查询子节点
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("costId", costId);
+        map.put("type", "3");
+        map.put("pidIsNull", "1");//标示，只查父节点
+        map.put("flag", flag);//标示
+        List<ProjectCostPointDTO> list = projectCostPointDao.selectByParam(map);
+        if (!CollectionUtils.isEmpty(list)) {
+            for (ProjectCostPointDTO dto : list) {
+                if (!StringUtil.isNullOrEmpty(dto.getFeeProportion())) {
+                    setProjectCostFee(dto, amount);
+                    //查询子节点
+                    Map<String, Object> param = new HashMap<String, Object>();
+                    param.put("type", dto.getType());
+                    param.put("pid", dto.getId());
+                    List<ProjectCostPointDTO> childList = this.projectCostPointDao.selectByParam(param);
+                    for (ProjectCostPointDTO dto1 : childList) {
+                        if (!StringUtil.isNullOrEmpty(dto1.getFeeProportion())) {
+                            setProjectCostFee(dto1, dto.getFee());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void setProjectCostFee(ProjectCostPointDTO dto, BigDecimal amount) {
+        if(amount!=null){
+            ProjectCostPointEntity entity = new ProjectCostPointEntity();
+            entity.setId(dto.getId());
+            double proportion = Double.parseDouble(dto.getFeeProportion());
+            BigDecimal decimalProprotion = new BigDecimal(proportion / 100);
+            entity.setFee(amount.multiply(decimalProprotion));
+            dto.setFee(amount.multiply(decimalProprotion));
+            this.projectCostPointDao.updateById(entity);
+        }
+    }
+
+    /**
+     * 方法描述：添加修改费用节点（如果是合作设计费。costId必须传递）  //类型1:合同总金额，2：技术审查费,3合作设计费付款 (字符串)，4.其他费用（付款），5.其他费用（收款）
+     * 作者：chenzhujie
+     * 日期：2017/3/1
+     */
+    @Override
+    public AjaxMessage saveOrUpdateProjectCostPoint(ProjectCostPointDTO projectCostPointDTO) throws Exception {
+
+        //漏验证
+        AjaxMessage ajaxMessage = this.validateTechnicalFee(projectCostPointDTO);
+        if ("1".equals(ajaxMessage.getCode())) {
+            return ajaxMessage;
+        }
+        ProjectCostPointEntity entity = new ProjectCostPointEntity();
+        BaseDTO.copyFields(projectCostPointDTO, entity);
+        //新增
+        if (StringUtil.isNullOrEmpty(projectCostPointDTO.getId())) {
+            if(StringUtil.isNullOrEmpty(projectCostPointDTO.getFlag())){
+                entity.setFlag("1");
+            }
+            entity.setId(StringUtil.buildUUID());
+            entity.setCreateBy(projectCostPointDTO.getAccountId());
+            projectCostPointDao.insert(entity);
+
+            //添加项目动态
+            dynamicService.addDynamic(null,entity,projectCostPointDTO.getCurrentCompanyId(),projectCostPointDTO.getAccountId());
+        } else {
+            ProjectCostPointEntity origin = projectCostPointDao.selectById(entity.getId());//保留修改前的数据
+            projectCostPointDao.updateById(entity);
+            //添加项目动态
+            dynamicService.addDynamic(origin,entity,projectCostPointDTO.getCurrentCompanyId(),projectCostPointDTO.getAccountId());
+            //查询子节点
+            Map<String, Object> param = new HashMap<String, Object>();
+            param.put("type", projectCostPointDTO.getType());
+            param.put("pid", projectCostPointDTO.getId());
+            List<ProjectCostPointDTO> childList = this.projectCostPointDao.selectByParam(param);
+            for (ProjectCostPointDTO dto1 : childList) {
+                if (!StringUtil.isNullOrEmpty(dto1.getFeeProportion())) {
+                    setProjectCostFee(dto1, projectCostPointDTO.getFee());
+                }
+            }
+        }
+        return AjaxMessage.succeed("操作成功");
+    }
+
+    //4.其他费用（付款），5.其他费用（收款）
+    @Override
+    public AjaxMessage saveOtherProjectCostPoint(ProjectCostPointDTO projectCostPointDTO) throws Exception {
+        ProjectCostPointEntity entity = new ProjectCostPointEntity();
+        BaseDTO.copyFields(projectCostPointDTO, entity);
+        //新增
+        if (StringUtil.isNullOrEmpty(projectCostPointDTO.getId())) {
+            //无需做总金额校验
+            //查看是否存在ProjectCost数据。此数据仅此用于关联一个costId，用于区分该数据属于哪个公司
+            //查询总费用
+            String costId=null;
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.put("projectId",projectCostPointDTO.getProjectId());
+            if("4".equals(projectCostPointDTO.getType())){
+                //查询是否存在
+                map.put("type","4");
+                map.put("fromCompanyId",projectCostPointDTO.getCurrentCompanyId());
+
+            }else {
+                map.put("type","5");
+                map.put("toCompanyId",projectCostPointDTO.getCurrentCompanyId());
+            }
+            List<ProjectCostDTO> totalCost = this.projectCostDao.selectByParam(map);//理论上只会存在一条
+            if(!CollectionUtils.isEmpty(totalCost)){
+                costId = totalCost.get(0).getId();
+            }else {//如果不存在
+                costId = this.saveProjectCostForOther(projectCostPointDTO);
+            }
+            //后台数据统一，flag=1：代表正式合同（实际上其他费用没有什么正式合同与附加协议）
+            if(StringUtil.isNullOrEmpty(projectCostPointDTO.getFlag())){
+                entity.setFlag("1");
+            }
+            entity.setCostId(costId);
+            entity.setId(StringUtil.buildUUID());
+            entity.setCreateBy(projectCostPointDTO.getAccountId());
+            projectCostPointDao.insert(entity);
+            //添加项目动态
+            dynamicService.addDynamic(null,entity,projectCostPointDTO.getCurrentCompanyId(),projectCostPointDTO.getAccountId());
+        } else {
+            ProjectCostPointEntity origin = projectCostPointDao.selectById(entity.getId()); //保留更改前的数据
+            projectCostPointDao.updateById(entity);
+            //添加项目动态
+            dynamicService.addDynamic(origin,entity,projectCostPointDTO.getCurrentCompanyId(),projectCostPointDTO.getAccountId());
+        }
+
+        return AjaxMessage.succeed("操作成功");
+    }
+
+    private String saveProjectCostForOther(ProjectCostPointDTO projectCostPointDTO){
+       String costId = StringUtil.buildUUID();
+        ProjectCostEntity costEntity = new ProjectCostEntity();
+        costEntity.setId(costId);
+        costEntity.setProjectId(projectCostPointDTO.getProjectId());
+        if("4".equals(projectCostPointDTO.getType())){
+            costEntity.setFromCompanyId(projectCostPointDTO.getCurrentCompanyId());
+        }else {
+            costEntity.setToCompanyId(projectCostPointDTO.getCurrentCompanyId());
+        }
+        costEntity.setType(projectCostPointDTO.getType());
+        this.projectCostDao.insert(costEntity);
+
+        return costId;
+    }
+
+    private AjaxMessage validateReturnMoneyDetail(ProjectCostPointDetailDTO dto) throws Exception {
+
+        ProjectCostPointEntity pointEntity = this.projectCostPointDao.selectById(dto.getPointId());
+        if (pointEntity == null) {
+            return AjaxMessage.failed("操作失败");
+        }
+        if (null == pointEntity.getFee() || pointEntity.getFee().compareTo(new BigDecimal("0"))==0) {
+            return AjaxMessage.failed("请先设置总金额");
+        }
+
+        //验证发起收款的金额不能大于节点的金额
+        String typeMemo=getTypeMemo(pointEntity.getType());
+        ProjectCostPointDetailEntity detailEntity = null;
+        if (!StringUtil.isNullOrEmpty(dto.getFee())) {
+            BigDecimal originalFee = new BigDecimal("0");
+            double sumReturnFee = this.projectCostPointDetailDao.getSumFee(pointEntity.getId());
+            if (!StringUtil.isNullOrEmpty(dto.getId())) {
+                detailEntity = this.projectCostPointDetailDao.selectById(dto.getId());
+                if(null!=detailEntity){
+                    originalFee = detailEntity.getFee();
+                }
+            }
+            if (CommonUtil.doubleCompare(dto.getFee().doubleValue() + sumReturnFee - originalFee.doubleValue(), pointEntity.getFee().doubleValue()) > 0) {
+                return AjaxMessage.failed(typeMemo+"大于"+ StringUtil.getRealData(pointEntity.getFee()));
+            }
+        }
+
+        //如果是修改，则验证修改的金额不能小于已经收款的金额
+        if(detailEntity!=null && !StringUtil.isNullOrEmpty(dto.getFee())){
+            double sumPaymentFee= this.projectCostPaymentDetailDao.getSumFee(detailEntity.getId());
+            if (CommonUtil.doubleCompare(sumPaymentFee, dto.getFee().doubleValue()) > 0) {
+                //new BigDecimal(sumPaymentFee+"")因为double会出现精度问题。所以先变成字符串
+                return AjaxMessage.failed(typeMemo+"小于"+ StringUtil.getRealData(new BigDecimal(sumPaymentFee+"")));
+            }
+        }
+
+        return null;
+    }
+
+    private String getTypeMemo(String type){
+        switch (type){
+            case "1":
+                return "发起回款总金额不能";
+            case "2":
+                return "发起收款总金额不能";
+            case "3":
+                return "发起收款总金额不能";
+            case "4":
+                return "发起付款总金额不能";
+            case "5":
+                return "发起收款总金额不能";
+        }
+        return "";
+    }
+
+    /**
+     * 方法描述：其他费用收款付款
+     * 作者：chenzhujie
+     * 日期：2017/3/1
+     */
+    @Override
+    public AjaxMessage saveOtherCostDetail(ProjectCostPointDetailDTO projectCostPointDetailDTO) throws Exception {
+        ProjectCostPointDetailEntity entity = this.projectCostPointDetailDao.selectById(projectCostPointDetailDTO.getId());
+        //保留原有数据
+        ProjectCostPointDetailEntity origin = new ProjectCostPointDetailEntity();
+        BeanUtilsEx.copyProperties(entity,origin);
+        entity.setFee(entity.getFee());
+        projectCostPointDetailDTO.setFee(entity.getFee());
+        projectCostPointDetailDao.updateById(entity);
+        //保存项目动态
+        dynamicService.addDynamic(origin,entity,projectCostPointDetailDTO.getCurrentCompanyId(),projectCostPointDetailDTO.getAccountId());
+        return AjaxMessage.succeed("操作成功");
+    }
+
+
+
+    private void sendMyTaskForReturnMoney(String costDetailId, ProjectCostPointDetailDTO dto) throws Exception {
+        ProjectCostPointEntity pointEntity = this.projectCostPointDao.selectById(dto.getPointId());
+        String type = "";
+        String companyId = "";
+        //推送任务 其他费用付款收款:|| "4".equals(pointEntity.getType()) || "5".equals(pointEntity.getType()) 不需要
+        if ("1".equals(pointEntity.getType()))//合同回款，
+        {
+            type = "2";
+            this.myTaskService.saveMyTask(costDetailId,SystemParameters.CONTRACT_FEE_PAYMENT_CONFIRM ,dto.getCurrentCompanyId(),dto.getAccountId(),dto.getCurrentCompanyId());
+        }
+        if ("2".equals(pointEntity.getType())) {//技术审查费
+            type = "1";
+            //给立项组织发起确认信息
+            ProjectEntity projectEntity = this.projectDao.selectById(pointEntity.getProjectId());
+            this.myTaskService.saveMyTask(costDetailId, SystemParameters.TECHNICAL_REVIEW_FEE_OPERATOR_MANAGER, projectEntity.getCompanyId(),dto.getAccountId(),dto.getCurrentCompanyId());
+        }
+        if ("3".equals(pointEntity.getType())) {//合作设计费
+            type = "1";
+            //给发包人发起确认信息
+            ProjectCostEntity costEntity = this.projectCostDao.selectById(pointEntity.getCostId());
+            this.myTaskService.saveMyTask(costDetailId, SystemParameters.COOPERATIVE_DESIGN_FEE_ORG_MANAGER, costEntity.getFromCompanyId(),dto.getAccountId(),dto.getCurrentCompanyId());
+        }
+        if ("4".equals(pointEntity.getType()))//其他费用付款
+        {
+            type = "2";
+            this.myTaskService.saveMyTask(costDetailId, SystemParameters.OTHER_FEE_FOR_PAY, dto.getCurrentCompanyId(),dto.getAccountId(),dto.getCurrentCompanyId());
+        }
+        if ("5".equals(pointEntity.getType()))//其他费用收款
+        {
+            type = "2";
+            this.myTaskService.saveMyTask(costDetailId, SystemParameters.OTHER_FEE_FOR_PAID, dto.getCurrentCompanyId(),dto.getAccountId(),dto.getCurrentCompanyId());
+        }
+        //保存操作
+        CompanyUserEntity userEntity = this.companyUserDao.getCompanyUserByUserIdAndCompanyId(dto.getAccountId(), dto.getCurrentCompanyId());
+        ProjectCostOperaterEntity operaterEntity = new ProjectCostOperaterEntity();
+        if (userEntity != null) {
+            operaterEntity.setId(StringUtil.buildUUID());
+            operaterEntity.setCostDetailId(costDetailId);
+            operaterEntity.setCompanyUserId(userEntity.getId());
+            operaterEntity.setType(type);
+            this.projectCostOperaterDao.insert(operaterEntity);
+        }
+    }
+
+
+    /**
+     * 方法描述：发起收款
+     * 作者：chenzhujie
+     * 日期：2017/3/1
+     */
+    @Override
+    public AjaxMessage saveOrUpdateReturnMoneyDetail(ProjectCostPointDetailDTO projectCostPointDetailDTO) throws Exception {
+        AjaxMessage ajaxMessage = validateReturnMoneyDetail(projectCostPointDetailDTO);
+        if (ajaxMessage != null) {
+            return ajaxMessage;
+        }
+        ProjectCostPointDetailEntity entity = new ProjectCostPointDetailEntity();
+        BaseDTO.copyFields(projectCostPointDetailDTO, entity);
+        //新增(发起收收款)
+        if (StringUtil.isNullOrEmpty(projectCostPointDetailDTO.getId())) {
+            String id = StringUtil.buildUUID();
+            entity.setId(id);
+            projectCostPointDetailDao.insert(entity);
+            //添加项目动态
+            dynamicService.addDynamic(null,entity,projectCostPointDetailDTO.getCurrentCompanyId(),projectCostPointDetailDTO.getAccountId());
+            //推送任务
+            this.sendMyTaskForReturnMoney(id, projectCostPointDetailDTO);
+        } else {
+          //  this.handleMyTaskForContractFee(projectCostPointDetailDTO);//只处理合同回款财务确认到款
+            ProjectCostPointDetailEntity origin = projectCostPointDetailDao.selectById(projectCostPointDetailDTO.getId());//保留原有数据
+            projectCostPointDetailDao.updateById(entity);
+            //添加项目动态
+            dynamicService.addDynamic(origin,entity,projectCostPointDetailDTO.getCurrentCompanyId(),projectCostPointDetailDTO.getAccountId());
+            createPaymentTask(projectCostPointDetailDTO.getId(),projectCostPointDetailDTO.getAccountId(),projectCostPointDetailDTO.getCurrentCompanyId());
+        }
+        return AjaxMessage.succeed("操作成功");
+    }
+
+
+    /**
+     * 方法描述：查询合同回款(map:projectId)
+     * 作者：chenzhujie
+     * 日期：2017/3/1
+     */
+    @Override
+    public AjaxMessage getContractInfo(Map<String, Object> map) throws Exception {
+        String accountId = (String)map.get("accountId");
+        map.put("type", "1");
+        map.put("flag", "1");
+        String cpyId = (StringUtil.isNullOrEmpty(map.get("companyId"))) ?
+                this.projectDao.selectById(map.get("projectId")).getCompanyId() :
+                (String) map.get("companyId");
+
+        String companyUserId = (String)map.get("companyUserId");
+        String isManager = "0";
+        String isFinancial = "0";
+        if(null!=companyUserId && !"".equals(companyUserId)){
+            isManager = this.getManagerFlag((String) map.get("projectId"), cpyId,companyUserId);
+        }
+        if(permissionService.isFinancialReceive(cpyId,accountId)){
+            isFinancial = "1";
+        }
+        Map<String, Object> result = this.getReviewFeeInfo(map, "1");
+        result.put("isManager", isManager);
+        result.put("isFinancial",isFinancial);
+        return AjaxMessage.succeed("查询成功").setData(result);
+    }
+
+    private void setCurrentTaskRealCompanyId(Map<String, Object> map){
+        if(map.containsKey("myTaskId") && !StringUtil.isNullOrEmpty(map.get("myTaskId"))){
+            String companyId = this.projectCostPointDao.getCostFeeCompanyByTaskId((String)map.get("myTaskId"));
+            if(!StringUtil.isNullOrEmpty(companyId)){
+                map.put("companyId",companyId);
+            }
+        }
+    }
+    /**
+     * 方法描述：查询技术审查费(map:projectId)
+     * 作者：chenzhujie
+     * 日期：2017/3/1
+     */
+    public AjaxMessage getTechicalReviewFeeInfo(Map<String, Object> map) throws Exception {
+        this.setCurrentTaskRealCompanyId(map);
+        map.put("pidIsNull", "1");//标示，只查父节点
+        map.put("flag", "1");//标示,查询正式合同记录
+        Map<String, Object> result = this.getReviewFeeInfo(map, "2");
+
+        String fromStatistic = (String) map.get("fromStatistic");//从统计过来查询无需要查询相关的操作权限
+
+        if(fromStatistic==null || "".equals(fromStatistic)){
+
+            ProjectEntity projectEntity = this.projectDao.selectById((String) map.get("projectId"));
+
+            if (projectEntity != null) {
+                result.put("projectName", projectEntity.getProjectName());
+                CompanyEntity companyEntity = this.companyDao.selectById(projectEntity.getCompanyId());
+                if (companyEntity != null) {
+                    result.put("companyName", companyEntity.getAliasName());
+                }
+                if (!StringUtil.isNullOrEmpty(projectEntity.getCompanyBid())) {
+                    CompanyEntity companyBEntity = this.companyDao.selectById(projectEntity.getCompanyBid());
+                    if (companyBEntity != null) {
+                        result.put("companyBName", companyBEntity.getAliasName());
+                    }
+                }
+
+                if (projectEntity.getCompanyId().equals((String) map.get("companyId"))) {//1为立项方，0：为乙方
+                    result.put("isSetUpProject", "1");
+                } else {
+                    result.put("isSetUpProject", "0");
+                }
+
+                String isManager = "0";
+                String currentCompanyId = (String) map.get("currentCompanyId");
+                String companyUserId = (String) map.get("companyUserId");
+                if (!StringUtil.isNullOrEmpty(projectEntity.getCompanyBid()) && !projectEntity.getCompanyBid().equals(projectEntity.getCompanyId())) {//存在乙方
+                    if(currentCompanyId.equals(projectEntity.getCompanyBid())){//当前是组织是乙方
+                        isManager = this.getManagerFlag(projectEntity.getId(), projectEntity.getCompanyBid(),companyUserId);
+
+                    }else{//当前是立项组织
+                        isManager = this.getManagerFlag(projectEntity.getId(), currentCompanyId,companyUserId);
+                    }
+                }
+                result.put("isManager", isManager);
+            }
+        }
+
+        return AjaxMessage.succeed("查询成功").setData(result);
+    }
+
+    private Map<String, Object> getReviewFeeInfo(Map<String, Object> map, String type) throws Exception {
+        map.put("type", type);
+        List<ProjectCostPointDTO> projectCostPointDTOS = new ArrayList<>();
+        //查询总费用
+        List<ProjectCostDTO> totalCost = this.projectCostDao.selectByParam(map);//理论上只会存在一条
+        if(!CollectionUtils.isEmpty(totalCost)){//根据costId查询相对应的节点数据
+            map.put("costId",totalCost.get(0).getId());
+            projectCostPointDTOS = this.projectCostPointDao.selectByParam(map);
+        }
+        List<ProjectCostPointDataDTO> projectCostPointDataList = new ArrayList<>();
+        ProjectCostTotalDTO totalDTO = new ProjectCostTotalDTO();
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        if (!CollectionUtils.isEmpty(totalCost)) {
+            result.put("totalCost", totalCost.get(0).getFee());
+            result.put("costId", totalCost.get(0).getId());
+            if (type.equals("3")) {
+                String companyId = (String) map.get("companyId");
+                String projectCompanyId = (String) map.get("projectCompanyId");
+                if (projectCompanyId.equals((String) map.get("fromCompanyId")) && !projectCompanyId.equals(companyId)) {
+                    result.put("isSetUpProject", "1");
+                } else {
+                    result.put("isSetUpProject", "0");
+                }
+                CompanyEntity companyEntity = null;
+                if (companyId.equals((String) map.get("fromCompanyId"))) {
+                    companyEntity = this.companyDao.selectById(map.get("toCompanyId"));
+                } else {
+                    companyEntity = this.companyDao.selectById(map.get("fromCompanyId"));
+                }
+                if (companyEntity != null) {
+                    result.put("companyName", companyEntity.getAliasName());
+                }
+
+            }
+            for (ProjectCostPointDTO dto : projectCostPointDTOS) {
+                this.getProjectCostPointData(dto, totalDTO, projectCostPointDataList, (String) map.get("companyUserId"),totalCost.get(0).getFee());
+            }
+        }
+        //使用新方法计算总计百分比
+        if(!CollectionUtils.isEmpty(totalCost)){
+            BigDecimal f = totalCost.get(0).getFee();
+            if ((f != null) && CommonUtil.doubleCompare(f.doubleValue(),new BigDecimal(0).doubleValue()) > 0) {
+                BigDecimal p = totalDTO.getFee().multiply(new BigDecimal(100));
+                p = p.divide(totalCost.get(0).getFee(), 2, RoundingMode.HALF_UP);
+                totalDTO.setFeeProportion(p.doubleValue());
+            }
+        }
+        result.put("pointList", projectCostPointDataList);
+        result.put("total", totalDTO);
+        result.put("currentFeeOrgId",map.get("companyId"));
+        return result;
+    }
+
+    /**
+     * 方法描述：合作设计费
+     * 作者：chenzhujie
+     * 日期：2017/3/1
+     *
+     * @param map(projectId,companyId:当前公司)
+     */
+    @Override
+    public AjaxMessage getCooperativeDesignFeeInfo(Map<String, Object> map) throws Exception {
+        this.setCurrentTaskRealCompanyId(map);
+        List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
+        //首先查询关系
+        List<Map<String, String>> relationList = projectTaskRelationDao.getProjectRelation(map);
+        //1.查询项目所在组织id
+        ProjectEntity projectEntity = this.projectDao.selectById(map.get("projectId"));
+        if (projectEntity == null) {
+            return AjaxMessage.failed("查询失败");
+        }
+
+        //2.查询每个表的明细
+        for (Map<String, String> map1 : relationList) {
+            Map<String, Object> param = new HashMap<String, Object>();
+         //   param.put("taskIdList", map1.get("taskId").split(","));
+            param.put("pidIsNull", "1");//标示，只查父节点
+            param.put("projectId", map.get("projectId"));
+            param.put("fromCompanyId", map1.get("fromCompanyId"));
+            param.put("toCompanyId", map1.get("toCompanyId"));
+            param.put("projectCompanyId", projectEntity.getCompanyId());
+            param.put("companyId", map.get("companyId"));
+            param.put("currentCompanyId", map.get("currentCompanyId"));
+            param.put("companyUserId", map.get("companyUserId"));
+            param.put("flag", "1");
+            param.put("type", "3");
+            Map<String, Object> result = this.getReviewFeeInfo(param, "3");
+            result.put("fromCompanyId", map1.get("fromCompanyId"));
+            result.put("toCompanyId", map1.get("toCompanyId"));
+
+            String companyUserId = (String) map.get("companyUserId");
+            if(null!=companyUserId && !"".equals(companyUserId)){
+
+                result.put("isManager", this.getManagerFlag(projectEntity.getId(), (String)map1.get("fromCompanyId"),companyUserId));
+
+                //收款方
+                result.put("isManager2", this.getManagerFlag(projectEntity.getId(), (String)map1.get("toCompanyId"),companyUserId));
+            }
+            param.clear();
+            param.put("toCompanyId",map1.get("toCompanyId"));
+            param.put("fromCompanyId",map1.get("fromCompanyId"));
+            param.put("projectId",map.get("projectId"));
+            ProjectTaskEntity taskEntity = projectTaskDao.getAllTaskNameByToCompanyId(param);
+            if(null!=taskEntity){
+                result.put("taskName",taskEntity.getTaskName());
+            }
+            resultList.add(result);
+        }
+
+        //合作关系单独请求
+        return AjaxMessage.succeed("查询成功").setData(resultList);
+    }
+
+    @Override
+    public String getProjectCostCompany(String myTaskId) {
+        MyTaskEntity task = myTaskService.selectById(myTaskId);
+        if(task!=null){
+            if(task.getTaskType()==10){
+
+            }
+        }
+        return null;
+    }
+
+
+    private String getManagerFlag(String projectId,String companyId,String companyUserId) throws Exception{
+        ProjectMemberEntity managerEntity = this.projectMemberService.getOperatorManager(projectId,companyId);
+        if(managerEntity!=null && managerEntity.getCompanyUserId().equals(companyUserId)){
+            return "1";
+        }
+        managerEntity = this.projectMemberService.getOperatorAssistant(projectId,companyId);
+        if(managerEntity!=null && managerEntity.getCompanyUserId().equals(companyUserId)){
+            return "1";
+        }
+        return "0";
+    }
+
+    private ProjectCostPointDataDTO getProjectCostPointData(ProjectCostPointDTO dto, ProjectCostTotalDTO totalDTO, List<ProjectCostPointDataDTO> projectCostPointDataList, String companyUserId,BigDecimal totalCost) throws Exception {
+
+        ProjectCostPointDataDTO dataDTO = new ProjectCostPointDataDTO();
+        BaseDTO.copyFields(dto, dataDTO);
+        projectCostPointDataList.add(dataDTO);
+        dataDTO.setUnpaid(new BigDecimal(0));//首先默认为0
+
+        dataDTO.setParentFee(totalCost);
+        //查询子节点
+        Map<String, Object> param = new HashMap<String, Object>();
+        param.put("type", dto.getType());
+        param.put("pid", dataDTO.getId());
+        List<ProjectCostPointDTO> childList = this.projectCostPointDao.selectByParam(param);
+        if (!CollectionUtils.isEmpty(childList)) {
+            dataDTO.setIsHasChild(1);//有子节点
+            BigDecimal paidFee = new BigDecimal("0");
+            for (ProjectCostPointDTO dto1 : childList) {
+                ProjectCostPointDataDTO dataDTO1 = new ProjectCostPointDataDTO();
+                BaseDTO.copyFields(dto1, dataDTO1);
+                //把父任务的值设置上去，用于前端判断
+                dataDTO1.setParentFee(dataDTO.getFee());
+                projectCostPointDataList.add(dataDTO1);
+                //获取发起收款（发起回款）
+                this.getPointDetailData(dataDTO1, companyUserId,totalDTO);
+                if(dataDTO1.getDeleteFlag()==1){//只要有到款则不可被删除
+                    dataDTO.setDeleteFlag(1);
+                }
+                if(dataDTO1.getPaidFee()!=null){
+                    paidFee = paidFee.add(dataDTO1.getPaidFee());
+                }
+            }
+            if (dataDTO.getFee()!=null) {
+                dataDTO.setUnpaid(dataDTO.getFee().subtract(paidFee));
+            }
+        } else {
+            //获取发起收款（发起回款）
+            this.getPointDetailData(dataDTO, companyUserId,totalDTO);
+        }
+
+
+        //处理合计
+        if (!StringUtil.isNullOrEmpty(dto.getFeeProportion())) {
+            totalDTO.setFeeProportion(totalDTO.getFeeProportion() + Double.parseDouble(dto.getFeeProportion()));
+        }
+
+        if (null != dto.getFee()) {
+            totalDTO.setFee(totalDTO.getFee().add(dto.getFee()));
+        }
+        if (null != dataDTO.getUnpaid() && null != totalDTO.getUnpaid()) {
+            totalDTO.setUnpaid(totalDTO.getUnpaid().add(dataDTO.getUnpaid()));
+        }
+        return dataDTO;
+    }
+
+    /**
+     * 方法描述：获取发起收款明细
+     * 作者：MaoSF
+     * 日期：2017/4/25
+     * @param:
+     * @return:
+     */
+    private void getPointDetailData(ProjectCostPointDataDTO dto, String companyUserId,ProjectCostTotalDTO totalDTO) throws Exception {
+        //查询明细
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("pointId", dto.getId());
+        dto.setUnpaid(new BigDecimal("0"));
+        dto.setBackFee(new BigDecimal("0"));
+        List<ProjectCostPointDetailEntity> pointDetailList = this.projectCostPointDetailDao.getCostPointDetailByPointId(dto.getId());
+        List<ProjectCostPointDetailDataDTO> pointDetailDataList = new ArrayList<>();
+        for(ProjectCostPointDetailEntity detail:pointDetailList){
+
+            ProjectCostPointDetailDataDTO pointDetailDataDTO = new ProjectCostPointDetailDataDTO();
+            BaseDTO.copyFields(detail,pointDetailDataDTO);
+            this.getPaymentDetailData(pointDetailDataDTO,companyUserId);
+            //累积发起收款的金额
+            dto.setBackFee(dto.getBackFee().add(detail.getFee()));
+
+            //只要有到款，则不可被删除
+            if(pointDetailDataDTO.getPayFee().compareTo(new BigDecimal("0"))>0 || pointDetailDataDTO.getPaidFee().compareTo(new BigDecimal("0"))>0){
+                pointDetailDataDTO.setDeleteFlag(1);//不可被删除
+            }
+            //累积发起收款
+            totalDTO.setBackMoney(totalDTO.getBackMoney().add(pointDetailDataDTO.getFee()));
+
+            //累积总到款
+            totalDTO.setToTheMoney(totalDTO.getToTheMoney().add(pointDetailDataDTO.getPaidFee()));
+
+            //累积总付款
+            totalDTO.setPayTheMoney(totalDTO.getPayTheMoney().add(pointDetailDataDTO.getPayFee()));
+
+            //累积经营负责人付款（到款）的金额
+            totalDTO.setPaymentFee(totalDTO.getPaymentFee().add(pointDetailDataDTO.getPaymentFee()));
+            //查询操作人
+            this.getOperatorForCostPointDetail(pointDetailDataDTO, dto.getType(), companyUserId);
+
+            pointDetailDataList.add(pointDetailDataDTO);
+        }
+
+        dto.setPointDetailList(pointDetailDataList);
+    }
+
+    /**
+     * 方法描述：处理操作人
+     * 作者：MaoSF
+     * 日期：2017/3/6
+     *
+     * @param:
+     * @return:
+     */
+    private void getOperatorForCostPointDetail(ProjectCostPointDetailDataDTO detailDataDTO, String type, String companyUserId) throws Exception {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("costDetailId", detailDataDTO.getId());
+        //设置权限
+        detailDataDTO.setRoleMap(handleOperateRole(detailDataDTO.getId(), type, companyUserId));
+        handleNeedRoleToHandle(detailDataDTO,companyUserId);//对权限做补偿
+        List<ProjectCostOperaterDTO> operaterDTOS = this.projectCostOperaterDao.getCostOperator(map);
+        if ("1".equals(type) || "4".equals(type) || "5".equals(type)) {//合同回款
+            for (ProjectCostOperaterDTO dto : operaterDTOS) {
+                if ("2".equals(dto.getType())) {
+                    detailDataDTO.setUserName(dto.getUserName());
+                }
+            }
+        }
+
+        if ("2".equals(type) || "3".equals(type)) {//技术审查费
+
+            for (ProjectCostOperaterDTO dto : operaterDTOS) {
+                if ("1".equals(dto.getType())) {
+                    detailDataDTO.setUserName(dto.getUserName());
+                }
+                if ("3".equals(dto.getType())) {
+                    detailDataDTO.setUserName2(dto.getUserName());
+                }
+                if(StringUtil.isNullOrEmpty( detailDataDTO.getUserName2())){
+                    if("4".equals(dto.getType())){
+                        detailDataDTO.setUserName2(dto.getUserName());
+                    }
+                }
+
+            }
+        }
+    }
+
+    /**
+     * 方法描述：获取收款详情
+     * 作者：MaoSF
+     * 日期：2017/4/25
+     * @param:
+     * @return:
+     */
+    private void getPaymentDetailData(ProjectCostPointDetailDataDTO dto, String companyUserId) throws Exception {
+        //查询明细
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("pointDetailId", dto.getId());
+        List<ProjectCostPaymentDetailDTO> detailDTOS = this.projectCostPaymentDetailDao.selectByPointDetailId(map);
+        List<ProjectCostPaymentDetailDataDTO> detailDataList = new ArrayList<>();
+        BigDecimal paidFee = new BigDecimal("0");
+        BigDecimal payFee = new BigDecimal("0");
+        BigDecimal paymentFee = new BigDecimal("0");
+        for (ProjectCostPaymentDetailDTO detailDataDTO : detailDTOS) {
+            ProjectCostPaymentDetailDataDTO detailDataDTO1 = new ProjectCostPaymentDetailDataDTO();
+            BaseDTO.copyFields(detailDataDTO, detailDataDTO1);
+            //查询操作人
+            this.getOperatorForCostDetail(detailDataDTO1, dto.getType(), companyUserId);
+            //统计到款
+            if(!StringUtil.isNullOrEmpty(detailDataDTO.getPaidDate())){
+                paidFee = paidFee.add(detailDataDTO.getFee());
+            }
+            //统计付款
+            if(!StringUtil.isNullOrEmpty(detailDataDTO.getPayDate())){
+                payFee = payFee.add(detailDataDTO.getFee());
+            }
+
+            //累积明细金额
+            paymentFee = paymentFee.add(detailDataDTO.getFee());
+
+            detailDataList.add(detailDataDTO1);
+        }
+        //未付金额
+        dto.setPayFee(payFee);
+        //未收金额
+        dto.setPaidFee(paidFee);
+        //总收款（付款）明细
+        dto.setPaymentFee(paymentFee);
+        dto.setPaymentList(detailDataList);
+
+    }
+
+
+    /**
+     * 方法描述：处理操作人
+     * 作者：MaoSF
+     * 日期：2017/3/6
+     *
+     * @param:
+     * @return:
+     */
+    private void getOperatorForCostDetail(ProjectCostPaymentDetailDataDTO detailDataDTO, String type, String companyUserId) throws Exception {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("costDetailId", detailDataDTO.getId());
+
+        //设置权限
+        detailDataDTO.setRoleMap(handleOperateRole(detailDataDTO.getId(), type, companyUserId));
+        handleNeedRoleToHandle(detailDataDTO,companyUserId);//对权限做补偿
+        List<ProjectCostOperaterDTO> operaterDTOS = this.projectCostOperaterDao.getCostOperator(map);
+        if ("1".equals(type) || "4".equals(type) || "5".equals(type)) {//合同回款
+            for (ProjectCostOperaterDTO dto : operaterDTOS) {
+                if ("2".equals(dto.getType())) {
+                    detailDataDTO.setUserName(dto.getUserName());
+                }
+            }
+        }
+
+        if ("2".equals(type) || "3".equals(type)) {//技术审查费
+
+            for (ProjectCostOperaterDTO dto : operaterDTOS) {
+                if ("1".equals(dto.getType())) {
+                    detailDataDTO.setUserName(dto.getUserName());
+                }
+                if ("3".equals(dto.getType())) {
+                    detailDataDTO.setUserName2(dto.getUserName());
+                }
+                if(StringUtil.isNullOrEmpty( detailDataDTO.getUserName2())){
+                    if("4".equals(dto.getType())){
+                        detailDataDTO.setUserName2(dto.getUserName());
+                    }
+                }
+
+            }
+        }
+    }
+
+    private void handleNeedRoleToHandle(ProjectCostPaymentDetailDataDTO detailDataDTO, String companyUserId) throws Exception{
+        CompanyUserEntity companyUserEntity = this.companyUserDao.selectById(companyUserId);
+        if(companyUserEntity==null){
+            return;
+        }
+        String companyId = companyUserEntity.getCompanyId();
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("targetId", detailDataDTO.getId());
+        map.put("companyId", companyId);
+        List<MyTaskEntity> myTaskList = this.myTaskService.getMyTaskByParamter(map);
+
+        if(!CollectionUtils.isEmpty(myTaskList)){//理论上只会存在一条有效数据
+            MyTaskEntity entity = myTaskList.get(0);
+            if(companyId.equals(entity.getCompanyId())) {
+                if (entity.getTaskType() == 5 || entity.getTaskType() == 7) {
+                    map.clear();
+                    map.put("permissionId", "50");
+                    map.put("companyId", companyId);
+                    map.put("userId", companyUserEntity.getUserId());
+                    List<CompanyUserTableDTO> companyUserList = this.companyUserDao.getCompanyUserByPermissionId(map);
+                    if (!CollectionUtils.isEmpty(companyUserList)){
+                        detailDataDTO.getRoleMap().put("flag" + entity.getTaskType(), entity.getId());
+                    }else {
+                        detailDataDTO.getRoleMap().remove("flag" + entity.getTaskType());
+                    }
+                }
+
+                if(entity.getTaskType()==8 || entity.getTaskType()==9 || entity.getTaskType()==10 ||  (entity.getTaskType()>15 &&  entity.getTaskType()<22)){
+                    if(isMyTask(entity,companyUserEntity.getUserId())){
+                        detailDataDTO.getRoleMap().put("flag" + entity.getTaskType(), entity.getId());
+                    }else {
+                        detailDataDTO.getRoleMap().remove("flag" + entity.getTaskType());
+                    }
+                }
+            }
+        }
+    }
+
+    private void handleNeedRoleToHandle(ProjectCostPointDetailDataDTO detailDataDTO, String companyUserId) throws Exception{
+        CompanyUserEntity companyUserEntity = this.companyUserDao.selectById(companyUserId);
+        if(companyUserEntity==null){
+            return;
+        }
+        String companyId = companyUserEntity.getCompanyId();
+        Map<String, Object> map = new HashMap<>();
+        map.put("targetId", detailDataDTO.getId());
+        map.put("companyId", companyId);
+        List<MyTaskEntity> myTaskList = this.myTaskService.getMyTaskByParamter(map);
+        if(companyUserEntity==null){
+            return;
+        }
+        if(!CollectionUtils.isEmpty(myTaskList)){//理论上只会存在一条有效数据
+            MyTaskEntity entity = myTaskList.get(0);
+            if(companyId.equals(entity.getCompanyId())) {
+                if (entity.getTaskType() == 5 || entity.getTaskType() == 7) {
+                    map.clear();
+                    map.put("permissionId", "50");
+                    map.put("companyId", companyId);
+                    map.put("userId", companyUserEntity.getUserId());
+                    List<CompanyUserTableDTO> companyUserList = this.companyUserDao.getCompanyUserByPermissionId(map);
+                    if (!CollectionUtils.isEmpty(companyUserList)){
+                        detailDataDTO.getRoleMap().put("flag" + entity.getTaskType(), entity.getId());
+                    }else {
+                        detailDataDTO.getRoleMap().remove("flag" + entity.getTaskType());
+                    }
+                }
+                if(entity.getTaskType()==10 || (entity.getTaskType()>15 &&  entity.getTaskType()<22)){
+
+                    if(isMyTask(entity,companyUserEntity.getUserId())){
+                        detailDataDTO.getRoleMap().put("flag" + entity.getTaskType(), entity.getId());
+                    }else {
+                        detailDataDTO.getRoleMap().remove("flag" + entity.getTaskType());
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isMyTask(MyTaskEntity myTask,String accountId){
+        switch (myTask.getTaskType()){
+            case SystemParameters.TECHNICAL_REVIEW_FEE_FOR_PAY:
+            case SystemParameters.COOPERATIVE_DESIGN_FEE_FOR_PAY:
+            case SystemParameters.OTHER_FEE_FOR_PAY:
+                if (permissionService.isFinancial(myTask.getCompanyId(),accountId)) {
+                    return true;
+                }
+            case SystemParameters.CONTRACT_FEE_PAYMENT_CONFIRM:
+            case SystemParameters.TECHNICAL_REVIEW_FEE_FOR_PAID:
+            case SystemParameters.COOPERATIVE_DESIGN_FEE_FOR_PAID:
+            case SystemParameters.OTHER_FEE_FOR_PAID:
+                if (permissionService.isFinancialReceive(myTask.getCompanyId(),accountId)) {
+                    return true;
+                }
+            default:return false;
+        }
+    }
+
+    private Map<String, Object> handleOperateRole(String costDetailId, String type, String companyUserId) throws Exception {
+        Map<String, Object> roleMap = new HashMap<String, Object>();
+        if("1".equals(type)||"4".equals(type)||"5".equals(type)){
+
+        }else {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("handlerId", companyUserId);
+            map.put("targetId", costDetailId);
+            List<MyTaskEntity> myTaskList = this.myTaskService.getMyTaskByParamter(map);
+            for (MyTaskEntity entity : myTaskList) {
+                roleMap.put("flag" + entity.getTaskType(), entity.getId());
+            }
+        }
+
+        return roleMap;
+    }
+
+
+    /**
+     * 方法描述：查询合同回款(map:projectId)map.put("type"="4"：付款，5：收款);
+     * 作者：chenzhujie
+     * 日期：2017/3/1
+     */
+    @Override
+    public AjaxMessage getOtherFee(Map<String, Object> map) throws Exception {
+        String cpyId = (String) map.get("companyId");//当前组织
+        this.setCurrentTaskRealCompanyId(map);
+        String companyId= (String) map.get("companyId");//当前费用所属的组织
+        String type = map.get("type").toString();
+        String accountId = (String) map.get("accountId");
+        String isManager = "0";
+        String isFinancal = "0";
+        String companyUserId = (String)map.get("companyUserId");
+        if(null!=companyUserId && !"".equals(companyUserId)){
+            isManager = this.getManagerFlag((String) map.get("projectId"), cpyId,companyUserId);
+        }
+        if("4".equals(type)){
+            //查询是否存在
+            map.put("type","4");
+            map.put("fromCompanyId",companyId);
+            if(permissionService.isFinancial(cpyId,accountId)){
+                isFinancal = "1";
+            }
+        }else {
+            map.put("type","5");
+            map.put("toCompanyId",companyId);
+            if(permissionService.isFinancialReceive(cpyId,accountId)){
+                isFinancal = "1";
+            }
+        }
+        Map<String, Object> result = this.getReviewFeeInfo(map,type);
+        result.put("isManager",isManager);
+        result.put("isFinancal",isFinancal);
+        return AjaxMessage.succeed("查询成功").setData(result);
+    }
+
+    /**
+     * 方法描述：删除费用（目前界面上没有删除操作。用于删除签发的任务时候，如果不存在签发的记录，则合作设计费删除）
+     * 作者：MaoSF
+     * 日期：2017/3/2
+     *
+     * @param id
+     * @param accountId
+     * @param:
+     * @return:
+     */
+    @Override
+    public AjaxMessage deleteProjectCost(String id, String accountId) throws Exception {
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("costId",id);
+        List<ProjectCostPointDTO> projectCostPointList = this.projectCostPointDao.selectByParam(map);
+        for(ProjectCostPointDTO pointDTO : projectCostPointList){
+            this.deleteProjectCostPoint(pointDTO.getId(),accountId);
+        }
+
+        ProjectCostEntity costEntity = new ProjectCostEntity();
+        costEntity.setId(id);
+        costEntity.setUpdateBy(accountId);
+        costEntity.setStatus("1");
+        this.projectCostDao.updateById(costEntity);
+        return AjaxMessage.succeed("删除成功");
+    }
+
+    /**
+     * 方法描述：删除费用节点
+     * 作者：MaoSF
+     * 日期：2017/3/2
+     *
+     * @param id
+     * @param:
+     * @return:
+     */
+    @Override
+    public AjaxMessage deleteProjectCostPoint(String id, String companyUserId) throws Exception {
+        ProjectCostPointEntity entity = this.projectCostPointDao.selectById(id);
+        if (entity != null) {//有可能不是签发节点，所以entity可能为null
+            //添加项目动态
+            dynamicService.addDynamic(entity,(ProjectCostPointEntity)null,companyUserId);
+            List<ProjectCostPointDetailEntity> list = this.projectCostPointDetailDao.getCostPointDetailByPointId(id);
+            this.projectCostPointDao.updateByPid(id);
+            entity.setStatus("1");
+            this.projectCostPointDao.updateById(entity);
+            //忽略任务
+            for (ProjectCostPointDetailEntity entity1 : list) {
+                deleteProjectCostPointDetail(entity1.getId(),companyUserId,false);
+                this.myTaskService.ignoreMyTask(entity1.getId());
+                messageService.deleteMessage(entity1.getId());
+            }
+            messageService.deleteMessage(id);
+        }
+        return AjaxMessage.succeed("删除成功");
+    }
+
+    /**
+     * 方法描述：删除发起收款明细节点
+     * 作者：MaoSF
+     * 日期：2017/3/2
+     *
+     * @param id
+     * @param:
+     * @return:
+     */
+    @Override
+    public AjaxMessage deleteProjectCostPointDetail(String id,String companyUserId) throws Exception {
+        return deleteProjectCostPointDetail(id,companyUserId,true);
+    }
+
+    @Override
+    public AjaxMessage deleteProjectCostPointDetail(String id, String companyUserId, Boolean isAddDynamic) throws Exception {
+        if(isAddDynamic) {//此函数在删除费用节点时也会调用，此时不应写入动态
+            ProjectCostPointDetailEntity origin = projectCostPointDetailDao.selectById(id);
+            dynamicService.addDynamic(origin,(ProjectCostPointDetailEntity)null,companyUserId);
+        }
+        String accountId = zInfoDAO.getUserIdByCompanyUserId(companyUserId); //获取userId
+        //逻辑删除（发起收款）
+        ProjectCostPointDetailEntity pointDetailEntity = new ProjectCostPointDetailEntity();
+        pointDetailEntity.setId(id);
+        pointDetailEntity.setUpdateBy(accountId);
+        pointDetailEntity.setStatus("1");//逻辑删除的标示
+        this.projectCostPointDetailDao.updateById(pointDetailEntity);
+
+        //逻辑删除收款的明细及相关个人任务
+        List<ProjectCostPaymentDetailEntity> list = this.projectCostPaymentDetailDao.listPaymentByDetailId(id);
+        for (ProjectCostPaymentDetailEntity entity1 : list) {
+            this.myTaskService.ignoreMyTask(entity1.getId());
+            messageService.deleteMessage(entity1.getId());
+            //删除组织账目
+            companyBillService.deleteCompanyBill(entity1.getId());
+        }
+        ProjectCostPaymentDetailEntity paymentDetailEntity = new ProjectCostPaymentDetailEntity();
+        paymentDetailEntity.setUpdateBy(accountId);
+        paymentDetailEntity.setStatus("1");//逻辑删除的标示
+        paymentDetailEntity.setPointDetailId(id);
+        this.projectCostPaymentDetailDao.updateCostPaymentDetailByPointDetailId(paymentDetailEntity);
+        // this.projectCostOperaterDao.deleteByCostDetailId(id);
+
+        //忽略明细款项相关个人任务
+        this.myTaskService.ignoreMyTask(id);
+        //删除消息
+        this.messageService.deleteMessage(id);
+        return AjaxMessage.succeed("删除成功");
+    }
+
+    /**
+     * 方法描述：删除收款明细节点
+     * 作者：MaoSF
+     * 日期：2017/4/27
+     *
+     * @param id
+     * @param:
+     * @return:
+     */
+    @Override
+    public AjaxMessage deleteProjectCostPaymentDetail(String id, String companyUserId) throws Exception {
+        //逻辑删除收款的明细
+        ProjectCostPaymentDetailEntity paymentDetailEntity = this.projectCostPaymentDetailDao.selectById(id);
+        CompanyUserEntity u = companyUserDao.selectById(companyUserId);
+        if(paymentDetailEntity==null || u==null){
+            return AjaxMessage.failed("删除失败");
+        }
+        //保存项目动态
+        dynamicService.addDynamic(paymentDetailEntity,null,companyUserId);
+
+        paymentDetailEntity.setUpdateBy(u.getUserId());
+        paymentDetailEntity.setStatus("1");//逻辑删除的标示
+        this.projectCostPaymentDetailDao.updateById(paymentDetailEntity);
+
+        //删除账目
+        companyBillService.deleteCompanyBill(id);
+
+        //this.projectCostOperaterDao.deleteByCostDetailId(id);
+
+        //忽略任务
+        this.myTaskService.ignoreMyTask(id);
+        //删除消息
+        this.messageService.deleteMessage(id);
+
+        //处理是否触发重新发起任务
+        this.handleSendMyTaskForChangeProjectCostPayment(paymentDetailEntity,u.getUserId(),u.getCompanyId());
+
+        return AjaxMessage.succeed("删除成功");
+    }
+
+    /**
+     * 方法描述：处理删除收款明细，是否重新触发任务发送给（合同回款-财务人员，技术审查费--
+     * 作者：MaoSF
+     * 日期：2017/4/27
+     * @param:
+     * @return:
+     */
+    private void handleSendMyTaskForChangeProjectCostPayment(ProjectCostPaymentDetailEntity paymentDetailEntity,String accountId,String currentCompanyId) throws Exception{
+        if (paymentDetailEntity == null){
+            return;
+        }
+        createPaymentTask(paymentDetailEntity.getPointDetailId(),accountId,currentCompanyId);
+    }
+
+
+    /**
+     * 方法描述：查找是否存在确认付款/确认付款任务，如果没有且需要确认付款/到款，添加一条任务
+     * 作者：ZCL
+     * 日期：2017/5/4
+     */
+    private void createPaymentTask(String detailId,String accountId,String currentCompanyId) throws Exception{
+        if (detailId == null){
+            return;
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("targetId", detailId);
+        List<MyTaskEntity> myTaskList = this.myTaskService.getMyTaskByParamter(map);
+        ProjectCostPointDetailEntity pointDetailEntity = this.projectCostPointDetailDao.selectById(detailId);
+        double paid = projectCostPaymentDetailDao.getSumFee(detailId);
+        if(CollectionUtils.isEmpty(myTaskList)){
+            if(pointDetailEntity!=null) {
+                if ((CommonUtil.doubleCompare(paid,pointDetailEntity.getFee().doubleValue())) < 0) {
+                    ProjectCostPointEntity pointEntity = this.projectCostPointDao.selectById(pointDetailEntity.getPointId());
+                    if (pointEntity != null) {
+                        //合同回款
+                        if ("1".equals(pointEntity.getType())) {
+                            ProjectEntity projectEntity = this.projectDao.selectById(pointEntity.getProjectId());
+                            this.myTaskService.saveMyTask(detailId, SystemParameters.CONTRACT_FEE_PAYMENT_CONFIRM, projectEntity.getCompanyId(),accountId,currentCompanyId);
+                        }
+                        //技术审查费
+                        if ("2".equals(pointEntity.getType())) {
+                            //给立项组织发起确认信息
+                            ProjectEntity projectEntity = this.projectDao.selectById(pointEntity.getProjectId());
+                            this.myTaskService.saveMyTask(detailId, SystemParameters.TECHNICAL_REVIEW_FEE_OPERATOR_MANAGER, projectEntity.getCompanyId(),accountId,currentCompanyId);
+                        }
+                        //合作设计费
+                        if ("3".equals(pointEntity.getType())) {
+                            //给发包人发起确认信息
+                            ProjectCostEntity costEntity = this.projectCostDao.selectById(pointEntity.getCostId());
+                            this.myTaskService.saveMyTask(detailId, SystemParameters.COOPERATIVE_DESIGN_FEE_ORG_MANAGER, costEntity.getFromCompanyId(),accountId,currentCompanyId);
+                        }
+                        //其他费用付款
+                        if ("4".equals(pointEntity.getType())) {
+                            ProjectCostEntity costEntity = this.projectCostDao.selectById(pointEntity.getCostId());
+                            this.myTaskService.saveMyTask(detailId, SystemParameters.OTHER_FEE_FOR_PAY, costEntity.getFromCompanyId(),accountId,currentCompanyId);
+                        }
+                        //其他费用收款
+                        if ("5".equals(pointEntity.getType())) {
+                            ProjectCostEntity costEntity = this.projectCostDao.selectById(pointEntity.getCostId());
+                            this.myTaskService.saveMyTask(detailId, SystemParameters.OTHER_FEE_FOR_PAID, costEntity.getToCompanyId(),accountId,currentCompanyId);
+                        }
+                    }
+                }
+            }
+        }else {
+            if ((CommonUtil.doubleCompare(paid,pointDetailEntity.getFee().doubleValue())) >= 0) {
+                //此处为经营负责人，把付款或许收款金额修改比原来大的时候调用
+                //把任务设置为完成
+                //理论上，该种任务只会存在一条
+                for(MyTaskEntity myTaskEntity:myTaskList){
+                    if(myTaskEntity.getTaskType()==SystemParameters.TECHNICAL_REVIEW_FEE_OPERATOR_MANAGER || myTaskEntity.getTaskType()==SystemParameters.COOPERATIVE_DESIGN_FEE_ORG_MANAGER){
+                        myTaskEntity.setStatus("1");
+                        this.myTaskService.updateById(myTaskEntity);
+                    }
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 方法描述：合同乙方更改技术审查费
+     * 作者：MaoSF
+     * 日期：2017/3/2
+     *
+     * @param projectId
+     * @param accountId
+     * @param flag
+     * @param:flag(1:重新添加，2.全部删除，4.先删除后添加）此处3，在原有的代码中处理
+     * @return:
+     */
+    @Override
+    public AjaxMessage handPartBChange(String projectId, String accountId, int flag) throws Exception {
+        if (flag != 0) {
+            if (flag == 1) {
+                //saveTechnicalReviewFeePoint(projectId, "2");
+            }
+            if (flag == 2) {
+                deleteTechnicalFee(projectId,"2");
+                deletePoint(projectId, "2",accountId);
+            }
+            if (flag == 4) {
+                deleteTechnicalFee(projectId,"2");
+                deletePoint(projectId, "2",accountId);
+               // saveTechnicalReviewFeePoint(projectId, "2");
+            }
+        }
+        return null;
+    }
+
+
+    private void deleteTechnicalFee(String projectId,String type){
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("projectId",projectId);
+        map.put("type",type);
+        List<ProjectCostDTO> list = this.projectCostDao.selectByParam(map);
+        for(ProjectCostDTO dto:list){
+            ProjectCostEntity projectCost = new ProjectCostEntity();
+            projectCost.setId(dto.getId());
+            projectCost.setStatus("1");
+            this.projectCostDao.updateById(projectCost);
+        }
+    }
+    private void deletePoint(String projectId, String type,String accountId) throws Exception {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("projectId", projectId);
+        map.put("type", type);
+        List<ProjectCostPointEntity> list = projectCostPointDao.selectByType(map);
+        for (ProjectCostPointEntity entity : list) {
+            deleteProjectCostPoint(entity.getId(),accountId);
+        }
+    }
+
+
+    /***************************=============技术审查==============**************/
+
+    /**
+     * 方法描述：验证合作设计费
+     * 作者：MaoSF
+     * 日期：2017/3/12
+     *
+     * @param projectCostPointDTO
+     * @param:
+     * @return:
+     */
+    @Override
+    public AjaxMessage validateTechnicalFee(ProjectCostPointDTO projectCostPointDTO) throws Exception {
+        if(StringUtil.isNullOrEmpty(projectCostPointDTO.getFee())){
+            return AjaxMessage.succeed(null);
+        }
+        ProjectCostPointEntity pointEntity= null;
+        String pointPid = projectCostPointDTO.getPid();
+        double fee = 0;
+        //如果是修改，则先查询出原来的数据
+        if (!StringUtil.isNullOrEmpty(projectCostPointDTO.getId())) {
+            pointEntity = this.projectCostPointDao.selectById(projectCostPointDTO.getId());
+            pointPid = pointEntity.getPid();
+            fee =  pointEntity.getFee().doubleValue();
+        }
+
+        String typeMemo="总金额不能大于";
+        double total = 0;
+        //查询子节点的总金额
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("projectId", projectCostPointDTO.getProjectId());
+        map.put("type", projectCostPointDTO.getType());
+        if ("3".equals(projectCostPointDTO.getType())) {
+            map.put("costId", projectCostPointDTO.getCostId());
+        }
+
+        if (!StringUtil.isNullOrEmpty(pointPid)) {
+            ProjectCostPointEntity projectCostPoint = this.projectCostPointDao.selectById(pointPid);
+            if (projectCostPoint.getFee() != null) {
+                total = projectCostPoint.getFee().doubleValue();
+            }
+            map.put("pid", pointPid);
+        } else {
+            //如果是技术审查费，其他费用，第一级是不需要验证总金额 //type = 1,3暂时不做限制
+            if ("1".equals(projectCostPointDTO.getType()) || "2".equals(projectCostPointDTO.getType()) || "3".equals(projectCostPointDTO.getType()) || "4".equals(projectCostPointDTO.getType()) || "5".equals(projectCostPointDTO.getType())) {
+                //判断不能小于设置的子节点的总金额
+                if(pointEntity!=null){
+                    double pointTotalFee = this.projectCostPointDetailDao.getSumFee(pointEntity.getId());
+                    if(projectCostPointDTO.getFee().doubleValue()<pointTotalFee){
+                        return AjaxMessage.failed("金额不能小于" + pointTotalFee);
+                    }
+                }
+                return AjaxMessage.succeed(null);
+            }
+            //查询总金额
+            if ("3".equals(projectCostPointDTO.getType())) {
+                ProjectCostEntity costEntity = this.projectCostDao.selectById(projectCostPointDTO.getCostId());
+                if (costEntity.getFee() != null) {
+                    total = costEntity.getFee().doubleValue();
+                }
+                map.put("costId", costEntity.getId());
+                map.put("pidIsNull", "1");
+            } else {//如果是合同回款
+                List<ProjectCostDTO> costDTOs = this.projectCostDao.selectByParam(map);
+                if (!CollectionUtils.isEmpty(costDTOs)) {
+                    if (null != costDTOs.get(0).getFee()) {
+                        total = costDTOs.get(0).getFee().doubleValue();
+                    }
+                }
+            }
+        }
+
+        if(total==0){
+            return AjaxMessage.failed("请先设置总金额");
+        }
+        //判断不能大于设置的总金额
+        Double totalFee = this.projectCostPointDao.getTotalFee(map);
+        if (!StringUtil.isNullOrEmpty(projectCostPointDTO.getFee())) {
+            Double d = (totalFee + projectCostPointDTO.getFee().doubleValue() - fee);
+            if (CommonUtil.doubleCompare(d,total) > 0) {
+                return AjaxMessage.failed(typeMemo + total);
+            }
+        }
+
+
+
+        return AjaxMessage.succeed(null);
+    }
+
+    /**
+     * 方法描述：验证收款(如果是新增的话，originalFee默认为0)
+     * 作者：MaoSF
+     * 日期：2017/4/26
+     * @param:
+     * @return:
+     */
+    public AjaxMessage validateSaveCostPaymentDetail(ProjectCostPaymentDetailDTO dto,BigDecimal pointFee,BigDecimal originalFee,String feeType) throws Exception{
+
+        if(pointFee==null){
+            return AjaxMessage.failed("操作失败");
+        }
+
+        if(dto.getFee()!=null){//当财务到款，付款是不需要传递fee的
+            double sumFee = this.projectCostPaymentDetailDao.getSumFee(dto.getPointDetailId());
+            if (CommonUtil.doubleCompare((sumFee + dto.getFee().doubleValue()-originalFee.doubleValue()) ,pointFee.doubleValue()) > 0) {
+
+                String errorMsg = "";
+                if("1".equals(feeType) || "5".equals(feeType)){
+                    errorMsg = "收款总金额不能大于";
+                }
+                if("2".equals(feeType) || "3".equals(feeType) || "4".equals(feeType)){
+                    errorMsg = "付款总金额不能大于";
+                }
+                return AjaxMessage.failed(errorMsg+StringUtil.getRealData(pointFee));
+            }
+        }
+
+
+        return null;
+    }
+
+    @Override
+    public AjaxMessage saveCostPaymentDetail(ProjectCostPaymentDetailDTO dto) throws Exception {
+
+        boolean isInsert = false;
+        boolean isSaveAdverseFinancial = false;
+        BigDecimal originalFee = new BigDecimal("0");
+        if(!StringUtil.isNullOrEmpty(dto.getId())) {//存在ID修改
+            ProjectCostPaymentDetailEntity paymentDetail = this.projectCostPaymentDetailDao.selectById(dto.getId());
+            if(paymentDetail!=null){
+                originalFee = paymentDetail.getFee();
+                //防止在任务调用方，没有传递pointDetailId
+                dto.setPointDetailId(paymentDetail.getPointDetailId());
+            }
+        }
+        ProjectCostPointDetailEntity pointDetail = this.projectCostPointDetailDao.selectById(dto.getPointDetailId());
+        if(pointDetail==null){
+            return AjaxMessage.failed("操作失败");
+        }
+        ProjectCostPointEntity costPoint = this.projectCostPointDao.selectById(pointDetail.getPointId());
+        if(pointDetail==null){
+            return AjaxMessage.failed("操作失败");
+        }
+        ProjectCostEntity cost = projectCostDao.selectById(costPoint.getCostId());
+        if(cost==null){
+            return AjaxMessage.failed("操作失败");
+        }
+        //验证
+        AjaxMessage ajax = this.validateSaveCostPaymentDetail(dto,pointDetail.getFee(),originalFee,costPoint.getType());
+        if(ajax != null){
+            return ajax;
+        }
+        int res = 0;
+        ProjectCostPaymentDetailEntity entity = new ProjectCostPaymentDetailEntity();
+        BaseDTO.copyFields(dto, entity);
+        if(!StringUtil.isNullOrEmpty(dto.getId())){//存在ID修改
+            ProjectCostPaymentDetailEntity origin = projectCostPaymentDetailDao.selectById(entity.getId()); //保存原有数据
+            entity.setUpdateBy(dto.getAccountId());
+            //保存项目动态
+            dynamicService.addDynamic(origin,entity,dto.getCurrentCompanyId(),dto.getAccountId());
+            //保存操作
+            String type = null;
+            String payDate = null;
+            if(!StringUtil.isNullOrEmpty(dto.getPaidDate())){
+                type = "5";
+                payDate = dto.getPaidDate();
+            }
+            if(!StringUtil.isNullOrEmpty(dto.getPayDate())){
+                type = "6";
+                payDate = dto.getPayDate();
+            }
+            isSaveAdverseFinancial = handleAdverseFinancialAccount(entity.getId());
+            if(isSaveAdverseFinancial || type.equals("6")){
+                //判断余额付款方的余额
+                validateBalance(cost.getFromCompanyId(),origin.getFee(),payDate);
+            }
+            if(!StringUtil.isNullOrEmpty(type)){
+                isInsert = this.saveProjectCostOperater(entity.getId(),type,dto.getCurrentCompanyUserId(),dto.getFee(),dto.getAccountId());
+                if(isInsert){
+                    this.financialAccount(costPoint,dto,type,entity.getId(),dto.getFee());
+                }
+                if(isSaveAdverseFinancial){
+                    type = "5".equals(type)?"6":"5";
+                    isInsert = this.saveProjectCostOperater(entity.getId(),type,dto.getCurrentCompanyUserId(),dto.getFee(),dto.getAccountId());
+                    if(isInsert){
+                        this.financialAccount(costPoint,dto,type,entity.getId(),dto.getFee());
+                    }
+                }
+            }
+            if(isSaveAdverseFinancial){ //当前财务如果是 技术审查费/合作设计费 双方的共同财务，则同时把付款信息默认记录到系统
+                if(!StringUtil.isNullOrEmpty(entity.getPayDate()) && StringUtil.isNullOrEmpty(entity.getPaidDate())){
+                    entity.setPaidDate(entity.getPayDate());
+                }else if(!StringUtil.isNullOrEmpty(entity.getPaidDate()) && StringUtil.isNullOrEmpty(entity.getPayDate())){
+                    entity.setPayDate(entity.getPaidDate());
+                }
+            }
+            res = projectCostPaymentDetailDao.updateById(entity);
+        }else{//添加
+            //如果是合同回款，其他费用收款
+            if("1".equals(costPoint.getType()) || "5".equals(costPoint.getType())){
+                if(StringUtil.isNullOrEmpty(dto.getPaidDate())){
+                    dto.setPaidDate(DateUtils.date2Str(DateUtils.date_sdf));
+                }
+            }
+            //如果是其他费用付款
+            if("4".equals(costPoint.getType())){
+                if(StringUtil.isNullOrEmpty(dto.getPaidDate())){
+                    dto.setPayDate(DateUtils.date2Str(DateUtils.date_sdf));
+                }
+                //判断余额付款方的余额
+                validateBalance(cost.getFromCompanyId(),dto.getFee(),dto.getPayDate());
+            }
+
+            entity.setId(StringUtil.buildUUID());
+            entity.setCreateBy(dto.getAccountId());
+            entity.setProjectId(costPoint.getProjectId());
+            res = projectCostPaymentDetailDao.insert(entity);
+
+            //保存项目日志
+            dynamicService.addDynamic(null,entity,dto.getCurrentCompanyId(),dto.getAccountId());
+            //保存操作
+            isInsert = this.saveProjectCostOperater(entity.getId(),costPoint.getType(),dto.getCurrentCompanyUserId(),dto.getFee(),dto.getAccountId());
+            if(!"2".equals(costPoint.getType()) && !"3".equals(costPoint.getType()) && isInsert){
+                this.financialAccount(costPoint,dto,costPoint.getType(),entity.getId(),dto.getFee());
+            }
+        }
+        //财务到款，付款给企业负责人和经营负责人推送消息
+        this.sendMessage(cost,pointDetail,entity,dto,isSaveAdverseFinancial);
+        if(res>0){
+            Map<String,Object> map = new HashMap<>();
+            map.put("costId",costPoint.getCostId());
+            map.put("paymentDetailId",entity.getId());
+            map.put("pointDetailId",pointDetail.getId());
+            map.put("pointId",costPoint.getId());
+            return AjaxMessage.succeed("操作成功").setData(map);
+        }else{
+            return AjaxMessage.error("操作失败");
+        }
+    }
+
+    private void validateBalance(String companyId,BigDecimal fee,String payDate) throws Exception{
+        fee = fee.multiply(new BigDecimal("10000"));
+        if(!companyBalanceService.isCanBeAllocate(companyId,fee.toString(),payDate)){
+            //抛异常
+            throw new CustomException("当前支出的金额不能大于账目余额与最低余额的差值");
+        }
+    }
+
+    /**
+     * 方法描述：修改付款或到款明细
+     * 作者：wrb
+     * 日期：2017/4/26
+     */
+    @Override
+    public AjaxMessage updateCostPaymentDetail(ProjectCostPaymentDetailDTO dto) throws Exception {
+        BigDecimal originalFee = new BigDecimal("0");
+        ProjectCostPaymentDetailEntity origin = null;
+        if(!StringUtil.isNullOrEmpty(dto.getId())) {//存在ID修改
+            ProjectCostPaymentDetailEntity paymentDetail = this.projectCostPaymentDetailDao.selectById(dto.getId());
+            if(paymentDetail!=null){
+                //保存原有数据
+                origin = new ProjectCostPaymentDetailEntity();
+                BeanUtilsEx.copyProperties(paymentDetail,origin);
+
+                originalFee = paymentDetail.getFee();
+                //防止在任务调用方，没有传递pointDetailId
+                dto.setPointDetailId(paymentDetail.getPointDetailId());
+            }
+        }
+        ProjectCostPointDetailEntity pointDetail = this.projectCostPointDetailDao.selectById(dto.getPointDetailId());
+        if(pointDetail==null){
+            return AjaxMessage.failed("操作失败");
+        }
+        ProjectCostPointEntity costPoint = this.projectCostPointDao.selectById(pointDetail.getPointId());
+        if(pointDetail==null){
+            return AjaxMessage.failed("操作失败");
+        }
+        //验证
+        AjaxMessage ajax = this.validateSaveCostPaymentDetail(dto,pointDetail.getFee(),originalFee,costPoint.getType());
+        if(ajax != null){
+            return ajax;
+        }
+
+        ProjectCostPaymentDetailEntity entity = new ProjectCostPaymentDetailEntity();
+        BaseDTO.copyFields(dto, entity);
+        entity.setUpdateBy(dto.getAccountId());
+        projectCostPaymentDetailDao.updateById(entity);
+
+        //保存项目日志
+        dynamicService.addDynamic(origin,entity,dto.getCurrentCompanyId(),dto.getAccountId());
+        //处理任务
+        handleSendMyTaskForChangeProjectCostPayment(entity,dto.getAccountId(),dto.getCurrentCompanyId());
+
+        return AjaxMessage.succeed("操作成功");
+    }
+
+
+    private boolean saveProjectCostOperater(String paymentDetailId,String type,String companyUserId,BigDecimal fee,String accountId){
+        ProjectCostOperaterEntity costOperaterEntity = new ProjectCostOperaterEntity();
+        costOperaterEntity.setId(StringUtil.buildUUID());
+        costOperaterEntity.setCompanyUserId(companyUserId);
+        costOperaterEntity.setCostDetailId(paymentDetailId);//记录到款的数据的id
+        costOperaterEntity.setCreateBy(accountId);
+        if("1".equals(type) || "5".equals(type)){
+            costOperaterEntity.setType("5");//到款类型
+        }
+        if("2".equals(type) || "3".equals(type)){
+            costOperaterEntity.setType("3");//经营负责人付款确认
+        }
+
+        if("6".equals(type) || "4".equals(type)){
+            costOperaterEntity.setType("6");//财务付款
+        }
+        //理论上，这种操作只会是一次，为了防止数据库中的数据错误，检查再处理
+        List<ProjectCostOperaterEntity> list = this.projectCostOperaterDao.selectByType(costOperaterEntity);
+        if(CollectionUtils.isEmpty(list)){
+            this.projectCostOperaterDao.insert(costOperaterEntity);
+            return true;
+        }else {
+            costOperaterEntity = list.get(0);
+            costOperaterEntity.setCompanyUserId(companyUserId);
+            this.projectCostOperaterDao.updateById(costOperaterEntity);
+            return false;
+        }
+    }
+
+    private void financialAccount(ProjectCostPointEntity costPoint,ProjectCostPaymentDetailDTO dto,String type,String paymentDetailId,BigDecimal fee) throws Exception{
+        SaveCompanyBillDTO billDTO = new SaveCompanyBillDTO();
+        String paymentDate = StringUtil.isNullOrEmpty(dto.getPaidDate())?dto.getPayDate():dto.getPaidDate();
+        ProjectCostEntity cost = projectCostDao.selectById(costPoint.getCostId());
+        billDTO.setFromCompanyId(cost.getFromCompanyId());
+        billDTO.setToCompanyId(cost.getToCompanyId());
+        billDTO.setFee(fee);
+        ProjectCostPaymentDetailEntity payment = null;
+        if(fee==null){
+            payment = this.projectCostPaymentDetailDao.selectById(paymentDetailId);
+            billDTO.setFee(payment.getFee());
+        }
+        if("1".equals(type) || "5".equals(type)){
+            billDTO.setPayType(CompanyBillType.DIRECTION_PAYEE);
+            billDTO.setCompanyId(cost.getToCompanyId());
+        }
+        if("6".equals(type) || "4".equals(type)){
+            billDTO.setPayType(CompanyBillType.DIRECTION_PAYER);
+            billDTO.setCompanyId(cost.getFromCompanyId());
+        }
+        billDTO.setFeeType(Integer.valueOf(cost.getType()));
+        if("5".equals(cost.getType())){ //如果类型是5，则属于其他费用
+            billDTO.setFeeType(CompanyBillType.FEE_TYPE_OTHER);
+        }
+
+        billDTO.setBillDescription(costPoint.getFeeDescription());
+        billDTO.setProjectId(cost.getProjectId());
+        billDTO.setOperatorId(dto.getCurrentCompanyUserId());
+        billDTO.setPaymentDate(paymentDate);
+        billDTO.setTargetId(paymentDetailId);
+        companyBillService.saveCompanyBill(billDTO);
+    }
+
+    boolean handleAdverseFinancialAccount(String paymentId) throws Exception{
+        Map<String,Object> param = new HashMap<>();
+        param.put("targetId",paymentId);
+        param.put("ignoreStatus","1");//忽略status的状态值，因为getMyTaskByParamter中默认status = 0
+        List<MyTaskEntity> taskList = this.myTaskService.getMyTaskByParamter(param);
+        if(!CollectionUtils.isEmpty(taskList) && taskList.size()<2){
+            return true;
+        }
+        return false;
+    }
+
+    private void sendMessage(ProjectCostEntity cost,ProjectCostPointDetailEntity pointDetail,ProjectCostPaymentDetailEntity paymentDetail,ProjectCostPaymentDetailDTO dto,boolean isSaveAdverseFinancial) throws Exception{
+        //财务到款，付款给企业负责人和经营负责人推送消息
+        sendMessageToOperatorAndOrgAdminForTaskType(cost,paymentDetail.getId(),pointDetail.getPointId(),dto.getTaskType(),dto.getAccountId(),dto.getCurrentCompanyId());
+        if(isSaveAdverseFinancial){
+            int type = dto.getTaskType();
+            if(dto.getTaskType()==SystemParameters.TECHNICAL_REVIEW_FEE_FOR_PAY){
+                type = SystemParameters.TECHNICAL_REVIEW_FEE_FOR_PAID;
+            }
+            if(dto.getTaskType()==SystemParameters.TECHNICAL_REVIEW_FEE_FOR_PAID){
+                type = SystemParameters.TECHNICAL_REVIEW_FEE_FOR_PAY;
+            }
+            if(dto.getTaskType()==SystemParameters.COOPERATIVE_DESIGN_FEE_FOR_PAY){
+                type = SystemParameters.COOPERATIVE_DESIGN_FEE_FOR_PAID;
+            }
+            if(dto.getTaskType()==SystemParameters.COOPERATIVE_DESIGN_FEE_FOR_PAID){
+                type = SystemParameters.COOPERATIVE_DESIGN_FEE_FOR_PAY;
+            }
+            sendMessageToOperatorAndOrgAdminForTaskType(cost,paymentDetail.getId(),pointDetail.getPointId(),type,dto.getAccountId(),dto.getCurrentCompanyId());
+        }
+    }
+    /**
+     * 方法描述：财务到款确认，给企业负责人和经营负责人推送信息
+     * 作者：MaoSF
+     * 日期：2017/3/17
+     */
+    private void sendMessageToOperatorAndOrgAdminForTaskType(ProjectCostEntity cost ,String paymentDetailId,String pointId,int taskType,String accountId,String currentCompanyId) throws Exception{
+        int type = 0;
+        String companyId = null;
+        String projectId = cost.getProjectId();
+        if(taskType==8){
+            type = SystemParameters.MESSAGE_TYPE_13;
+            companyId = cost.getToCompanyId();
+        }
+        if(taskType==9){
+            type = SystemParameters.MESSAGE_TYPE_16;
+            companyId = cost.getToCompanyId();
+        }
+        if(taskType==10){
+            type = SystemParameters.MESSAGE_TYPE_18;
+            companyId = cost.getToCompanyId();
+        }
+        if(taskType==16){
+            type = SystemParameters.MESSAGE_TYPE_27;
+            companyId = cost.getFromCompanyId();
+        }
+        if(taskType==17){
+            type = SystemParameters.MESSAGE_TYPE_28;
+            companyId = cost.getToCompanyId();
+        }
+        if(taskType==18){
+            type = SystemParameters.MESSAGE_TYPE_29;
+            companyId = cost.getFromCompanyId();
+        }
+        if(taskType==19){
+            type = SystemParameters.MESSAGE_TYPE_30;
+            companyId = cost.getToCompanyId();
+        }
+        if(taskType==20){
+            type = SystemParameters.MESSAGE_TYPE_33;
+            companyId = cost.getFromCompanyId();
+        }
+        if(taskType==21){
+            type = SystemParameters.MESSAGE_TYPE_34;
+            companyId = cost.getToCompanyId();
+        }
+        if(type==0){
+            return;//如果不是以上内容，只直接返回
+        }
+        ProjectMemberEntity managerEntity = this.projectMemberService.getOperatorManager(projectId,companyId);
+        ProjectMemberEntity assist = this.projectMemberService.getOperatorAssistant(projectId,companyId);
+        CompanyUserTableDTO orgManager = this.companyUserService.getOrgManager(companyId);
+
+        List<String> userIdList = new ArrayList<>();
+        if (managerEntity != null) {
+            if (!userIdList.contains(managerEntity.getAccountId())) {
+                userIdList.add(managerEntity.getAccountId());
+            }
+        }
+        if (assist != null) {
+            if (!userIdList.contains(assist.getAccountId())) {
+                userIdList.add(assist.getAccountId());
+            }
+        }
+        if (orgManager != null) {
+            if (!userIdList.contains(orgManager.getUserId())) {
+                userIdList.add(orgManager.getUserId());
+            }
+        }
+        List<String> userList = userIdList.stream()
+                .filter(line -> !accountId.equals(line))
+                .collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(userList)) {
+            for (String userId : userList) {
+                MessageEntity messageEntity = new MessageEntity();
+                messageEntity.setProjectId(projectId);
+                messageEntity.setCompanyId(companyId);
+                messageEntity.setTargetId(paymentDetailId);
+                messageEntity.setParam1(pointId);
+                messageEntity.setUserId(userId);
+                messageEntity.setMessageType(type);
+                messageEntity.setCreateBy(accountId);
+                messageEntity.setCreateDate(new Date());
+                messageEntity.setSendCompanyId(currentCompanyId);
+                this.messageService.sendMessage(messageEntity);
+            }
+        }
+    }
+
+
+    /**
+     * 方法描述：合作设计费（技术审查费）详情
+     * 作者：MaoSF
+     * 日期：2017/3/9
+     *
+     * @param:map(pointDetailId,taskType)
+     * @return:
+     */
+    @Override
+    public ProjectCostPointDataForMyTaskDTO getProjectCostPointDetailForMyTask(String paymentDetailId,String pointDetailId,int taskType,String companyId) throws Exception {
+        if(StringUtil.isNullOrEmpty(paymentDetailId) && StringUtil.isNullOrEmpty(pointDetailId)){
+            return null;
+        }
+        ProjectCostPointDataForMyTaskDTO dataDTO = this.projectCostPointDao.getCostPointData(pointDetailId,paymentDetailId,companyId);
+        if(dataDTO==null){
+            return dataDTO;
+        }
+        BigDecimal paidFee = new BigDecimal("0");
+        dataDTO.setUserName(getOperatorForCostDetail2(dataDTO.getType(),dataDTO.getPointDetailId()));
+        //查询明细
+        Map<String, Object> map = new HashMap<>();
+        map.put("pointDetailId",dataDTO.getPointDetailId());
+        List<ProjectCostPaymentDetailDTO> detailDTOS = this.projectCostPaymentDetailDao.selectByPointDetailId(map);
+        for(ProjectCostPaymentDetailDTO detail:detailDTOS){
+            if(taskType==4 || taskType==5 || taskType==6 || taskType==7){//经营负责人填写付款金额
+                paidFee = paidFee.add(detail.getFee());
+            }
+            else if(taskType==10 || taskType==17 || taskType==19 || taskType==21){//财务到款
+                if(!StringUtil.isNullOrEmpty(detail.getPaidDate())){
+                    paidFee = paidFee.add(detail.getFee());
+                }
+            }else {//财务付款
+                if(!StringUtil.isNullOrEmpty(detail.getPayDate())){
+                    paidFee = paidFee.add(detail.getFee());
+                }
+            }
+        }
+        if(dataDTO.getPointDetailFee()!=null){
+            dataDTO.setUnpaid(dataDTO.getPointDetailFee().subtract(paidFee));
+        }
+        dataDTO.setPaidFee(paidFee);
+        return dataDTO;
+    }
+
+    /**
+     * 方法描述：处理操作人
+     * 作者：MaoSF
+     * 日期：2017/3/6
+     * @param:
+     * @return:
+     */
+    private String getOperatorForCostDetail2(String type,String costDetailId) throws Exception{
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("costDetailId",costDetailId);
+        List<ProjectCostOperaterDTO> operaterDTOS = this.projectCostOperaterDao.getCostOperator(map);
+        if("1".equals(type)  || "4".equals(type) || "5".equals(type)){//合同回款
+            for(ProjectCostOperaterDTO dto:operaterDTOS){
+                if("2".equals(dto.getType())){
+                    return dto.getUserName();
+                }
+            }
+        }
+        if("2".equals(type) || "3".equals(type)){//技术审查费
+            for(ProjectCostOperaterDTO dto:operaterDTOS){
+                if("1".equals(dto.getType())){
+                    return dto.getUserName();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 方法描述：保存费用(合作设计费），先设置一条空的数据
+     * 作者：MaoSF
+     * 日期：2017/3/7
+     */
+    public void saveProjectCost(ProjectTaskEntity task, String currentCompanyId) throws Exception {
+        //查询是否存在总金额
+        //查询总费用
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("projectId", task.getProjectId());
+        map.put("fromCompanyId", currentCompanyId);
+        map.put("toCompanyId", task.getCompanyId());
+        map.put("type", "3"); //代表合作设计费类型
+        map.put("flag", "1"); //代表正式合同
+        List<ProjectCostDTO> totalCost = this.projectCostDao.selectByParam(map);//理论上只会存在一条
+        String costId = null;
+        if (!CollectionUtils.isEmpty(totalCost)) {
+            costId = totalCost.get(0).getId();
+        } else {
+            costId = StringUtil.buildUUID();
+            ProjectCostEntity costEntity = new ProjectCostEntity();
+            costEntity.setId(costId);
+            costEntity.setProjectId(task.getProjectId());
+            costEntity.setFromCompanyId(currentCompanyId);
+            costEntity.setToCompanyId(task.getCompanyId());
+            costEntity.setType("3");
+            costEntity.setFlag("1");
+            this.projectCostDao.insert(costEntity);
+        }
+    }
+}

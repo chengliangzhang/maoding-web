@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetNoticeByParamMapper">
+    <resultMap id="BaseResultMap" type="com.maoding.notice.dto.NoticeDTO">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="notice_title" property="noticeTitle" jdbcType="VARCHAR"/>
+        <result column="notice_no" property="noticeNo" jdbcType="VARCHAR"/>
+        <result column="notice_status" property="noticeStatus" jdbcType="VARCHAR"/>
+        <result column="notice_is_push" property="noticeIsPush" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
+        <result column="notice_publisher" property="noticePublisher" jdbcType="VARCHAR"/>
+        <result column="notice_publishdate" property="noticePublishdate" jdbcType="VARCHAR"/>
+        <result column="notice_content" property="noticeContent" jdbcType="LONGVARCHAR"/>
+        <result column="notice_publisher_name" property="noticePublisherName" jdbcType="VARCHAR"/>
+        <result column="company_name" property="companyName" jdbcType="VARCHAR"/>
+        <result column="notice_type" property="noticeType" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="selectByParam" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        a.id,
+        notice_title,
+        notice_no,
+        notice_status,
+        notice_is_push,
+        a.company_id,
+        notice_publisher,
+        notice_content,
+        notice_publishdate,
+        c.user_name AS notice_publisher_name,
+        c2.company_name,
+        a.`notice_type`
+        FROM maoding_web_notice a
+        LEFT JOIN maoding_web_company c2 on a.company_id = c2.id
+        LEFT JOIN maoding_web_notice_org b ON a.id = b.notice_id
+        LEFT JOIN maoding_web_company_user c ON a.notice_publisher = c.id
+        LEFT JOIN maoding_web_org d ON b.org_id = d.id
+        WHERE
+        1 = 1 AND a.notice_status!='1'
+        AND
+        (
+        (
+        d.org_type = 1
+        AND b.org_id IN ( SELECT org_id FROM maoding_web_org_user ou WHERE ou.company_id = #{companyId,jdbcType=VARCHAR}
+        AND ou.user_id = #{userId,jdbcType=VARCHAR})
+        )
+        OR
+        (
+        d.org_type = 0
+        AND b.org_id IN (SELECT company_id FROM maoding_web_org_user ou WHERE ou.company_id
+        =#{companyId,jdbcType=VARCHAR} AND ou.user_id = #{userId,jdbcType=VARCHAR})
+        )
+        )
+        GROUP BY a.id
+        ORDER BY a.create_date DESC
+        <if test="_parameter.containsKey('startPage')">
+            limit #{startPage},#{endPage}
+        </if>
+    </select>
+
+    <select id="selectByParamCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT count(1)
+        FROM (
+                 SELECT a.id
+                 FROM maoding_web_notice a
+                     LEFT JOIN maoding_web_notice_org b ON a.id = b.notice_id
+                     LEFT JOIN maoding_web_company_user c ON a.notice_publisher = c.id
+                     LEFT JOIN maoding_web_org d ON b.org_id = d.id
+                 WHERE
+                     1 = 1 AND a.notice_status != '1'
+                     AND
+                     (
+                         (
+                             d.org_type = 1
+                             AND b.org_id IN (SELECT org_id
+                                              FROM maoding_web_org_user ou
+                                              WHERE ou.company_id = #{companyId,jdbcType=VARCHAR} AND
+                                                    ou.user_id = #{userId,jdbcType=VARCHAR})
+                         )
+                         OR
+                         (
+                             d.org_type = 0
+                             AND b.org_id IN (SELECT company_id
+                                              FROM maoding_web_org_user ou
+                                              WHERE ou.company_id = #{companyId,jdbcType=VARCHAR} AND
+                                                    ou.user_id = #{userId,jdbcType=VARCHAR})
+                         )
+                     )
+                 GROUP BY a.id
+             ) a2
+    </select>
+
+    <select id="getNoticeByCompanyId" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+        a.id,
+        notice_title,
+        notice_no,
+        notice_status,
+        notice_is_push,
+        a.company_id,
+        notice_publisher,
+        notice_content,
+        notice_publishdate,
+        c.user_name AS notice_publisher_name
+        FROM maoding_web_notice a
+        LEFT JOIN maoding_web_company_user c ON a.notice_publisher = c.id
+        WHERE a.company_id = #{companyId,jdbcType=VARCHAR} AND a.notice_status='0'
+        ORDER BY a.create_date DESC
+        <if test="_parameter.containsKey('startPage')">
+            limit #{startPage},#{endPage}
+        </if>
+    </select>
+
+    <select id="getNoticeCountByCompanyId" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT count(1)
+        FROM maoding_web_notice a
+        WHERE a.company_id = #{companyId,jdbcType=VARCHAR} AND a.notice_status = '0'
+    </select>
+
+    <select id="getNoticeOrgByNoticeId" resultType="com.maoding.notice.dto.NoticeOrgDTO"
+            parameterType="java.lang.String">
+        SELECT
+            org_id                        AS orgId,
+            CASE (o.org_type)
+            WHEN 0
+                THEN (SELECT company_short_name
+                      FROM maoding_web_company c4
+                      WHERE c4.id = o.id)
+            ELSE (SELECT depart_name
+                  FROM maoding_web_depart d1
+                  WHERE d1.id = o.id) END AS orgName
+        FROM maoding_web_notice_org a
+            LEFT JOIN maoding_web_org o ON a.org_id = o.id
+        WHERE notice_id = #{noticeId,jdbcType=VARCHAR}
+    </select>
+
+
+    <select id="getNotReadNotice" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT a.id
+        FROM maoding_web_notice a
+            INNER JOIN maoding_web_notice_org b ON a.id = b.notice_id
+        WHERE a.notice_status = '0'
+              AND b.org_id = #{companyId}
+              AND a.id NOT IN (SELECT notice_id
+                               FROM maoding_web_notice_read
+                               WHERE company_id = #{companyId} AND user_id = #{userId})
+    </select>
+    <select id="getNoticeById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+            t.id,
+            t.notice_title,
+            t.notice_no,
+            t.notice_status,
+            t.notice_is_push,
+            t.company_id,
+            t.notice_publisher,
+            t.notice_content,
+            t.notice_publishdate,
+            t.create_date,
+            t.create_by,
+            t.update_date,
+            t.update_by,
+            c.`user_name` as notice_publisher_name
+        FROM
+            maoding_web_notice t
+            LEFT JOIN maoding_web_company_user c
+                ON t.`notice_publisher` = c.`id`
+        WHERE t.id = #{id}
+    </select>
+</mapper>

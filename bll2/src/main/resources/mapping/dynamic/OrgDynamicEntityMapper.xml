@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="OrgDynamicEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.dynamic.entity.OrgDynamicEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="dynamic_title" property="dynamicTitle" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="dynamic_type" property="dynamicType" jdbcType="INTEGER" />
+    <result column="target_id" property="targetId" jdbcType="VARCHAR" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="field1" property="field1" jdbcType="VARCHAR" />
+    <result column="field2" property="field2" jdbcType="VARCHAR" />
+  </resultMap>
+
+
+  <resultMap id="ResultMapWithBLOBs" type="com.maoding.dynamic.entity.OrgDynamicEntity" extends="BaseResultMap" >
+    <result column="dynamic_content" property="dynamicContent" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+
+  <sql id="Base_Column_List" >
+    id, dynamic_title, company_id, dynamic_type, target_id, create_by, create_date, update_by, 
+    update_date, field1, field2
+  </sql>
+
+
+  <sql id="Blob_Column_List" >
+    dynamic_content
+  </sql>
+
+  <select id="selectById" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from maoding_web_org_dynamic
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+
+
+  <select id="selectByParam" resultMap="ResultMapWithBLOBs" parameterType="java.util.Map" >
+  select
+  <include refid="Base_Column_List" />
+  ,
+  <include refid="Blob_Column_List" />
+  from maoding_web_org_dynamic
+  where field2='0'
+  <if test="companyId != null" >
+    and  company_id = #{companyId,jdbcType=VARCHAR}
+  </if>
+  <if test="dynamicType != null" >
+    and  dynamic_type = #{dynamicType,jdbcType=VARCHAR}
+  </if>
+  ORDER BY  create_date DESC
+  <if test="_parameter.containsKey('startPage')">
+    limit #{startPage},#{endPage}
+  </if>
+
+</select>
+
+  <select id="listOrgDynamicByParam" resultMap="ResultMapWithBLOBs" parameterType="java.util.Map" >
+  select SQL_CALC_FOUND_ROWS
+    a.id,a.dynamic_title,a.company_id,a.dynamic_type,a.target_id,a.create_by,a.create_date,a.update_by,a.update_date,a.field1,a.field2,a.dynamic_content
+  from
+      maoding_web_org_dynamic a
+      left join maoding_web_notice b on (a.target_id=b.id)
+      left join maoding_web_notice_org c on (b.id=c.notice_id)
+  WHERE
+      a.field2='0'
+      <if test="companyId != null" >
+        and (((a.company_id = #{companyId,jdbcType=VARCHAR})
+            and (c.org_id is null or c.org_id = #{companyId,jdbcType=VARCHAR}))
+          or ((a.company_id != #{companyId,jdbcType=VARCHAR})
+            and (c.org_id = #{companyId,jdbcType=VARCHAR})))
+      </if>
+      <if test="dynamicType != null" >
+        and  a.dynamic_type = #{dynamicType,jdbcType=VARCHAR}
+      </if>
+    ORDER BY  a.create_date DESC
+  <if test="_parameter.containsKey('startPage')">
+    limit #{startPage},#{endPage}
+  </if>
+</select>
+
+  <select id="getLastQueryCount" resultType="java.lang.Integer">
+    SELECT found_rows()
+  </select>
+
+  <select id="getLastOrgDynamicByParam" resultMap="ResultMapWithBLOBs" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from maoding_web_org_dynamic
+    where field2='0'  and  company_id = #{companyId,jdbcType=VARCHAR}
+    ORDER BY  create_date DESC
+    limit 5
+  </select>
+
+  <select id="selectByParamCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select
+    COUNT(1)
+    from maoding_web_org_dynamic
+    where field2='0'
+    <if test="companyId != null" >
+      and  company_id = #{companyId,jdbcType=VARCHAR}
+    </if>
+    <if test="dynamicType != null" >
+      and  dynamic_type = #{dynamicType,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_org_dynamic
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.maoding.dynamic.entity.OrgDynamicEntity" >
+    insert into maoding_web_org_dynamic (id, dynamic_title, company_id, 
+      dynamic_type, target_id, create_by, 
+      create_date, update_by, update_date, 
+      field1, field2, dynamic_content
+      )
+    values (#{id,jdbcType=VARCHAR}, #{dynamicTitle,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, 
+      #{dynamicType,jdbcType=VARCHAR}, #{targetId,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{field1,jdbcType=VARCHAR}, '0', #{dynamicContent,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertByParam" parameterType="com.maoding.dynamic.entity.OrgDynamicEntity" >
+    insert into maoding_web_org_dynamic
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="dynamicTitle != null" >
+        dynamic_title,
+      </if>
+      <if test="companyId != null" >
+        company_id,
+      </if>
+      <if test="dynamicType != null" >
+        dynamic_type,
+      </if>
+      <if test="targetId != null" >
+        target_id,
+      </if>
+      <if test="createBy != null" >
+        create_by,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="updateBy != null" >
+        update_by,
+      </if>
+      <if test="updateDate != null" >
+        update_date,
+      </if>
+      <if test="field1 != null" >
+        field1,
+      </if>
+      <if test="field2 != null" >
+        field2,
+      </if>
+      <if test="dynamicContent != null" >
+        dynamic_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamicTitle != null" >
+        #{dynamicTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamicType != null" >
+        #{dynamicType,jdbcType=VARCHAR},
+      </if>
+      <if test="targetId != null" >
+        #{targetId,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null" >
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="field1 != null" >
+        #{field1,jdbcType=VARCHAR},
+      </if>
+      <if test="field2 != null" >
+        #{field2,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamicContent != null" >
+        #{dynamicContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateById" parameterType="com.maoding.dynamic.entity.OrgDynamicEntity" >
+    update maoding_web_org_dynamic
+    <set >
+      <if test="dynamicTitle != null" >
+        dynamic_title = #{dynamicTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamicType != null" >
+        dynamic_type = #{dynamicType,jdbcType=VARCHAR},
+      </if>
+      <if test="targetId != null" >
+        target_id = #{targetId,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="field1 != null" >
+        field1 = #{field1,jdbcType=VARCHAR},
+      </if>
+      <if test="field2 != null" >
+        field2 = #{field2,jdbcType=VARCHAR},
+      </if>
+      <if test="dynamicContent != null" >
+        dynamic_content = #{dynamicContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="update" parameterType="com.maoding.dynamic.entity.OrgDynamicEntity" >
+    update maoding_web_org_dynamic
+    set dynamic_title = #{dynamicTitle,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      dynamic_type = #{dynamicType,jdbcType=VARCHAR},
+      target_id = #{targetId,jdbcType=VARCHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      field1 = #{field1,jdbcType=VARCHAR},
+      field2 = #{field2,jdbcType=VARCHAR},
+      dynamic_content = #{dynamicContent,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+
+  <update id="updatefield2ByTargetId" parameterType="java.lang.String" >
+    update maoding_web_org_dynamic
+    set
+      field2 = '1'
+    where target_id = #{targetId,jdbcType=VARCHAR}
+  </update>
+</mapper>

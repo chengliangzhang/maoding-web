@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="RelationRecordEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.commonModule.entity.RelationRecordEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="relation_id" property="relationId" jdbcType="VARCHAR" />
+    <result column="target_id" property="targetId" jdbcType="VARCHAR" />
+    <result column="operate_record_id" property="operateRecordId" jdbcType="VARCHAR" />
+    <result column="deleted" property="deleted" jdbcType="INTEGER" />
+    <result column="record_type" property="recordType" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, relation_id, target_id,operate_record_id, deleted, record_type, create_date, create_by, update_date,
+    update_by
+  </sql>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_relation_record
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getRelationRecord" resultMap="BaseResultMap" parameterType="com.maoding.commonModule.dto.QueryRelationRecordDTO">
+    select
+    <include refid="Base_Column_List" />
+    from maoding_relation_record
+    <where>
+      deleted = 0
+      <if test="relationId != null" >
+        AND relation_id = #{relationId,jdbcType=VARCHAR}
+      </if>
+      <if test="targetId != null" >
+        AND target_id = #{targetId,jdbcType=VARCHAR}
+      </if>
+      <if test="recordType != null" >
+        AND record_type = #{recordType,jdbcType=VARCHAR}
+      </if>
+      <if test="operateRecordId != null" >
+        AND operate_record_id = #{operateRecordId,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_relation_record
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maoding.commonModule.entity.RelationRecordEntity" >
+    insert into maoding_relation_record (id, relation_id, target_id, operate_record_id,
+      deleted, record_type, create_date, 
+      create_by, update_date, update_by
+      )
+    values (#{id,jdbcType=VARCHAR}, #{relationId,jdbcType=VARCHAR}, #{targetId,jdbcType=VARCHAR}, #{operateRecordId,jdbcType=VARCHAR},
+      #{deleted,jdbcType=INTEGER}, #{recordType,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.commonModule.entity.RelationRecordEntity" >
+    update maoding_relation_record
+    <set>
+      <if test="relationId != null" >
+        relation_id = #{relationId,jdbcType=VARCHAR},
+      </if>
+      <if test="targetId != null" >
+        target_id = #{targetId,jdbcType=VARCHAR},
+      </if>
+      <if test="operateRecordId != null" >
+        operate_record_id = #{operateRecordId,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null" >
+        deleted = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="recordType != null" >
+        record_type = #{recordType,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateRelationRecord" parameterType="com.maoding.commonModule.entity.RelationRecordEntity">
+    update maoding_relation_record
+    set  deleted = 1
+    <where>
+    <if test="relationId != null" >
+      AND relation_id = #{relationId,jdbcType=VARCHAR}
+    </if>
+    <if test="targetId != null" >
+      AND target_id = #{targetId,jdbcType=VARCHAR}
+    </if>
+    <if test="recordType != null" >
+      AND record_type = #{recordType,jdbcType=VARCHAR}
+    </if>
+  </where>
+  </update>
+
+  <update id="update" parameterType="com.maoding.commonModule.entity.RelationRecordEntity" >
+    update maoding_relation_record
+    set relation_id = #{relationId,jdbcType=VARCHAR},
+      target_id = #{targetId,jdbcType=VARCHAR},
+      operate_record_id = #{operateRecordId,jdbcType=VARCHAR},
+      deleted = #{deleted,jdbcType=INTEGER},
+      record_type = #{recordType,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

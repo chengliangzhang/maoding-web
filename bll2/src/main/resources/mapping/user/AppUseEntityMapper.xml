@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="AppUseEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.user.entity.AppUseEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="areaStructure" property="areaStructure" jdbcType="VARCHAR" />
+    <result column="plotRatio" property="plotRatio" jdbcType="VARCHAR" />
+    <result column="coverageRate" property="coverageRate" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, areaStructure, plotRatio,coverageRate, create_date, create_by, update_date,
+    update_by
+  </sql>
+
+  <insert id="insert" parameterType="com.maoding.user.entity.AppUseEntity" >
+    insert into maoding_web_appuse (id, areaStructure, plotRatio,coverageRate,create_date)
+    values (#{id,jdbcType=VARCHAR}, #{areaStructure,jdbcType=VARCHAR}, #{plotRatio,jdbcType=VARCHAR},
+    #{coverageRate,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP})
+  </insert>
+
+  <select id="selectList" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select
+    <include refid="Base_Column_List"/>
+    from maoding_web_appuse ORDER BY create_date desc
+  </select>
+</mapper>

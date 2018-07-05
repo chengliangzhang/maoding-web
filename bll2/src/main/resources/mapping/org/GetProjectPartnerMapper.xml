@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetProjectPartnerMapper">
+	<resultMap id="BaseResultMap"
+		type="com.maoding.project.dto.ProjectPartnerDTO">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="company_id" property="companyId" jdbcType="VARCHAR" />
+		<result column="company_name" property="companyName" jdbcType="VARCHAR" />
+		<result column="company_manager_id" property="companyManagerId" jdbcType="VARCHAR" />
+		<result column="company_manager_name" property="companyManagerName" jdbcType="VARCHAR" />
+		<result column="project_manager_id" property="projectManagerId" jdbcType="VARCHAR" />
+		<result column="project_manager_name" property="projectManagerName" jdbcType="VARCHAR" />
+		<result column="task_name_splice" property="taskNameSplice" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- 查询项目外部合作的组织及任务信息 -->
+	<select id="getProjectPartnerList" resultMap="BaseResultMap" parameterType="com.maoding.org.dto.PartnerQueryDTO">
+		select
+		DISTINCT a.phone,a.id, a.company_id, b.company_name,e.id as company_manager_id,e.user_name as company_manager_name,
+		c.id as project_manager_id,d.user_name as project_manager_name,
+		(select GROUP_CONCAT(t.task_name ORDER BY t.create_date) from  maoding_web_project_task t,maoding_web_project_task_relation r where t.id=r.task_id and t.task_status!='1' and r.from_company_id = a.from_company_id and r.to_company_id = a.company_id and t.project_id = a.project_id) as task_name_splice
+		from maoding_web_partner a
+		left join maoding_web_company b on a.company_id=b.id
+		left join maoding_web_project_member c on a.company_id=c.company_id and a.project_id = c.project_id and c.member_type = 1 and c.deleted = 0
+		LEFT JOIN maoding_web_company_user d on c.company_user_id = d.id
+		LEFT JOIN (SELECT u.id,u.user_name,u.company_id from maoding_web_user_permission p,maoding_web_company_user u where p.permission_id = '50' and  p.user_id = u.user_id and p.company_id = u.company_id) e on a.company_id =e.company_id
+	  	where 1=1
+		and a.from_company_id=#{fromCompanyId,jdbcType=VARCHAR}
+		and a.project_id=#{projectId,jdbcType=VARCHAR}
+		ORDER BY a.company_id DESC
+	</select>
+
+
+</mapper>

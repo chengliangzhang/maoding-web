@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="TeamOperaterEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.org.entity.TeamOperaterEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="admin_password" property="adminPassword" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, company_id, user_id, admin_password, create_date, create_by, update_date, update_by
+  </sql>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_team_operater
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getTeamOperaterByCompanyId" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_team_operater
+    where company_id = #{companyId,jdbcType=VARCHAR}
+    <if test="userId != null" >
+      AND user_id = #{userId,jdbcType=VARCHAR}
+    </if>
+
+  </select>
+
+  <select id="getAllTeamOperater" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_team_operater
+  </select>
+
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_team_operater
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.maoding.org.entity.TeamOperaterEntity" >
+    insert into maoding_web_team_operater (id, company_id, user_id, 
+      admin_password, create_date, create_by, 
+      update_date, update_by)
+    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{adminPassword,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="updateById" parameterType="com.maoding.org.entity.TeamOperaterEntity" >
+    update maoding_web_team_operater
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="adminPassword != null" >
+        admin_password = #{adminPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+        update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="update" parameterType="com.maoding.org.entity.TeamOperaterEntity" >
+    update maoding_web_team_operater
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      admin_password = #{adminPassword,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = now(),
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <select id="getSystemManager"  parameterType="java.lang.String" resultType="com.maoding.org.dto.CompanyUserTableDTO">
+    select b.id,b.user_id,b.company_id,b.user_name
+    from maoding_web_team_operater a
+    LEFT JOIN maoding_web_company_user b on a.company_id = b.company_id and a.user_id = b.user_id
+    where a.company_id = #{companyId}
+    limit 1
+  </select>
+
+</mapper>

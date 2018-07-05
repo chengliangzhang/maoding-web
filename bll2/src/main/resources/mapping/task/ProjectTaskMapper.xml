@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maoding.task.dao.ProjectTaskDao">
+    <select id="getTaskByTaskId" resultType="com.maoding.task.dto.TaskWithFullNameDTO" parameterType="java.lang.String">
+        SELECT
+            a.id as id,
+            a.project_id as project_id,
+            a.task_type as task_type,
+            if (a.id is null,'',
+                (case a.task_type when 0 then '设计任务' when 1 then '设计内容' else '设计任务' end)) as type_name,
+            if(a.task_type=0,a.task_full_name,a.task_name) as task_name,
+            concat(a.task_full_name,
+                if(a.task_type=0 and c.leader_name IS NOT NULL,concat(' 任务负责人：',c.leader_name),''),
+                if((a.start_time IS NOT NULL) OR (a.end_time IS NOT NULL),
+                    concat(' ',if(a.task_type=1,'合同时间：','进度计划：'),
+                        date_format(a.start_time, '%Y/%m/%d'),' — ',date_format(a.end_time, '%Y/%m/%d')),''),
+                if(a.task_type=2 and e.company_name is not null,concat(' 设计组织：',e.company_name),''),
+                if(a.task_type=0 and d.members IS NOT NULL,concat(' 参与人员：',d.members),'')) AS task_full_name,
+            ifnull(c.leader_name,'') as leader_name,
+                if((a.start_time IS NOT NULL) OR (a.end_time IS NOT NULL),
+                    concat(date_format(a.start_time, '%Y/%m/%d'),' — ',date_format(a.end_time, '%Y/%m/%d')),'') as task_period,
+            ifnull(d.members,'') as members,
+            e.company_id as to_company_id,
+            ifnull(e.company_name,'') as to_company_name
+        FROM
+            (<include refid="task_with_full_name_table_by_task_id"/>) a
+            LEFT JOIN (<include refid="task_responsible_table_by_task_id"/>) c on (a.id=c.task_id)
+            LEFT JOIN (<include refid="process_responsible_table_by_task_id"/>) d on (a.id=d.task_id)
+            LEFT JOIN (<include refid="task_to_company_table_by_task_id"/>) e on (a.id=e.id)
+        LIMIT 1
+    </select>
+
+    <sql id="task_to_company_table_by_task_id">
+        SELECT
+            a1.id as id,
+            a2.id as company_id,
+            if((a3.depart_name is null),a2.company_name,concat(a2.company_name,'(',a3.depart_name,')')) as company_name
+        FROM
+            (   SELECT id,company_id,org_id
+                FROM maoding_web_project_task
+                WHERE task_status!='1' and ((task_type=2 AND id = #{taskId}) OR (task_type=3 AND be_modify_id=#{taskId}) OR (task_type=4 AND be_modify_id=#{taskId}))
+                LIMIT 1
+            ) a1
+            INNER JOIN maoding_web_company a2 on (a2.status='0' and a1.company_id=a2.id)
+            LEFT JOIN maoding_web_depart a3 on (a3.status='0' and a1.org_id=a3.id and a1.company_id=a3.company_id)
+    </sql>
+
+    <sql id="process_responsible_table_by_task_id">
+        SELECT task_id,
+            group_concat(concat(node_name,'：',members) SEPARATOR ' ') as members
+        FROM
+            (   SELECT task_id,node_name,
+                    group_concat(DISTINCT user_name ORDER BY seq SEPARATOR ' ') AS members
+                FROM
+                    (   SELECT
+                            a1.node_id AS task_id,
+                            ifnull(a2.user_name, ifnull(a3.nick_name, a3.user_name)) AS user_name,
+                            a1.member_type AS member_type,
+                            (CASE a1.member_type WHEN 4 THEN '设计' WHEN 5 THEN '校对' WHEN 6 THEN '审核' ELSE a1.member_type END) as node_name,
+                            a1.seq AS seq
+                        FROM
+                            (  SELECT node_id,member_type,company_user_id,seq
+                                FROM maoding_web_project_member
+                                WHERE deleted = 0 AND node_id = #{taskId}
+                            ) a1
+                            INNER JOIN maoding_web_company_user a2 ON (a2.id = a1.company_user_id)
+                            INNER JOIN maoding_web_account a3 ON (a3.status = '0' AND a3.id = a2.user_id)
+                    ) b1
+                GROUP BY task_id,member_type
+                ORDER BY task_id,member_type
+            ) c1
+        GROUP BY task_id
+    </sql>
+
+    <sql id="task_responsible_table_by_task_id">
+        SELECT
+            a1.target_id as task_id,
+            ifnull(a2.user_name,ifnull(a3.nick_name,a3.user_name)) as leader_name
+        FROM
+            (   SELECT target_id,company_user_id
+                FROM maoding_web_project_member
+                WHERE deleted = 0 AND member_type=3 AND target_id = #{taskId}
+            ) a1
+            INNER JOIN maoding_web_company_user a2 on (a2.id=a1.company_user_id)
+            INNER JOIN maoding_web_account a3 on (a3.status='0' and a3.id=a2.user_id)
+    </sql>
+
+    <sql id="task_with_full_name_table_by_task_id">
+        SELECT
+            a1.id as id,
+            a1.project_id as project_id,
+            if(a1.task_type=2 and a3.task_id is null,0,a1.task_type) as task_type,
+            a1.start_time as start_time,
+            a1.end_time as end_time,
+            a1.task_name as task_name,
+            GROUP_CONCAT(a2.task_name ORDER BY length(a2.task_path) SEPARATOR '_') as task_full_name
+        FROM
+            (   SELECT id,task_type,task_name,task_path,project_id,is_operater_task
+                FROM
+                  maoding_web_project_task
+                WHERE
+                  task_status!='1' AND id=#{taskId}
+                LIMIT 1
+            ) a1
+            INNER JOIN maoding_web_project_task a2 on (POSITION(a2.id IN a1.task_path))
+            LEFT JOIN maoding_web_project_task_relation a3 on (a3.task_id=a1.id)
+    </sql>
+
+    <select id="getSubProductTaskCountByTaskId" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*)
+        from (<include refid="GetTaskStateMapper.task_state_table"/>) x
+    </select>
+</mapper>

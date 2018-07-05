@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="DepartEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.org.entity.DepartEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="depart_name" property="departName" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="pid" property="pid" jdbcType="VARCHAR" />
+    <result column="depart_level" property="departLevel" jdbcType="VARCHAR" />
+    <result column="depart_path" property="departPath" jdbcType="VARCHAR" />
+    <result column="depart_seq" property="departSeq" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="org_type" property="orgType" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="depart_type" property="departType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, depart_name, company_id, pid, depart_level, depart_path, depart_seq, create_date, 
+    create_by, update_date, update_by, org_type, status, depart_type
+  </sql>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_depart
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getDepartByCompanyIdCount" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    select count(1)
+    from maoding_web_depart
+    where status='0' and company_id = #{companyId,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <select id="selectByDepartNameAndPid" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_depart
+    where company_id = #{companyId,jdbcType=VARCHAR}
+    and binary depart_name = #{departName,jdbcType=VARCHAR}
+    and pid= #{pid,jdbcType=VARCHAR}
+    and status = '0'
+  </select>
+  
+  <!-- 查询子部门（departPath+'-'） （也可以包含自己）-->
+	<select id="selectDepartsByDepartPath" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from maoding_web_depart
+		where status='0' and depart_path like #{departPath,jdbcType=VARCHAR} '%'
+	</select>	
+	
+		<select id="selectDepartNodesByCompanyIds" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from maoding_web_depart
+		where status=0
+          <if test="null != companyIds">
+		and company_id in
+
+		<foreach collection="companyIds" index="i" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+          </if>
+	</select>
+	
+	<select id="selectDepartEdgesByCompanyIds" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT
+		d.id AS 'from',
+		d.company_id AS 'to',
+		d.pid AS 'too'
+		FROM maoding_web_depart d
+		where d.status=0
+        <if test="null != companyIds">
+		and d.company_id in
+		<foreach collection="companyIds" index="i" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+        </if>
+		ORDER BY d.depart_seq
+	</select>
+
+    <select id="getmaxDepartSeq" resultType="java.lang.Integer">
+      select IFNULL(max(depart_seq),0)+1 from maoding_web_depart
+    </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_depart
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+    <!-- 物理删除 -->
+  <delete id="deleteByDepartPath2" parameterType="java.lang.String" >
+      delete from maoding_web_depart
+      where depart_path like #{departPath,jdbcType=VARCHAR} '%'
+  </delete>
+
+    <!-- 逻辑删除 -->
+    <delete id="deleteByDepartPath" parameterType="java.lang.String" >
+        update maoding_web_depart set status='1'
+        where depart_path like #{departPath,jdbcType=VARCHAR} '%'
+    </delete>
+  
+  <insert id="insert" parameterType="com.maoding.org.entity.DepartEntity" >
+    insert into maoding_web_depart (id, depart_name, company_id, 
+      pid, depart_level, depart_path, 
+      depart_seq, create_date, create_by, 
+      update_date, update_by, org_type, 
+      status, depart_type)
+    values (#{id,jdbcType=VARCHAR}, #{departName,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, 
+      #{pid,jdbcType=VARCHAR}, #{departLevel,jdbcType=VARCHAR}, #{departPath,jdbcType=VARCHAR}, 
+      #{departSeq,jdbcType=INTEGER}, now(), #{createBy,jdbcType=VARCHAR},
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{orgType,jdbcType=VARCHAR}, 
+      '0', #{departType,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="updateById" parameterType="com.maoding.org.entity.DepartEntity" >
+    update maoding_web_depart
+    <set >
+      <if test="departName != null" >
+        depart_name = #{departName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null" >
+        pid = #{pid,jdbcType=VARCHAR},
+      </if>
+      <if test="departLevel != null" >
+        depart_level = #{departLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="departPath != null" >
+        depart_path = #{departPath,jdbcType=VARCHAR},
+      </if>
+      <if test="departSeq != null and departSeq!=0" >
+        depart_seq = #{departSeq,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+        update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="orgType != null" >
+        org_type = #{orgType,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="departType != null" >
+        depart_type = #{departType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="update" parameterType="com.maoding.org.entity.DepartEntity" >
+    update maoding_web_depart
+    set depart_name = #{departName,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      pid = #{pid,jdbcType=VARCHAR},
+      depart_level = #{departLevel,jdbcType=VARCHAR},
+      depart_path = #{departPath,jdbcType=VARCHAR},
+      depart_seq = #{departSeq,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = now(),
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      org_type = #{orgType,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      depart_type = #{departType,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

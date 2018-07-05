@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="QueryCompanyRelationEntityMapper">
+	<resultMap id="BaseResultMap"
+		type="com.maoding.org.dto.CompanyRelationDTO">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="org_id" property="orgId" jdbcType="VARCHAR" />
+		<result column="audit_status" property="auditStatus" jdbcType="VARCHAR" />
+		<result column="org_pid" property="orgPid" jdbcType="VARCHAR" />
+		<result column="relation_type" property="relationType" jdbcType="VARCHAR" />
+		<result column="company_type" property="companyType" jdbcType="VARCHAR" />
+		<result column="join_date" property="joinDate" jdbcType="DATE" />
+		<result column="pass_date" property="passDate" jdbcType="DATE" />
+		<result column="type_id" property="typeId" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="company_name" property="companyName" jdbcType="VARCHAR" />
+		<result column="pCompany_name" property="pCompanyName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+		<!-- 查询申请加盟，邀请加盟 ,查询大B管理的小b ，或被邀请的大B -->
+	<select id="getCompanyRelationByParam" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select
+		a.id, org_id, a.org_pid, a.create_date,o.org_type as company_type,
+		b.company_name,c.company_name as pCompany_name
+		from maoding_web_company_relation a
+		left join maoding_web_org o on a.id= o.id
+		left join maoding_web_company b on a.org_id=b.id
+		left join maoding_web_company c on a.org_pid=c.id
+		where 1=1 
+		<if test="orgId != null">
+			and a.org_id=#{orgId,jdbcType=VARCHAR}
+		</if>
+		 <if test="orgPid != null">
+			and a.org_pid=#{orgPid,jdbcType=VARCHAR}
+		</if>
+		<if test="cid != null">
+			and (a.org_id=#{cid,jdbcType=VARCHAR} or
+			a.org_pid=#{cid,jdbcType=VARCHAR})
+		</if>
+		<if test="orgType != null">
+			and o.org_type=#{orgType,jdbcType=VARCHAR}
+		</if>
+		<if test="keyword != null">
+			and (b.company_name LIKE '%' #{keyword} '%' or c.company_name like '%' #{keyword} '%')
+		</if>
+		<if test="_parameter.containsKey('startPage')">
+			limit #{startPage},#{endPage}
+		</if>
+	</select>
+
+	<select id="getCompanyRelationByParamCount" resultType="java.lang.Integer"
+		parameterType="java.util.Map">
+		select count(1)
+		from maoding_web_company_relation a
+		left join maoding_web_org o on a.id= o.id
+		left join maoding_web_company b on a.org_id=b.id
+		left join maoding_web_company c on a.org_pid=c.id
+		where 1=1
+		<if test="orgId != null">
+			and a.org_id=#{orgId,jdbcType=VARCHAR}
+		</if>
+		 <if test="orgPid != null">
+			and a.org_pid=#{orgPid,jdbcType=VARCHAR}
+		</if>
+		<if test="cid != null">
+			and (a.org_id=#{cid,jdbcType=VARCHAR} or
+			a.org_pid=#{cid,jdbcType=VARCHAR})
+		</if>
+		<if test="orgType != null">
+			and o.org_type=#{orgType,jdbcType=VARCHAR}
+		</if>
+		<if test="keyword != null">
+			and (b.company_name LIKE '%' #{keyword} '%' or c.company_name like '%' #{keyword} '%')
+		</if>
+	</select>
+
+	<select id="getCompanyRelationByOrgId" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		a.id, org_id, a.org_pid, a.create_date,b.org_type as company_type,a.type_id
+		from maoding_web_company_relation a,maoding_web_org b
+		where a.id = b.id and a.org_id = #{orgId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="getExpAmountCompanyAndChildren" resultMap="BaseResultMap" parameterType="java.lang.String">
+		SELECT b.id,
+			b.org_id,
+			b.org_pid,
+			b.type_id,
+			c.org_type as company_type,
+			a.company_name
+		from maoding_web_company a
+		LEFT JOIN maoding_web_company_relation b on a.id =  b.org_id
+		LEFT JOIN maoding_web_org c on b.id=c.id
+	-- 	LEFT JOIN maoding_web_business_partner d on a.id = d.company_id and d.type = 3
+		where a.status='0' and b.org_pid=#{id,jdbcType=VARCHAR}
+		order by c.org_type
+	</select>
+
+	<select id="getOrgType" resultMap="BaseResultMap" parameterType="java.lang.String">
+		SELECT
+			b.id as org_id,
+			t.id,
+			t.org_pid,
+			t.type_id,
+			b.company_name as company_name
+		FROM maoding_web_company b
+		LEFT JOIN maoding_web_company_relation t ON t.org_id = b.id
+		where b.id=#{orgId}
+	</select>
+
+</mapper>

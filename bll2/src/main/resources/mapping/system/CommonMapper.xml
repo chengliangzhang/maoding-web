@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="CommonMapper">
+  <sql id="limitSQL">
+    <if test="pageSize != null">
+      limit
+      <if test="startLine != null">
+        #{startLine},
+      </if>
+      #{pageSize}
+    </if>
+  </sql>
+  <sql id="countSQL">
+    <if test="pageSize != null">
+      SQL_CALC_FOUND_ROWS
+    </if>
+  </sql>
+
+  <select id="getLastQueryCount" resultType="java.lang.Integer">
+    SELECT found_rows()
+  </select>
+</mapper>

@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetProjectEntityPageMapper">
+    <resultMap id="BaseResultMap" type="com.maoding.project.dto.ProjectTableDTO">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="project_name" property="projectName" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
+        <result column="company_bid" property="companyBid" jdbcType="VARCHAR"/>
+        <result column="project_no" property="projectNo" jdbcType="VARCHAR"/>
+        <result column="parent_projectid" property="parentProjectid" jdbcType="VARCHAR"/>
+        <result column="total_contract_amount" property="totalContractAmount" jdbcType="DECIMAL"/>
+        <result column="build_name" property="buildName" jdbcType="VARCHAR"/>
+        <result column="build_type" property="buildType" jdbcType="VARCHAR"/>
+        <result column="sign_date" property="signDate" jdbcType="DATE"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="project_create_date" property="projectCreateDate" jdbcType="DATE"/>
+        <result column="construct_company" property="constructCompany" jdbcType="VARCHAR"/>
+        <!--<result column="party_b" property="partyB" jdbcType="VARCHAR" />-->
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="design_company_name" property="designCompanyName" jdbcType="VARCHAR"/>
+        <result column="from_company_name" property="fromCompanyName" jdbcType="VARCHAR"/>
+        <result column="company_user_id" property="companyUserId" jdbcType="VARCHAR"/>
+        <result column="company_user_id" property="companyUserId" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="attentionId" property="attentionId" jdbcType="VARCHAR"/><!-- 关注ID -->
+        <result column="isMyProject" property="isMyProject" jdbcType="VARCHAR"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <result column="help_company_user_name" property="helpCompanyUserName" jdbcType="VARCHAR"/>
+        <result column="member_type" property="memberType" jdbcType="VARCHAR"/>
+        <association property="companyName" select="CompanyEntityMapper.getAliasName" column="company_id"
+                     fetchType="eager"/>
+        <association property="partyB" select="CompanyEntityMapper.getAliasName" column="company_bid"
+                     fetchType="eager"/>
+        <association property="createBy" select="ProjectMemberEntityMapper.selectProjectCreator" column="id"
+                     fetchType="eager"/>
+        <!--<association property="outerCooperatorFlag" select="PartnerEntityMapper.getOuterCooperatorFlag" column="id"-->
+                     <!--fetchType="eager"/>-->
+        <!--<association property="overtimeFlag" select="GetTaskStateMapper.getTaskStateByProjectId" column="id"-->
+                     <!--fetchType="eager"/>-->
+        <association property="partyA" select="EnterpriseMapper.getEnterpriseName" column="construct_company"
+                     fetchType="eager"/>
+        <!--<collection property="designContentList" column="id" select="getProjectTaskRootData"  fetchType="eager"></collection>-->
+        <association property="projectMemberEntities" select="GetProjectMemberMapper.listProjectMemberByParam" column="{projectId=id,companyId=company_id}"
+                     fetchType="eager"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMap2" type="com.maoding.project.dto.ProjectDesignContentShow">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="task_name" property="contentName" jdbcType="VARCHAR"/>
+        <result column="start_time" property="planStartTime" jdbcType="VARCHAR"/>
+        <result column="end_time" property="planEndTime" jdbcType="VARCHAR"/>
+        <association property="status" select="GetTaskStateMapper.getTaskState"
+                     column="{taskId=id,startTime=start_time,endTime=end_time}" fetchType="eager">
+        </association>
+    </resultMap>
+
+
+    <!-- v2项目列表-->
+    <select id="getProjectListByProcessing" resultMap="BaseResultMap" parameterType="com.maoding.project.dto.QueryProjectDTO">
+        SELECT
+        a.id,
+        a.company_id,
+        a.company_bid,
+        a.project_name,
+        a.project_no,
+        a.create_date,
+        a.project_create_date,
+        a.status,
+        a.construct_company,
+        a.contract_date as sign_date,
+        concat(c1.company_name,'/',b.user_name) as help_company_user_name,
+        concat(IFNULL(a.province,''),IFNULL(a.city,''),IFNULL(a.county,''),IFNULL(a.detail_address,'')) as address,
+        <if test="type!=null and type!=''">
+            <choose>
+                <when test="type==1">
+                    '1' as isMyProject,
+                </when>
+                <when test="type==2">
+                    '2' as isMyProject,
+                </when>
+                <otherwise>
+                    if((SELECT count(1) from  maoding_web_project_member where project_id = a.id and company_user_id =#{companyUserId})>0,1,
+                    if((SELECT count(1) from  maoding_web_attention where target_id = a.id and company_user_id = #{companyUserId})>0,2,0)) as  isMyProject,
+                </otherwise>
+            </choose>
+        </if>
+        a.built_type as build_type
+        FROM maoding_web_project a
+        LEFT JOIN maoding_web_company_user b on a.helper_company_user_id = b.id
+        LEFT JOIN maoding_web_company c1 on c1.id=b.company_id
+        LEFT JOIN maoding_web_project_task_relation c on a.id = c.project_id and c.relation_status ='0'
+       --  LEFT JOIN maoding_data_dictionary h on POSITION(h.id in built_type)>0
+        WHERE a.pstatus='0'
+        and (a.company_id = #{relationCompany} or a.company_bid = #{relationCompany}
+        or c.to_company_id = #{relationCompany} or c.from_company_id = #{relationCompany})
+        <if test="status!=null">
+            and a.status = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test="type!=null and type==1 and type!=''">
+            and a.id in (SELECT DISTINCT project_id from maoding_web_project_member where company_user_id =#{companyUserId} )
+        </if>
+        <if test="type!=null and type==2 and type!=''">
+            and a.id in (SELECT DISTINCT target_id from maoding_web_attention where company_user_id =#{companyUserId} )
+        </if>
+        <choose>
+            <when test="projectNameMask!=null and projectNameMask!=''">
+                and a.project_name like '%' #{projectNameMask} '%'
+            </when>
+            <when test="keyWord!=null and keyWord!=''">
+                and (a.project_name like '%' #{keyWord} '%' or a.project_no like '%' #{keyWord} '%' )
+            </when>
+        </choose>
+        <if test="orgIds!=null and orgIds.size()>0">
+            and a.company_id in
+            <foreach collection="orgIds" item="id" index="i" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            <![CDATA[  and  a.project_create_date >= #{startTime,jdbcType=VARCHAR}  ]]>
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            <![CDATA[  and  a.project_create_date < DATE_ADD(#{endTime,jdbcType=VARCHAR},INTERVAL 1 DAY)  ]]>
+        </if>
+
+        <if test="createBy!=null and createBy!=''">
+            and a.create_by = #{createBy,jdbcType=VARCHAR}
+        </if>
+
+        <if test="buildTypeList!=null and buildTypeList.size()>0">
+            and(
+            <foreach collection="buildTypeList" item="build"  separator="or">
+              a.built_type like '%' #{build,jdbcType=VARCHAR} '%'
+            </foreach>
+            )
+        </if>
+        <!--合同签订条件-->
+        <if test="startSignDate!=null and startSignDate!=''">
+            <![CDATA[  and  a.contract_date >= #{startSignDate,jdbcType=VARCHAR}  ]]>
+        </if>
+        <if test="endSignDate!=null and endSignDate!=''">
+            <![CDATA[  and  a.contract_date < DATE_ADD(#{endSignDate,jdbcType=VARCHAR},INTERVAL 1 DAY)  ]]>
+        </if>
+        <!--地址查询条件-->
+        <if test="(province!=null and province!='') or (city!=null and city!='') or (county!=null and county!='')">
+            and (a.province=#{province} or a.city=#{city} or a.county=#{county})
+        </if>
+        <if test="companyId != null and companyId != ''">
+            and a.company_id=#{companyId}
+        </if>
+        <!--甲方-->
+        <if test="constructCompany!=null and constructCompany!=''">
+            and a.construct_company=#{constructCompany}
+        </if>
+        <!--乙方-->
+        <if test="companyBid!=null and companyBid!=''">
+            and a.company_bid=#{companyBid}
+        </if>
+        <if test="memberProjects!=null">
+                and a.id in
+                <foreach collection="memberProjects" item="id" index="i" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+        </if>
+        <if test="memberStatusType==1">
+            and a.id in ('1')
+        </if>
+        group by a.id
+        <choose>
+            <when test="orderField!=null and orderField!='' ">
+                order by a.project_create_date
+                <if test="orderField ==1">
+                    DESC
+                </if>
+                ,a.create_date DESC,a.project_name desc
+            </when>
+            <when test="orderSign!=null and orderSign!=''">
+                order by a.contract_date
+                <if test="orderSign==1">
+                    DESC
+                </if>
+            </when>
+            <otherwise>
+                order by a.project_create_date DESC, a.create_date DESC,a.project_name desc
+            </otherwise>
+        </choose>
+        <if test="startLine!= null">
+            limit #{startLine}
+            <if test="maxCount != null">
+                ,#{maxCount}
+            </if>
+        </if>
+    </select>
+
+    <select id="getProjectListByProcessingCountImmediately" resultType="java.lang.Integer">
+        SELECT FOUND_ROWS()
+    </select>
+    <!-- 项目查询-->
+    <select id="getProjectListByProcessingCount" resultType="java.lang.Integer" parameterType="com.maoding.project.dto.QueryProjectDTO">
+        select count(1) from(
+        SELECT a.id
+        FROM maoding_web_project a
+        LEFT JOIN maoding_web_project_task_relation c on a.id = c.project_id and c.relation_status ='0'
+        WHERE a.pstatus='0'
+        and (a.company_id = #{relationCompany} or a.company_bid = #{relationCompany}
+        or c.to_company_id = #{relationCompany} or c.from_company_id = #{relationCompany})
+        <if test="status!=null">
+            and a.status = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test="type!=null and type==1">
+            and a.id in (SELECT DISTINCT project_id from maoding_web_project_member where company_user_id =#{companyUserId} )
+        </if>
+        <if test="type!=null and type==2">
+            and a.id in (SELECT DISTINCT target_id from maoding_web_attention where company_user_id =#{companyUserId} )
+        </if>
+        <choose>
+            <when test="projectNameMask!=null">
+                and a.project_name like '%' #{projectNameMask} '%'
+            </when>
+            <when test="keyWord!=null">
+                and (a.project_name like '%' #{keyWord} '%' or a.project_no like '%' #{keyWord} '%' )
+            </when>
+        </choose>
+        <if test="orgIds!=null and orgIds.size()>0">
+            and a.company_id in
+            <foreach collection="orgIds" item="id" index="i" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+
+        <if test="startTime!=null and startTime!=''">
+            <![CDATA[  and  a.project_create_date >= #{startTime,jdbcType=VARCHAR}  ]]>
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            <![CDATA[  and  a.project_create_date < DATE_ADD(#{endTime,jdbcType=VARCHAR},INTERVAL 1 DAY)  ]]>
+        </if>
+
+        <if test="createBy!=null">
+            and a.create_by = #{createBy,jdbcType=VARCHAR}
+        </if>
+        <if test="buildTypeList!=null and buildTypeList.size()>0">
+            and(
+            <foreach collection="buildTypeList" item="build"  separator="or">
+                a.built_type like '%' #{build,jdbcType=VARCHAR} '%'
+            </foreach>
+            )
+        </if>
+        <!--合同签订条件-->
+        <if test="startSignDate!=null and startSignDate!=''">
+            <![CDATA[  and  a.project_create_date >= #{startSignDate,jdbcType=VARCHAR}  ]]>
+        </if>
+        <if test="endSignDate!=null and endSignDate!=''">
+            <![CDATA[  and  a.project_create_date < DATE_ADD(#{endSignDate,jdbcType=VARCHAR},INTERVAL 1 DAY)  ]]>
+        </if>
+        <!--地址查询条件-->
+        <if test="(province!=null and province!='') or (city!=null and city!='') or (county!=null and county!='')">
+            and (a.province=#{province} or a.city=#{city} or a.company_id=#{companyId})
+        </if>
+
+        <if test="companyId != null and companyId != ''">
+            and a.company_id=#{companyId}
+        </if>
+        <!--甲方-->
+        <if test="constructCompany!=null and constructCompany!=''">
+            and a.construct_company=#{constructCompany}
+        </if>
+        <!--乙方-->
+        <if test="companyBid!=null and companyBid!=''">
+            and a.company_bid=#{companyBid}
+        </if>
+        <if test="memberProjects!=null">
+            and a.id in
+            <foreach collection="memberProjects" item="id" index="i" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <if test="memberStatusType==1">
+            and a.id in ('1')
+        </if>
+        group by a.id
+        )p
+    </select>
+
+
+    <!-- 我要报销 选择项目下拉框 -->
+    <select id="getProjectListByCompanyId" parameterType="com.maoding.project.dto.ProjectDTO"
+            resultType="com.maoding.project.dto.ProjectDTO">
+        SELECT a.id,
+        a.company_id,
+        a.project_no,
+        a.project_name as projectName
+        FROM maoding_web_project a
+        left join maoding_web_project_task b on a.id=b.project_id and b.task_status='0'
+        WHERE a.pstatus='0'
+        and (a.company_id = #{companyId,jdbcType=VARCHAR} or b.company_id = #{companyId,jdbcType=VARCHAR})
+        <if test="projectName!=null">
+            and a.project_name like '%' #{projectName} '%'
+        </if>
+        group by a.id
+        ORDER BY a.project_create_date DESC
+    </select>
+
+
+    <select id="getProjectBuildType" resultType="java.lang.String" parameterType="java.lang.String">
+        SELECT a.built_type
+        FROM maoding_web_project a
+            LEFT JOIN maoding_web_project_task b ON a.id = b.project_id AND b.task_status = '0'
+        WHERE a.`pstatus` = '0' AND a.built_type IS NOT NULL
+              AND (a.company_id = #{companyId,jdbcType=VARCHAR} OR a.company_bid = #{companyId,jdbcType=VARCHAR} OR
+                   b.company_id = #{companyId,jdbcType=VARCHAR})
+    </select>
+
+    <select id="getBuildType" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT DISTINCT id,name from maoding_data_dictionary where id in
+        <foreach collection="idList" item="id" index="i" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <!-- 获取当前人与该项目的关系 flag：1（参与），0（无关系）用于项目群删除人员做判断-->
+    <select id="getProjectFlagByUserId" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        IF(count(1)>0,1,0) as flag
+        FROM maoding_web_project_member a
+        where a.deleted=0
+        and a.project_id = #{id,jdbcType=VARCHAR}
+        and a.account_id=#{userId,jdbcType=VARCHAR}
+        <if test="companyId!=null">
+            and a.company_id = #{companyId,jdbcType=VARCHAR}
+        </if>
+        <if test="notTargetId!=null">
+            and a.target_id != #{notTargetId,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <sql id="get_limit">
+        <if test="pageIndex!=null">
+            limit #{pageIndex}
+            <if test="pageSize!=null">
+                ,#{pageSize}
+            </if>
+        </if>
+    </sql>
+
+    <!--获取工时统计列表-->
+    <select id="getProjectWorking" resultType="com.maoding.project.dto.ProjectWorkingHourTableDTO"
+            parameterType="com.maoding.project.dto.ProjectWorkingHoursDTO">
+        SELECT
+        t.id,
+        t.`project_no` as projectNo,
+        t.`project_name` as projectName,
+        hours1.num,
+        FORMAT(hours1.hours,1) as hours
+        FROM `maoding_web_project` t
+        LEFT JOIN maoding_web_project_task c ON t.id = c.project_id and c.task_status ='0'
+        LEFT JOIN
+        (SELECT
+        SUM(hours1.labor_hours) hours,
+        count(DISTINCT hours1.company_user_id) as num,
+        hours1.`project_id`
+        FROM  maoding_web_labor_hour hours1
+        WHERE hours1.`company_id` = #{currentCompanyId}
+        AND hours1.deleted = 0
+        GROUP BY hours1.project_id) hours1
+        ON hours1.`project_id` = t.id
+        WHERE (
+        t.`company_id` = #{currentCompanyId}
+        OR t.`company_bid` = #{currentCompanyId}
+        OR c.company_id = #{currentCompanyId}
+        )
+        AND t.`pstatus` = 0 GROUP BY t.id
+        ORDER by t.create_date desc
+        <include refid="get_limit"/>
+    </select>
+    <select id="getProjectWorkingCount" parameterType="com.maoding.project.dto.ProjectWorkingHoursDTO"
+            resultType="java.lang.Integer">
+        SELECT COUNT(tt.id)
+        FROM (
+                 SELECT t.id
+                 FROM
+                     `maoding_web_project` t
+                     LEFT JOIN maoding_web_project_task c
+                         ON t.id = c.project_id
+                            AND c.task_status = '0'
+                 WHERE (
+                           t.`company_id` = #{currentCompanyId}
+                           OR t.`company_bid` = #{currentCompanyId}
+                           OR c.company_id = #{currentCompanyId}
+                       )
+                       AND t.`pstatus` = 0
+                 GROUP BY t.id) tt
+    </select>
+</mapper>

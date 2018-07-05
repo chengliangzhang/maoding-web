@@ -1,0 +1,2087 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="StatisticMapper">
+    <sql id="get_cost">
+        select a1.from_company_id as from_company_id,
+        (select a2.company_name from maoding_web_company a2 where a2.id=a1.from_company_id) as from_company_name,
+        a1.to_company_id as to_company_id,
+        (select a3.company_name from maoding_web_company a3 where a3.id=a1.to_company_id) as to_company_name,
+        a1.project_id as project_id,
+        a4.project_name as project_name,
+        if(a1.type!=5,a1.type,4) as fee_type,
+        (case a1.type when 1 then '合同回款' when 2 then '技术审查费' when 3 then '合作设计费'
+        when 4 then '其他费用' when 5 then '其他费用' else '其他' end) as fee_type_name,
+        if(a1.from_company_id in
+        <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+            #{companyId}
+        </foreach>
+        ,1,0) as in_from_list,
+        if(a1.to_company_id in
+        <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+            #{companyId}
+        </foreach>
+        ,1,0) as in_to_list,
+        a1.id as id
+        from
+        maoding_web_project_cost a1
+        inner join maoding_web_project a4 on (a1.project_id=a4.id and a4.pstatus='0')
+        <where>
+            a1.status='0' and (
+            a1.from_company_id in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+            or a1.to_company_id in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+            )
+            <if test="feeType!=null">
+                <choose>
+                    <when test="feeType!=4">
+                        and a1.type=#{feeType}
+                    </when>
+                    <otherwise>
+                        and (a1.type='4' or a1.type='5')
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="projectNameMask!=null">
+                and a4.project_name like concat('%',#{projectNameMask},'%')
+            </if>
+        </where>
+    </sql>
+    <sql id="get_payment">
+        SELECT
+            d1.point_detail_id                                                                AS point_detail_id,
+            d1.fee                                                                            AS fee,
+            d1.paid_date                                                                      AS paid_date,
+            if(((d1.paid_date IS NOT NULL) AND (d1.pay_date IS NOT NULL)), NULL, d1.pay_date) AS pay_date
+        FROM
+            maoding_web_project_cost_payment_detail d1
+        WHERE
+            d1.status = '0' AND ((d1.paid_date IS NOT NULL) OR (d1.pay_date IS NOT NULL))
+        UNION ALL
+        SELECT
+            d2.point_detail_id AS point_detail_id,
+            d2.fee             AS fee,
+            NULL               AS paid_date,
+            d2.pay_date        AS pay_date
+        FROM
+            maoding_web_project_cost_payment_detail d2
+        WHERE
+            d2.status = '0' AND ((d2.paid_date IS NOT NULL) AND (d2.pay_date IS NOT NULL))
+    </sql>
+    <sql id="join_cost">
+        (<include refid="get_cost"/>) a
+        inner join maoding_web_project_cost_point b on (a.id=b.cost_id and b.status='0')
+        inner join maoding_web_project_cost_point_detail c on (b.id=c.point_id and c.status='0')
+        inner join (<include refid="get_payment"/>) d on (c.id=d.point_detail_id and
+        ((a.in_to_list=1 and d.paid_date is not null) or (a.in_from_list and d.pay_date is not null)))
+    </sql>
+    <sql id="get_order_by">
+        order by
+        <choose>
+            <when test="orderField!=null">
+                ifnull(d.pay_date,d.paid_date)
+                <if test="direction==null or direction!=1">
+                    desc
+                </if>
+            </when>
+            <otherwise>
+                ifnull(d.pay_date,d.paid_date) desc
+            </otherwise>
+        </choose>
+    </sql>
+    <sql id="get_limit">
+        <if test="startLine!=null">
+            limit #{startLine}
+            <if test="linesCount!=null">
+                ,#{linesCount}
+            </if>
+        </if>
+    </sql>
+    <sql id="get_detail_list">
+        select
+        ifnull(d.paid_date,d.pay_date) as profit_date,
+        <choose>
+            <when test="unitType==null or unitType==1">
+                convert(if((d.pay_date is null),d.fee,-d.fee),DECIMAL(12,6)) as profit_fee,
+            </when>
+            <otherwise>
+                convert(if((d.pay_date is null),d.fee*10000,-d.fee*10000),DECIMAL(16,2)) as profit_fee,
+            </otherwise>
+        </choose>
+        if((d.pay_date is null),1,2) as profit_type,
+        a.fee_type as fee_type,
+        a.fee_type_name as fee_type_name,
+        a.from_company_id as from_company_id,
+        a.from_company_name as from_company_name,
+        a.to_company_id as to_company_id,
+        a.to_company_name as to_company_name,
+        a.project_id as project_id,
+        a.project_name as project_name,
+        b.fee_description as fee_name
+        from
+        <include refid="join_cost"/>
+    </sql>
+    <sql id="get_filter">
+        <where>
+            <if test="startDate!=null">
+                <![CDATA[ and ifnull(d.pay_date,d.paid_date) > #{startDate} ]]>
+            </if>
+            <if test="endDate!=null">
+                <![CDATA[ and ifnull(d.pay_date,d.paid_date) <= #{endDate} ]]>
+            </if>
+            <if test="combineCompanyId!=null">
+                <choose>
+                    <when test="typeIsUnion==null or typeIsUnion==false">
+                        and (((d.pay_date is null) and a.from_company_id=#{combineCompanyId})
+                        or ((d.paid_date is null) and a.to_company_id=#{combineCompanyId}))
+                    </when>
+                    <otherwise>
+                        and (((d.pay_date is null) and a.to_company_id=#{combineCompanyId})
+                        or ((d.paid_date is null) and a.from_company_id=#{combineCompanyId}))
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="profitType!=null">
+                <choose>
+                    <when test="profitType==1">
+                        and (d.pay_date is null)
+                    </when>
+                    <otherwise>
+                        and (d.pay_date is not null)
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+    </sql>
+    <select id="selectStatisticDetail" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        <include refid="get_detail_list"/>
+        <include refid="get_filter"/>
+        <include refid="get_order_by"/>
+        <include refid="get_limit"/>
+    </select>
+    <select id="selectStatisticDetailSummary" resultType="StatisticDetailSummaryDTO"
+            parameterType="StatisticDetailQueryDTO">
+        select
+        <choose>
+            <when test="unitType==null or unitType==1">
+                convert(sum(if(t.profit_type=1,t.profit_fee,0)),DECIMAL(12,6)) as gain,
+                convert(sum(if(t.profit_type=2,t.profit_fee,0)),DECIMAL(12,6)) as pay,
+                convert(sum(t.profit_fee),DECIMAL(12,6)) as amount,
+            </when>
+            <otherwise>
+                convert(sum(if(t.profit_type=1,t.profit_fee,0)),DECIMAL(16,2)) as gain,
+                convert(sum(if(t.profit_type=2,t.profit_fee,0)),DECIMAL(16,2)) as pay,
+                convert(sum(t.profit_fee),DECIMAL(16,2)) as amount,
+            </otherwise>
+        </choose>
+        count(*) as total
+        from
+        (
+        <include refid="get_detail_list"/>
+        <include refid="get_filter"/>
+        ) t
+    </select>
+    <select id="selectValidCompany" resultType="CompanySelectDTO" parameterType="StatisticDetailQueryDTO">
+        select
+        DISTINCT b.id as company_id,b.company_name as company_name
+        from
+        ( select DISTINCT to_company_id as company_id
+        from maoding_web_project_cost
+        where status='0'
+        and from_company_id in
+        <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+            #{companyId}
+        </foreach>
+        union
+        select DISTINCT from_company_id as company_id
+        from maoding_web_project_cost
+        where status='0'
+        and to_company_id in
+        <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+            #{companyId}
+        </foreach>
+        ) a
+        INNER JOIN maoding_web_company b on (a.company_id=b.id)
+    </select>
+    <select id="selectStatisticSummary" resultType="StatisticSummaryDTO" parameterType="StatisticDetailQueryDTO">
+        select
+        <choose>
+            <when test="unitType==null or unitType==1">
+                convert(sum(t.amount),DECIMAL(12,6)) as amount,
+                convert(sum(if(t.type=1,t.amount,0)),DECIMAL(12,6)) as contract,
+                convert(sum(if(t.type=2,t.amount,0)),DECIMAL(12,6)) as technical,
+                convert(sum(if(t.type=3,t.amount,0)),DECIMAL(12,6)) as cooperator,
+                convert(sum(if(t.type=4,t.amount,0)),DECIMAL(12,6)) as other,
+                convert(sum(if(t.amount>0,t.amount,0)),DECIMAL(12,6)) as income,
+                convert(sum(if(t.amount>0,0,t.amount)),DECIMAL(12,6)) as expenses
+            </when>
+            <otherwise>
+                convert(sum(t.amount)*10000,DECIMAL(16,2)) as amount,
+                convert(sum(if(t.type=1,t.amount,0))*10000,DECIMAL(16,2)) as contract,
+                convert(sum(if(t.type=2,t.amount,0))*10000,DECIMAL(16,2)) as technical,
+                convert(sum(if(t.type=3,t.amount,0))*10000,DECIMAL(16,2)) as cooperator,
+                convert(sum(if(t.type=4,t.amount,0))*10000,DECIMAL(16,2)) as other,
+                convert(sum(if(t.amount>0,t.amount,0))*10000,DECIMAL(16,2)) as income,
+                convert(sum(if(t.amount>0,0,t.amount))*10000,DECIMAL(16,2)) as expenses
+            </otherwise>
+        </choose>
+        from (
+        select
+        sum(if((d.pay_date is null),d.fee,-d.fee)) as amount,
+        a.fee_type as type
+        from
+        <include refid="join_cost"/>
+        group by a.fee_type
+        ) t
+    </select>
+
+    <!--统计查询条件-->
+    <sql id="getExpensesByStatistics">
+        <where>
+            1=1
+            <if test="combineCompanyId!=null">
+                AND ( mwpc.from_company_id = #{combineCompanyId}
+                OR mwpc.to_company_id = #{combineCompanyId})
+            </if>
+            <if test="associatedOrg!=null">
+                AND (mwpc.to_company_id = #{associatedOrg} or mwpc.from_company_id =#{associatedOrg})
+            </if>
+            <if test="startDate!=null">
+                <![CDATA[ and ifnull(pay.pay_date,pay.paid_date) > #{startDate} ]]>
+            </if>
+            <if test="endDate!=null">
+                <![CDATA[ and ifnull(pay.pay_date,pay.paid_date) <= #{endDate} ]]>
+            </if>
+            <if test="projectName!=null">
+                and mwp.project_name like concat('%',#{projectName},'%')
+            </if>
+            <if test="profitType!=null">
+                <choose>
+                    <!-- <when test="profitType==0">
+                         and (pay.pay_date is null)
+                     </when>
+                     <otherwise>
+                         and (pay.pay_date is not null)
+                     </otherwise>-->
+                    <when test="profitType == 0">
+                        and mwpc.to_company_id = #{companyId}
+
+                    </when>
+                    <otherwise>
+                        and mwpc.from_company_id = #{companyId}
+                        and (mwpc.type=2 or mwpc.type=3 or mwpc.type=4 or mwpc.type=5)
+                    </otherwise>
+
+                </choose>
+            </if>
+            <if test="feeType!=null">
+                <choose>
+
+                    <when test="feeType ==4">
+                        and (mwpc.type='4' or mwpc.type='5')
+                    </when>
+                    <otherwise>
+                        and mwpc.type=#{feeType}
+                    </otherwise>
+                </choose>
+            </if>
+
+            <if test="receivableId!=null">
+                and mwpc.`to_company_id`=#{receivableId}
+                AND mwpcpd.id in
+                (SELECT
+                t.id
+                FROM
+                maoding_web_project_cost_point_detail t
+                INNER JOIN `maoding_web_project_cost_point` tt
+                ON t.point_id = tt.id
+                INNER JOIN `maoding_web_project_cost` cost
+                ON tt.cost_id = cost.id
+                AND cost.to_company_id = #{receivableId}
+                WHERE t.id NOT IN
+                (SELECT
+                t.id
+                FROM
+                (SELECT
+                t.`id`,
+                t.`fee`
+                FROM
+                `maoding_web_project_cost_point_detail` t) t,
+                (SELECT
+                tt.`point_detail_id`,
+                SUM(tt.`fee`) AS fee
+                FROM
+                maoding_web_project_cost_payment_detail tt where tt.`status`=0
+                GROUP BY tt.point_detail_id) tt
+                WHERE t.id = tt.point_detail_id
+                AND t.fee - tt.fee = 0))
+            </if>
+            <if test="paymentId!=null">
+                and mwpc.`from_company_id`=#{paymentId}
+                AND mwpcpd.id in
+                (SELECT
+                t.id
+                FROM
+                maoding_web_project_cost_point_detail t
+                INNER JOIN `maoding_web_project_cost_point` tt
+                ON t.point_id = tt.id
+                INNER JOIN `maoding_web_project_cost` cost
+                ON tt.cost_id = cost.id
+                AND cost.from_company_id = #{paymentId}
+                WHERE t.id NOT IN
+                (SELECT
+                t.id
+                FROM
+                (SELECT
+                t.`id`,
+                t.`fee`
+                FROM
+                `maoding_web_project_cost_point_detail` t) t,
+                (SELECT
+                tt.`point_detail_id`,
+                SUM(tt.`fee`) AS fee
+                FROM
+                maoding_web_project_cost_payment_detail tt where tt.`status`=0
+                GROUP BY tt.point_detail_id) tt
+                WHERE t.id = tt.point_detail_id
+                AND t.fee - tt.fee = 0))
+            </if>
+        </where>
+    </sql>
+
+    <sql id="getReceiveByStatistics">
+        <where>
+            1=1
+            <if test="startDate!=null">
+                <![CDATA[ and DATE_FORMAT(mwpcpd.`create_date`,'%Y-%m-%d') >= #{startDate} ]]>
+            </if>
+            <if test="endDate!=null">
+                <![CDATA[ and DATE_FORMAT(mwpcpd.`create_date`,'%Y-%m-%d') <= #{endDate} ]]>
+            </if>
+            <if test="projectName!=null">
+                and mwp.project_name like concat('%',#{projectName},'%')
+            </if>
+            <!--<if test="profitType!=null">-->
+                <!--<choose>-->
+                    <!--<when test="profitType == 0">-->
+                        <!--and mwpc.to_company_id = #{companyId}-->
+                    <!--</when>-->
+                    <!--<otherwise>-->
+                        <!--and mwpc.from_company_id = #{companyId}-->
+                        <!--and (mwpc.type=2 or mwpc.type=3 or mwpc.type=4 or mwpc.type=5)-->
+                    <!--</otherwise>-->
+                <!--</choose>-->
+            <!--</if>-->
+            <if test="feeType!=null">
+                <choose>
+                    <when test="feeType ==4">
+                        and (mwpc.type='4' or mwpc.type='5')
+                    </when>
+                    <otherwise>
+                        and mwpc.type=#{feeType}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="payType!=null and payType==1">
+                and mwpc.to_company_id in
+                <foreach collection="companyIdList" item="id" index="i" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+                <if test="associatedOrg!=null" >
+                    and mwpc.from_company_id = #{associatedOrg}
+                </if>
+            </if>
+            <if test="payType!=null and payType==2">
+                and mwpc.from_company_id in
+                <foreach collection="companyIdList" item="id" index="i" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+                <if test="associatedOrg!=null" >
+                    and mwpc.to_company_id = #{associatedOrg}
+                </if>
+            </if>
+        </where>
+    </sql>
+
+    <!--报销查询条件-->
+    <sql id="getExpensesReimbursement">
+        <where>
+            1=1 AND (mwm.approve_status = 1 OR mwm.approve_status = 6)
+            <if test="combineCompanyId!=null">
+                and mwm.company_id=#{combineCompanyId}
+            </if>
+            <if test="associatedOrg!=null">
+                and mwm.company_id=#{associatedOrg}
+            </if>
+            <if test="startDate!=null">
+                <![CDATA[ and allocation_date > #{startDate} ]]>
+            </if>
+            <if test="endDate!=null">
+                <![CDATA[ and  allocation_date <= #{endDate} ]]>
+            </if>
+            <if test="projectName!=null">
+                and mwp.project_name like concat('%',#{projectName},'%')
+            </if>
+            <if test="profitType!=null">
+                <choose>
+                    <when test="profitType==0">
+                        AND mwm.allocation_date IS NULL
+                    </when>
+                    <otherwise>
+                        AND mwm.allocation_date IS not NULL
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="feeType!=null">
+                <choose>
+                    <when test="feeType == 6">
+                        and mwm.type=2
+                    </when>
+                    <when test="feeType == 7">
+                        and mwm.type=1
+                    </when>
+                    <otherwise>
+                        and mwm.type=10
+                    </otherwise>
+                </choose>
+            </if>
+        </where>
+    </sql>
+    <!--统计-->
+    <sql id="getExpensesByStatisticsSQL">
+        SELECT
+        tt.id,
+        tt.feeType,
+        tt.fromCompanyId,
+        tt.fromCompanyName,
+        tt.toCompanyId,
+        tt.toCompanyName,
+        tt.projectId,
+        tt.projectName,
+        tt.feeName,
+        tt.paidDate,
+        tt.payDate,
+        tt.profitFee,
+        tt.feeTypeName
+        FROM
+        (SELECT
+        mwpcpd.`id` AS id,
+        mwpc.`type` AS feeType,
+        mwpc.from_company_id AS fromCompanyId,
+        mwcf.`company_name` AS fromCompanyName,
+        mwpc.`to_company_id` AS toCompanyId,
+        mwct.`company_name` AS toCompanyName,
+        mwpc.`project_id` AS projectId,
+        mwp.`project_name` AS projectName,
+        mwpcp.`fee_description` feeName,
+        pay.`paid_date` as paidDate,
+        pay.`pay_date` as payDate,
+        CONVERT(pay.fee * 10000, DECIMAL (16, 2))AS profitFee,
+        (
+        CASE
+        mwpc.type
+        WHEN 1
+        THEN '合同回款'
+        WHEN 2
+        THEN '技术审查费'
+        WHEN 3
+        THEN '合作设计费'
+        WHEN 4
+        THEN '其他收支'
+        WHEN 5
+        THEN '其他收支'
+        ELSE '其他'
+        END
+        ) AS feeTypeName
+        FROM
+        `maoding_web_project_cost_point_detail` mwpcpd
+        INNER JOIN `maoding_web_project_cost_point` mwpcp
+        ON mwpcpd.`point_id` = mwpcp.`id`
+        AND mwpcpd.`status` = 0
+        AND mwpcp.`status` = 0
+        INNER JOIN maoding_web_project_cost mwpc
+        ON mwpcp.`cost_id` = mwpc.`id`
+        AND mwpc.`status` = 0
+        LEFT JOIN maoding_web_company mwcf
+        ON mwpc.`from_company_id` = mwcf.`id`
+        AND mwcf.`status` = 0
+        LEFT JOIN maoding_web_company mwct
+        ON mwpc.`to_company_id` = mwct.`id`
+        AND mwct.`status` = 0
+        INNER JOIN `maoding_web_project_cost_payment_detail` pay
+        ON pay.point_detail_id = mwpcpd.`id`
+        AND pay.`status` = 0
+        and pay.paid_date IS NOT NULL
+        INNER JOIN maoding_web_project mwp
+        ON mwp.`id` = mwpc.`project_id`
+        AND mwp.`pstatus` = 0
+        <include refid="getExpensesByStatistics"/>
+        GROUP BY pay.id) tt
+    </sql>
+
+    <!--应收sql-->
+    <sql id="getReceivableSQL">
+        SELECT
+        tt.id,
+        tt.feeType,
+        tt.fromCompanyId,
+        tt.fromCompanyName,
+        tt.toCompanyId,
+        tt.toCompanyName,
+        tt.projectId,
+        tt.projectName,
+        tt.feeName,
+        tt.createDate,
+        tt.fee*10000 as fee,
+        <if test="payType!=null and payType==1">
+            (tt.fee*10000 - receiveFee) as profitFee,
+        </if>
+        <if test="payType!=null and payType==2">
+            (tt.fee*10000 - payFee) as profitFee,
+        </if>
+        tt.receiveFee,
+        tt.payFee,
+        tt.feeTypeName
+        FROM
+        (
+        SELECT
+        mwpcpd.`id` AS id,
+        mwpcpd.fee,
+        mwpc.`type` AS feeType,
+        mwpc.from_company_id AS fromCompanyId,
+        mwcf.`company_name` AS fromCompanyName,
+        mwpc.`to_company_id` AS toCompanyId,
+        mwct.`company_name` AS toCompanyName,
+        mwpc.`project_id` AS projectId,
+        mwp.`project_name` AS projectName,
+        mwpcp.`fee_description` feeName,
+        DATE_FORMAT(
+        mwpcpd.`create_date`,
+        '%Y-%m-%d'
+        ) AS createDate,
+        sum(if(pay.paid_date IS NOT NULL,pay.fee*10000,0)) as receiveFee,
+        sum(if(pay.pay_date IS NOT NULL,pay.fee*10000,0)) as payFee,
+        (
+        CASE mwpc.type
+        WHEN 1 THEN
+        '合同回款'
+        WHEN 2 THEN
+        '技术审查费'
+        WHEN 3 THEN
+        '合作设计费'
+        WHEN 4 THEN
+        '其他费用'
+        WHEN 5 THEN
+        '其他费用'
+        ELSE
+        '其他'
+        END
+        ) AS feeTypeName
+        FROM
+        maoding_web_project_cost mwpc
+        LEFT JOIN `maoding_web_project_cost_point` mwpcp ON mwpc.`id` = mwpcp.`cost_id`
+        AND mwpc.`status` = 0
+        AND mwpcp.`status` = 0
+        LEFT JOIN `maoding_web_project_cost_point_detail` mwpcpd ON mwpcpd.`point_id` = mwpcp.`id`
+        AND mwpcpd.`status` = 0
+        LEFT JOIN maoding_web_company mwcf ON mwpc.`from_company_id` = mwcf.`id`
+        AND mwcf.`status` = 0
+        LEFT JOIN maoding_web_company mwct ON mwpc.`to_company_id` = mwct.`id`
+        AND mwct.`status` = 0
+        LEFT JOIN maoding_web_project_cost_payment_detail pay on pay.`point_detail_id` = mwpcpd.`id`  AND pay.`status` = 0
+        INNER JOIN maoding_web_project mwp ON mwp.`id` = mwpc.`project_id`
+        AND mwp.`pstatus` = 0
+        <include refid="getReceiveByStatistics"/>
+        group by mwpcpd.id
+        ORDER BY mwpcpd.`create_date` desc) tt
+        <if test="payType!=null and payType==1">
+            where tt.fee*10000 > receiveFee
+        </if>
+        <if test="payType!=null and payType==2">
+            where tt.fee*10000 > payFee
+        </if>
+    </sql>
+
+    <!--应付sql-->
+    <sql id="getPaymentSQL">
+        SELECT
+        tt.id,
+        tt.feeType,
+        tt.fromCompanyId,
+        tt.fromCompanyName,
+        tt.toCompanyId,
+        tt.toCompanyName,
+        tt.projectId,
+        tt.projectName,
+        tt.feeName,
+        tt.createDate,
+        tt.profitFee,
+        tt.feeTypeName
+        FROM
+        (SELECT
+        mwpcpd.`id` AS id,
+        mwpc.`type` AS feeType,
+        mwpc.from_company_id AS fromCompanyId,
+        mwcf.`company_name` AS fromCompanyName,
+        mwpc.`to_company_id` AS toCompanyId,
+        mwct.`company_name` AS toCompanyName,
+        mwpc.`project_id` AS projectId,
+        mwp.`project_name` AS projectName,
+        mwpcp.`fee_description` feeName,
+        DATE_FORMAT(mwpcpd.`create_date`,'%Y-%m-%d') AS createDate,
+        CONVERT(
+        (mwpcpd.`fee`-IFNULL(pay.payFee,0)) * 10000,
+        DECIMAL (16, 2)
+        ) AS profitFee,
+        (
+        CASE
+        mwpc.type
+        WHEN 1
+        THEN '合同回款'
+        WHEN 2
+        THEN '技术审查费'
+        WHEN 3
+        THEN '合作设计费'
+        WHEN 4
+        THEN '其他费用'
+        WHEN 5
+        THEN '其他费用'
+        ELSE '其他'
+        END
+        ) AS feeTypeName
+        FROM
+        maoding_web_project_cost_point_detail mwpcpd
+        INNER JOIN maoding_web_project_cost_point mwpcp
+        ON mwpcpd.`point_id` = mwpcp.`id`
+        INNER JOIN `maoding_web_project_cost` mwpc
+        ON mwpc.`id` = mwpcp.`cost_id`
+        AND mwpcpd.`status` = 0
+        INNER JOIN maoding_web_project mwp
+        ON mwp.`id` = mwpc.`project_id`
+        AND mwp.`pstatus` = 0
+        LEFT JOIN maoding_web_company mwcf
+        ON mwpc.`from_company_id` = mwcf.`id`
+        AND mwcf.`status` = 0
+        LEFT JOIN maoding_web_company mwct
+        ON mwpc.`to_company_id` = mwct.`id`
+        AND mwct.`status` = 0
+        LEFT JOIN (SELECT pay.id,pay.point_detail_id,SUM(pay.`fee`) AS payFee,pay.status,pay.pay_date,pay.paid_date FROM
+        maoding_web_project_cost_payment_detail pay
+        WHERE pay.pay_date IS NOT NULL and pay.status=0
+        GROUP BY pay.`point_detail_id`)pay ON pay.`point_detail_id`=mwpcpd.`id`
+        <include refid="getExpensesByStatistics"/>
+        ORDER BY mwpcpd.`create_date` DESC ) tt
+    </sql>
+    <!--报销-->
+    <sql id="getExpensesReimbursementSQL">
+        SELECT
+        t.id,
+        t.feeType,
+        t.fromCompanyId,
+        t.fromCompanyName,
+        t.toCompanyId,
+        t.toCompanyName,
+        t.projectId,
+        t.projectName,
+        t.feeName,
+        t.paidDate,
+        t.payDate,
+        t.profitFee,
+        t.feeTypeName
+        FROM
+        (SELECT
+        mwm.id as id,
+        mwm.type AS feeType,
+        mwm.company_id AS fromCompanyId,
+        null AS fromCompanyName,
+        mwm.company_id AS toCompanyId,
+        null AS toCompanyName,
+        mwed.project_id AS projectId,
+        null AS projectName,
+        (SELECT
+        s.exp_use
+        FROM
+        maoding_web_exp_detail s
+        WHERE s.main_id = mwm.id
+        ORDER BY s.seq
+        LIMIT 1) AS feeName,
+        mwm.allocation_date AS paidDate,
+        mwm.allocation_date AS payDate,
+        sum(mwed.exp_amount) AS profitFee,
+        (
+        CASE
+        mwm.type
+        WHEN 1
+        THEN '报销申请'
+        WHEN 2
+        THEN '费用申请'
+        END
+        ) AS feeTypeName
+        FROM
+        `maoding_web_exp_main` mwm
+        left JOIN maoding_web_exp_detail mwed
+        ON mwed.`main_id` = mwm.`id`
+        left JOIN maoding_web_project mwp
+        ON mwed.`project_id` = mwp.`id`
+        LEFT JOIN maoding_web_company mwcf
+        ON mwcf.`id` = mwm.`company_id`
+        <include refid="getExpensesReimbursement"/>
+        GROUP BY id) t
+    </sql>
+    <!--应收明细列表-->
+    <sql id="getReceivableDetailSQL">
+        SELECT
+            mwpcp.`id`                                       AS id,
+            mwpc.`type`                                      AS feeType,
+            mwpc.from_company_id                             AS fromCompanyId,
+            mwcf.`company_name`                              AS fromCompanyName,
+            mwpc.`to_company_id`                             AS toCompanyId,
+            mwct.`company_name`                              AS toCompanyName,
+            mwpc.`project_id`                                AS projectId,
+            mwp.`project_name`                               AS projectName,
+            mwpcp.`fee_description`                             feeName,
+            DATE_FORMAT(mwpcpd.`create_date`, '%Y-%m-%d')    AS createDate,
+            CONVERT(mwpcp.`fee` * 10000, DECIMAL(16, 2))     AS nodeFee,
+            CONVERT(SUM(mwpcpd.fee) * 10000, DECIMAL(16, 2)) AS launchFee,
+            (
+                CASE
+                mwpc.type
+                WHEN 1
+                    THEN '合同回款'
+                WHEN 2
+                    THEN '技术审查费'
+                WHEN 3
+                    THEN '合作设计费'
+                WHEN 4
+                    THEN '其他费用'
+                WHEN 5
+                    THEN '其他费用'
+                ELSE '其他'
+                END
+            )                                                AS feeTypeName
+        FROM
+            `maoding_web_project_cost_point_detail` mwpcpd
+            INNER JOIN `maoding_web_project_cost_point` mwpcp
+                ON mwpcpd.`point_id` = mwpcp.`id`
+                   AND mwpcpd.`status` = 0
+                   AND mwpcp.`status` = 0
+            INNER JOIN maoding_web_project_cost mwpc
+                ON mwpcp.`cost_id` = mwpc.`id`
+                   AND mwpc.`status` = 0
+            LEFT JOIN maoding_web_company mwcf
+                ON mwpc.`from_company_id` = mwcf.`id`
+                   AND mwcf.`status` = 0
+            LEFT JOIN maoding_web_company mwct
+                ON mwpc.`to_company_id` = mwct.`id`
+                   AND mwct.`status` = 0
+            INNER JOIN maoding_web_project mwp
+                ON mwp.`id` = mwpc.`project_id`
+                   AND mwp.`pstatus` = 0
+        WHERE mwpcpd.`id` = #{id}
+    </sql>
+    <!--应付明细列表-->
+    <sql id="getPaymentDetailSQL">
+        SELECT
+            mwpcp.`id`                                       AS id,
+            mwpc.`type`                                      AS feeType,
+            mwpc.from_company_id                             AS fromCompanyId,
+            mwcf.`company_name`                              AS fromCompanyName,
+            mwpc.`to_company_id`                             AS toCompanyId,
+            mwct.`company_name`                              AS toCompanyName,
+            mwpc.`project_id`                                AS projectId,
+            mwp.`project_name`                               AS projectName,
+            mwpcp.`fee_description`                             feeName,
+            DATE_FORMAT(mwpcpd.`create_date`, '%Y-%m-%d')    AS createDate,
+            CONVERT(mwpcp.`fee` * 10000, DECIMAL(16, 2))     AS nodeFee,
+            CONVERT(SUM(mwpcpd.fee) * 10000, DECIMAL(16, 2)) AS launchFee,
+            (
+                CASE
+                mwpc.type
+                WHEN 1
+                    THEN '合同回款'
+                WHEN 2
+                    THEN '技术审查费'
+                WHEN 3
+                    THEN '合作设计费'
+                WHEN 4
+                    THEN '其他费用'
+                WHEN 5
+                    THEN '其他费用'
+                ELSE '其他'
+                END
+            )                                                AS feeTypeName
+        FROM
+            `maoding_web_project_cost_point_detail` mwpcpd
+            INNER JOIN `maoding_web_project_cost_point` mwpcp
+                ON mwpcpd.`point_id` = mwpcp.`id`
+                   AND mwpcpd.`status` = 0
+                   AND mwpcp.`status` = 0
+            INNER JOIN maoding_web_project_cost mwpc
+                ON mwpcp.`cost_id` = mwpc.`id`
+                   AND mwpc.`status` = 0
+            LEFT JOIN maoding_web_company mwcf
+                ON mwpc.`from_company_id` = mwcf.`id`
+                   AND mwcf.`status` = 0
+            LEFT JOIN maoding_web_company mwct
+                ON mwpc.`to_company_id` = mwct.`id`
+                   AND mwct.`status` = 0
+            INNER JOIN maoding_web_project mwp
+                ON mwp.`id` = mwpc.`project_id`
+                   AND mwp.`pstatus` = 0
+        WHERE mwpcpd.`id` = #{id}
+    </sql>
+    <sql id="getReceivableDetailListSQL">
+        SELECT
+            payment.`id`                                                             AS id,
+            DATE_FORMAT(ifnull(payment.`pay_date`, payment.`paid_date`), '%Y-%m-%d') AS createDate,
+            CONVERT(payment.`fee` * 10000, DECIMAL(16, 2))                           AS accountFee,
+            (
+                CASE
+                cost.type
+                WHEN 1
+                    THEN '合同回款'
+                WHEN 2
+                    THEN '技术审查费'
+                WHEN 3
+                    THEN '合作设计费'
+                WHEN 4
+                    THEN '其他费用'
+                WHEN 5
+                    THEN '其他费用'
+                ELSE '其他'
+                END
+            )                                                                        AS feeTypeName
+        FROM
+            maoding_web_project_cost_payment_detail payment
+            INNER JOIN maoding_web_project_cost_point_detail mwpcpd
+                ON payment.`point_detail_id` = mwpcpd.`id` AND payment.`status` = 0 AND mwpcpd.`status` = 0
+                   AND payment.paid_date IS NOT NULL
+            INNER JOIN `maoding_web_project_cost_point` cpoint
+                ON mwpcpd.`point_id` = cpoint.`id` AND cpoint.`status` = 0
+            INNER JOIN `maoding_web_project_cost` cost
+                ON cpoint.`cost_id` = cost.`id` AND cost.`status` = 0
+                   AND mwpcpd.`id` = #{id}
+        ORDER BY payment.`pay_date` DESC
+    </sql>
+    <sql id="getPaymentDetailListSQL">
+        SELECT
+            payment.`id`                                                             AS id,
+            DATE_FORMAT(ifnull(payment.`pay_date`, payment.`paid_date`), '%Y-%m-%d') AS createDate,
+            CONVERT(payment.`fee` * 10000, DECIMAL(16, 2))                           AS accountFee,
+            (
+                CASE
+                cost.type
+                WHEN 1
+                    THEN '合同回款'
+                WHEN 2
+                    THEN '技术审查费'
+                WHEN 3
+                    THEN '合作设计费'
+                WHEN 4
+                    THEN '其他费用'
+                WHEN 5
+                    THEN '其他费用'
+                ELSE '其他'
+                END
+            )                                                                        AS feeTypeName
+        FROM
+            maoding_web_project_cost_payment_detail payment
+            INNER JOIN maoding_web_project_cost_point_detail mwpcpd
+                ON payment.`point_detail_id` = mwpcpd.`id` AND payment.`status` = 0 AND mwpcpd.`status` = 0
+                   AND payment.pay_date IS NOT NULL
+            INNER JOIN `maoding_web_project_cost_point` cpoint
+                ON mwpcpd.`point_id` = cpoint.`id` AND cpoint.`status` = 0
+            INNER JOIN `maoding_web_project_cost` cost
+                ON cpoint.`cost_id` = cost.`id` AND cost.`status` = 0
+                   AND mwpcpd.`id` = #{id}
+        ORDER BY payment.`pay_date` DESC
+    </sql>
+    <!--台账-->
+    <select id="getExpensesDetailLedger" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        <include refid="getExpensesByStatisticsSQL"/>
+        union all
+        <include refid="getExpensesReimbursementSQL"/>
+        ORDER BY paidDate DESC ,payDate DESC
+        <include refid="get_limit"/>
+    </select>
+
+    <!--台账合计-->
+    <select id="getExpensesDetailLedgerSum" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        <include refid="getExpensesByStatisticsSQL"/>
+        union all
+        <include refid="getExpensesReimbursementSQL"/>
+        ORDER BY paidDate DESC ,payDate DESC
+    </select>
+
+    <!--台账count-->
+    <select id="getExpensesDetailLedgerCount" resultType="java.lang.Integer" parameterType="StatisticDetailQueryDTO">
+        select count(*) from ((
+        <include refid="getExpensesByStatisticsSQL"/>)
+        union all
+        (<include refid="getExpensesReimbursementSQL"/>))AS count
+
+    </select>
+    <!--应收-->
+    <select id="getReceivable" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        <include refid="getReceivableSQL"/>
+        <include refid="get_limit"/>
+    </select>
+    <!--总应收-->
+    <select id="getReceivableSum" resultType="java.math.BigDecimal" parameterType="StatisticDetailQueryDTO">
+        SELECT SUM(t.profitFee) FROM (<include refid="getReceivableSQL"/>) t
+    </select>
+    <!--应收count-->
+    <select id="getReceivableCount" resultType="java.lang.Integer" parameterType="StatisticDetailQueryDTO">
+        select count(*) from (<include refid="getReceivableSQL"/>) as count
+    </select>
+    <!--应付-->
+    <select id="getPayment" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        <include refid="getPaymentSQL"/>
+        <include refid="get_limit"/>
+    </select>
+    <!--应付count-->
+    <select id="getPaymentCount" resultType="java.lang.Integer" parameterType="StatisticDetailQueryDTO">
+        select count(*) from (<include refid="getPaymentSQL"/>) as count
+    </select>
+    <!--总应付-->
+    <select id="getPaymentSum" resultType="java.math.BigDecimal" parameterType="StatisticDetailQueryDTO">
+        SELECT SUM(t.profitFee) FROM (<include refid="getPaymentSQL"/>) t
+    </select>
+
+
+    <!--应收明细-->
+    <select id="getReceivableDetail" resultType="ReceivableDetailDTO" parameterType="java.lang.String">
+        <include refid="getReceivableDetailSQL"/>
+    </select>
+    <!--应收明细，到账明细-->
+    <select id="getReceivableDetailList" resultType="PaymentDetailDTO" parameterType="java.lang.String">
+        <include refid="getReceivableDetailListSQL"/>
+    </select>
+    <!--获取到账金额-->
+    <select id="getAccountFee" resultType="java.math.BigDecimal" parameterType="java.lang.String">
+        SELECT CONVERT(SUM(pay.`fee`) * 10000, DECIMAL(16, 2)) AS accountFee
+        FROM
+            `maoding_web_project_cost_point` mwpcp
+            INNER JOIN maoding_web_project_cost_point_detail mwpcpd
+                ON mwpcp.id = mwpcpd.point_id
+            INNER JOIN maoding_web_project_cost_payment_detail pay
+                ON mwpcpd.`id` = pay.`point_detail_id`
+                   AND pay.paid_date IS NOT NULL AND pay.`status`=0
+        WHERE mwpcpd.id = #{id}
+    </select>
+    <!--应付明细-->
+    <select id="getPaymentDetail" resultType="ReceivableDetailDTO" parameterType="java.lang.String">
+        <include refid="getPaymentDetailSQL"/>
+    </select>
+    <!--应付明细，到账明细-->
+    <select id="getPaymentDetailList" resultType="PaymentDetailDTO" parameterType="java.lang.String">
+        <include refid="getPaymentDetailListSQL"/>
+    </select>
+    <!--获取应付到账金额-->
+    <select id="getPaymentAccountFee" resultType="java.math.BigDecimal" parameterType="java.lang.String">
+        SELECT CONVERT(SUM(pay.`fee`) * 10000, DECIMAL(16, 2)) AS accountFee
+        FROM
+            `maoding_web_project_cost_point` mwpcp
+            INNER JOIN maoding_web_project_cost_point_detail mwpcpd
+                ON mwpcp.id = mwpcpd.point_id
+            INNER JOIN maoding_web_project_cost_payment_detail pay
+                ON mwpcpd.`id` = pay.`point_detail_id`
+                   AND pay.pay_date IS NOT NULL AND pay.`status`=0
+        WHERE mwpcpd.id = #{id}
+    </select>
+
+    <!--获取主营业务收入-->
+    <select id="getMainBusinessIncome" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+        mwpcpd.`id` AS id,
+        mwpc.`type` AS feeType,
+        mwpc.from_company_id AS fromCompanyId,
+        mwcf.`company_name` AS fromCompanyName,
+        mwpc.`to_company_id` AS toCompanyId,
+        mwct.`company_name` AS toCompanyName,
+        mwpc.`project_id` AS projectId,
+        mwp.`project_name` AS projectName,
+        mwpcp.`fee_description` feeName,
+        DATE_FORMAT(pay.`paid_date`, '%Y-%m') AS createDate,
+        SUM(CONVERT(pay.fee * 10000, DECIMAL (16, 2))) AS profitFee,
+        (
+        CASE
+        mwpc.type
+        WHEN 1
+        THEN '合同回款'
+        WHEN 2
+        THEN '技术审查费'
+        WHEN 3
+        THEN '合作设计费'
+        WHEN 4
+        THEN '其他收入'
+        WHEN 5
+        THEN '其他收入'
+        END
+        ) AS feeTypeName
+        FROM
+        `maoding_web_project_cost_point_detail` mwpcpd
+        INNER JOIN `maoding_web_project_cost_point` mwpcp
+        ON mwpcpd.`point_id` = mwpcp.`id`
+        AND mwpcpd.`status` = 0
+        AND mwpcp.`status` = 0
+        INNER JOIN maoding_web_project_cost mwpc
+        ON mwpcp.`cost_id` = mwpc.`id`
+        AND mwpc.`status` = 0
+        LEFT JOIN maoding_web_company mwcf
+        ON mwpc.`from_company_id` = mwcf.`id`
+        AND mwcf.`status` = 0
+        LEFT JOIN maoding_web_company mwct
+        ON mwpc.`to_company_id` = mwct.`id`
+        AND mwct.`status` = 0
+        INNER JOIN `maoding_web_project_cost_payment_detail` pay
+        ON pay.point_detail_id = mwpcpd.`id`
+        AND pay.`status` = 0
+        INNER JOIN maoding_web_project mwp
+        ON mwp.`id` = mwpc.`project_id`
+        AND mwp.`pstatus` = 0
+        <include refid="getExpensesByStatistics"/>
+        GROUP BY createDate
+    </select>
+    <!--总收入-->
+    <select id="getGeneralIncome" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+        tt.id,
+        tt.feeType,
+        tt.feeName,
+        tt.createDate,
+        tt.profitFee,
+        tt.feeTypeName
+        FROM
+        (SELECT
+        mwpcpd.`id` AS id,
+        mwpc.`type` AS feeType,
+        mwpc.from_company_id AS fromCompanyId,
+        mwcf.`company_name` AS fromCompanyName,
+        mwpc.`to_company_id` AS toCompanyId,
+        mwct.`company_name` AS toCompanyName,
+        mwpc.`project_id` AS projectId,
+        mwp.`project_name` AS projectName,
+        mwpcp.`fee_description` feeName,
+        DATE_FORMAT(IFNULL(pay.`paid_date`, pay.`pay_date`), '%Y-%m') AS createDate,
+        CONVERT(SUM(pay.fee) * 10000, DECIMAL (16, 2)) AS profitFee,
+        (
+        CASE
+        mwpc.type
+        WHEN 1
+        THEN '合同回款'
+        WHEN 2
+        THEN '技术审查费'
+        WHEN 3
+        THEN '合作设计费'
+        WHEN 4
+        THEN '其他费用'
+        WHEN 5
+        THEN '其他费用'
+        ELSE '其他'
+        END
+        ) AS feeTypeName
+        FROM
+        `maoding_web_project_cost_point_detail` mwpcpd
+        INNER JOIN `maoding_web_project_cost_point` mwpcp
+        ON mwpcpd.`point_id` = mwpcp.`id`
+        AND mwpcpd.`status` = 0
+        AND mwpcp.`status` = 0
+        INNER JOIN maoding_web_project_cost mwpc
+        ON mwpcp.`cost_id` = mwpc.`id`
+        AND mwpc.`status` = 0
+        LEFT JOIN maoding_web_company mwcf
+        ON mwpc.`from_company_id` = mwcf.`id`
+        AND mwcf.`status` = 0
+        LEFT JOIN maoding_web_company mwct
+        ON mwpc.`to_company_id` = mwct.`id`
+        AND mwct.`status` = 0
+        INNER JOIN `maoding_web_project_cost_payment_detail` pay
+        ON pay.point_detail_id = mwpcpd.`id`
+        AND pay.`status` = 0
+        INNER JOIN maoding_web_project mwp
+        ON mwp.`id` = mwpc.`project_id`
+        AND mwp.`pstatus` = 0
+        WHERE 1 = 1 and pay.paid_date is not null
+        <if test="combineCompanyId!=null">
+            AND mwpc.to_company_id = #{combineCompanyId}
+        </if>
+        <if test="companyIdList!=null">
+            and mwpc.to_company_id in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+        </if>
+        <if test="startDate!=null">
+            <![CDATA[ and ifnull(pay.pay_date,pay.paid_date) > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and ifnull(pay.pay_date,pay.paid_date) <= #{endDate} ]]>
+        </if>
+        GROUP BY createDate,feeType
+        ORDER BY createDate DESC)tt
+    </select>
+
+    <!--总支出-->
+    <select id="getTotalExpenditure" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+        c.exp_date AS createDate,
+        a.code AS feeTypeName,
+        ifnull(SUM(c.exp_amount),0) AS profitFee
+        FROM
+        maoding_data_dictionary a
+        INNER JOIN maoding_data_dictionary b
+        ON a.id = b.pid
+        LEFT JOIN maoding_web_exp_fixed c
+        ON b.id = c.exp_type
+        LEFT JOIN maoding_web_company_user d
+        ON c.user_id = d.user_id
+        AND c.company_id = d.company_id
+        WHERE a.`code` LIKE 'gdfy%'
+        AND a.pid IS NULL
+        <if test="combineCompanyId!=null">
+            AND c.company_id = #{combineCompanyId}
+        </if>
+        <if test="companyIdList!=null">
+            and c.company_id in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+        </if>
+        <if test="startDate!=null">
+            <![CDATA[ and c.exp_date > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and c.exp_date <= #{endDate} ]]>
+        </if>
+        GROUP BY exp_date,
+        feeTypeName
+    </select>
+    <!--直接项目成本台账已拨款的-->
+    <select id="getProjectExpenditure" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+        tt.id,
+        tt.feeType,
+        tt.fromCompanyId,
+        tt.fromCompanyName,
+        tt.toCompanyId,
+        tt.toCompanyName,
+        tt.projectId,
+        tt.projectName,
+        tt.feeName,
+        tt.createDate,
+        tt.profitFee,
+        tt.feeTypeName
+        FROM
+        (SELECT
+        mwpcpd.`id` AS id,
+        mwpc.`type` AS feeType,
+        mwpc.from_company_id AS fromCompanyId,
+        mwcf.`company_name` AS fromCompanyName,
+        mwpc.`to_company_id` AS toCompanyId,
+        mwct.`company_name` AS toCompanyName,
+        mwpc.`project_id` AS projectId,
+        mwp.`project_name` AS projectName,
+        mwpcp.`fee_description` feeName,
+        DATE_FORMAT(IFNULL(pay.`paid_date`, pay.`pay_date`),'%Y-%m') AS createDate,
+        ifnull(CONVERT(SUM(pay.fee) * 10000, DECIMAL (16, 2)),0) AS profitFee,
+        (
+        CASE
+        mwpc.type
+        WHEN 1
+        THEN '合同回款'
+        WHEN 2
+        THEN '技术审查费'
+        WHEN 3
+        THEN '合作设计费'
+        WHEN 4
+        THEN '其他费用'
+        WHEN 5
+        THEN '其他费用'
+        ELSE '其他'
+        END
+        ) AS feeTypeName
+        FROM
+        `maoding_web_project_cost_point_detail` mwpcpd
+        INNER JOIN `maoding_web_project_cost_point` mwpcp
+        ON mwpcpd.`point_id` = mwpcp.`id`
+        AND mwpcpd.`status` = 0
+        AND mwpcp.`status` = 0
+        INNER JOIN maoding_web_project_cost mwpc
+        ON mwpcp.`cost_id` = mwpc.`id`
+        AND mwpc.`status` = 0
+        LEFT JOIN maoding_web_company mwcf
+        ON mwpc.`from_company_id` = mwcf.`id`
+        AND mwcf.`status` = 0
+        LEFT JOIN maoding_web_company mwct
+        ON mwpc.`to_company_id` = mwct.`id`
+        AND mwct.`status` = 0
+        INNER JOIN `maoding_web_project_cost_payment_detail` pay
+        ON pay.point_detail_id = mwpcpd.`id`
+        AND pay.`status` = 0
+        AND (
+        pay.paid_date IS NOT NULL
+        OR pay.pay_date IS NOT NULL
+        )
+        INNER JOIN maoding_web_project mwp
+        ON mwp.`id` = mwpc.`project_id`
+        AND mwp.`pstatus` = 0
+        WHERE 1 = 1
+        <if test="combineCompanyId!=null">
+            AND mwpc.from_company_id = #{combineCompanyId}
+        </if>
+        <if test="companyIdList!=null">
+            and mwpc.from_company_id in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+        </if>
+        <if test="startDate!=null">
+            <![CDATA[ and ifnull(pay.pay_date,pay.paid_date) > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and ifnull(pay.pay_date,pay.paid_date) <= #{endDate} ]]>
+        </if>
+        AND mwpc.`type` IN(2,3,4,5)
+        GROUP BY feeType,createDate
+        ) tt
+    </select>
+    <!--报销汇总-->
+    <select id="getPaymentCollect" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+        mwm.type AS feeType,
+        mwed.`exp_use` AS feeName,
+        ifnull(SUM(mwed.exp_amount),0) AS profitFee,
+        mwed.exp_pname AS projectName,
+        DATE_FORMAT(mwm.allocation_date,'%Y-%m') AS createDate,
+        b.`code`AS CODE,
+        a.status
+        FROM
+        maoding_web_exp_category a
+        INNER JOIN maoding_web_exp_category b
+        ON a.pid = b.id
+        INNER JOIN maoding_web_exp_detail mwed
+        ON a.id = mwed.exp_type
+        INNER JOIN
+        `maoding_web_exp_main` mwm
+        ON mwed.main_id = mwm.id
+        WHERE 1 = 1
+        AND (mwm.approve_status = 1 OR mwm.approve_status = 6)
+        AND mwm.allocation_date IS NOT NULL
+        <if test="combineCompanyId!=null">
+            AND mwm.`company_id`=#{combineCompanyId}
+        </if>
+        <if test="companyIdList!=null">
+            and mwm.`company_id` in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+        </if>
+        <if test="startDate!=null">
+            <![CDATA[ and mwm.allocation_date > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and mwm.allocation_date <= #{endDate} ]]>
+        </if>
+        GROUP BY createDate,mwed.exp_pname
+        ORDER BY mwm.allocation_date DESC
+    </select>
+    <!--曲线总收入-->
+    <select id="getCurveIncomeData" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+        tt.id,
+        tt.feeType,
+        tt.fromCompanyId,
+        tt.fromCompanyName,
+        tt.toCompanyId,
+        tt.toCompanyName,
+        tt.projectId,
+        tt.projectName,
+        tt.feeName,
+        tt.createDate,
+        tt.profitFee,
+        tt.feeTypeName
+        FROM
+        (SELECT
+        mwpcpd.`id` AS id,
+        mwpc.`type` AS feeType,
+        mwpc.from_company_id AS fromCompanyId,
+        mwcf.`company_name` AS fromCompanyName,
+        mwpc.`to_company_id` AS toCompanyId,
+        mwct.`company_name` AS toCompanyName,
+        mwpc.`project_id` AS projectId,
+        mwp.`project_name` AS projectName,
+        mwpcp.`fee_description` feeName,
+        DATE_FORMAT(IFNULL(pay.`paid_date`, pay.`pay_date`),'%Y-%m') AS createDate,
+        CONVERT(SUM(pay.fee) * 10000, DECIMAL (16, 2)) AS profitFee,
+        (
+        CASE
+        mwpc.type
+        WHEN 1
+        THEN '合同回款'
+        WHEN 2
+        THEN '技术审查费'
+        WHEN 3
+        THEN '合作设计费'
+        WHEN 4
+        THEN '其他费用'
+        WHEN 5
+        THEN '其他费用'
+        ELSE '其他'
+        END
+        ) AS feeTypeName
+        FROM
+        `maoding_web_project_cost_point_detail` mwpcpd
+        INNER JOIN `maoding_web_project_cost_point` mwpcp
+        ON mwpcpd.`point_id` = mwpcp.`id`
+        AND mwpcpd.`status` = 0
+        AND mwpcp.`status` = 0
+        INNER JOIN maoding_web_project_cost mwpc
+        ON mwpcp.`cost_id` = mwpc.`id`
+        AND mwpc.`status` = 0
+        LEFT JOIN maoding_web_company mwcf
+        ON mwpc.`from_company_id` = mwcf.`id`
+        AND mwcf.`status` = 0
+        LEFT JOIN maoding_web_company mwct
+        ON mwpc.`to_company_id` = mwct.`id`
+        AND mwct.`status` = 0
+        INNER JOIN `maoding_web_project_cost_payment_detail` pay
+        ON pay.point_detail_id = mwpcpd.`id`
+        AND pay.`status` = 0
+        AND (
+        pay.paid_date IS NOT NULL
+        OR pay.pay_date IS NOT NULL
+        )
+        INNER JOIN maoding_web_project mwp
+        ON mwp.`id` = mwpc.`project_id`
+        AND mwp.`pstatus` = 0
+        WHERE 1 = 1
+        <if test="combineCompanyId!=null">
+            AND mwpc.to_company_id = #{combineCompanyId}
+        </if>
+        <if test="companyIdList!=null">
+            and mwpc.to_company_id in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+        </if>
+        <if test="startDate!=null">
+            <![CDATA[ and ifnull(pay.pay_date,pay.paid_date) > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and ifnull(pay.pay_date,pay.paid_date) <= #{endDate} ]]>
+        </if>
+        GROUP BY createDate
+        ) tt
+    </select>
+    <!--曲线总支出1-->
+    <select id="getCurveExpenditureData1" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+        c.exp_date AS createDate,
+        a.code AS feeTypeName,
+        IFNULL(SUM(c.exp_amount),0) AS profitFee
+        FROM
+        maoding_data_dictionary a
+        INNER JOIN maoding_data_dictionary b
+        ON a.id = b.pid
+        LEFT JOIN maoding_web_exp_fixed c
+        ON b.id = c.exp_type
+        LEFT JOIN maoding_web_company_user d
+        ON c.user_id = d.user_id
+        AND c.company_id = d.company_id
+        WHERE a.`code` LIKE 'gdfy%'
+        AND a.pid IS NULL
+        <if test="combineCompanyId!=null">
+            AND c.company_id = #{combineCompanyId}
+        </if>
+        <if test="companyIdList!=null">
+            and c.company_id in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+        </if>
+        <if test="startDate!=null">
+            <![CDATA[ and c.exp_date > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and c.exp_date <= #{endDate} ]]>
+        </if>
+        GROUP BY exp_date
+    </select>
+    <!--曲线总支出2-->
+    <select id="getCurveExpenditureData2" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+        tt.id,
+        tt.feeType,
+        tt.fromCompanyId,
+        tt.fromCompanyName,
+        tt.toCompanyId,
+        tt.toCompanyName,
+        tt.projectId,
+        tt.projectName,
+        tt.feeName,
+        tt.createDate,
+        tt.profitFee,
+        tt.feeTypeName
+        FROM
+        (SELECT
+        mwpcpd.`id` AS id,
+        mwpc.`type` AS feeType,
+        mwpc.from_company_id AS fromCompanyId,
+        mwcf.`company_name` AS fromCompanyName,
+        mwpc.`to_company_id` AS toCompanyId,
+        mwct.`company_name` AS toCompanyName,
+        mwpc.`project_id` AS projectId,
+        mwp.`project_name` AS projectName,
+        mwpcp.`fee_description` feeName,
+        DATE_FORMAT(IFNULL(pay.`paid_date`, pay.`pay_date`),'%Y-%m') AS createDate,
+        CONVERT(SUM(pay.fee) * 10000, DECIMAL (16, 2)) AS profitFee,
+        (
+        CASE
+        mwpc.type
+        WHEN 1
+        THEN '合同回款'
+        WHEN 2
+        THEN '技术审查费'
+        WHEN 3
+        THEN '合作设计费'
+        WHEN 4
+        THEN '其他费用'
+        WHEN 5
+        THEN '其他费用'
+        ELSE '其他'
+        END
+        ) AS feeTypeName
+        FROM
+        `maoding_web_project_cost_point_detail` mwpcpd
+        INNER JOIN `maoding_web_project_cost_point` mwpcp
+        ON mwpcpd.`point_id` = mwpcp.`id`
+        AND mwpcpd.`status` = 0
+        AND mwpcp.`status` = 0
+        INNER JOIN maoding_web_project_cost mwpc
+        ON mwpcp.`cost_id` = mwpc.`id`
+        AND mwpc.`status` = 0
+        LEFT JOIN maoding_web_company mwcf
+        ON mwpc.`from_company_id` = mwcf.`id`
+        AND mwcf.`status` = 0
+        LEFT JOIN maoding_web_company mwct
+        ON mwpc.`to_company_id` = mwct.`id`
+        AND mwct.`status` = 0
+        INNER JOIN `maoding_web_project_cost_payment_detail` pay
+        ON pay.point_detail_id = mwpcpd.`id`
+        AND pay.`status` = 0
+        AND (
+        pay.paid_date IS NOT NULL
+        OR pay.pay_date IS NOT NULL
+        )
+        INNER JOIN maoding_web_project mwp
+        ON mwp.`id` = mwpc.`project_id`
+        AND mwp.`pstatus` = 0
+        WHERE 1 = 1
+        <if test="combineCompanyId!=null">
+            AND mwpc.from_company_id = #{combineCompanyId}
+        </if>
+        <if test="companyIdList!=null">
+            and mwpc.from_company_id in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+        </if>
+        AND mwpc.`type` IN(2,3,4,5)
+        <if test="startDate!=null">
+            <![CDATA[ and ifnull(pay.pay_date,pay.paid_date) > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and ifnull(pay.pay_date,pay.paid_date) <= #{endDate} ]]>
+        </if>
+        GROUP BY createDate
+        ) tt
+    </select>
+    <!--曲线总支出3-->
+    <select id="getCurveExpenditureData3" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+        mwm.type AS feeType,
+        mwed.`exp_use` AS feeName,
+        IFNULL(CONVERT(SUM(mwed.exp_amount),DECIMAL (16, 2)),0) AS profitFee,
+        mwed.exp_pname AS projectName,
+        DATE_FORMAT(mwm.allocation_date,'%Y-%m') AS createDate,
+        b.`code`AS feeName
+        FROM
+        maoding_web_exp_category a
+        INNER JOIN maoding_web_exp_category b
+        ON a.pid = b.id
+        INNER JOIN maoding_web_exp_detail mwed
+        ON a.id = mwed.exp_type
+        INNER JOIN
+        `maoding_web_exp_main` mwm
+        ON mwed.main_id = mwm.id
+        WHERE 1 = 1
+        AND (mwm.approve_status = 1 OR mwm.approve_status = 6)
+        AND mwm.allocation_date IS NOT NULL
+        <if test="combineCompanyId!=null">
+            AND mwm.`company_id`= #{combineCompanyId}
+        </if>
+        <if test="companyIdList!=null">
+            and mwm.`company_id` in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+        </if>
+        <if test="startDate!=null">
+            <![CDATA[ and mwm.allocation_date > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and mwm.allocation_date <= #{endDate} ]]>
+        </if>
+        GROUP BY createDate
+        ORDER BY mwm.allocation_date DESC
+    </select>
+    <!--合同总金额-->
+    <select id="getContractSumMoney" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+        CONVERT(SUM(t.`content`),DECIMAL (16, 2))*10000 AS profitFee,
+        DATE_FORMAT(create_date,'%Y-%m')AS createDate
+        FROM
+        maoding_web_dynamic t
+        WHERE TYPE=50
+        <if test="combineCompanyId!=null">
+            AND company_id=#{combineCompanyId}
+        </if>
+        <if test="companyIdList!=null">
+            and company_id in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+        </if>
+        <if test="startDate!=null">
+            <![CDATA[ and t.create_date > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and t.create_date <= #{endDate} ]]>
+        </if>
+        GROUP BY company_id,createDate
+    </select>
+    <!--柱状图总收入-->
+    <select id="getColumnarIncome" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        -- 柱状图总收入
+        SELECT
+        tt.id,
+        tt.feeType,
+        tt.fromCompanyId,
+        tt.fromCompanyName,
+        tt.toCompanyId,
+        tt.toCompanyName,
+        tt.projectId,
+        tt.projectName,
+        tt.feeName,
+        tt.createDate,
+        tt.profitFee,
+        tt.feeTypeName
+        FROM
+        (SELECT
+        mwpcpd.`id` AS id,
+        mwpc.`type` AS feeType,
+        mwpc.from_company_id AS fromCompanyId,
+        mwcf.`company_name` AS fromCompanyName,
+        mwpc.`to_company_id` AS toCompanyId,
+        mwct.`company_name` AS toCompanyName,
+        mwpc.`project_id` AS projectId,
+        mwp.`project_name` AS projectName,
+        mwpcp.`fee_description` feeName,
+        DATE_FORMAT(
+        IFNULL(pay.`paid_date`, pay.`pay_date`),
+        '%Y-%m'
+        ) AS createDate,
+        CONVERT(SUM(pay.fee) * 10000, DECIMAL (16, 2)) AS profitFee,
+        (
+        CASE
+        mwpc.type
+        WHEN 1
+        THEN '合同回款'
+        WHEN 2
+        THEN '技术审查费'
+        WHEN 3
+        THEN '合作设计费'
+        WHEN 4
+        THEN '其他费用'
+        WHEN 5
+        THEN '其他费用'
+        ELSE '其他'
+        END
+        ) AS feeTypeName
+        FROM
+        `maoding_web_project_cost_point_detail` mwpcpd
+        LEFT JOIN `maoding_web_project_cost_point` mwpcp
+        ON mwpcpd.`point_id` = mwpcp.`id`
+        AND mwpcpd.`status` = 0
+        AND mwpcp.`status` = 0
+        LEFT JOIN maoding_web_project_cost mwpc
+        ON mwpcp.`cost_id` = mwpc.`id`
+        AND mwpc.`status` = 0
+        LEFT JOIN maoding_web_company mwcf
+        ON mwpc.`from_company_id` = mwcf.`id`
+        AND mwcf.`status` = 0
+        LEFT JOIN maoding_web_company mwct
+        ON mwpc.`to_company_id` = mwct.`id`
+        AND mwct.`status` = 0
+        LEFT JOIN `maoding_web_project_cost_payment_detail` pay
+        ON pay.point_detail_id = mwpcpd.`id`
+        AND pay.`status` = 0
+        AND (
+        pay.paid_date IS NOT NULL
+        OR pay.pay_date IS NOT NULL
+        )
+        INNER JOIN maoding_web_project mwp
+        ON mwp.`id` = mwpc.`project_id`
+        AND mwp.`pstatus` = 0
+        WHERE 1 = 1
+        <if test="companyIdList!=null">
+            and mwpc.to_company_id in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+        </if>
+        <if test="startDate!=null">
+            <![CDATA[ and ifnull(pay.pay_date,pay.paid_date) > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and ifnull(pay.pay_date,pay.paid_date) <= #{endDate} ]]>
+        </if>
+        GROUP BY to_company_id
+        ORDER BY mwcf.`create_date` ASC
+        ) tt
+    </select>
+    <!--柱状图，总支出1-->
+    <select id="getColumnarExpenditure1" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+        c.exp_date AS createDate,
+        a.code AS feeTypeName,
+        IFNULL(SUM(c.exp_amount),0) AS profitFee,
+        c.`company_id` AS toCompanyId
+        FROM
+        maoding_data_dictionary a
+        INNER JOIN maoding_data_dictionary b
+        ON a.id = b.pid
+        LEFT JOIN maoding_web_exp_fixed c
+        ON b.id = c.exp_type
+        LEFT JOIN maoding_web_company_user d
+        ON c.user_id = d.user_id
+        AND c.company_id = d.company_id
+        WHERE a.`code` LIKE 'gdfy%'
+        AND a.pid IS NULL
+        <if test="companyIdList!=null">
+            and c.company_id in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+        </if>
+        <if test="startDate!=null">
+            <![CDATA[ and c.exp_date > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and c.exp_date <= #{endDate} ]]>
+        </if>
+        GROUP BY toCompanyId
+    </select>
+    <!--柱状图，总支出2-->
+    <select id="getColumnarExpenditure2" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+        tt.id,
+        tt.feeType,
+        tt.fromCompanyId,
+        tt.fromCompanyName,
+        tt.toCompanyId,
+        tt.toCompanyName,
+        tt.projectId,
+        tt.projectName,
+        tt.feeName,
+        tt.createDate,
+        tt.profitFee,
+        tt.feeTypeName
+        FROM
+        (SELECT
+        mwpcpd.`id` AS id,
+        mwpc.`type` AS feeType,
+        mwpc.from_company_id AS fromCompanyId,
+        mwcf.`company_name` AS fromCompanyName,
+        mwpc.`from_company_id` AS toCompanyId,
+        mwct.`company_name` AS toCompanyName,
+        mwpc.`project_id` AS projectId,
+        mwp.`project_name` AS projectName,
+        mwpcp.`fee_description` feeName,
+        DATE_FORMAT(IFNULL(pay.`paid_date`, pay.`pay_date`),'%Y-%m') AS createDate,
+        CONVERT(SUM(pay.fee) * 10000, DECIMAL (16, 2)) AS profitFee,
+        (
+        CASE
+        mwpc.type
+        WHEN 1
+        THEN '合同回款'
+        WHEN 2
+        THEN '技术审查费'
+        WHEN 3
+        THEN '合作设计费'
+        WHEN 4
+        THEN '其他费用'
+        WHEN 5
+        THEN '其他费用'
+        ELSE '其他'
+        END
+        ) AS feeTypeName
+        FROM
+        `maoding_web_project_cost_point_detail` mwpcpd
+        INNER JOIN `maoding_web_project_cost_point` mwpcp
+        ON mwpcpd.`point_id` = mwpcp.`id`
+        AND mwpcpd.`status` = 0
+        AND mwpcp.`status` = 0
+        INNER JOIN maoding_web_project_cost mwpc
+        ON mwpcp.`cost_id` = mwpc.`id`
+        AND mwpc.`status` = 0
+        LEFT JOIN maoding_web_company mwcf
+        ON mwpc.`from_company_id` = mwcf.`id`
+        AND mwcf.`status` = 0
+        LEFT JOIN maoding_web_company mwct
+        ON mwpc.`to_company_id` = mwct.`id`
+        AND mwct.`status` = 0
+        INNER JOIN `maoding_web_project_cost_payment_detail` pay
+        ON pay.point_detail_id = mwpcpd.`id`
+        AND pay.`status` = 0
+        AND (
+        pay.paid_date IS NOT NULL
+        OR pay.pay_date IS NOT NULL
+        )
+        INNER JOIN maoding_web_project mwp
+        ON mwp.`id` = mwpc.`project_id`
+        AND mwp.`pstatus` = 0
+        WHERE 1 = 1 AND mwpc.`type` IN(2,3,4,5)
+        <if test="companyIdList!=null">
+            and mwpc.from_company_id in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+        </if>
+        <if test="startDate!=null">
+            <![CDATA[ and ifnull(pay.pay_date,pay.paid_date) > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and ifnull(pay.pay_date,pay.paid_date) <= #{endDate} ]]>
+        </if>
+        GROUP BY fromCompanyId
+        ) tt
+    </select>
+    <!--柱状图，总支出3-->
+    <select id="getColumnarExpenditure3" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        -- 报销汇总
+        SELECT
+            mwm.type AS feeType,
+            mwed.`exp_use` AS feeName,
+            IFNULL(
+                    CONVERT(SUM(mwed.exp_amount), DECIMAL (16, 2)),
+                    0
+            ) AS profitFee,
+            mwed.exp_pname AS projectName,
+            DATE_FORMAT(mwm.allocation_date, '%Y-%m') AS createDate,
+            b.`code` AS feeName,
+            mwm.`company_id` AS toCompanyId
+        FROM
+            maoding_web_exp_category a
+            INNER JOIN maoding_web_exp_category b
+                ON a.pid = b.id
+            INNER JOIN maoding_web_exp_detail mwed
+                ON a.id = mwed.exp_type
+            INNER JOIN `maoding_web_exp_main` mwm
+                ON mwed.main_id = mwm.id
+        WHERE 1 = 1
+              AND ( mwm.approve_status = 1 OR mwm.approve_status = 6)
+              AND mwm.allocation_date IS NOT NULL
+        <if test="companyIdList!=null">
+            and mwm.`company_id` in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+        </if>
+        <if test="startDate!=null">
+            <![CDATA[ and mwm.allocation_date > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and mwm.allocation_date <= #{endDate} ]]>
+        </if>
+        GROUP BY toCompanyId
+        ORDER BY mwm.allocation_date DESC
+    </select>
+    <!--柱状图合同总金额-->
+    <select id="getColumnarSumMoney" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+            CONVERT(SUM(t.`content`), DECIMAL (16, 2)) * 10000 AS profitFee,
+            DATE_FORMAT(create_date, '%Y-%m') AS createDate,
+            t.company_id AS toCompanyId
+        FROM
+            maoding_web_dynamic t
+        WHERE TYPE = 50
+        <if test="companyIdList!=null">
+            and company_id in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+        </if>
+        <if test="startDate!=null">
+            <![CDATA[ and t.create_date > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and t.create_date <= #{endDate} ]]>
+        </if>
+        GROUP BY toCompanyId
+    </select>
+    <!--获取柱状图组织ID，名称-->
+    <select id="getColumnarCompany" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+            t.id as toCompanyId,
+            t.company_short_name as toCompanyName
+        FROM
+            maoding_web_company t
+        WHERE 1=1
+        <if test="companyIdList!=null">
+            and id in
+            <foreach collection="companyIdList" item="companyId" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+        </if>
+        ORDER BY create_date ASC
+    </select>
+    <!--获取利润报表费用录入数据-->
+    <select id="getProfitCostOfEntry" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+            c.exp_date AS createDate,
+            b.code AS code,
+            IFNULL(c.exp_amount, 0) AS profitFee,
+            b.`name` AS feeTypeName
+        FROM
+            maoding_data_dictionary a
+            LEFT JOIN maoding_data_dictionary b
+                ON a.id = b.pid
+            LEFT JOIN maoding_web_exp_fixed c
+                ON b.id = c.exp_type
+        WHERE  c.company_id =#{combineCompanyId}
+        <if test="startDate!=null">
+            <![CDATA[ and c.exp_date > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and c.exp_date <= #{endDate} ]]>
+        </if>
+        <if test="pcode!=null">
+            AND a.`code`=#{pcode}
+        </if>
+        GROUP BY exp_date,
+            b.`code`
+    </select>
+    <!--获取利润报表费用录入数据名称-->
+    <select id="getProfitCostOfEntryName" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+        c.exp_date AS createDate,
+        b.code AS CODE,
+        IFNULL(SUM(c.exp_amount), 0) AS profitFee,
+        b.`name` AS feeTypeName,
+        a.id
+        FROM
+        maoding_data_dictionary a
+        LEFT JOIN maoding_data_dictionary b
+        ON a.id = b.pid
+        LEFT JOIN maoding_web_exp_fixed c
+        ON b.id = c.exp_type
+        WHERE
+        <if test="pcode!=null">
+             a.`code`=#{pcode}
+        </if>
+        GROUP BY b.`code`,feeTypeName
+        ORDER BY b.`seq`
+    </select>
+    <!--获取利润报表费用录入数据合计-->
+    <select id="getProfitCostOfEntrySum" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+        c.exp_date AS createDate,
+        b.code AS CODE,
+        IFNULL(SUM(c.exp_amount), 0) AS profitFee,
+        b.`name` AS feeTypeName,
+        a.id
+        FROM
+        maoding_data_dictionary a
+        LEFT JOIN maoding_data_dictionary b
+        ON a.id = b.pid
+        LEFT JOIN maoding_web_exp_fixed c
+        ON b.id = c.exp_type
+        WHERE c.company_id = #{combineCompanyId}
+        <if test="pcode!=null">
+            AND a.`code`=#{pcode}
+        </if>
+        <if test="startDate!=null">
+            <![CDATA[ and c.exp_date > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and c.exp_date <= #{endDate} ]]>
+        </if>
+        GROUP BY b.`code`,feeTypeName
+        ORDER BY b.`seq`
+    </select>
+    <!--获取利润报表主营业务成本-->
+    <select id="getProfitProjectExpenditure" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+            mwpc.`type` AS feeType,
+            DATE_FORMAT(IFNULL(pay.`paid_date`, pay.`pay_date`),'%Y-%m') AS createDate,
+            CONVERT(SUM(pay.fee) * 10000, DECIMAL (16, 2)) AS profitFee,
+            (
+                CASE
+                mwpc.type
+                WHEN 1
+                    THEN '合同回款'
+                WHEN 2
+                    THEN '技术审查费'
+                WHEN 3
+                    THEN '合作设计费'
+                WHEN 4
+                    THEN '其他费用'
+                WHEN 5
+                    THEN '其他费用'
+                ELSE '其他'
+                END
+            ) AS feeTypeName
+        FROM
+            `maoding_web_project_cost_point_detail` mwpcpd
+            INNER JOIN `maoding_web_project_cost_point` mwpcp
+                ON mwpcpd.`point_id` = mwpcp.`id`
+                   AND mwpcpd.`status` = 0
+                   AND mwpcp.`status` = 0
+            INNER JOIN maoding_web_project_cost mwpc
+                ON mwpcp.`cost_id` = mwpc.`id`
+                   AND mwpc.`status` = 0
+            LEFT JOIN maoding_web_company mwcf
+                ON mwpc.`from_company_id` = mwcf.`id`
+                   AND mwcf.`status` = 0
+            LEFT JOIN maoding_web_company mwct
+                ON mwpc.`to_company_id` = mwct.`id`
+                   AND mwct.`status` = 0
+            INNER JOIN `maoding_web_project_cost_payment_detail` pay
+                ON pay.point_detail_id = mwpcpd.`id`
+                   AND pay.`status` = 0
+                   AND (
+                       pay.paid_date IS NOT NULL
+                       OR pay.pay_date IS NOT NULL
+                   )
+            INNER JOIN maoding_web_project mwp
+                ON mwp.`id` = mwpc.`project_id`
+                   AND mwp.`pstatus` = 0
+        WHERE 1 = 1
+              AND mwpc.from_company_id = #{combineCompanyId}
+              AND  mwpc.`type` IN(2,3,4,5)
+        <if test="startDate!=null">
+            <![CDATA[ and ifnull(pay.pay_date,pay.paid_date) > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and ifnull(pay.pay_date,pay.paid_date) <= #{endDate} ]]>
+        </if>
+        GROUP BY feeType,createDate
+    </select>
+    <!--利润报表，获取财务管理-->
+    <select id="getApplyReimbursement" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+        DATE_FORMAT(main.allocation_date, '%Y-%m') AS createDate,
+        SUM(mwed.exp_amount) AS profitFee,
+        mwec.`code` AS CODE,
+        mwec1.`code` AS pcode,
+        mwec.`name` AS feeTypeName,
+        main.`approve_status` AS feeType,
+        mwec.`status`
+        FROM
+        maoding_web_exp_category mwec
+        INNER JOIN maoding_web_exp_category mwec1
+        ON mwec.pid = mwec1.id
+        INNER JOIN maoding_web_exp_detail mwed
+        ON mwec.id = mwed.exp_type
+        INNER JOIN maoding_web_exp_main main
+        ON mwed.main_id = main.id
+        WHERE mwec.`company_id` = #{combineCompanyId}
+        AND main.approve_status = 6
+        <choose>
+            <when test="pcode == 'bx_qtfy'">
+                and (mwec1.`code`=#{pcode} OR mwec.`status`=1)
+            </when>
+            <otherwise>
+                and mwec1.`code`=#{pcode}
+            </otherwise>
+        </choose>
+        <if test="startDate!=null">
+            <![CDATA[ and main.allocation_date > #{startDate} ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and main.allocation_date <= #{endDate} ]]>
+        </if>
+        GROUP BY mwec.`code`,createDate
+    </select>
+    <select id="getApplyReimbursementName" resultType="StatisticDetailDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+            t.name AS feeTypeName,
+            t.code,
+            tt.pcode,
+            tt.createDate,
+            tt.approve_status AS feeType,
+            IFNULL(tt.profitFee, 0) AS profitFee
+        FROM
+            (SELECT
+                 id,
+                 NAME,
+                 CODE,
+                 create_by,
+                 update_date,
+                 update_by,
+                 exptype_memo,
+                 company_id,
+                 seq
+             FROM
+                 maoding_web_exp_category
+             WHERE 1 = 1
+                   AND STATUS = '0'
+                   AND pid IN
+                       (SELECT
+                            id
+                        FROM
+                            maoding_web_exp_category t
+                        WHERE 1 = 1
+                              AND (pid IS NULL
+                                   OR pid = '')
+                              AND company_id = #{combineCompanyId}
+                              AND t.`code` = #{pcode}
+                        ORDER BY seq)) t
+            LEFT JOIN
+            (SELECT
+                 DATE_FORMAT(main.allocation_date, '%Y-%m') AS createDate,
+                 IFNULL(SUM(mwed.exp_amount), 0) AS profitFee,
+                 mwec.`code` AS CODE,
+                 mwec1.`code` AS pcode,
+                 mwec.`name` AS feeTypeName,
+                 mwec.id AS id,
+                 main.`approve_status`
+             FROM
+                 maoding_web_exp_category mwec
+                 INNER JOIN maoding_web_exp_category mwec1
+                     ON mwec.pid = mwec1.id
+                 INNER JOIN maoding_web_exp_detail mwed
+                     ON mwec.id = mwed.exp_type
+                 INNER JOIN maoding_web_exp_main main
+                     ON mwed.main_id = main.id
+             WHERE mwec.`company_id` =#{combineCompanyId}
+                   AND mwec1.`code` = #{pcode}
+                   AND main.approve_status = 6
+                <if test="startDate!=null">
+                    <![CDATA[ and main.allocation_date > #{startDate} ]]>
+                </if>
+                <if test="endDate!=null">
+                    <![CDATA[ and main.allocation_date <= #{endDate} ]]>
+                </if>
+             GROUP BY mwec.`code`) tt
+                ON t.id = tt.id
+        ORDER BY t.seq
+    </select>
+
+</mapper>

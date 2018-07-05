@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="CompanyDiskEntityMapper">
+    <insert id="insert" parameterType="com.maoding.conllaboration.entity.CompanyDiskEntity">
+        INSERT INTO maoding_corp_company_disk
+        (
+            id
+            , company_id
+            , total_size
+            , corp_size
+            , docmgr_size
+            , free_size
+            , up_version
+            , create_date
+            , create_by
+            , update_date
+            , update_by
+        )
+        VALUES
+            (
+                #{id,jdbcType=VARCHAR},
+                #{companyId,jdbcType=VARCHAR},
+                #{totalSize,jdbcType=BIGINT},
+                #{corpSize,jdbcType=BIGINT},
+                #{docmgrSize,jdbcType=BIGINT},
+                #{freeSize,jdbcType=BIGINT},
+                #{upVersion,jdbcType=BIGINT},
+                #{createDate,jdbcType=TIMESTAMP},
+                #{createBy,jdbcType=VARCHAR},
+                #{updateDate,jdbcType=TIMESTAMP},
+                #{updateBy,jdbcType=VARCHAR}
+            );
+    </insert>
+    <select id="selectById"  resultType="com.maoding.conllaboration.entity.CompanyDiskEntity" parameterType="java.lang.String">
+        SELECT *
+        FROM maoding_corp_company_disk c
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+</mapper>

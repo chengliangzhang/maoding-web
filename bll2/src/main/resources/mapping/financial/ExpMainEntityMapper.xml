@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ExpMainEntityMapper">
+    <resultMap id="BaseResultMap" type="com.maoding.financial.entity.ExpMainEntity">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="company_user_id" property="companyUserId" jdbcType="VARCHAR"/>
+        <result column="exp_date" property="expDate" jdbcType="DATE"/>
+        <result column="approve_status" property="approveStatus" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
+        <result column="depart_id" property="departId" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="create_by" property="createBy" jdbcType="VARCHAR"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="update_by" property="updateBy" jdbcType="VARCHAR"/>
+        <result column="version_num" property="versionNum" jdbcType="INTEGER"/>
+        <result column="exp_no" property="expNo" jdbcType="INTEGER"/>
+        <result column="exp_flag" property="expFlag" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="allocation_date" property="allocationDate" jdbcType="DATE"/>
+        <result column="allocation_user_id" property="allocationUserId" jdbcType="VARCHAR"/>
+        <result column="enterprise_id" property="enterpriseId" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap id="LeaveDetailMap" type="com.maoding.financial.dto.LeaveDetailDTO">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="applyDate" property="applyDate" jdbcType="DATE" />
+        <result column="applyName" property="applyName" jdbcType="VARCHAR" />
+        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="comment" property="comment" jdbcType="VARCHAR" />
+        <result column="startTime" property="startTime" jdbcType="TIMESTAMP" />
+        <result column="endTime" property="endTime" jdbcType="TIMESTAMP" />
+        <result column="leaveTime" property="leaveTime" jdbcType="VARCHAR" />
+        <result column="auditPerson" property="auditPerson" jdbcType="VARCHAR" />
+        <result column="approveDate" property="approveDate" jdbcType="VARCHAR" />
+        <result column="currentCompanyId" property="currentCompanyId" jdbcType="VARCHAR" />
+        <result column="address" property="address" jdbcType="VARCHAR" />
+        <result column="projectName" property="projectName" jdbcType="VARCHAR" />
+        <collection property="projectSkyDriveEntity" select="ProjectSkyDriveEntityMapper.getNetFileByParam" column="{targetId=id}" fetchType="eager" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, company_user_id, exp_date, approve_status, company_id, depart_id,
+        remark, create_date, create_by, update_date, update_by, version_num, exp_no, exp_flag,
+        type, allocation_date, allocation_user_id,enterprise_id
+    </sql>
+    <resultMap id="BaseResultMapWithUserName" type="com.maoding.financial.dto.ExpMainDTO">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="company_user_id" property="companyUserId" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="company_name" property="companyName" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
+        <result column="exp_date" property="expDate" jdbcType="DATE"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="exp_no" property="expNo" jdbcType="VARCHAR"/>
+        <result column="approve_status" property="approveStatus" jdbcType="VARCHAR"/>
+        <result column="allocation_date" property="allocationDate" jdbcType="DATE"/>
+        <result column="allocation_user_name" property="allocationUserName" jdbcType="VARCHAR"/>
+        <result column="allocation_user_company_id" property="allocationUserCompanyId" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+    </resultMap>
+    <select id="selectByIdWithUserName" resultMap="BaseResultMapWithUserName" parameterType="java.lang.String">
+       SELECT
+            a.id,
+            a.company_user_id,
+            b.user_name,
+            a.exp_date,
+            a.exp_no,
+            a.version_num,
+            a.remark,
+            a.approve_status,
+            a.allocation_date,
+            a.type,
+            c.user_name AS allocation_user_name,
+            c.company_id as allocation_user_company_id,
+            company.id as company_id,
+            company.company_name
+        FROM maoding_web_exp_main a
+            LEFT JOIN maoding_web_company_user b ON a.company_user_id = b.id AND a.company_id = b.company_id
+            LEFT JOIN maoding_web_company_user c ON a.allocation_user_id = c.id
+            left join maoding_web_company company on (company.id = b.company_id)
+        WHERE a.id = #{id,jdbcType=VARCHAR}
+    </select>
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from maoding_web_exp_main
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteById" parameterType="java.lang.String">
+        DELETE FROM maoding_web_exp_main
+        WHERE id = #{id,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.maoding.financial.entity.ExpMainEntity">
+        INSERT INTO maoding_web_exp_main (id, company_user_id,
+                                          exp_date, approve_status,
+                                          company_id, depart_id, remark,
+                                          create_date, create_by, update_date,
+                                          update_by, exp_no, exp_flag, type, allocation_date, allocation_user_id)
+        VALUES (#{id,jdbcType=VARCHAR}, #{companyUserId,jdbcType=VARCHAR},
+                                        now(), #{approveStatus,jdbcType=VARCHAR},
+                                        #{companyId,jdbcType=VARCHAR}, #{departId,jdbcType=VARCHAR},
+                                        #{remark,jdbcType=VARCHAR},
+                                        now(), #{createBy,jdbcType=VARCHAR}, now(),
+                                        #{updateBy,jdbcType=VARCHAR}, #{expNo,jdbcType=VARCHAR},
+                #{expFlag,jdbcType=INTEGER},
+                #{type,jdbcType=INTEGER}, #{allocationDate,jdbcType=DATE}, #{allocationUserId,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="updateById" parameterType="com.maoding.financial.entity.ExpMainEntity">
+        update maoding_web_exp_main
+        <set>
+            <if test="companyUserId != null">
+                company_user_id = #{companyUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="expDate != null">
+                exp_date = #{expDate},
+            </if>
+            <if test="approveStatus != null">
+                approve_status = #{approveStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null">
+                company_id = #{companyId,jdbcType=VARCHAR},
+            </if>
+            <if test="departId != null">
+                depart_id = #{departId,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            update_date = now(),
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="versionNum != null">
+                version_num = (#{versionNum,jdbcType=INTEGER} + 1),
+            </if>
+            <if test="expNo != null">
+                exp_no = (#{expNo,jdbcType=VARCHAR}),
+            </if>
+            <if test="expFlag != null">
+                exp_flag = #{expFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+
+            <if test="allocationDate != null">
+                allocation_date = #{allocationDate,jdbcType=DATE},
+            </if>
+            <if test="allocationUserId != null">
+                allocation_user_id = #{allocationUserId,jdbcType=VARCHAR},
+            </if>
+
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+        <if test="versionNum != null">
+            and version_num = #{versionNum,jdbcType=INTEGER}
+        </if>
+    </update>
+    <update id="update" parameterType="com.maoding.financial.entity.ExpMainEntity">
+        UPDATE maoding_web_exp_main
+        SET company_user_id            = #{companyUserId,jdbcType=VARCHAR},
+            exp_date           = #{expDate,jdbcType=DATE},
+            approve_status     = #{approveStatus,jdbcType=VARCHAR},
+            company_id         = #{companyId,jdbcType=VARCHAR},
+            depart_id          = #{departId,jdbcType=VARCHAR},
+            type               = #{type,jdbcType=INTEGER},
+            allocation_date    = #{allocationDate,jdbcType=DATE},
+            allocation_user_id = #{allocationUserId,jdbcType=VARCHAR},
+            remark             = #{remark,jdbcType=VARCHAR},
+            create_date        = #{createDate,jdbcType=TIMESTAMP},
+            create_by          = #{createBy,jdbcType=VARCHAR},
+            update_date        = #{updateDate,jdbcType=TIMESTAMP},
+            update_by          = #{updateBy,jdbcType=VARCHAR}
+        WHERE id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectByParam" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        m.*
+        from maoding_web_exp_main m
+        where 1=1
+        <if test="expNo != null">
+            and m.exp_no=#{expNo,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <select id="getExpenditureCount" resultType="StatisticDetailSummaryDTO" parameterType="StatisticDetailQueryDTO">
+        SELECT
+        SUM(tt.exp_amount) AS pay
+        FROM
+        maoding_web_exp_main t
+        INNER JOIN maoding_web_exp_detail tt
+        ON t.`id` = tt.`main_id`
+        where 1=1
+        <if test="combineCompanyId != null">
+            and t.company_id=#{combineCompanyId}
+        </if>
+        GROUP BY t.company_id
+
+    </select>
+    <sql id="getLeaveDetailListCondition">
+        <if test="type!=null and type!=''">
+            and main.type = #{type}
+        </if>
+        <if test="companyId != null and companyId !=''">
+            and main.company_id=#{companyId}
+        </if>
+        <if test="applyName!=null and applyName!=''">
+            and user.user_name like '%' #{applyName} '%'
+        </if>
+        <if test="auditPerson!=null and auditPerson!=''">
+            and auditUser.user_name like '%' #{auditPerson} '%'
+        </if>
+        <if test="startDate!=null">
+            <![CDATA[ and main.exp_date >= #{startDate}]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[ and main.exp_date <= #{endDate}]]>
+        </if>
+        <if test="startApproveDate!=null">
+            <![CDATA[ and audit.approve_date >= #{startApproveDate}]]>
+        </if>
+        <if test="endApproveDate!=null">
+            <![CDATA[ and audit.approve_date <= #{endApproveDate}]]>
+        </if>
+        <if test="id!=null and id!=''">
+            and main.id=#{id}
+        </if>
+        <if test="leaveType!=null and leaveType!=''">
+            and detail.leave_type=#{leaveType}
+        </if>
+
+    </sql>
+    <sql id="get_limit">
+        <if test="startLine!=null">
+            limit #{startLine}
+            <if test="linesCount!=null">
+                ,#{linesCount}
+            </if>
+        </if>
+    </sql>
+    <!--请假sql-->
+    <select id="getLeaveDetailList" resultMap="LeaveDetailMap"
+            parameterType="com.maoding.financial.dto.LeaveDetailQueryDTO">
+        SELECT
+        main.`id` as id,
+        main.exp_date AS applyDate,
+        user.user_name AS applyName,
+        detail.leave_type AS TYPE,
+        main.`remark` AS COMMENT,
+        detail.`start_time` AS startTime,
+        detail.`end_time` AS endTime,
+        detail.`leave_time` AS leaveTime,
+        auditUser.`user_name` AS auditPerson,
+        audit.approve_date AS approveDate,
+        main.`company_id` AS currentCompanyId,
+        detail.address AS address,
+        p.project_name as projectName
+        FROM
+        maoding_web_exp_main main
+        LEFT JOIN maoding_web_leave_detail detail
+        LEFT JOIN maoding_web_project p on detail.project_id = p.id
+        ON detail.main_id = main.id
+        LEFT JOIN maoding_web_exp_audit audit
+        ON audit.main_id = main.id
+        LEFT JOIN maoding_web_company_user USER
+        ON main.company_user_id = user.id
+        LEFT JOIN maoding_web_company_user auditUser
+        ON audit.`audit_person` = auditUser.`id`
+        WHERE main.approve_status = 1  AND audit.`is_new`='Y'
+        <include refid="getLeaveDetailListCondition"/>
+        ORDER BY main.exp_date DESC
+        <include refid="get_limit"/>
+    </select>
+    <!--请假total-->
+    <select id="getLeaveDetailCount" resultType="java.lang.Integer" parameterType="com.maoding.financial.dto.LeaveDetailQueryDTO">
+        SELECT
+        count(audit.`id`)
+        FROM
+        maoding_web_exp_main main
+        LEFT JOIN maoding_web_leave_detail detail
+        ON detail.main_id = main.id
+        LEFT JOIN maoding_web_exp_audit audit
+        ON audit.main_id = main.id
+        LEFT JOIN maoding_web_company_user USER
+        ON main.company_user_id = user.id
+        LEFT JOIN maoding_web_company_user auditUser
+        ON audit.`audit_person` = auditUser.`id`
+        WHERE main.approve_status = 1  AND audit.`is_new`='Y'
+        <include refid="getLeaveDetailListCondition"/>
+        ORDER BY main.exp_date DESC
+    </select>
+    
+</mapper>

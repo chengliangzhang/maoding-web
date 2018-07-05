@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ProjectAuditEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.project.entity.ProjectAuditEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="process_id" property="processId" jdbcType="VARCHAR" />
+    <result column="node_id" property="nodeId" jdbcType="VARCHAR" />
+    <result column="audit_date" property="auditDate" jdbcType="DATE" />
+    <result column="audit_type" property="auditType" jdbcType="VARCHAR" />
+    <result column="audit_status" property="auditStatus" jdbcType="VARCHAR" />
+    <result column="from_id" property="fromId" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, user_id, project_id, process_id, node_id, audit_date, audit_type, audit_status, 
+    from_id, create_date, create_by, update_date, update_by
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_project_audit
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getProjectAuditEntityByProjectAndType" resultMap="BaseResultMap" parameterType="java.util.Map"  >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_project_audit
+    where project_id = #{projectId,jdbcType=VARCHAR} and audit_type = #{auditType,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_project_audit
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.maoding.project.entity.ProjectAuditEntity" >
+    insert into maoding_web_project_audit (id, user_id, project_id, 
+      process_id, node_id, audit_date, 
+      audit_type, audit_status, from_id, 
+      create_date, create_by, update_date, 
+      update_by)
+    values (#{id,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR}, 
+      #{processId,jdbcType=VARCHAR}, #{nodeId,jdbcType=VARCHAR}, #{auditDate,jdbcType=DATE}, 
+      #{auditType,jdbcType=VARCHAR}, #{auditStatus,jdbcType=VARCHAR}, #{fromId,jdbcType=VARCHAR}, 
+      now(), #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP},
+      #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.project.entity.ProjectAuditEntity" >
+    update maoding_web_project_audit
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="processId != null" >
+        process_id = #{processId,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeId != null" >
+        node_id = #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="auditDate != null" >
+        audit_date = #{auditDate,jdbcType=DATE},
+      </if>
+      <if test="auditType != null" >
+        audit_type = #{auditType,jdbcType=VARCHAR},
+      </if>
+      <if test="auditStatus != null" >
+        audit_status = #{auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="fromId != null" >
+        from_id = #{fromId,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+        update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <delete id="deleteByProjectAndType" parameterType="java.util.Map" >
+    delete from maoding_web_project_audit
+    where project_id = #{projectId,jdbcType=VARCHAR} and audit_type = #{auditType,jdbcType=VARCHAR}
+  </delete>
+
+</mapper>

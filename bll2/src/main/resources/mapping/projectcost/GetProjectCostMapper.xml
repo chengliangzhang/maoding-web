@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetProjectCostMapper" >
+  <resultMap id="BaseResultMapDto" type="com.maoding.projectcost.dto.ProjectCostDTO" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="from_company_id" property="fromCompanyId" jdbcType="VARCHAR" />
+    <result column="to_company_id" property="toCompanyId" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="fee" property="fee" jdbcType="DECIMAL" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, project_id, from_company_id,to_company_id, type, fee,  remark, status,create_date,
+    create_by, update_date, update_by
+  </sql>
+
+  <select id="selectByParam" parameterType="java.util.Map" resultMap="BaseResultMapDto">
+    SELECT
+    <include refid="Base_Column_List" />
+    from maoding_web_project_cost
+    where status= '0'
+    and project_id=#{projectId,jdbcType=VARCHAR}
+    and type = #{type,jdbcType=VARCHAR}
+    <if test="fromCompanyId != null" >
+     and from_company_id = #{fromCompanyId,jdbcType=VARCHAR}
+    </if>
+    <if test="toCompanyId != null" >
+      and to_company_id = #{toCompanyId,jdbcType=VARCHAR}
+    </if>
+    <if test="flag != null" >
+      and flag = #{flag,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+</mapper>

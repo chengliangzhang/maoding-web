@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="StatisticCompanyBillMapper">
+    <sql id="get_limit">
+        <if test="startLine!=null">
+            limit #{startLine}
+            <if test="linesCount!=null">
+                ,#{linesCount}
+            </if>
+        </if>
+    </sql>
+
+    <!--统计查询条件-->
+    <sql id="getStandingBillBookWhere">
+        <where>
+            bill.deleted = 0
+            AND detail.fee>0
+            <if test="combineCompanyId!=null">
+                AND  FIND_IN_SET(bill.company_id , #{combineCompanyId})
+                AND NOT(FIND_IN_SET(bill.fee_type ,'2,3')
+                AND FIND_IN_SET(relation.from_company_id,#{combineCompanyId})
+                AND FIND_IN_SET(relation.to_company_id,#{combineCompanyId}))
+            </if>
+            <if test="startDate!=null">
+                <![CDATA[ and bill.payment_date >= #{startDate} ]]>
+            </if>
+            <if test="endDate!=null">
+                <![CDATA[ and bill.payment_date <= #{endDate} ]]>
+            </if>
+            <if test="projectName!=null">
+                and bill.project_name like concat('%',#{projectName},'%')
+            </if>
+            <if test="profitType!=null">
+                AND bill.pay_type = #{profitType}
+            </if>
+            <if test="feeType!=null and feeType!=''">
+                AND FIND_IN_SET(CONCAT(detail.exp_type_name,'_',bill.pay_type) , #{feeType})
+            </if>
+            <if test="associatedOrg!=null">
+                AND if(bill.pay_type=1,bill.payer_name,bill.payee_name) = #{associatedOrg}
+            </if>
+        </where>
+    </sql>
+
+    <sql id="getStandingBillBookDetailWhere">
+        <where>
+            bill.deleted = 0
+            AND detail.fee>0
+            <if test="statisticCompanyList!=null and statisticCompanyList.size() > 0">
+                and
+                <foreach collection="statisticCompanyList" item="companyParam" index="i" open="(" separator="or" close=")">
+                    bill.company_id = #{companyParam.companyId}
+                    <if test="companyParam.startDate!=null">
+                        <![CDATA[ and if(LENGTH(bill.payment_date)=7,DATE_FORMAT(bill.create_date,'%Y-%m-%d'),bill.payment_date) >= #{companyParam.startDate} ]]>
+                    </if>
+                    <if test="companyParam.endDate!=null">
+                        <![CDATA[ and if(LENGTH(bill.payment_date)=7,DATE_FORMAT(bill.create_date,'%Y-%m-%d'),bill.payment_date) <= #{companyParam.endDate} ]]>
+                    </if>
+                </foreach>
+            </if>
+            <if test="combineCompanyId!=null">
+                AND  FIND_IN_SET(bill.company_id , #{combineCompanyId})
+                AND NOT (relation.from_company_id is not null
+                and relation.to_company_id is not null
+                and FIND_IN_SET(relation.from_company_id,#{combineCompanyId})
+                AND FIND_IN_SET(relation.to_company_id,#{combineCompanyId}))
+            </if>
+            <if test="projectName!=null">
+                and bill.project_name like concat('%',#{projectName},'%')
+            </if>
+            <if test="profitType!=null">
+                AND bill.pay_type = #{profitType}
+            </if>
+            <if test="feeType!=null and feeType!=''">
+                AND FIND_IN_SET(CONCAT(detail.exp_type_name,'_',bill.pay_type) , #{feeType})
+            </if>
+            <if test="receivableId!=null">
+                AND relation.to_company_id = #{receivableId}
+            </if>
+            <if test="fromCompanyName!=null">
+                AND if(bill.pay_type=2,tocompany.company_name ,if(bill.fee_type = 1,bill.payer_name,fcompany.company_name )) = #{fromCompanyName}
+            </if>
+            <if test="toCompanyName!=null">
+                AND tocompany.company_name = #{toCompanyName}
+            </if>
+            <if test="associatedOrg!=null">
+                AND if(bill.pay_type=1,bill.payer_name,bill.payee_name) = #{associatedOrg}
+            </if>
+        </where>
+    </sql>
+
+    <sql id="getBalanceWhere">
+        <where>
+            bill.deleted = 0
+            AND detail.fee>0
+            <if test="statisticCompanyList!=null and statisticCompanyList.size() > 0">
+                and
+                <foreach collection="statisticCompanyList" item="companyParam" index="i" open="(" separator="or" close=")">
+                    bill.company_id = #{companyParam.companyId}
+                    <if test="companyParam.setBalanceDate!=null">
+                        <![CDATA[ and if(LENGTH(bill.payment_date)=7,DATE_FORMAT(bill.create_date,'%Y-%m-%d'),bill.payment_date) >= DATE_FORMAT(#{companyParam.setBalanceDate},'%Y-%m-%d') ]]>
+                    </if>
+                </foreach>
+            </if>
+
+        </where>
+    </sql>
+
+    <!--统计查询条件-->
+    <sql id="getClassStatisticsWhere">
+        <where>
+            a.deleted = 0
+            <if test="combineCompanyId!=null">
+                AND company_id = #{combineCompanyId}
+            </if>
+            <if test="companyIdList!=null and companyIdList.size() > 0">
+                AND company_id in
+                <foreach collection="companyIdList" item="companyId" index="i" open="(" separator="," close=")">
+                    #{companyId}
+                </foreach>
+            </if>
+            <if test="startDate!=null">
+                <![CDATA[ and payment_date > #{startDate} ]]>
+            </if>
+            <if test="endDate!=null">
+                <![CDATA[ and payment_date <= #{endDate} ]]>
+            </if>
+            <if test="projectName!=null">
+                and project_name like concat('%',#{projectName},'%')
+            </if>
+        </where>
+    </sql>
+
+
+    <!--统计查询条件-->
+    <sql id="getCompanyColumnarDataWhere">
+        <where>
+            1=1
+            <if test="combineCompanyId!=null">
+                AND company_id = #{combineCompanyId}
+            </if>
+            <if test="companyIdList!=null and companyIdList.size() > 0">
+                AND a.id in
+                <foreach collection="companyIdList" item="companyId" index="i" open="(" separator="," close=")">
+                    #{companyId}
+                </foreach>
+            </if>
+            <if test="feeTypeList!=null and feeTypeList.size() > 0">
+                AND c.exp_type_parent_name in
+                <foreach collection="feeTypeList" item="feeType" index="i" open="(" separator="," close=")">
+                    #{feeType}
+                </foreach>
+            </if>
+            <if test="startDate!=null">
+                <![CDATA[ and payment_date > #{startDate} ]]>
+            </if>
+            <if test="endDate!=null">
+                <![CDATA[ and payment_date <= #{endDate} ]]>
+            </if>
+            <if test="groupByTime!=null and groupByTime=='1'.toString()">
+                <if test="startDateStr!=null">
+                    <![CDATA[ and SUBSTR(b.payment_date, 1, 7) >= #{startDateStr} ]]>
+                </if>
+                <if test="endDateStr!=null">
+                    <![CDATA[ and SUBSTR(b.payment_date, 1, 7) <= #{endDateStr} ]]>
+                </if>
+            </if>
+
+            <if test="groupByTime!=null and groupByTime=='2'.toString()">
+                <if test="startDateStr!=null">
+                    <![CDATA[ and SUBSTR(b.payment_date, 1, 4) >= #{startDateStr} ]]>
+                </if>
+                <if test="endDateStr!=null">
+                    <![CDATA[ and SUBSTR(b.payment_date, 1, 4) <= #{endDateStr} ]]>
+                </if>
+            </if>
+
+            <if test="projectName!=null">
+                and project_name like concat('%',#{projectName},'%')
+            </if>
+        </where>
+    </sql>
+    <select id="getCompanyStandingBook_bak" resultType="com.maoding.statistic.dto.StatisticDetailDTO"
+            parameterType="com.maoding.statistic.dto.StatisticDetailQueryDTO">
+        SELECT
+        bill.id,
+        bill.payment_date AS profitDate,
+        IF( bill.fee_unit = 1, bill.fee * 10000, fee ) AS profitFee,
+        bill.pay_type AS profitType,
+        bill.bill_description AS feeName,
+        IF( bill.pay_type = 1,fcompany.company_name, IF( bill.fee_type IN (5, 6), '--', tocompany.company_name )) AS fromCompanyName,
+        bill.project_name AS projectName,
+        CASE bill.fee_type
+        WHEN 1 THEN '合同回款'
+        WHEN 2 THEN '技术审查费'
+        WHEN 3 THEN '合作设计费'
+        WHEN 4 THEN '其他收支'
+        WHEN 5 THEN '报销申请'
+        WHEN 6 THEN '费用申请'
+        WHEN 7 THEN '固定支出'
+        ELSE '其他'
+        END as feeTypeName
+        from maoding_web_company_bill bill
+        LEFT JOIN maoding_web_company_bill_relation relation
+        ON bill.id = relation.id
+        LEFT JOIN maoding_web_company fcompany
+        ON relation.from_company_id = fcompany.id
+        LEFT JOIN maoding_web_company tocompany
+        ON relation.to_company_id = tocompany.id
+        <include refid="getStandingBillBookWhere"/>
+        order by bill.payment_date desc,bill.create_date DESC
+        <include refid="get_limit"/>
+    </select>
+
+    <select id="getCompanyStandingBook" resultType="com.maoding.statistic.dto.StatisticDetailDTO"
+            parameterType="com.maoding.statistic.dto.StatisticDetailQueryDTO">
+        SELECT
+        bill.id,
+        bill.payment_date AS profitDate,
+        sum(IF( bill.fee_unit = 1, detail.fee * 10000, detail.fee )) AS profitFee,
+        bill.pay_type AS profitType,
+        detail.fee_description AS feeName,
+--          ifnull(fcompany.company_name,payer_name) as fromCompanyName,
+--          IF(bill.fee_type IN (5, 6), '--',ifnull(tocompany.company_name,payee_name))  as toCompanyName,
+        if(fee_type = 1,bill.payer_name, IF( bill.pay_type = 1,fcompany.company_name, IF( bill.fee_type IN (5, 6), '--', tocompany.company_name )))AS fromCompanyName,
+        bill.project_name AS projectName,
+        detail.exp_type_name as feeTypeName
+        from maoding_web_company_bill bill
+        INNER JOIN maoding_web_company_bill_detail detail on bill.id = detail.bill_id
+        INNER JOIN maoding_web_company_bill_relation relation ON bill.id = relation.id
+        LEFT JOIN maoding_web_company fcompany ON relation.from_company_id = fcompany.id
+        LEFT JOIN maoding_web_company tocompany ON relation.to_company_id = tocompany.id
+        <include refid="getStandingBillBookDetailWhere"/>
+        group by bill.id,detail.exp_type_name
+        order by bill.payment_date desc,bill.create_date DESC
+        <include refid="get_limit"/>
+    </select>
+
+    <select id="getCompanyStandingBookCount" parameterType="com.maoding.statistic.dto.StatisticDetailQueryDTO"
+            resultType="java.lang.Integer">
+        select count(1)
+        from
+        (SELECT bill.id from maoding_web_company_bill bill
+        INNER JOIN maoding_web_company_bill_detail detail ON bill.id = detail.bill_id
+        INNER JOIN maoding_web_company_bill_relation relation ON bill.id = relation.id
+        LEFT JOIN maoding_web_company fcompany ON relation.from_company_id = fcompany.id
+        LEFT JOIN maoding_web_company tocompany ON relation.to_company_id = tocompany.id
+        <include refid="getStandingBillBookDetailWhere"/>)a
+    </select>
+
+    <select id="getCompanyStandingBookSum" parameterType="com.maoding.statistic.dto.StatisticDetailQueryDTO"
+            resultType="com.maoding.statistic.dto.StatisticDetailSummaryDTO">
+        SELECT sum(IF(pay_type=1,if(fee_unit=1,detail.fee*10000,detail.fee),0)) as gain,
+        sum(IF(pay_type=2,if(fee_unit=1,detail.fee*10000,detail.fee),0)) as pay
+        from maoding_web_company_bill bill
+        INNER JOIN maoding_web_company_bill_detail detail on bill.id = detail.bill_id
+        INNER JOIN maoding_web_company_bill_relation relation ON bill.id = relation.id
+        LEFT JOIN maoding_web_company fcompany ON relation.from_company_id = fcompany.id
+        LEFT JOIN maoding_web_company tocompany ON relation.to_company_id = tocompany.id
+        <include refid="getStandingBillBookDetailWhere"/>
+    </select>
+
+    <select id="getBalanceSum" parameterType="com.maoding.statistic.dto.StatisticDetailQueryDTO"
+            resultType="com.maoding.statistic.dto.StatisticDetailSummaryDTO">
+        SELECT sum(IF(pay_type=1,if(fee_unit=1,detail.fee*10000,detail.fee),0)) as gain,
+        sum(IF(pay_type=2,if(fee_unit=1,detail.fee*10000,detail.fee),0)) as pay
+        from maoding_web_company_bill bill
+        INNER JOIN maoding_web_company_bill_detail detail on bill.id = detail.bill_id
+        INNER JOIN maoding_web_company_bill_relation relation ON bill.id = relation.id
+        <include refid="getBalanceWhere"/>
+    </select>
+
+    <!--   <select id="getCompanyStandingBookSum_bak" parameterType="com.maoding.statistic.dto.StatisticDetailQueryDTO"
+               resultType="com.maoding.statistic.dto.StatisticDetailSummaryDTO">
+           SELECT sum(IF(pay_type=1,if(fee_unit=1,fee*10000,fee),0)) as gain,
+           sum(IF(pay_type=2,if(fee_unit=1,fee*10000,fee),0)) as pay
+           from maoding_web_company_bill bill
+           <include refid="getStandingBillBookWhere"/>
+       </select>
+       -->
+
+    <select id="getCompanyBillClassStatistics" parameterType="com.maoding.statistic.dto.StatisticDetailQueryDTO"
+            resultType="com.maoding.statistic.dto.ExpensesStatisticsDTO">
+        SELECT
+        -- 收款
+        SUM(IF(pay_type=1 and exp_type_parent_name='合同回款',if(fee_unit=1,b.fee*10000,b.fee) ,0)) as contractRevenue,
+        SUM(IF(pay_type=1 and exp_type_parent_name='技术审查费',if(fee_unit=1,b.fee*10000,b.fee) ,0)) as technologyRevenue,
+        SUM(IF(pay_type=1 and exp_type_parent_name='合作设计费',if(fee_unit=1,b.fee*10000,b.fee) ,0)) as cooperationRevenue,
+        SUM(IF(pay_type=1 and POSITION('其他' IN exp_type_parent_name),if(fee_unit=1,b.fee*10000,b.fee) ,0)) as
+        otherRevenue,
+        -- 付款
+        SUM(IF(pay_type=2 and exp_type_parent_name='主营业务税金及附加',if(fee_unit=1,b.fee*10000,b.fee) ,0)) as mainBusiness,
+        SUM(IF(pay_type=2 and exp_type_parent_name='财务费用',if(fee_unit=1,b.fee*10000,b.fee) ,0)) as financialCost,
+        SUM(IF(pay_type=2 and exp_type_parent_name='所得税费用',if(fee_unit=1,b.fee*10000,b.fee) ,0)) as incomeTax,
+        <![CDATA[   SUM(IF(pay_type=2 and (exp_type_parent_name='直接人工成本' or  exp_type_parent_name='直接项目成本' or fee_type <5),if(fee_unit=1,b.fee*10000,b.fee) ,0)) as mainBusinessCost, ]]>
+        SUM(IF(pay_type=2 and (exp_type_parent_name='管理人员工资'
+        or exp_type_parent_name='房屋物业费用'
+        or exp_type_parent_name = '资产摊销'
+        or exp_type_parent_name = '资产减值准备'
+        or ((fee_type =5 or fee_type =6) and exp_type_parent_name!='直接项目成本') ),if(fee_unit=1,b.fee*10000,b.fee) ,0)) as
+        managementFee,
+        sum(if(pay_type=1,if(fee_unit=1,b.fee*10000,b.fee) ,0)) as countRevenue,
+        sum(if(pay_type=2,if(fee_unit=1,b.fee*10000,b.fee) ,0)) as countExpenditure
+        from maoding_web_company_bill a
+        INNER JOIN maoding_web_company_bill_detail b on a.id = b.bill_id
+        <include refid="getClassStatisticsWhere"/>
+    </select>
+
+    <select id="getCompanyBillForLineData" parameterType="com.maoding.statistic.dto.StatisticDetailQueryDTO"
+            resultType="com.maoding.statistic.dto.ClassifiedStatisticDataDTO">
+        SELECT SUBSTR(payment_date,1,7) as timeData,
+        SUM(IF(pay_type=1,if(fee_unit=1,fee*10000,fee) ,0)) as countExpenditure,
+        SUM(IF(pay_type=2,if(fee_unit=1,fee*10000,fee) ,0)) as countRevenue
+        from maoding_web_company_bill a
+        <include refid="getClassStatisticsWhere"/>
+        and payment_date is not null
+        GROUP BY SUBSTR(payment_date,1,7)
+    </select>
+
+    <select id="getCompanyBillDetailByYear" parameterType="com.maoding.statistic.dto.StatisticDetailQueryDTO"
+            resultType="com.maoding.statistic.dto.CompanyBillDetailDTO">
+        SELECT
+        SUBSTR(payment_date, 1, 7)                  AS paymentDate,
+        SUM(if(fee_unit = 1, b.fee * 10000, b.fee)) AS paymentFee,
+        pay_type,
+        fee_type,
+        b.exp_type_parent_name,
+        b.exp_type_name
+        FROM maoding_web_company_bill a
+        INNER JOIN maoding_web_company_bill_detail b ON a.id = b.bill_id
+        WHERE a.deleted = 0
+
+        <if test="companyIdList!=null and companyIdList.size()>0">
+            AND company_id in
+            <foreach collection="companyIdList" item="companyId" index="i" open="(" separator="," close=")">
+                #{companyId}
+            </foreach>
+        </if>
+        AND SUBSTR(payment_date, 1, 4) = #{date}
+        GROUP BY pay_type, fee_type, b.exp_type_parent_name, b.exp_type_name, SUBSTR(payment_date, 1, 7)
+    </select>
+
+    <select id="getRelationCompany" resultType="java.util.Map"
+            parameterType="com.maoding.statistic.dto.StatisticDetailQueryDTO">
+        select * from (
+            SELECT
+            if(a.fee_type=1 and #{payType}=2,a.payer_name,fcompany.company_name) as companyName,
+            if(a.fee_type=1 and #{payType}=2,replace(uuid(),'-',''),fcompany.id) as companyId
+            from maoding_web_company_bill a
+            INNER JOIN maoding_web_company_bill_relation b on a.id = b.id
+            LEFT JOIN maoding_web_company fcompany ON<if test="payType==2"> if(a.pay_type=1,b.from_company_id,b.to_company_id) = fcompany.id </if>
+            <if test="payType==1">b.to_company_id = fcompany.id</if>
+            -- LEFT JOIN maoding_web_company tocompany ON b.to_company_id = tocompany.id
+            where a.deleted = 0
+            <if test="statisticCompanyList!=null and statisticCompanyList.size() > 0">
+                and
+                <foreach collection="statisticCompanyList" item="companyParam" index="i" open="(" separator="or" close=")">
+                    a.company_id = #{companyParam.companyId}
+                </foreach>
+            </if>
+        )a
+        where a.companyName is not null and a.companyName!=''
+        group by a.companyName
+    </select>
+
+    <!-- 柱状图数据 -->
+    <select id="getCompanyColumnarData" parameterType="com.maoding.statistic.dto.StatisticDetailQueryDTO"
+            resultType="com.maoding.statistic.dto.StatisticDetailSummaryDTO">
+        SELECT a.company_name, sum(IF(pay_type=1,if(fee_unit=1,fee*10000,fee),0)) as gain,
+        sum(IF(pay_type=2,if(fee_unit=1,fee*10000,fee),0)) as pay
+        from maoding_web_company a
+        LEFT JOIN maoding_web_company_bill b on a.id = b.company_id and b.deleted = 0
+        <include refid="getCompanyColumnarDataWhere"/>
+        GROUP BY a.id
+    </select>
+
+
+    <!-- 柱状图数据 - 按组织分组 -->
+    <select id="getColumnarDataForOrgGroup" parameterType="com.maoding.statistic.dto.StatisticDetailQueryDTO"
+            resultType="com.maoding.statistic.dto.StatisticClassicSummaryDTO">
+        SELECT a.company_name,b.company_id,c.exp_type_parent_name,  sum(if(fee_unit=1,b.fee*10000,b.fee)) as amount
+        from maoding_web_company a
+        LEFT JOIN maoding_web_company_bill b on a.id = b.company_id and b.deleted = 0
+        LEFT JOIN maoding_web_company_bill_detail c on b.id = c.bill_id
+        <include refid="getCompanyColumnarDataWhere"/>
+        GROUP BY a.id,c.exp_type_parent_name
+    </select>
+
+    <!-- 柱状图数据 - 按时间分组 -->
+    <select id="getColumnarDataForTimeGroup" parameterType="com.maoding.statistic.dto.StatisticDetailQueryDTO"
+            resultType="com.maoding.statistic.dto.StatisticClassicSummaryDTO">
+        SELECT a.company_name,b.company_id, c.exp_type_parent_name, sum(if(fee_unit=1,c.fee*10000,c.fee)) as amount
+        <if test="groupByTime!=null and groupByTime=='1'.toString()">
+        ,SUBSTR(b.payment_date, 1, 7) as paymentDate
+        </if>
+        <if test="groupByTime!=null and groupByTime=='2'.toString()">
+            ,SUBSTR(b.payment_date, 1, 4) as paymentDate
+        </if>
+        from maoding_web_company a
+        LEFT JOIN maoding_web_company_bill b on a.id = b.company_id and b.deleted = 0
+        LEFT JOIN maoding_web_company_bill_detail c on b.id = c.bill_id
+        <include refid="getCompanyColumnarDataWhere"/>
+        GROUP BY c.exp_type_parent_name
+        <if test="groupByTime!=null and groupByTime=='1'.toString()">
+          ,SUBSTR(b.payment_date, 1, 7)
+        </if>
+        <if test="groupByTime!=null and groupByTime=='2'.toString()">
+            ,SUBSTR(b.payment_date, 1, 4)
+        </if>
+        order by SUBSTR(b.payment_date, 1, 7)
+    </select>
+</mapper>

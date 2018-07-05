@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="CompanyPropertyEntityMapper" >
+
+  <select id="listUnitName" resultType="java.lang.String">
+    select distinct a.content
+    from maoding_web_const a
+    where a.type=8
+  </select>
+
+  <insert id="insertDefaultProperty" parameterType="java.util.Map" >
+    insert into maoding_web_company_property (id, company_id, field_name,
+                                              unit_name, be_selected, be_default,sequencing,
+                                              create_date, create_by)
+    values
+    <foreach collection="entityList" item="entity" index="idx" separator=",">
+      (
+          replace(uuid(),'-','')
+          ,<choose><when test="companyId!=null">#{companyId}</when><otherwise>#{entity.companyId}</otherwise></choose>
+          ,#{entity.fieldName},#{entity.unitName}
+          ,<choose><when test="beSelected!=null">#{beSelected,jdbcType=TINYINT}</when><otherwise>#{entity.beSelected,jdbcType=TINYINT}</otherwise></choose>
+          ,<choose><when test="beDefault!=null">#{beDefault,jdbcType=TINYINT}</when><otherwise>#{entity.beDefault,jdbcType=TINYINT}</otherwise></choose>
+          ,<choose><when test="entity.sequencing!=null">(#{entity.sequencing}+#{idx})</when><otherwise>#{idx}</otherwise></choose>
+          ,<choose><when test="createDate!=null">#{createDate}</when><otherwise>now()</otherwise></choose>
+          ,<choose><when test="createBy!=null">#{createBy}</when><otherwise>#{entity.createBy}</otherwise></choose>
+      )
+    </foreach>
+  </insert>
+
+  <select id="listCommonDefaultProperty" resultType="com.maoding.org.entity.CompanyPropertyEntity">
+    select a.*
+    from maoding_web_company_property a
+    where a.deleted!=1 and a.company_id is null
+    order by a.sequencing
+  </select>
+
+  <select id="listCompanyProperty" resultType="com.maoding.project.dto.CustomProjectPropertyDTO" parameterType="java.lang.String">
+    select a.id,a.field_name,a.unit_name,a.sequencing,if(a.deleted!=1 and a.be_selected=1,0,-1) as change_status
+    from maoding_web_company_property a
+    where a.company_id=#{companyId}
+    order by a.sequencing
+  </select>
+
+  <select id="listDefaultProperty" resultType="com.maoding.project.dto.CustomProjectPropertyDTO" parameterType="java.lang.String">
+    select a.id,a.field_name,a.unit_name,a.sequencing,0 as change_status
+    from maoding_web_company_property a
+    where a.deleted!=1 and a.company_id=#{companyId}
+      and a.be_default=1
+    order by a.sequencing
+  </select>
+
+  <select id="listCustomProperty" resultType="com.maoding.project.dto.CustomProjectPropertyDTO" parameterType="java.lang.String">
+    select a.id,a.field_name,a.unit_name,a.unit_id,a.sequencing,0 as change_status
+    from maoding_web_company_property a
+    where a.deleted!=1 and a.company_id=#{companyId}
+      and a.be_default!=1
+    order by a.sequencing
+  </select>
+
+  <select id="selectById" resultType="com.maoding.org.entity.CompanyPropertyEntity" parameterType="java.lang.String" >
+    select *
+    from maoding_web_company_property
+    where id = #{id}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_company_property
+    where id = #{id}
+  </delete>
+
+  <update id="fakeDeleteById" parameterType="java.lang.String" >
+    update maoding_web_company_property
+    set deleted=1
+    where id = #{id}
+  </update>
+
+  <insert id="insert" parameterType="com.maoding.org.entity.CompanyPropertyEntity" >
+    insert into maoding_web_company_property (id, company_id, field_name,
+                                              unit_name, be_selected, be_default,sequencing,
+                                              create_date, create_by)
+    values (
+            <choose><when test="id!=null">#{id}</when><otherwise>replace(uuid(),'-','')</otherwise></choose>
+            ,#{companyId},#{fieldName},#{unitName},#{beSelected,jdbcType=TINYINT},#{beDefault,jdbcType=TINYINT},#{sequencing}
+            ,<choose><when test="createDate!=null">#{createDate}</when><otherwise>now()</otherwise></choose>
+            ,#{createBy}
+    )
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.org.entity.CompanyPropertyEntity" >
+    update maoding_web_company_property
+    <set>
+      <if test="fieldName!=null">
+        field_name=#{fieldName},
+      </if>
+      <if test="unitName!=null">
+        unit_name=#{unitName},
+      </if>
+      <if test="beSelected!=null">
+        be_selected=#{beSelected,jdbcType=TINYINT},
+      </if>
+      <if test="beDefault!=null">
+        be_default=#{beDefault,jdbcType=TINYINT},
+      </if>
+      <if test="sequencing!=null">
+        sequencing=#{sequencing},
+      </if>
+      <if test="deleted!=null">
+        deleted=#{deleted}
+      </if>
+      <choose>
+        <when test="updateDate!=null">
+          update_date=#{updateDate},
+        </when>
+        <otherwise>
+          update_date=now(),
+        </otherwise>
+      </choose>
+      <if test="updateBy!=null">
+        update_by=#{updateBy},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+
+</mapper>

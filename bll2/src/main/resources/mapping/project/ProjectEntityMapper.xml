@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ProjectEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.project.entity.ProjectEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="company_bid" property="companyBid" jdbcType="VARCHAR" />
+    <result column="project_type" property="projectType" jdbcType="VARCHAR" />
+    <result column="built_type" property="builtType" jdbcType="VARCHAR" />
+    <result column="project_no" property="projectNo" jdbcType="VARCHAR" />
+    <result column="project_name" property="projectName" jdbcType="VARCHAR" />
+    <result column="base_area" property="baseArea" jdbcType="VARCHAR" />
+    <result column="capacity_area" property="capacityArea" jdbcType="VARCHAR" />
+    <result column="total_construction_area" property="totalConstructionArea" jdbcType="VARCHAR" />
+    <result column="increasing_area" property="increasingArea" jdbcType="VARCHAR" />
+    <result column="coverage" property="coverage" jdbcType="VARCHAR" />
+    <result column="greening_rate" property="greeningRate" jdbcType="VARCHAR" />
+    <result column="built_height" property="builtHeight" jdbcType="VARCHAR" />
+    <result column="built_floor_up" property="builtFloorUp" jdbcType="VARCHAR" />
+    <result column="built_floor_down" property="builtFloorDown" jdbcType="VARCHAR" />
+    <result column="construct_company" property="constructCompany" jdbcType="VARCHAR" />
+    <result column="investment_estimation" property="investmentEstimation" jdbcType="DECIMAL" />
+    <result column="total_contract_amount" property="totalContractAmount" jdbcType="DECIMAL" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="pstatus" property="pstatus" jdbcType="VARCHAR" />
+    <result column="project_create_date" property="projectCreateDate" jdbcType="DATE" />
+    <result column="is_history" property="isHistory" jdbcType="INTEGER" />
+    <result column="design_range" property="designRange" jdbcType="VARCHAR" />
+    <result column="contract_date" property="contractDate" jdbcType="DATE" />
+    <result column="parent_projectid" property="parentProjectid" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="county" property="county" jdbcType="VARCHAR" />
+    <result column="volume_ratio" property="volumeRatio" jdbcType="VARCHAR" />
+    <result column="detail_address" property="detailAddress" jdbcType="VARCHAR" />
+    <result column="helper_company_user_id" property="helperCompanyUserId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, company_id, company_bid, project_type, built_type, project_no, project_name,
+    base_area, capacity_area, total_construction_area, increasing_area, coverage, greening_rate,
+    built_height, built_floor_up, built_floor_down, construct_company, investment_estimation,
+    total_contract_amount, status, pstatus, project_create_date, is_history, design_range,
+    contract_date, parent_projectid, province,city,county,volume_ratio,detail_address,helper_company_user_id,
+    create_date, create_by, update_date, update_by
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_project
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+
+  <select id="selectByIdForCollaboration" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_project
+    where id = #{projectId,jdbcType=VARCHAR}
+    <if test="syncDate != null">
+      <![CDATA[  and create_date <= #{syncDate,jdbcType=VARCHAR}  ]]>
+    </if>
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap"  >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_project a
+    WHERE a.pstatus='0'
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_project
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maoding.project.entity.ProjectEntity" >
+    insert into maoding_web_project (id, company_id, company_bid, 
+      project_type, built_type, project_no, 
+      project_name, base_area, capacity_area, 
+      total_construction_area, increasing_area, coverage, 
+      greening_rate, built_height, built_floor_up, 
+      built_floor_down, construct_company, investment_estimation, 
+      total_contract_amount, status, pstatus, 
+      project_create_date, is_history, design_range, 
+      contract_date, parent_projectid, province,city,county,volume_ratio,detail_address,helper_company_user_id,
+      create_date,create_by, update_date, update_by
+      )
+    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{companyBid,jdbcType=VARCHAR},
+      #{projectType,jdbcType=VARCHAR}, #{builtType,jdbcType=VARCHAR}, #{projectNo,jdbcType=VARCHAR},
+      #{projectName,jdbcType=VARCHAR}, #{baseArea,jdbcType=VARCHAR}, #{capacityArea,jdbcType=VARCHAR},
+      #{totalConstructionArea,jdbcType=VARCHAR}, #{increasingArea,jdbcType=VARCHAR}, #{coverage,jdbcType=VARCHAR},
+      #{greeningRate,jdbcType=VARCHAR}, #{builtHeight,jdbcType=VARCHAR}, #{builtFloorUp,jdbcType=VARCHAR},
+      #{builtFloorDown,jdbcType=VARCHAR}, #{constructCompany,jdbcType=VARCHAR}, #{investmentEstimation,jdbcType=DECIMAL},
+      #{totalContractAmount,jdbcType=DECIMAL},
+      <choose><when test="status!=null">#{status}</when><otherwise>'0'</otherwise></choose>,
+      <choose><when test="pstatus!=null">#{pstatus}</when><otherwise>'0'</otherwise></choose>,
+      <if test="projectCreateDate == null" > now() </if>
+      <if test="projectCreateDate != null" > #{projectCreateDate,jdbcType=DATE} </if>,
+    #{isHistory,jdbcType=INTEGER}, #{designRange,jdbcType=VARCHAR},
+      #{contractDate,jdbcType=DATE}, #{parentProjectid,jdbcType=VARCHAR},#{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{county,jdbcType=VARCHAR},
+      #{volumeRatio,jdbcType=VARCHAR},#{detailAddress,jdbcType=VARCHAR},#{helperCompanyUserId,jdbcType=VARCHAR},
+      <if test="createDate == null" > now() </if>
+      <if test="createDate != null" > #{createDate,jdbcType=TIMESTAMP} </if>,
+      #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.project.entity.ProjectEntity" >
+    update maoding_web_project
+    <set >
+      <!--<if test="companyId != null" >-->
+        <!--company_id = #{companyId,jdbcType=VARCHAR},-->
+      <!--</if>-->
+      <if test="companyBid != null" >
+        company_bid = #{companyBid,jdbcType=VARCHAR},
+      </if>
+      <if test="projectType != null" >
+        project_type = #{projectType,jdbcType=VARCHAR},
+      </if>
+      <if test="builtType != null" >
+        built_type = #{builtType,jdbcType=VARCHAR},
+      </if>
+      <if test="projectNo != null" >
+        project_no = #{projectNo,jdbcType=VARCHAR},
+      </if>
+      <if test="projectName != null" >
+        project_name = #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="baseArea != null" >
+        base_area = #{baseArea,jdbcType=VARCHAR},
+      </if>
+      <if test="capacityArea != null" >
+        capacity_area = #{capacityArea,jdbcType=VARCHAR},
+      </if>
+      <if test="totalConstructionArea != null" >
+        total_construction_area = #{totalConstructionArea,jdbcType=VARCHAR},
+      </if>
+      <if test="increasingArea != null" >
+        increasing_area = #{increasingArea,jdbcType=VARCHAR},
+      </if>
+      <if test="coverage != null" >
+        coverage = #{coverage,jdbcType=VARCHAR},
+      </if>
+      <if test="greeningRate != null" >
+        greening_rate = #{greeningRate,jdbcType=VARCHAR},
+      </if>
+      <if test="volumeRatio != null" >
+        volume_ratio = #{volumeRatio,jdbcType=VARCHAR},
+      </if>
+      <if test="builtHeight != null" >
+        built_height = #{builtHeight,jdbcType=VARCHAR},
+      </if>
+      <if test="builtFloorUp != null" >
+        built_floor_up = #{builtFloorUp,jdbcType=VARCHAR},
+      </if>
+      <if test="builtFloorDown != null" >
+        built_floor_down = #{builtFloorDown,jdbcType=VARCHAR},
+      </if>
+      <if test="constructCompany != null" >
+        construct_company = #{constructCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="investmentEstimation != null" >
+        investment_estimation = #{investmentEstimation,jdbcType=VARCHAR},
+      </if>
+      <if test="totalContractAmount != null" >
+        total_contract_amount = #{totalContractAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="helperCompanyUserId != null" >
+        helper_company_user_id = #{helperCompanyUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="pstatus != null" >
+        pstatus = #{pstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="projectCreateDate != null" >
+        project_create_date = #{projectCreateDate,jdbcType=DATE},
+      </if>
+      <if test="isHistory != null" >
+        is_history = #{isHistory,jdbcType=INTEGER},
+      </if>
+      <if test="designRange != null" >
+        design_range = #{designRange,jdbcType=VARCHAR},
+      </if>
+      <if test="contractDate != null" >
+        contract_date = #{contractDate,jdbcType=DATE},
+      </if>
+      <if test="parentProjectid != null" >
+        parent_projectid = #{parentProjectid,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null" >
+        county = #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="detailAddress != null" >
+        detail_address = #{detailAddress,jdbcType=VARCHAR},
+      </if>
+
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+        update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <!-- 删除项目使用 -->
+  <update id="updatePstatus" parameterType="com.maoding.project.entity.ProjectEntity" >
+    update maoding_web_project
+    set
+    pstatus = #{pstatus,jdbcType=VARCHAR},
+    update_date = now()
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+
+  <!-- 删除项目使用 -->
+  <update id="updateCompanyId" parameterType="com.maoding.project.entity.ProjectEntity" >
+    update maoding_web_project
+    set
+    company_id = #{companyId,jdbcType=VARCHAR},
+    update_date = now()
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="update" parameterType="com.maoding.project.entity.ProjectEntity" >
+    update maoding_web_project
+    set
+      company_bid = #{companyBid,jdbcType=VARCHAR},
+      project_type = #{projectType,jdbcType=VARCHAR},
+      built_type = #{builtType,jdbcType=VARCHAR},
+      project_no = #{projectNo,jdbcType=VARCHAR},
+      project_name = #{projectName,jdbcType=VARCHAR},
+      base_area = #{baseArea,jdbcType=VARCHAR},
+      capacity_area = #{capacityArea,jdbcType=VARCHAR},
+      total_construction_area = #{totalConstructionArea,jdbcType=VARCHAR},
+      increasing_area = #{increasingArea,jdbcType=VARCHAR},
+      coverage = #{coverage,jdbcType=VARCHAR},
+      greening_rate = #{greeningRate,jdbcType=VARCHAR},
+      built_height = #{builtHeight,jdbcType=VARCHAR},
+      built_floor_up = #{builtFloorUp,jdbcType=VARCHAR},
+      built_floor_down = #{builtFloorDown,jdbcType=VARCHAR},
+      construct_company = #{constructCompany,jdbcType=VARCHAR},
+      investment_estimation = #{investmentEstimation,jdbcType=DECIMAL},
+      total_contract_amount = #{totalContractAmount,jdbcType=DECIMAL},
+      status = #{status,jdbcType=VARCHAR},
+      pstatus = #{pstatus,jdbcType=VARCHAR},
+      project_create_date = #{projectCreateDate,jdbcType=DATE},
+      is_history = #{isHistory,jdbcType=INTEGER},
+      design_range = #{designRange,jdbcType=VARCHAR},
+      contract_date = #{contractDate,jdbcType=DATE},
+      parent_projectid = #{parentProjectid,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      county = #{county,jdbcType=VARCHAR},
+      volume_ratio = #{volumeRatio,jdbcType=VARCHAR},
+      detail_address = #{detailAddress,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = now(),
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

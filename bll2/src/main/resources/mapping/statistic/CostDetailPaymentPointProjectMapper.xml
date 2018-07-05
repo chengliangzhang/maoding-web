@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="CostDetailPaymentPointProjectMapper" >
+    <sql id="Join_Method" >
+        (<include refid="getCost"/>) b
+        inner join maoding_web_project c on (b.project_id=c.id and c.pstatus='0')
+        inner join maoding_web_project_cost_point d on (b.id=d.cost_id and d.status='0')
+        left join maoding_web_project_cost_point_detail e on (d.id=e.point_id and e.status='0')
+        left join maoding_web_project_cost_payment_detail f on (e.id=f.point_detail_id and f.status='0')
+    </sql>
+
+    <sql id="getCost">
+        select a.id as id,a.project_id as project_id,
+            <choose>
+                <when test="type==1 or type>=4">
+                    a.to_company_id as company_id
+                </when>
+                <otherwise>
+                    a.from_company_id as company_id
+                </otherwise>
+            </choose>
+        from
+            maoding_web_project_cost a
+        where
+            a.status = '0'
+            <if test="projectId!=null">
+                and a.project_id=#{projectId}
+            </if>
+            <choose>
+                <when test="type==1">
+                    and a.type='1' and a.to_company_id=#{companyId}
+                </when>
+               <when test="type==2">
+                    and a.type='2' and a.from_company_id=#{companyId}
+                </when>
+               <when test="type==3">
+                    and a.type='3' and a.from_company_id=#{companyId}
+                </when>
+               <when test="type==4">
+                    and a.type='4' and a.from_company_id=#{companyId}
+                </when>
+                <when test="type==5">
+                    and a.type='2' and a.to_company_id=#{companyId}
+                </when>
+                <when test="type==6">
+                    and a.type='3' and a.to_company_id=#{companyId}
+                </when>
+                <when test="type==7">
+                    and a.type='5' and a.to_company_id=#{companyId}
+                </when>
+                <otherwise>
+                    and a.type=NULL
+                </otherwise>
+            </choose>
+    </sql>
+
+    <sql id="getOrderBy">
+        <if test="orderByProjectName!=null or orderByLastPaidDate!=null">
+            order by
+            <choose>
+                <when test="orderByProjectName!=null">
+                    h.project_name
+                    <if test="orderByProjectName!=1">
+                        desc
+                    </if>
+                </when>
+                <when test="orderByLastPaidDate!=null">
+                    h.paid_date
+                    <if test="orderByLastPaidDate!=1">
+                        desc
+                    </if>
+                </when>
+            </choose>
+        </if>
+    </sql>
+
+    <sql id="getLimit">
+        <if test="startLine!=null">
+            limit #{startLine}
+            <if test="linesCount!=null">
+                ,#{linesCount}
+            </if>
+        </if>
+    </sql>
+
+    <select id="selectStatisticByQuery" resultType="projectCostStatisticDTO" parameterType="projectCostQueryDTO">
+        SELECT
+            <if test="isCount!=null">
+                SQL_CALC_FOUND_ROWS
+            </if>
+            h.project_id as project_id,
+            h.project_name as project_name,
+            convert(sum(h.pointed_fee),DECIMAL(12,6)) as pointed_fee,
+            convert((sum(h.pointed_fee) - sum(h.paid_fee)),DECIMAL(12,6)) as un_finished_paid_fee,
+            convert((sum(h.pointed_fee) - sum(h.pay_fee)),DECIMAL(12,6)) as un_finished_pay_fee,
+            convert(sum(h.detailed_fee),DECIMAL(12,6)) as detailed_fee,
+            convert((sum(h.pointed_fee) - sum(h.detailed_fee)),DECIMAL(12,6)) as un_detailed_fee,
+            convert(sum(h.paid_fee),DECIMAL(12,6)) as paid_fee,
+            convert(sum(h.pay_fee),DECIMAL(12,6)) AS pay_fee,
+            convert(sum(h.un_paid_fee),DECIMAL(12,6)) as un_paid_fee,
+            convert(sum(h.un_pay_fee),DECIMAL(12,6)) AS un_pay_fee,
+            max(h.paid_date) as last_paid_date,
+            max(h.pay_date) as last_pay_date
+        FROM (
+            SELECT
+                g.project_id as project_id,
+                g.project_name as project_name,
+                g.pointed_fee as pointed_fee,
+                sum(g.detailed_fee) as detailed_fee,
+                sum(g.paid_fee) as paid_fee,
+                sum(g.pay_fee) as pay_fee,
+                (sum(g.detailed_fee) - sum(g.paid_fee)) as un_paid_fee,
+                (sum(g.detailed_fee) - sum(g.pay_fee)) AS un_pay_fee,
+                max(g.paid_date) as paid_date,
+                max(g.pay_date) as pay_date
+            FROM (
+                SELECT
+                    b.project_id as project_id,
+                    c.project_name as project_name,
+                    ifnull(d.fee,0) as pointed_fee,
+                    ifnull(e.fee,0) as detailed_fee,
+                    sum(CASE WHEN f.paid_date is not null THEN ifnull(f.fee, 0) ELSE 0 END)AS paid_fee,
+                    sum(CASE WHEN f.pay_date is not null THEN ifnull(f.fee, 0) ELSE 0 END)AS pay_fee,
+                    max(f.paid_date) as paid_date,
+                    max(f.pay_date) as pay_date,
+                    d.id as point_id
+                from <include refid="Join_Method"/>
+                group by b.project_id,d.id,e.id
+            ) g group by g.project_id,g.point_id
+        ) h group by h.project_id
+        <include refid="getOrderBy"/>
+        <include refid="getLimit"/>
+    </select>
+    <select id="selectStatisticSummaryByQuery" resultType="companyCostStatisticDTO" parameterType="projectCostQueryDTO">
+        SELECT
+            convert(sum(h.pointed_fee),DECIMAL(12,6)) as pointed_fee,
+            convert((sum(h.pointed_fee) - sum(h.paid_fee)),DECIMAL(12,6)) as un_finished_paid_fee,
+            convert((sum(h.pointed_fee) - sum(h.pay_fee)),DECIMAL(12,6)) as un_finished_pay_fee,
+            convert(sum(h.detailed_fee),DECIMAL(12,6)) as detailed_fee,
+            convert((sum(h.pointed_fee) - sum(h.detailed_fee)),DECIMAL(12,6)) as un_detailed_fee,
+            convert(sum(h.paid_fee),DECIMAL(12,6)) as paid_fee,
+            convert(sum(h.pay_fee),DECIMAL(12,6)) AS pay_fee,
+            convert(sum(h.un_paid_fee),DECIMAL(12,6)) as un_paid_fee,
+            convert(sum(h.un_pay_fee),decimal(12,6)) AS un_pay_fee
+        FROM (
+            SELECT
+                g.project_id as project_id,
+                g.project_name as project_name,
+                g.pointed_fee as pointed_fee,
+                sum(g.detailed_fee) as detailed_fee,
+                sum(g.paid_fee) as paid_fee,
+                sum(g.pay_fee) as pay_fee,
+                (sum(g.detailed_fee) - sum(g.paid_fee)) as un_paid_fee,
+                (sum(g.detailed_fee) - sum(g.pay_fee)) AS un_pay_fee
+            FROM (
+                SELECT
+                    b.project_id as project_id,
+                    c.project_name as project_name,
+                    ifnull(d.fee,0) as pointed_fee,
+                    ifnull(e.fee,0) as detailed_fee,
+                    sum(CASE WHEN f.paid_date is not null THEN ifnull(f.fee, 0) ELSE 0 END)AS paid_fee,
+                    sum(CASE WHEN f.pay_date is not null THEN ifnull(f.fee, 0) ELSE 0 END)AS pay_fee,
+                    d.id as point_id
+                from <include refid="Join_Method"/>
+                group by b.project_id,d.id,e.id
+            ) g group by g.project_id,g.point_id
+        ) h
+     </select>
+    <select id="getCount" resultType="java.lang.Integer">
+        SELECT FOUND_ROWS()
+    </select>
+</mapper>

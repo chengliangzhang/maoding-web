@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="VersionMapper">
+	<select id="listUpdate" parameterType="com.maoding.system.dto.UpdateQueryDTO" resultType="com.maoding.system.dto.UpdateDTO">
+		select <include refid="CommonMapper.countSQL"/>
+			a.versionName as version_name,
+			a.versionDesc as version_desc,
+			a.create_date
+		from maoding_app_version a
+		<where>
+			<choose>
+				<when test="platform!=null">
+					and a.platform=#{platform}
+				</when>
+				<otherwise>
+					and a.platform='web'
+				</otherwise>
+			</choose>
+			<if test="createDateBefore!=null">
+				and [CDATA[#{createDateBefore} >= a.create_date]]
+			</if>
+			<if test="createDateAfter!=null">
+				and [CDATA[a.create_date >= #{createDateBefore}]]
+			</if>
+		</where>
+		order by a.create_date desc,a.versionCode desc,a.versionName desc
+		<include refid="CommonMapper.limitSQL"/>
+	</select>
+</mapper>

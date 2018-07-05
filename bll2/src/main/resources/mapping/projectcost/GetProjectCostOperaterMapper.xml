@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetProjectCostOperaterMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.projectcost.dto.ProjectCostOperaterDTO" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="cost_detail_id" property="costDetailId" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="company_user_id" property="companyUserId" jdbcType="VARCHAR" />
+    <result column="operater_date" property="operaterDate" jdbcType="TIMESTAMP" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="field1" property="field1" jdbcType="VARCHAR" />
+    <result column="field2" property="field2" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, cost_detail_id,  type, company_user_id,  operater_date, create_date,
+    create_by, update_date, update_by,field1,field2
+  </sql>
+
+  <select id="getCostOperator" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select a.id,a.type,a.company_user_id,b.user_name
+    from maoding_web_project_cost_operater a
+    LEFT JOIN maoding_web_company_user b on a.company_user_id = b.id
+    where a.cost_detail_id = #{costDetailId,jdbcType=VARCHAR}
+    order by a.type
+  </select>
+
+</mapper>

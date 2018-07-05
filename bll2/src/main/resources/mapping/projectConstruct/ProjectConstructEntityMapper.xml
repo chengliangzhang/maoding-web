@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ProjectConstructEntityMapper">
+  <resultMap id="BaseResultMap" type="com.maoding.project.entity.ProjectConstructEntity">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="contract_person" jdbcType="VARCHAR" property="contractPerson" />
+    <result column="contract_phone" jdbcType="VARCHAR" property="contractPhone" />
+    <result column="contract_address" jdbcType="VARCHAR" property="contractAddress" />
+    <result column="contract_email" jdbcType="VARCHAR" property="contractEmail" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="contract_province" jdbcType="VARCHAR" property="contractProvince" />
+    <result column="contract_city" jdbcType="VARCHAR" property="contractCity" />
+    <result column="contract_fax" jdbcType="VARCHAR" property="contractFax" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="web_url" jdbcType="VARCHAR" property="webUrl" />
+  </resultMap>
+
+  <resultMap id="BaseResultMapDTO" type="com.maoding.project.dto.ProjectConstructDTO">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="contract_person" jdbcType="VARCHAR" property="contractPerson" />
+    <result column="contract_phone" jdbcType="VARCHAR" property="contractPhone" />
+    <result column="contract_address" jdbcType="VARCHAR" property="contractAddress" />
+    <result column="contract_email" jdbcType="VARCHAR" property="contractEmail" />
+    <result column="company_id" jdbcType="VARCHAR" property="companyId" />
+    <result column="contract_province" jdbcType="VARCHAR" property="contractProvince" />
+    <result column="contract_city" jdbcType="VARCHAR" property="contractCity" />
+    <result column="contract_fax" jdbcType="VARCHAR" property="contractFax" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="web_url" jdbcType="VARCHAR" property="webUrl" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.maoding.project.entity.ProjectConstructEntity">
+    <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, company_name, contract_person, contract_phone, contract_address, contract_email,
+    company_id, contract_province, contract_city, contract_fax, create_date, create_by,
+    update_date, update_by, web_url
+  </sql>
+  <sql id="Blob_Column_List">
+    remark
+  </sql>
+  <select id="selectById" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from maoding_web_project_construct
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.String">
+    delete from maoding_web_project_construct
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maoding.project.entity.ProjectConstructEntity">
+    insert into maoding_web_project_construct (id, company_name, contract_person,
+    contract_phone, contract_address, contract_email,
+    company_id, contract_province, contract_city,
+    contract_fax, create_date, create_by,
+    update_date, update_by, web_url,
+    remark)
+    values (#{id,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{contractPerson,jdbcType=VARCHAR},
+    #{contractPhone,jdbcType=VARCHAR}, #{contractAddress,jdbcType=VARCHAR}, #{contractEmail,jdbcType=VARCHAR},
+    #{companyId,jdbcType=VARCHAR}, #{contractProvince,jdbcType=VARCHAR}, #{contractCity,jdbcType=VARCHAR},
+    #{contractFax,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR},
+    #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{webUrl,jdbcType=VARCHAR},
+    #{remark,jdbcType=LONGVARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.project.entity.ProjectConstructEntity">
+    update maoding_web_project_construct
+    <set>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="contractPerson != null">
+        contract_person = #{contractPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="contractPhone != null">
+        contract_phone = #{contractPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="contractAddress != null">
+        contract_address = #{contractAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="contractEmail != null">
+        contract_email = #{contractEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="contractProvince != null">
+        contract_province = #{contractProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="contractCity != null">
+        contract_city = #{contractCity,jdbcType=VARCHAR},
+      </if>
+      <if test="contractFax != null">
+        contract_fax = #{contractFax,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+        update_date = now(),
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="webUrl != null">
+        web_url = #{webUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <select id="selectByCompanyId" resultMap="BaseResultMapDTO" parameterType="java.lang.String" >
+    SELECT
+    id, company_name, contract_person, contract_phone, contract_address, contract_email, company_id, contract_province,web_url, contract_city, contract_fax, remark
+    FROM maoding_web_project_construct
+    WHERE company_id = #{companyId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByCompanyName" resultMap="BaseResultMapDTO"  parameterType="java.util.Map" >
+    SELECT
+    id, company_name, contract_person, contract_phone, contract_address, contract_email, company_id, contract_province,web_url, contract_city, contract_fax, remark
+    FROM maoding_web_project_construct
+    WHERE company_id = #{companyId,jdbcType=VARCHAR}
+     <if test="companyName!=null">
+    and binary company_name= #{companyName,jdbcType=VARCHAR}
+     </if>
+  </select>
+
+  <select id="selectUsedConstructByCompanyId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT  a.id, a.company_name,b.create_date
+    FROM maoding_web_project_construct a
+    LEFT JOIN maoding_web_project b on a.id = b.construct_company
+    WHERE a.company_id = #{companyId,jdbcType=VARCHAR} and b.pstatus='0'
+    GROUP BY a.id
+    ORDER by b.create_date desc
+    limit 5
+  </select>
+
+  <select id="getConstructByParam" resultMap="BaseResultMapDTO" parameterType="java.util.Map" >
+    SELECT
+    id, company_name, contract_person, contract_phone, contract_address, contract_email, company_id, contract_province,web_url, contract_city, contract_fax, remark
+    FROM maoding_web_project_construct
+    WHERE company_id = #{companyId,jdbcType=VARCHAR}
+    <if test="keyword != null and keyword!=''">
+      and company_name LIKE  '%' #{keyword} '%'
+    </if>
+  </select>
+
+</mapper>

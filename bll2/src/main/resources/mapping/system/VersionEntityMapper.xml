@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="VersionEntityMapper">
+	<resultMap id="BaseResultMap" type="com.maoding.system.entity.VersionEntity">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="platform" property="platform" jdbcType="VARCHAR" />
+		<result column="versionCode" property="versioncode" jdbcType="VARCHAR" />
+		<result column="versionName" property="versionname" jdbcType="VARCHAR" />
+		<result column="updateUrl" property="updateurl" jdbcType="VARCHAR" />
+		<result column="minSdkVersion" property="minsdkversion"
+			jdbcType="VARCHAR" />
+		<result column="versionDesc" property="versiondesc" jdbcType="VARCHAR" />
+		<result column="mandatory_update" property="mandatoryUpdate" jdbcType="VARCHAR" />
+		<result column="create_by" property="createBy" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+		<result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, platform, versionCode, versionName, updateUrl, minSdkVersion,mandatory_update,
+		versionDesc, create_by,
+		create_date, update_by, update_date
+	</sql>
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from maoding_app_version
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+	<select id="selectByPlatform" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select v.versionName,
+		v.versionCode,
+		v.versionDesc,
+		v.minSdkVersion,
+		v.mandatory_update,
+		CONCAT(#{fastdfsUrl,jdbcType=VARCHAR},v.updateUrl) AS 'updateUrl'
+		from maoding_app_version v
+		where v.versionCode=(SELECT MAX(versionCode) FROM maoding_app_version m where m.platform=#{platform,jdbcType=VARCHAR})
+		and v.platform=#{platform,jdbcType=VARCHAR}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from maoding_app_version
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.maoding.system.entity.VersionEntity">
+		insert into maoding_app_version (id, platform, versionCode,
+		versionName, updateUrl, minSdkVersion,mandatory_update,
+		versionDesc, create_by, create_date,
+		update_by, update_date)
+		values (#{id,jdbcType=VARCHAR}, #{platform,jdbcType=VARCHAR},
+		#{versioncode,jdbcType=VARCHAR},
+		#{versionname,jdbcType=VARCHAR}, #{updateurl,jdbcType=VARCHAR}, #{minsdkversion,jdbcType=VARCHAR},#{mandatoryUpdate,jdbcType=VARCHAR},
+		#{versiondesc,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR},
+		#{createDate,jdbcType=TIMESTAMP},
+		#{updateBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.maoding.system.entity.VersionEntity">
+		insert into maoding_app_version
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="platform != null">
+				platform,
+			</if>
+			<if test="versioncode != null">
+				versionCode,
+			</if>
+			<if test="versionname != null">
+				versionName,
+			</if>
+			<if test="updateurl != null">
+				updateUrl,
+			</if>
+			<if test="minsdkversion != null">
+				minSdkVersion,
+			</if>
+			<if test="versiondesc != null">
+				versionDesc,
+			</if>
+			<if test="createBy != null">
+				create_by,
+			</if>
+			<if test="createDate != null">
+				create_date,
+			</if>
+			<if test="updateBy != null">
+				update_by,
+			</if>
+			<if test="updateDate != null">
+				update_date,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="platform != null">
+				#{platform,jdbcType=VARCHAR},
+			</if>
+			<if test="versioncode != null">
+				#{versioncode,jdbcType=VARCHAR},
+			</if>
+			<if test="versionname != null">
+				#{versionname,jdbcType=VARCHAR},
+			</if>
+			<if test="updateurl != null">
+				#{updateurl,jdbcType=VARCHAR},
+			</if>
+			<if test="minsdkversion != null">
+				#{minsdkversion,jdbcType=VARCHAR},
+			</if>
+			<if test="versiondesc != null">
+				#{versiondesc,jdbcType=VARCHAR},
+			</if>
+			<if test="createBy != null">
+				#{createBy,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				#{createDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateBy != null">
+				#{updateBy,jdbcType=VARCHAR},
+			</if>
+			<if test="updateDate != null">
+				#{updateDate,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.maoding.system.entity.VersionEntity">
+		update maoding_app_version
+		<set>
+			<if test="platform != null">
+				platform = #{platform,jdbcType=VARCHAR},
+			</if>
+			<if test="versioncode != null">
+				versionCode = #{versioncode,jdbcType=VARCHAR},
+			</if>
+			<if test="versionname != null">
+				versionName = #{versionname,jdbcType=VARCHAR},
+			</if>
+			<if test="updateurl != null">
+				updateUrl = #{updateurl,jdbcType=VARCHAR},
+			</if>
+			<if test="minsdkversion != null">
+				minSdkVersion = #{minsdkversion,jdbcType=VARCHAR},
+			</if>
+			<if test="mandatoryUpdate != null">
+				mandatory_update = #{mandatoryUpdate,jdbcType=VARCHAR},
+			</if>
+			<if test="versiondesc != null">
+				versionDesc = #{versiondesc,jdbcType=VARCHAR},
+			</if>
+			<if test="createBy != null">
+				create_by = #{createBy,jdbcType=VARCHAR},
+			</if>
+			<if test="createDate != null">
+				create_date = #{createDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateBy != null">
+				update_by = #{updateBy,jdbcType=VARCHAR},
+			</if>
+			<if test="updateDate != null">
+				update_date = #{updateDate,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.maoding.system.entity.VersionEntity">
+		update maoding_app_version
+		set platform = #{platform,jdbcType=VARCHAR},
+		versionCode = #{versioncode,jdbcType=VARCHAR},
+		versionName = #{versionname,jdbcType=VARCHAR},
+		updateUrl = #{updateurl,jdbcType=VARCHAR},
+		minSdkVersion = #{minsdkversion,jdbcType=VARCHAR},
+		versionDesc = #{versiondesc,jdbcType=VARCHAR},
+		create_by = #{createBy,jdbcType=VARCHAR},
+		create_date = #{createDate,jdbcType=TIMESTAMP},
+		update_by = #{updateBy,jdbcType=VARCHAR},
+		update_date = #{updateDate,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

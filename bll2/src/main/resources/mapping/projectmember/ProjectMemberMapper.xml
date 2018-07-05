@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ProjectMemberMapper">
+    <select id="getProjectMember" parameterType="com.maoding.projectmember.dto.MemberQueryDTO" resultType="com.maoding.projectmember.entity.ProjectMemberEntity">
+        select *
+        from maoding_web_project_member a
+        where
+            (a.deleted is null or a.deleted=0)
+            <if test="id!=null">
+                and a.id=#{id}
+            </if>
+            <if test="companyId!=null">
+                and a.company_id=#{companyId}
+            </if>
+            <if test="projectId!=null">
+                and a.project_id=#{projectId}
+            </if>
+            <if test="memberType!=null">
+                and a.member_type=#{memberType}
+            </if>
+        <include refid="CommonMapper.limitSQL"/>
+    </select>
+
+    <select id="getProjectMemberByUserIdAndTyep" resultType="java.lang.String" parameterType="java.util.Map">
+        SELECT
+        DISTINCT member.project_id as projectId
+        FROM
+        maoding_web_project_member member
+        LEFT JOIN maoding_web_company_user cuser
+        ON member.`company_user_id` = cuser.`id`
+        LEFT JOIN maoding_web_project_member a
+        ON a.project_id = member.`project_id`
+        LEFT JOIN maoding_web_project_member b
+        ON b.project_id = member.`project_id`
+        LEFT JOIN maoding_web_project_member c
+        ON c.project_id = member.`project_id`
+        where member.deleted=0
+        <!--<if test="companyId!=null">-->
+            <!--and member.company_id=#{companyId}-->
+        <!--</if>-->
+        <if test="busPersonInCharge!=null">
+            and (
+            member.`company_user_id` = #{busPersonInCharge}
+            AND member.`member_type` = 1
+            )
+        </if>
+        <if test="busPersonInChargeAssistant!=null">
+            AND (
+            a.`company_user_id` = #{busPersonInChargeAssistant}
+            AND a.`member_type` = 6
+            )
+        </if>
+        <if test="designPersonInCharge!=null">
+            AND (
+            b.`company_user_id` = #{designPersonInCharge}
+            AND b.`member_type` = 2
+            )
+        </if>
+        <if test="designPersonInChargeAssistant!=null">
+
+            AND (
+            c.`company_user_id` = #{designPersonInChargeAssistant}
+            AND c.`member_type` = 7
+            )
+        </if>
+
+    </select>
+</mapper>

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="UserEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.user.entity.UserEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="cellphone" property="cellphone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="birthday" property="birthday" jdbcType="DATE" />
+    <result column="marriage_status" property="marriageStatus" jdbcType="VARCHAR" />
+    <result column="id_card" property="idCard" jdbcType="VARCHAR" />
+    <result column="native_place" property="nativePlace" jdbcType="VARCHAR" />
+    <result column="file_storage" property="fileStorage" jdbcType="VARCHAR" />
+    <result column="residency_location" property="residencyLocation" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="graduation_school" property="graduationSchool" jdbcType="VARCHAR" />
+    <result column="major" property="major" jdbcType="VARCHAR" />
+    <result column="last_degree" property="lastDegree" jdbcType="VARCHAR" />
+    <result column="highest_degree" property="highestDegree" jdbcType="VARCHAR" />
+    <result column="work_begin_date" property="workBeginDate" jdbcType="DATE" />
+    <result column="graduation_date" property="graduationDate" jdbcType="DATE" />
+    <result column="insurance_address" property="insuranceAddress" jdbcType="VARCHAR" />
+    <result column="insurance_no" property="insuranceNo" jdbcType="VARCHAR" />
+    <result column="accumulation_fund" property="accumulationFund" jdbcType="VARCHAR" />
+    <result column="bank_info_no" property="bankInfoNo" jdbcType="VARCHAR" />
+    <result column="bank_account" property="bankAccount" jdbcType="VARCHAR" />
+    <result column="emergency_contact" property="emergencyContact" jdbcType="VARCHAR" />
+    <result column="emergency_phone" property="emergencyPhone" jdbcType="VARCHAR" />
+    <result column="english_level" property="englishLevel" jdbcType="VARCHAR" />
+    <result column="nation" property="nation" jdbcType="VARCHAR" />
+    <result column="political_status" property="politicalStatus" jdbcType="VARCHAR" />
+    <result column="hobby" property="hobby" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, user_name, cellphone, email, sex, birthday, marriage_status, id_card, 
+    native_place, file_storage, residency_location, address, graduation_school, major, 
+    last_degree, highest_degree, work_begin_date, graduation_date, insurance_address, 
+    insurance_no, accumulation_fund, bank_info_no, bank_account, emergency_contact, emergency_phone, 
+    english_level, nation, political_status, hobby, status, create_date, create_by, update_date, 
+    update_by
+  </sql>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_user
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_user
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.maoding.user.entity.UserEntity" >
+    insert into maoding_web_user (id,user_name, 
+      cellphone, email, sex, 
+      birthday, marriage_status, id_card, 
+      native_place, file_storage, residency_location, 
+      address, graduation_school, major, 
+      last_degree, highest_degree, work_begin_date, 
+      graduation_date, insurance_address, insurance_no, 
+      accumulation_fund, bank_info_no, bank_account, 
+      emergency_contact, emergency_phone, english_level, 
+      nation, political_status, hobby, 
+      status, create_date, create_by, 
+      update_date, update_by)
+    values (#{id,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{cellphone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, 
+      #{birthday,jdbcType=DATE}, #{marriageStatus,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, 
+      #{nativePlace,jdbcType=VARCHAR}, #{fileStorage,jdbcType=VARCHAR}, #{residencyLocation,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{graduationSchool,jdbcType=VARCHAR}, #{major,jdbcType=VARCHAR}, 
+      #{lastDegree,jdbcType=VARCHAR}, #{highestDegree,jdbcType=VARCHAR}, #{workBeginDate,jdbcType=DATE}, 
+      #{graduationDate,jdbcType=DATE}, #{insuranceAddress,jdbcType=VARCHAR}, #{insuranceNo,jdbcType=VARCHAR}, 
+      #{accumulationFund,jdbcType=VARCHAR}, #{bankInfoNo,jdbcType=VARCHAR}, #{bankAccount,jdbcType=VARCHAR}, 
+      #{emergencyContact,jdbcType=VARCHAR}, #{emergencyPhone,jdbcType=VARCHAR}, #{englishLevel,jdbcType=VARCHAR}, 
+      #{nation,jdbcType=VARCHAR}, #{politicalStatus,jdbcType=VARCHAR}, #{hobby,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="updateById" parameterType="com.maoding.user.entity.UserEntity" >
+    update maoding_web_user
+    <set >
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="cellphone != null" >
+        cellphone = #{cellphone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null and birthday!=''" >
+        birthday = #{birthday,jdbcType=DATE},
+      </if>
+      <if test="birthday == null || birthday==''" >
+        birthday = NULL ,
+      </if>
+
+      <if test="marriageStatus != null" >
+        marriage_status = #{marriageStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="idCard != null" >
+        id_card = #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="nativePlace != null" >
+        native_place = #{nativePlace,jdbcType=VARCHAR},
+      </if>
+      <if test="fileStorage != null" >
+        file_storage = #{fileStorage,jdbcType=VARCHAR},
+      </if>
+      <if test="residencyLocation != null" >
+        residency_location = #{residencyLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="graduationSchool != null" >
+        graduation_school = #{graduationSchool,jdbcType=VARCHAR},
+      </if>
+      <if test="major != null" >
+        major = #{major,jdbcType=VARCHAR},
+      </if>
+      <if test="lastDegree != null" >
+        last_degree = #{lastDegree,jdbcType=VARCHAR},
+      </if>
+      <if test="highestDegree != null" >
+        highest_degree = #{highestDegree,jdbcType=VARCHAR},
+      </if>
+      <if test="workBeginDate != null" >
+        work_begin_date = #{workBeginDate,jdbcType=DATE},
+      </if>
+      <if test="graduationDate != null" >
+        graduation_date = #{graduationDate,jdbcType=DATE},
+      </if>
+      <if test="insuranceAddress != null" >
+        insurance_address = #{insuranceAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="insuranceNo != null" >
+        insurance_no = #{insuranceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="accumulationFund != null" >
+        accumulation_fund = #{accumulationFund,jdbcType=VARCHAR},
+      </if>
+      <if test="bankInfoNo != null" >
+        bank_info_no = #{bankInfoNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccount != null" >
+        bank_account = #{bankAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="emergencyContact != null" >
+        emergency_contact = #{emergencyContact,jdbcType=VARCHAR},
+      </if>
+      <if test="emergencyPhone != null" >
+        emergency_phone = #{emergencyPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="englishLevel != null" >
+        english_level = #{englishLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="nation != null" >
+        nation = #{nation,jdbcType=VARCHAR},
+      </if>
+      <if test="politicalStatus != null" >
+        political_status = #{politicalStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="hobby != null" >
+        hobby = #{hobby,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="update" parameterType="com.maoding.user.entity.UserEntity" >
+    update maoding_web_user
+    set user_name = #{userName,jdbcType=VARCHAR},
+      cellphone = #{cellphone,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=DATE},
+      marriage_status = #{marriageStatus,jdbcType=VARCHAR},
+      id_card = #{idCard,jdbcType=VARCHAR},
+      native_place = #{nativePlace,jdbcType=VARCHAR},
+      file_storage = #{fileStorage,jdbcType=VARCHAR},
+      residency_location = #{residencyLocation,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      graduation_school = #{graduationSchool,jdbcType=VARCHAR},
+      major = #{major,jdbcType=VARCHAR},
+      last_degree = #{lastDegree,jdbcType=VARCHAR},
+      highest_degree = #{highestDegree,jdbcType=VARCHAR},
+      work_begin_date = #{workBeginDate,jdbcType=DATE},
+      graduation_date = #{graduationDate,jdbcType=DATE},
+      insurance_address = #{insuranceAddress,jdbcType=VARCHAR},
+      insurance_no = #{insuranceNo,jdbcType=VARCHAR},
+      accumulation_fund = #{accumulationFund,jdbcType=VARCHAR},
+      bank_info_no = #{bankInfoNo,jdbcType=VARCHAR},
+      bank_account = #{bankAccount,jdbcType=VARCHAR},
+      emergency_contact = #{emergencyContact,jdbcType=VARCHAR},
+      emergency_phone = #{emergencyPhone,jdbcType=VARCHAR},
+      english_level = #{englishLevel,jdbcType=VARCHAR},
+      nation = #{nation,jdbcType=VARCHAR},
+      political_status = #{politicalStatus,jdbcType=VARCHAR},
+      hobby = #{hobby,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

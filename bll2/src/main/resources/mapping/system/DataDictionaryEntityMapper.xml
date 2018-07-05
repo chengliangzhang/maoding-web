@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="DataDictionaryEntityMapper">
+	<resultMap id="BaseResultMap"
+		type="com.maoding.system.entity.DataDictionaryEntity">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="pid" property="pid" jdbcType="VARCHAR" />
+		<result column="root_id" property="rootId" jdbcType="VARCHAR" />
+		<result column="deep_index" property="deepIndex" jdbcType="INTEGER" />
+		<result column="vl" property="vl" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="create_by" property="createBy" jdbcType="VARCHAR" />
+		<result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+		<result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+		<result column="seq" property="seq" jdbcType="VARCHAR" />
+
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, name, code, pid, root_id, deep_index, vl, seq
+
+	</sql>
+	<select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from maoding_data_dictionary
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+
+	<delete id="deleteById" parameterType="java.lang.String">
+		delete from maoding_data_dictionary
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	
+	<insert id="insert" parameterType="com.maoding.system.entity.DataDictionaryEntity">
+		insert into maoding_data_dictionary (id, name, code,
+		pid, root_id, deep_index,
+		vl, create_date, create_by,
+		update_date, update_by)
+		values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+		#{code,jdbcType=VARCHAR},
+		#{pid,jdbcType=VARCHAR}, #{rootId,jdbcType=VARCHAR}, #{deepIndex,jdbcType=INTEGER},
+		#{vl,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR},
+		#{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
+	</insert>
+	
+	<update id="updateById" parameterType="com.maoding.system.entity.DataDictionaryEntity">
+		update maoding_data_dictionary
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="code != null">
+				code = #{code,jdbcType=VARCHAR},
+			</if>
+			<if test="pid != null">
+				pid = #{pid,jdbcType=VARCHAR},
+			</if>
+			<if test="rootId != null">
+				root_id = #{rootId,jdbcType=VARCHAR},
+			</if>
+			<if test="deepIndex != null">
+				deep_index = #{deepIndex,jdbcType=INTEGER},
+			</if>
+			<if test="vl != null">
+				vl = #{vl,jdbcType=VARCHAR},
+			</if>
+			update_date = now(),
+			<if test="updateBy != null">
+				update_by = #{updateBy,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="update" parameterType="com.maoding.system.entity.DataDictionaryEntity">
+		update maoding_data_dictionary
+		set name = #{name,jdbcType=VARCHAR},
+		code = #{code,jdbcType=VARCHAR},
+		pid = #{pid,jdbcType=VARCHAR},
+		root_id = #{rootId,jdbcType=VARCHAR},
+		deep_index = #{deepIndex,jdbcType=INTEGER},
+		vl = #{vl,jdbcType=VARCHAR},
+		update_date = now(),
+		update_by = #{updateBy,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+
+	
+	<!-- 根据code查询子集 -->
+	<select id="selectSubsetByCode" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		SELECT id, name, code, pid, root_id, deep_index, vl, seq FROM
+		maoding_data_dictionary
+		WHERE deleted = 0 and pid=(SELECT id FROM maoding_data_dictionary WHERE
+		code=#{code,jdbcType=VARCHAR}) ORDER BY seq
+	</select>
+
+
+	<!-- 根据code查询自己及子集 -->
+	<select id="selectParentAndSubByCode" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		SELECT dd.id,dd.name,dd.code,dd.pid
+		from maoding_data_dictionary dd
+		where dd.deleted = 0 and dd.rootId IN (SELECT d.id FROM maoding_data_dictionary d WHERE d.deleted = 0
+		AND d.code LIKE '%' #{code} '%')
+		order by seq
+	</select>
+	
+	<!-- 根据相关参数查找 -->
+	<select id="selectByParemeter" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from maoding_data_dictionary
+		where deleted = 0
+		<if test="pid != null">
+			and pid=#{pid,jdbcType=VARCHAR}
+		</if>
+		<if test="rootId != null">
+			and root_id=#{rootId,jdbcType=VARCHAR}
+		</if>
+		<if test="code != null and isLike =='true'">
+			AND code LIKE '%' #{code} '%'
+		</if>
+		<if test="code != null and (isLike==null || isLike =='false')">
+			AND code =#{code,jdbcType=VARCHAR}
+		</if>
+		<if test="deepIndex != null">
+			and deep_index=#{deepIndex,jdbcType=VARCHAR}
+		</if>
+		
+		<if test="idList != null">
+			and id in
+			<foreach collection="idList" index="i" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</if>
+		order by seq
+	</select>
+
+	<resultMap id="BaseResultMap2" type="com.maoding.system.dto.DataDictionaryDataDTO" >
+		<id column="pid" property="id" />
+		<id column="parentName" property="name" />
+		<result column="parentCode" property="code" />
+		<result column="parentMemo" property="memo" />
+		<result column="parentSeq" property="seq" />
+		<collection property="childList" ofType="com.maoding.system.dto.DataDictionaryDataDTO" >
+			<result column="name" property="name" />
+			<result column="code" property="code" />
+			<result column="pid" property="pid" />
+			<result column="memo" property="memo" />
+			<result column="seq" property="seq" />
+		</collection>
+	</resultMap>
+
+	<select id="getExpTypeList" resultMap="BaseResultMap2" parameterType="java.lang.String">
+		SELECT a.id as pid,a.code as parentCode,b.id, a.name as parentName, a.memo as parentMemo,a.seq as parentSeq,
+		b.name,b.code,b.memo,b.seq
+		from maoding_data_dictionary a
+		INNER JOIN maoding_data_dictionary b on a.id = b.pid
+		where a.deleted = 0
+		and b.deleted = 0
+		and a.`code` like CONCAT(#{code},'%')
+		and a.pid is null
+	</select>
+
+</mapper>

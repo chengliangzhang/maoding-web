@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="CustomConstEntityMapper" >
+  <insert id="insert" parameterType="com.maoding.commonModule.entity.CustomConstEntity">
+    insert into md_list_const_custom (id, deleted, create_time,last_modify_time,
+      last_modify_user_id, last_modify_role_id,
+      company_id, project_id, task_id,
+      classic_id,code_id, title, extra)
+    values (#{id}, #{deleted,jdbcType=TINYINT}, #{createDate,jdbcType=TIMESTAMP},#{updateDate,jdbcType=TIMESTAMP},
+      #{createBy},null,
+      #{companyId},#{projectId},#{taskId},
+      #{classicId,jdbcType=SMALLINT},#{codeId,jdbcType=SMALLINT},#{title},#{extra})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.commonModule.entity.CustomConstEntity" >
+    update md_list_const_custom
+    <set >
+      <if test="deleted != null" >
+        deleted = #{deleted},
+      </if>
+      <if test="createDate != null" >
+        create_time = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null" >
+        last_modify_time = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        last_modify_user_id = #{updateBy},
+      </if>
+      <if test="companyId != null" >
+        company_id = #{companyId},
+      </if>
+      <if test="projectId != null" >
+        project_id = #{projectId},
+      </if>
+      <if test="taskId != null" >
+        task_id = #{taskId},
+      </if>
+      <if test="classicId != null" >
+        classic_id = #{classicId,jdbcType=SMALLINT},
+      </if>
+      <if test="codeId != null" >
+        code_id = #{codeId,jdbcType=SMALLINT},
+      </if>
+      <if test="title != null" >
+        title = #{title},
+      </if>
+      <if test="extra != null" >
+        extra = #{extra},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+
+  <sql id="FilterByTemplate">
+    <if test="id != null">
+      and template_content.template_id = #{id}
+    </if>
+    <if test="name != null">
+      and template_content.template_name = #{name}
+    </if>
+    <if test="isFunction != null or isMeasure != null or isRange != null">
+      (
+        1 = 0
+        <if test="isFunction != null">
+          or template_content.is_function = #{isFunction,jdbcType=TINYINT}
+        </if>
+        <if test="isMeasure != null">
+          or template_content.is_function = #{isMeasure,jdbcType=TINYINT}
+        </if>
+        <if test="isRange != null">
+          or template_content.is_function = #{isRange,jdbcType=TINYINT}
+        </if>
+      )
+    </if>
+  </sql>
+
+  <select id="listTemplateContent" parameterType="com.maoding.commonModule.dto.TemplateQueryDTO" resultType="com.maoding.commonModule.dto.ContentDTO">
+    select
+      template_content.detail_name as name,
+      if(template_content.id is null,null,1) as is_default,
+      template_content.*
+    from md_template_content_const template_content
+    <where>
+      <include refid="FilterByTemplate"/>
+    </where>
+  </select>
+</mapper>

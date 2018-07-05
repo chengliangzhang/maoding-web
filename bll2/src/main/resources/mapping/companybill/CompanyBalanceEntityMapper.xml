@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="CompanyBalanceEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.companybill.entity.CompanyBalanceEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="initial_balance" property="initialBalance" jdbcType="VARCHAR" />
+    <result column="low_balance" property="lowBalance" jdbcType="VARCHAR" />
+    <result column="set_balance_date" property="setBalanceDate" jdbcType="DATE" />
+    <result column="current_balance" property="currentBalance" jdbcType="VARCHAR" />
+    <result column="income" property="income" jdbcType="VARCHAR" />
+    <result column="expense" property="expense" jdbcType="VARCHAR" />
+    <result column="deleted" property="deleted" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, company_id, initial_balance, low_balance, set_balance_date, current_balance,
+    income, expense, deleted, create_date, create_by, update_date, update_by
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_company_balance
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getCompanyBalanceByCompanyId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_company_balance
+    where company_id = #{companyId,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_company_balance
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.maoding.companybill.entity.CompanyBalanceEntity" >
+      insert into maoding_company_balance (id, company_id, initial_balance,
+      low_balance, set_balance_date, current_balance,
+      income, expense, deleted,
+      create_date, create_by, update_date,
+      update_by)
+    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{initialBalance,jdbcType=VARCHAR},
+      #{lowBalance,jdbcType=VARCHAR}, #{setBalanceDate,jdbcType=DATE}, #{currentBalance,jdbcType=VARCHAR},
+      #{income,jdbcType=VARCHAR}, #{expense,jdbcType=VARCHAR}, #{deleted,jdbcType=INTEGER},
+      #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.companybill.entity.CompanyBalanceEntity" >
+    update maoding_company_balance
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="initialBalance != null" >
+        initial_balance = #{initialBalance,jdbcType=VARCHAR},
+      </if>
+      <if test="lowBalance != null" >
+        low_balance = #{lowBalance,jdbcType=VARCHAR},
+      </if>
+      <if test="setBalanceDate != null" >
+        set_balance_date = #{setBalanceDate,jdbcType=DATE},
+      </if>
+      <if test="currentBalance != null" >
+        current_balance = #{currentBalance,jdbcType=VARCHAR},
+      </if>
+      <if test="income != null" >
+        income = #{income,jdbcType=VARCHAR},
+      </if>
+      <if test="expense != null" >
+        expense = #{expense,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null" >
+        deleted = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="update" parameterType="com.maoding.companybill.entity.CompanyBalanceEntity" >
+    update maoding_company_balance
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      initial_balance = #{initialBalance,jdbcType=VARCHAR},
+      low_balance = #{lowBalance,jdbcType=VARCHAR},
+      set_balance_date = #{setBalanceDate,jdbcType=DATE},
+      current_balance = #{currentBalance,jdbcType=VARCHAR},
+      income = #{income,jdbcType=VARCHAR},
+      expense = #{expense,jdbcType=VARCHAR},
+      deleted = #{deleted,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

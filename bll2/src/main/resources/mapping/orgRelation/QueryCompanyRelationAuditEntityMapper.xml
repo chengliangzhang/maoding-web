@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="QueryCompanyRelationAuditEntityMapper">
+	<resultMap id="BaseResultMap"
+		type="com.maoding.org.dto.CompanyRelationAuditDTO">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="org_id" property="orgId" jdbcType="VARCHAR" />
+		<result column="audit_status" property="auditStatus" jdbcType="VARCHAR" />
+		<result column="org_pid" property="orgPid" jdbcType="VARCHAR" />
+		<result column="relation_type" property="relationType" jdbcType="VARCHAR" />
+		<result column="company_type" property="companyType" jdbcType="VARCHAR" />
+		<result column="join_date" property="joinDate" jdbcType="DATE" />
+		<result column="pass_date" property="passDate" jdbcType="DATE" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="company_name" property="companyName" jdbcType="VARCHAR" />
+		<result column="pCompany_name" property="pCompanyName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+		<!-- 查询申请加盟，邀请加盟 ,查询大B管理的小b ，或被邀请的大B -->
+	<select id="getCompanyRelationAuditByParam" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select
+		a.id, org_id, a.org_pid, a.create_date,a.type,a.audit_status,
+		b.company_name,c.company_name as pCompany_name
+		from maoding_web_company_relation_audit a
+		left join maoding_web_company b on a.org_id=b.id
+		left join maoding_web_company c on a.org_pid=c.id
+		where 1=1 and a.audit_status!='1'
+		<if test="orgId != null">
+			and a.org_id=#{orgId,jdbcType=VARCHAR}
+		</if>
+
+		 <if test="orgPid != null">
+			and a.org_pid=#{orgPid,jdbcType=VARCHAR}
+		</if>
+		<if test="cid != null">
+			and (a.org_id=#{cid,jdbcType=VARCHAR} or
+			a.org_pid=#{cid,jdbcType=VARCHAR})
+		</if>
+
+		<if test="cid != null and isAudit != null"><!-- 只查询待审核的数据 -->
+			and ((a.org_id=#{cid,jdbcType=VARCHAR} and a.relation_type='1') or
+			(a.org_pid=#{cid,jdbcType=VARCHAR} and a.relation_type='0'))
+		</if>
+
+		<if test="auditStatus != null">
+			and a.audit_status=#{auditStatus,jdbcType=VARCHAR}
+		</if>
+
+		<if test="type != null">
+			and a.type=#{type,jdbcType=VARCHAR}
+		</if>
+
+		<if test="keyword != null">
+			and (b.company_name LIKE '%' #{keyword} '%' or c.company_name like '%' #{keyword} '%')
+		</if>
+		<if test="_parameter.containsKey('startPage')">
+			limit #{startPage},#{endPage}
+		</if>
+	</select>
+
+	<select id="getCompanyRelationAuditByParamCount" resultType="java.lang.Integer"
+		parameterType="java.util.Map">
+		select count(1)
+		from maoding_web_company_relation_audit a
+		left join maoding_web_company b on a.org_id=b.id
+		left join maoding_web_company c on a.org_pid=c.id
+		where 1=1 and a.audit_status!='1'
+		<if test="orgId != null">
+			and a.org_id=#{orgId,jdbcType=VARCHAR}
+		</if>
+		 <if test="pid != null">
+			and a.org_pid=#{orgPid,jdbcType=VARCHAR}
+		</if>
+		<if test="cid != null">
+			and (a.org_id=#{cid,jdbcType=VARCHAR} or
+			a.org_pid=#{cid,jdbcType=VARCHAR})
+		</if>
+
+		<if test="cid != null and isAudit != null"><!-- 只查询待审核的数据 -->
+			and ((a.org_id=#{cid,jdbcType=VARCHAR} and a.relation_type='1') or
+			(a.org_pid=#{cid,jdbcType=VARCHAR} and a.relation_type='0'))
+		</if>
+		<if test="type != null">
+			and a.type=#{type,jdbcType=VARCHAR}
+		</if>
+		<if test="auditStatus != null">
+			and a.audit_status=#{auditStatus,jdbcType=VARCHAR}
+		</if>
+		<if test="keyword != null">
+			and (b.company_name LIKE '%' #{keyword} '%' or c.company_name like '%' #{keyword} '%')
+		</if>
+	</select>
+</mapper>

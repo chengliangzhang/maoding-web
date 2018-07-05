@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="RoleDTOMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.role.dto.RoleDTO" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="order_index" property="orderIndex" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+
+    <resultMap id="BaseResultMap2" type="com.maoding.role.dto.RoleDTO" extends="BaseResultMap">
+        <!-- 一对多的关系 -->
+        <collection property="permissionList" ofType="com.maoding.role.dto.PermissionDTO">
+            <result column="permission_id" property="id" jdbcType="VARCHAR" />
+            <result column="permission_code" property="code" jdbcType="VARCHAR" />
+            <result column="permission_name" property="name" jdbcType="VARCHAR" />
+            <result column="description" property="description" jdbcType="VARCHAR" />
+        </collection>
+    </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, company_id, code, name, order_index
+  </sql>
+
+  <!-- 查找当前公司的角色 -->
+	<select id="selectByCompanyId" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from maoding_web_role where status!='1' AND (company_id=#{companyId,jdbcType=VARCHAR} or
+		company_id is null) order by order_index
+	</select>
+
+    <select id="getRolePermissionByType" resultMap="BaseResultMap2" parameterType="java.lang.String">
+        SELECT DISTINCT a.id,a.`code`,a.name,c.id as permission_id,c.`name` as permission_name,c.code as permission_code,c.description
+        from maoding_web_role a
+        INNER JOIN maoding_web_role_permission b on a.id = b.role_id
+        INNER JOIN maoding_web_permission c on c.id = b.permission_id
+        where a.`status` = 0 and c.`status` = 0
+        and b.company_id is null
+        and (not FIND_IN_SET(#{type},b.forbid_relation_type_id) or b.forbid_relation_type_id is null)
+        ORDER BY a.order_index,c.seq
+    </select>
+
+</mapper>

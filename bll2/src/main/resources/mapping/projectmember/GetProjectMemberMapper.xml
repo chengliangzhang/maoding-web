@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetProjectMemberMapper">
+    <resultMap id="BaseResultMap" type="com.maoding.projectmember.dto.ProjectMemberDTO">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="project_id" property="projectId" jdbcType="VARCHAR"/>
+        <result column="company_id" property="companyId" jdbcType="VARCHAR"/>
+        <result column="account_id" property="accountId" jdbcType="VARCHAR"/>
+        <result column="company_user_id" property="companyUserId" jdbcType="VARCHAR"/>
+        <result column="user_name" property="companyUserName" jdbcType="VARCHAR"/>
+        <result column="member_type" property="memberType" jdbcType="INTEGER"/>
+        <result column="target_id" property="targetId" jdbcType="VARCHAR"/>
+        <result column="node_id" property="nodeId" jdbcType="VARCHAR"/>
+        <result column="seq" property="seq" jdbcType="INTEGER"/>
+        <result column="head_img" property="headImg" jdbcType="VARCHAR"/>
+        <result column="cellphone" property="cellphone" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="node_name" property="nodeName" jdbcType="VARCHAR"/>
+        <result column="complete_time" jdbcType="VARCHAR" property="completeTime"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMap3" type="com.maoding.projectmember.dto.ProjectMemberDTO" extends="BaseResultMap">
+        <association property="companyName" select="CompanyEntityMapper.getAliasName" column="company_id"
+                     fetchType="eager"/>
+    </resultMap>
+    <!--获取工时-->
+    <resultMap id="BaseResultMap4" type="com.maoding.projectmember.dto.ProjectMemberDTO" extends="BaseResultMap">
+        <result column="hours" property="hours" jdbcType="VARCHAR" />
+        <association property="companyName" select="CompanyEntityMapper.getAliasName" column="company_id"
+                     fetchType="eager"/>
+    </resultMap>
+
+    <select id="listProjectMemberByParam" parameterType="com.maoding.projectmember.dto.MemberQueryDTO"
+            resultMap="BaseResultMap">
+        SELECT
+        a.id,a.company_id,a.project_id,a.member_type,a.company_user_id,a.account_id,a.target_id,a.node_id,
+        b.user_name, b.email,c.cellphone, e.complete_time
+        <if test="notContainHeadImg==null">
+          ,d.oss_file_path as head_img
+        </if>
+        FROM maoding_web_project_member a
+        INNER JOIN maoding_web_company_user b on a.company_user_id = b.id
+        INNER JOIN maoding_web_account c on a.account_id = c.id
+        <if test="notContainHeadImg==null">
+            LEFT JOIN (
+            <include refid="UserAttachEntityMapper.getHeadImg"/>
+            ) d on a.account_id = d.user_id and d.attach_type = '5'
+        </if>
+        LEFT JOIN maoding_web_project_process_node e on e.id = a.target_id
+        <where>
+            a.deleted = 0
+            <include refid="whereExample"/>
+        </where>
+        order by a.member_type,a.seq
+    </select>
+
+    <sql id="whereExample">
+        <if test="projectId != null">
+            AND a.project_id = #{projectId,jdbcType=VARCHAR}
+        </if>
+        <if test="companyId != null">
+            AND a.company_id = #{companyId,jdbcType=VARCHAR}
+        </if>
+        <if test="accountId != null">
+            AND a.account_id = #{accountId,jdbcType=VARCHAR}
+        </if>
+        <if test="companyUserId != null">
+            AND a.company_user_id = #{companyUserId,jdbcType=VARCHAR}
+        </if>
+        <if test="memberType != null">
+            AND a.member_type = #{memberType,jdbcType=INTEGER}
+        </if>
+        <if test="targetId != null">
+            AND a.target_id = #{targetId,jdbcType=VARCHAR}
+        </if>
+        <if test="nodeId != null">
+            AND a.node_id = #{nodeId,jdbcType=VARCHAR}
+        </if>
+        <if test="status != null">
+            AND a.status = #{status,jdbcType=INTEGER}
+        </if>
+    </sql>
+
+
+    <resultMap id="BaseResultMap2" type="com.maoding.project.dto.ProjectTaskProcessNodeDTO">
+        <id column="member_type" jdbcType="INTEGER" property="memberType"/>
+        <result column="target_id" jdbcType="VARCHAR"  property="targetId" />
+        <!-- 一对多的关系 -->
+        <collection property="userList" ofType="com.maoding.project.dto.ProjectDesignUser">
+            <result column="id" jdbcType="VARCHAR" property="id"/>
+            <result column="account_id" jdbcType="VARCHAR" property="accountId"/>
+            <result column="company_user_id" jdbcType="VARCHAR" property="companyUserId"/>
+            <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+            <result column="cellphone" jdbcType="VARCHAR" property="cellphone"/>
+            <result column="email" jdbcType="VARCHAR" property="email"/>
+            <result column="head_img" jdbcType="VARCHAR" property="headImg"/>
+            <result column="complete_time" jdbcType="VARCHAR" property="completeTime"/>
+        </collection>
+    </resultMap>
+
+    <select id="listProjectMemberGroupByParam" parameterType="com.maoding.projectmember.dto.MemberQueryDTO"
+            resultMap="BaseResultMap2">
+        SELECT
+        a.member_type,a.company_user_id,
+        b.user_name, b.email,c.cellphone,
+        d.oss_file_path as head_img
+        FROM maoding_web_project_member a
+        LEFT JOIN maoding_web_company_user b on a.company_user_id = b.id
+        LEFT JOIN maoding_web_account c on b.user_id = c.id
+        LEFT JOIN (
+        <include refid="UserAttachEntityMapper.getHeadImg"/>
+        ) d on c.id = d.user_id and d.attach_type = '5'
+        <where>
+            deleted = 0 and a.status=0
+            <include refid="whereExample"/>
+        </where>
+        order by a.member_type,a.seq
+    </select>
+
+    <select id="listDesignMember" parameterType="java.lang.String" resultMap="BaseResultMap2">
+        SELECT
+            a.id,
+            a.member_type,
+            a.target_id,
+            a.company_user_id,
+            a.account_id,
+            b.user_name,
+            b.email,
+            c.complete_time
+        FROM maoding_web_project_member a
+        INNER JOIN maoding_web_company_user b ON a.company_user_id = b.id
+        LEFT JOIN maoding_web_project_process_node c ON c.id = a.target_id
+        WHERE deleted = 0 AND node_id = #{nodeId,jdbcType=VARCHAR}
+              AND (a.member_type = 4 OR a.member_type = 5 OR a.member_type = 6)
+        ORDER BY a.member_type, a.seq
+    </select>
+
+
+    <select id="getDesignUser" resultType="java.lang.String" parameterType="java.lang.String">
+        SELECT GROUP_CONCAT(CONCAT(node, ': ', userName, " ") ORDER BY member_type)
+        FROM (SELECT
+                  a.member_type,
+                  (CASE (member_type)
+                   WHEN 4
+                       THEN '设计'
+                   WHEN 5
+                       THEN '校对'
+                   WHEN 6
+                       THEN '审核'
+                   ELSE ''
+                   END)                                    AS node,
+                  GROUP_CONCAT(b.user_name ORDER BY a.seq) AS userName
+              FROM maoding_web_project_member a
+                  LEFT JOIN maoding_web_company_user b ON a.company_user_id = b.id AND a.deleted = 0
+              WHERE a.node_id = #{taskId}
+              GROUP BY a.member_type) a
+    </select>
+
+
+    <select id="getTaskDesigner" parameterType="java.util.Map" resultMap="BaseResultMap">
+        SELECT
+            a.id,
+            a.company_user_id,
+            b.user_name
+        FROM (SELECT
+                  if(b.id IS NULL, a.id, b.id)                           id,
+                  if(b.id IS NULL, a.company_user_id, b.company_user_id) company_user_id
+              FROM maoding_web_project_member a
+                  LEFT JOIN maoding_web_project_member b
+                      ON a.project_id = b.project_id AND b.deleted = 0 AND b.member_type = 3 AND
+                         (b.target_id = #{taskId} OR b.node_id = #{taskId})
+              WHERE a.project_id = #{projectId} AND a.company_id = #{companyId} AND a.member_type = 2
+              LIMIT 1) a
+            LEFT JOIN maoding_web_company_user b ON a.company_user_id = b.id
+    </select>
+
+
+    <select id="getTaskDesignerName" parameterType="java.util.Map" resultType="java.lang.String">
+        SELECT b.user_name
+        FROM (SELECT
+                  if(b.id IS NULL, a.id, b.id)                           id,
+                  if(b.id IS NULL, a.company_user_id, b.company_user_id) company_user_id
+              FROM maoding_web_project_member a
+                  LEFT JOIN maoding_web_project_member b
+                      ON a.project_id = b.project_id AND b.deleted = 0 AND b.member_type = 3 AND
+                         (b.target_id = #{taskId} OR b.node_id = #{taskId})
+              WHERE a.project_id = #{projectId} AND a.company_id = #{companyId} AND a.member_type = 2
+              LIMIT 1) a
+            LEFT JOIN maoding_web_company_user b ON a.company_user_id = b.id
+    </select>
+    <sql id="get_limit">
+        <if test="pageIndex!=null">
+            limit #{pageIndex}
+            <if test="pageSize!=null">
+                ,#{pageSize}
+            </if>
+        </if>
+    </sql>
+    <sql id="getProjectWorkingHoursCondition">
+        <if test="startDate != null and startDate!=''">
+            <![CDATA[ and hour1.`labor_date` > #{startDate} ]]>
+        </if>
+        <if test="endDate != null and endDate!=''">
+            <![CDATA[ and hour1.`labor_date` <= #{startDate} ]]>
+        </if>
+        <if test="userName != null and userName!=''">
+           and  b.user_name=#{userName}
+        </if>
+
+    </sql>
+    <select id="listProjectAllMember" parameterType="com.maoding.projectmember.dto.MemberQueryDTO"
+            resultMap="BaseResultMap3">
+        SELECT a.id,a.project_id,
+        a.company_id,a.company_user_id,a.account_id,
+        b.user_name, b.email,
+        c.cellphone,c.user_name as account_name,
+        d.oss_file_path as head_img,
+        group_CONCAT( DISTINCT CASE ( member_type)
+        WHEN 0 THEN '立项人'
+        WHEN 1 THEN '经营负责人'
+        WHEN 2 THEN '设计负责人'
+        WHEN 3 THEN '任务负责人'
+        WHEN 4 THEN '设计人'
+        WHEN 5 THEN '校对人'
+        WHEN 6 THEN '审核人'
+        WHEN 7 THEN '经营助理'
+        WHEN 8 THEN '设计助理'
+        ELSE ''
+        END order by member_type separator '、' ) AS node_name
+        FROM maoding_web_project_member a
+        LEFT JOIN maoding_web_company_user b on a.company_user_id = b.id
+        LEFT JOIN maoding_web_account c on a.account_id = c.id
+        LEFT JOIN (
+        <include refid="UserAttachEntityMapper.getHeadImg"/>
+        ) d on a.account_id = d.user_id and d.attach_type = '5'
+        where deleted = 0
+        and a.project_id = #{projectId}
+        group by a.company_user_id
+        ORDER BY case when a.company_id = #{projectCompanyId} then 1
+        else 2 end asc
+    </select>
+    <!--获取人员工时-->
+    <select id="getProjectWorkingHours" parameterType="com.maoding.project.dto.ProjectWorkingHoursDTO"
+            resultMap="BaseResultMap4">
+        SELECT
+        hour1.project_id,
+        b.id AS company_user_id,
+        b.user_id AS account_id,
+        b.user_name,
+        b.email,
+        c.cellphone,
+        c.user_name AS account_name,
+        d.oss_file_path AS head_img,
+        FORMAT(SUM(hour1.labor_hours),1) AS hours,
+        a.node_name
+        FROM maoding_web_labor_hour hour1
+        LEFT JOIN maoding_web_company_user b ON hour1.company_user_id = b.id
+        LEFT JOIN maoding_web_account c ON b.user_id = c.id
+        LEFT JOIN (
+            SELECT  company_user_id,
+            GROUP_CONCAT(
+                DISTINCT CASE (member_type)
+                WHEN 0 THEN '立项人'
+                WHEN 1 THEN '经营负责人'
+                WHEN 2 THEN '设计负责人'
+                WHEN 3 THEN '任务负责人'
+                WHEN 4 THEN '设计人'
+                WHEN 5 THEN '校对人'
+                WHEN 6 THEN '审核人'
+                WHEN 7 THEN '经营助理'
+                WHEN 8 THEN '设计助理'
+                ELSE ''
+                END
+                ORDER BY  member_type SEPARATOR '、'
+                ) AS node_name
+                FROM
+                maoding_web_project_member
+                WHERE
+                project_id = #{projectId}
+                AND company_id = #{currentCompanyId}
+                GROUP BY
+                company_user_id
+        ) a ON a.company_user_id = b.id
+        LEFT JOIN (
+        <include refid="UserAttachEntityMapper.getHeadImg"/>
+        ) d on b.user_id = d.user_id and d.attach_type = '5'
+        WHERE 1 = 1
+        AND hour1.project_id = #{projectId}
+        AND hour1.company_id = #{currentCompanyId}
+        AND hour1.deleted = 0
+        GROUP BY hour1.company_user_id
+        <choose>
+            <when test="seq ==0">
+                order by hours ASC
+            </when>
+            <when test="seq ==1">
+                order by hours DESC
+            </when>
+            <otherwise>
+                ORDER BY case when b.company_id = #{currentCompanyId} then 1
+                else 2 end asc
+            </otherwise>
+        </choose>
+        <include refid="get_limit" />
+
+    </select>
+    <!--获取工时总页数count-->
+    <select id="getProjectWorkingHoursCount" parameterType="com.maoding.project.dto.ProjectWorkingHoursDTO" resultType="java.lang.Integer">
+        SELECT count(DISTINCT company_user_id)
+        from maoding_web_labor_hour hour1
+        LEFT JOIN maoding_web_company_user b on hour1.company_user_id = b.id
+        where hour1.project_id = #{projectId}
+        AND hour1.company_id = #{currentCompanyId}
+        AND hour1.deleted = 0
+        <include refid="getProjectWorkingHoursCondition"/>
+    </select>
+    <!--获取工时总数sum-->
+    <select id="getProjectWorkingHoursSum" parameterType="com.maoding.project.dto.ProjectWorkingHoursDTO" resultType="java.lang.String">
+        SELECT
+        FORMAT(sum(hour1.labor_hours),1) as sumHours
+        FROM  maoding_web_labor_hour hour1
+        LEFT JOIN maoding_web_company_user b on hour1.company_user_id = b.id
+        WHERE hour1.`company_id` = #{currentCompanyId}
+        AND hour1.`project_id` = #{projectId}
+        AND hour1.deleted = 0
+        <include refid="getProjectWorkingHoursCondition"/>
+    </select>
+</mapper>

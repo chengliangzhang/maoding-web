@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetDepartByCompanyIdMapper">
+	<resultMap id="BaseResultMap" type="com.maoding.org.entity.DepartEntity">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="depart_name" property="departName" jdbcType="VARCHAR" />
+		<result column="company_id" property="companyId" jdbcType="VARCHAR" />
+		<result column="pid" property="pid" jdbcType="VARCHAR" />
+		<result column="depart_level" property="departLevel" jdbcType="VARCHAR" />
+		<result column="depart_path" property="departPath" jdbcType="VARCHAR" />
+		<result column="depart_seq" property="departSeq" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="create_by" property="createBy" jdbcType="VARCHAR" />
+		<result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+		<result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+		 <result column="org_type" property="orgType" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="VARCHAR" />
+		<result column="depart_type" property="departType" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List" >
+   	 	id, depart_name, company_id, pid, depart_level, depart_path, depart_seq, create_date, 
+    	create_by, update_date, update_by, org_type, status, depart_type
+  	</sql>
+	<!-- 根据companyId获取部门 -->
+	<select id="selectDepartBycompanyId" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		SELECT id, company_id, pid, depart_level,depart_path,
+		depart_seq,org_type,depart_type,status,
+		(SELECT GROUP_CONCAT(dd.depart_name
+		ORDER BY dd.depart_level SEPARATOR '/') FROM maoding_web_depart dd
+		WHERE d.depart_path LIKE CONCAT('%',dd.id,'%'))  as depart_name
+		from
+		maoding_web_depart d
+		where company_id = #{companyId,jdbcType=VARCHAR}
+		and status='0'
+		<if test="departLevel != null">
+			and depart_level = #{departLevel,jdbcType=VARCHAR}
+		</if>
+		<if test="pid != null">
+			and pid = #{pid,jdbcType=VARCHAR}
+		</if>
+		<if test="departType != null">
+			and depart_type = #{departType,jdbcType=VARCHAR}
+		</if>
+		<if test="orgType != null">
+			and org_type = #{orgType,jdbcType=VARCHAR}
+		</if>
+		<if test="selectVal!=null">
+			and depart_name like '%' #{selectVal} '%'
+		</if>
+		<if test="_parameter.containsKey('orgList') and orgList!=null">  <!-- 用于部门选择（头部信息）组织切换 （查询个人所在独立部门（如果所在的部门非独立部门，但是父部门是独立部门，则需要查询父部门）） -->
+			and depart_type='1'
+			and id in
+			<foreach collection="orgList" index="index" item="orgId"
+				open="(" separator="," close=")">
+				#{orgId}
+			</foreach>
+		</if>
+		ORDER BY depart_seq
+	</select>
+
+
+
+	<!-- 根据companyId获取部门 -->
+	<select id="selectDepartBycompanyIdWS" resultMap="BaseResultMap"
+			parameterType="java.util.Map">
+		SELECT id, company_id, pid, depart_level,depart_path,
+		depart_seq,org_type,depart_type,status,
+		depart_name
+		from
+		maoding_web_depart d
+		where company_id = #{companyId,jdbcType=VARCHAR}
+		and status='0'
+		<if test="departLevel != null">
+			and depart_level = #{departLevel,jdbcType=VARCHAR}
+		</if>
+		<if test="pid != null">
+			and pid = #{pid,jdbcType=VARCHAR}
+		</if>
+		<if test="departType != null">
+			and depart_type = #{departType,jdbcType=VARCHAR}
+		</if>
+		<if test="orgType != null">
+			and org_type = #{orgType,jdbcType=VARCHAR}
+		</if>
+		<if test="selectVal!=null">
+			and depart_name like '%' #{selectVal} '%'
+		</if>
+		<if test="_parameter.containsKey('orgList') and orgList!=null">  <!-- 用于部门选择（头部信息）组织切换 （查询个人所在独立部门（如果所在的部门非独立部门，但是父部门是独立部门，则需要查询父部门）） -->
+			and depart_type='1'
+			and id in
+			<foreach collection="orgList" index="index" item="orgId"
+					 open="(" separator="," close=")">
+				#{orgId}
+			</foreach>
+		</if>
+		ORDER BY depart_name ,depart_level desc
+	</select>
+
+	<!-- 根据userId,comapnyId获取部门一级部门 -->
+	<select id="selectDepartByParam" resultMap="BaseResultMap"
+			parameterType="java.util.Map">
+		SELECT id, company_id, pid, depart_level,depart_path,
+		depart_seq,org_type,depart_type,STATUS,
+		depart_name
+		FROM
+		maoding_web_depart d
+		WHERE id IN (SELECT org_id FROM maoding_web_org_user WHERE 1 = 1
+		<if test="userId != null">
+			and user_id = #{userId,jdbcType=VARCHAR}
+		</if>
+		<if test="companyId != null">
+			and company_id = #{companyId,jdbcType=VARCHAR}
+		</if>
+		)
+		AND depart_level = 1
+	</select>
+	<!-- 根据comapnyId获取没有创建群组部门一级部门 -->
+	<select id="selectNotCreateGroupDepart" resultMap="BaseResultMap"
+			parameterType="java.util.Map">
+		SELECT id, company_id, pid, depart_level,depart_path,
+		depart_seq,org_type,depart_type,STATUS,
+		depart_name
+		FROM
+		maoding_web_depart d WHERE d.id NOT IN (SELECT orgId FROM maoding_web_im_group WHERE groupType = 1) AND d.depart_level = 1 AND d.status = '0'
+		<if test="companyId != null">
+			and d.company_id = #{companyId,jdbcType=VARCHAR}
+		</if>
+	</select>
+	<!-- 根据comapnyId获取创建群组部门一级部门 -->
+	<select id="selectCreateGroupDepart" resultMap="BaseResultMap"
+			parameterType="java.util.Map">
+		SELECT id, company_id, pid, depart_level,depart_path,
+		depart_seq,org_type,depart_type,STATUS,
+		depart_name
+		FROM
+		maoding_web_depart d WHERE d.id IN (SELECT orgId FROM maoding_web_im_group WHERE groupType = 1) AND d.depart_level = 1
+		<if test="companyId != null">
+			and d.company_id = #{companyId,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<!-- 根据comapnyId获取部门一级部门 -->
+	<select id="selectStairDepartCompanyId" resultMap="BaseResultMap"
+			parameterType="java.util.Map">
+		SELECT id, company_id, pid, depart_level,depart_path,
+		depart_seq,org_type,depart_type,STATUS,
+		depart_name
+		FROM
+		maoding_web_depart d
+		WHERE 1=1
+		<if test="companyId != null">
+			and company_id = #{companyId,jdbcType=VARCHAR}
+		</if>
+		AND depart_level = 1
+	</select>
+	<!-- 根据companyId和userId获取部门（包含公司） -->
+	<select id="getDepartByUserIdContentCompany" resultType="com.maoding.org.dto.DepartDTO" parameterType="java.util.Map">
+
+		SELECT b2.id, b2.id as company_id, null as pid, '1' as depart_level,'1' as depart_path,
+					  '1' as depart_seq,'0' as org_type,'0' as depart_type,status,
+					  IF(p.nick_name IS NULL OR p.nick_name="", b2.company_name,p.nick_name) as depart_name,
+					  a2.server_station as server_station
+		FROM maoding_web_org_user  a2
+			INNER JOIN maoding_web_company b2 on a2.org_id=b2.id
+			LEFT JOIN maoding_web_business_partner p on b2.id = p.company_id and p.type=3
+		WHERE a2.user_id = #{userId,jdbcType=VARCHAR}
+			  and a2.company_id= #{companyId,jdbcType=VARCHAR}
+			  and a2.org_id=a2.company_id
+		UNION
+		(
+			SELECT d.id, d.company_id, pid, depart_level,depart_path,
+				depart_seq,org_type,depart_type,status,
+				(SELECT GROUP_CONCAT(dd.depart_name
+									 ORDER BY dd.depart_level SEPARATOR '/') FROM maoding_web_depart dd
+				 WHERE d.depart_path LIKE CONCAT('%',dd.id,'%')) as depart_name,o.server_station as server_station
+			from maoding_web_depart d
+				INNER JOIN maoding_web_org_user o on d.id = o.org_id
+			where d.company_id = #{companyId,jdbcType=VARCHAR}
+				  and o.user_id = #{userId,jdbcType=VARCHAR}
+				  and d.status='0'
+			ORDER BY depart_name ,depart_level desc
+		)
+	</select>
+
+	<!-- 根据companyId和userId获取部门（包含公司）Interface -->
+	<select id="getDepartByUserIdContentCompanyInterface" resultMap="BaseResultMap" parameterType="java.util.Map">
+
+		SELECT b2.id, b2.id as company_id, null as pid, '1' as depart_level,'1' as depart_path,
+		'1' as depart_seq,'0' as org_type,'0' as depart_type,status,b2.company_short_name as depart_name
+		FROM maoding_web_org_user  a2
+		INNER JOIN maoding_web_company b2 on a2.org_id=b2.id
+		WHERE a2.user_id = #{userId,jdbcType=VARCHAR}
+		and a2.company_id= #{companyId,jdbcType=VARCHAR}
+		and a2.org_id=a2.company_id
+		UNION
+		(
+		SELECT d.id, d.company_id, pid, depart_level,depart_path,
+		depart_seq,org_type,depart_type,status,
+		(SELECT GROUP_CONCAT(dd.depart_name
+		ORDER BY dd.depart_level SEPARATOR '/') FROM maoding_web_depart dd
+		WHERE d.depart_path LIKE CONCAT('%',dd.id,'%')) as depart_name
+		from maoding_web_depart d
+		INNER JOIN maoding_web_org_user o on d.id = o.org_id
+		where d.company_id = #{companyId,jdbcType=VARCHAR}
+		and o.user_id = #{userId,jdbcType=VARCHAR}
+		and d.status='0'
+		ORDER BY depart_name ,depart_level desc
+		)
+	</select>
+
+	<!-- 根据companyId和userId获取部门 -->
+	<select id="getDepartByCompanyIdAndUserId" resultMap="BaseResultMap" parameterType="java.util.Map">
+		SELECT d.id, d.company_id, pid, depart_level,depart_path,
+		depart_seq,org_type,depart_type,status,
+		(SELECT GROUP_CONCAT(dd.depart_name
+		ORDER BY dd.depart_level SEPARATOR '/') FROM maoding_web_depart dd
+		WHERE d.depart_path LIKE CONCAT('%',dd.id,'%')) as depart_name
+		from maoding_web_depart d
+		LEFT JOIN maoding_web_org_user o on d.id = o.org_id
+		where d.company_id = #{companyId,jdbcType=VARCHAR}
+		and o.user_id = #{userId,jdbcType=VARCHAR}
+		and d.status='0'
+		ORDER BY depart_name ,depart_level desc
+
+	</select>
+	
+	<select id="selectUserDpartByParam" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+   	 b.id, b.company_id,b.depart_name,a.server_station
+    from maoding_web_org_user a
+    left join maoding_web_depart b on a.org_id=b.id
+    where 1=1
+    <if test="companyId != null" >
+      and  a.company_id = #{companyId,jdbcType=VARCHAR}
+    </if>
+    <if test="orgId != null" >
+       and a.org_id = #{orgId,jdbcType=VARCHAR}
+    </if>
+    <if test="cuId != null" >
+       and a.cu_id = #{cuId,jdbcType=VARCHAR}
+    </if>
+     <if test="userId != null" >
+       and a.user_id = #{userId,jdbcType=VARCHAR}
+    </if>
+     <if test="departType != null" >
+       and b.depart_type = #{departType,jdbcType=VARCHAR}
+    </if>
+  </select>
+    <!-- 查询子部门（departPath+'-'） （也可以包含自己）-->
+	<select id="selectDepartsByDepartPath" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from maoding_web_depart
+		where status='0' and depart_path like #{departPath,jdbcType=VARCHAR} '%'
+	</select>	
+	
+	<select id="selectDepartNodesByCompanyIds" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from maoding_web_depart
+		where status=0
+		and company_id in
+		<foreach collection="companyIds" index="i" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
+</mapper>

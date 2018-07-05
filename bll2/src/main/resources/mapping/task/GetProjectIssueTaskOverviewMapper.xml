@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetProjectIssueTaskOverviewMapper" >
+    <resultMap id="PhaseMap" type="com.maoding.task.dto.ProjectIssueTaskOverviewDTO" >
+        <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+        <result column="task_name" property="taskName" jdbcType="VARCHAR" />
+        <!--<result column="start_time" property="planStartTime" jdbcType="DATE" />-->
+        <!--<result column="end_time" property="planEndTime" jdbcType="DATE" />-->
+        <collection property="childrenList" column="task_id" select="getDesignTaskList"
+                    ofType="com.maoding.task.dto.ProjectIssueTaskOverviewDTO"  fetchType="eager"/>
+    </resultMap>
+    <resultMap id="DesignMap" type="com.maoding.task.dto.ProjectIssueTaskOverviewDTO">
+        <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+        <result column="task_name" property="taskName" jdbcType="VARCHAR" />
+        <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+        <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+        <result column="start_time" property="planStartTime" jdbcType="DATE" />
+        <result column="end_time" property="planEndTime" jdbcType="DATE" />
+        <result column="task_state" property="taskState" jdbcType="TINYINT" />
+        <result column="last_date" property="lastDate" jdbcType="DATE" />
+        <collection property="childrenList" column="task_id"
+                    select="getIssueTaskList2" ofType="com.maoding.task.dto.ProjectIssueTaskOverviewDTO" fetchType="eager"/>
+    </resultMap>
+    <resultMap id="TaskMap" type="com.maoding.task.dto.ProjectIssueTaskOverviewDTO">
+        <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+        <result column="task_pid" property="taskPid" jdbcType="VARCHAR" />
+        <result column="task_name" property="taskName" jdbcType="VARCHAR" />
+        <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+        <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+        <result column="depart_id" property="departId" jdbcType="VARCHAR" />
+        <result column="depart_name" property="departName" jdbcType="VARCHAR" />
+        <result column="manager_id" property="managerId" jdbcType="VARCHAR" />
+        <result column="manager_name" property="managerName" jdbcType="VARCHAR" />
+        <result column="start_time" property="planStartTime" jdbcType="DATE" />
+        <result column="end_time" property="planEndTime" jdbcType="DATE" />
+        <result column="is_many_issue" property="isManyIssue" jdbcType="TINYINT" />
+        <result column="task_state" property="taskState" jdbcType="TINYINT" />
+        <result column="last_date" property="lastDate" jdbcType="DATE" />
+    </resultMap>
+
+    <resultMap id="TaskIssueMap" type="com.maoding.task.dto.ProjectIssueTaskOverviewDTO" extends="TaskMap">
+        <result column="current_company_id" property="currentCompanyId" jdbcType="VARCHAR" /><!-- 用于参数传递 -->
+        <association property="taskState" select="GetTaskStateMapper.getTaskState2" column="{taskId=task_id}" fetchType="eager"/>
+        <association property="companyName" column="company_id"  select="CompanyEntityMapper.getAliasName"  fetchType="eager" />
+        <collection property="issuePlanList" select="GetProjectIssueTaskMapper.getOtherCompanyTaskPlanForIssueOverview" column="taskId = task_id,companyId = current_company_id" fetchType="eager" />
+    </resultMap>
+
+    <select id="getProjectTaskIssueOverview2" parameterType="java.lang.String" resultMap="PhaseMap">
+        select
+            a1.id as task_id,
+            a1.task_name as task_name,
+            a1.start_time as start_time,
+            a1.end_time as end_time
+        FROM
+            (   select id,task_name,seq,start_time,end_time
+                from maoding_web_project_task
+                where task_status='0' and task_type=1 and project_id=#{projectId}) a1
+        order by a1.seq
+    </select>
+    <select id="getDesignTaskList" resultMap="DesignMap" parameterType="java.lang.String">
+        select
+            a1.id as task_id,
+            a1.task_name as task_name,
+            a1.task_path as task_path,
+            a1.start_time as start_time,
+            a1.end_time as end_time,
+            ifnull(a1.company_id,'') as company_id,
+            if((a9.nick_name is null) or (trim(a9.nick_name)=''),a3.company_name,a9.nick_name) as company_name,
+            ifnull(a1.org_id,'') as depart_id,
+            ifnull(a4.depart_name,'') as depart_name,
+#                 ifnull(a5.company_user_id,'') as manager_id,
+#                 ifnull(a6.user_name,'') as manager_name,
+            if(a1.start_time is null,0,
+                if(a7.responsibler_count=0,6,
+                    if(a7.not_complete_count=0,if(datediff(a7.complete_date,a1.end_time)>0,4,3),
+                        if(a1.start_time>now(),5,
+                            if(datediff(now(),a1.end_time)>0,2,1))))) as task_state,
+            a7.complete_date as last_date
+        FROM
+            (   select id,company_id,org_id,project_id,task_name,task_path,create_date,start_time,end_time
+                from maoding_web_project_task
+                where task_status='0' and task_type=2 and task_pid=#{taskId}) a1
+            left join maoding_web_company a3 on (a1.company_id=a3.id)
+            left join maoding_web_business_partner a9 on (a3.id=a9.company_id and a9.type=3)
+            left join maoding_web_depart a4 on (a1.org_id=a4.id)
+#                 left join maoding_web_project_manager a5 on (a1.company_id=a5.company_id and a1.project_id=a5.project_id and a5.type=1)
+#                 left join maoding_web_company_user a6 on (a5.company_user_id=a6.id)
+            left join (<include refid="ProjectTaskEntityMapper.task_state_table"/>) a7 on (a1.id=a7.task_id)
+            left join maoding_web_project_task a8 on (a8.task_type=3 and task_status!='1' and a1.id=a8.be_modify_id)
+        order by a8.create_date,a1.create_date
+   </select>
+    <select id="getIssueTaskList2" resultMap="TaskMap" parameterType="java.lang.String">
+        select
+            a1.id as task_id,
+            a1.task_name as task_name,
+            a1.start_time as start_time,
+            a1.end_time as end_time,
+            a1.company_id as company_id,
+            if((a9.nick_name is null) or (trim(a9.nick_name)=''),a3.company_name,a9.nick_name) as company_name,
+            a1.org_id as depart_id,
+            a4.depart_name as depart_name,
+            a5.company_user_id as manager_id,
+            a6.user_name as manager_name,
+            a1.is_many_issue as is_many_issue,
+            if(a1.start_time is null,0,
+                if(a7.responsibler_count=0,6,
+                    if(a7.not_complete_count=0,if(datediff(a7.complete_date,a1.end_time)>0,4,3),
+                        if(a1.start_time>now(),5,
+                            if(datediff(now(),a1.end_time)>0,2,1))))) as task_state,
+            a7.complete_date as last_date
+        FROM
+            (<include refid="issue_task_table_2"/>) a1
+            left join maoding_web_company a3 on (a1.company_id=a3.id)
+            left join maoding_web_business_partner a9 on (a3.id=a9.company_id and a9.type=3)
+            left join maoding_web_depart a4 on (a1.org_id=a4.id)
+            left join maoding_web_project_manager a5 on (a1.company_id=a5.company_id and a1.project_id=a5.project_id and a5.type=1)
+            left join maoding_web_company_user a6 on (a5.company_user_id=a6.id)
+            left join (<include refid="ProjectTaskEntityMapper.task_state_table"/>) a7 on (a1.id=a7.task_id)
+        order by a1.create_date,a3.company_name
+    </select>
+    <select id="getIssueTaskList" resultMap="TaskMap" parameterType="java.lang.String">
+        select
+            a1.id as task_id,
+            a1.task_name as task_name,
+            a1.start_time as start_time,
+            a1.end_time as end_time,
+            a1.company_id as company_id,
+            if((a9.nick_name is null) or (trim(a9.nick_name)=''),a3.company_name,a9.nick_name) as company_name,
+            a1.org_id as depart_id,
+            a4.depart_name as depart_name,
+            a5.company_user_id as manager_id,
+            a6.user_name as manager_name,
+            a1.is_many_issue as is_many_issue,
+            if(a1.start_time is null,0,
+                if(a7.responsibler_count=0,6,
+                    if(a7.not_complete_count=0,if(datediff(a7.complete_date,a1.end_time)>0,4,3),
+                        if(a1.start_time>now(),5,
+                            if(datediff(now(),a1.end_time)>0,2,1))))) as task_state,
+            a7.complete_date as last_date
+        FROM
+            (<include refid="issue_task_table"/>) a1
+            left join maoding_web_company a3 on (a1.company_id=a3.id)
+            left join maoding_web_business_partner a9 on (a3.id=a9.company_id and a9.type=3)
+            left join maoding_web_depart a4 on (a1.org_id=a4.id)
+            left join maoding_web_project_manager a5 on (a1.company_id=a5.company_id and a1.project_id=a5.project_id and a5.type=1)
+            left join maoding_web_company_user a6 on (a5.company_user_id=a6.id)
+            left join (<include refid="ProjectTaskEntityMapper.task_state_table"/>) a7 on (a1.id=a7.task_id)
+        order by a1.create_date,a3.company_name
+    </select>
+    <sql id="issue_task_table_2">
+        select
+            ifnull(x2.id,x1.id) as id,
+            if((x2.id is null),x1.task_name,x2.task_name) as task_name,
+            if((x2.id is null),x1.project_id,x2.project_id) as project_id,
+            if((x2.id is null),x1.company_id,x2.company_id) as company_id,
+            if((x2.id is null),x1.org_id,x2.org_id) as org_id,
+            if((x2.id is null),x1.create_date,x2.create_date) as create_date,
+            if((x2.id is null),x1.start_time,x2.start_time) as start_time,
+            if((x2.id is null),x1.end_time,x2.end_time) as end_time,
+            if((x2.id is null) or (x2.company_id=x1.company_id),0,1) as is_many_issue
+        from
+            (   select id,project_id,company_id,org_id,task_name,create_date,start_time,end_time
+                from maoding_web_project_task
+                where ((task_type=2) and (task_status='0') and (task_pid=#{taskId}))
+            ) x1
+            left join maoding_web_project_task x2 on ((x2.task_type=2) and (x2.task_status='0') and (x1.id=x2.task_pid))
+    </sql>
+    <sql id="issue_task_table">
+        select
+            ifnull(x2.id,x1.id) as id,
+            if((x2.id is null),x1.task_name,x2.task_name) as task_name,
+            if((x2.id is null),x1.project_id,x2.project_id) as project_id,
+            if((x2.id is null),x1.company_id,x2.company_id) as company_id,
+            if((x2.id is null),x1.org_id,x2.org_id) as org_id,
+            if((x2.id is null),x1.create_date,x2.create_date) as create_date,
+            if((x2.id is null),x1.start_time,x2.start_time) as start_time,
+            if((x2.id is null),x1.end_time,x2.end_time) as end_time,
+            if((x2.id is null) or (x2.company_id=x1.company_id),0,1) as is_many_issue
+        from
+            (   select id,project_id,company_id,org_id,task_name,create_date,start_time,end_time
+                from maoding_web_project_task
+                where ((task_type=2) and (task_status='0') and (id=#{taskId}))
+            ) x1
+            left join maoding_web_project_task x2 on ((x2.task_type=2) and (x2.task_status='0') and (x1.id=x2.task_pid))
+        union ALL
+        select
+            n.id,
+            n.task_name,
+            n.project_id,
+            n.company_id,
+            n.org_id,
+            n.create_date,
+            n.start_time,
+            n.end_time,
+            0 as is_many_issue
+        from
+            (select
+                    sum(m.issue_to_self) as issue_to_self_count,
+                    sum(m.issue_to_others) as issue_to_others_count,
+                    m.id,
+                    m.task_name,
+                    m.project_id,
+                    m.company_id,
+                    m.org_id,
+                    m.create_date,
+                    m.start_time,
+                    m.end_time
+                from
+                    (   select
+                            m1.id as id,
+                            m1.task_name as task_name,
+                            m1.project_id as project_id,
+                            m1.company_id as company_id,
+                            m1.org_id as org_id,
+                            m1.create_date as create_date,
+                            m1.start_time as start_time,
+                            m1.end_time as end_time,
+                            if((m1.company_id=m2.company_id),1,0) as issue_to_self,
+                            if((m1.company_id=m2.company_id),0,1) as issue_to_others
+                        from
+                            (   select id,project_id,company_id,org_id,task_name,create_date,start_time,end_time
+                                from maoding_web_project_task
+                                where ((task_type=2) and (task_status='0') and (id=#{taskId}))
+                            ) m1
+                            inner join maoding_web_project_task m2 on (m2.task_type=2 and m2.task_status = '0' and m1.id = m2.task_pid)
+                    ) m
+                ) n
+        where (n.issue_to_self_count=0) and (n.issue_to_others_count>0)
+    </sql>
+
+    <select id="listProjectTaskIssueOverview" parameterType="java.util.Map" resultMap="TaskIssueMap">
+        select
+        a.id as task_id,
+        a.task_pid as task_pid,
+        a.task_name as task_name,
+        #{companyId} as current_company_id,
+        if(b.id is null ,a.company_id ,b.company_id) as company_id,
+		if(b.id is null ,a.from_company_id ,b.from_company_id) as from_company_id,
+        if(b.id is null ,a.org_id, b.org_id) as depart_id,
+        c.depart_name as depart_name,
+        if(b.id is null ,a.start_time, b.start_time) as start_time,
+        if(b.id is null ,a.end_time, b.end_time) as end_time
+        from maoding_web_project_task a
+        LEFT JOIN maoding_web_project_task b on a.id = b.be_modify_id and b.from_company_id = #{companyId}
+        LEFT JOIN maoding_web_depart c on if(b.id is null ,a.org_id, b.org_id) = c.id
+        where a.task_status != '1' and (a.task_type=1 or a.task_type=2) and a.project_id=#{projectId}
+        GROUP BY a.id
+        order by a.task_level,a.seq
+    </select>
+
+</mapper>

@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetCompanyUserByOrgIdMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.org.dto.CompanyUserTableDTO" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="cellphone" property="cellphone" jdbcType="VARCHAR" />
+    <result column="relation_type" property="relationType" jdbcType="VARCHAR" />
+    <result column="audit_status" property="auditStatus" jdbcType="VARCHAR" />
+    <result column="employee_type" property="employeeType" jdbcType="VARCHAR" />
+    <result column="employee_status" property="employeeStatus" jdbcType="VARCHAR" />
+    <result column="entry_time" property="entryTime" jdbcType="DATE" />
+    <result column="departure_time" property="departureTime" jdbcType="DATE" />
+    <result column="illustration" property="illustration" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+	<result column="sex" property="sex" jdbcType="VARCHAR" />
+	<result column="seq" property="seq" jdbcType="INTEGER" />
+	<result column="org_server_station" property="orgServerStation" jdbcType="VARCHAR" />
+    <result column="departure_reason" property="departureReason" jdbcType="VARCHAR" />
+    <result column="occupation_registration" property="occupationRegistration" jdbcType="VARCHAR" />
+    <result column="positional_title" property="positionalTitle" jdbcType="VARCHAR" />
+	<result column="admin_flag" property="adminFlag" jdbcType="VARCHAR" />
+	<result column="role_ids" property="roleIds" jdbcType="VARCHAR" />
+	<result column="role_names" property="roleNames" jdbcType="VARCHAR" />
+
+  </resultMap>
+
+	<resultMap id="departListMap" type="com.maoding.org.dto.UserDepartDTO">
+		<result column="depart_id" property="departId"/>
+		<result column="depart_name" property="departName"/>
+		<result column="server_station" property="serverStation"/>
+		<result column="role" property="role"/>
+		<result column="org_roles" property="orgRoles"/>
+	</resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, company_id, user_id, user_name,sex, relation_type, audit_status, employee_type, employee_status, 
+    entry_time, departure_time, illustration, phone, email, departure_reason, create_date, 
+    create_by, update_date, update_by
+  </sql>
+  
+  <!-- 查找公司或部门下所有人员（admin项目） -->
+	<select id="getCompanyUserByOrgIdOfAdmin" resultMap="BaseResultMap" parameterType="java.util.Map">
+		SELECT
+		a.id, a.company_id, a.user_id, a.user_name, a.relation_type, a.audit_status, a.employee_type, a.employee_status,
+		a.entry_time, a.departure_time, a.illustration, a.phone, a.email, a.departure_reason,
+		b.cellphone,
+		c.sex,
+		d.seq,
+		d.server_station as org_server_station,
+		e.id as admin_flag,
+		f.role_names,
+		f.role_ids
+		FROM maoding_web_company_user a
+		LEFT JOIN maoding_web_account b ON b.id=a.user_id
+		LEFT JOIN maoding_web_user c ON a.user_id=c.id
+		LEFT JOIN maoding_web_org_user d on a.id = d.cu_id and a.company_id = d.company_id and a.user_id = d.user_id
+		LEFT JOIN maoding_web_team_operater e on a.company_id=e.company_id and a.user_id = e.user_id
+		LEFT JOIN (SELECT ru.user_id,ru.company_id,ru.org_id,GROUP_CONCAT(r.name) as role_names,GROUP_CONCAT(r.id) as role_ids
+					FROM maoding_web_role_user ru,maoding_web_role r
+					where ru.role_id = r.id GROUP by ru.org_id,ru.user_id)  f on  a.company_id = f.org_id and a.user_id = f.user_id
+		WHERE  (d.org_id=#{orgId,jdbcType=VARCHAR} or (d.org_id is null and a.company_id=#{orgId,jdbcType=VARCHAR}))
+		<if test="auditStatus!=null">
+		   AND a.audit_status= #{auditStatus,jdbcType=VARCHAR} 
+		</if>
+		<if test="keyword != null">
+			AND (a.user_name LIKE '%#{keyword,jdbcType=VARCHAR}%' OR b.cellphone LIKE '%#{keyword,jdbcType=VARCHAR}%')
+		</if>
+		ORDER BY d.seq
+		<if test="startPage!=null">
+			LIMIT #{startPage},#{endPage}
+		</if>
+	</select>
+
+	<select id="getCompanyUserByOrgIdCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+
+		SELECT COUNT(1) from (
+		SELECT
+		DISTINCT a.id
+		FROM maoding_web_company_user a
+		LEFT JOIN maoding_web_account b ON b.id=a.user_id
+		LEFT JOIN maoding_web_org_user c on a.id = c.cu_id and a.company_id = c.company_id and a.user_id = c.user_id
+		WHERE  (c.org_id=#{orgId,jdbcType=VARCHAR} or (c.org_id is null and a.company_id=#{orgId,jdbcType=VARCHAR}))
+		<if test="auditStatus!=null">
+			AND a.audit_status= #{auditStatus,jdbcType=VARCHAR}
+		</if>
+		<if test="keyword != null">
+			AND (a.user_name LIKE '%#{keyword,jdbcType=VARCHAR}%' OR b.cellphone LIKE '%#{keyword,jdbcType=VARCHAR}%')
+		</if>
+		)a22
+
+	</select>
+
+	<!-- 组织人员work项目-->
+	<select id="getCompanyUserByOrgIdOfWork" resultMap="BaseResultMap" parameterType="java.util.Map">
+		SELECT
+		a.id, a.company_id, a.user_id, a.user_name, a.relation_type, a.audit_status, a.employee_type, a.employee_status,
+		a.entry_time, a.departure_time, a.illustration, a.phone, a.email, a.departure_reason,
+		b.cellphone,
+		c.sex,
+		d.seq,
+		d.server_station as org_server_station,
+		e.occupation_registration,
+		f.positional_title
+		FROM maoding_web_company_user a
+		LEFT JOIN maoding_web_account b ON b.id=a.user_id
+		LEFT JOIN maoding_web_user c ON a.user_id=c.id
+		LEFT JOIN maoding_web_org_user d on a.id = d.cu_id and a.company_id = d.company_id and a.user_id = d.user_id
+		LEFT JOIN ( SELECT uq.user_id,dd.name as occupation_registration FROM maoding_web_user_qualifications uq,maoding_data_dictionary dd where dd.id=uq.reg_certificate_level)e ON e.user_id=a.user_id
+		LEFT JOIN ( SELECT utn.user_id,dd.name as positional_title FROM maoding_web_user_technical utn,maoding_data_dictionary dd where dd.id=utn.technical_level)f ON f.user_id=a.user_id
+		WHERE  (d.org_id=#{orgId,jdbcType=VARCHAR} or (d.org_id is null and a.company_id=#{orgId,jdbcType=VARCHAR}))
+		<if test="auditStatus!=null">
+			AND a.audit_status= #{auditStatus,jdbcType=VARCHAR}
+		</if>
+		<if test="keyword != null">
+			AND (a.user_name LIKE '%#{keyword,jdbcType=VARCHAR}%' OR b.cellphone LIKE '%#{keyword,jdbcType=VARCHAR}%')
+		</if>
+		ORDER BY d.seq
+		<if test="startPage!=null">
+			LIMIT #{startPage},#{endPage}
+		</if>
+	</select>
+
+	<!-- 根据orgId查询当前组织所有人员-->
+	<select id="getUserByOrgId" resultType="com.maoding.org.dto.CompanyUserTableDTO" parameterType="java.util.Map">
+		select DISTINCT a.user_id as userId, a.user_name as userName from maoding_web_company_user a
+		left join maoding_web_org_user b on a.id = b.cu_id
+		where 1 = 1
+		<if test="orgId!=null and orgId!=''">
+			AND b.org_id = #{orgId,jdbcType=VARCHAR}
+		</if>
+		<if test="companyId!=null and companyId!=''">
+			AND a.company_id = #{companyId,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<!-- 查找公司或部门下所有人员 （节点及子节点）暂时未用-->
+	<select id="getCompanyUserByOrgId-bak" resultMap="BaseResultMap" parameterType="java.util.Map">
+		SELECT
+		a.*,
+		b.cellphone,
+		c.sex,
+		d.occupation_registration,
+		e.positional_title
+		FROM maoding_web_company_user a
+		LEFT JOIN maoding_web_account b ON b.id=a.user_id
+		LEFT JOIN maoding_web_user c ON a.user_id=c.id
+		LEFT JOIN ( SELECT uq.user_id,dd.name as occupation_registration FROM maoding_web_user_qualifications uq,maoding_data_dictionary dd where dd.id=uq.reg_certificate_level)d ON d.user_id=a.user_id
+		LEFT JOIN ( SELECT utn.user_id,dd.name as positional_title FROM maoding_web_user_technical utn,maoding_data_dictionary dd where dd.id=utn.technical_level)e ON e.user_id=a.user_id
+		LEFT JOIN (SELECT a1.user_id ,a1.server_station , b1.id as depart_id,b1.company_id,b1.depart_name,b1.depart_seq,b1.depart_path,b1.depart_level
+		FROM maoding_web_org_user  a1
+		LEFT JOIN maoding_web_depart b1 on a1.org_id=b1.id
+		GROUP BY a1.org_id,a1.user_id
+		) g on g.company_id=a.company_id and g.user_id =a.user_id
+		WHERE (CASE (SELECT @ct:=COUNT(*) FROM maoding_web_company c WHERE c.id=#{orgId,jdbcType=VARCHAR})
+		WHEN 0 THEN g.depart_path LIKE CONCAT('%',#{orgId,jdbcType=VARCHAR},'%')
+		ELSE a.company_id=#{orgId,jdbcType=VARCHAR} END)
+		<if test="auditStatus!=null">
+			AND a.audit_status= #{auditStatus,jdbcType=VARCHAR}
+		</if>
+		<if test="keyword != null">
+			AND (a.user_name LIKE '%#{keyword,jdbcType=VARCHAR}%' OR b.cellphone LIKE '%#{keyword,jdbcType=VARCHAR}%')
+		</if>
+		ORDER BY a.seq,a.update_date desc
+		<if test="startPage!=null">
+			LIMIT #{startPage},#{endPage}
+		</if>
+	</select>
+
+	<!-- 查询组织人员人数（节点及子节点）暂时未用-->
+	<select id="getCompanyUserByOrgIdCount-bak" resultType="java.lang.Integer" parameterType="java.util.Map">
+
+		SELECT COUNT(1) from (
+		SELECT
+		DISTINCT a.id
+		FROM maoding_web_company_user a
+		LEFT JOIN (SELECT a1.user_id ,a1.server_station , b1.id as depart_id,b1.company_id,b1.depart_name,b1.depart_seq,b1.depart_path
+		FROM maoding_web_org_user  a1
+		LEFT JOIN maoding_web_depart b1 on a1.org_id=b1.id
+		WHERE a1.org_id!=a1.company_id
+		GROUP BY a1.org_id,a1.user_id
+		ORDER BY a1.user_id) g on g.company_id=a.company_id and g.user_id =a.user_id
+		WHERE (CASE (SELECT @ct:=COUNT(*) FROM maoding_web_company c WHERE c.id=#{orgId,jdbcType=VARCHAR})
+		WHEN 0 THEN g.depart_path LIKE CONCAT('%',#{orgId,jdbcType=VARCHAR},'%')
+		ELSE a.company_id=#{orgId,jdbcType=VARCHAR} END)
+		<if test="auditStatus!=null">
+			AND a.audit_status= #{auditStatus,jdbcType=VARCHAR}
+		</if>
+		<if test="keyword != null">
+			AND (a.user_name LIKE '%#{keyword,jdbcType=VARCHAR}%' OR b.cellphone LIKE '%#{keyword,jdbcType=VARCHAR}%')
+		</if>
+		) a22
+
+	</select>
+
+
+	<select id="getCompanyUserDepartRole" resultMap="departListMap" parameterType="java.util.Map">
+
+		SELECT a2.id, b2.id as depart_id,ifnull(p2.nick_name,b2.company_name) as depart_name,a2.server_station ,GROUP_CONCAT(d2.name) as role,GROUP_CONCAT(d2.id) as org_roles
+		FROM maoding_web_org_user  a2
+			LEFT JOIN maoding_web_company b2 on a2.org_id=b2.id
+			LEFT JOIN maoding_web_business_partner p2 on p2.company_id=b2.id
+			LEFT JOIN maoding_web_role_user c2 on a2.org_id=c2.org_id and c2.user_id=a2.user_id
+			LEFT JOIN maoding_web_role d2 on c2.role_id=d2.id
+		WHERE a2.user_id = #{userId,jdbcType=VARCHAR}
+			  and a2.company_id= #{companyId,jdbcType=VARCHAR}
+			  and a2.org_id=a2.company_id
+		GROUP BY a2.org_id,a2.user_id
+		UNION
+		(
+			SELECT * from (
+				SELECT a1.id,  b1.id as depart_id,b1.depart_name, a1.server_station ,GROUP_CONCAT(d1.name) as role,GROUP_CONCAT(d1.id) as org_roles
+				FROM maoding_web_org_user  a1
+				LEFT JOIN maoding_web_depart b1 on a1.org_id=b1.id
+				LEFT JOIN maoding_web_role_user c1 on a1.org_id=c1.org_id and c1.user_id=a1.user_id
+				LEFT JOIN maoding_web_role d1 on c1.role_id=d1.id
+				WHERE a1.user_id = #{userId,jdbcType=VARCHAR}
+					  and a1.company_id= #{companyId,jdbcType=VARCHAR}
+					  and a1.org_id!=a1.company_id
+				GROUP BY a1.org_id,a1.user_id
+				order by a1.seq
+			)a
+		)
+	</select>
+
+	<select id="getCompanyUserDepartRoleInterface" resultMap="departListMap" parameterType="java.util.Map">
+
+		SELECT a2.id, b2.id as depart_id,b2.company_short_name as depart_name,a2.server_station ,GROUP_CONCAT(d2.name) as role,GROUP_CONCAT(d2.id) as org_roles
+		FROM maoding_web_org_user  a2
+		LEFT JOIN maoding_web_company b2 on a2.org_id=b2.id
+		LEFT JOIN maoding_web_role_user c2 on a2.org_id=c2.org_id and c2.user_id=a2.user_id
+		LEFT JOIN maoding_web_role d2 on c2.role_id=d2.id
+		WHERE a2.user_id = #{userId,jdbcType=VARCHAR}
+		and a2.company_id= #{companyId,jdbcType=VARCHAR}
+		and a2.org_id=a2.company_id
+		GROUP BY a2.org_id,a2.user_id
+		UNION
+		(
+		SELECT a1.id,  b1.id as depart_id,b1.depart_name, a1.server_station ,GROUP_CONCAT(d1.name) as role,GROUP_CONCAT(d1.id) as org_roles
+		FROM maoding_web_org_user  a1
+		LEFT JOIN maoding_web_depart b1 on a1.org_id=b1.id
+		LEFT JOIN maoding_web_role_user c1 on a1.org_id=c1.org_id and c1.user_id=a1.user_id
+		LEFT JOIN maoding_web_role d1 on c1.role_id=d1.id
+		WHERE a1.user_id = #{userId,jdbcType=VARCHAR}
+		and a1.company_id= #{companyId,jdbcType=VARCHAR}
+		and a1.org_id!=a1.company_id
+		GROUP BY a1.org_id,a1.user_id
+		)
+	</select>
+	<!-- 未激活人列表 -->
+	<select id="getCompanyUserOfNotActive" resultMap="BaseResultMap" parameterType="java.util.Map">
+  		SELECT a.*,
+		b.cellphone
+		from  maoding_web_company_user a
+		LEFT JOIN maoding_web_account b on a.user_id = b.id
+		where b.`status`='1' and a.audit_status='1'
+		and a.company_id = #{companyId,jdbcType=VARCHAR}
+		<if test="startPage!=null">
+			LIMIT #{startPage},#{endPage}
+		</if>
+  	</select>
+  	
+  	<!-- 未激活人数 -->
+  	<select id="getCompanyUserOfNotActiveCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+  		SELECT COUNT(1)  from  maoding_web_company_user a
+		LEFT JOIN maoding_web_account b on a.user_id = b.id
+		where b.`status`='1' and a.audit_status='1'
+		and a.company_id = #{companyId,jdbcType=VARCHAR}
+  	</select>
+
+	<select id="getCompanyUserDTOByUserIdAndCompanyId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select
+		a.id,a.user_name,a.email,b.cellphone
+		from maoding_web_company_user a
+		LEFT  JOIN  maoding_web_account b on b.id = a.user_id
+		where user_id = #{userId,jdbcType=VARCHAR} and company_id = #{companyId,jdbcType=VARCHAR}
+	</select>
+
+</mapper>

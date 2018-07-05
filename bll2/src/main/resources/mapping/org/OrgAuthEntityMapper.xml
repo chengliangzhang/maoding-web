@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="OrgAuthEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.org.entity.OrgAuthEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="org_name" property="orgName" jdbcType="VARCHAR" />
+    <result column="authentication_status" property="authenticationStatus" jdbcType="BIT" />
+    <result column="operator_name" property="operatorName" jdbcType="VARCHAR" />
+    <result column="reject_reason" property="rejectReason" jdbcType="VARCHAR" />
+    <result column="legal_representative" property="legalRepresentative" jdbcType="VARCHAR" />
+    <result column="business_license_number" property="businessLicenseNumber" jdbcType="VARCHAR" />
+    <result column="business_license_type" property="businessLicenseType" jdbcType="SMALLINT" />
+    <result column="apply_date" property="applyDate" jdbcType="DATE" />
+    <result column="expiry_date" property="expiryDate" jdbcType="DATE" />
+    <result column="deleted" property="deleted" jdbcType="BIT" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, org_name, authentication_status, operator_name, reject_reason, legal_representative, 
+    business_license_number, business_license_type, apply_date, expiry_date, deleted, 
+    create_date, create_by, update_date, update_by
+  </sql>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_org_auth
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_org_auth
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.maoding.org.entity.OrgAuthEntity" >
+    insert into maoding_web_org_auth (id, org_name, authentication_status, 
+      operator_name, reject_reason, legal_representative, 
+      business_license_number, business_license_type, 
+      apply_date, expiry_date, deleted, 
+      create_date, create_by, update_date, 
+      update_by)
+    values (#{id,jdbcType=VARCHAR}, #{orgName,jdbcType=VARCHAR}, #{authenticationStatus,jdbcType=BIT}, 
+      #{operatorName,jdbcType=VARCHAR}, #{rejectReason,jdbcType=VARCHAR}, #{legalRepresentative,jdbcType=VARCHAR}, 
+      #{businessLicenseNumber,jdbcType=VARCHAR}, #{businessLicenseType,jdbcType=SMALLINT}, 
+      #{applyDate,jdbcType=DATE}, #{expiryDate,jdbcType=DATE}, #{deleted,jdbcType=BIT}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.org.entity.OrgAuthEntity" >
+    update maoding_web_org_auth
+    <set >
+      <if test="orgName != null" >
+        org_name = #{orgName,jdbcType=VARCHAR},
+      </if>
+      <if test="authenticationStatus != null" >
+        authentication_status = #{authenticationStatus,jdbcType=BIT},
+      </if>
+      <if test="operatorName != null" >
+        operator_name = #{operatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="rejectReason != null" >
+        reject_reason = #{rejectReason,jdbcType=VARCHAR},
+      </if>
+      <if test="legalRepresentative != null" >
+        legal_representative = #{legalRepresentative,jdbcType=VARCHAR},
+      </if>
+      <if test="businessLicenseNumber != null" >
+        business_license_number = #{businessLicenseNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="businessLicenseType != null" >
+        business_license_type = #{businessLicenseType,jdbcType=SMALLINT},
+      </if>
+      <if test="applyDate != null" >
+        apply_date = #{applyDate,jdbcType=DATE},
+      </if>
+      <if test="expiryDate != null" >
+        expiry_date = #{expiryDate,jdbcType=DATE},
+      </if>
+      <if test="deleted != null" >
+        deleted = #{deleted,jdbcType=BIT},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="update" parameterType="com.maoding.org.entity.OrgAuthEntity" >
+    update maoding_web_org_auth
+    set org_name = #{orgName,jdbcType=VARCHAR},
+      authentication_status = #{authenticationStatus,jdbcType=BIT},
+      operator_name = #{operatorName,jdbcType=VARCHAR},
+      reject_reason = #{rejectReason,jdbcType=VARCHAR},
+      legal_representative = #{legalRepresentative,jdbcType=VARCHAR},
+      business_license_number = #{businessLicenseNumber,jdbcType=VARCHAR},
+      business_license_type = #{businessLicenseType,jdbcType=SMALLINT},
+      apply_date = #{applyDate,jdbcType=DATE},
+      expiry_date = #{expiryDate,jdbcType=DATE},
+      deleted = #{deleted,jdbcType=BIT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

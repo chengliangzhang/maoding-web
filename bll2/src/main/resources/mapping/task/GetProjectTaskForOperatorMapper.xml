@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetProjectTaskForOperatorMapper" >
+
+    <resultMap id="BaseResultMap" type="com.maoding.task.dto.ProjectIssueTaskDTO" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+        <result column="content_name" property="taskName" jdbcType="VARCHAR" />
+        <result column="plan_start_time" property="planStartTime" jdbcType="DATE" />
+        <result column="plan_end_time" property="planEndTime" jdbcType="DATE" />
+        <result column="issue_level_all" property="issueLevel" jdbcType="INTEGER" />
+        <result column="content_is_has_child" property="isHasChild" jdbcType="INTEGER" />
+        <collection property="childList" ofType="com.maoding.task.dto.ProjectIssueTaskDTO">
+            <result column="task_id" property="id" jdbcType="VARCHAR" />
+            <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+            <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+            <result column="depart_id" property="departId" jdbcType="VARCHAR" />
+            <result column="task_name" property="taskName" jdbcType="VARCHAR" />
+            <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+            <result column="depart_name" property="departName" jdbcType="VARCHAR" />
+            <result column="be_modify_id" property="beModifyId" jdbcType="VARCHAR" />
+            <result column="start_time" property="planStartTime" jdbcType="DATE" />
+            <result column="end_time" property="planEndTime" jdbcType="DATE" />
+            <result column="complete_date" property="completeDate" jdbcType="DATE" />
+            <result column="task_remark" property="taskRemark" jdbcType="VARCHAR" />
+            <result column="task_status" property="taskStatus" jdbcType="VARCHAR" />
+            <result column="task_type" property="taskType" jdbcType="INTEGER" />
+            <result column="is_has_child" property="isHasChild" jdbcType="INTEGER" />
+            <result column="is_root_task" property="isRootTask" jdbcType="INTEGER" />
+            <result column="task_path" property="taskPath" jdbcType="VARCHAR" />
+            <result column="issue_level" property="issueLevel" jdbcType="INTEGER" />
+        </collection>
+    </resultMap>
+
+    <select id="getOperatorTaskList" parameterType="com.maoding.task.dto.QueryProjectTaskDTO" resultMap="BaseResultMap">
+        SELECT
+        (b.id is not null) as content_is_has_child,
+        exists(select 1 from maoding_web_project_task where (task_type=0 or task_type=2) and task_status!='1' and task_pid=b.be_modify_id) as is_has_child,
+        a.id,a.task_name as content_name ,a.start_time as plan_start_time,a.end_time as plan_end_time,
+        b.id as task_id,b.task_name, b.task_remark,b.project_id,b.complete_date,b.depart_id,b.depart_name,b.company_id,a.task_level-1 as issue_level_all,
+        if((p.nick_name is null) or (trim(p.nick_name)=''),c.company_name,p.nick_name) as company_name,
+        b.start_time ,b.end_time,
+        b.task_status,
+        b.be_modify_id,b.task_type,b.is_root_task,
+        b.task_level-1 as issue_level
+        from maoding_web_project_task a
+        LEFT JOIN ( SELECT
+        IFNULL(t2.id,t1.id) as id,
+        t1.id as be_modify_id,
+        IF(t2.id is null,t1.task_pid,t2.task_pid) as task_pid,
+        IF(t2.id is null,t1.task_type,t2.task_type) as task_type,
+        IF(t2.id is null,t1.project_id,t2.project_id) as project_id,
+        IF(t2.id is null,t1.task_name,t2.task_name) as task_name,
+        IF(t2.id is null,t1.task_remark,t2.task_remark) as task_remark,
+        IF(t2.id is null,t1.start_time,t2.start_time) as start_time,
+        IF(t2.id is null,t1.end_time,t2.end_time) as end_time,
+        IF(t2.id is null,t1.seq,t2.seq) as seq,
+        t1.complete_date as complete_date,
+        ifnull(t2.create_date,t1.create_date) as create_date,
+        IF(t2.id is null,t1.company_id,t2.company_id) as company_id,
+        IF(t2.id is null,t1.task_status,t2.task_status) as task_status,
+        IF(t2.id is null,t1.org_id,t2.org_id) as depart_id,
+        (select d.depart_name from maoding_web_depart d where d.id =  IF(t2.id is null,t1.org_id,t2.org_id)) as depart_name,
+        IF(t1.task_pid is null,1,IF(r.id is not null,1,0)) as is_root_task,
+        ifnull(t2.task_level,t1.task_level) as task_level
+        from maoding_web_project_task t1
+        LEFT JOIN maoding_web_project_task t2 on t1.id = t2.be_modify_id and t2.task_type=3 and t2.task_status !='1'
+        LEFT JOIN maoding_web_project_task_relation r on t1.id = r.task_id and r.relation_status='0'
+        WHERE (t1.task_type = 3 and t2.id is null and t1.be_modify_id is null) or (t1.task_type = 2 and t2.id is null) or (t1.task_type=2 and t2.task_type=3)) b on a.id = b.task_pid and b.task_status!='1'
+        LEFT JOIN maoding_web_company c on b.company_id = c.id
+        LEFT JOIN maoding_web_business_partner p on c.id = p.company_id and p.type = 3
+       <if test="isCreator!=null and isCreator==0">
+        LEFT JOIN maoding_web_project_task_relation f on a.id = f.task_id and f.relation_status='0'
+       </if>
+        WHERE a.task_status='0'
+        AND a.project_id = #{projectId,jdbcType=VARCHAR}
+        AND a.company_id = #{companyId,jdbcType=VARCHAR}
+        <choose>
+            <when test="isCreator==0">
+                AND  f.to_company_id =  #{companyId,jdbcType=VARCHAR}
+                AND a.task_type = 2
+            </when>
+            <when test="isCreator==1">
+                AND   a.task_type = 1
+            </when>
+        </choose>
+        order by a.seq,b.seq,a.create_date,b.create_date
+    </select>
+
+    <!-- 根据taskPid获取任务ID及未发布的信息记录 -->
+    <select id="getTaskByTaskPidForChangeProcessTime" resultType="com.maoding.task.dto.ProjectIssueTaskDTO" parameterType="java.lang.String">
+        SELECT
+            t1.id as be_modify_id,t1.task_name,t1.task_pid,t1.task_remark,t1.project_id,t1.company_id,t1.org_id as depart_id,
+            t2.id,t3.start_time as plan_start_time,t3.end_time as plan_end_time
+            from maoding_web_project_task t1
+            LEFT JOIN maoding_web_project_task t2 on t1.id = t2.be_modify_id and t2.task_type=3
+            LEFT JOIN (select target_id,start_time,end_time from (select  target_id,start_time,end_time from maoding_web_project_process_time  ORDER BY create_date desc)t group by target_id) t3 on t3.target_id = IFNULL(t2.id,t1.id)
+            WHERE t1.task_pid =  #{taskPid,jdbcType=VARCHAR}
+             and ((t1.task_type = 3 and t2.id is null and t1.be_modify_id is null) or (t1.task_type = 2 and t2.id is null) or (t1.task_type=2 and t2.task_type=3))
+            and t1.task_status != '1'
+    </select>
+</mapper>

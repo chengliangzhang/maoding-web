@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="RoleEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.role.entity.RoleEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="order_index" property="orderIndex" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, company_id, code, name, order_index,status, create_date, create_by, update_date, update_by
+  </sql>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_role
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_role
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maoding.role.entity.RoleEntity" >
+    insert into maoding_web_role (id, company_id, code, 
+      name, order_index, create_date, 
+      create_by, update_date, update_by
+      )
+    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{orderIndex,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.role.entity.RoleEntity" >
+    update maoding_web_role
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="orderIndex != null" >
+        order_index = #{orderIndex,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="update" parameterType="com.maoding.role.entity.RoleEntity" >
+    update maoding_web_role
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      order_index = #{orderIndex,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <!-- 查找当前公司的角色 -->
+	<select id="selectByCompanyId" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from maoding_web_role where company_id=#{companyId,jdbcType=VARCHAR} or
+		company_id is null order by order_index
+	</select>
+
+	<!-- 查找当前个人所在组织的（组织：团队，部门）所有角色 -->
+	<select id="getUserRolesByOrgId" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select a.id,a.name,a.code,a.order_index
+		from maoding_web_role a,maoding_web_role_user b
+		where a.id=b.role_id
+		and b.user_id=#{userId,jdbcType=VARCHAR}
+		and b.org_id=#{orgId,jdbcType=VARCHAR}
+		order by a.order_index
+	</select>
+
+  <!-- 查找当前个人所在组织的（组织：团队，部门）所有角色 -->
+  <select id="getUserRoleCodes" resultType="java.lang.String" parameterType="java.util.Map">
+    select GROUP_CONCAT(a.code)
+    from maoding_web_role a,maoding_web_role_user b
+    where a.id=b.role_id
+    and b.user_id=#{userId,jdbcType=VARCHAR}
+    and b.org_id=#{orgId,jdbcType=VARCHAR}
+    GROUP by b.org_id
+  </select>
+
+    <!--根据角色名和公司Id获取人员Id-->
+    <select id="getUserIdByName" resultType="java.lang.String" parameterType="java.util.Map">
+        select b.user_id
+        from maoding_web_role a,maoding_web_role_user b
+        where a.id=b.role_id
+        and b.company_id=#{companyId,jdbcType=VARCHAR}
+        AND a.name=#{roleName,jdbcType=VARCHAR}
+    </select>
+
+  <!--根据角色名和公司Id获取人员Id-->
+  <select id="getMaxRoleIndex" resultType="java.lang.Integer">
+    select count(1)+1
+    from maoding_web_role a
+  </select>
+
+
+</mapper>

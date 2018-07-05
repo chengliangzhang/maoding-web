@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetCompanyFilterbyParamMapper">
+	<resultMap id="BaseResultMap"
+		type="com.maoding.org.dto.CompanyDTO">
+	 	<id column="id" property="id" jdbcType="VARCHAR" />
+	    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+	    <result column="company_type" property="companyType" jdbcType="VARCHAR" />
+	    <result column="company_short_name" property="companyShortName" jdbcType="VARCHAR" />
+	    <result column="company_fax" property="companyFax" jdbcType="VARCHAR" />
+	    <result column="province" property="province" jdbcType="VARCHAR" />
+	    <result column="city" property="city" jdbcType="VARCHAR" />
+		<result column="county" property="county" jdbcType="VARCHAR" />
+	    <result column="company_phone" property="companyPhone" jdbcType="VARCHAR" />
+	    <result column="company_address" property="companyAddress" jdbcType="VARCHAR" />
+	    <result column="status" property="status" jdbcType="VARCHAR" />
+	    <result column="file_path" property="filePath" jdbcType="LONGVARCHAR" />
+	</resultMap>
+	
+	<!-- 查找所有的大B,小b。并且过滤当前小b已关联的大B ，过滤当前大B已关联的小b， 用于组织查询 -->
+	<select id="getCompanyFilterbyParam" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		SELECT
+			c.id,
+			company_name as companyName,
+			company_type as companyType,
+			company_short_name as companyShortName,
+			c.status
+		from maoding_web_company c
+		where 1=1 and c.status = 0 and c.id !=#{orgId,jdbcType=VARCHAR}
+		<if test="keyword != null and keyword!=''"> 
+			and (c.company_name LIKE  '%' #{keyword} '%' or c.company_short_name LIKE  '%' #{keyword} '%')
+		</if>
+		<if test="province != null">
+			and c.province=#{province,jdbcType=VARCHAR}
+		</if>
+		<if test="city != null">
+			and c.city=#{city,jdbcType=VARCHAR}
+		</if>
+		<if test="county != null">
+			and c.county=#{county,jdbcType=VARCHAR}
+		</if>
+		<if test="companyName != null">
+			and c.company_name LIKE  '%' #{companyName} '%'
+		</if>
+		<!--<if test="orgId != null">
+			and c.company_type!=0
+			and c.id not in( SELECT org_pid from maoding_web_company_relation where
+			org_id=#{orgId,jdbcType=VARCHAR} and (company_status='0' or company_status='2'))
+		</if>
+		<if test="orgPid != null">
+			and c.company_type=0
+			and c.id not in( SELECT org_id from maoding_web_company_relation
+			where org_pid=#{orgPid,jdbcType=VARCHAR} and (company_status='0' or company_status='2'))
+		</if>-->
+		<if test="startPage!=null">
+			LIMIT #{startPage},#{endPage}
+		</if>
+	</select>
+	
+		<select id="getCompanyFilterbyParamCount"  resultType="java.lang.Integer"
+		parameterType="java.lang.String">
+		SELECT count(1)
+		from maoding_web_company c
+		where 1=1 and c.status = 0 and c.id !=#{orgId,jdbcType=VARCHAR}
+		<if test="keyword != null and keyword!=''"> 
+			and (c.company_name LIKE  '%' #{keyword} '%' or c.company_short_name LIKE  '%' #{keyword} '%')
+		</if>
+		<if test="province != null">
+			and c.province=#{province,jdbcType=VARCHAR}
+		</if>
+		<if test="city != null">
+			and c.city=#{city,jdbcType=VARCHAR}
+		</if>
+		<if test="county != null">
+			and c.county=#{county,jdbcType=VARCHAR}
+		</if>
+
+		<!--<if test="orgId != null">
+			and c.company_type!=0
+			and c.id not in( SELECT org_pid from maoding_web_company_relation where
+			org_id=#{orgId,jdbcType=VARCHAR} and (company_status='0' or company_status='2'))
+		</if>
+		<if test="orgPid != null">
+			and c.company_type=0
+			and c.id not in( SELECT org_id from maoding_web_company_relation
+			where org_pid=#{orgPid,jdbcType=VARCHAR} and (company_status='0' or company_status='2'))
+		</if>-->
+	</select>
+</mapper>
