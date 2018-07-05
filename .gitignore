@@ -1,9 +1,12 @@
-target
-logs
-.idea
-.svn
+target/
+logs/
+node_modules/
+webapp/
+.idea/
+.svn/
 .depend
 *.iml
 *.7z*
 *.rar*
-services/src/test/java/com/maoding/FileServer/upload_test*.*
+*.orig*
+upload_test*.*
