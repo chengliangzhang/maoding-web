@@ -2090,7 +2090,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             ProjectTaskEntity target = projectTaskDao.selectById(taskId);
             dynamicService.addDynamic(null, target, designContentDTO.getCompanyId(), designContentDTO.getAccountId());
             //通知协同
-            collaborationService.pushSyncCMD_PT(target.getProjectId(), target.getTaskPath(), SyncCmd.PT0);
+//            collaborationService.pushSyncCMD_PT(target.getProjectId(), target.getTaskPath(), SyncCmd.PT0);
             //推送消息 给本团队的经营负责人推送消息 MESSAGE_TYPE_302
             this.messageService.sendMessageForProjectManager(new SendMessageDTO(designContentDTO.getProjectId(), designContentDTO.getCompanyId(), designContentDTO.getAccountId(), designContentDTO.getCompanyId(), SystemParameters.MESSAGE_TYPE_302));
         } else {//修改
