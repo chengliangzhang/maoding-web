@@ -47,9 +47,10 @@ public class ExpFixedDaoImpl extends GenericDao<ExpFixedEntity> implements ExpFi
     }
 
     @Override
-    public ExpFixedMainDTO getExpFixed(String companyId, String expDate) {
+    public ExpFixedMainDTO getExpFixed(String companyId, String rootCompanyId, String expDate) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("companyId", companyId);
+        map.put("rootCompanyId", rootCompanyId);
         map.put("expDate", expDate);
         List<ExpFixedMainDTO> list = this.sqlSession.selectList("GetExpFixedMapper.getExpFixed", map);
         if(!CollectionUtils.isEmpty(list)){

@@ -19,6 +19,8 @@ public class SaveExpCategoryShowStatusDTO extends BaseDTO {
 
     private Integer categoryType;
 
+    private Integer payType;
+
     private Integer showStatus;
 
     private String relationCompanyId;
@@ -86,5 +88,13 @@ public class SaveExpCategoryShowStatusDTO extends BaseDTO {
 
     public void setCategoryTypeList(List<ExpCategoryRelationEntity> categoryTypeList) {
         this.categoryTypeList = categoryTypeList;
+    }
+
+    public Integer getPayType() {
+        return payType;
+    }
+
+    public void setPayType(Integer payType) {
+        this.payType = payType;
     }
 }

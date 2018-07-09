@@ -11,6 +11,8 @@ public class QueryExpCategoryDTO extends BaseDTO {
 
     private Integer categoryType;
 
+    private Integer payType;
+
     /**
      * 不为null时，包含项目费用类型的数据
      */
@@ -68,5 +70,13 @@ public class QueryExpCategoryDTO extends BaseDTO {
 
     public void setCompanyIdList(List<String> companyIdList) {
         this.companyIdList = companyIdList;
+    }
+
+    public Integer getPayType() {
+        return payType;
+    }
+
+    public void setPayType(Integer payType) {
+        this.payType = payType;
     }
 }

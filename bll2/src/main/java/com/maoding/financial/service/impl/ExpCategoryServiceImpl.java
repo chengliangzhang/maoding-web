@@ -127,6 +127,11 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
         }
         dataList = this.dataDictionaryDao.getExpTypeList(code);
         for (DataDictionaryDataDTO d : dataList) {
+            int payType = CompanyBillType.DIRECTION_PAYER;
+            if(otherIncome.equals(d.getCode())){
+                payType = CompanyBillType.DIRECTION_PAYEE;
+            }
+
             String pid = d.getId();
             if(!directCost.equals(d.getCode())){
                 ExpCategoryEntity expCategoryEntity = new ExpCategoryEntity();
@@ -140,6 +145,7 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
                 expCategoryEntity.setCategoryType(categoryType);
                 expCategoryEntity.setStatus("0");
                 expCategoryEntity.setShowStatus(1);
+                expCategoryEntity.setPayType(payType);
                 if(categoryType==3){
                     expCategoryEntity.setShowStatus(0); // 如果是类型为分摊费用，默认不选中
                 }else {
@@ -165,6 +171,7 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
                 child.setCategoryType(categoryType);
                 child.setStatus("0");
                 child.setShowStatus(1);
+                child.setPayType(payType);
                 if(categoryType==3){
                     child.setShowStatus(0); // 如果是类型为分摊费用，默认不选中
                 }else {
@@ -228,24 +235,34 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
         this.setDefaultExp(rootCompanyId);
         this.insertCategoryFromRootCompany(query);
         List<ExpCategoryDataDTO> result = this.expCategoryDao.getExpCategoryList(query);
-        if(!CollectionUtils.isEmpty(result)){
-            if(!"主营业务收入".equals(result.get(0).getName()) && (query.getCategoryType()==null || query.getCategoryType()==2)){
-                ExpCategoryEntity mainIncome = expCategoryDao.selectById(mainIncomeId);
-                mainIncome.setShowStatus(0);
-                result.add(0,(ExpCategoryDataDTO)BaseDTO.copyFields(mainIncome,ExpCategoryDataDTO.class));
-            }
-        }
+//        if(!CollectionUtils.isEmpty(result)){
+//            if(!"主营业务收入".equals(result.get(0).getName()) && (query.getCategoryType()==null || query.getCategoryType()==2)){
+//                ExpCategoryEntity mainIncome = expCategoryDao.selectById(mainIncomeId);
+//                mainIncome.setShowStatus(0);
+//                result.add(0,(ExpCategoryDataDTO)BaseDTO.copyFields(mainIncome,ExpCategoryDataDTO.class));
+//            }
+//        }
         //重新处理一下disabled
-        if(companyId.equals(rootCompanyId)){
-            result.stream().forEach(exp->{
-                if(exp.getCategoryType()==3){
-                    exp.setDisabled(true);
+
+        result.stream().forEach(exp->{
+            if(!CollectionUtils.isEmpty(exp.getChildList())){
+                if(exp.getChildList().size()==1 && StringUtil.isNullOrEmpty(exp.getChildList().get(0).getId())){
+                    exp.setChildList(new ArrayList<>());
+                }else {
                     exp.getChildList().stream().forEach(child->{
-                        child.setDisabled(true);
+                        if(child!=null && child.getCategoryType()!=null){
+                            if(child.getCategoryType()==0){
+                                child.setDisabled(true);
+                            }
+                            if(child.getCategoryType()==3 && companyId.equals(rootCompanyId)){
+                                child.setDisabled(true);
+                            }
+                        }
                     });
                 }
-            });
-        }
+            }
+        });
+
         return result;
     }
 
@@ -270,7 +287,6 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
         if(!CollectionUtils.isEmpty(query.getCompanyIdList())){
             rootCompanyId = companyService.getRootCompanyId(query.getCompanyIdList().get(0));
             this.setDefaultExp(rootCompanyId);
-            this.setDefaultExp(rootCompanyId);
             //下面的只对总公司进行设置。如果子公司没有设置，那么统一使用总公司的
             query.setRootCompanyId(rootCompanyId);
             query.setCompanyId(rootCompanyId);
@@ -279,7 +295,6 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
             companyIdList.addAll(query.getCompanyIdList());
         }else if(!StringUtil.isNullOrEmpty(subCompanyId)){
             query.setCompanyIdList(Arrays.asList(subCompanyId));
-            this.setDefaultExp(rootCompanyId);
             this.setDefaultExp(rootCompanyId);
             query.setRootCompanyId(rootCompanyId);
             query.setCompanyId(subCompanyId);
@@ -319,6 +334,10 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
         if(dto.getCategoryType()==null || dto.getCategoryType()==0){ //为了在sql的判断处理简单些
             dto.setCategoryType(null);
         }
+        if(dto.getPayType()==null || dto.getPayType()==0){ //为了在sql的判断处理简单些
+            dto.setPayType(null);
+        }
+
         if(companyId.equals(rootCompanyId)){ //保存原有的逻辑
             //把原来的设置为不展示
             dto.setIds(null);
@@ -508,7 +527,10 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
 
     @Override
     public AjaxMessage deleteCategoryBaseData(String id) throws Exception {
-        expCategoryDao.deleteById(id);
+        ExpCategoryEntity category = new ExpCategoryEntity();
+        category.setId(id);
+        category.setStatus("1");
+        expCategoryDao.updateById(category);
         return new AjaxMessage().setCode("0").setInfo("操作成功");
     }
     /**

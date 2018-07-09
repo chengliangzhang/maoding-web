@@ -372,7 +372,7 @@
         DELETE FROM maoding_web_project_sky_drive
         where id in
         <foreach collection="ids" item="ids"  open="(" close=")" separator=",">
-           #{ids}
+            #{ids}
         </foreach>
     </delete>
 
@@ -387,20 +387,20 @@
 
     <insert id="insert" parameterType="com.maoding.project.entity.ProjectSkyDriveEntity">
         INSERT INTO maoding_web_project_sky_drive (id, project_id, pid,
-                                                   sky_drive_path, file_name, file_path,
-                                                   company_id, type, file_size, task_id, status,
-                                                   file_group, is_customize, file_ext_name,
-                                                   param4, target_id, create_date, create_by,
-                                                   update_date, update_by)
+        sky_drive_path, file_name, file_path,
+        company_id, type, file_size, task_id, status,
+        file_group, is_customize, file_ext_name,
+        param4, target_id, create_date, create_by,
+        update_date, update_by)
         VALUES (#{id,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR}, #{pid,jdbcType=VARCHAR},
-                                        #{skyDrivePath,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR},
-                                        #{filePath,jdbcType=VARCHAR},
-                                        #{companyId,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},
-                                        #{fileSize,jdbcType=BIGINT},
-                                        #{taskId,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
-                #{fileGroup,jdbcType=VARCHAR}, #{isCustomize,jdbcType=VARCHAR}, #{fileExtName,jdbcType=VARCHAR},
-                #{param4,jdbcType=INTEGER}, #{targetId,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR},
-                now(), #{updateBy,jdbcType=VARCHAR})
+        #{skyDrivePath,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR},
+        #{filePath,jdbcType=VARCHAR},
+        #{companyId,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},
+        #{fileSize,jdbcType=BIGINT},
+        #{taskId,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
+        #{fileGroup,jdbcType=VARCHAR}, #{isCustomize,jdbcType=VARCHAR}, #{fileExtName,jdbcType=VARCHAR},
+        #{param4,jdbcType=INTEGER}, #{targetId,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR},
+        now(), #{updateBy,jdbcType=VARCHAR})
     </insert>
 
     <update id="renameById" parameterType="com.maoding.project.dto.ProjectSkyDriveRenameDTO">
@@ -510,24 +510,24 @@
     <select id="getProjectSkyByCompanyId" resultMap="BaseResultMap" parameterType="java.util.Map">
         SELECT a.*
         FROM maoding_web_project_sky_drive a
-            LEFT JOIN maoding_web_project_sky_drive b ON a.pid = b.id
+        LEFT JOIN maoding_web_project_sky_drive b ON a.pid = b.id
         WHERE a.status = '0' AND (type = 0 OR type = 1) AND b.project_id = #{projectId,jdbcType=VARCHAR}
-              AND b.pid IS NULL
-              AND b.file_name = '设计成果'
-              AND a.company_id = #{companyId,jdbcType=VARCHAR} AND a.type = '0'
+        AND b.pid IS NULL
+        AND b.file_name = '设计成果'
+        AND a.company_id = #{companyId,jdbcType=VARCHAR} AND a.type = '0'
     </select>
 
     <!--项目文档第二层目录获取sql-->
     <select id="getProjectSkyDriveEntityById" parameterType="java.util.Map" resultMap="BaseResultMap1">
         SELECT
-            t.id,
-            t.`sky_drive_path`,
-            t.`file_name`
+        t.id,
+        t.`sky_drive_path`,
+        t.`file_name`
         FROM
-            `maoding_web_project_sky_drive` t
+        `maoding_web_project_sky_drive` t
         WHERE t.`company_id` = #{companyId,jdbcType=VARCHAR}
-              AND project_id = #{projectId,jdbcType=VARCHAR}
-              AND pid IS NULL
+        AND project_id = #{projectId,jdbcType=VARCHAR}
+        AND pid IS NULL
     </select>
 
     <!--根据projectId，fileName，task_id查询-->
@@ -563,17 +563,17 @@
     <!--查询归档文件夹是否已发布-->
     <select id="getProjectSkyDriveEntityByProjectIdAndFileName" resultMap="BaseResultMap" parameterType="java.util.Map">
         SELECT
-            t.id,
-            t.pid,
-            t.sky_drive_path,
-            t.type
+        t.id,
+        t.pid,
+        t.sky_drive_path,
+        t.type
         FROM
-            maoding_web_project_sky_drive t
-            LEFT JOIN maoding_web_project_sky_drive dev
-                ON t.`pid` = dev.id
+        maoding_web_project_sky_drive t
+        LEFT JOIN maoding_web_project_sky_drive dev
+        ON t.`pid` = dev.id
         WHERE dev.`file_name` = #{fileName}
-              AND t.`project_id` = #{projectId}
-              AND t.`status` = '0'
+        AND t.`project_id` = #{projectId}
+        AND t.`status` = '0'
         <if test="companyId!=null">
             AND t.company_id = #{companyId}
         </if>
@@ -581,27 +581,27 @@
     <!--生产安排，给该公司创建文件夹（归档文件）-->
     <select id="getProjectSkyDriveEntityByProductionFile" resultMap="BaseResultMap" parameterType="java.util.Map">
         SELECT
-            t.id,
-            t.pid,
-            t.sky_drive_path
+        t.id,
+        t.pid,
+        t.sky_drive_path
         FROM
-            maoding_web_project_sky_drive t
-            LEFT JOIN maoding_web_project_sky_drive dev
-                ON t.`pid` = dev.id
-            LEFT JOIN maoding_web_project_sky_drive dev1
-                ON dev.`pid` = dev1.id
-            LEFT JOIN maoding_web_project_sky_drive dev2
-                ON dev1.`pid` = dev2.id
-            LEFT JOIN maoding_web_project_sky_drive dev3
-                ON dev2.`pid` = dev3.id
-            LEFT JOIN maoding_web_project_sky_drive dev4
-                ON dev3.`pid` = dev4.id
+        maoding_web_project_sky_drive t
+        LEFT JOIN maoding_web_project_sky_drive dev
+        ON t.`pid` = dev.id
+        LEFT JOIN maoding_web_project_sky_drive dev1
+        ON dev.`pid` = dev1.id
+        LEFT JOIN maoding_web_project_sky_drive dev2
+        ON dev1.`pid` = dev2.id
+        LEFT JOIN maoding_web_project_sky_drive dev3
+        ON dev2.`pid` = dev3.id
+        LEFT JOIN maoding_web_project_sky_drive dev4
+        ON dev3.`pid` = dev4.id
         WHERE t.`project_id` = #{projectId}
-              AND t.`status` = '0'
-              AND (dev.`file_name` = '归档文件' OR dev1.`file_name` = '归档文件'
-                   OR dev2.`file_name` = '归档文件' OR dev3.`file_name` = '归档文件'
-                   OR dev4.`file_name` = '归档文件')
-              AND t.`task_id` = #{taskId}
+        AND t.`status` = '0'
+        AND (dev.`file_name` = '归档文件' OR dev1.`file_name` = '归档文件'
+        OR dev2.`file_name` = '归档文件' OR dev3.`file_name` = '归档文件'
+        OR dev4.`file_name` = '归档文件')
+        AND t.`task_id` = #{taskId}
         <if test="companyId">
             and t.company_id=#{companyId}
         </if>
@@ -620,38 +620,38 @@
     </update>
     <select id="getProjectSkyDriveEntityByProjectIdAndCompanyId" resultMap="BaseResultMap" parameterType="java.util.Map">
         SELECT
-            t.id,
-            t.pid,
-            t.sky_drive_path
+        t.id,
+        t.pid,
+        t.sky_drive_path
         FROM
-            maoding_web_project_sky_drive t
+        maoding_web_project_sky_drive t
         WHERE t.`file_name` =#{fileName}
-              AND t.`project_id` = #{projectId}
-             <if test="status!=null">
-              AND t.`status` = #{status}
-             </if>
-              AND t.company_id =#{companyId}
+        AND t.`project_id` = #{projectId}
+        <if test="status!=null">
+            AND t.`status` = #{status}
+        </if>
+        AND t.company_id =#{companyId}
     </select>
 
     <select id="getSkyDriveByFileAndProIdAndComId" resultMap="BaseResultMap" parameterType="java.util.Map">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-            maoding_web_project_sky_drive t
+        maoding_web_project_sky_drive t
         WHERE t.pid IN
-              (SELECT
-                   tt.id
-               FROM
-                   maoding_web_project_sky_drive tt
-               WHERE tt.pid IN
-                     (SELECT
-                          id
-                      FROM
-                          maoding_web_project_sky_drive ttt
-                      WHERE ttt.`file_name` = #{fileName}
-                            AND ttt.`project_id` = #{projectId}
-                            AND ttt.`company_id` = #{companyId}))
-              AND t.`task_id` = #{taskId}
+        (SELECT
+        tt.id
+        FROM
+        maoding_web_project_sky_drive tt
+        WHERE tt.pid IN
+        (SELECT
+        id
+        FROM
+        maoding_web_project_sky_drive ttt
+        WHERE ttt.`file_name` = #{fileName}
+        AND ttt.`project_id` = #{projectId}
+        AND ttt.`company_id` = #{companyId}))
+        AND t.`task_id` = #{taskId}
 
     </select>
     <!--查询归档通知下的所有文件夹和文件-->
@@ -659,10 +659,10 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-            `maoding_web_project_sky_drive` t
+        `maoding_web_project_sky_drive` t
         WHERE t.project_id =#{projectId}
-              AND t.company_id = #{companyId}
-              AND t.pid = #{id}
+        AND t.company_id = #{companyId}
+        AND t.pid = #{id}
     </select>
     <select id="getOwnerProjectFileFirst" resultMap="BaseResultMap" parameterType="java.util.Map">
         SELECT
@@ -690,21 +690,21 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-            maoding_web_project_sky_drive t
+        maoding_web_project_sky_drive t
         WHERE t.file_name =
-              (SELECT
-                   drive.`file_name`
-               FROM
-                   maoding_web_project_sky_drive drive
-               WHERE id = #{pid})
-            <if test="projectId!=null">
-              AND t.project_id = #{projectId}
-            </if>
-          <if test="companyId!=null">
-              AND t.company_id = #{companyId}
-          </if>
-              AND t.id != #{pid}
-              AND t.pid != #{pid}
+        (SELECT
+        drive.`file_name`
+        FROM
+        maoding_web_project_sky_drive drive
+        WHERE id = #{pid})
+        <if test="projectId!=null">
+            AND t.project_id = #{projectId}
+        </if>
+        <if test="companyId!=null">
+            AND t.company_id = #{companyId}
+        </if>
+        AND t.id != #{pid}
+        AND t.pid != #{pid}
     </select>
     <!--获取甲方组织id-->
     <select id="getOwnerProject" resultMap="BaseResultMap" parameterType="java.util.Map">
@@ -765,7 +765,8 @@
         <include refid="Base_Column_List"/>
         FROM
         maoding_web_project_sky_drive t
-        WHERE t.`file_name` = #{fileName}
+        WHERE t.status = 0
+        AND t.`file_name` = #{fileName}
         AND company_id = #{companyId}
         AND t.pid IN
         (SELECT
@@ -777,7 +778,8 @@
         t.id
         FROM
         maoding_web_project_sky_drive t
-        WHERE t.`file_name` = '归档文件'
+        WHERE  t.status = 0
+        and t.`file_name` = '归档文件'
         AND t.company_id = #{companyId}
         AND t.project_id = #{projectId}))
 
@@ -788,7 +790,8 @@
         <include refid="Base_Column_List"/>
         FROM
         maoding_web_project_sky_drive t
-        WHERE t.`file_name` = #{fileName}
+        WHERE  t.status = 0
+        AND t.`file_name` = #{fileName}
         AND company_id = #{companyId}
         AND t.pid IN
         (SELECT
@@ -800,7 +803,8 @@
         t.id
         FROM
         maoding_web_project_sky_drive t
-        WHERE t.`file_name` = '归档文件'
+        WHERE  t.status = 0
+        and t.`file_name` = '归档文件'
         AND t.company_id = #{companyId}
         AND t.project_id = #{projectId}))
 
@@ -810,7 +814,7 @@
         <include refid="Base_Column_List"/>
         FROM
         maoding_web_project_sky_drive t
-        where  1=1
+        where  t.status = 0
         and (
         <foreach collection="id" item="id" separator="or">
             pid=#{id}

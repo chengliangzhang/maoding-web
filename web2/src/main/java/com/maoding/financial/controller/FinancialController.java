@@ -268,6 +268,7 @@ public class FinancialController extends BaseController {
         if(StringUtil.isNullOrEmpty(query.getCompanyId()) || "root".equals(query.getCompanyId())){
             query.setCompanyId(this.currentCompanyId);
         }
+        query.setIsContainSystemType("1");
         return this.ajaxResponseSuccess().setData(expCategoryService.getExpTypeList(query));
     }
 
@@ -318,13 +319,6 @@ public class FinancialController extends BaseController {
         return expCategoryService.getCategoryBaseData(this.currentCompanyId, this.currentUserId);
     }
 
-    //删除
-    @RequestMapping(value = "/expCategory/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public AjaxMessage deleteCategoryBaseData(@PathVariable String id) throws Exception {
-        return expCategoryService.deleteCategoryBaseData(id);
-    }
-
     //增加修改
     @RequestMapping(value = {"/expCategory", "/expCategory/{id}"}, method = RequestMethod.POST)
     @ResponseBody
@@ -356,15 +350,15 @@ public class FinancialController extends BaseController {
 
 
     /**************************************/
-//    /**
-//     * 规定支出类型 新增，修改
-//     */
-//    @RequestMapping(value = {"/deleteExpCategory"}, method = RequestMethod.POST)
-//    @ResponseBody
-//    @RequiresPermissions(value = {RoleConst.FINANCE_TYPE}, logical = Logical.OR)
-//    public AjaxMessage deleteExpCategory(@RequestBody ExpCategoryDTO dto) throws Exception {
-//        return expCategoryService.deleteCategoryBaseData(dto.getId());
-//    }
+    /**
+     * 规定支出类型 新增，修改
+     */
+    @RequestMapping(value = {"/deleteExpCategory"}, method = RequestMethod.POST)
+    @ResponseBody
+    @RequiresPermissions(value = {RoleConst.FINANCE_TYPE}, logical = Logical.OR)
+    public AjaxMessage deleteExpCategory(@RequestBody ExpCategoryDTO dto) throws Exception {
+        return expCategoryService.deleteCategoryBaseData(dto.getId());
+    }
 
     /**
      * 方法描述：得到当前公司和当前组织下面人员

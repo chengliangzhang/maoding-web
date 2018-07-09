@@ -1495,10 +1495,6 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
      * 方法描述：查询项目列表（进行中的项目）
      * 作者：TangY
      * 日期：2016/7/29
-     * ~
-     *
-     * @param:
-     * @return:
      */
     @Override
     public Map<String, Object> getProcessingProjectsByPage(Map<String, Object> param) throws Exception {
@@ -1599,6 +1595,12 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
 
     public List<ProjectTableDTO> getProjectsByPage(QueryProjectDTO queryProjectDTO) throws Exception {
         if ((queryProjectDTO.getPageIndex() != null) && (queryProjectDTO.getPageSize() != null)) {
+            if(queryProjectDTO.getPageIndex()<0){
+                queryProjectDTO.setPageIndex(0); //如果前端存储了负数，默认使用0
+            }
+            if(queryProjectDTO.getPageSize()<1){
+                queryProjectDTO.setPageSize(10); //如果前端存储了负数，默认使用10
+            }
             queryProjectDTO.setStartLine(queryProjectDTO.getPageIndex() * queryProjectDTO.getPageSize());
             queryProjectDTO.setMaxCount(queryProjectDTO.getPageSize());
         }
@@ -2076,13 +2078,13 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         String taskId = null;
         String taskDetailId = null;
         if (StringUtil.isNullOrEmpty(designContentDTO.getId())) {//新增
-            taskId = this.saveTask(designContentDTO.getProjectId(), designContentDTO.getCompanyId(), designContentDTO.getContentName(), 0,
-                    DateUtils.str2Date(designContentDTO.getStartTime(), DateUtils.date_sdf), DateUtils.str2Date(designContentDTO.getEndTime(), DateUtils.date_sdf), designContentDTO.getAccountId());
+//            taskId = this.saveTask(designContentDTO.getProjectId(), designContentDTO.getCompanyId(), designContentDTO.getContentName(), 0,
+//                    DateUtils.str2Date(designContentDTO.getStartTime(), DateUtils.date_sdf), DateUtils.str2Date(designContentDTO.getEndTime(), DateUtils.date_sdf), designContentDTO.getAccountId());
             //保存基本信息
             Integer seq = this.projectDesignContentDao.getProjectContentMaxSeq(designContentDTO.getProjectId());
             taskDetailId = this.saveTaskDetail(designContentDTO.getProjectId(), designContentDTO.getCompanyId(), designContentDTO.getContentName(), seq,
                     DateUtils.str2Date(designContentDTO.getStartTime(), DateUtils.date_sdf), DateUtils.str2Date(designContentDTO.getEndTime(), DateUtils.date_sdf), designContentDTO.getAccountId());
-            insertProjectProcessTime(designContentDTO, taskId);
+//            insertProjectProcessTime(designContentDTO, taskId);
             insertProjectProcessTime(designContentDTO, taskDetailId);
             //保存项目动态
             ProjectTaskEntity target = projectTaskDao.selectById(taskId);

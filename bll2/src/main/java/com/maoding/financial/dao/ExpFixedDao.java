@@ -39,7 +39,7 @@ public interface ExpFixedDao extends BaseDao<ExpFixedEntity> {
     /**
      * 查询月固定支出
      */
-    ExpFixedMainDTO getExpFixed(String companyId, String expDate);
+    ExpFixedMainDTO getExpFixed(String companyId,String rootCompanyId, String expDate);
 
     List<ExpFixedAmountDTO> getExpFixedByMonth(String companyId, String[] months);
 

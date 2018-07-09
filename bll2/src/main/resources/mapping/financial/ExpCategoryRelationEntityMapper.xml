@@ -41,6 +41,10 @@
       and category_type_id in (select id from maoding_web_exp_category
       where category_type = #{categoryType} and company_id = #{relationCompanyId})
     </if>
+    <if test="payType!=null">
+      and category_type_id in (select id from maoding_web_exp_category
+      where pay_type = #{payType} and company_id = #{relationCompanyId})
+    </if>
   </delete>
 
   <insert id="insert" parameterType="com.maoding.financial.entity.ExpCategoryRelationEntity" >

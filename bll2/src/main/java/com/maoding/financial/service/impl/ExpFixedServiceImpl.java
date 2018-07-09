@@ -72,7 +72,8 @@ public class ExpFixedServiceImpl extends GenericService<ExpFixedEntity> implemen
      */
     @Override
     public ExpFixedMainDTO getExpFixedByExpDate(String companyId, String expDate) throws Exception{
-        ExpFixedMainDTO dto = expFixedDao.getExpFixed(companyId,expDate);
+        String rootCompanyId = companyService.getRootCompanyId(companyId);
+        ExpFixedMainDTO dto = expFixedDao.getExpFixed(companyId,rootCompanyId,expDate);
         if(dto==null){//理论上是不会为null的，因为不管数据库中是否有数据，都返回固定格式的数据
             //如果为空，则获取默认的数据
             dto = getExpFixedDefault(companyId,expDate);

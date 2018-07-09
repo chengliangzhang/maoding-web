@@ -23,7 +23,7 @@
     </collection>
   </resultMap>
 
-  <select id="getExpFixed" resultMap="BaseResultMap" parameterType="java.util.Map" >
+  <select id="getExpFixed_old" resultMap="BaseResultMap" parameterType="java.util.Map" >
     SELECT ifnull(c.exp_date, #{expDate}) as exp_date,#{companyId} as company_id,c.user_id,d.user_name,
     c.exp_type_parent_name,c.exp_type_name,c.seq,
     c.id,c.exp_amount,c.remark,c.depart_id
@@ -32,6 +32,30 @@
     where c.company_id = #{companyId}
     and c.exp_date = #{expDate}
     order by c.seq
+  </select>
+
+  <select id="getExpFixed" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select * from (
+        SELECT ifnull(c.exp_date, #{expDate}) as exp_date,#{companyId} as company_id,c.user_id,d.user_name,
+        c.exp_type_parent_name,c.exp_type_name,c.seq,
+        c.id,c.exp_amount,c.remark,c.depart_id
+        from maoding_web_exp_fixed c
+        INNER  JOIN maoding_web_company_user d on c.user_id = d.user_id and c.company_id = d.company_id or d.id = c.user_id
+        where c.company_id = #{companyId} and c.exp_date = #{expDate}
+        union
+        SELECT #{expDate} as exp_date,#{companyId} as company_id,null as user_id,null as user_name,
+            a1.name as exp_type_parent_name,
+            b1.name as exp_type_name,   CONCAT(a1.seq,b1.seq) as seq,
+         null as id ,null as exp_amount,null as remark,null as depart_id
+            from maoding_web_exp_category a1
+            INNER JOIN maoding_web_exp_category b1 on a1.id = b1.pid
+            INNER JOIN maoding_web_exp_category_relation c2 on b1.id = c2.category_type_id
+            where b1.company_id =  #{rootCompanyId}
+            and (b1.category_type = 2 or b1.category_type = 3)
+             and c2.company_id = #{companyId}
+          and CONCAT(a1.name,'-',b1.`name`) not in (SELECT CONCAT(exp_type_parent_name,'-',exp_type_name) from maoding_web_exp_fixed
+          where company_id = #{companyId} and exp_date = #{expDate} )
+    ) a order by  cast(seq as signed)
   </select>
 
   <select id="getExpFixedByMonth" resultType="com.maoding.financial.dto.ExpFixedAmountDTO" parameterType="java.util.Map">
