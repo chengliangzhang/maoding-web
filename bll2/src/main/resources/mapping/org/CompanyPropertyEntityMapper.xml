@@ -50,7 +50,8 @@
   </select>
 
   <select id="listCustomProperty" resultType="com.maoding.project.dto.CustomProjectPropertyDTO" parameterType="java.lang.String">
-    select a.id,a.field_name,a.unit_name,a.unit_id,a.sequencing,0 as change_status
+    select a.id,a.field_name,a.unit_name,
+    a.unit_id,a.sequencing,0 as change_status
     from maoding_web_company_property a
     where a.deleted!=1 and a.company_id=#{companyId}
       and a.be_default!=1

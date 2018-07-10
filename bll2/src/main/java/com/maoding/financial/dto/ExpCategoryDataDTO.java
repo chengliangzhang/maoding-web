@@ -33,6 +33,8 @@ public class ExpCategoryDataDTO {
 
     private boolean disabled;
 
+    private String isDefaulted;
+
     List<ExpCategoryDataDTO> childList = new ArrayList<>();
 
     public String getName() {
@@ -123,4 +125,11 @@ public class ExpCategoryDataDTO {
         this.disabled = disabled;
     }
 
+    public String getIsDefaulted() {
+        return isDefaulted;
+    }
+
+    public void setIsDefaulted(String isDefaulted) {
+        this.isDefaulted = isDefaulted;
+    }
 }

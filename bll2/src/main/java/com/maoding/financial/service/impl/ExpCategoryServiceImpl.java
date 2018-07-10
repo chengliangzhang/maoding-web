@@ -527,7 +527,17 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
 
     @Override
     public AjaxMessage deleteCategoryBaseData(String id) throws Exception {
-        ExpCategoryEntity category = new ExpCategoryEntity();
+        ExpCategoryEntity category = this.expCategoryDao.selectById(id);
+        if (category==null){
+            return new AjaxMessage().setCode("1").setInfo("操作失败");
+        }
+        Map<String,Object> map = new HashMap<>();
+        map.put("pid",category.getPid());
+        map.put("status","0");
+        List<ExpCategoryEntity> list = expCategoryDao.getDataByParemeter(map);
+        if(list!=null && list.size()<2){
+            return new AjaxMessage().setCode("1").setInfo("至少保留一项");
+        }
         category.setId(id);
         category.setStatus("1");
         expCategoryDao.updateById(category);

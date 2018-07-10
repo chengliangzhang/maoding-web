@@ -186,11 +186,13 @@
     <result column="parentShowStatus" property="showStatus" />
     <result column="parentCategoryType" property="categoryType" />
     <result column="parentExpTypeMemo" property="expTypeMemo" />
+    <result column="parent_is_defaulted" property="isDefaulted"  />
     <collection property="childList" ofType="com.maoding.financial.dto.ExpCategoryDataDTO" >
       <id column="name" property="name" />
       <result column="id" property="id" />
       <result column="code" property="code" />
-      <result column="prentId" property="pid" />
+      <result column="parentId" property="pid" />
+      <result column="is_defaulted" property="isDefaulted" />
       <result column="show_status" property="showStatus" />
       <result column="category_type" property="categoryType" />
         <result column="exptype_memo" property="expTypeMemo" />
@@ -198,25 +200,28 @@
   </resultMap>
 
   <select id="getExpCategoryList" resultMap="BaseResultMap2" parameterType="com.maoding.financial.dto.QueryExpCategoryDTO">
-    SELECT a.id as pid,a.code as parentCode,a.show_status as parentShowStatus,
+      SELECT a.id as pid,a.code as parentCode,a.show_status as parentShowStatus,
       a.category_type as parentCategoryType,a.exptype_memo as parentExpTypeMemo,
-    b.id, b.pid as prentId,a.name as parentName, b.name,b.code,if(b.category_type = 0,b.show_status,if(c.id is not null,1,0)) as show_status,b.category_type,b.exptype_memo
-    from maoding_web_exp_category a
-    LEFT JOIN maoding_web_exp_category b on a.id = b.pid and b.status = 0
-    LEFT JOIN maoding_web_exp_category_relation c on b.id = c.category_type_id and c.company_id = #{companyId}
-    where 1=1
-    and a.status = 0
-    <if test="categoryType!=null">
-      and a.company_id = #{rootCompanyId}
-      and b.category_type = #{categoryType}
-    </if>
-    <if test="categoryType==null">
-      and (a.company_id = #{rootCompanyId}
+      b.id, b.pid as parentId,a.name as parentName, b.name,b.code,
+      if(b.code is null ,'0','1') as is_defaulted,'1' as parent_is_defaulted,
+    if(c.id is not null,1,0) as show_status,b.category_type,b.exptype_memo
+      from maoding_web_exp_category a
+      INNER JOIN maoding_web_exp_category b on a.id = b.pid
+      LEFT JOIN maoding_web_exp_category_relation c on b.id = c.category_type_id and c.company_id = #{companyId}
+      where 1=1
+      and a.status = 0
+      and b.status = 0
+      <if test="categoryType!=null">
+          and b.company_id = #{rootCompanyId}
+          and b.category_type = #{categoryType}
+      </if>
+      <if test="categoryType==null">
+      and (b.company_id = #{rootCompanyId}
       <if test="isContainSystemType!=null">
-        or a.company_id is null
+          or b.company_id is null
       </if>
       )
-    </if>
+      </if>
     <if test="payType!=null">
         and (b.pay_type = #{payType} or a.pay_type =  #{payType})
     </if>
@@ -230,7 +235,7 @@
   <select id="getExpCategoryListByType" resultMap="BaseResultMap2" parameterType="com.maoding.financial.dto.QueryExpCategoryDTO">
     SELECT a.id as pid,a.code as parentCode,a.show_status as parentShowStatus,
     a.category_type as parentCategoryType,a.exptype_memo as parentExpTypeMemo,
-    b.id, b.pid as prentId, a.name as parentName, b.name,b.code,b.show_status,b.category_type,b.exptype_memo
+    b.id, b.pid as parentId, a.name as parentName, b.name,b.code,b.show_status,b.category_type,b.exptype_memo
     from maoding_web_exp_category a
     INNER JOIN maoding_web_exp_category b on a.id = b.pid
     INNER JOIN maoding_web_exp_category_relation c on b.id = c.category_type_id
@@ -260,7 +265,7 @@
   <select id="getExpTypeListForProfitReport" resultMap="BaseResultMap2" parameterType="java.util.Map">
     SELECT a.id as pid,a.code as parentCode,a.show_status as parentShowStatus,
     a.category_type as parentCategoryType,a.exptype_memo as parentExpTypeMemo,
-    b.id, b.pid as prentId, a.name as parentName, b.name,b.code,b.show_status,b.category_type,b.exptype_memo
+    b.id, b.pid as parentId, a.name as parentName, b.name,b.code,b.show_status,b.category_type,b.exptype_memo
     from maoding_web_exp_category a
     INNER JOIN maoding_web_exp_category b on a.id = b.pid
     where 1=1
