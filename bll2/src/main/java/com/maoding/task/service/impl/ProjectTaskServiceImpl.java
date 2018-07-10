@@ -159,11 +159,24 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         int i = this.projectTaskDao.insert(entity);
         //处理文件
         if (entity.getTaskType() == SystemParameters.TASK_TYPE_PHASE || entity.getTaskType() == SystemParameters.TASK_TYPE_ISSUE) {
+            //需要的话建立根目录
+            ProjectEntity tmp = createProjectEntityFrom(entity);
+            projectSkyDriverService.createProjectFile(tmp);
+
             projectSkyDriverService.createFileMasterForTask(entity);
             projectSkyDriverService.createFileMasterForArchivedFile(entity);
         }
         return i;
     }
+
+    private ProjectEntity createProjectEntityFrom(ProjectTaskEntity task){
+        ProjectEntity dst = new ProjectEntity();
+        dst.setId(task.getProjectId());
+        dst.setCompanyId(task.getFromCompanyId());
+        dst.setCompanyBid(task.getCompanyId());
+        return dst;
+    }
+
 
     @Override
     public int updateById(ProjectTaskEntity entity) {

@@ -508,52 +508,63 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
 
     //创建公司的默认文件夹
     public void createProjectFile(ProjectEntity projectEntity) {
-        List<String> fileList = SystemParameters.rootList;
-        String companyId = null != projectEntity.getCompanyBid() ? projectEntity.getCompanyBid() : projectEntity.getCompanyId();
-        //判断文件夹是否已存在
-        List<ProjectSkyDriveEntity> parent = null;
+        List<ProjectSkyDriveEntity> parent;
+        //创建本公司项目文档目录
         Map<String, Object> param = new HashMap<>();
         param.put("fileName", "设计文件");
         param.put("projectId", projectEntity.getId());
-        param.put("companyId", companyId);
+        param.put("companyId", projectEntity.getCompanyId());
         param.put("status", "0");
         parent = this.projectSkyDriverDao.getProjectSkyDriveEntityByProjectIdAndCompanyId(param);
         if (parent == null || parent.size() == 0) {
-            int seq0 = 1;
-            for (String fileName : fileList) {
-                ProjectSkyDriveEntity projectSkyDriveEntity = new ProjectSkyDriveEntity();
-                projectSkyDriveEntity.setId(StringUtil.buildUUID());
-                projectSkyDriveEntity.setCompanyId(null != projectEntity.getCompanyBid() ? projectEntity.getCompanyBid() : projectEntity.getCompanyId());
-                projectSkyDriveEntity.setProjectId(projectEntity.getId());
-                projectSkyDriveEntity.setSkyDrivePath(projectSkyDriveEntity.getId());
-                projectSkyDriveEntity.setIsCustomize(1);
-                projectSkyDriveEntity.setType(0);
-                projectSkyDriveEntity.setFileName(fileName);
-                projectSkyDriveEntity.setParam4(seq0++);
-                projectSkyDriveEntity.setStatus("0");
-                projectSkyDriverDao.insert(projectSkyDriveEntity);
-                List<String> fileList2 = new ArrayList<String>();
+            createSkyRoot(projectEntity.getId(),projectEntity.getCompanyId());
+        }
+        //创建设计组织公司的项目文档目录
+        if (!StringUtils.isEmpty(projectEntity.getCompanyBid()) && !projectEntity.getCompanyBid().equals(projectEntity.getCompanyId())) {
+            param.put("companyId", projectEntity.getCompanyBid());
+            parent = projectSkyDriverDao.getProjectSkyDriveEntityByProjectIdAndCompanyId(param);
+            if (parent == null || parent.size() == 0) {
+                createSkyRoot(projectEntity.getId(),projectEntity.getCompanyBid());
+            }
+        }
+    }
 
-                if ("交付文件".equals(fileName) || "设计文件".equals(fileName)) {
+    private void createSkyRoot(String projectId, String companyId) {
+        //添加项目文档目录
+        int seq0 = 1;
+        List<String> rootDirList = SystemParameters.rootList;
+        for (String fileName : rootDirList) {
+            ProjectSkyDriveEntity projectSkyDriveEntity = new ProjectSkyDriveEntity();
+            projectSkyDriveEntity.setId(StringUtil.buildUUID());
+            projectSkyDriveEntity.setCompanyId(companyId);
+            projectSkyDriveEntity.setProjectId(projectId);
+            projectSkyDriveEntity.setSkyDrivePath(projectSkyDriveEntity.getId());
+            projectSkyDriveEntity.setIsCustomize(1);
+            projectSkyDriveEntity.setType(0);
+            projectSkyDriveEntity.setFileName(fileName);
+            projectSkyDriveEntity.setParam4(seq0++);
+            projectSkyDriveEntity.setStatus("0");
+            projectSkyDriverDao.insert(projectSkyDriveEntity);
 
-                } else {
-                    fileList2 = SystemParameters.nodeList2;
-                }
-                int seq = 1;
-                for (String fileName2 : fileList2) {
-                    ProjectSkyDriveEntity projectSkyDrivey = new ProjectSkyDriveEntity();
-                    projectSkyDrivey.setId(StringUtil.buildUUID());
-                    projectSkyDrivey.setCompanyId(null != projectEntity.getCompanyBid() ? projectEntity.getCompanyBid() : projectEntity.getCompanyId());
-                    projectSkyDrivey.setProjectId(projectEntity.getId());
-                    projectSkyDrivey.setPid(projectSkyDriveEntity.getId());
-                    projectSkyDrivey.setSkyDrivePath(projectSkyDriveEntity.getId() + "-" + projectSkyDrivey.getId());
-                    projectSkyDrivey.setIsCustomize(1);
-                    projectSkyDrivey.setType(0);
-                    projectSkyDrivey.setFileName(fileName2);
-                    projectSkyDrivey.setParam4(seq++);
-                    projectSkyDrivey.setStatus("0");
-                    projectSkyDriverDao.insert(projectSkyDrivey);
-                }
+            //添加项目依据目录下的子目录
+            List<String> inputDirList = new ArrayList<>();
+            if (!"交付文件".equals(fileName) && !"设计文件".equals(fileName)) {
+                inputDirList = SystemParameters.nodeList2;
+            }
+            int seq = 1;
+            for (String fileName2 : inputDirList) {
+                ProjectSkyDriveEntity projectSkyDrivey = new ProjectSkyDriveEntity();
+                projectSkyDrivey.setId(StringUtil.buildUUID());
+                projectSkyDrivey.setCompanyId(companyId);
+                projectSkyDrivey.setProjectId(projectId);
+                projectSkyDrivey.setPid(projectSkyDriveEntity.getId());
+                projectSkyDrivey.setSkyDrivePath(projectSkyDriveEntity.getId() + "-" + projectSkyDrivey.getId());
+                projectSkyDrivey.setIsCustomize(1);
+                projectSkyDrivey.setType(0);
+                projectSkyDrivey.setFileName(fileName2);
+                projectSkyDrivey.setParam4(seq++);
+                projectSkyDrivey.setStatus("0");
+                projectSkyDriverDao.insert(projectSkyDrivey);
             }
         }
     }
