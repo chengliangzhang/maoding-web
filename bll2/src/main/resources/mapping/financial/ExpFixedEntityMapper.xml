@@ -51,7 +51,7 @@
       #{updateBy,jdbcType=VARCHAR})
   </insert>
 
-  <update id="updateById" parameterType="com.maoding.financial.entity.ExpFixedEntity" >
+  <update id="updateAmount" parameterType="com.maoding.financial.entity.ExpFixedEntity" >
     update maoding_web_exp_fixed
     <set >
       <if test="expType != null" >
@@ -62,6 +62,9 @@
       </if>
       <if test="expAmount != null" >
         exp_amount = #{expAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="expAmount == null" >
+        exp_amount = null,
       </if>
       <if test="userId != null" >
         user_id = #{userId,jdbcType=VARCHAR},
@@ -103,6 +106,46 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
+
+
+  <update id="updateById" parameterType="com.maoding.financial.entity.ExpFixedEntity" >
+    update maoding_web_exp_fixed
+    <set >
+      <if test="expType != null" >
+        exp_type = #{expType,jdbcType=VARCHAR},
+      </if>
+      <if test="expDate != null" >
+        exp_date = #{expDate,jdbcType=VARCHAR},
+      </if>
+      <if test="expAmount != null" >
+        exp_amount = #{expAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="relationCompanyId != null" >
+        relation_company_id = #{relationCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="expTypeParentName != null" >
+        exp_type_parent_name = #{expTypeParentName,jdbcType=VARCHAR},
+      </if>
+      <if test="expTypeName != null" >
+        exp_type_name = #{expTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      update_date = now(),
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
 
   <select id="getExpFixedByExpDate" resultType="com.maoding.financial.dto.ExpFixedDataDTO" parameterType="java.util.Map" >
     select a.id, a.exp_amount as exp_amount, a.user_id,

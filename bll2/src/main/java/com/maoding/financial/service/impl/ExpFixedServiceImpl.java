@@ -84,7 +84,7 @@ public class ExpFixedServiceImpl extends GenericService<ExpFixedEntity> implemen
             for(ExpFixedDTO fixed:dto.getFixedList()){
                 for(ExpFixedDTO fixedDTO:fixed.getDetailList()){
                     if(fixedDTO.getExpAmount()!=null ){
-                        if(otherIncome.equals(fixedDTO.getExpTypeParentName())){
+                        if(!StringUtil.isNullOrEmpty(fixedDTO.getExpTypeParentName()) && fixedDTO.getExpTypeParentName().contains("收入")){
                             incomeMount = incomeMount.add(fixedDTO.getExpAmount());
                         }else {
                             expMount = expMount.add(fixedDTO.getExpAmount());
@@ -130,11 +130,9 @@ public class ExpFixedServiceImpl extends GenericService<ExpFixedEntity> implemen
             }else {
                 //更新
                 entity.setUpdateBy(dto.getUserId());
-                expFixedDao.updateById(entity);
+                expFixedDao.updateAmount(entity);
             }
         }
-
-
         //财务记账
         financialAccount(dto,user.getId());
         return AjaxMessage.succeed(null);
@@ -149,7 +147,7 @@ public class ExpFixedServiceImpl extends GenericService<ExpFixedEntity> implemen
         }
         double currentAmount = 0;
         for(ExpFixedDTO fixed:dto.getFixedList()){
-            if(!"其他业务收入".equals(fixed.getExpTypeParentName()) && fixed.getExpAmount()!=null){
+            if(!StringUtil.isNullOrEmpty(fixed.getExpTypeParentName()) && fixed.getExpTypeParentName().contains("收入") && fixed.getExpAmount()!=null){
                 currentAmount = currentAmount + fixed.getExpAmount().doubleValue();
             }
         }

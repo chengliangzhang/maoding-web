@@ -30,7 +30,10 @@ public class ExpCategoryDaoImpl extends GenericDao<ExpCategoryEntity> implements
         entity.setStatus("0");
         if(entity.getSeq()==null || 0==entity.getSeq())
         {
-            int seq = this.getMaxExpCategorySeq(entity.getCompanyId());
+            int seq = this.getMaxExpCategorySeq(entity.getCompanyId(),entity.getPid());
+            if(entity.getPid()!=null && "0021e366139f47febc88c3e4eafe6e25".equals(entity.getPid())){
+                seq = seq+5;
+            }
             entity.setSeq(seq);
         }
         return super.insert(entity);
@@ -80,6 +83,21 @@ public class ExpCategoryDaoImpl extends GenericDao<ExpCategoryEntity> implements
     @Override
     public int getMaxExpCategorySeq(String companyId) {
         return this.sqlSession.selectOne("ExpCategoryEntityMapper.getMaxExpCategorySeq",companyId);
+    }
+
+    /**
+     * 方法描述：获取最大的seq值
+     * 作者：MaoSF
+     * 日期：2016/10/9
+     */
+    @Override
+    public int getMaxExpCategorySeq(String companyId,String pid) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("companyId",companyId);
+        map.put("pid",pid);
+        int seq =  this.sqlSession.selectOne("ExpCategoryEntityMapper.getMaxExpCategorySeq",map);
+        seq = seq+1;
+        return seq;
     }
 
     /**

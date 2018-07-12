@@ -60,6 +60,8 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
 
     private String otherIncome = "gdfy_qtywsr";
     private String directCost = "bx_ywfy";
+    private String directCost2 = "zjxmcb";
+    private String mainIncome = "zyywsr";
 
     private String mainIncomeId = "a322548663a811e8a033f8db88fcba36";
     /**
@@ -243,7 +245,6 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
 //            }
 //        }
         //重新处理一下disabled
-
         result.stream().forEach(exp->{
             if(!CollectionUtils.isEmpty(exp.getChildList())){
                 if(exp.getChildList().size()==1 && StringUtil.isNullOrEmpty(exp.getChildList().get(0).getId())){
@@ -348,7 +349,7 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
             if(dto.getIdList().size()>0){
                 dto.setShowStatus(1);
                 dto.setIds(org.apache.commons.lang3.StringUtils.join(dto.getIdList(),","));
-                 this.expCategoryDao.saveExpCategoryShowStatus(dto);
+                this.expCategoryDao.saveExpCategoryShowStatus(dto);
             }
         }
         // 删除原来组织的relation信息
@@ -383,7 +384,7 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
     /**
      * 费用类型查询统一接口
      */
-    private List<ExpTypeDTO> getExpTypeList(String companyId,Integer categoryType){
+    private List<ExpTypeDTO> getExpTypeList(String companyId, Integer categoryType){
         QueryExpCategoryDTO query = new QueryExpCategoryDTO();
         query.setCompanyId(companyId);
         query.setCategoryType(categoryType);
@@ -393,7 +394,7 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
             List<ExpCategoryDataDTO> list = this.getExpCategoryListByType(companyId,categoryType);
             for(ExpCategoryDataDTO e:list){
                 ExpTypeDTO dto = new ExpTypeDTO();
-                dto.setParent((ExpCategoryEntity)BaseDTO.copyFields(e,ExpCategoryEntity.class));
+                dto.setParent((ExpCategoryEntity) BaseDTO.copyFields(e,ExpCategoryEntity.class));
                 dto.setChild(BaseDTO.copyFields(e.getChildList(),ExpCategoryEntity.class));
                 expTypes.add(dto);
             }
@@ -403,7 +404,7 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
         return expTypes;
     }
 
-    private List<ExpCategoryEntity> getExpType(String companyId,String pid,Integer categoryType){
+    private List<ExpCategoryEntity> getExpType(String companyId, String pid, Integer categoryType){
         Map<String,Object> param = new HashMap<>();
         param.put("pid", pid);
         param.put("companyId", companyId);
@@ -494,7 +495,7 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
 
     @Override
     public int saveExpFixCategory(ExpCategoryDTO dto) throws Exception {
-       // dto.setCategoryType(2);//固定支出类型
+        // dto.setCategoryType(2);//固定支出类型
         return saveCategoryType(dto);
     }
 
@@ -504,7 +505,18 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
             return 0;
         }
         Integer categoryType = dto.getCategoryType()==null?parent.getCategoryType():dto.getCategoryType();
-        ExpCategoryEntity category = (ExpCategoryEntity)BaseDTO.copyFields(dto,ExpCategoryEntity.class);
+        if(parent.getCategoryType()==3){
+            categoryType = 3;
+        }else if (categoryType==0){
+            categoryType = 2;
+        }
+
+        ExpCategoryEntity category = (ExpCategoryEntity) BaseDTO.copyFields(dto,ExpCategoryEntity.class);
+        if(otherIncome.equals(parent.getCode()) || parent.getPayType()==1){
+            category.setPayType(CompanyBillType.DIRECTION_PAYEE);
+        }else {
+            category.setPayType(CompanyBillType.DIRECTION_PAYER);
+        }
         if(StringUtil.isNullOrEmpty(category.getId())){
             category.initEntity();
             category.setRootId(dto.getPid());
@@ -514,11 +526,11 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
             if(StringUtil.isNullOrEmpty(dto.getCompanyId())){
                 category.setCompanyId(dto.getCurrentCompanyId());
             }
-            if(otherIncome.equals(parent.getCode())){
-                category.setPayType(CompanyBillType.DIRECTION_PAYEE);
-            }else {
-                category.setPayType(CompanyBillType.DIRECTION_PAYER);
+            int seq = this.expCategoryDao.getMaxExpCategorySeq(dto.getCompanyId(),dto.getPid());
+            if(directCost.equals(parent.getCode()) || mainIncome.equals(parent.getCode()) || directCost2.equals(parent.getCode())){
+                seq = seq+5;
             }
+            category.setSeq(seq);
             return this.expCategoryDao.insert(category);
         }else {
             return this.expCategoryDao.updateById(category);

@@ -44,6 +44,12 @@ public interface ExpCategoryDao extends BaseDao<ExpCategoryEntity>{
 	 */
 	int getMaxExpCategorySeq(String companyId);
 
+	/**
+	 * 方法描述：获取最大的seq值
+	 * 作者：MaoSF
+	 * 日期：2016/10/9
+	 */
+	int getMaxExpCategorySeq(String companyId,String pid);
 
 	int deleteByPId(Map<String, Object> map);
 

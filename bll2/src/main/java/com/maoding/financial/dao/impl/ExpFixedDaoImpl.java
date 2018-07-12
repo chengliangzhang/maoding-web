@@ -79,4 +79,9 @@ public class ExpFixedDaoImpl extends GenericDao<ExpFixedEntity> implements ExpFi
         }
         return null;
     }
+
+    @Override
+    public int updateAmount(ExpFixedEntity entity) {
+        return this.sqlSession.update("ExpFixedEntityMapper.updateAmount",entity);
+    }
 }

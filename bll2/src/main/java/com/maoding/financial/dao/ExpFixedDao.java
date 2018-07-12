@@ -48,4 +48,6 @@ public interface ExpFixedDao extends BaseDao<ExpFixedEntity> {
      */
     ExpFixedMainDTO getExpFixedDefault(String companyId, String rootCompanyId,String expDate);
 
+    int updateAmount(ExpFixedEntity entity);
+
 }

@@ -219,8 +219,8 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
         deleteCompanyBillForFixData(dto);
         if(dto.getFeeType()==CompanyBillType.FEE_TYPE_FIX_OTHER_INCOME){
             for (ExpFixedDataDTO detail:detailList){
-                if(detail.getExpTypeParentName().contains("其他业务收入") && detail.getExpAmount()!=null){
-                    sum = sum.add(saveCompanyDetail(detail,"其他业务收入",detail.getExpTypeParentName(),mainBill.getId(),createDate));
+                if(detail.getExpTypeParentName().contains("收入") && detail.getExpAmount()!=null){
+                    sum = sum.add(saveCompanyDetail(detail,detail.getExpTypeParentName(),detail.getExpTypeParentName(),mainBill.getId(),createDate));
                 }
             }
             mainBill.setFee(sum);
@@ -234,7 +234,7 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
                     otherCompanyIncome.add(detail);
                     continue;
                 }
-                if(detail.getExpTypeParentName().contains("其他业务收入") && detail.getExpAmount()!=null){
+                if(detail.getExpTypeParentName().contains("收入") && detail.getExpAmount()!=null){
                     continue;
                 }
                 sum = sum.add(saveCompanyDetail(detail,"固定支出",detail.getExpTypeParentName(),mainBill.getId(),createDate));
