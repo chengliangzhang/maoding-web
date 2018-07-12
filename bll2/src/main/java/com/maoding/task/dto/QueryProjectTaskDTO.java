@@ -24,8 +24,21 @@ public class QueryProjectTaskDTO extends BaseDTO{
      */
     private int isCreator;//是否是立项方
 
+    /**
+     * 所属的签发任务的id
+     * 如果为空，则查询所有生产任务，否则，只查询对应此签发任务的生产任务
+     */
+    private String issueTaskId;
 
-     public Integer getPageIndex() {
+    public String getIssueTaskId() {
+        return issueTaskId;
+    }
+
+    public void setIssueTaskId(String issueTaskId) {
+        this.issueTaskId = issueTaskId;
+    }
+
+    public Integer getPageIndex() {
         return pageIndex;
     }
 

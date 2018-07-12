@@ -274,7 +274,7 @@ public class ProjectTaskController extends BaseController {
     @RequestMapping(value = "/listDesignTaskTab", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage listDesignTaskTab(@RequestBody QueryProjectTaskDTO query) throws Exception {
-        return null;
+        return AjaxMessage.succeed(null);
     }
 
 

@@ -193,4 +193,12 @@ import java.util.Map;
 
     boolean isEditIssueTask(String projectId,String companyId,String accountId) throws Exception;
 
+    /**
+     * @author  张成亮
+     * @date    2018/7/12
+     * @description     查询生产任务标签列表
+     * @param   query 要查询的项目信息
+     * @return  相应的签发任务列表，及一个"全部"标签
+     **/
+    List<ProjectIssueTaskDTO> listDesignTaskTab(QueryProjectTaskDTO query) throws Exception;
 }

@@ -3549,4 +3549,34 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         }
         return false;
     }
+
+    /**
+     * @param query 要查询的项目信息
+     * @return 相应的签发任务列表，及一个"全部"标签
+     * @author 张成亮
+     * @date 2018/7/12
+     * @description 查询生产任务标签列表
+     **/
+    @Override
+    public List<ProjectIssueTaskDTO> listDesignTaskTab(QueryProjectTaskDTO query) throws Exception {
+        List<ProjectIssueTaskDTO> tabList = new ArrayList<>();
+        //添加全部标签
+        ProjectIssueTaskDTO tabAll = new ProjectIssueTaskDTO();
+        tabAll.setId("");
+        tabAll.setTaskName("全部");
+        tabList.add(tabAll);
+        //获取签发列表
+        String projectId = query.getProjectId();
+        List<ProjectIssueTaskDTO> issueList = this.projectTaskDao.getOperatorTaskList(query);
+        //过滤非本公司签发任务
+        List<ProjectIssueTaskDTO> tmpList = new ArrayList<>();
+        issueList.forEach(issue->{
+            String currentCompanyId = query.getCurrentCompanyId();
+            if (currentCompanyId.equals(issue.getCompanyId())){
+                tmpList.add(issue);
+            }
+        });
+        tabList.addAll(tmpList);
+        return tabList;
+    }
 }
