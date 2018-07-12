@@ -1355,16 +1355,16 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         if (projectEntity == null) {
             return list;
         }
-        //todo 查询生产数据
+        //查询生产数据
         QueryProjectTaskDTO query = new QueryProjectTaskDTO();
         query.setCompanyId(companyId);
         query.setProjectId(projectId);
         List<ProjectDesignTaskShow> projectTaskDTOList = projectTaskDao.getProductTaskList(query);
-        //todo 排序
+        //排序
         if (!CollectionUtils.isEmpty(projectTaskDTOList)) {
             list = orderDesignTaskList(projectTaskDTOList, "");
         }
-        //todo 查询相关的参与人员
+        //查询相关的参与人员
         List<ProjectMemberDTO> memberList = projectMemberService.listProjectMemberByParam(projectId,null);
         Map<String,ProjectTaskProcessNodeDTO> designNodeList = new HashMap<>();
         Map<String,ProjectMemberDTO> designList = new HashMap<>();

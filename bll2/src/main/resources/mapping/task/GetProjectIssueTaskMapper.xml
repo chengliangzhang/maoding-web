@@ -135,6 +135,9 @@
         AND (b.task_type = 0 or b.task_type = 1 or b.task_type = 2 or b.task_type = 5)
         and b.task_status != 1
         and b.company_id = #{companyId} and POSITION(a.id IN b.task_path)
+        <if test="issueTaskId != null">
+            and POSITION(#{issueTaskId} IN a.task_path)
+        </if>
         group by a.id
         ORDER BY a.task_level,a.seq
     </select>
