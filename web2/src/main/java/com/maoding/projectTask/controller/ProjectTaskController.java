@@ -274,6 +274,9 @@ public class ProjectTaskController extends BaseController {
     @RequestMapping(value = "/getTaskGroupInfo", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage getTaskGroupInfo(@RequestBody QueryProjectTaskDTO query) throws Exception {
+        if (StringUtil.isNullOrEmpty(query.getCompanyId())){
+            query.setCompanyId(this.currentCompanyId);
+        }
         ProjectProductTaskGroupInfoDTO data = projectTaskService.getTaskGroupInfo(query);
         return AjaxMessage.succeed(data);
     }

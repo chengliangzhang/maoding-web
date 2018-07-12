@@ -3577,8 +3577,8 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         //过滤非本公司签发任务
         List<BaseShowDTO> tmpList = new ArrayList<>();
         issueList.forEach(issue->{
-            String currentCompanyId = query.getCurrentCompanyId();
-            if (currentCompanyId.equals(issue.getCompanyId())){
+            String companyId = query.getCompanyId();
+            if (companyId.equals(issue.getCompanyId())){
                 tmpList.add(new BaseShowDTO(issue.getId(),issue.getTaskName()));
             }
         });
