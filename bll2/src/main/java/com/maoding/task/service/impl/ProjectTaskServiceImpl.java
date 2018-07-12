@@ -3559,7 +3559,7 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
      * @description 查询生产任务标签列表
      **/
     @Override
-    public ProjectProductTaskGroupInfoDTO listDesignTaskTab(QueryProjectTaskDTO query) throws Exception {
+    public ProjectProductTaskGroupInfoDTO getTaskGroupInfo(QueryProjectTaskDTO query) throws Exception {
         List<BaseShowDTO> tabList = new ArrayList<>();
         //添加全部标签
         BaseShowDTO tabAll = new BaseShowDTO("","全部");

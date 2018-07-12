@@ -271,10 +271,10 @@ public class ProjectTaskController extends BaseController {
      * @date    2018/7/12
      * @description     获取生产安排标签列表
      **/
-    @RequestMapping(value = "/listDesignTaskTab", method = RequestMethod.POST)
+    @RequestMapping(value = "/getTaskGroupInfo", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxMessage listDesignTaskTab(@RequestBody QueryProjectTaskDTO query) throws Exception {
-        ProjectProductTaskGroupInfoDTO data = projectTaskService.listDesignTaskTab(query);
+    public AjaxMessage getTaskGroupInfo(@RequestBody QueryProjectTaskDTO query) throws Exception {
+        ProjectProductTaskGroupInfoDTO data = projectTaskService.getTaskGroupInfo(query);
         return AjaxMessage.succeed(data);
     }
 

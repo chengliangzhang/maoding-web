@@ -200,5 +200,5 @@ import java.util.Map;
      * @param   query 要查询的项目信息
      * @return  相应的签发任务列表，及一个"全部"标签
      **/
-    ProjectProductTaskGroupInfoDTO listDesignTaskTab(QueryProjectTaskDTO query) throws Exception;
+    ProjectProductTaskGroupInfoDTO getTaskGroupInfo(QueryProjectTaskDTO query) throws Exception;
 }
