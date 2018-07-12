@@ -6,6 +6,7 @@ import com.beust.jcommander.internal.Maps;
 import com.maoding.conllaboration.SyncCmd;
 import com.maoding.conllaboration.service.CollaborationService;
 import com.maoding.core.base.dto.BaseDTO;
+import com.maoding.core.base.dto.BaseShowDTO;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.NetFileType;
@@ -3558,25 +3559,25 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
      * @description 查询生产任务标签列表
      **/
     @Override
-    public List<ProjectIssueTaskDTO> listDesignTaskTab(QueryProjectTaskDTO query) throws Exception {
-        List<ProjectIssueTaskDTO> tabList = new ArrayList<>();
+    public ProjectProductTaskGroupInfoDTO listDesignTaskTab(QueryProjectTaskDTO query) throws Exception {
+        List<BaseShowDTO> tabList = new ArrayList<>();
         //添加全部标签
-        ProjectIssueTaskDTO tabAll = new ProjectIssueTaskDTO();
-        tabAll.setId("");
-        tabAll.setTaskName("全部");
+        BaseShowDTO tabAll = new BaseShowDTO("","全部");
         tabList.add(tabAll);
         //获取签发列表
-        String projectId = query.getProjectId();
         List<ProjectIssueTaskDTO> issueList = this.projectTaskDao.getOperatorTaskList(query);
         //过滤非本公司签发任务
-        List<ProjectIssueTaskDTO> tmpList = new ArrayList<>();
+        List<BaseShowDTO> tmpList = new ArrayList<>();
         issueList.forEach(issue->{
             String currentCompanyId = query.getCurrentCompanyId();
             if (currentCompanyId.equals(issue.getCompanyId())){
-                tmpList.add(issue);
+                tmpList.add(new BaseShowDTO(issue.getId(),issue.getTaskName()));
             }
         });
         tabList.addAll(tmpList);
-        return tabList;
+
+        ProjectProductTaskGroupInfoDTO result = new ProjectProductTaskGroupInfoDTO();
+        result.setTabList(tabList);
+        return result;
     }
 }
