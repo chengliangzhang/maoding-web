@@ -1346,10 +1346,9 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
     }
 
     /**
-     * 生产安排
+     * 增加父任务后的生产安排查询
      */
-    @Override
-    public List<ProjectDesignTaskShow> getProjectDesignTaskList(String companyId, String projectId, String companyUserId) throws Exception {
+    private List<ProjectDesignTaskShow> getProjectDesignTaskList(String companyId, String projectId, String companyUserId, String parentTaskId) throws Exception {
         ProjectEntity projectEntity = this.projectDao.selectById(projectId);
         List<ProjectDesignTaskShow> list = new ArrayList<>();
         if (projectEntity == null) {
@@ -1359,6 +1358,7 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         QueryProjectTaskDTO query = new QueryProjectTaskDTO();
         query.setCompanyId(companyId);
         query.setProjectId(projectId);
+        query.setIssueTaskId(parentTaskId);
         List<ProjectDesignTaskShow> projectTaskDTOList = projectTaskDao.getProductTaskList(query);
         //排序
         if (!CollectionUtils.isEmpty(projectTaskDTOList)) {
@@ -1408,6 +1408,14 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
             handleTaskDetailRoleFlag(dto, companyId, companyUserId, isEmployeesOfCompany, isDesignManager, isPartBDesinger);
         }
         return list;
+    }
+
+    /**
+     * 原有的生产安排查询
+     */
+    @Override
+    public List<ProjectDesignTaskShow> getProjectDesignTaskList(String companyId, String projectId, String companyUserId) throws Exception {
+        return getProjectDesignTaskList(companyId,projectId,companyUserId,null);
     }
 
     private void getDesignUser(List<ProjectMemberDTO> memberList,Map<String,ProjectTaskProcessNodeDTO> designNodeList,Map<String,ProjectMemberDTO> designList) throws Exception{
