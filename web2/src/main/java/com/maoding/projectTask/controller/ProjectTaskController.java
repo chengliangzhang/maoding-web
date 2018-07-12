@@ -266,6 +266,17 @@ public class ProjectTaskController extends BaseController {
         return this.ajaxResponseSuccess().setData(data);
     }
 
+    /**
+     * @author  张成亮
+     * @date    2018/7/12
+     * @description     获取生产安排标签列表
+     **/
+    @RequestMapping(value = "/listDesignTaskTab", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage listDesignTaskTab(@RequestBody QueryProjectTaskDTO query) throws Exception {
+        return null;
+    }
+
 
     /**
      * 方法描述：保存经营签发，或生产分解
