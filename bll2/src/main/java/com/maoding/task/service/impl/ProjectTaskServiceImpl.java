@@ -1491,7 +1491,7 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         info.setOrgList(this.getSelectOrg(query,projectEntity));
         String companyId = query.getCompanyId();//此句必须在getSelectOrg后面。因为在getSelectOrg中可能改变了companyId
 
-        List<ProjectDesignTaskShow> projectDesignContentShowList = getProjectDesignTaskList(companyId, query.getProjectId(), currentCompanyUserId);
+        List<ProjectDesignTaskShow> projectDesignContentShowList = getProjectDesignTaskList(companyId, query.getProjectId(), currentCompanyUserId,query.getIssueTaskId());
 //        Map<String, Object> param = new HashMap<>();
 //        param.put("companyId", companyId);
 //        param.put("accountId", accountId);
