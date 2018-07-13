@@ -3587,13 +3587,27 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         if (!CollectionUtils.isEmpty(rootList)) {
             //排序
             List<ProjectDesignTaskShow> rootOrderedList = orderDesignTaskList(rootList, "");
-            //转换并添加到标签列表
+            //转换
             List<BaseShowDTO> rootSimpleList = new ArrayList<>();
             rootOrderedList.forEach(task->{
                 String taskPath = projectTaskDao.getTaskParentName(task.getId());
                 rootSimpleList.add(new BaseShowDTO(task.getId(),taskPath));
             });
-            tabList.addAll(rootSimpleList);
+            //只保留叶任务
+            List<BaseShowDTO> leafIssueList = new ArrayList<>();
+            rootSimpleList.forEach(task1->{
+                boolean hasChild = false;
+                for (BaseShowDTO task2 : rootSimpleList) {
+                    if (isParent(task1,task2)){
+                        hasChild = true;
+                        break;
+                    }
+                }
+                if (!hasChild){
+                    leafIssueList.add(task1);
+                }
+            });
+            tabList.addAll(leafIssueList);
         }
 
         ProjectProductTaskGroupInfoDTO result = new ProjectProductTaskGroupInfoDTO();
