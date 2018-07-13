@@ -135,7 +135,7 @@
         AND (
           b.task_type = 1 or b.task_type = 2
           <if test="isRootOnly == null or isRootOnly != '1'.toString()">
-              or b.task_type = 0 or  or b.task_type = 5
+              or b.task_type = 0 or b.task_type = 5
           </if>
           )
         and b.task_status != 1
