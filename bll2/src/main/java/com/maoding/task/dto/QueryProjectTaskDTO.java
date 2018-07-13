@@ -30,6 +30,16 @@ public class QueryProjectTaskDTO extends BaseDTO{
      */
     private String issueTaskId;
 
+    private String isRootOnly;
+
+    public String getIsRootOnly() {
+        return isRootOnly;
+    }
+
+    public void setIsRootOnly(String isRootOnly) {
+        this.isRootOnly = isRootOnly;
+    }
+
     public String getIssueTaskId() {
         return issueTaskId;
     }

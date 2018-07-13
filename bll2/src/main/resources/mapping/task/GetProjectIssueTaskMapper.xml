@@ -132,7 +132,12 @@
         LEFT JOIN maoding_web_project_task t3 on a.id = t3.be_modify_id and t3.from_company_id = #{companyId}
         where a.project_id= #{projectId}
         AND b.is_operater_task = 0
-        AND (b.task_type = 0 or b.task_type = 1 or b.task_type = 2 or b.task_type = 5)
+        AND (
+          b.task_type = 1 or b.task_type = 2
+          <if test="isRootOnly != '1'.toString()">
+              or b.task_type = 0 or  or b.task_type = 5
+          </if>
+          )
         and b.task_status != 1
         and b.company_id = #{companyId} and POSITION(a.id IN b.task_path)
         <if test="issueTaskId != null">

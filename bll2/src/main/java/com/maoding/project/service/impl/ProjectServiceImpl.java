@@ -308,8 +308,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         }
     }
 
-    //保存任务信息（首次任务Id为阶段Id）
-    //保存签发
+    //保存任务信息
     private String saveTask(String projectId, String companyId, String taskName, int seq, Date startTime, Date endTime, String accountId) throws Exception {
         ProjectTaskEntity projectTaskEntity = new ProjectTaskEntity();
         projectTaskEntity.setId(StringUtil.buildUUID());
@@ -330,8 +329,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         return projectTaskEntity.getId();
     }
 
-    //保存任务信息（首次任务Id为阶段Id）
-    //项目信息保存
+    //保存设计阶段信息
     private String saveTaskDetail(String projectId, String companyId, String taskName, int seq, Date startTime, Date endTime, String accountId) throws Exception {
         ProjectDesignContentEntity projectDesignContentEntity = new ProjectDesignContentEntity();
         projectDesignContentEntity.setId(StringUtil.buildUUID());
@@ -345,7 +343,6 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
 
     //保存设定的设计阶段的时间
     private void saveProjectTime(ProjectDesignContentDTO projectDesignContentDTO, String targetId, String companyId, String accountId) throws Exception {
-
         if (!CollectionUtils.isEmpty(projectDesignContentDTO.getProjectProcessTimeEntityList())) {
             Calendar calendar = Calendar.getInstance();
             System.out.println(calendar.getTime());
@@ -370,9 +367,6 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
      * 方法描述：删除项目（逻辑删除）
      * 作者：MaoSF
      * 日期：2016/8/4
-     *
-     * @param:
-     * @return:
      */
     @Override
     public AjaxMessage deleteProjectById(String id, String currentCompanyUserId) throws Exception {

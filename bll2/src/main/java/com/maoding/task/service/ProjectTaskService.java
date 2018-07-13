@@ -126,6 +126,8 @@ import java.util.Map;
      */
     List<ProjectIssueTaskDTO> getProjectIssueTaskList(QueryProjectTaskDTO query) throws Exception;
 
+    List<ProjectIssueTaskDTO> getProjectIssueTaskListForInitFile(QueryProjectTaskDTO query) throws Exception;
+
     /**
      * 获取签发界面数据
      */

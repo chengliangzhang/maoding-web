@@ -2496,6 +2496,13 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         return list;
     }
 
+    @Override
+    public List<ProjectIssueTaskDTO> getProjectIssueTaskListForInitFile(QueryProjectTaskDTO query) throws Exception {
+        List<ProjectIssueTaskDTO> list = this.projectTaskDao.getOperatorTaskList(query);
+        list = orderIssueTaskList(list, "");
+        return list;
+    }
+
     private void setIsHasChild(List<ProjectIssueTaskDTO> list) {
         for (ProjectIssueTaskDTO issueTaskDTO : list) {
             for (ProjectIssueTaskDTO dto : list) {
@@ -3570,35 +3577,24 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
     @Override
     public ProjectProductTaskGroupInfoDTO getTaskGroupInfo(QueryProjectTaskDTO query) throws Exception {
         List<BaseShowDTO> tabList = new ArrayList<>();
-        //添加全部标签
+        //添加“全部”标签
         BaseShowDTO tabAll = new BaseShowDTO("","全部");
         tabList.add(tabAll);
-        //获取签发列表
-        List<ProjectIssueTaskDTO> issueList = this.projectTaskDao.getOperatorTaskList(query);
-        //过滤非本公司签发任务
-        List<BaseShowDTO> companyIssueList = new ArrayList<>();
-        issueList.forEach(issue->{
-            String companyId = query.getCompanyId();
-            if (companyId.equals(issue.getCompanyId())){
-                String taskPath = projectTaskDao.getTaskParentName(issue.getId());
-                companyIssueList.add(new BaseShowDTO(issue.getId(),taskPath));
-            }
-        });
-        //只保留叶任务
-        List<BaseShowDTO> leafIssueList = new ArrayList<>();
-        companyIssueList.forEach(issue1->{
-            boolean hasChild = false;
-            for (BaseShowDTO issue2 : companyIssueList) {
-                if (isParent(issue1,issue2)){
-                    hasChild = true;
-                    break;
-                }
-            }
-            if (!hasChild){
-                leafIssueList.add(issue1);
-            }
-        });
-        tabList.addAll(leafIssueList);
+        //获取生产根任务列表
+        query.setIsRootOnly("1");
+        List<ProjectDesignTaskShow> rootList = this.projectTaskDao.getProductTaskList(query);
+
+        if (!CollectionUtils.isEmpty(rootList)) {
+            //排序
+            List<ProjectDesignTaskShow> rootOrderedList = orderDesignTaskList(rootList, "");
+            //转换并添加到标签列表
+            List<BaseShowDTO> rootSimpleList = new ArrayList<>();
+            rootOrderedList.forEach(task->{
+                String taskPath = projectTaskDao.getTaskParentName(task.getId());
+                rootSimpleList.add(new BaseShowDTO(task.getId(),taskPath));
+            });
+            tabList.addAll(rootSimpleList);
+        }
 
         ProjectProductTaskGroupInfoDTO result = new ProjectProductTaskGroupInfoDTO();
         result.setTabList(tabList);
