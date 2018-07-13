@@ -1363,11 +1363,7 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         List<ProjectDesignTaskShow> projectTaskDTOList = projectTaskDao.getProductTaskList(query);
         //排序
         if (!CollectionUtils.isEmpty(projectTaskDTOList)) {
-            if (parentTaskId == null) {
-                list = orderDesignTaskList(projectTaskDTOList, "");
-            } else {
-                list = orderDesignTaskList(projectTaskDTOList, parentTaskId);
-            }
+            list = orderDesignTaskList(projectTaskDTOList, "", parentTaskId);
         }
         //查询相关的参与人员
         List<ProjectMemberDTO> memberList = projectMemberService.listProjectMemberByParam(projectId,null);
@@ -2567,9 +2563,9 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
     }
 
     /**
-     * 生产安排排序
+     * 改写生产安排排序，因原来的排序方式只能从根任务排序，添加标签后需要能够从非根任务开始排序，因此简单的增加了一个表明开始排序的任务id号
      */
-    private List<ProjectDesignTaskShow> orderDesignTaskList(List<ProjectDesignTaskShow> list, String id) {
+    private List<ProjectDesignTaskShow> orderDesignTaskList(List<ProjectDesignTaskShow> list, String id, String rootId) {
         //排序
         List<ProjectDesignTaskShow> result = new ArrayList<>();
 
@@ -2594,22 +2590,34 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
                 isFirst = true;
             }
             if ("".equals(id)) {
-                if (StringUtil.isNullOrEmpty(projectDesignTaskShow.getTaskPid())) {//生产那块根节点在sql查出来的taskPid设为null
+                if (isRootTask(projectDesignTaskShow,rootId)) {//生产那块根节点在sql查出来的taskPid设为null
                     projectDesignTaskShow.setFirst(isFirst);
                     projectDesignTaskShow.setLast(isLast);
                     result.add(projectDesignTaskShow);
-                    result.addAll(orderDesignTaskList(list, projectDesignTaskShow.getId()));
+                    result.addAll(orderDesignTaskList(list, projectDesignTaskShow.getId(), rootId));
                 }
             }
             if (id.equals(projectDesignTaskShow.getTaskPid())) {
                 projectDesignTaskShow.setFirst(isFirst);
                 projectDesignTaskShow.setLast(isLast);
                 result.add(projectDesignTaskShow);
-                result.addAll(orderDesignTaskList(list, projectDesignTaskShow.getId()));
+                result.addAll(orderDesignTaskList(list, projectDesignTaskShow.getId(), rootId));
             }
         }
         return result;
+    }
 
+    //判断是否是根任务
+    private boolean isRootTask(ProjectDesignTaskShow projectDesignTaskShow, String rootId){
+        return StringUtil.isNullOrEmpty(projectDesignTaskShow.getTaskPid()) ||
+                (rootId != null && rootId.equals(projectDesignTaskShow.getId()));
+    }
+
+    /**
+     * 生产安排排序
+     */
+    private List<ProjectDesignTaskShow> orderDesignTaskList(List<ProjectDesignTaskShow> list, String id) {
+        return orderDesignTaskList(list,id,null);
     }
 
     /**
