@@ -15,6 +15,7 @@ import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.BeanUtilsEx;
 import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
+import com.maoding.core.util.StringUtils;
 import com.maoding.dynamic.dao.ZInfoDAO;
 import com.maoding.dynamic.service.DynamicService;
 import com.maoding.message.dto.QueryMessageDTO;
@@ -3572,21 +3573,42 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         //添加全部标签
         BaseShowDTO tabAll = new BaseShowDTO("","全部");
         tabList.add(tabAll);
-        //获取签发列表，并且只保留叶任务
+        //获取签发列表
         List<ProjectIssueTaskDTO> issueList = this.projectTaskDao.getOperatorTaskList(query);
         //过滤非本公司签发任务
-        List<BaseShowDTO> tmpList = new ArrayList<>();
+        List<BaseShowDTO> companyIssueList = new ArrayList<>();
         issueList.forEach(issue->{
             String companyId = query.getCompanyId();
             if (companyId.equals(issue.getCompanyId())){
                 String taskPath = projectTaskDao.getTaskParentName(issue.getId());
-                tmpList.add(new BaseShowDTO(issue.getId(),taskPath));
+                companyIssueList.add(new BaseShowDTO(issue.getId(),taskPath));
             }
         });
-        tabList.addAll(tmpList);
+        //只保留叶任务
+        List<BaseShowDTO> leafIssueList = new ArrayList<>();
+        companyIssueList.forEach(issue1->{
+            boolean hasChild = false;
+            for (BaseShowDTO issue2 : companyIssueList) {
+                if (isParent(issue1,issue2)){
+                    hasChild = true;
+                }
+            }
+            if (!hasChild){
+                leafIssueList.add(issue1);
+            }
+        });
+        tabList.addAll(leafIssueList);
 
         ProjectProductTaskGroupInfoDTO result = new ProjectProductTaskGroupInfoDTO();
         result.setTabList(tabList);
         return result;
+    }
+
+    private boolean isParent(BaseShowDTO dto1, BaseShowDTO dto2){
+        return (dto1 != null) && (dto2 != null) &&
+                (!StringUtils.isEmpty(dto1.getId())) && (!StringUtils.isEmpty(dto1.getName())) &&
+                (!StringUtils.isEmpty(dto2.getId())) && (!StringUtils.isEmpty(dto2.getName())) &&
+                (!dto2.getId().equals(dto1.getId())) &&
+                (!dto2.getName().contains(dto1.getId() + " — "));
     }
 }
