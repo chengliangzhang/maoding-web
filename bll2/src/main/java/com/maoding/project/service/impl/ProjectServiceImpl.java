@@ -974,9 +974,6 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             //新增项目信息
             String id = StringUtil.buildUUID();
             projectEntity.setId(id);
-//            if (null == dto.getProjectType() || "".equals(dto.getProjectType())) {
-//                projectEntity.setProjectType(SystemParameters.PROJECT_TYPE_ID);
-//            }
             projectEntity.setPstatus("0");
             projectEntity.setStatus("0");
             projectEntity.setCreateBy(accountId);
@@ -1051,9 +1048,6 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                 projectDao.update(projectEntity);//更新全部字段
             } else {
                 projectEntity.setUpdateBy(accountId);
-//                if (null == dto.getProjectType() || "".equals(dto.getProjectType())) {
-//                    projectEntity.setProjectType(SystemParameters.PROJECT_TYPE_ID);
-//                }
                 projectDao.updateById(projectEntity);
             }
 

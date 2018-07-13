@@ -897,8 +897,8 @@ public class ImportServiceImpl extends NewBaseService implements ImportService {
         }
         project.setHelperCompanyUserId(helperCompanyUserId);
 
-        //建筑类型
-        project.setProjectType(SystemParameters.PROJECT_TYPE_ID);
+        //目前模板内没有项目类型，默认为建筑设计
+        project.setProjectType(SystemParameters.DEFAULT_PROJECT_TYPE_NAME);
 
         ProjectQueryDTO query = new ProjectQueryDTO(project.getCompanyId(), project.getProjectNo(), project.getProjectName(), project.getProjectCreateDate());
         if (projectDAO.getProject(query) != null) return createProjectDOError(data, "已存在项目");

@@ -97,8 +97,8 @@ public interface SystemParameters {
     String TASK_MANAGER = "taskManager";
 
 
-    //默认为建筑类型
-    String PROJECT_TYPE_ID = "1c6f48757e684b3cb059b94021e12baa";
+    //在导入历史数据时，模板内没有项目类型，默认为建筑设计
+    String DEFAULT_PROJECT_TYPE_NAME = "建筑设计";
 
 
     /**
