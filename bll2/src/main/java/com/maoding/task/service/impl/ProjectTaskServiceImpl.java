@@ -1364,6 +1364,10 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         //排序
         if (!CollectionUtils.isEmpty(projectTaskDTOList)) {
             list = orderDesignTaskList(projectTaskDTOList, "", parentTaskId);
+            //如果不是从根节点开始，需要把第一个节点的taskPid设置为空，才能够显示大纲
+            if (!StringUtils.isEmpty(parentTaskId) && list.size() > 0){
+                list.get(0).setTaskPid(null);
+            }
         }
         //查询相关的参与人员
         List<ProjectMemberDTO> memberList = projectMemberService.listProjectMemberByParam(projectId,null);
