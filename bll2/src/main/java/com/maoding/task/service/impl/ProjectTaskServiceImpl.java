@@ -1363,7 +1363,11 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         List<ProjectDesignTaskShow> projectTaskDTOList = projectTaskDao.getProductTaskList(query);
         //排序
         if (!CollectionUtils.isEmpty(projectTaskDTOList)) {
-            list = orderDesignTaskList(projectTaskDTOList, "");
+            if (parentTaskId == null) {
+                list = orderDesignTaskList(projectTaskDTOList, "");
+            } else {
+                list = orderDesignTaskList(projectTaskDTOList, parentTaskId);
+            }
         }
         //查询相关的参与人员
         List<ProjectMemberDTO> memberList = projectMemberService.listProjectMemberByParam(projectId,null);
