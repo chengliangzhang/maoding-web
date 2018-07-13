@@ -3610,6 +3610,6 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
                 (!StringUtils.isEmpty(dto1.getId())) && (!StringUtils.isEmpty(dto1.getName())) &&
                 (!StringUtils.isEmpty(dto2.getId())) && (!StringUtils.isEmpty(dto2.getName())) &&
                 (!dto2.getId().equals(dto1.getId())) &&
-                (dto2.getName().contains(dto1.getId() + " — "));
+                (dto2.getName().contains(dto1.getName() + " — "));
     }
 }
