@@ -3572,14 +3572,15 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         //添加全部标签
         BaseShowDTO tabAll = new BaseShowDTO("","全部");
         tabList.add(tabAll);
-        //获取签发列表
+        //获取签发列表，并且只保留叶任务
         List<ProjectIssueTaskDTO> issueList = this.projectTaskDao.getOperatorTaskList(query);
         //过滤非本公司签发任务
         List<BaseShowDTO> tmpList = new ArrayList<>();
         issueList.forEach(issue->{
             String companyId = query.getCompanyId();
             if (companyId.equals(issue.getCompanyId())){
-                tmpList.add(new BaseShowDTO(issue.getId(),issue.getTaskName()));
+                String taskPath = projectTaskDao.getTaskParentName(issue.getId());
+                tmpList.add(new BaseShowDTO(issue.getId(),taskPath));
             }
         });
         tabList.addAll(tmpList);
