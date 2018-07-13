@@ -8,6 +8,7 @@ import com.maoding.core.constant.NetFileType;
 import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.*;
 import com.maoding.org.dao.CompanyDao;
+import com.maoding.org.dto.CompanyDataDTO;
 import com.maoding.org.entity.CompanyEntity;
 import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.dao.ProjectSkyDriverDao;
@@ -20,8 +21,13 @@ import com.maoding.project.service.ProjectSkyDriverService;
 import com.maoding.projectmember.entity.ProjectMemberEntity;
 import com.maoding.projectmember.service.ProjectMemberService;
 import com.maoding.task.dao.ProjectTaskDao;
+import com.maoding.task.dao.ProjectTaskRelationDao;
+import com.maoding.task.dto.ProjectIssueTaskDTO;
+import com.maoding.task.dto.QueryProjectTaskDTO;
 import com.maoding.task.entity.ProjectTaskEntity;
 import com.maoding.task.service.ProjectTaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -39,6 +45,7 @@ import java.util.*;
 @Service("projectSkyDriverService")
 public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveEntity> implements ProjectSkyDriverService {
 
+    protected final Logger log= LoggerFactory.getLogger(getClass());
 
     @Autowired
     private ProjectSkyDriverDao projectSkyDriverDao;
@@ -56,6 +63,10 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
 
     @Autowired
     private ProjectTaskService projectTaskService;
+
+    @Autowired
+    private ProjectTaskRelationDao projectTaskRelationDao;
+
 
     @Autowired
     private ProjectMemberService projectMemberService;
@@ -385,9 +396,6 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
      * 方法描述：获取成果文件目录
      * 作   者：DongLiu
      * 日   期：2018/1/19 11:08
-     *
-     * @param
-     * @return
      */
     @Override
     public AjaxMessage getMyProjectSkyDriveByParam(Map<String, Object> map) throws Exception {
@@ -529,44 +537,66 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         }
     }
 
-    private void createSkyRoot(String projectId, String companyId) {
+    int createProjectFile(String projectId,String companyId){
+        List<ProjectSkyDriveEntity> parent;
+        //创建本公司项目文档目录
+        return createSkyRoot(projectId,companyId);
+    }
+
+    private int createSkyRoot(String projectId, String companyId) {
+        int result = 0;
         //添加项目文档目录
         int seq0 = 1;
         List<String> rootDirList = SystemParameters.rootList;
         for (String fileName : rootDirList) {
-            ProjectSkyDriveEntity projectSkyDriveEntity = new ProjectSkyDriveEntity();
-            projectSkyDriveEntity.setId(StringUtil.buildUUID());
-            projectSkyDriveEntity.setCompanyId(companyId);
-            projectSkyDriveEntity.setProjectId(projectId);
-            projectSkyDriveEntity.setSkyDrivePath(projectSkyDriveEntity.getId());
-            projectSkyDriveEntity.setIsCustomize(1);
-            projectSkyDriveEntity.setType(0);
-            projectSkyDriveEntity.setFileName(fileName);
-            projectSkyDriveEntity.setParam4(seq0++);
-            projectSkyDriveEntity.setStatus("0");
-            projectSkyDriverDao.insert(projectSkyDriveEntity);
+            Map<String, Object> param = new HashMap<>();
+            param.put("fileName", fileName);
+            param.put("projectId", projectId);
+            param.put("companyId", companyId);
+            param.put("status", "0");
+            List<ProjectSkyDriveEntity> fileList = this.projectSkyDriverDao.getProjectSkyDriveEntityByProjectIdAndCompanyId(param);
+            if (CollectionUtils.isEmpty(fileList)) {
+                if(!fileName.equals("设计依据")){
+                    result = 1;
+                }
+                ProjectSkyDriveEntity projectSkyDriveEntity = new ProjectSkyDriveEntity();
+                projectSkyDriveEntity.setId(StringUtil.buildUUID());
+                projectSkyDriveEntity.setCompanyId(companyId);
+                projectSkyDriveEntity.setProjectId(projectId);
+                projectSkyDriveEntity.setSkyDrivePath(projectSkyDriveEntity.getId());
+                projectSkyDriveEntity.setIsCustomize(1);
+                projectSkyDriveEntity.setType(0);
+                projectSkyDriveEntity.setFileName(fileName);
+                projectSkyDriveEntity.setParam4(seq0++);
+                projectSkyDriveEntity.setStatus("0");
+                projectSkyDriveEntity.setCreateBy("系统创建");
+                projectSkyDriverDao.insert(projectSkyDriveEntity);
 
-            //添加项目依据目录下的子目录
-            List<String> inputDirList = new ArrayList<>();
-            if (!"交付文件".equals(fileName) && !"设计文件".equals(fileName)) {
-                inputDirList = SystemParameters.nodeList2;
+                //添加项目依据目录下的子目录
+                List<String> inputDirList = new ArrayList<>();
+                if (!"交付文件".equals(fileName) && !"设计文件".equals(fileName)) {
+                    inputDirList = SystemParameters.nodeList2;
+                }
+                int seq = 1;
+                for (String fileName2 : inputDirList) {
+                    ProjectSkyDriveEntity projectSkyDrivey = new ProjectSkyDriveEntity();
+                    projectSkyDrivey.setId(StringUtil.buildUUID());
+                    projectSkyDrivey.setCompanyId(companyId);
+                    projectSkyDrivey.setProjectId(projectId);
+                    projectSkyDrivey.setPid(projectSkyDriveEntity.getId());
+                    projectSkyDrivey.setSkyDrivePath(projectSkyDriveEntity.getId() + "-" + projectSkyDrivey.getId());
+                    projectSkyDrivey.setIsCustomize(1);
+                    projectSkyDrivey.setType(0);
+                    projectSkyDrivey.setFileName(fileName2);
+                    projectSkyDrivey.setParam4(seq++);
+                    projectSkyDrivey.setStatus("0");
+                    projectSkyDrivey.setCreateBy("系统创建");
+                    projectSkyDriverDao.insert(projectSkyDrivey);
+                }
             }
-            int seq = 1;
-            for (String fileName2 : inputDirList) {
-                ProjectSkyDriveEntity projectSkyDrivey = new ProjectSkyDriveEntity();
-                projectSkyDrivey.setId(StringUtil.buildUUID());
-                projectSkyDrivey.setCompanyId(companyId);
-                projectSkyDrivey.setProjectId(projectId);
-                projectSkyDrivey.setPid(projectSkyDriveEntity.getId());
-                projectSkyDrivey.setSkyDrivePath(projectSkyDriveEntity.getId() + "-" + projectSkyDrivey.getId());
-                projectSkyDrivey.setIsCustomize(1);
-                projectSkyDrivey.setType(0);
-                projectSkyDrivey.setFileName(fileName2);
-                projectSkyDrivey.setParam4(seq++);
-                projectSkyDrivey.setStatus("0");
-                projectSkyDriverDao.insert(projectSkyDrivey);
-            }
+
         }
+        return result;
     }
 
     /**
@@ -663,10 +693,6 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
      * 方法描述：经营签发的任务名称默认到文档库中（交付文件中的文件）
      * 作者：MaoSF
      * 日期：2017/4/12
-     *
-     * @param taskEntity
-     * @param:
-     * @return:
      */
     @Override
     public void createFileMasterForTask(ProjectTaskEntity taskEntity) {
@@ -1018,43 +1044,83 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
     public AjaxMessage initProjectSkyDriver() throws Exception {
         List<ProjectEntity> list = projectDao.selectAll();
         for (ProjectEntity project : list) {
-            //首先创建默认文件
-            //1.创建文件夹
-            this.createProjectFile(project);
-
-            //查询 交付文件 文件
-            ProjectSkyDriveEntity parent = this.projectSkyDriverDao.getSkyDriveByPidAndFileName(null, "交付文件", project.getId(), project.getCompanyId());
-
-            //查询第一级的任务（查询设计阶段）
-            Map<String, Object> map = new HashMap<>();
-            map.put("projectId", project.getId());
-            map.put("taskType", 1);
-            List<ProjectTaskEntity> designList = this.projectTaskDao.selectByParam(map);
-            for (ProjectTaskEntity design : designList) {
-                ProjectSkyDriveEntity projectSkyDrivey = new ProjectSkyDriveEntity();
-                projectSkyDrivey.setId(StringUtil.buildUUID());
-                projectSkyDrivey.setCompanyId(project.getCompanyId());
-                projectSkyDrivey.setProjectId(project.getId());
-                projectSkyDrivey.setPid(parent.getId());
-                projectSkyDrivey.setSkyDrivePath(parent.getSkyDrivePath() + "-" + projectSkyDrivey.getId());
-                projectSkyDrivey.setIsCustomize(1);
-                projectSkyDrivey.setType(0);
-                projectSkyDrivey.setFileName(design.getTaskName());
-                projectSkyDrivey.setTaskId(design.getId());
-                projectSkyDrivey.setParam4(design.getSeq());//排序字段
-                projectSkyDrivey.setStatus("0");
-                this.projectSkyDriverDao.insert(projectSkyDrivey);
-                //使用递归设置网络磁盘
-                this.setSkyDriverForTask(project.getId(), design.getId(), projectSkyDrivey.getId(), projectSkyDrivey.getSkyDrivePath());
+            //处理合作放内容
+            List<CompanyDataDTO> companyList = projectTaskRelationDao.getTakePartCompany(project.getId());
+            CompanyDataDTO createCompany = new CompanyDataDTO();
+            createCompany.setId(project.getCompanyId());
+            companyList.add(0,createCompany);
+            for(CompanyDataDTO c:companyList){
+                //首先创建默认文件
+                //1.创建文件夹 (处理立项方内容)
+                int i = this.createProjectFile(project.getId(),c.getId());
+                if(i==1){//如果系统中有默认文件了，则不处理后面的内容
+                    createDefaultForDeliveryFile(project,c.getId(),NetFileType.DIRECTORY_ACHIEVEMENT);
+                    createDefaultForDeliveryFile(project,c.getId(),NetFileType.DIRECTORY_ARCHIVE_NOTICE);
+                }
             }
         }
         return null;
     }
 
-    private void setSkyDriverForTask(String projectId, String taskPid, String pid, String skyDriverPath) throws Exception {
+    private void createDefaultForDeliveryFile(ProjectEntity project,String companyId,Integer fileType) throws Exception{
+        String fileName = null;
+        if(fileType == NetFileType.DIRECTORY_ACHIEVEMENT){
+            fileName = "交付文件";
+        }else {
+            fileName = "设计文件";
+        }
+        //查询 父文件 文件
+        ProjectSkyDriveEntity parent = this.projectSkyDriverDao.getSkyDriveByPidAndFileName(null, fileName, project.getId(), companyId);
+        Map<String,String> filePath = new HashMap<>();//保存文件的path,以免每次都去查找
+        //查询签发数据
+        QueryProjectTaskDTO query = new QueryProjectTaskDTO();
+        query.setProjectId(project.getId());
+        query.setCompanyId(companyId);
+        List<ProjectIssueTaskDTO> list = projectTaskService.getProjectIssueTaskListForInitFile(query);
+        for(ProjectIssueTaskDTO design:list){
+            if("0".equals(design.getTaskStatus())){
+                String skyDrivePath  = null;
+                if(StringUtil.isNullOrEmpty(design.getTaskPid())) {
+                    skyDrivePath = parent.getSkyDrivePath();
+                }else {
+                    skyDrivePath = filePath.get(design.getTaskPid());
+                }
+                if (skyDrivePath==null){
+                    log.error("项目："+project.getId()+"  --"+project.getProjectName()+"  任务名："+design.getBeModifyId());
+                    continue;
+                }
+                ProjectSkyDriveEntity projectSkyDrivey = this.projectSkyDriverDao.getSkyDriveByPidAndFileName
+                        (parent.getId(), parent.getFileName(), project.getId(), companyId);
+                //如果该文件没有存在，则插入记录
+                if(projectSkyDrivey==null){
+                    projectSkyDrivey = new ProjectSkyDriveEntity();
+                    projectSkyDrivey.setId(StringUtil.buildUUID());
+                    projectSkyDrivey.setCompanyId(companyId);
+                    projectSkyDrivey.setProjectId(project.getId());
+                    projectSkyDrivey.setPid(parent.getId());
+                    projectSkyDrivey.setSkyDrivePath(skyDrivePath + "-" + projectSkyDrivey.getId());
+                    projectSkyDrivey.setIsCustomize(1);
+                    projectSkyDrivey.setType(fileType);
+                    projectSkyDrivey.setFileName(design.getTaskName());
+                    projectSkyDrivey.setTaskId(design.getBeModifyId());
+                    projectSkyDrivey.setParam4(design.getSeq());//排序字段
+                    projectSkyDrivey.setStatus("0");
+                    projectSkyDrivey.setCreateBy("系统创建");
+                    this.projectSkyDriverDao.insert(projectSkyDrivey);
+                }
+                filePath.put(design.getBeModifyId(),projectSkyDrivey.getSkyDrivePath());
+            }
+        }
+    }
 
+    private void setSkyDriverForTask(String projectId, String taskPid, String pid, String skyDriverPath,Integer fileType) throws Exception {
+        Map<String,Object> map = new HashMap<>();
+        map.put("taskPid",taskPid);
         List<ProjectTaskEntity> taskList = this.projectTaskDao.getProjectTaskByPid(taskPid);
         for (ProjectTaskEntity taskEntity : taskList) {
+            if(taskEntity.getTaskType()==0){
+                continue;
+            }
             ProjectSkyDriveEntity projectSkyDrivey = new ProjectSkyDriveEntity();
             projectSkyDrivey.setId(StringUtil.buildUUID());
             projectSkyDrivey.setCompanyId(taskEntity.getCompanyId());
@@ -1062,7 +1128,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
             projectSkyDrivey.setPid(pid);
             projectSkyDrivey.setSkyDrivePath(skyDriverPath + "-" + projectSkyDrivey.getId());
             projectSkyDrivey.setIsCustomize(1);
-            projectSkyDrivey.setType(0);
+            projectSkyDrivey.setType(fileType);
             projectSkyDrivey.setFileName(taskEntity.getTaskName());
             projectSkyDrivey.setTaskId(taskEntity.getId());
             projectSkyDrivey.setParam4(taskEntity.getSeq());//排序字段
@@ -1074,9 +1140,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
                 this.projectSkyDriverDao.insert(projectSkyDrivey);
                 isExist = projectSkyDrivey;
             }
-
-            setSkyDriverForTask(projectId, taskEntity.getId(), isExist.getId(), isExist.getSkyDrivePath());
-
+            setSkyDriverForTask(projectId, taskEntity.getId(), isExist.getId(), isExist.getSkyDrivePath(),fileType);
         }
 
     }
@@ -1164,10 +1228,6 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
      * 方法描述：获取项目合同附件列表
      * 作者：ZCL
      * 日期：2017/9/12
-     *
-     * @param projectId
-     * @param:
-     * @return:
      */
     @Override
     public List<ProjectSkyDriveEntity> listProjectContractAttach(String projectId) throws Exception {
@@ -1186,9 +1246,6 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
      * 方法描述：获取单个文件的路径
      * 作者：MaoSF
      * 日期：2017/6/2
-     *
-     * @param:
-     * @return:
      */
     private String getFileUrl(Map<String, Object> map, boolean isHasFastdfsUrl) {
         List<ProjectSkyDriveEntity> attachEntityList = this.projectSkyDriverDao.getNetFileByParam(map);

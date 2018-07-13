@@ -82,8 +82,6 @@ public interface ProjectTaskDao extends BaseDao<ProjectTaskEntity> {
      * 方法描述：查询子节点（此处全部为正式数据）
      * 作者：MaoSF
      * 日期：2017/3/12
-     * @param:
-     * @return:
      */
     List<ProjectTaskEntity> getProjectTaskByPid(String taskPid);
 

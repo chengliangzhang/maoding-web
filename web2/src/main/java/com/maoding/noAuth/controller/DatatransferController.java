@@ -169,7 +169,7 @@ public class DatatransferController extends BaseController {
      * @param:
      * @return:
      */
-    @RequestMapping(value = "/initProjectSkyDriver",method = RequestMethod.POST)
+    @RequestMapping(value = "/initProjectSkyDriver",method = RequestMethod.GET)
     @ResponseBody
     public void initProjectSkyDriver() throws Exception{
 

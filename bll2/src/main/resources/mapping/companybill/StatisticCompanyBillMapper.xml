@@ -14,7 +14,7 @@
     <sql id="getStandingBillBookWhere">
         <where>
             bill.deleted = 0
-            AND detail.fee>0
+            AND detail.fee!=0
             <if test="combineCompanyId!=null">
                 AND  FIND_IN_SET(bill.company_id , #{combineCompanyId})
                 AND NOT(FIND_IN_SET(bill.fee_type ,'2,3')
@@ -45,7 +45,7 @@
     <sql id="getStandingBillBookDetailWhere">
         <where>
             bill.deleted = 0
-            AND detail.fee>0
+            AND detail.fee!=0
             <if test="statisticCompanyList!=null and statisticCompanyList.size() > 0">
                 and
                 <foreach collection="statisticCompanyList" item="companyParam" index="i" open="(" separator="or" close=")">
@@ -92,7 +92,7 @@
     <sql id="getBalanceWhere">
         <where>
             bill.deleted = 0
-            AND detail.fee>0
+            AND detail.fee != 0
             <if test="statisticCompanyList!=null and statisticCompanyList.size() > 0">
                 and
                 <foreach collection="statisticCompanyList" item="companyParam" index="i" open="(" separator="or" close=")">

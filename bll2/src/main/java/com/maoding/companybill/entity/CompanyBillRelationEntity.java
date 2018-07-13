@@ -6,15 +6,15 @@ import java.util.Date;
 
 public class CompanyBillRelationEntity extends BaseEntity{
 
-    private String fromCompanyId;
+    private String fromCompanyId;//付款方id
 
-    private String toCompanyId;
+    private String toCompanyId;//收款方id
 
-    private String operatorId;
+    private String operatorId;//操作者id（companyUserId)
 
-    private String projectId;
+    private String projectId;//项目id
 
-    private String targetId;
+    private String targetId;//目标id(如：报销id)
 
 
     public String getFromCompanyId() {

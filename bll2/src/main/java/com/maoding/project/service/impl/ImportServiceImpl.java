@@ -249,31 +249,31 @@ public class ImportServiceImpl extends NewBaseService implements ImportService {
     private ExpFixedDTO createImportExpFixedDTO(Map<String, Object> data) {
         ExpFixedDTO dto = new ExpFixedDTO();
         try {
-            dto.setDateTime(data.get(ExpFixedConst.DATE_TIME).toString());
+            dto.setDateTime(data.get(ExpCategoryConst.DATE_TIME).toString());
             if (dto.getDateTime() == null) {
-                dto.setErrorReason(ExpFixedConst.DATE_TIME + "不能为空");
+                dto.setErrorReason(ExpCategoryConst.DATE_TIME + "不能为空");
                 return dto;
             }
-            dto.setGdfySalestaxTax(data.get(ExpFixedConst.GDFY_SALESTAX_TAX).toString());
-            dto.setGdfyDirectcostsSalay(data.get(ExpFixedConst.GDFY_DIRECTCOSTS_SALAY).toString());
-            dto.setGdfyDirectcostsFund(data.get(ExpFixedConst.GDFY_DIRECTCOSTS_FUND).toString());
-            dto.setGdfyDirectcostsBonus(data.get(ExpFixedConst.GDFY_DIRECTCOSTS_BONUS).toString());
-            dto.setGdfyExecutivesalarySalay(data.get(ExpFixedConst.GDFY_EXECUTIVESALARY_SALAY).toString());
-            dto.setGdfyExecutivesalaryFund(data.get(ExpFixedConst.GDFY_EXECUTIVESALARY_FUND).toString());
-            dto.setGdfyExecutivesalaryBonus(data.get(ExpFixedConst.GDFY_EXECUTIVESALARY_BONUS).toString());
-            dto.setGdfyFwsalaryBgcd(data.get(ExpFixedConst.GDFY_FWSALARY_BGCD).toString());
-            dto.setGdfyFwsalaryWg(data.get(ExpFixedConst.GDFY_FWSALARY_WG).toString());
-            dto.setGdfyFwsalarySd(data.get(ExpFixedConst.GDFY_FWSALARY_SD).toString());
-            dto.setGdfyFwsalaryNet(data.get(ExpFixedConst.GDFY_FWSALARY_NET).toString());
-            dto.setGdfyFwsalaryGbwh(data.get(ExpFixedConst.GDFY_FWSALARY_GBWH).toString());
-            dto.setGdfyAssetsamortizationBgzx(data.get(ExpFixedConst.GDFY_ASSETSAMORTIZATION_BGZX).toString());
-            dto.setGdfyAssetsamortizationBgsb(data.get(ExpFixedConst.GDFY_ASSETSAMORTIZATION_BGSB).toString());
-            dto.setGdfyAssetsamortizationRjtx(data.get(ExpFixedConst.GDFY_ASSETSAMORTIZATION_RJTX).toString());
-            dto.setGdfyAssetsamortizationBdczj(data.get(ExpFixedConst.GDFY_ASSETSAMORTIZATION_BDCZJ).toString());
-            dto.setGdfyZcjzzbHzzb(data.get(ExpFixedConst.GDFY_ZCJZZB_HZZB).toString());
-            dto.setGdfyCwfySxf(data.get(ExpFixedConst.GDFY_CWFY_SXF).toString());
-            dto.setGdfyCwfyLx(data.get(ExpFixedConst.GDFY_CWFY_LX).toString());
-            dto.setGdfySdsfySds(data.get(ExpFixedConst.GDFY_SDSFY_SDS).toString());
+            dto.setGdfySalestaxTax(data.get(ExpCategoryConst.EXP_SALESTAX_TAX).toString());
+            dto.setGdfyDirectcostsSalay(data.get(ExpCategoryConst.EXP_DIRECTCOSTS_SALAY).toString());
+            dto.setGdfyDirectcostsFund(data.get(ExpCategoryConst.EXP_DIRECTCOSTS_FUND).toString());
+            dto.setGdfyDirectcostsBonus(data.get(ExpCategoryConst.EXP_DIRECTCOSTS_BONUS).toString());
+            dto.setGdfyExecutivesalarySalay(data.get(ExpCategoryConst.EXP_EXECUTIVESALARY_SALAY).toString());
+            dto.setGdfyExecutivesalaryFund(data.get(ExpCategoryConst.EXP_EXECUTIVESALARY_FUND).toString());
+            dto.setGdfyExecutivesalaryBonus(data.get(ExpCategoryConst.EXP_EXECUTIVESALARY_BONUS).toString());
+            dto.setGdfyFwsalaryBgcd(data.get(ExpCategoryConst.EXP_FWSALARY_BGCD).toString());
+            dto.setGdfyFwsalaryWg(data.get(ExpCategoryConst.EXP_FWSALARY_WG).toString());
+            dto.setGdfyFwsalarySd(data.get(ExpCategoryConst.EXP_FWSALARY_SD).toString());
+            dto.setGdfyFwsalaryNet(data.get(ExpCategoryConst.EXP_FWSALARY_NET).toString());
+            dto.setGdfyFwsalaryGbwh(data.get(ExpCategoryConst.EXP_FWSALARY_GBWH).toString());
+            dto.setGdfyAssetsamortizationBgzx(data.get(ExpCategoryConst.EXP_ASSETSAMORTIZATION_BGZX).toString());
+            dto.setGdfyAssetsamortizationBgsb(data.get(ExpCategoryConst.EXP_ASSETSAMORTIZATION_BGSB).toString());
+            dto.setGdfyAssetsamortizationRjtx(data.get(ExpCategoryConst.EXP_ASSETSAMORTIZATION_RJTX).toString());
+            dto.setGdfyAssetsamortizationBdczj(data.get(ExpCategoryConst.EXP_ASSETSAMORTIZATION_BDCZJ).toString());
+            dto.setGdfyZcjzzbHzzb(data.get(ExpCategoryConst.EXP_ZCJZZB_HZZB).toString());
+            dto.setGdfyCwfySxf(data.get(ExpCategoryConst.EXP_CWFY_SXF).toString());
+            dto.setGdfyCwfyLx(data.get(ExpCategoryConst.EXP_CWFY_LX).toString());
+            dto.setGdfySdsfySds(data.get(ExpCategoryConst.EXP_SDSFY_SDS).toString());
         } catch (Exception e) {
             log.error("createImportExpFixedDTO is fail:" + e.getMessage());
         }

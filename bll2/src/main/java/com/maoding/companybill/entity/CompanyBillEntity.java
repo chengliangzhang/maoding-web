@@ -7,33 +7,33 @@ import java.util.Date;
 
 public class CompanyBillEntity extends BaseEntity{
 
-    private String companyId;
+    private String companyId;//所属组织id
 
-    private BigDecimal fee;
+    private BigDecimal fee;//总金额
 
-    private Integer feeType;
+    private Integer feeType;//费用类型（参考CompanyBillType）
 
-    private Integer payType;
+    private Integer payType;//收支类型（1：收，2：支）
 
-    private Integer feeUnit;
+    private Integer feeUnit;//金额的单位（1：万元，2：元）目前统一用元
 
-    private String billDescription;
+    private String billDescription;//费用描述
 
     private String payerName; //付款方
 
     private String payeeName; //收款方
 
-    private String projectName;
+    private String projectName;//项目名称
 
-    private String paymentDate;
+    private String paymentDate;//费用日期
 
-    private String operatorName;
+    private String operatorName;//操作人（收款/付款人）
 
-    private String invoiceNo;
+    private String invoiceNo;//发票号
 
-    private Integer deleted;
+    private Integer deleted;//0：有效，1：无效记录
 
-    private String paramV1;
+    private String paramV1;//备用字段
 
     public String getCompanyId() {
         return companyId;

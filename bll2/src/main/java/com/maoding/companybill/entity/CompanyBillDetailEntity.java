@@ -7,19 +7,19 @@ import java.util.Date;
 
 public class CompanyBillDetailEntity extends BaseEntity{
 
-    private String billId;
+    private String billId;//主记录id
 
-    private BigDecimal fee;
+    private BigDecimal fee;//该项对应的金额
 
-    private String expTypeParentName;
+    private String expTypeParentName;//费用父类型
 
-    private String expTypeName;
+    private String expTypeName;//费用类型
 
-    private String feeDescription;
+    private String feeDescription;//费用描述
 
-    private String projectName;
+    private String projectName;//项目名称
 
-    private Integer seq;
+    private Integer seq;//排序
 
     public String getBillId() {
         return billId;
