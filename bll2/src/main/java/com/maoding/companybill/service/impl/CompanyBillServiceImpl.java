@@ -7,6 +7,7 @@ import com.maoding.companybill.dto.SaveCompanyBillDTO;
 import com.maoding.companybill.entity.CompanyBillDetailEntity;
 import com.maoding.companybill.entity.CompanyBillEntity;
 import com.maoding.companybill.entity.CompanyBillRelationEntity;
+import com.maoding.companybill.service.CompanyBalanceService;
 import com.maoding.companybill.service.CompanyBillService;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.NewBaseService;
@@ -14,6 +15,7 @@ import com.maoding.core.constant.CompanyBillType;
 import com.maoding.core.constant.ExpCategoryConst;
 import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
+import com.maoding.financial.dao.ExpCategoryDao;
 import com.maoding.financial.dao.ExpDetailDao;
 import com.maoding.financial.dao.ExpFixedDao;
 import com.maoding.financial.dao.ExpMainDao;
@@ -22,9 +24,12 @@ import com.maoding.financial.dto.ExpMainDTO;
 import com.maoding.financial.entity.ExpDetailEntity;
 import com.maoding.org.dao.CompanyDao;
 import com.maoding.org.dao.CompanyUserDao;
+import com.maoding.org.entity.CompanyEntity;
+import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.org.service.CompanyService;
 import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.entity.ProjectEntity;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -142,6 +147,9 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
     }
 
 
+    /**
+     * 报销，费用申请，业务处理
+     */
     private void saveExpFee(SaveCompanyBillDTO dto,CompanyBillEntity bill) throws Exception {
 
         ExpMainDTO exp = expMainDao.selectByIdWithUserName(dto.getTargetId());
@@ -172,6 +180,10 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
         bill.setPayeeName(exp.getUserName());
         bill.setFeeUnit(2);
     }
+
+    /**
+     * 项目费用（合同回款，合作设计费，技术审查费，其他收支）业务处理
+     */
     private void saveProjectFee(SaveCompanyBillDTO dto,CompanyBillEntity bill) throws Exception {
         CompanyBillDetailEntity billDetail = new CompanyBillDetailEntity();
         billDetail.initEntity();
@@ -205,6 +217,9 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
         bill.setFee(bill.getFee().multiply(new BigDecimal("10000")));
     }
 
+    /**
+     * 固定支出 业务处理
+     */
     private void saveFixFee(SaveCompanyBillDTO dto,CompanyBillEntity mainBill) throws Exception {
         Date createDate = dto.getCreateDate();
         if(createDate==null) {
