@@ -401,6 +401,15 @@ public class ProjectSkyDriverController extends BaseController {
     @RequiresPermissions(value = {RoleConst.PROJECT_EDIT}, logical = Logical.OR)
     public AjaxMessage sendarchivedFileNotifier(@RequestBody Map<String, Object> param) throws Exception {
         try {
+            //原来的代码使用taskEntity和修改后的map存储传入的参数，现在改为DeliverEditDTO
+            DeliverEditDTO request = new DeliverEditDTO();
+            request.setProjectId((String) param.get("projectId"));
+            request.setCompanyId((String) param.get("companyId"));
+            request.setIssueId((String) param.get("id"));
+            request.setName((String) param.get("taskName"));
+            request.setType(NetFileType.DIRECTORY_SEND_ARCHIVE_NOTICE);
+
+            //***********原来的代码*****************/
             //创建归档通知文件夹
             ProjectTaskEntity taskEntity = new ProjectTaskEntity();
             taskEntity.setTaskPid((String) param.get("id"));
@@ -418,16 +427,11 @@ public class ProjectSkyDriverController extends BaseController {
             taskEntity.setIsOperaterTask(0);
             taskEntity.setType(NetFileType.DIRECTORY_SEND_ARCHIVE_NOTICE);
             taskEntity.setFileSize(0);
-            //创建文件夹
-            DeliverEditDTO request = new DeliverEditDTO();
-            request.setProjectId((String) param.get("projectId"));
-            request.setCompanyId((String) param.get("companyId"));
-            request.setIssueId((String) param.get("id"));
-            request.setName((String) param.get("taskName"));
-            request.setType(NetFileType.DIRECTORY_SEND_ARCHIVE_NOTICE);
-            request = updateDeliverEdit(request,taskEntity);
+            //***********原来的代码*****************/
 
+            //创建交付目录
             this.projectSkyDriverService.createDeliver(taskEntity,request);
+
             // 发送消息,应该按照人数发送消息
             List<Object> userList = (List) param.get("userArr");
             for (Object o : userList) {
