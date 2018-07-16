@@ -172,4 +172,12 @@ import java.util.Map;
      *
      * */
     String getCompleteTaskId(Map<String,Object> param);
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/16
+     * @description     创建交付相关的个人任务
+     * @param   request 交付申请信息
+     **/
+    void createDeliverPersonalTask();
 }

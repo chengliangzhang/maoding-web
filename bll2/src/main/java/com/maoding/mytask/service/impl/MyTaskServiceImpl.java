@@ -56,7 +56,6 @@ import com.maoding.task.service.ProjectTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
@@ -1998,4 +1997,13 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         }
     }
 
+    /**
+     * @author 张成亮
+     * @date 2018/7/16
+     * @description 创建交付相关的个人任务
+     **/
+    @Override
+    public void createDeliverPersonalTask() {
+
+    }
 }

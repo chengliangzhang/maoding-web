@@ -9,6 +9,7 @@ import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.message.entity.MessageEntity;
 import com.maoding.message.service.MessageService;
+import com.maoding.mytask.service.MyTaskService;
 import com.maoding.project.dto.*;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.entity.ProjectSkyDriveEntity;
@@ -45,6 +46,9 @@ public class ProjectSkyDriverController extends BaseController {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private MyTaskService myTaskService;
 
     @ModelAttribute
     public void before() {
@@ -435,6 +439,7 @@ public class ProjectSkyDriverController extends BaseController {
             //创建交付目录
             this.projectSkyDriverService.createDeliver(taskEntity,request);
             //创建负责人任务
+            myTaskService.createDeliverPersonalTask();
 
             // 发送消息,应该按照人数发送消息
             List<Object> userList = (List) param.get("userArr");
