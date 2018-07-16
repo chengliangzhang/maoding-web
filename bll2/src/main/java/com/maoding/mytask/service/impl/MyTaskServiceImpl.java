@@ -1345,15 +1345,70 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
     public void finishMyTask(MyTaskEntity myTask) {
         //3.处理我的任务
         this.finishMyTask(myTask.getId());
-        //忽略其他人员的任务
-        Map<String, Object> map = new HashMap<>();
-        map.put("param4", "1");
-        map.put("targetId", myTask.getTargetId());
-        map.put("projectId",myTask.getProjectId());
-        map.put("companyId",myTask.getCompanyId());
-        map.put("taskType", myTask.getTaskType());
-        this.updateStatesByTargetId(map);
+
+        //如果不是确认交付完成任务
+        if (!isDeliverResponseType(myTask)) {
+            //忽略其他人员的任务
+            Map<String, Object> map = new HashMap<>();
+            map.put("param4", "1");
+            map.put("targetId", myTask.getTargetId());
+            map.put("projectId", myTask.getProjectId());
+            map.put("companyId", myTask.getCompanyId());
+            map.put("taskType", myTask.getTaskType());
+            this.updateStatesByTargetId(map);
+        } else {
+            //否则，是确认交付完成任务
+            //同时完成同负责人、同签发任务的上传任务
+            finishDeliverUpload(myTask);
+            //如果是最后一个确认交付完成任务
+            if (isLastDeliverResponseType(myTask)) {
+                //通告交付任务创建者上传任务已完成
+                notifyDeliverFinished(myTask);
+            }
+        }
     }
+
+    //判断是否确认交付完成任务
+    private boolean isDeliverResponseType(MyTaskEntity myTask){
+        return Integer.valueOf(MyTaskEntity.DELIVER_CONFIRM_FINISH)
+                .equals(myTask.getTaskType());
+    }
+
+    //判断是否最后一个确认交付完成任务
+    private boolean isLastDeliverResponseType(MyTaskEntity myTask){
+        //查询同项目、同公司、targetId相同，类型为确认交付完成任务，且状态为未完成的任务
+        Map<String, Object> query = new HashMap<>();
+        query.put("projectId",myTask.getProjectId());
+        query.put("companyId",myTask.getCompanyId());
+        query.put("targetId",myTask.getTargetId());
+        query.put("taskType",MyTaskEntity.DELIVER_CONFIRM_FINISH);
+        query.put("status","0");
+        List<MyTaskEntity> list = myTaskDao.getMyTaskByParam(query);
+        return ObjectUtils.isEmpty(list);
+    }
+
+    //完成同负责人、同签发任务的上传任务
+    private void finishDeliverUpload(MyTaskEntity myTask){
+        //查询同项目、同公司、targetId相同，类型为上传任务，且状态为未完成的任务
+        Map<String, Object> query = new HashMap<>();
+        query.put("projectId",myTask.getProjectId());
+        query.put("companyId",myTask.getCompanyId());
+        query.put("targetId",myTask.getTargetId());
+        query.put("taskType",MyTaskEntity.DELIVER_EXECUTE);
+        query.put("status","0");
+        List<MyTaskEntity> list = myTaskDao.getMyTaskByParam(query);
+        if (!ObjectUtils.isEmpty(list)){
+            for (MyTaskEntity entity : list) {
+                finishMyTask(entity.getId());
+            }
+        }
+    }
+
+    //通告交付任务创建者上传任务已完成
+    private void notifyDeliverFinished(MyTaskEntity myTask){
+
+    }
+
 
     /**
      * 方法描述：财务到款确认 type=16-19（合作设计费，技术审查费，双方财务付款到款操作）
