@@ -415,6 +415,7 @@ public class ProjectSkyDriverController extends BaseController {
             request.setType(NetFileType.DIRECTORY_SEND_ARCHIVE_NOTICE);
             request.setDescription((String) param.get("remarks"));
             request.setEndTime(DateUtils.parseDate((String) param.get("deadline"),"yyyy-MM-dd"));
+            request.setChangedResponseList(createResponseEditListFrom((List<Map<String,Object>>) param.get("userArr")));
 
             //***********原来的代码*****************/
             //创建归档通知文件夹
@@ -456,6 +457,17 @@ public class ProjectSkyDriverController extends BaseController {
             return AjaxMessage.failed("数据异常");
         }
         return AjaxMessage.succeed("发送成功");
+    }
+
+    private List<ResponseEditDTO> createResponseEditListFrom(List<Map<String,Object>> userArr){
+        List<ResponseEditDTO> responseEditList = new ArrayList<>();
+        userArr.forEach(user->{
+            ResponseEditDTO responseEditRequest = new ResponseEditDTO();
+            responseEditRequest.setId((String) user.get("id"));
+            responseEditRequest.setIsSelected((String) user.get("isSelected"));
+            responseEditList.add(responseEditRequest);
+        });
+        return responseEditList;
     }
 
     private MessageEntity sendMessageEntity(Map<String, Object> param) {
