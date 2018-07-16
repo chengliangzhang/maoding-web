@@ -4,6 +4,7 @@ import com.maoding.core.base.service.BaseService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.mytask.dto.*;
 import com.maoding.mytask.entity.MyTaskEntity;
+import com.maoding.project.dto.DeliverEditDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -179,5 +180,5 @@ import java.util.Map;
      * @description     创建交付相关的个人任务
      * @param   request 交付申请信息
      **/
-    void createDeliverPersonalTask();
+    void createDeliverPersonalTask(DeliverEditDTO request);
 }

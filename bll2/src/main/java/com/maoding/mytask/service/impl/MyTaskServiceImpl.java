@@ -31,6 +31,7 @@ import com.maoding.org.service.CompanyService;
 import com.maoding.org.service.CompanyUserService;
 import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.dao.ProjectProcessNodeDao;
+import com.maoding.project.dto.DeliverEditDTO;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.entity.ProjectProcessNodeEntity;
 import com.maoding.project.service.ProjectProcessService;
@@ -1998,12 +1999,13 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
     }
 
     /**
+     * @param request 交付申请信息
      * @author 张成亮
      * @date 2018/7/16
      * @description 创建交付相关的个人任务
      **/
     @Override
-    public void createDeliverPersonalTask() {
+    public void createDeliverPersonalTask(DeliverEditDTO request) {
 
     }
 }

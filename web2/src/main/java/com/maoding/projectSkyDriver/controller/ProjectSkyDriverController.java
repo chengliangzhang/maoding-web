@@ -439,7 +439,7 @@ public class ProjectSkyDriverController extends BaseController {
             //创建交付目录
             this.projectSkyDriverService.createDeliver(taskEntity,request);
             //创建负责人任务
-            myTaskService.createDeliverPersonalTask();
+            myTaskService.createDeliverPersonalTask(request);
 
             // 发送消息,应该按照人数发送消息
             List<Object> userList = (List) param.get("userArr");
