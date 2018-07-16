@@ -871,7 +871,31 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
      */
     @Override
     public String createSendarchivedFileNotifier(ProjectTaskEntity taskEntity) {
-        return createDeliver(taskEntity,null);
+        ProjectSkyDriveEntity isExist = this.projectSkyDriverDao.getSkyDriveByPidAndFileName
+                (taskEntity.getTaskPid(), taskEntity.getTaskName(), taskEntity.getProjectId(), taskEntity.getCompanyId());
+        ProjectSkyDriveEntity projectSkyDrivey = new ProjectSkyDriveEntity();
+        String pid = "";
+        if (null == isExist) {
+            projectSkyDrivey.setId(StringUtil.buildUUID());
+            projectSkyDrivey.setCompanyId(taskEntity.getCompanyId());
+            projectSkyDrivey.setProjectId(taskEntity.getProjectId());
+            projectSkyDrivey.setPid(taskEntity.getTaskPid());
+            projectSkyDrivey.setSkyDrivePath(taskEntity.getTaskPid() + "-" + projectSkyDrivey.getId());
+            projectSkyDrivey.setIsCustomize(1);
+            projectSkyDrivey.setType(taskEntity.getType());
+            projectSkyDrivey.setFileName(taskEntity.getTaskName());
+            projectSkyDrivey.setTaskId(taskEntity.getId());
+            projectSkyDrivey.setParam4(taskEntity.getSeq());//排序字段
+            projectSkyDrivey.setStatus("0");
+            projectSkyDrivey.setFilePath(taskEntity.getFilePath());
+            projectSkyDrivey.setFileSize(0 != taskEntity.getFileSize() ? taskEntity.getFileSize() : 0);
+            this.projectSkyDriverDao.insert(projectSkyDrivey);
+            pid = projectSkyDrivey.getId();
+        }
+        if ((null == pid || "".equals(pid)) && null != isExist) {
+            pid = isExist.getId();
+        }
+        return pid;
     }
 
     /**
@@ -896,7 +920,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
                         (rootDir.getId(), issue.getTaskName(), request.getProjectId(), request.getCompanyId());
                 //如果任务目录不存在，创建任务目录
                 if (taskDir == null) {
-                    taskDir = createDirFrom(issue, rootDir);
+                    taskDir = createDirFrom(issue, rootDir, request);
                     this.projectSkyDriverDao.insert(taskDir);
                     id = taskDir.getId();
                 }
@@ -904,7 +928,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
                 //如果Name不为空，创建交付目录
                 if (!StringUtils.isEmpty(request.getName())) {
                     //创建交付目录
-                    ProjectSkyDriveEntity deliverDir = createDirFrom(request);
+                    ProjectSkyDriveEntity deliverDir = createDirFrom(taskDir,request);
                     id = deliverDir.getId();
                 }
             }
@@ -948,65 +972,35 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         return (list != null) && (list.size() > 0);
     }
 
-    //使用父目录信息内容补充缺失的交付信息
-    private DeliverEditDTO updateDeliverEdit(DeliverEditDTO request,ProjectSkyDriveEntity parent){
-        //如果父目录编号为空，补充父目录编号
-        if (StringUtils.isEmpty(request.getParentDirId())){
-            request.setParentDirId(parent.getId());
-            request.setParentDirIdPath(parent.getSkyDrivePath());
-        }
-        //目录类型
-        if (request.getType() == null){
-            request.setType(parent.getType());
-        }
-        return request;
-    }
-
-
-    //使用任务信息内容补充缺失的交付信息
-    private DeliverEditDTO updateDeliverEdit(DeliverEditDTO request,ProjectTaskEntity task){
-        //所属签发任务
-        if (StringUtils.isEmpty(request.getIssueId())){
-            request.setIssueId(task.getId());
-        }
-        //项目编号
-        if (StringUtils.isEmpty(request.getProjectId())){
-            request.setProjectId(task.getProjectId());
-        }
-        //公司编号
-        if (StringUtils.isEmpty(request.getCompanyId())){
-            request.setCompanyId(task.getCompanyId());
-        }
-
-        return request;
-    }
 
     //使用交付信息创建相应的交付目录信息
-    private ProjectSkyDriveEntity createDirFrom(DeliverEditDTO request){
+    private ProjectSkyDriveEntity createDirFrom(ProjectSkyDriveEntity parent, DeliverEditDTO request){
         ProjectSkyDriveEntity dir = new ProjectSkyDriveEntity();
         dir.setId(StringUtil.buildUUID());
-        dir.setSkyDrivePath(request.getParentDirIdPath() + "-" + dir.getId());
+        dir.setPid(parent.getId());
+        dir.setSkyDrivePath(parent.getSkyDrivePath() + "-" + dir.getId());
         dir.setCompanyId(request.getCompanyId());
         dir.setProjectId(request.getProjectId());
-        dir.setPid(request.getIssueId());
         dir.setIsCustomize(1);
         dir.setType(request.getType());
         dir.setFileName(request.getName());
         dir.setTaskId(request.getIssueId());
-        dir.setParam4(request.getSeq());
+        dir.setTargetId(request.getIssueId());
+        dir.setParam4(1);
         dir.setStatus("0");
+        dir.setCreateBy(request.getCreateBy());
         return dir;
     }
 
     //使用任务信息创建相应的文档目录信息
-    private ProjectSkyDriveEntity createDirFrom(ProjectTaskEntity task,ProjectSkyDriveEntity parent){
+    private ProjectSkyDriveEntity createDirFrom(ProjectTaskEntity task,ProjectSkyDriveEntity parent, DeliverEditDTO request){
         ProjectSkyDriveEntity dir = new ProjectSkyDriveEntity();
         dir.setId(StringUtil.buildUUID());
         dir.setSkyDrivePath(parent.getSkyDrivePath() + "-" + dir.getId());
         dir.setProjectId(task.getProjectId());
         dir.setCompanyId(task.getCompanyId());
         dir.setPid(parent.getId());
-        dir.setIsCustomize(1);
+        dir.setIsCustomize(0);
         //类型指定为目录
         dir.setType(0);
         //目录名同任务名
@@ -1016,6 +1010,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         dir.setParam4(task.getSeq());
         dir.setStatus("0");
         dir.setFileSize(0);
+        dir.setCreateBy(request.getCreateBy());
         return dir;
     }
 
