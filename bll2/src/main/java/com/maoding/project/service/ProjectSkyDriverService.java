@@ -2,6 +2,7 @@ package com.maoding.project.service;
 
 import com.maoding.core.base.service.BaseService;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.project.dto.DeliverEditDTO;
 import com.maoding.project.dto.ProjectSkyDriveDTO;
 import com.maoding.project.dto.ProjectSkyDriveRenameDTO;
 import com.maoding.project.entity.ProjectEntity;
@@ -241,6 +242,16 @@ public interface ProjectSkyDriverService extends BaseService<ProjectSkyDriveEnti
      * 发送归档通知文件夹
      */
     String createSendarchivedFileNotifier(ProjectTaskEntity taskEntity);
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/16
+     * @description 在任务对应的文档目录下创建或更改交付文件夹
+     * @param task 任务
+     *        request 交付申请
+     * @return 创建或更改的交付文件夹
+     */
+    String createDeliver(ProjectTaskEntity task,DeliverEditDTO request);
 
     /**
      * 查询归档通知下的所有文件夹和文件
