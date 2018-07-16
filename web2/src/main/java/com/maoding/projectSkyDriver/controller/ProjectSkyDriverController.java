@@ -6,6 +6,7 @@ import com.maoding.core.constant.NetFileType;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.StringUtil;
+import com.maoding.core.util.StringUtils;
 import com.maoding.message.entity.MessageEntity;
 import com.maoding.message.service.MessageService;
 import com.maoding.project.dto.*;
@@ -418,7 +419,15 @@ public class ProjectSkyDriverController extends BaseController {
             taskEntity.setType(NetFileType.DIRECTORY_SEND_ARCHIVE_NOTICE);
             taskEntity.setFileSize(0);
             //创建文件夹
-            this.projectSkyDriverService.createSendarchivedFileNotifier(taskEntity);
+            DeliverEditDTO request = new DeliverEditDTO();
+            request.setProjectId((String) param.get("projectId"));
+            request.setCompanyId((String) param.get("companyId"));
+            request.setIssueId((String) param.get("id"));
+            request.setName((String) param.get("taskName"));
+            request.setType(NetFileType.DIRECTORY_SEND_ARCHIVE_NOTICE);
+            request = updateDeliverEdit(request,taskEntity);
+
+            this.projectSkyDriverService.createDeliver(taskEntity,request);
             // 发送消息,应该按照人数发送消息
             List<Object> userList = (List) param.get("userArr");
             for (Object o : userList) {
@@ -434,6 +443,24 @@ public class ProjectSkyDriverController extends BaseController {
             return AjaxMessage.failed("数据异常");
         }
         return AjaxMessage.succeed("发送成功");
+    }
+
+    //使用任务信息内容补充缺失的交付信息
+    private DeliverEditDTO updateDeliverEdit(DeliverEditDTO request,ProjectTaskEntity task){
+        //所属签发任务
+        if (StringUtils.isEmpty(request.getIssueId())){
+            request.setIssueId(task.getId());
+        }
+        //项目编号
+        if (StringUtils.isEmpty(request.getProjectId())){
+            request.setProjectId(task.getProjectId());
+        }
+        //公司编号
+        if (StringUtils.isEmpty(request.getCompanyId())){
+            request.setCompanyId(task.getCompanyId());
+        }
+
+        return request;
     }
 
     private MessageEntity sendMessageEntity(Map<String, Object> param) {
