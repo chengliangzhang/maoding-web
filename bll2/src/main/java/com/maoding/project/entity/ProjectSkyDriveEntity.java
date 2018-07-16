@@ -72,7 +72,7 @@ public class ProjectSkyDriveEntity extends BaseEntity {
     /**
      * 预留字段4(排序字段)
      */
-    private int param4;
+    private Integer param4;
 
     /**
      * 关联任务的id
@@ -172,11 +172,11 @@ public class ProjectSkyDriveEntity extends BaseEntity {
         this.fileSize = fileSize;
     }
 
-    public int getParam4() {
+    public Integer getParam4() {
         return param4;
     }
 
-    public void setParam4(int param4) {
+    public void setParam4(Integer param4) {
         this.param4 = param4;
     }
 
