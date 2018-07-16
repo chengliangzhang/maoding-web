@@ -3,7 +3,6 @@ package com.maoding.org.controller;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.bean.AjaxMessage;
-import com.maoding.core.common.service.UploadService;
 import com.maoding.core.component.sms.SmsSender;
 import com.maoding.core.component.sms.bean.Sms;
 import com.maoding.core.constant.NetFileType;
@@ -83,9 +82,6 @@ public class OrgController extends BaseController {
 
     @Autowired
     private SmsSender smsSender;
-
-    @Autowired
-    private UploadService uploadService;
 
     @Autowired
     private AccountDao accountDao;
@@ -1604,7 +1600,7 @@ public class OrgController extends BaseController {
         String filePath = this.projectSkyDriverService.getCompanyFileByType(this.currentCompanyId, NetFileType.COMPANY_QR_CODE_ATTACH);
         if (!StringUtil.isNullOrEmpty(filePath)) {
             String fileName = this.currentCompanyDTO.getCompanyName() + ".jpg";
-            uploadService.downLoadFileByFdfs(response, filePath, fileName);
+          //  uploadService.downLoadFileByFdfs(response, filePath, fileName);
         }
 
     }

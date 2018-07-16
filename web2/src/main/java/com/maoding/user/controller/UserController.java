@@ -1,6 +1,5 @@
 package com.maoding.user.controller;
 
-import com.maoding.core.annotation.isLogin;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.bean.AjaxMessage;
@@ -139,7 +138,6 @@ public class UserController extends BaseController {
      */
     @RequestMapping(value = {"/userInfo", "/userInfo/{id}"}, method = RequestMethod.GET)
     @ResponseBody
-    @isLogin
     public AjaxMessage getUserInfo(@PathVariable Map<String, Object> map) throws Exception {
         //userService.get
         //账号信息

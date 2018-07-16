@@ -115,22 +115,9 @@ public class ExpCategoryDaoImpl extends GenericDao<ExpCategoryEntity> implements
     }
 
     @Override
-    public List<ExpCategoryDataDTO> getExpTypeListForProfitReport(String companyId, String subCompanyId) {
-        Map<String,Object> map = new HashMap<>();
-        map.put("companyId",companyId);
-        map.put("subCompanyId",subCompanyId);
-        map.put("showStatus","1");
-        return this.sqlSession.selectList("ExpCategoryEntityMapper.getExpTypeListForProfitReport",map);
+    public List<ExpCategoryDataDTO> getExpTypeListForProfitReport(QueryExpCategoryDTO query) {
+        return this.sqlSession.selectList("ExpCategoryEntityMapper.getExpTypeListForProfitReport",query);
 
-    }
-
-    @Override
-    public List<ExpCategoryDataDTO> getExpTypeListForProfitReport(String companyId, List<String> subCompanyIdList) {
-        Map<String,Object> map = new HashMap<>();
-        map.put("companyId",companyId);
-        map.put("companyIdList",subCompanyIdList);
-        map.put("showStatus","1");
-        return this.sqlSession.selectList("ExpCategoryEntityMapper.getExpTypeListForProfitReport",map);
     }
 
     @Override

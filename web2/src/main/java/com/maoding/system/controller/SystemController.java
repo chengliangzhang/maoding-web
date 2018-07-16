@@ -3,7 +3,6 @@ package com.maoding.system.controller;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.bean.AjaxMessage;
-import com.maoding.core.common.service.UploadService;
 import com.maoding.core.component.sms.SmsSender;
 import com.maoding.core.component.sms.bean.Sms;
 import com.maoding.core.constant.SystemParameters;
@@ -86,8 +85,6 @@ public class SystemController extends BaseController{
 	@Autowired
 	public UserService userService;
 
-	@Autowired
-	public UploadService uploadService;
 
 	@Autowired
 	public CompanyService companyService;
@@ -429,14 +426,14 @@ public class SystemController extends BaseController{
 		String fileName = "卯丁个人操作手册V1.0.pdf";
 		//获取网站部署路径(通过ServletContext对象)，用于确定下载文件位置，从而实现下载
 
-		uploadService.downLoadFile(response,fileName,helpDocUrl);
+		//uploadService.downLoadFile(response,fileName,helpDocUrl);
 
 	}
 	@RequestMapping("file/downloadManaDoc")
 	public void downloadManaDoc(HttpServletResponse response) throws UnsupportedEncodingException {
 		String fileName = "卯丁管理员使用手册V1.0.pdf";
 		//获取网站部署路径(通过ServletContext对象)，用于确定下载文件位置，从而实现下载
-		uploadService.downLoadFile(response,fileName,helpDocUrl);
+		//uploadService.downLoadFile(response,fileName,helpDocUrl);
 
 	}
 
@@ -470,7 +467,7 @@ public class SystemController extends BaseController{
 	@RequestMapping(value = "/createImg", method = RequestMethod.POST)
 	@ResponseBody
 	public void createImg() throws Exception{
-		this.uploadService.createQrcode("https://www.baidu.com","company/");
+		//this.uploadService.createQrcode("https://www.baidu.com","company/");
 	}
 
 

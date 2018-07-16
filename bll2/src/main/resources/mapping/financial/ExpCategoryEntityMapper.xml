@@ -266,21 +266,20 @@
   </select>
 
 
-  <select id="getExpTypeListForProfitReport" resultMap="BaseResultMap2" parameterType="java.util.Map">
-    SELECT a.id as pid,a.code as parentCode,a.show_status as parentShowStatus,
+  <select id="getExpTypeListForProfitReport" resultMap="BaseResultMap2" parameterType="com.maoding.financial.dto.QueryExpCategoryDTO">
+    select * from (
+    SELECT a.id as pid,a.code as parentCode,a.show_status as parentShowStatus,a.seq as parentSeq,
     a.category_type as parentCategoryType,a.exptype_memo as parentExpTypeMemo,
-    b.id, b.pid as prentId, a.name as parentName, b.name,b.code,b.show_status,b.category_type,b.exptype_memo
+    b.id, b.pid as prentId, a.name as parentName, b.name,b.code,b.seq,
+    b.show_status,b.category_type,b.exptype_memo
     from maoding_web_exp_category a
     INNER JOIN maoding_web_exp_category b on a.id = b.pid
     where 1=1
     and a.status = 0
     and b.status = 0
-    and (b.company_id = #{companyId}
+    and (b.company_id = #{rootCompanyId}
     and  b.id in (select category_type_id from maoding_web_exp_category_relation
     where 1=1
-    <if test="subCompanyId!=null">
-      and company_id = #{subCompanyId}
-    </if>
     <if test="companyIdList!=null and companyIdList.size()>0">
       and company_id in
       <foreach collection="companyIdList" item="id" index="i" open="(" separator="," close=")">
@@ -289,14 +288,25 @@
     </if>
     )
     or b.company_id is null)
-    <!--<if test="subCompanyId==null">-->
-    <!--and (b.company_id = #{companyId} or b.company_id is null)-->
-    <!--</if>-->
-    <!--<if test="subCompanyId!=null">-->
-    <!--and (b.company_id = #{companyId} or b.company_id is null or (b.company_id = #{subCompanyId} and b.category_type = 3)) -->
-    <!--</if>-->
     and a.pid is null
-    order by  a.seq,b.seq,a.category_type
+ --   order by  a.seq,b.seq,a.category_type
+    <if test="parentTypeList!=null and parentTypeList.size()>0">
+    union
+    SELECT c.id as pid,c.code as parentCode,c.show_status as parentShowStatus,c.seq as parentSeq,
+    c.category_type as parentCategoryType,c.exptype_memo as parentExpTypeMemo,
+    null as id, null as prentId,c.name as parentName, null as name,null as code,null as seq,
+    null as show_status,null as category_type,null as exptype_memo
+    from maoding_web_exp_category c
+    where  1=1
+    and c.pid is null
+    and c.company_id = #{rootCompanyId}
+    and c.name in
+    <foreach collection="parentTypeList" item="parentType" index="i" open="(" separator="," close=")">
+      #{parentType}
+    </foreach>
+    </if>
+    ) a1
+    order by  a1.parentSeq,a1.seq,a1.category_type
   </select>
 
   <update id="saveExpCategoryShowStatus" parameterType="com.maoding.financial.dto.SaveExpCategoryShowStatusDTO">

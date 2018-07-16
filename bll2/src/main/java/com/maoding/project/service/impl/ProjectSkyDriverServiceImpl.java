@@ -3,10 +3,12 @@ package com.maoding.project.service.impl;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.bean.AjaxMessage;
-import com.maoding.core.common.service.UploadService;
 import com.maoding.core.constant.NetFileType;
 import com.maoding.core.constant.SystemParameters;
-import com.maoding.core.util.*;
+import com.maoding.core.util.HttpUtils;
+import com.maoding.core.util.JsonUtils;
+import com.maoding.core.util.StringUtil;
+import com.maoding.core.util.StringUtils;
 import com.maoding.org.dao.CompanyDao;
 import com.maoding.org.dto.CompanyDataDTO;
 import com.maoding.org.entity.CompanyEntity;
@@ -34,7 +36,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 深圳市设计同道技术有限公司
@@ -58,9 +63,6 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
 
     @Autowired
     private ProjectTaskDao projectTaskDao;
-
-    @Autowired
-    private UploadService uploadService;
 
     @Autowired
     private ProjectTaskService projectTaskService;
@@ -1298,32 +1300,32 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
      */
     @Override
     public String createCompanyQrcode(String companyId) throws Exception {
-        String url = this.serverUrl + "iAdmin/sys/shareInvitation/" + companyId;
-        String result = this.uploadService.createQrcode(url, this.companyUrl);
-
-        //上传成功后，数据保存到数据库
-        if (null != result && !"".equals(result)) {
-            //先删除原有的二维码数据
-//			if(null!=companyId&&!"".equals(companyId)) {
-//				Map<String, Object> paraMap = new HashMap<String, Object>();
-//				paraMap.put("companyId", companyId);
-//				paraMap.put("fileType", "7");
-//				companyAttachDao.delCompanyAttachByParamer(paraMap);
-//			}
-            ProjectSkyDriveEntity projectSkyDrive = new ProjectSkyDriveEntity();
-            projectSkyDrive.setId(StringUtil.buildUUID());
-            projectSkyDrive.setFileName("");
-            projectSkyDrive.setType(7);
-            projectSkyDrive.setFileGroup(result.substring(0, 6));
-            projectSkyDrive.setFilePath(result.substring(7));
-            projectSkyDrive.setCompanyId(companyId);
-            projectSkyDrive.setIsCustomize(0);
-            projectSkyDrive.setStatus("0");
-            projectSkyDrive.setCreateDate(new Date());
-            projectSkyDriverDao.insert(projectSkyDrive);
-
-            return result;
-        }
+//        String url = this.serverUrl + "iAdmin/sys/shareInvitation/" + companyId;
+//        String result = this.uploadService.createQrcode(url, this.companyUrl);
+//
+//        //上传成功后，数据保存到数据库
+//        if (null != result && !"".equals(result)) {
+//            //先删除原有的二维码数据
+////			if(null!=companyId&&!"".equals(companyId)) {
+////				Map<String, Object> paraMap = new HashMap<String, Object>();
+////				paraMap.put("companyId", companyId);
+////				paraMap.put("fileType", "7");
+////				companyAttachDao.delCompanyAttachByParamer(paraMap);
+////			}
+//            ProjectSkyDriveEntity projectSkyDrive = new ProjectSkyDriveEntity();
+//            projectSkyDrive.setId(StringUtil.buildUUID());
+//            projectSkyDrive.setFileName("");
+//            projectSkyDrive.setType(7);
+//            projectSkyDrive.setFileGroup(result.substring(0, 6));
+//            projectSkyDrive.setFilePath(result.substring(7));
+//            projectSkyDrive.setCompanyId(companyId);
+//            projectSkyDrive.setIsCustomize(0);
+//            projectSkyDrive.setStatus("0");
+//            projectSkyDrive.setCreateDate(new Date());
+//            projectSkyDriverDao.insert(projectSkyDrive);
+//
+//            return result;
+//        }
 
         return null;
     }

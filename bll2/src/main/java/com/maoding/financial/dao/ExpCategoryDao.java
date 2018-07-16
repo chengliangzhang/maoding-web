@@ -58,8 +58,7 @@ public interface ExpCategoryDao extends BaseDao<ExpCategoryEntity>{
 	 */
 	List<ExpCategoryDataDTO> getExpCategoryList(QueryExpCategoryDTO query);
 
-	List<ExpCategoryDataDTO> getExpTypeListForProfitReport(String companyId,String subCompanyId);
-	List<ExpCategoryDataDTO> getExpTypeListForProfitReport(String companyId,List<String> subCompanyIdList);
+	List<ExpCategoryDataDTO> getExpTypeListForProfitReport(QueryExpCategoryDTO query);
 
 	List<ExpCategoryDataDTO> getExpCategoryListByType(QueryExpCategoryDTO query);
 

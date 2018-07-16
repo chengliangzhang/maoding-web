@@ -1,7 +1,7 @@
 package com.maoding.shiro.filter;
 
 
-import com.maoding.core.base.dto.JsonResponse;
+import com.maoding.core.bean.JsonResponse;
 import com.maoding.core.util.HTTPHelper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;

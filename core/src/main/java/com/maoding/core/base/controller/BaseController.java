@@ -253,6 +253,7 @@ public abstract class BaseController {
     @ResponseBody
     public Object handleException(Exception ex, HttpServletRequest request) throws Exception {
         log.error(request.toString());
+        ex.printStackTrace();
 		if (isAjaxRequest(request)) {
 			log.info("不是预期的HttpServletRequest");
 			if (ex instanceof LoginException) {

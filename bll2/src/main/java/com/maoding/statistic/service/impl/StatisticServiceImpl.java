@@ -876,6 +876,16 @@ public class StatisticServiceImpl implements StatisticService {
         return list;
     }
 
+    public List<String> getExpTypeParentList(List<CompanyBillDetailDTO> list){
+        List<String> typeList = new ArrayList<>();
+        list.stream().forEach(b->{
+            if(!typeList.contains(b.getExpTypeParentName())){
+                typeList.add(b.getExpTypeParentName());
+            }
+        });
+        return typeList;
+    }
+
     @Override
     public List<ProfitStatementTableDTO> getProfitStatement(StatisticDetailQueryDTO dto) throws Exception{
         //组织参数
@@ -888,7 +898,7 @@ public class StatisticServiceImpl implements StatisticService {
         //初始化利润报表
         List<ProfitStatementTableDTO> dataList = new ArrayList<>();
         Map<String,ProfitStatementDataDTO> mapData = new HashMap<>();
-        initProfitStatement2(dataList,mapData,dto.getCompanyIdList());
+        initProfitStatement2(dataList,mapData,dto.getCompanyIdList(),getExpTypeParentList(list));
         //
         for(CompanyBillDetailDTO data:list){
             setProfitStatementData(dataList,mapData,data);
@@ -1070,10 +1080,17 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     private void initProfitStatement2(List<ProfitStatementTableDTO> list ,Map<String,ProfitStatementDataDTO> mapData,List<String> companyIdList) throws Exception {
+        initProfitStatement2(list,mapData,companyIdList,null);
+    }
+
+    private void initProfitStatement2(List<ProfitStatementTableDTO> list ,Map<String,ProfitStatementDataDTO> mapData,List<String> companyIdList,List<String> parentTypeList) throws Exception {
         //todo 1.查询所有的费用收支项
         QueryExpCategoryDTO query = new QueryExpCategoryDTO();
        // query.setCompanyId(companyId);
         query.setCompanyIdList(companyIdList);
+        if(!CollectionUtils.isEmpty(parentTypeList)){
+            query.setParentTypeList(parentTypeList);
+        }
         List<ExpCategoryDataDTO> typeList = expCategoryService.getExpTypeListForProfitReport(query);
         //todo 2.把mapList重新整理成 ProfitStatementTableDTO
         ProfitStatementTableDTO table1 = new ProfitStatementTableDTO("业务收入","code1");
@@ -1114,7 +1131,7 @@ public class StatisticServiceImpl implements StatisticService {
         mapData.put("财务费用合计",data91);
         table9.getList().add(data91);
 
-        //财务费用
+        //税务费用
         ProfitStatementTableDTO table10 = new ProfitStatementTableDTO("税务费用合计","code5");
         table10.setFlag(1);
         table10.setArrowsFlag(1);
@@ -1135,7 +1152,7 @@ public class StatisticServiceImpl implements StatisticService {
         ProfitStatementDataDTO data12 = new ProfitStatementDataDTO("净利润","合计");
         mapData.put("净利润",data12);
         table12.getList().add(data12);
-
+        boolean isAddTable = false;
         /********************/
         for(ExpCategoryDataDTO parent:typeList){
             String parentName = parent.getName();
@@ -1152,6 +1169,9 @@ public class StatisticServiceImpl implements StatisticService {
             if("财务费用".equals(parentName)){
                 list.add(table9);
             }
+            if("税务费用".equals(parentName)){
+                list.add(table10);
+            }
 
             ProfitStatementTableDTO dataTable = new ProfitStatementTableDTO(parentName,"");
             for(ExpCategoryDataDTO child:parent.getChildList()){
@@ -1163,8 +1183,14 @@ public class StatisticServiceImpl implements StatisticService {
             list.add(dataTable);
             if("财务费用".equals(parentName)){
                 list.add(table11);
-                list.add(table10);
+               // list.add(table10);
+                isAddTable = true;
             }
+        }
+        //如果系统中不存在财务费用，则在最后添加table11，table10，否则会漏掉利润总额 此行数据
+        if(!isAddTable){
+            list.add(table11);
+//            list.add(table10);
         }
         list.add(table12);
     }

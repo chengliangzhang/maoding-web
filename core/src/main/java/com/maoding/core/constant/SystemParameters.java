@@ -3,6 +3,8 @@
  */
 package com.maoding.core.constant;
 
+import com.maoding.core.bean.MessageTemplate;
+
 import java.util.*;
 
 
@@ -21,31 +23,10 @@ public interface SystemParameters {
     String FILE_SEPARATOR = System.getProperty("file.separator");
     String FTP_FILE_SEPARATOR = "/";
     String UTF8 = "UTF-8";
-    int DEFAULT_BUFFER = 1024;
-    /**
-     * 验证码时效（2分钟）
-     */
-    long SECURITY_CODE_MAX_LIVE_TIME = 180000;
     /**
      * 验证码时效（10分钟）
      */
     long SECURITY_CODE_10_MAX_LIVE_TIME = 600000;
-    /**
-     * 令牌时效（一星期）
-     */
-    long TOKEN_MAX_LIVE_TIME = 604800000;
-    /**
-     * 验证码时效（2分钟）
-     */
-    int SECURITY_CODE_MAX_LIVE_TIME_N = 180000;
-    /**
-     * 验证码时效（10分钟）
-     */
-    int SECURITY_CODE_10_MAX_LIVE_TIME_N = 600000;
-    /**
-     * 令牌时效（一星期）
-     */
-    int TOKEN_MAX_LIVE_TIME_N = 604800000;
 
     /******************系统返回状态码*****************/
 
@@ -63,7 +44,6 @@ public interface SystemParameters {
      * 异常状态码
      */
     String EXCEPTION_CODE = "500";
-
 
     /**
      * 设计依据编码
@@ -208,7 +188,9 @@ public interface SystemParameters {
     int OTHER_FEE_FOR_PAID = 21;//其他费到账（财务）
     int TASK_COMPLETE = 22;//生产根任务已完成，给设计负责人推送任务
     int COST_AUDIT = 23;//费用申请审核
-
+    int LEAVE_AUDIT= 24;//请假申请审核
+    int EVECTION_AUDIT= 25;//出差审核
+    int CUSTOM_TASK= 100;//12.自定义的轻量型任务
     //任务签发权限
     String PROJECT_TASK_ISSUE = "project_task_issue";
 
@@ -269,7 +251,7 @@ public interface SystemParameters {
 
     /*****************消息模板******************/
 
-    Map<String, String> message2 = new HashMap<String, String>() {
+    Map<String, String> messageForWeb = new HashMap<String, String>() {
         {
             /** 参数对照 ***
              * %sendUserName%:发出通告的用户名
@@ -531,7 +513,7 @@ public interface SystemParameters {
 
     /*****************消息模板******************/
 
-    Map<String,String> messageForApp=new HashMap<String,String>(){
+    Map<String,String> messageForApp2=new HashMap<String,String>(){
         {
             /** 参数对照 ***
              * %sendUserName%:发出通告的用户名
@@ -758,6 +740,237 @@ public interface SystemParameters {
 
         }
     };
+
+
+    /*****************消息模板******************/
+
+    Map<String,MessageTemplate> messageForApp=new HashMap<String,MessageTemplate>(){
+        {
+            /** 参数对照 ***
+             * %sendUserName%:发出通告的用户名
+             * %sendCompanyName%:发出通告的公司名
+             * %projectName%:项目名
+             * %pointName%:款项节点名
+             * %feeDescription%:费用节点描述
+             * %costFee%:费用金额，如100，200
+             * %paymentDate%:修改前的到账，付款日期等
+             * %url%：url地址
+             * %startTime1%：变更前的开始时间
+             * %endTime1%：变更前的结束时间
+             * %startTime2%：变更后的开始时间
+             * %endTime2%：变更后的结束时间
+             * %nodeName% ：节点名称：设校审
+             * %toNodeName%：节点名称：校审（***完成设计（nodeName），请审核（toNodeName））
+             *
+             */
+
+            //设置乙方
+            put("1",new MessageTemplate("你成为了 “%projectName%” 乙方经营负责人",1) );//ok
+            put("2",new MessageTemplate("你成为了 “%projectName%” 乙方设计负责人",1));//ok
+            //立项
+            /**********************经营负责人**********************/
+            //ok //你成为了 “?” 经营负责人 -- hi,XXX完成了“卯丁科技大厦一期”的立项，请你担任该项目的经营负责人，请在任务中查看并进行［任务签发］，
+            put("3",new MessageTemplate("%sendUserName% 变更了“%projectName%”的经营负责人，请你担任该项目的经营负责人，点击查看详情。",1) );
+            //hi,XXX增加了“卯丁科技大厦一期”的设计任务，请在任务中查看并进行［任务签发］，
+            put(String.format("%d", MESSAGE_TYPE_301),new MessageTemplate("%sendUserName% 创建了%projectName%的项目，请你担任该项目的经营负责人，点击查看详情。" ,1));
+            /*******合作组织消息********2017-12-27 修改两条信息相同*/
+            //hi,xxx组织，经营负责人XXX发布了“卯丁科技大厦一期”的设计任务，请你担任该项目的经营负责人，请在任务中查看并进行［任务签发］，
+            put(String.format("%d", MESSAGE_TYPE_302),new MessageTemplate("hi,%sendCompanyName%组织，%sendUserName% 增加了“%projectName%”的设计任务，点击查看详情。" ,1));
+            //hi,xxx组织，经营负责人XXX发布了“卯丁科技大厦一期”的设计任务，请在任务中查看并进行［任务签发］，
+            put(String.format("%d", MESSAGE_TYPE_303),new MessageTemplate("hi,%sendCompanyName%组织，经营负责人%sendUserName%发布了“%projectName%”的设计任务，请你担任该项目的经营负责人,点击查看详情。" ,1));
+            put(String.format("%d", MESSAGE_TYPE_306), new MessageTemplate("hi,%sendCompanyName%组织，%sendUserName% 发布了“%projectName%”的设计任务，点击查看详情。",1));//ok
+
+            /****************/
+            //“卯丁科技大厦一期-方案设计”的设计任务已完成，请你跟进相关项目收支的经营工作，
+            put(String.format("%d", MESSAGE_TYPE_304),new MessageTemplate("“%projectName%-%taskName%”的设计任务已完成，请你跟进相关项目收支的经营工作。" ,1));
+
+            put(String.format("%d", MESSAGE_TYPE_305),new MessageTemplate("%sendUserName% 指定了你为 “%projectName%”的经营助理，点击查看详情。" ,1));
+
+            put("4",new MessageTemplate("你成为了 “%projectName%” 设计负责人" ,1));//ok
+            /******************** 任务负责人************************/
+            // hi,经营负责人XXX发布了“卯丁科技大厦一期”的设计任务，请你担任该项目的设计负责人，请在任务中查看并进行［生产安排］，（第一次发布任务给本组织）
+            put(String.format("%d", MESSAGE_TYPE_401),new MessageTemplate("%sendUserName% 发布了“%projectName%”的设计任务，请你担任该项目的设计负责人，点击查看详情。" ,1));
+            // hi,经营负责人XXX发布了“卯丁科技大厦一期”的设计任务，请在任务中查看并进行［生产安排］，（第二次及后面发布任务给本组织）
+            put(String.format("%d", MESSAGE_TYPE_402),new MessageTemplate("%sendUserName% 发布了“%projectName%”的设计任务，点击查看详情。" ,1));
+            //设计负责人XXX进行了“卯丁科技大厦一期-建筑设计”的生产安排，你被设定为任务负责人，详情点击［我的任务］查看，
+            put(String.format("%d", MESSAGE_TYPE_403),new MessageTemplate("%sendUserName% 指定了你为“%projectName%-%taskName%”的任务负责人，点击查看详情。" ,0));
+            //任务负责人XXX进行了“卯丁科技大厦一期-建筑设计”的生产安排，你被设定为任务负责人，详情点击［我的任务］查看，
+            put(String.format("%d", MESSAGE_TYPE_404),new MessageTemplate("%sendUserName% 指定了你为“%projectName%-%taskName%”的任务负责人，点击查看详情。" ,0));
+            //“卯丁科技大厦一期-方案设计”的设计/校对/审核任务已完成，请你确认，
+            put(String.format("%d", MESSAGE_TYPE_405),new MessageTemplate("“%projectName%-%taskName%”的%nodeName%任务已完成，请你确认，" ,1));
+            //“卯丁科技大厦一期-方案设计”的设计任务已完成，请你确认，(设计任务完成（任务负责人），每一条完成，都需要往上一级任务负责人推消息)
+            put(String.format("%d", MESSAGE_TYPE_406),new MessageTemplate("%sendUserName%  提交了“%projectName%-%taskName%”的设计任务，请你确认。" ,1));
+            /*************************设计负责人*********/
+            //所有的生产任务已经完成（仅自己生产的），给本组织的设计负责人推送消息：“卯丁科技大厦一期-方案设计....”的设计任务已完成，请你确认，
+            put(String.format("%d", MESSAGE_TYPE_407),new MessageTemplate("%sendUserName%  提交了 “%projectName%-%taskName%”的设计任务已完成，现“%projectName%”整体工作已提交请你确认工作。" ,1));
+            //本团队所有的生产任务已经完成（包含签发给其他组织的任务）：“卯丁科技大厦一期-方案设计，初步设计....”所有生产任务已完成，请你确认，
+            //许佳迪，提交了“卯丁科技大厦一期-方案设计”的设计任务，现“卯丁科技大厦一期”整体工作已提交请你确认工作。
+            put(String.format("%d", MESSAGE_TYPE_408),new MessageTemplate("%sendUserName% 提交了“%projectName%-%taskName%”的设计任务，现“%projectName%”整体工作已提交请你确认工作。" ,0));//此处还应该推送任务，任务类型22
+            //合作方 A 给 B的任务全部完成，给A组织的设计负责人推送消息
+            put(String.format("%d", MESSAGE_TYPE_409),new MessageTemplate("%sendUserName%  提交了“%projectName%-%taskName%”的设计任务已完成，请你跟进相关项目收支的经营工作。" ,1));
+            put(String.format("%d", MESSAGE_TYPE_410),new MessageTemplate("%sendUserName% 指定了你为 “%projectName%”的设计助理，点击查看详情",1));
+
+            /****************时间变动消息推送**************/
+            //任务负责人/设计负责人XXX变更了“卯丁科技大厦一期-方案设计”的计划进度〖由2017-05-09至2017-09-09变更为2017-06-09至2017-10-09），请查看并作相应调整，
+            //设计负责人更变时间
+            put(String.format("%d", MESSAGE_TYPE_601),new MessageTemplate("%sendUserName%变更了“%projectName%-%taskName%”的计划进度【由%startTime1%至%endTime1%变更为%startTime2%至%endTime2%】，请查看并作相应调整。" ,1));
+            //任务负责人更变时间
+            put(String.format("%d", MESSAGE_TYPE_602),new MessageTemplate("%sendUserName%变更了“%projectName%-%taskName%”的计划进度【由%startTime1%至%endTime1%变更为%startTime2%至%endTime2%】，请查看并作相应调整。" ,1));
+            //经营负责人更变时间
+            put(String.format("%d", MESSAGE_TYPE_603),new MessageTemplate("%sendUserName%变更了“%projectName%-%taskName%”的计划进度【由%startTime1%至%endTime1%变更为%startTime2%至%endTime2%】，请查看并作相应调整。" ,1));
+            //合作任务变更时间 %sendCompanyName%组织经营负责人
+            put(String.format("%d", MESSAGE_TYPE_604),new MessageTemplate("%sendUserName%变更了“%projectName%-%taskName%”的计划进度【由%startTime1%至%endTime1%变更为%startTime2%至%endTime2%】，请查看并作相应调整。" ,1));
+            //任务签发
+            put("5",new MessageTemplate("你成为了“%projectName%-%taskName%”的经营负责人",1) );//ok
+
+            /******************设校审人员*******************/
+            //设计负责人XXX进行了“卯丁科技大厦一期-建筑设计”的生产安排，你将参与该任务的（设计、校对、审核）xx工作，详情请点击［我的任务］查看，
+            put(String.format("%d", MESSAGE_TYPE_501),new MessageTemplate("%sendUserName% 指定了你为“%projectName%-%taskName%”的%nodeName%人员，点击查看详情。" ,1));//ok
+            put(String.format("%d", MESSAGE_TYPE_502),new MessageTemplate("%sendUserName% 指定了你为“%projectName%-%taskName%”的%nodeName%人员，点击查看详情。" ,1));//ok
+            //XXX完成了“卯丁科技大厦一期-方案设计”的设计工作，请你校对，
+            //XXX完成了“卯丁科技大厦一期-方案设计”的校对工作，请你审核，
+            put(String.format("%d", MESSAGE_TYPE_503),new MessageTemplate("%sendUserName% 完成了“%projectName%-%taskName%”的%nodeName%工作，请你%toNodeName%。" ,1));//ok
+
+
+            /***************************************************/
+            put("6",new MessageTemplate("你成为了“%projectName%-%taskName%”的设计负责人" ,1));//ok
+            //设置任务负责人
+            put("7",new MessageTemplate("你成为了“%projectName%-%taskName%”的任务负责人",0));//ok
+
+            //“卯丁科技大厦 - 方案设计 - 方案C”设计任务的校对人是：许佳迪、小练，审核人是：XX，XXX
+            put("8",new MessageTemplate("“%projectName%-%taskName%”设计任务的%nodeName%",1));//乙方项目负责人,当设置审核人员后，给乙方负责人发送消息 //ok
+
+            put("9",new MessageTemplate("“%projectName%-%taskName%”设计任务已全部完成",1));//ok
+            put("10",new MessageTemplate("你成为了 “%projectName%-%taskName%” 的%nodeName%人",0)); //ok
+
+            put("21",new MessageTemplate("“%projectName%-%taskName%”所有子任务已全部完成",1));//ok
+            /**************报销***************/
+            put("19",new MessageTemplate("%sendUserName%申请报销“%expName%”，共计%expAmount%元，请你审批。",0));//ok
+            //?共计?元的报销申请不予批准---XXX拒绝了你申请的“办公用品”报销金额200.00元
+            put("20",new MessageTemplate("%sendUserName%拒绝了你申请的“%expName%”报销，金额%expAmount%元，退回原因：%reason%。",1));//ok
+            //你申请“?”共计?元已审批通过 -- XXX同意你“办公用品”的报销金额为2000元，
+            put("22",new MessageTemplate("%sendUserName%同意你“%expName%”的报销，金额为%expAmount%元。",1));
+            //XXX转交了许佳迪申请的“办公用品”报销金额200.00元，请你审批，
+            put("221",new MessageTemplate("%sendUserName%同意并转交了%expUserName%的报销申请“%expName%”，共计%expAmount%元给你，请你审批。",0));
+            /***********费用部分***********/
+            put("222",new MessageTemplate("%sendUserName%申请费用“%expName%”，共计%expAmount%元，请你审批。",0));//ok
+            //?共计?元的报销申请不予批准---XXX拒绝了你申请的“办公用品”报销金额200.00元
+            put("223",new MessageTemplate("%sendUserName%拒绝了你申请的“%expName%”费用，金额%expAmount%元，退回原因：%reason%。",1));//ok
+            //你申请“?”共计?元已审批通过 -- XXX同意你“办公用品”的报销金额为2000元，
+            put("224",new MessageTemplate("%sendUserName%同意你“%expName%”的费用，金额为%expAmount%元。",1));//报销单审批完成后发给报销人送消息
+            //毛双凤同意并转交了郭志彬的费用申请“差旅费用”共计1200元，给您，请您审批。
+            put("225",new MessageTemplate("%sendUserName%同意并转交了%expUserName%的费用申请“%expName%”，共计%expAmount%元给你，请你审批。",0));
+            /***********请假部分***********/
+            put("226",new MessageTemplate("%sendUserName% 提交了请假申请，请假类型：%leaveTypeName%，请假时间：%startTime1% - %endTime1%，请你审批。",0));//ok
+            put("227",new MessageTemplate("%sendUserName% 拒绝了你的请假申请，请假类型“%leaveTypeName%”，请假时间：%startTime1% - %endTime1%，退回原因：%reason%。",1));//ok
+            //您提交的请假申请，请假类型：事假，请假时间：2017/12/26 09:00-2017/12/27 18:00，已完成审批。
+            put("228",new MessageTemplate("你提交的请假申请，请假类型：%leaveTypeName%，请假时间：%startTime1% - %endTime1%，已完成审批。",1));
+            put("229",new MessageTemplate("%sendUserName%同意并转交了%expUserName%的请假申请，请假类型：%leaveTypeName%，请假时间：%startTime1% - %endTime1%给你，请你审批。",0));
+            /***********出差部分***********/
+            put("230",new MessageTemplate("%sendUserName% 提交了出差申请，出差地：%address%，出差时间：%startTime1% - %endTime1%，请你审批。",0));
+            put("231",new MessageTemplate("%sendUserName% 拒绝了你的出差申请，出差地：%address%，出差时间：%startTime1% - %endTime1%，退回原因：%reason%。",1));//ok
+            put("232",new MessageTemplate("你提交的出差申请，出差地：%address%，出差时间：%startTime1% - %endTime1%，已完成审批。",1));
+            put("233",new MessageTemplate("%sendUserName%同意并转交了%expUserName%的出差申请，出差地：%address%，出差时间：%startTime1% - %endTime1%，%sendUserName%给你，请你审批。",0));
+
+            put("236",new MessageTemplate("%expUserName% 提交的报销申请，“%expName%”，共计%expAmount%元，财务已拨款，请知晓。",1));//ok
+            put("237",new MessageTemplate("%expUserName% 提交的费用申请，“%expName%”，共计%expAmount%元，财务已拨款，请知晓。",1));//ok
+            put("238",new MessageTemplate("%expUserName% 提交的请假申请，请假类型：%leaveTypeName%，请假时间：%startTime1% - %endTime1%，已完成审批，请知晓",1));//ok
+            put("239",new MessageTemplate("%expUserName% 提交的出差申请，出差地：%address%，出差时间：%startTime1% - %endTime1%，已完成审批，请知晓",1));
+
+            //财务拨款（报销，费用）
+            put("234",new MessageTemplate("你申请的报销“%expName%”共计%expAmount%元，财务已拨款。",1));
+            put("235",new MessageTemplate("你申请的费用“%expName%”共计%expAmount%元，财务已拨款。",1));
+            /******************项目费用******************/
+            //技术审查费
+            //? - 技术审查费 - ?” 金额：?万，需要你确认付款 ----->XXX发起了“卯丁科技大厦一期：技术审查费节点”的技术审查费30万元，请确认付款金额，
+            put("11",new MessageTemplate("%sendUserName%发起了“%projectName%：%feeDescription%”的技术审查费%fee%万元，请确认付款金额。",0));
+            //
+            put("12",new MessageTemplate("“%projectName% - 技术审查费 - %feeDescription%” 金额：%fee%万，已确认付款",0)); //
+            put("13",new MessageTemplate("“%projectName% - 技术审查费 - %feeDescription%” 金额：%fee%万，已确认到账",0));
+
+            //合作设计费
+            //? - 合作设计费 - ?” 金额：?万，需要你确认付款 -->XXX发起了“卯丁科技大厦一期：合作设计费节点”的合作设计费30万元，请确认付款金额，
+            put("14",new MessageTemplate("%sendUserName%发起了“%projectName%：%feeDescription%”的合作设计费%fee%万元，请确认付款金额。",0));
+
+            put("15",new MessageTemplate("“%projectName% - 合作设计费 - %feeDescription%” 金额：%fee%万，已确认付款",1));
+            put("16",new MessageTemplate("“%projectName% - 合作设计费 - %feeDescription%” 金额：%fee%万，已确认到账",1));
+
+            //合同回款
+            //? - 合同回款 - ?” 金额：?万，开始收款了 -->XXX发起了“卯丁科技大厦一期：回款节点”的合同回款30万元，请你跟进并确认实际到帐金额和日期，
+            put("17",new MessageTemplate("%sendUserName%发起了“%projectName%：%feeDescription%”的合同回款%fee%万元，请你跟进并确认实际到帐金额和日期。",0));//合同回款--通知财务收款
+            //? - 合同回款 - ?” 金额：?万，已确认到账，到账日期为? --->XXX确认了“卯丁科技大厦一期：回款节点”的实际到金额为30万元，到账日期为xxxx-xx-xx，
+            put("18",new MessageTemplate("%sendUserName%确认了“%projectName%：%feeDescription%”的实际到金额为%fee%万元，到账日期为%paymentDate%。",1));//合同回款到账，通知经营负责人，企业负责人
+
+
+            //? - 技术审查费 - ?” 金额：?万，已付款，请进行相关操作 -->XXX确认了“卯丁科技大厦一期：技术审查费节点”的技术审查费付款金额为30万元，请你跟进并确认实际付款日期，
+            put("23",new MessageTemplate("%sendUserName%确认了“%projectName%：%feeDescription%”的技术审查费付款金额为%fee%万元，请你跟进并确认实际付款日期，",0));//技术审查费财务人员付款操作
+            //? - 技术审查费 - ?” 金额：?万，已到账，请进行相关操作-->XXX确认了“卯丁科技大厦一期：技术审查费节点”的技术审查费付款金额为30万元，请你跟进并确认实际到账日期，
+            put("24",new MessageTemplate("%sendUserName%确认了“%projectName%：%feeDescription%”的技术审查费付款金额为%fee%万元，请你跟进并确认实际到账日期。",0));//技术审查费财务人员到账操作
+
+            //“? - 合作设计费 - ?” 金额：?万，已付款，请进行相关操作-->XXX确认了“卯丁科技大厦一期：合作设计费节点”的合作设计费付款金额为30万元，请你跟进并确认实际付款日期，
+            put("25",new MessageTemplate("%sendUserName%确认了“%projectName%：%feeDescription%”的合作设计费付款金额为%fee%万元，请你跟进并确认实际付款日期。",0));//合作设计费财务人员付款操作
+            //? - 合作设计费 - ?” 金额：?万，已到账，请进行相关操作-->XXX确认了“卯丁科技大厦一期：合作设计费节点”的合作设计费付款金额为30万元，请你跟进并确认实际到账日期，
+            put("26",new MessageTemplate("%sendUserName%确认了“%projectName%：%feeDescription%”的合作设计费付款金额为%fee%万元，请你跟进并确认实际到账日期。",0));//合作设计费财务人员到账操作
+
+            //? - 技术审查费 - ?” 金额：?万，已确认付款，付款日期为?--->XXX确认了“卯丁科技大厦一期：技术审查费节点”的技术审查费付款金额为30万元，实际付款日期为xxxx-xx-xx，
+            put("27",new MessageTemplate("%sendUserName%确认了“%projectName%：%feeDescription%”的技术审查费付款金额为%fee%万元，实际付款日期为%paymentDate%。",1));//技术审查费付款，通知经营负责人，企业负责人
+            //? - 技术审查费 - ?” 金额：?万，已确认到账，到账日期为?-->XXX确认了“卯丁科技大厦一期：技术审查费节点”的技术审查费到账金额为30万元，实际到账日期为xxxx-xx-xx，
+            put("28",new MessageTemplate("%sendUserName%确认了“%projectName%：%feeDescription%”的技术审查费到账金额为%fee%万元，实际到账日期为%paymentDate%。",1));//技术审查费到账，通知经营负责人，企业负责人
+
+            //? - 合作设计费 - ?” 金额：?万，已确认付款，付款日期为? -->XXX确认了“卯丁科技大厦一期：合作设计费节点”的合作设计费付款金额为30万元，实际付款日期为xxxx-xx-xx，
+            put("29",new MessageTemplate("%sendUserName%确认了“%projectName%：%feeDescription%”的合作设计费付款金额为%fee%万元，实际付款日期为%paymentDate%。",1));//合作设计费付款，通知经营负责人，企业负责人
+            //? - 合作设计费 - ?” 金额：?万，已确认到账，到账日期为?-->XXX确认了“卯丁科技大厦一期：合作设计费节点”的合作设计费到账金额为30万元，实际到账日期为xxxx-xx-xx，
+            put("30",new MessageTemplate("%sendUserName%确认了“%projectName%：%feeDescription%”的合作设计费到账金额为%fee%万元，实际到账日期为%paymentDate%。",1));//合作设计费到账，通知经营负责人，企业负责人
+
+            //其他收支
+            //“? - 其他收支 - ?” 金额：?万，开始付款了 --> XXX发起了“卯丁科技大厦一期：节点描述”的其他支出30万元，请你跟进并确认实际付款金额和日期，
+            put("31",new MessageTemplate("%sendUserName%发起了“%projectName%：%feeDescription%”的其他支出%fee%万元，请你跟进并确认实际付款金额和日期。",0));//通知财务人员付款
+            //? - 其他收支 - ?” 金额：?万，开始收款了 -->XXX发起了“卯丁科技大厦一期：节点描述”的其他收入30万元，请你跟进并确认实际到帐金额和日期，
+            put("32",new MessageTemplate("%sendUserName%发起了“%projectName%：%feeDescription%”的其他收入%fee%万元，请你跟进并确认实际到帐金额和日期。",0));//通知财务人员收款
+            //“? - 其他收支 - ?” 金额：?万，已确认付款，付款日期为? -->
+            put("33",new MessageTemplate("%sendUserName%确认了“%projectName%：%feeDescription%”的实际付款金额为%fee%万元，付款日期为%paymentDate%。",1));//合其他收支付款，通知经营负责人，企业负责人
+            //“? - 其他收支 - ?” 金额：?万，已确认收款，收款日期为? -->XXX确认了“卯丁科技大厦一期：节点描述”的实际到账金额为30万元，到账日期为xxxx-xx-xx，
+            put("34",new MessageTemplate("%sendUserName%确认了“%projectName%：%feeDescription%”的实际到账金额为%fee%万元，到账日期为%paymentDate%。",1));//合其他收支付款，通知经营负责人，企业负责人
+
+            put("35",new MessageTemplate("“%projectName% - %taskName%”的所有设计任务已完成",1));//生产根任务已完成，给设计负责人推送消息
+            put(String.format("%d", MESSAGE_TYPE_PHASE_TASK_CHANGE),new MessageTemplate("立项人%sendUserName%通知您， %taskName%的时间进行了调整，由%startTime1%变更为%endTime1%",1)); //设计内容时间更改
+            put(String.format("%d",MESSAGE_TYPE_ISSUE_TASK_CHANGE),new MessageTemplate("?经营负责人%sendUserName%通知您， %taskName%的计划进度进行了调整，由%startTime1%变更为%endTime1%",1)); //签发任务时间更改
+            put(String.format("%d",MESSAGE_TYPE_PRODUCT_TASK_CHANGE),new MessageTemplate("任务负责人%sendUserName%通知您， %taskName%的计划进度进行了调整，由%startTime1%变更为%endTime1%",1)); //生产任务时间更改
+            put(String.format("%d",MESSAGE_TYPE_PRODUCT_TASK_FINISH),new MessageTemplate("%sendUserName%， %taskName%已完成，您看是否需要现在去处理相关项目费用的事宜？",1)); //生产任务完成
+
+            //权限改动
+            //hi,你被设定为“圆正测试设计院”系统管理员，相应权限请点击［个人设置］查看。
+            put(String.format("%d",MESSAGE_TYPE_NEW_SYSTEM_MANAGER),new MessageTemplate("%sendUserName% 设定你为“%sendCompanyName%”系统管理员，点击查看详情。",1)); //系统管理员移交，给新的管理员推送消息
+            //系统管理员重新设置了你的权限，请点击［个人设置］查看。
+            put(String.format("%d",MESSAGE_TYPE_ROLE_CHANGE),new MessageTemplate("%sendUserName% 修改了你的权限，请点击查看详情。",1)); //个人权限变动，推送消息
+            //hi,你被设定为“圆正测试设计院”企业负责人，相应权限请点击［个人设置］查看。
+            put(String.format("%d",MESSAGE_TYPE_NEW_ORG_MANAGER),new MessageTemplate("%sendUserName% 设定你为“%sendCompanyName%”企业负责人，点击查看详情。",1)); //企业负责人移交，给新的企业负责人推送消息
+
+            //确定乙方:hi,“卯丁科技大厦一期”项目由“立项组织/XXX”完成立项，请你根据项目进度跟进相关工作，
+            put(String.format("%d",MESSAGE_TYPE_PART_B),new MessageTemplate("%sendUserName% 创建了“%projectName%”项目由“立项组织/%sendCompanyName%”完成立项，请你根据项目进度跟进相关工作。",1)); //确定乙方
+            //第一次发布任务给本团队，则给本团队的企业负责人推送消息
+            put(String.format("%d",MESSAGE_TYPE_PUBLISH_TASK_ORG_MANAGER),new MessageTemplate("%sendUserName% 创建了“%projectName%”项目，该项目的经营负责人是：%projectManagerName%，设计负责人是：%designerName%，你可根据具体情况进行调整。",1));
+
+            //会议，日程消息模板
+            put(String.format("%d",MESSAGE_TYPE_701),new MessageTemplate("%sendUserName% 已为你安排日程，日程内容“%scheduleContent%”，日程时间：%startTime1% - %endTime1%，点击查看详情。",1));
+            put(String.format("%d",MESSAGE_TYPE_702),new MessageTemplate("%sendUserName% 已修改安排日程，日程内容“%scheduleContent%”，日程时间：%startTime1% - %endTime1%，点击查看详情。",1));
+            put(String.format("%d",MESSAGE_TYPE_703),new MessageTemplate("%sendUserName% 已取消安排日程，日程内容“%scheduleContent%”，日程时间：%startTime1% - %endTime1%，请知晓。",1));
+            put(String.format("%d",MESSAGE_TYPE_704),new MessageTemplate("%sendUserName% 已为你安排会议，会议内容“%scheduleContent%”，会议时间：%startTime1% - %endTime1%， 如同意参加，点击详情回复是否参会。",1));
+            put(String.format("%d",MESSAGE_TYPE_705),new MessageTemplate("%sendUserName% 已修改安排会议，会议内容“%scheduleContent%”，会议时间：%startTime1% - %endTime1%， 如同意参加，点击详情回复是否参会。",1));
+            put(String.format("%d",MESSAGE_TYPE_706),new MessageTemplate("%sendUserName% 已取消安排会议，会议内容“%scheduleContent%”，会议时间：%startTime1% - %endTime1%，请知晓。",1));
+            put(String.format("%d",MESSAGE_TYPE_707),new MessageTemplate("%sendUserName% 已确定参加会议“%scheduleContent%”，点击查看详情。",1));
+            put(String.format("%d",MESSAGE_TYPE_708),new MessageTemplate("%sendUserName% 已确定不参加会议“%scheduleContent%”，不参加原因“%reason%”，点击查看详情。",1));
+            put(String.format("%d",MESSAGE_TYPE_709),new MessageTemplate( "你的日程“%scheduleContent%”即将开始，点击查看详情。",1));
+            put(String.format("%d",MESSAGE_TYPE_710),new MessageTemplate( "你的会议“%scheduleContent%”即将开始，点击查看详情。",1));
+
+            put(String.format("%d", MESSAGE_TYPE_FILING_NOTICE),new MessageTemplate( "请大家于%startTime1%日进行%projectName%系统的归档，归档人员名单“%toNodeName%”。备注：%remarks%",1));
+
+            put(String.format("%d", MESSAGE_TYPE_901),new MessageTemplate( "%sendUserName% 给你安排了“%taskName%”任务，内容：%scheduleContent%，开始时间：%startTime1%，截止时间：%endTime1%，点击查看详情。",0));
+            put(String.format("%d", MESSAGE_TYPE_902),new MessageTemplate( "%sendUserName% 完成了你交付的“%taskName%”任务，内容：%scheduleContent%，点击查看详情。",1));
+
+        }
+    };
+
 
     /*****************消息类型******************/
     int MESSAGE_TYPE_1 = 1;//1.乙方经营负责人

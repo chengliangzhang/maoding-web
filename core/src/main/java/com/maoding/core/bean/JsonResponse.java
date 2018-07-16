@@ -1,4 +1,4 @@
-package com.maoding.core.base.dto;
+package com.maoding.core.bean;
 
 import java.io.Serializable;
 

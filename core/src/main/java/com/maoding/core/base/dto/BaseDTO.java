@@ -1,9 +1,13 @@
 package com.maoding.core.base.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.maoding.core.util.StringUtil;
+
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
+import java.rmi.server.ExportException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +40,29 @@ public abstract class BaseDTO implements Serializable {
      * 当前公司
      */
     private String currentCompanyId;
+
+    /**
+     * 移动平台（android ,ios）
+     */
+    private String platform;
+
+    /**
+     * 请求接口版本号
+     */
+    private Integer interfaceVersion;
+
+    @JsonProperty(value = "IMEI") //大写无效，需要赋值给小写
+    private String imei;
+
+
+    /** 字符串和布尔值互转 */
+    public static Boolean toBoolean(String s){
+        return (s != null) && "1".equals(s);
+    }
+
+    public static String toString(Boolean b){
+        return ((b != null) && b) ? "1" : "0";
+    }
 
     /**
      * 复制属性到Map，为null的属性不复制，包括基类的属性
@@ -100,9 +127,14 @@ public abstract class BaseDTO implements Serializable {
     /**
      * 根据entityList复制dtoList
      */
-    public static Object copyFields(Object source, Class destClass) throws Exception {
-        Object dest = destClass.newInstance();
-        copyFields(source, dest);
+    public static Object copyFields(Object source, Class destClass)  {
+        Object dest = null;
+        try{
+            dest = destClass.newInstance();
+            copyFields(source, dest);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return dest;
     }
 
@@ -118,7 +150,8 @@ public abstract class BaseDTO implements Serializable {
         }
         return destList;
     }
-    
+
+
     public String getId() {
         return id;
     }
@@ -127,13 +160,13 @@ public abstract class BaseDTO implements Serializable {
         this.id = id;
     }
 
-	public String getAccountId() {
-		return accountId;
-	}
+    public String getAccountId() {
+        return accountId;
+    }
 
-	public void setAccountId(String accountId) {
-		this.accountId = accountId;
-	}
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
+    }
 
     public String getToken() {
         return token;
@@ -144,6 +177,9 @@ public abstract class BaseDTO implements Serializable {
     }
 
     public String getAppOrgId() {
+        if(!StringUtil.isNullOrEmpty(currentCompanyId) && StringUtil.isNullOrEmpty(appOrgId)){
+            appOrgId = currentCompanyId;
+        }
         return appOrgId;
     }
 
@@ -152,10 +188,38 @@ public abstract class BaseDTO implements Serializable {
     }
 
     public String getCurrentCompanyId() {
+        if(!StringUtil.isNullOrEmpty(appOrgId) && StringUtil.isNullOrEmpty(currentCompanyId)){
+            currentCompanyId = appOrgId;
+        }
         return currentCompanyId;
     }
 
     public void setCurrentCompanyId(String currentCompanyId) {
         this.currentCompanyId = currentCompanyId;
     }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
+
+    public String getIMEI() {
+        return imei;
+    }
+
+    public void setIMEI(String imei) {
+        this.imei = imei;
+    }
+
+    public Integer getInterfaceVersion() {
+        return interfaceVersion;
+    }
+
+    public void setInterfaceVersion(Integer interfaceVersion) {
+        this.interfaceVersion = interfaceVersion;
+    }
+
 }

@@ -24,6 +24,8 @@ public class QueryExpCategoryDTO extends BaseDTO {
 
     private List<String> companyIdList = new ArrayList<>();
 
+    private List<String> parentTypeList = new ArrayList<>();
+
     public String getCompanyId() {
         return companyId;
     }
@@ -78,5 +80,13 @@ public class QueryExpCategoryDTO extends BaseDTO {
 
     public void setPayType(Integer payType) {
         this.payType = payType;
+    }
+
+    public List<String> getParentTypeList() {
+        return parentTypeList;
+    }
+
+    public void setParentTypeList(List<String> parentTypeList) {
+        this.parentTypeList = parentTypeList;
     }
 }

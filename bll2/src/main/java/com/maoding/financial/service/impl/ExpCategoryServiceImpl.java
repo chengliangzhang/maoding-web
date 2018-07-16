@@ -282,6 +282,7 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
 
     @Override
     public List<ExpCategoryDataDTO> getExpTypeListForProfitReport(QueryExpCategoryDTO query) throws Exception {
+
         String subCompanyId = query.getCompanyId();
         String rootCompanyId = null;
         List<String> companyIdList = new ArrayList<>();
@@ -303,7 +304,14 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
             companyIdList.add(subCompanyId);
         }
 
-        List<ExpCategoryDataDTO> list = this.expCategoryDao.getExpTypeListForProfitReport(rootCompanyId,companyIdList);
+        //重新封裝一下参数，虽然传递进来的query 与要 传递到dao中的类型一样。为了避免部分参数不需要的情况，重新封装一下
+        QueryExpCategoryDTO param = new QueryExpCategoryDTO();
+        param.setRootCompanyId(rootCompanyId);
+        param.setCompanyIdList(companyIdList);
+        if(!CollectionUtils.isEmpty(query.getParentTypeList())){
+            param.setParentTypeList(query.getParentTypeList());
+        }
+        List<ExpCategoryDataDTO> list = this.expCategoryDao.getExpTypeListForProfitReport(param);
         return list;
     }
 

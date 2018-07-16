@@ -845,7 +845,7 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
             messageDTO.setPointName(getCostPointName(messageDTO.getParam1()));
 
         //生成content
-        messageEntity.setMessageContent(SystemParameters.message2.get(Integer.toString(messageDTO.getMessageType()))
+        messageEntity.setMessageContent(SystemParameters.messageForWeb.get(Integer.toString(messageDTO.getMessageType()))
                 .replaceAll("%createByName%", messageDTO.getCreateByName())
                 .replaceAll("%sendCompanyName%", messageDTO.getSendCompanyName())
                 .replaceAll("%projectName%", messageDTO.getProjectName())
@@ -1443,7 +1443,7 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
             return "";
         }
         messageDTO.setProjectName(dto.getProjectName());
-        return getMessageContent(SystemParameters.message2.get(Integer.toString(messageType)),dto);
+        return getMessageContent(SystemParameters.messageForWeb.get(Integer.toString(messageType)),dto);
     }
 
     private String getMessageContent(String messageContent, Integer messageType,String platform) throws Exception {
@@ -1452,9 +1452,9 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
             return "";
         }
         if("web".equals(platform)){
-            return this.getMessageContent(SystemParameters.message2.get(Integer.toString(messageType)),dto);
+            return this.getMessageContent(SystemParameters.messageForWeb.get(Integer.toString(messageType)),dto);
         }else {
-            return this.getMessageContent(SystemParameters.messageForApp.get(Integer.toString(messageType)),dto);
+            return this.getMessageContent(SystemParameters.messageForApp.get(Integer.toString(messageType)).getContent(),dto);
         }
     }
     private String getMessageContent(String template,MessageJsonDTO dto) throws Exception {

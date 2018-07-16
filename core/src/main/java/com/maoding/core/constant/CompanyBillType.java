@@ -19,6 +19,8 @@ public class CompanyBillType {
 
     //其他收支
     public static final Integer FEE_TYPE_OTHER  = 4;
+    //其他收款（costType）
+    public static final Integer FEE_TYPE_OTHER_PAID  = 5;//项目费用中的其他收款类型。但是在财务数据中，统一为其他费用（类型为：4）
 
     //报销
     public static final Integer FEE_TYPE_EXPENSE   = 5;
