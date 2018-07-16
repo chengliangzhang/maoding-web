@@ -32,6 +32,7 @@ import com.maoding.org.service.CompanyUserService;
 import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.dao.ProjectProcessNodeDao;
 import com.maoding.project.dto.DeliverEditDTO;
+import com.maoding.project.dto.ResponseEditDTO;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.entity.ProjectProcessNodeEntity;
 import com.maoding.project.service.ProjectProcessService;
@@ -58,6 +59,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -2006,6 +2008,52 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
      **/
     @Override
     public void createDeliverPersonalTask(DeliverEditDTO request) {
+        //创建负责人任务，用于标记上传任务完成
+        createDeliverPersonalTaskResponse(request);
+        //创建上传者任务，用于快速跳转到上传目录
+        createDeliverPersonalTaskUpload(request);
+    }
+    
+    private void createDeliverPersonalTaskResponse(DeliverEditDTO request){
+        List<MyTaskEntity> list = createMyTaskEntityFrom(request,MyTaskEntity.DELIVER_CONFIRM_FINISH);
+        myTaskDao.insert(list);
+    }
+    
+    
+    private void createDeliverPersonalTaskUpload(DeliverEditDTO request){
+        List<MyTaskEntity> list = createMyTaskEntityFrom(request,MyTaskEntity.DELIVER_EXECUTE);
+        myTaskDao.insert(list);
+    }
 
+    //根据交付信息创建myTask记录
+    //taskType: 要创建的myTask类型，DELIVER_CONFIRM_FINISH:确认交付文件上传完毕, DELIVER_EXECUTE:进行交付文件上传
+    private List<MyTaskEntity> createMyTaskEntityFrom(DeliverEditDTO request, int myTaskType){
+        List<MyTaskEntity> entityList = new ArrayList<>();
+        if (!ObjectUtils.isEmpty(request.getChangedResponseList())) {
+            request.getChangedResponseList().forEach(response -> {
+                if (isNewResponse(response)) {
+                    MyTaskEntity entity = new MyTaskEntity();
+                    entity.setId(StringUtil.buildUUID());
+                    entity.setCompanyId(request.getCompanyId());
+                    entity.setProjectId(request.getProjectId());
+                    entity.setTaskType(myTaskType);
+                    entity.setHandlerId(response.getId());
+                    entity.setCreateBy(request.getCreateBy());
+                    entity.setSendCompanyId(request.getCompanyId());
+                    entity.setCreateDate(new Date());
+                    entity.setDeadline(request.getEndTime());
+                    entity.setTargetId(request.getIssueId());
+                    entity.setTaskTitle(request.getName());
+                    entity.setTaskContent(request.getDescription());
+                    entityList.add(entity);
+                }
+            });
+        }
+        return entityList;
+    }
+
+    //判断负责人是否尚未添加个人任务
+    private boolean isNewResponse(ResponseEditDTO response){
+        return "1".equals(response.getIsSelected());
     }
 }

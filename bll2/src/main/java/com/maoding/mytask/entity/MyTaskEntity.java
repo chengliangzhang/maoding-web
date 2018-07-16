@@ -7,6 +7,11 @@ import java.util.Date;
 
 public class MyTaskEntity extends BaseEntity{
 
+    /** 确认交付文件上传完毕 */
+    public static final int DELIVER_CONFIRM_FINISH = 26;
+    /** 进行交付文件上传 */
+    public static final int DELIVER_EXECUTE = 27;
+
     private String taskTitle;
 
     /**

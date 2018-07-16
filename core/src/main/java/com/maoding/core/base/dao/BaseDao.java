@@ -1,6 +1,9 @@
 package com.maoding.core.base.dao;
 
 
+import org.springframework.util.ObjectUtils;
+
+import java.util.List;
 
 /**深圳市设计同道技术有限公司
  * 类    名：BaseDao
@@ -43,4 +46,22 @@ public interface BaseDao<T> {
 	 * @return
 	 */
 	public T							selectById			(Object id);
- }
+
+	/**
+	 * @author  张成亮
+	 * @date    2018/7/16
+	 * @description     插入列表
+	 * @param   entityList 要插入的列表
+	 * @return  插入的记录数
+	 **/
+	default int insert(List<T> entityList){
+		int n = 0;
+		if (!ObjectUtils.isEmpty(entityList)){
+			for (T entity : entityList) {
+				insert(entity);
+				n++;
+			}
+		}
+		return n;
+	}
+}
