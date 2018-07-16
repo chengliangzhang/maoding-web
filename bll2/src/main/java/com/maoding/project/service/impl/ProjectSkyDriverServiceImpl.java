@@ -998,8 +998,8 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         ProjectSkyDriveEntity dir = new ProjectSkyDriveEntity();
         dir.setId(StringUtil.buildUUID());
         dir.setSkyDrivePath(parent.getSkyDrivePath() + "-" + dir.getId());
-        dir.setProjectId(task.getProjectId());
-        dir.setCompanyId(task.getCompanyId());
+        dir.setProjectId(request.getProjectId());
+        dir.setCompanyId(request.getCompanyId());
         dir.setPid(parent.getId());
         dir.setIsCustomize(0);
         //类型指定为目录
