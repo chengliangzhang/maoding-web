@@ -527,6 +527,9 @@
         `maoding_web_project_sky_drive` t
         WHERE t.`company_id` = #{companyId,jdbcType=VARCHAR}
         AND project_id = #{projectId,jdbcType=VARCHAR}
+        <if test="fileName != null">
+            and (t.file_name = #{fileName})
+        </if>
         AND pid IS NULL
     </select>
 
