@@ -111,7 +111,7 @@
         LEFT JOIN maoding_web_depart t4 on if(t3.id is null ,t1.org_id, t3.org_id) = t4.id
         where t1.project_id= #{projectId} and (POSITION(t1.id in t2.task_path) or t1.id = t2.be_modify_id)
         and (t1.task_type = 1 or t1.task_type = 2 or t1.task_type = 3 and t1.be_modify_id is null)
-        <if test="issueTaskId != null">
+        <if test="issueTaskId != null and issueTaskId != '-'.toString()">
             and (t1.id = #{issueTaskId})
         </if>
         GROUP BY t1.id
