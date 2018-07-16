@@ -929,6 +929,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
                 if (!StringUtils.isEmpty(request.getName())) {
                     //创建交付目录
                     ProjectSkyDriveEntity deliverDir = createDirFrom(taskDir,request);
+                    projectSkyDriverDao.insert(deliverDir);
                     id = deliverDir.getId();
                 }
             }
