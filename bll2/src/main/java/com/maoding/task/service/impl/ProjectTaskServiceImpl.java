@@ -68,6 +68,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 深圳市设计同道技术有限公司
@@ -2472,7 +2473,23 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         String currentCompanyId = query.getCurrentCompanyId();
         String projectId = query.getProjectId();
         List<ProjectIssueTaskDTO> list = this.projectTaskDao.getOperatorTaskList(query);
-        list = orderIssueTaskList(list, "");
+        //如果query内issueTaskId不为空，则需要额外处理
+        //首先，把parentId都设置为空，使其平级
+        //其次，如果issueTaskId为id，则返回应该只有一条数据
+        //如果issueTaskId为"-"，则返回中的数据应该只保留叶节点（is_operater_task为0的节点）
+        //issueTaskId为空时与原来处理相同
+        if (StringUtils.isEmpty(query.getIssueTaskId())){
+            list = orderIssueTaskList(list, "");
+        } else if ("-".equals(query.getIssueTaskId())) {
+            list = orderIssueTaskList(list, "");
+            //过滤掉is_operater_task不为0的节点
+            list = list.stream().filter(f->(f.getIsOperaterTask() == 0)).collect(Collectors.toList());
+        } else if (list.size() > 1){
+            ProjectIssueTaskDTO issue = list.get(0);
+            list = new ArrayList<>();
+            list.add(issue);
+        }
+
         setFirstOrLast(list);
         //处理是否可以添加子任务
         for (ProjectIssueTaskDTO issueDTO : list) {
