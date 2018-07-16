@@ -1406,7 +1406,8 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
 
     //通告交付任务创建者上传任务已完成
     private void notifyDeliverFinished(MyTaskEntity myTask){
-
+        MessageEntity message = getMessage(myTask);
+        messageService.sendMessage(message);
     }
 
 
@@ -1540,6 +1541,11 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                 break;
             case 21:
                 messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_32);
+                break;
+            case MyTaskEntity.DELIVER_CONFIRM_FINISH:
+                messageEntity.setUserId(task.getCreateBy());
+                messageEntity.setSendCompanyId(task.getSendCompanyId());
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_DELIVER_FINISHED);
                 break;
         }
         return messageEntity;

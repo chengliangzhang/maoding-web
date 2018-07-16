@@ -859,6 +859,8 @@ public interface SystemParameters {
     int MESSAGE_TYPE_ISSUE_TASK_CHANGE = 37; //签发任务时间更改
     int MESSAGE_TYPE_PRODUCT_TASK_CHANGE = 38; //生产任务时间更改
     int MESSAGE_TYPE_PRODUCT_TASK_FINISH = 39; //生产任务完成
+    int MESSAGE_TYPE_DELIVER_FINISHED = 40; //文件归档任务完成
+
 
     int MESSAGE_TYPE_NEW_SYSTEM_MANAGER = 801; //系统管理员移交，给新的管理员推送消息
     int MESSAGE_TYPE_ROLE_CHANGE = 802; //权限发送改动，给相关人员推送消息
