@@ -411,6 +411,7 @@ public class ProjectSkyDriverController extends BaseController {
             request.setProjectId((String) param.get("projectId"));
             request.setCompanyId((String) param.get("companyId"));
             request.setIssueId((String) param.get("targetId"));
+            request.setCreateBy((String) param.get("userId"));
             request.setName((String) param.get("taskName"));
             request.setType(NetFileType.DIRECTORY_SEND_ARCHIVE_NOTICE);
             request.setDescription((String) param.get("remarks"));
