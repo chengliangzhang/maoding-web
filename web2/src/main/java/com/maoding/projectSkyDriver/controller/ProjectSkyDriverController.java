@@ -19,6 +19,7 @@ import com.maoding.projectmember.dto.ProjectMemberDTO;
 import com.maoding.task.dto.ProjectDesignTaskShow;
 import com.maoding.task.entity.ProjectTaskEntity;
 import com.maoding.task.service.ProjectTaskService;
+import com.mysql.jdbc.StringUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -461,10 +462,15 @@ public class ProjectSkyDriverController extends BaseController {
             ResponseEditDTO responseEditRequest = new ResponseEditDTO();
             responseEditRequest.setId((String) user.get("id"));
             responseEditRequest.setName((String) user.get("name"));
-            responseEditRequest.setIsSelected((String) user.get("isSelected"));
+            responseEditRequest.setIsSelected(
+                    getWithDefault((String) user.get("isSelected"),"1"));
             responseEditList.add(responseEditRequest);
         });
         return responseEditList;
+    }
+
+    private String getWithDefault(String value,String defaultValue){
+        return (StringUtils.isNullOrEmpty(value)) ? defaultValue : value;
     }
 
     private MessageEntity sendMessageEntity(Map<String, Object> param) {
