@@ -1,5 +1,6 @@
 package com.maoding.project.service.impl;
 
+import com.maoding.core.base.dto.BaseShowDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.ProjectMemberType;
 import com.maoding.core.constant.SystemParameters;
@@ -11,9 +12,9 @@ import com.maoding.message.dto.SendMessageDTO;
 import com.maoding.message.entity.MessageEntity;
 import com.maoding.message.service.MessageService;
 import com.maoding.org.dao.CompanyUserDao;
-import com.maoding.org.dto.CompanyUserTableDTO;
 import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.project.dto.ProjectTaskResponsibleDTO;
+import com.maoding.project.service.ProjectSkyDriverService;
 import com.maoding.project.service.ProjectTaskResponsibleService;
 import com.maoding.projectmember.entity.ProjectMemberEntity;
 import com.maoding.projectmember.service.ProjectMemberService;
@@ -25,9 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 深圳市设计同道技术有限公司
@@ -56,6 +56,9 @@ public class ProjectTaskResponsibleServiceImpl  implements ProjectTaskResponsibl
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private ProjectSkyDriverService projectSkyDriverService;
 
     /**
      * 方法描述：保存任务负责人（新增）
@@ -148,7 +151,29 @@ public class ProjectTaskResponsibleServiceImpl  implements ProjectTaskResponsibl
         }
         // 添加项目动态
         dynamicService.addDynamic(oldProjectTaskResponsible,projectMember,dto.getCurrentCompanyId(),dto.getAccountId());
+        //在项目文档中建立设计文件目录中创建相关人员目录
+        //准备添加设计文件目录中的人员目录
+        List<BaseShowDTO> designerList = createDesignListFrom(companyUserEntity);
+        List<ProjectTaskEntity> issueList = projectTaskDao.listIssueParentByTaskId(dto.getTaskId());
+        projectSkyDriverService.createDesignerDir(getCreateDesignerDirFirstParam(dto),issueList,designerList);
         return  new AjaxMessage().setCode("0").setInfo("操作成功！");
+    }
+
+    //获取要调用createDesignerDir时，存放projectId等信息的参数
+    private SaveProjectTaskDTO getCreateDesignerDirFirstParam(ProjectTaskResponsibleDTO dto){
+        SaveProjectTaskDTO tmpDTO = new SaveProjectTaskDTO();
+        tmpDTO.setProjectId(dto.getProjectId());
+        tmpDTO.setCompanyId(dto.getCompanyId());
+        tmpDTO.setAccountId(dto.getAccountId());
+        return tmpDTO;
+    }
+
+    //获取添加人员
+    private List<BaseShowDTO> createDesignListFrom(CompanyUserEntity companyUser){
+        List<BaseShowDTO> designerList = new ArrayList<>();
+        String userName = companyUserDao.getUserName(companyUser);
+        designerList.add(new BaseShowDTO(companyUser.getId(),userName));
+        return designerList;
     }
 
     /**
