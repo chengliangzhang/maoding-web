@@ -1,6 +1,7 @@
 {
   "name": "maoding-web",
   "version": "1.0.0",
+  "description": "",
   "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -24,7 +25,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "gulp": "^4.0.0-alpha.3",
+    "gulp": "github:gulpjs/gulp#4.0",
     "gulp-autoprefixer": "^3.1.1",
     "gulp-clean": "^0.3.2",
     "gulp-clean-css": "^3.0.3",
@@ -38,6 +39,5 @@
     "gulp-uglify": "^2.0.1",
     "gulp-watch": "^4.3.11",
     "jshint": "^2.9.4"
-  },
-  "description": ""
+  }
 }
