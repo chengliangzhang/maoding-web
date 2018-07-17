@@ -336,5 +336,5 @@ public interface ProjectTaskDao extends BaseDao<ProjectTaskEntity> {
      * @param   id 生产安排的任务编号
      * @return  签发任务
      **/
-    List<ProjectTaskEntity> getIssueParentsByTaskId(String id);
+    List<ProjectTaskEntity> listIssueParentByTaskId(String id);
 }

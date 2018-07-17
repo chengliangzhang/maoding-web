@@ -5,6 +5,7 @@ import com.beust.jcommander.internal.Maps;
 import com.maoding.conllaboration.SyncCmd;
 import com.maoding.conllaboration.service.CollaborationService;
 import com.maoding.core.base.dto.BaseDTO;
+import com.maoding.core.base.dto.BaseShowDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.ProjectMemberType;
 import com.maoding.core.constant.SystemParameters;
@@ -13,7 +14,6 @@ import com.maoding.dynamic.dao.ZInfoDAO;
 import com.maoding.dynamic.service.DynamicService;
 import com.maoding.message.dto.SendMessageDTO;
 import com.maoding.message.service.MessageService;
-import com.maoding.mytask.entity.MyTaskEntity;
 import com.maoding.mytask.service.MyTaskService;
 import com.maoding.org.dao.CompanyUserDao;
 import com.maoding.org.entity.CompanyUserEntity;
@@ -23,6 +23,7 @@ import com.maoding.project.dto.*;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.entity.ProjectProcessNodeEntity;
 import com.maoding.project.service.ProjectProcessService;
+import com.maoding.project.service.ProjectSkyDriverService;
 import com.maoding.projectmember.entity.ProjectMemberEntity;
 import com.maoding.projectmember.service.ProjectMemberService;
 import com.maoding.task.dao.ProjectTaskDao;
@@ -79,6 +80,8 @@ public class ProjectProcessServiceImpl implements ProjectProcessService {
     @Autowired
     private ZInfoDAO zInfoDAO;
 
+    @Autowired
+    private ProjectSkyDriverService projectSkyDriverService;
 
     /**
      * 获取指定任务下的流程
@@ -259,7 +262,29 @@ public class ProjectProcessServiceImpl implements ProjectProcessService {
 //        msg += (target != null) ? target.getMembers() : "";
 //        this.sendMessageToPartBDesigner(dto.getProjectId(), dto.getTaskManageId(), msg);
 
+        //在项目文档中建立设计文件目录中创建相关人员目录
+        //准备添加设计文件目录中的人员目录
+        List<BaseShowDTO> designerList = createDesignListFrom(addNodes);
+        List<ProjectTaskEntity> issueList = projectTaskDao.listIssueParentByTaskId(dto.getId());
+        projectSkyDriverService.createDesignerDir(getCreateDesignerDirFirstParam(dto),issueList,designerList);
+
         return new AjaxMessage().setCode("0").setInfo("保存成功");
+    }
+
+    //获取要调用createDesignerDir时，存放projectId等信息的参数
+    private SaveProjectTaskDTO getCreateDesignerDirFirstParam(ProjectProcessDTO dto){
+        SaveProjectTaskDTO tmpDTO = new SaveProjectTaskDTO();
+        tmpDTO.setProjectId(dto.getProjectId());
+        tmpDTO.setCompanyId(dto.getCompanyId());
+        tmpDTO.setAccountId(dto.getAccountId());
+        return tmpDTO;
+    }
+
+    //获取添加人员
+    private List<BaseShowDTO> createDesignListFrom(List<ProjectProcessNodeDTO> nodes){
+        List<BaseShowDTO> designerList = new ArrayList<>();
+        nodes.forEach(node-> designerList.add(new BaseShowDTO(node.getCompanyUserId(),node.getUserName())));
+        return designerList;
     }
 
     /**

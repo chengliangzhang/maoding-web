@@ -549,8 +549,8 @@ public class ProjectTaskDaoImpl extends GenericDao<ProjectTaskEntity> implements
      * @description 查找生产安排所属的签发任务
      **/
     @Override
-    public List<ProjectTaskEntity> getIssueParentsByTaskId(String id) {
-        return sqlSession.selectList("ProjectTaskEntityMapper.getIssueParentsByTaskId",id);
+    public List<ProjectTaskEntity> listIssueParentByTaskId(String id) {
+        return sqlSession.selectList("ProjectTaskEntityMapper.listIssueParentByTaskId",id);
     }
 
     ProjectTaskDao dao = null; //调用xml内定义的SQL语句的对象

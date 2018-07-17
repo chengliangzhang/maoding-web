@@ -694,7 +694,7 @@
     limit 1
   </select>
 
-  <select id="getIssueParentsByTaskId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="listIssueParentByTaskId" parameterType="java.lang.String" resultMap="BaseResultMap">
     SELECT
 	  parents.*
     FROM
