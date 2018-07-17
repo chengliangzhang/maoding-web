@@ -6,6 +6,7 @@ import com.maoding.project.dto.ProjectSkyDriveRenameDTO;
 import com.maoding.project.dto.SkyDriveUpdateDTO;
 import com.maoding.project.entity.ProjectSkyDriveEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,8 @@ public class ProjectSkyDriverDaoImpl extends GenericDao<ProjectSkyDriveEntity> i
         map.put("fileName", fileName);
         map.put("projectId", projectId);
         map.put("companyId", companyId);
-        return this.sqlSession.selectOne("ProjectSkyDriveEntityMapper.getSkyDriveByPidAndFileName", map);
+        List<ProjectSkyDriveEntity> list = sqlSession.selectList("ProjectSkyDriveEntityMapper.getSkyDriveByPidAndFileName", map);
+        return (!ObjectUtils.isEmpty(list)) ? list.get(0) : null;
     }
 
     @Override

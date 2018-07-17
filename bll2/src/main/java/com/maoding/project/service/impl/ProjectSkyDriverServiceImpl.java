@@ -1447,7 +1447,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
 
     //使用人员信息创建相应的设计文件子目录信息
     private ProjectSkyDriveEntity createDesignerDirFrom(ProjectSkyDriveEntity parent, BaseShowDTO request, String taskId, String createBy){
-        final int SKY_DRIVE_TYPE_PERSONAL_DIR = 100;
+        final int SKY_DRIVE_TYPE_PERSONAL_DIR = 40;
 
         ProjectSkyDriveEntity dir = new ProjectSkyDriveEntity();
         dir.initEntity();
