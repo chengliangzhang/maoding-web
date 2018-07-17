@@ -972,7 +972,10 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         if (!isValid(rootDirList)){
             return null;
         } else {
-            return rootDirList.get(0);
+            ProjectSkyDriveEntity rootDir = rootDirList.get(0);
+            rootDir.setProjectId(projectId);
+            rootDir.setCompanyId(companyId);
+            return rootDir;
         }
     }
 
