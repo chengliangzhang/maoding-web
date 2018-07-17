@@ -66,6 +66,7 @@ import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -334,6 +335,8 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         }
         ProjectTaskEntity entity = new ProjectTaskEntity();
         BaseDTO.copyFields(dto, entity);
+        //参与此任务的人员，用于创建设计文件子目录
+        List<BaseShowDTO> designerList = new ArrayList<>();
         //新增
         if (StringUtil.isNullOrEmpty(dto.getId())) {
             entity.setId(StringUtil.buildUUID());
@@ -361,15 +364,19 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
             String targetId = dto.getDesignerId();
             //保存任务负责人
             if (!StringUtil.isNullOrEmpty(targetId)) {
+                addDesigner(designerList,targetId);
                 this.saveProjectTaskResponsibler(dto, entity.getId(), targetId, dto.getTaskPid(), false);
             }
             if (dto.getTaskType() == 0) {
                 //处理设校审
                 //设计人
+                addDesigner(designerList,dto.getDesignUserList());
                 this.projectProcessService.saveProjectProcessForNewTask(entity, dto.getDesignUserList(), ProjectMemberType.PROJECT_DESIGNER, companyUser.getId());
                 //校对
+                addDesigner(designerList,dto.getCheckUserList());
                 this.projectProcessService.saveProjectProcessForNewTask(entity, dto.getCheckUserList(), ProjectMemberType.PROJECT_PROOFREADER, companyUser.getId());
                 //审核
+                addDesigner(designerList,dto.getExamineUserList());
                 this.projectProcessService.saveProjectProcessForNewTask(entity, dto.getExamineUserList(), ProjectMemberType.PROJECT_AUDITOR, companyUser.getId());
             } else {
                 //保存设计人。不需要产生任务，不需要推送消息
@@ -380,18 +387,48 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         } else {
             this.updateProjectTask(dto);
         }
-        //创建文件夹
-        ProjectTaskEntity taskEntity = new ProjectTaskEntity();
-        taskEntity.setProjectId(entity.getProjectId());
-        taskEntity.setTaskPid(entity.getTaskPid());
-        taskEntity.setCompanyId(entity.getCompanyId());
-        taskEntity.setTaskName(entity.getTaskName());
-        taskEntity.setId(entity.getId());
-        taskEntity.setSeq(entity.getTaskLevel());
-        //创建归档文件夹
-//        projectSkyDriverService.createFileMasterForProductionFile(taskEntity);
+
+        //在设计文件目录下创建任务及用户名子目录
+        projectSkyDriverService.createDesignerDir(dto,entity,designerList);
+
         //返回信息
         return AjaxMessage.succeed("保存成功");
+    }
+
+    //添加设计人员，如果已经存在则不添加
+    private List<BaseShowDTO> addDesigner(List<BaseShowDTO> designerList, List<String> idList){
+        if (!ObjectUtils.isEmpty(idList)) {
+            idList.forEach(id -> addDesigner(designerList, id));
+        }
+        return designerList;
+    }
+
+    //添加设计人员，如果已经存在则不添加
+    private List<BaseShowDTO> addDesigner(List<BaseShowDTO> designerList, String id){
+        if (designerList == null) {
+            designerList = new ArrayList<>();
+        }
+        if (!isIncludeId(designerList,id)){
+            BaseShowDTO designer = new BaseShowDTO();
+            designer.setId(id);
+            designer.setName(companyUserDao.getUserName(id));
+            designerList.add(designer);
+        }
+        return designerList;
+    }
+
+    //判断列表是否包含id为指定id的项
+    private boolean isIncludeId(List<BaseShowDTO> list, String id){
+        boolean isInclude = false;
+        if (list != null){
+            for (BaseShowDTO dto : list) {
+                if (id.equals(dto.getId())){
+                    isInclude = true;
+                    break;
+                }
+            }
+        }
+        return isInclude;
     }
 
     /**

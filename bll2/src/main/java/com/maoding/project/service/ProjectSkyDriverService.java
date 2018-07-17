@@ -1,5 +1,6 @@
 package com.maoding.project.service;
 
+import com.maoding.core.base.dto.BaseShowDTO;
 import com.maoding.core.base.service.BaseService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.project.dto.DeliverEditDTO;
@@ -7,6 +8,7 @@ import com.maoding.project.dto.ProjectSkyDriveDTO;
 import com.maoding.project.dto.ProjectSkyDriveRenameDTO;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.entity.ProjectSkyDriveEntity;
+import com.maoding.task.dto.SaveProjectTaskDTO;
 import com.maoding.task.entity.ProjectTaskEntity;
 
 import java.util.List;
@@ -296,4 +298,15 @@ public interface ProjectSkyDriverService extends BaseService<ProjectSkyDriveEnti
     List<ProjectSkyDriveEntity> getProjectFileByFileName(Map<String, Object> map);
 
     Integer getProjectFileTotil(Map<String, Object> map);
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/17
+     * @description     在交付文件目录下创建参与者用户目录
+     * @param   request 更改任务申请
+     * @param   taskId 关联任务编号
+     * @param   designerList 用户列表
+     **/
+
+    void createDesignerDir(SaveProjectTaskDTO request, ProjectTaskEntity task, List<BaseShowDTO> designerList);
 }
