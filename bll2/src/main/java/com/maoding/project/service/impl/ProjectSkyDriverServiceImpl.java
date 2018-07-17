@@ -1415,20 +1415,32 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
 
     /**
      * @param request      更改任务申请
-     * @param task       关联任务
+     * @param taskList     关联任务
      * @param designerList 用户列表
      * @author 张成亮
      * @date 2018/7/17
      * @description 在交付文件目录下创建参与者用户目录
      **/
     @Override
-    public void createDesignerDir(SaveProjectTaskDTO request, ProjectTaskEntity task, List<BaseShowDTO> designerList) {
+    public void createDesignerDir(SaveProjectTaskDTO request, List<ProjectTaskEntity> taskList, List<BaseShowDTO> designerList) {
         ProjectSkyDriveEntity rootDir = getDesignRoot(request);
+        ProjectSkyDriveEntity parent = rootDir;
+        if (!ObjectUtils.isEmpty(taskList)){
+            for (ProjectTaskEntity task : taskList) {
+                ProjectSkyDriveEntity taskDir = getChildByName(parent,task.getTaskName());
+                if (taskDir == null){
+                    taskDir = createTaskDirFrom(parent,task,request.getAccountId());
+                }
+                parent = taskDir;
+            }
+        }
+
         if (!ObjectUtils.isEmpty(designerList)){
+            ProjectSkyDriveEntity lastParent = parent;
             designerList.forEach(designer->{
-                ProjectSkyDriveEntity designerDir = getChildByName(rootDir,designer.getName());
+                ProjectSkyDriveEntity designerDir = getChildByName(lastParent,designer.getName());
                 if (designerDir == null){
-                    designerDir = createDesignerDirFrom(rootDir,designer,task.getId(),task.getCreateBy());
+                    designerDir = createDesignerDirFrom(rootDir,designer,lastParent.getTaskId(),request.getAccountId());
                     projectSkyDriverDao.insert(designerDir);
                 }
             });

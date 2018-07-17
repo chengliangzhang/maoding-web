@@ -329,4 +329,12 @@ public interface ProjectTaskDao extends BaseDao<ProjectTaskEntity> {
     Integer getSubProductTaskCountByTaskId(String taskPid);
 
     void changeCompany(TaskChangeCompanyDTO dto);
+    /**
+     * @author  张成亮
+     * @date    2018/7/17
+     * @description     查找生产安排所属的签发任务
+     * @param   id 生产安排的任务编号
+     * @return  签发任务
+     **/
+    List<ProjectTaskEntity> getIssueParentsByTaskId(String id);
 }

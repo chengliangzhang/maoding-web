@@ -302,11 +302,11 @@ public interface ProjectSkyDriverService extends BaseService<ProjectSkyDriveEnti
     /**
      * @author  张成亮
      * @date    2018/7/17
-     * @description     在交付文件目录下创建参与者用户目录
-     * @param   request 更改任务申请
-     * @param   task 关联任务
+     * @description      在交付文件目录下创建参与者用户目录
+     * @param   request  更改任务申请
+     * @param   taskList 关联任务
      * @param   designerList 用户列表
      **/
 
-    void createDesignerDir(SaveProjectTaskDTO request, ProjectTaskEntity task, List<BaseShowDTO> designerList);
+    void createDesignerDir(SaveProjectTaskDTO request, List<ProjectTaskEntity> taskList, List<BaseShowDTO> designerList);
 }

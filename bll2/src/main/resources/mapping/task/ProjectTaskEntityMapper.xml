@@ -693,4 +693,16 @@
       left join (<include refid="task_state_table"/>) a3 on (a1.id=a3.task_id)
     limit 1
   </select>
+
+  <select id="getIssueParentsByTaskId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+	  parents.*
+    FROM
+      maoding_web_project_task task
+      inner join maoding_web_project_task parents on (POSITION(parents.id in task.task_path)
+          and issue.is_operater_task=1)
+    WHERE
+	  task.id = #{id}
+	order by length(parents.task_path)
+  </select>
 </mapper>

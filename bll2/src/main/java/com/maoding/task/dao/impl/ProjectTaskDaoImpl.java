@@ -541,6 +541,18 @@ public class ProjectTaskDaoImpl extends GenericDao<ProjectTaskEntity> implements
         sqlSession.update("ProjectTaskEntityMapper.changeFromCompany",dto);
     }
 
+    /**
+     * @param id 生产安排的任务编号
+     * @return 签发任务
+     * @author 张成亮
+     * @date 2018/7/17
+     * @description 查找生产安排所属的签发任务
+     **/
+    @Override
+    public List<ProjectTaskEntity> getIssueParentsByTaskId(String id) {
+        return sqlSession.selectList("ProjectTaskEntityMapper.getIssueParentsByTaskId",id);
+    }
+
     ProjectTaskDao dao = null; //调用xml内定义的SQL语句的对象
     @PostConstruct
     public void init(){

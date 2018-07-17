@@ -389,15 +389,15 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         }
 
         //在设计文件目录下创建任务及用户名子目录
-        projectSkyDriverService.createDesignerDir(dto,entity,designerList);
+        projectSkyDriverService.createDesignerDir(dto,getIssueParentList(entity),designerList);
 
         //返回信息
         return AjaxMessage.succeed("保存成功");
     }
 
     //获取生产任务所属的签发任务
-    private ProjectTaskEntity getIssueTask(ProjectTaskEntity task){
-        return null;
+    private List<ProjectTaskEntity> getIssueParentList(ProjectTaskEntity task){
+        return projectTaskDao.getIssueParentsByTaskId(task.getId());
     }
 
     //添加设计人员，如果已经存在则不添加
