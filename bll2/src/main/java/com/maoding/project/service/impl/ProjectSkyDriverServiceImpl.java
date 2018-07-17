@@ -1047,6 +1047,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         dir.setStatus("0");
         dir.setFileSize(0);
         dir.setCreateBy(createBy);
+        projectSkyDriverDao.insert(dir);
         return dir;
     }
 
