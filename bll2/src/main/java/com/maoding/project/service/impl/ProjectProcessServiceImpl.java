@@ -264,8 +264,8 @@ public class ProjectProcessServiceImpl implements ProjectProcessService {
 
         //在项目文档中建立设计文件目录中创建相关人员目录
         //准备添加设计文件目录中的人员目录
-        List<BaseShowDTO> designerList = createDesignListFrom(addNodes);
-        List<ProjectTaskEntity> issueList = projectTaskDao.listIssueParentByTaskId(dto.getId());
+        List<BaseShowDTO> designerList = createDesignListFrom(dto.getNodes());
+        List<ProjectTaskEntity> issueList = projectTaskDao.listIssueParentByTaskId(taskId);
         projectSkyDriverService.createDesignerDir(getCreateDesignerDirFirstParam(dto),issueList,designerList);
 
         return new AjaxMessage().setCode("0").setInfo("保存成功");
