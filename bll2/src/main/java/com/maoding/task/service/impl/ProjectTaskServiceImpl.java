@@ -2549,6 +2549,12 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
             issueDTO.setCanBeDelete(getBeDelete(issueDTO, currentCompanyId, testList));
             //设置状态文字
             issueDTO.setStatusText(projectTaskDao.getStateText(issueDTO.getTaskState(), issueDTO.getPlanStartTime(), issueDTO.getPlanEndTime(), issueDTO.getCompleteDate()));
+
+            //如果issueUserId不为空，填写签发人名称
+            if (!StringUtils.isEmpty(issueDTO.getIssueUserId())){
+                String userName = companyUserDao.getUserNameByCompanyIdAndUserId(issueDTO.getCompanyId(),issueDTO.getIssueUserId());
+                issueDTO.setIssueUserName(userName);
+            }
         }
         setIsHasChild(list);
         return list;
