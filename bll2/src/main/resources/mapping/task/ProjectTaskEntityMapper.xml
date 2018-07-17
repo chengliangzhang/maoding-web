@@ -700,7 +700,7 @@
     FROM
       maoding_web_project_task task
       inner join maoding_web_project_task parents on (POSITION(parents.id in task.task_path)
-          and issue.is_operater_task=1)
+          and parents.is_operater_task=1)
     WHERE
 	  task.id = #{id}
 	order by length(parents.task_path)
