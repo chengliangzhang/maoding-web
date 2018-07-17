@@ -1441,8 +1441,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
             designerList.forEach(designer->{
                 ProjectSkyDriveEntity designerDir = getChildByName(lastParent,designer.getName());
                 if (designerDir == null){
-                    designerDir = createDesignerDirFrom(rootDir,designer,lastParent.getTaskId(),request.getAccountId());
-                    projectSkyDriverDao.insert(designerDir);
+                    createDesignerDirFrom(rootDir,designer,lastParent.getTaskId(),request.getAccountId());
                 }
             });
         }
