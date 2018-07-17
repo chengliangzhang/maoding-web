@@ -395,6 +395,11 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         return AjaxMessage.succeed("保存成功");
     }
 
+    //获取生产任务所属的签发任务
+    private ProjectTaskEntity getIssueTask(ProjectTaskEntity task){
+        return null;
+    }
+
     //添加设计人员，如果已经存在则不添加
     private List<BaseShowDTO> addDesigner(List<BaseShowDTO> designerList, List<String> idList){
         if (!ObjectUtils.isEmpty(idList)) {
