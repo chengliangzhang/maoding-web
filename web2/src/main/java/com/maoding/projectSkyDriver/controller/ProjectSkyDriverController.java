@@ -425,11 +425,16 @@ public class ProjectSkyDriverController extends BaseController {
             //***********原来的代码*****************/
             //创建归档通知文件夹
             ProjectTaskEntity taskEntity = new ProjectTaskEntity();
-            taskEntity.setTaskPid((String) param.get("id"));
+            //原有代码必须要有id，为了和以前代码兼容，在id为空时生成一个id
+            String id = (String) param.get("id");
+            if (StringUtils.isNullOrEmpty(id)){
+                id = StringUtil.buildUUID();
+            }
+            taskEntity.setTaskPid(id);
             //保存原有id
-            param.put("oldId", param.get("id"));
+            param.put("oldId", id);
             List<String> ids = new ArrayList<>();
-            ids.add(param.get("id").toString());
+            ids.add(id);
             param.put("id", ids);
             List<ProjectSkyDriveEntity> entities = projectSkyDriverService.getDirectoryDTOList(param);
             taskEntity.setTaskType(SystemParameters.TASK_TYPE_ISSUE);
