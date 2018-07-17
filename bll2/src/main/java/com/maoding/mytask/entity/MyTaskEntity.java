@@ -36,6 +36,7 @@ public class MyTaskEntity extends BaseEntity{
      */
     private Integer taskType;
 
+    /** 处理人编号，使用company_user的id */
     private String handlerId;
 
     private String companyId;

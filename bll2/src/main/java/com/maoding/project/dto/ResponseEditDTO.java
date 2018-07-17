@@ -10,8 +10,18 @@ import com.maoding.core.base.dto.BaseDTO;
  * @description :
  */
 public class ResponseEditDTO extends BaseDTO {
+    /** 负责人名称 */
+    private String name;
     /** 最后的状态是否是被选中 */
     private String isSelected;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getIsSelected() {
         return isSelected;

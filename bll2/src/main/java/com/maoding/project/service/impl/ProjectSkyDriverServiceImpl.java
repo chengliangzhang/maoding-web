@@ -927,11 +927,15 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
                     id = taskDir.getId();
                 }
 
-                //如果Name不为空，创建交付目录
-                if (!StringUtils.isEmpty(request.getName())) {
+                //如果Id为空，创建交付目录，否则更改交付目录
+                if (StringUtils.isEmpty(request.getId())) {
                     //创建交付目录
                     ProjectSkyDriveEntity deliverDir = createDirFrom(taskDir,request);
                     projectSkyDriverDao.insert(deliverDir);
+                    id = deliverDir.getId();
+                } else {
+                    ProjectSkyDriveEntity deliverDir = createDirFrom(taskDir,request);
+                    projectSkyDriverDao.updateById(deliverDir);
                     id = deliverDir.getId();
                 }
             }
@@ -979,7 +983,12 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
     //使用交付信息创建相应的交付目录信息
     private ProjectSkyDriveEntity createDirFrom(ProjectSkyDriveEntity parent, DeliverEditDTO request){
         ProjectSkyDriveEntity dir = new ProjectSkyDriveEntity();
-        dir.setId(StringUtil.buildUUID());
+        if (StringUtils.isEmpty(request.getId())) {
+            dir.initEntity();
+        } else {
+            dir.setId(request.getId());
+            dir.resetUpdateDate();
+        }
         dir.setPid(parent.getId());
         dir.setSkyDrivePath(parent.getSkyDrivePath() + "-" + dir.getId());
         dir.setCompanyId(request.getCompanyId());

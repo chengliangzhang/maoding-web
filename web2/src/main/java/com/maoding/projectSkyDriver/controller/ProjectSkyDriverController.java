@@ -443,15 +443,10 @@ public class ProjectSkyDriverController extends BaseController {
             //创建负责人任务
             myTaskService.createDeliverPersonalTask(request);
 
-            // 发送消息,应该按照人数发送消息
-            List<Object> userList = (List) param.get("userArr");
-            for (Object o : userList) {
-                Map<String, String> user = (Map<String, String>) o;
-                param.put("userName", user.get("name"));
-                param.put("newUserId", user.get("id"));
-                MessageEntity m = sendMessageEntity(param);
-                messageService.sendMessage(m);
-            }
+            //为每个负责人发送一条消息
+            List<MessageEntity> messageList = messageService.createDeliverChangedMessageListFrom(request);
+            messageService.sendMessage(messageList);
+
         } catch (Exception e) {
             e.printStackTrace();
             log.error("sendarchivedFileNotifier is fail" + e.getMessage());
@@ -465,6 +460,7 @@ public class ProjectSkyDriverController extends BaseController {
         userArr.forEach(user->{
             ResponseEditDTO responseEditRequest = new ResponseEditDTO();
             responseEditRequest.setId((String) user.get("id"));
+            responseEditRequest.setName((String) user.get("name"));
             responseEditRequest.setIsSelected((String) user.get("isSelected"));
             responseEditList.add(responseEditRequest);
         });

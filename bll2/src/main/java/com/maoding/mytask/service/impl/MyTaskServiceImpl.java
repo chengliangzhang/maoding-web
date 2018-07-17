@@ -2079,8 +2079,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         List<MyTaskEntity> list = createMyTaskEntityFrom(request,MyTaskEntity.DELIVER_CONFIRM_FINISH);
         myTaskDao.insert(list);
     }
-    
-    
+
     private void createDeliverPersonalTaskUpload(DeliverEditDTO request){
         List<MyTaskEntity> list = createMyTaskEntityFrom(request,MyTaskEntity.DELIVER_EXECUTE);
         myTaskDao.insert(list);

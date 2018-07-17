@@ -33,6 +33,8 @@ import com.maoding.org.dao.CompanyUserDao;
 import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.dao.ProjectProcessNodeDao;
+import com.maoding.project.dto.DeliverEditDTO;
+import com.maoding.project.dto.ResponseEditDTO;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.entity.ProjectProcessNodeEntity;
 import com.maoding.projectcost.dao.ProjectCostPaymentDetailDao;
@@ -53,6 +55,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.net.URLEncoder;
 import java.util.*;
@@ -1545,5 +1548,40 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
         } catch (Exception e) {
             log.error("MessageServiceImpl失败 推送消息失败 web端", e);
         }
+    }
+
+    /**
+     * @param request 交付申请
+     * @return 消息队列
+     * @author 张成亮
+     * @date 2018/7/17
+     * @description 根据个人任务创建消息
+     **/
+    @Override
+    public List<MessageEntity> createDeliverChangedMessageListFrom(DeliverEditDTO request) {
+        List<MessageEntity> messageList = new ArrayList<>();
+        if (!ObjectUtils.isEmpty(request.getChangedResponseList())){
+            List<ResponseEditDTO> responseList = request.getChangedResponseList();
+            responseList.forEach(response->{
+                if (isTrue(response.getIsSelected())) {
+                    MessageEntity message = new MessageEntity();
+                    message.setUserId(response.getId());
+                    message.setUserName(response.getName());
+                    message.setCompanyId(request.getCompanyId());
+                    message.setProjectId(request.getProjectId());
+                    message.setDeadline(DateUtils.date2Str(request.getEndTime(),DateUtils.date_sdf2));
+                    //使用原有发送消息语句，使用TaskName代替ProjectName
+                    message.setTaskName(getProjectName(message.getProjectId()));
+                    message.setRemarks(request.getDescription());
+                    message.setMessageType(SystemParameters.MESSAGE_TYPE_FILING_NOTICE);
+                    messageList.add(message);
+                }
+            });
+        }
+        return messageList;
+    }
+
+    private boolean isTrue(String isSelected){
+        return "1".equals(isSelected);
     }
 }

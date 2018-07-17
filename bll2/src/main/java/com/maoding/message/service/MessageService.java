@@ -5,6 +5,7 @@ import com.maoding.core.bean.AjaxMessage;
 import com.maoding.message.dto.QueryMessageDTO;
 import com.maoding.message.dto.SendMessageDTO;
 import com.maoding.message.entity.MessageEntity;
+import com.maoding.project.dto.DeliverEditDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -77,6 +78,15 @@ public interface MessageService extends BaseService<MessageEntity> {
     int deleteMessage(String field) throws Exception;
 
     List<MessageEntity> getMessageByParam(QueryMessageDTO dto);
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/17
+     * @description     创建交付信息更改消息队列
+     * @param   request 交付申请
+     * @return  消息队列
+     **/
+    List<MessageEntity> createDeliverChangedMessageListFrom(DeliverEditDTO request);
 
 
     void initOldData();
