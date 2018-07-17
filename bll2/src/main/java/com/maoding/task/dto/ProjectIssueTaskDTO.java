@@ -1,6 +1,9 @@
 package com.maoding.task.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -140,7 +143,39 @@ public class ProjectIssueTaskDTO extends TaskBaseDTO{
      */
     List<ProjectTaskPlanDTO> issuePlanList = new ArrayList<>();
 
+    /** 签发人编号 */
+    private String issueUserId;
 
+    /** 签发人名称 */
+    private String issueUserName;
+
+    /** 签发时间 */
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    private Date issueTime;
+
+    public String getIssueUserId() {
+        return issueUserId;
+    }
+
+    public void setIssueUserId(String issueUserId) {
+        this.issueUserId = issueUserId;
+    }
+
+    public String getIssueUserName() {
+        return issueUserName;
+    }
+
+    public void setIssueUserName(String issueUserName) {
+        this.issueUserName = issueUserName;
+    }
+
+    public Date getIssueTime() {
+        return issueTime;
+    }
+
+    public void setIssueTime(Date issueTime) {
+        this.issueTime = issueTime;
+    }
 
     public String getId() {
         return id;
