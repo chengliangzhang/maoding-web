@@ -1415,7 +1415,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
 
     /**
      * @param request      更改任务申请
-     * @param taskId       关联任务编号
+     * @param task       关联任务
      * @param designerList 用户列表
      * @author 张成亮
      * @date 2018/7/17

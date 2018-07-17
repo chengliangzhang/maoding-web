@@ -24,6 +24,7 @@ import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -416,7 +417,9 @@ public class ProjectSkyDriverController extends BaseController {
             request.setName((String) param.get("taskName"));
             request.setType(NetFileType.DIRECTORY_SEND_ARCHIVE_NOTICE);
             request.setDescription((String) param.get("remarks"));
-            request.setEndTime(DateUtils.parseDate((String) param.get("deadline"),"yyyy-MM-dd"));
+            if (!ObjectUtils.isEmpty(param.get("deadline"))) {
+                request.setEndTime(DateUtils.parseDate((String) param.get("deadline"), "yyyy-MM-dd"));
+            }
             request.setChangedResponseList(createResponseEditListFrom((List<Map<String,Object>>) param.get("userArr")));
 
             //***********原来的代码*****************/

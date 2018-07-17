@@ -304,7 +304,7 @@ public interface ProjectSkyDriverService extends BaseService<ProjectSkyDriveEnti
      * @date    2018/7/17
      * @description     在交付文件目录下创建参与者用户目录
      * @param   request 更改任务申请
-     * @param   taskId 关联任务编号
+     * @param   task 关联任务
      * @param   designerList 用户列表
      **/
 
