@@ -102,30 +102,32 @@
 
   <select id="listDeliver" parameterType="com.maoding.mytask.dto.MyTaskQueryDTO" resultMap="DeliverMap">
     select
-        deliver_task.id -- 交付任务编号
-        ,deliver_task.task_title as name -- 交付任务名称
-        ,deliver_task.task_content as description -- 说明
-        ,deliver_task.deadline as end_time -- 截止时间
-        ,deliver_task.create_by -- 发起人
-        ,deliver_task.create_date -- 发起时间
-        ,if(deliver_task.complete_date is null,'0','1') as is_finished -- 是否已经结束
-        ,account.id as response_id -- 负责人编号
-        ,account.user_name as response_name -- 负责人姓名
-        ,if(response_task.complete_date is null,'0','1') as response_is_finised -- 负责人是否已结束任务
-    from md_list_deliver deliver_task -- 交付任务
-        inner join maoding_web_my_task response_task on (response_task.target_id = deliver_task.id and response_task.task_type = 26) -- 负责人任务
-        inner join maoding_web_company_user company_user on (company_user.id = response_task.handler_id) -- 负责人角色
-        inner join maoding_web_account account on (account.id = company_user.user_id) -- 用户名
+        deliver_task.id
+        ,deliver_task.task_title as name
+        ,deliver_task.task_content as description
+        ,deliver_task.deadline as end_time
+        ,deliver_task.create_by
+        ,deliver_task.create_date
+        ,if(deliver_task.complete_date is null,'0','1') as is_finished
+        ,user_response.id as response_id
+        ,user_response.user_name as response_name
+        ,if(response_task.complete_date is null,'0','1') as response_is_finised
+        ,user_create.user_name as create_by_name
+    from md_list_deliver deliver_task
+        inner join maoding_web_my_task response_task on (response_task.target_id = deliver_task.id and response_task.task_type = 26)
+        inner join maoding_web_company_user company_user on (company_user.id = response_task.handler_id)
+        inner join maoding_web_account user_response on (user_response.id = company_user.user_id)
+        inner join maoding_web_account user_create on (user_create.id = deliver_task.create_by)
         <if test="taskId != null or nodeId != null">
           inner join maoding_web_project_sky_drive node on (
               deliver_task.target_id = node.id
               <if test="nodeId != null">
                 and node.id = #{nodeId}
               </if>
-            ) -- 交付目录
+            )
           <if test="taskId != null">
             inner join maoding_web_project_task issue_task on (issue_task.id = node.task_id
-              and issue_task.id = #{taskId}) -- 签发任务
+              and issue_task.id = #{taskId})
           </if>
         </if>
   </select>

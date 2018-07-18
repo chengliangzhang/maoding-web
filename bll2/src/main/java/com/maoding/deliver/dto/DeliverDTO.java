@@ -21,6 +21,8 @@ public class DeliverDTO extends BaseShowDTO {
     private Date endTime;
     /** 发起人 */
     private String createBy;
+    /** 发起人名称 */
+    private String createByName;
     /** 发起时间 */
     @JsonFormat(pattern="yyyy/MM/dd HH:mm",timezone = "GMT+8")
     private Date createDate;
@@ -28,6 +30,14 @@ public class DeliverDTO extends BaseShowDTO {
     private String isFinished;
     /** 负责人列表 */
     private List<ResponseDTO> responseList;
+
+    public String getCreateByName() {
+        return createByName;
+    }
+
+    public void setCreateByName(String createByName) {
+        this.createByName = createByName;
+    }
 
     public String getDescription() {
         return description;
