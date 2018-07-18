@@ -36,6 +36,14 @@
       </if>
       <if test="status != null" >
         status = #{status,jdbcType=VARCHAR},
+        <choose>
+          <when test="status != '0'.toString()">
+            complete_date = now(),
+          </when>
+          <otherwise>
+            complete_date = null,
+          </otherwise>
+        </choose>
       </if>
       <if test="createDate != null" >
         create_date = #{createDate,jdbcType=TIMESTAMP},
@@ -73,12 +81,6 @@
       </if>
       <if test="deadline != null" >
         deadline = #{deadline,jdbcType=DATE},
-      </if>
-      <if test="completeDate != null" >
-        complete_date = #{completeDate,jdbcType=DATE},
-      </if>
-      <if test="status != null and status=='1'.toString() and completeDate == null" >
-        complete_date = now(),
       </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}

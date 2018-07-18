@@ -346,4 +346,60 @@
     </where>
   </update>
 
+  <!-- 通用的更改 -->
+  <update id="updateByQuery"  parameterType="java.util.Map">
+    update maoding_web_my_task
+    <set >
+      <if test="myTask.status != null" >
+        status = #{myTask.status,jdbcType=VARCHAR},
+        <choose>
+          <when test="myTask.status != '0'.toString()">
+            complete_date = now(),
+          </when>
+          <otherwise>
+            complete_date = null,
+          </otherwise>
+        </choose>
+      </if>
+      <if test="myTask.updateBy != null">
+        update_by = #{myTask.updateBy},
+      </if>
+      <choose>
+        <when test="myTask.updateDate != null">
+          update_date = #{myTask.updateDate,jdbc=TIMESTAMP},
+        </when>
+        <otherwise>
+          update_date = now(),
+        </otherwise>
+      </choose>
+    </set>
+    where 1=1
+      <if test="query.companyId != null">
+        and  company_id=#{query.companyId,jdbcType=VARCHAR}
+      </if>
+      <if test="query.nodeId != null">
+        and  target_id=#{query.taskId,jdbcType=VARCHAR}
+      </if>
+      <if test="query.userId != null" >
+        and handler_id = #{query.userId,jdbcType=VARCHAR}
+      </if>
+  </update>
+
+
+  <select id="listByQuery" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+        <include refid="Base_Column_List" />
+    from maoding_web_my_task
+    where (1 = 1)
+        <if test="query.companyId != null">
+          and  company_id=#{companyId,jdbcType=VARCHAR}
+        </if>
+        <if test="query.nodeId != null">
+          and  target_id=#{taskId,jdbcType=VARCHAR}
+        </if>
+        <if test="query.userId != null" >
+          and handler_id = #{userId,jdbcType=VARCHAR}
+        </if>
+  </select>
+
 </mapper>

@@ -1125,6 +1125,9 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                     case 18:
                     case 19:
                         return handleType16(myTaskEntity, result, status, currentUserId, dto.getPaidDate());
+                    case MyTaskEntity.DELIVER_CONFIRM_FINISH:
+                        handleMyTaskDeliver(myTaskEntity,dto);
+                        return AjaxMessage.succeed(null);
                     default:
                         return null;
                 }
@@ -1134,6 +1137,48 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
 //            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 //        }
         return AjaxMessage.failed("操作失败");
+    }
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/18
+     * @description     处理交付负责人任务
+     * @param   myTask 要处理的个人任务
+     * @param   param 处理任务时的参数
+     **/
+    private void handleMyTaskDeliver(MyTaskEntity myTask, HandleMyTaskDTO param){
+        if (isComplete(param)){
+            completeMyTaskDeliverResponse(myTask,param);
+        }
+    }
+
+    //完成负责人的交付任务
+    private void completeMyTaskDeliverResponse(MyTaskEntity myTask, HandleMyTaskDTO param){
+        //标记同负责人、同交付目录的所有任务（确认交付任务、执行上传）完成
+        MyTaskEntity changed = new MyTaskEntity();
+        changed.setStatus("0"); //完成标志
+        MyTaskQueryDTO changedQuery = new MyTaskQueryDTO();
+        changedQuery.setCompanyId(myTask.getCompanyId());
+        changedQuery.setTaskId(myTask.getTargetId());
+        changedQuery.setUserId(myTask.getHandlerId());
+        myTaskDao.updateByQuery(changed,changedQuery);
+        //如果已经此交付目录没有负责人要从事的交付任务了
+        MyTaskQueryDTO query = new MyTaskQueryDTO();
+        query.setCompanyId(changedQuery.getCompanyId());
+        query.setTaskId(changedQuery.getTaskId());
+        List<MyTaskEntity> list = myTaskDao.listByQuery(query);
+        if (ObjectUtils.isEmpty(list)) {
+            //标记交付任务完成
+            DeliverEntity deliver = new DeliverEntity();
+            deliver.setId(myTask.getTargetId());
+            deliver.setStatus("1");
+            deliverDao.updateById(deliver);
+        }
+    }
+
+    //判断处理任务参数是激活还是完成
+    private boolean isComplete(HandleMyTaskDTO param){
+        return "1".equals(param.getCompletion());
     }
 
     /**
