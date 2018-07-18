@@ -107,6 +107,9 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
     @Override
     public int saveProcess(ProcessEditDTO dto) throws Exception {
+
+        //todo 添加数据校验
+
         //添加判断
         if(StringUtil.isNullOrEmpty(dto.getCompanyId())){
             dto.setCompanyId(dto.getCurrentCompanyId());
@@ -114,6 +117,9 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         ProcessEntity process = (ProcessEntity)BaseDTO.copyFields(dto,ProcessEntity.class);
         process.initEntity();
         process.setDeleted(0);
+        if(StringUtil.isNullOrEmpty(dto.getProcessName())){
+            process.setProcessName(ProcessConst.PROCESS_NAME_MAP.get(dto.getProcessType().toString()));
+        }
         int i = processDao.insert(process);
         ProcessOrgRelationEntity processOrgRelation = new ProcessOrgRelationEntity();
         processOrgRelation.initEntity();
@@ -122,7 +128,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         processOrgRelation.setProcessId(process.getId());
         processOrgRelation.setCompanyId(dto.getCompanyId());
         processOrgRelation.setRelationCompanyId(dto.getRelationCompanyId());
-        processOrgRelation.setCompanyType(ProcessConst.COMPANY_TYPE_ALL);//待定
+        processOrgRelation.setCompanyType(this.getCompanyType(dto.getRelationCompanyId()));
         processOrgRelationDao.insert(processOrgRelation);
         initProcessNode(process.getId(),dto.getCompanyId(),process.getProcessType());
         return i;
@@ -157,8 +163,12 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             if(p.getCompanyType()==ProcessConst.COMPANY_TYPE_ALL){
                 return "事业合伙人";
             }
+            //todo 查询相应的组织
+            if(p.getCompanyType()==ProcessConst.COMPANY_TYPE_SINGLE){
+                return "";
+            }
         }
-        //查询相应的组织
+
         return "";
     }
 
@@ -206,5 +216,22 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             }
         });
         return StringUtils.join(memberNameList,",");
+    }
+
+    private Integer getCompanyType(String relationCompanyId){
+        if(!StringUtil.isNullOrEmpty(relationCompanyId)){
+            if(relationCompanyId.equals("root")){
+                return ProcessConst.COMPANY_TYPE_ALL;
+            }
+            else if(relationCompanyId.contains("subCompany")){
+                return ProcessConst.COMPANY_TYPE_SUB;
+            }
+            else if(relationCompanyId.contains("partnerId")){
+                return ProcessConst.COMPANY_TYPE_PARTNER;
+            }else if(relationCompanyId.length()==32){
+                return ProcessConst.COMPANY_TYPE_SINGLE;
+            }
+        }
+        return ProcessConst.COMPANY_TYPE_ALL;
     }
 }

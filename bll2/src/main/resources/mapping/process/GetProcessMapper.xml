@@ -29,7 +29,7 @@
     ,process_type
     ,c.company_name
     ,d.user_name as update_user_name
-    ,ifnull(b.company_id,'1','0') as is_template
+    ,if(b.company_id is null,'1','0') as is_template
     from maoding_process_org_relation a
     INNER JOIN maoding_process b on a.process_id = b.id
     INNER JOIN maoding_web_company c on a.company_id = c.id
