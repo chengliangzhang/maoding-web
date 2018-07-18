@@ -12,7 +12,6 @@ import com.maoding.core.util.BeanUtilsEx;
 import com.maoding.core.util.CommonUtil;
 import com.maoding.core.util.StringUtil;
 import com.maoding.deliver.dao.DeliverDao;
-import com.maoding.deliver.dto.DeliverDTO;
 import com.maoding.deliver.entity.DeliverEntity;
 import com.maoding.dynamic.service.DynamicService;
 import com.maoding.financial.dao.ExpMainDao;

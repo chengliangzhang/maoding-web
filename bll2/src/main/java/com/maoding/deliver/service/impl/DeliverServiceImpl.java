@@ -1,10 +1,12 @@
 package com.maoding.deliver.service.impl;
 
 import com.maoding.core.base.service.GenericService;
+import com.maoding.deliver.dao.DeliverDao;
 import com.maoding.deliver.dto.DeliverDTO;
 import com.maoding.deliver.entity.DeliverEntity;
 import com.maoding.deliver.service.DeliverService;
 import com.maoding.mytask.dto.MyTaskQueryDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +20,10 @@ import java.util.List;
  */
 @Service("deliverService")
 public class DeliverServiceImpl extends GenericService<DeliverEntity> implements DeliverService {
+
+    @Autowired
+    private DeliverDao deliverDao;
+
     /**
      * @param query 交付任务查询条件
      * @return 交付任务列表
@@ -27,6 +33,6 @@ public class DeliverServiceImpl extends GenericService<DeliverEntity> implements
      **/
     @Override
     public List<DeliverDTO> listDeliver(MyTaskQueryDTO query) {
-        return null;
+        return deliverDao.listDeliver(query);
     }
 }
