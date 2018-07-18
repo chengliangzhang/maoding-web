@@ -169,7 +169,7 @@ public class MyTaskController extends BaseController {
      * @date    2018/7/18
      * @description     查询交付任务
      **/
-    @RequestMapping("/handleMyTask")
+    @RequestMapping("/listDeliver")
     @ResponseBody
     public AjaxMessage listDeliver(@RequestBody MyTaskQueryDTO query) throws Exception {
         List<DeliverDTO> list = myTaskService.listDeliver(query);
