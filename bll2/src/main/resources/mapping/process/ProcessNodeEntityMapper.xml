@@ -36,6 +36,8 @@
     <include refid="Base_Column_List" />
     from maoding_process_node
     where process_id = #{processId,jdbcType=VARCHAR}
+    and deleted = 0
+    order by seq
   </select>
 
   <delete id="deleteById" parameterType="java.lang.String" >

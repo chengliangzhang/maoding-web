@@ -29,7 +29,15 @@
     select
     <include refid="Base_Column_List" />
     from maoding_process_node_member
-    where process_id = #{processId,jdbcType=VARCHAR}
+    where process_id = #{processId}
+    and deleted = 0
+  </select>
+
+  <select id="listMemberByNodeId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_process_node_member
+    where node_id = #{nodeId}
     and deleted = 0
   </select>
 

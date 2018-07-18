@@ -22,6 +22,8 @@ public class ProcessDTO {
 
     private Integer status;//是否被选择的状态（1：被选中，0:未被选中)
 
+    private String isTemplate;//1：系统默认的
+
     public String getId() {
         return id;
     }
@@ -100,5 +102,13 @@ public class ProcessDTO {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getIsTemplate() {
+        return isTemplate;
+    }
+
+    public void setIsTemplate(String isTemplate) {
+        this.isTemplate = isTemplate;
     }
 }

@@ -19,4 +19,11 @@ public class ProcessNodeMemberDaoImpl extends GenericDao<ProcessNodeMemberEntity
     public List<ProcessNodeMemberEntity> listProcessNodeMember(String processId) {
         return this.sqlSession.selectList("ProcessNodeMemberEntityMapper.listProcessNodeMember",processId);
     }
+
+    @Override
+    public List<ProcessNodeMemberEntity> listMemberByNodeId(String nodeId) {
+        return this.sqlSession.selectList("ProcessNodeMemberEntityMapper.listMemberByNodeId",nodeId);
+    }
+
+
 }

@@ -3,28 +3,26 @@ package com.maoding.process.service.impl;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.constant.ProcessConst;
+import com.maoding.core.constant.ProjectMemberType;
 import com.maoding.core.util.StringUtil;
+import com.maoding.org.dao.CompanyUserDao;
 import com.maoding.process.dao.ProcessDao;
 import com.maoding.process.dao.ProcessNodeDao;
 import com.maoding.process.dao.ProcessNodeMemberDao;
 import com.maoding.process.dao.ProcessOrgRelationDao;
-import com.maoding.process.dto.ProcessCountDTO;
-import com.maoding.process.dto.ProcessDTO;
-import com.maoding.process.dto.ProcessEditDTO;
-import com.maoding.process.dto.QueryProcessDTO;
+import com.maoding.process.dto.*;
 import com.maoding.process.entity.ProcessEntity;
 import com.maoding.process.entity.ProcessNodeEntity;
 import com.maoding.process.entity.ProcessNodeMemberEntity;
 import com.maoding.process.entity.ProcessOrgRelationEntity;
 import com.maoding.process.service.ProcessService;
 import com.maoding.project.dto.ProjectProcessNode;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("processService")
 public class ProcessServiceImpl extends NewBaseService implements ProcessService {
@@ -40,6 +38,9 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
     @Autowired
     private ProcessOrgRelationDao processOrgRelationDao;
+
+    @Autowired
+    private CompanyUserDao companyUserDao;
 
     private void initDefaultProcessRelation(String companyId,Integer processType){
         ProcessOrgRelationEntity processOrgRelation = new ProcessOrgRelationEntity();
@@ -127,6 +128,20 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         return i;
     }
 
+    @Override
+    public List<ProcessNodeDTO> listProcessNode(QueryProcessDTO query) {
+        List<ProcessNodeDTO> nodeList = new ArrayList<>();
+        List<ProcessNodeEntity> list = processNodeDao.listProcessNode(query.getProcessId());
+        list.stream().forEach(node->{
+            ProcessNodeDTO nodeDTO = (ProcessNodeDTO)BaseDTO.copyFields(node,ProcessNodeDTO.class);
+            //处理操作人
+            nodeDTO.setOperatorName(this.getProcessNodeMemberName(node.getId()));
+            nodeList.add(nodeDTO);
+        });
+
+        return nodeList;
+    }
+
 
     /**
      * 获取关联组织的名称
@@ -175,4 +190,21 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
     }
 
 
+    private String getProcessNodeMemberName(String nodeId){
+        List<String> memberNameList = new ArrayList<>();
+        List<ProcessNodeMemberEntity> memberList = processNodeMemberDao.listMemberByNodeId(nodeId);
+        //以下代码后续还需要优化
+        memberList.stream().forEach(m->{
+            if(!StringUtil.isNullOrEmpty(m.getMemberId())){
+                memberNameList.add(companyUserDao.getUserName(m.getMemberId()));
+            } else if(!StringUtil.isNullOrEmpty(m.getRoleType())){
+                if(m.getRoleType().equals(ProjectMemberType.PROJECT_OPERATOR_MANAGER.toString()) ){
+                    if(ProjectMemberType.projectMemberRole.get(m.getRoleType())!=null){
+                        memberNameList.add(ProjectMemberType.projectMemberRole.get(m.getRoleType()));
+                    }
+                }
+            }
+        });
+        return StringUtils.join(memberNameList,",");
+    }
 }

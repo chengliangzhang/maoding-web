@@ -1,8 +1,6 @@
-package com.maoding.process.entity;
+package com.maoding.process.dto;
 
-import com.maoding.core.base.entity.BaseEntity;
-
-public class ProcessNodeEntity extends BaseEntity{
+public class ProcessNodeDTO {
 
     private String processId;//所属流程id
 
@@ -14,18 +12,16 @@ public class ProcessNodeEntity extends BaseEntity{
 
     private String relationContent;//节点关联的内容
 
-    private Integer nodeType; //节点类型
+    private Integer nodeType;//节点的类型
 
-    private Integer isAllAgree;//是否全部同意
-
-    private Integer seq;
-
-    private Integer deleted;//删除标识：0：有效，1：无效
+    private Integer isAllAgree;
 
     /** 项目收支流程 **/
-    private Integer nodeStatus1;//应收状态
-    private Integer nodeStatus2;//到账/付款状态
-    private Integer nodeStatus3;//同步状态
+    private Integer nodeStatus1;//应收状态，1：选择状态
+    private Integer nodeStatus2;//到账/付款状态 1：选择状态
+    private Integer nodeStatus3;//同步状态 1：选择状态
+
+    private String operatorName;
 
     public String getProcessId() {
         return processId;
@@ -75,22 +71,6 @@ public class ProcessNodeEntity extends BaseEntity{
         this.isAllAgree = isAllAgree;
     }
 
-    public Integer getSeq() {
-        return seq;
-    }
-
-    public void setSeq(Integer seq) {
-        this.seq = seq;
-    }
-
-    public Integer getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Integer deleted) {
-        this.deleted = deleted;
-    }
-
     public Integer getNodeStatus1() {
         return nodeStatus1;
     }
@@ -121,5 +101,13 @@ public class ProcessNodeEntity extends BaseEntity{
 
     public void setRelationContent(String relationContent) {
         this.relationContent = relationContent;
+    }
+
+    public String getOperatorName() {
+        return operatorName;
+    }
+
+    public void setOperatorName(String operatorName) {
+        this.operatorName = operatorName;
     }
 }

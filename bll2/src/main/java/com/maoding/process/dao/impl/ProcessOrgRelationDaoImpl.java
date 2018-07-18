@@ -14,6 +14,6 @@ public class ProcessOrgRelationDaoImpl extends GenericDao<ProcessOrgRelationEnti
 
     @Override
     public ProcessCountDTO countProcess(QueryProcessDTO query) {
-        return this.sqlSession.selectOne("ProcessOrgRelationEntityMapper.countProcess");
+        return this.sqlSession.selectOne("ProcessOrgRelationEntityMapper.countProcess",query);
     }
 }

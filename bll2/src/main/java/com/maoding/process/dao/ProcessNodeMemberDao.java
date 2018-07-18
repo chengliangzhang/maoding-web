@@ -14,5 +14,14 @@ import java.util.List;
  */
 public interface ProcessNodeMemberDao extends BaseDao<ProcessNodeMemberEntity> {
 
+    /**
+     * 查询流程所有操作人
+     */
     List<ProcessNodeMemberEntity> listProcessNodeMember(String processId);
+
+    /**
+     *
+     *查询流程节点所有操作人
+     */
+    List<ProcessNodeMemberEntity> listMemberByNodeId(String nodeId);
 }

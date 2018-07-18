@@ -54,4 +54,17 @@ public class ProcessController extends BaseController{
         return AjaxMessage.error("操作失败");
     }
 
+    /**
+     * 方法描述：获取流程的节点信息
+     * 作者：MaoSF
+     * 日期：2016/11/30
+     */
+    @RequestMapping(value = "/listProcessNode", method = RequestMethod.POST)
+    @ResponseBody
+    // @RequiresPermissions(value = {RoleConst.ADMIN_NOTICE}, logical = Logical.OR)
+    public AjaxMessage listProcessNode(@RequestBody QueryProcessDTO dto) throws Exception {
+        dto.setCurrentCompanyId(this.currentCompanyId);
+        return AjaxMessage.succeed( processService.listProcessNode(dto));
+    }
+
 }
