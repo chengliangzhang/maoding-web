@@ -377,7 +377,7 @@
       <if test="query.companyId != null">
         and  company_id=#{query.companyId,jdbcType=VARCHAR}
       </if>
-      <if test="query.nodeId != null">
+      <if test="query.taskId != null">
         and  target_id=#{query.taskId,jdbcType=VARCHAR}
       </if>
       <if test="query.userId != null" >
@@ -391,13 +391,13 @@
         <include refid="Base_Column_List" />
     from maoding_web_my_task
     where (1 = 1)
-        <if test="query.companyId != null">
+        <if test="companyId != null">
           and  company_id=#{companyId,jdbcType=VARCHAR}
         </if>
-        <if test="query.nodeId != null">
+        <if test="nodeId != null">
           and  target_id=#{taskId,jdbcType=VARCHAR}
         </if>
-        <if test="query.userId != null" >
+        <if test="userId != null" >
           and handler_id = #{userId,jdbcType=VARCHAR}
         </if>
   </select>
