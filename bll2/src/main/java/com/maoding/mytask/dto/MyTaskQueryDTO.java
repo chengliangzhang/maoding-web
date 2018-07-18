@@ -21,6 +21,46 @@ public class MyTaskQueryDTO {
      */
     Integer status;
 
+    /** 要查询的签发任务编号 */
+    private String issueTaskId;
+    /** 是否查询交付任务 查询交付任务时必须为"1" */
+    private String isDelivery;
+    private String isDeliver;
+    /** 归档目录编号 */
+    private String nodeId;
+
+    public String getIssueTaskId() {
+        return getTaskId();
+    }
+
+    public void setIssueTaskId(String issueTaskId) {
+        setTaskId(issueTaskId);
+    }
+
+    public String getIsDeliver() {
+        return isDeliver;
+    }
+
+    public void setIsDeliver(String isDeliver) {
+        this.isDeliver = isDeliver;
+    }
+
+    public String getIsDelivery() {
+        return getIsDeliver();
+    }
+
+    public void setIsDelivery(String isDelivery) {
+        setIsDeliver(isDelivery);
+    }
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
     public String getTaskId() {
         return taskId;
     }
