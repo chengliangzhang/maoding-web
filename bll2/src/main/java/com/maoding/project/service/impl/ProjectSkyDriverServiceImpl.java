@@ -202,7 +202,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         List<ProjectSkyDriveEntity> list = this.projectSkyDriverDao.getSkyDriveByParam(map);
         List<ProjectSkyDriveData> resulList = new ArrayList<>();
         for (ProjectSkyDriveEntity entity : list) {
-            setResulList(accountId, companyId, resulList, entity);
+            setResultList(accountId, companyId, resulList, entity);
         }
         Map<String, Object> para = new HashMap<>();
         para.put("projectId", 0 < list.size() ? list.get(0).getProjectId() : null);
@@ -286,9 +286,9 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
             map.put("fileNames", fileNames);
         }
         List<ProjectSkyDriveEntity> list = this.projectSkyDriverDao.getSkyDriveByParamList(map);
-        List<ProjectSkyDriveData> resulList = new ArrayList<>();
+        List<ProjectSkyDriveData> resultList = new ArrayList<>();
         for (ProjectSkyDriveEntity entity : list) {
-            setResulList(accountId, companyId, resulList, entity);
+            setResultList(accountId, companyId, resultList, entity);
         }
         Map<String, Object> para = new HashMap<>();
         String projectId = (String) map.get("projectId");
@@ -296,20 +296,20 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         para.put("fileName", "设计文件");
         para.put("companyId", companyId);
         List<ProjectSkyDriveEntity> entities = projectSkyDriverDao.getProjectSkyDriveEntityByProjectIdAndFileName(para);
-        for (ProjectSkyDriveData projectSkyDriveData : resulList) {
+        for (ProjectSkyDriveData projectSkyDriveData : resultList) {
             if ("设计依据".equals(projectSkyDriveData.getFileName())) {
                 projectSkyDriveData.setChildId(true);
             }
         }
         if (0 < entities.size()) {
-            for (ProjectSkyDriveData projectSkyDriveData : resulList) {
+            for (ProjectSkyDriveData projectSkyDriveData : resultList) {
                 if ("设计文件".equals(projectSkyDriveData.getFileName()) || "交付文件".equals(projectSkyDriveData.getFileName())) {
                     projectSkyDriveData.setChildId(true);
                 }
             }
         }
         //设计文件查看是否有子类
-        for (ProjectSkyDriveData entity : resulList) {
+        for (ProjectSkyDriveData entity : resultList) {
             Map<String, Object> param = new HashMap<>();
             param.put("projectId", entity.getProjectId());
             param.put("fileName", entity.getFileName());
@@ -323,7 +323,11 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
                 }
             }
         }
-        returnData.put("list", resulList);
+
+        //增加目录可写标记
+        resultList.forEach(node-> node.setIsWritable(toString(isWritable(node,accountId))));
+
+        returnData.put("list", resultList);
         returnData.put("uploadFlag", 0);
         if (null != map.get("pid")) {
             ProjectSkyDriveEntity parent = this.selectById(map.get("pid"));
@@ -352,7 +356,19 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         return AjaxMessage.succeed(returnData);
     }
 
-    private void setResulList(String accountId, String companyId, List<ProjectSkyDriveData> resulList, ProjectSkyDriveEntity entity) throws Exception {
+
+    //判断文件是否可写，如果操作者和文件创建者相同则可写，否则不可写
+    private boolean isWritable(ProjectSkyDriveData file, String accountId){
+        return (StringUtils.isNotEmpty(accountId)
+                && ((accountId.equals(file.getCreateBy())) || StringUtils.isEmpty(file.getCreateBy())));
+    }
+
+    //转换布尔值为字符串，0-false,1-true
+    private String toString(boolean b){
+        return b ? "1" : "0";
+    }
+
+    private void setResultList(String accountId, String companyId, List<ProjectSkyDriveData> resultList, ProjectSkyDriveEntity entity) throws Exception {
         long fileSize = 0;
         //判断是否为签发过来的目录
         Map<String, Object> param = new HashMap<>();
@@ -396,7 +412,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         if (null != owner && !entity.getCompanyId().equals(owner.getFromCompanyId())) {
             driveData.setSendResults("1");
         }
-        resulList.add(driveData);
+        resultList.add(driveData);
     }
 
     /**
@@ -420,7 +436,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         List<ProjectSkyDriveEntity> list = this.projectSkyDriverDao.getSkyDriveByParam(map);
         List<ProjectSkyDriveData> resulList = new ArrayList<>();
         for (ProjectSkyDriveEntity entity : list) {
-            setResulList(accountId, companyId, resulList, entity);
+            setResultList(accountId, companyId, resulList, entity);
         }
         Map<String, Object> para = new HashMap<>();
         para.put("projectId", 0 < list.size() ? list.get(0).getProjectId() : null);
