@@ -100,17 +100,6 @@ public class ProjectSkyDriveData {
      */
     private String sendResults;
 
-    /** 是否可写 */
-    private String isWritable;
-
-    public String getIsWritable() {
-        return isWritable;
-    }
-
-    public void setIsWritable(String isWritable) {
-        this.isWritable = isWritable;
-    }
-
     public String getSendResults() {
         return sendResults;
     }

@@ -237,9 +237,6 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
             }
         }
 
-        //增加目录可写标记
-        resultList.forEach(node-> node.setIsWritable(toString(isWritable(node,accountId))));
-
         returnData.put("list", resultList);
         returnData.put("uploadFlag", 0);
         if (null != map.get("pid")) {
@@ -250,7 +247,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
                     String rootId = path[0];
                     ProjectSkyDriveEntity root = this.selectById(rootId);
                     if ("交付文件".equals(root.getFileName()) || "设计文件".equals(root.getFileName())) {
-                        if (companyId.equals(parent.getCompanyId())) {
+                        if (isWritable(parent,accountId,companyId)) {
                             returnData.put("uploadFlag", 1);
                         }
                     } else {
@@ -328,9 +325,6 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
             }
         }
 
-        //增加目录可写标记
-        resultList.forEach(node-> node.setIsWritable(toString(isWritable(node,accountId))));
-
         returnData.put("list", resultList);
         returnData.put("uploadFlag", 0);
         if (null != map.get("pid")) {
@@ -341,7 +335,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
                     String rootId = path[0];
                     ProjectSkyDriveEntity root = this.selectById(rootId);
                     if ("交付文件".equals(root.getFileName()) || "设计文件".equals(root.getFileName())) {
-                        if (companyId.equals(parent.getCompanyId())) {
+                        if (isWritable(parent,accountId,companyId)) {
                             returnData.put("uploadFlag", 1);
                         }
                     } else {
@@ -361,10 +355,11 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
     }
 
 
-    //判断文件是否可写，如果操作者和文件创建者相同则可写，否则不可写
-    private boolean isWritable(ProjectSkyDriveData file, String accountId){
-        return (StringUtils.isNotEmpty(accountId)
-                && ((accountId.equals(file.getCreateBy())) || StringUtils.isEmpty(file.getCreateBy())));
+    //判断文件是否可写，如果操作者和文件创建者相同，并且选择了创建文件时的组织，则可写，否则不可写
+    private boolean isWritable(ProjectSkyDriveEntity file, String accountId, String companyId){
+        return (StringUtils.isNotEmpty(accountId) && StringUtils.isNotEmpty(companyId)
+                && ((accountId.equals(file.getCreateBy())) || StringUtils.isEmpty(file.getCreateBy()))
+                && ((companyId.equals(file.getCompanyId())) || StringUtils.isEmpty(file.getCompanyId())));
     }
 
     //转换布尔值为字符串，0-false,1-true
@@ -403,7 +398,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         if (0 == driveData.getFileSize()) {
             driveData.setFileSize(fileSize);
         }
-        if (accountId.equals(entity.getUpdateBy()) && companyId.equals(entity.getCompanyId())) {
+        if (isWritable(entity,accountId,companyId)) {
             driveData.setEditFlag(1);
         }
 
@@ -484,7 +479,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
                     String rootId = path[0];
                     ProjectSkyDriveEntity root = this.selectById(rootId);
                     if ("交付文件".equals(root.getFileName()) || "设计文件".equals(root.getFileName())) {
-                        if (companyId.equals(parent.getCompanyId())) {
+                        if (isWritable(parent,accountId,companyId)) {
                             returnData.put("uploadFlag", 1);
                         }
                     } else {
