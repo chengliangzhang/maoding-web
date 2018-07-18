@@ -91,6 +91,7 @@
     <result column="description" property="description"/>
     <result column="end_time" property="endTime"/>
     <result column="create_by" property="createBy"/>
+    <result column="create_by_name" property="createByName"/>
     <result column="create_date" property="createDate"/>
     <result column="is_finished" property="isFinished"/>
     <collection property="responseList" ofType="com.maoding.deliver.dto.ResponseDTO">
