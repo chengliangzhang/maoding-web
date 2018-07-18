@@ -362,7 +362,6 @@
   </resultMap>
 
   <select id="listDeliver" parameterType="com.maoding.mytask.dto.MyTaskQueryDTO" resultType="com.maoding.mytask.dto.DeliverDTO">
-    select null
     select
         deliver_task.id,
         deliver_task.task_title as name,
@@ -378,7 +377,7 @@
         inner join maoding_web_my_task response_task on (response_task.target_id = deliver_task.id and response_task.task_type = 26)
         inner join maoding_web_company_user company_user on (company_user.id = response_task.handler_id)
         inner join maoding_web_account account on (account.id = company_user.user_id)
-        <if test="taskId != null">
+        <if test="taskId != null or nodeId != null">
           inner join maoding_web_project_sky_drive node on (deliver_task.target_id = node.id
               <if test="nodeId != null">
                 and node.id = #{nodeId}
