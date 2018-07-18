@@ -253,7 +253,7 @@ public interface ProjectSkyDriverService extends BaseService<ProjectSkyDriveEnti
      *        request 交付申请
      * @return 创建或更改的交付文件夹
      */
-    String createDeliver(ProjectTaskEntity task,DeliverEditDTO request);
+    String createDeliverDir(ProjectTaskEntity task, DeliverEditDTO request);
 
     /**
      * 查询归档通知下的所有文件夹和文件

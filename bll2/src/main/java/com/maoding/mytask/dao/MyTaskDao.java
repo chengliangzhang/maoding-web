@@ -2,6 +2,7 @@ package com.maoding.mytask.dao;
 
 
 import com.maoding.core.base.dao.BaseDao;
+import com.maoding.deliver.dto.DeliverDTO;
 import com.maoding.mytask.dto.*;
 import com.maoding.mytask.entity.MyTaskEntity;
 import org.apache.ibatis.annotations.Param;

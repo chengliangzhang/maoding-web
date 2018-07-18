@@ -1,6 +1,7 @@
 package com.maoding.mytask.dao.impl;
 
 import com.maoding.core.base.dao.GenericDao;
+import com.maoding.deliver.dto.DeliverDTO;
 import com.maoding.mytask.dao.MyTaskDao;
 import com.maoding.mytask.dto.*;
 import com.maoding.mytask.entity.MyTaskEntity;

@@ -347,7 +347,7 @@
   </update>
 
   <!-- 查询交付任务 -->
-  <resultMap id="DeliverMap" type="com.maoding.mytask.dto.DeliverDTO">
+  <resultMap id="DeliverMap" type="com.maoding.deliver.dto.DeliverDTO">
     <id column="id" property="id"/>
     <result column="name" property="name"/>
     <result column="description" property="description"/>
@@ -355,7 +355,7 @@
     <result column="create_by" property="createBy"/>
     <result column="create_date" property="createDate"/>
     <result column="is_finished" property="isFinished"/>
-    <collection property="responseList" ofType="com.maoding.mytask.dto.ResponseDTO">
+    <collection property="responseList" ofType="com.maoding.deliver.dto.ResponseDTO">
       <id column="response_id" property="id"/>
       <result column="response_name" property="name"/>
       <result column="response_is_finised" property="isFinished"/>

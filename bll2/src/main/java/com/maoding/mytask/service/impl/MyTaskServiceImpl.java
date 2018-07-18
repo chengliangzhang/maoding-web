@@ -11,6 +11,9 @@ import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.BeanUtilsEx;
 import com.maoding.core.util.CommonUtil;
 import com.maoding.core.util.StringUtil;
+import com.maoding.deliver.dao.DeliverDao;
+import com.maoding.deliver.dto.DeliverDTO;
+import com.maoding.deliver.entity.DeliverEntity;
 import com.maoding.dynamic.service.DynamicService;
 import com.maoding.financial.dao.ExpMainDao;
 import com.maoding.financial.dto.ExpMainDTO;
@@ -60,6 +63,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -77,6 +81,10 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
 
     @Autowired
     private MyTaskDao myTaskDao;
+
+
+    @Autowired
+    private DeliverDao deliverDao;
 
     @Autowired
     private CompanyUserDao companyUserDao;
@@ -2068,63 +2076,86 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
      * @description 创建交付相关的个人任务
      **/
     @Override
-    public void createDeliverPersonalTask(DeliverEditDTO request) {
+    public void saveDeliverTask(DeliverEditDTO request) {
         //创建交付任务，用于查找交付历史
-        createDeliverPersonalTaskDeliver(request);
+        DeliverEntity deliver = saveDeliverAction(request,DeliverEntity.DELIVER_ACTION);
         //创建负责人任务，用于标记上传任务完成
-        createDeliverPersonalTaskResponse(request);
+        saveDeliverResponseTask(deliver,request.getChangedResponseList());
         //创建上传者任务，用于快速跳转到上传目录
-        createDeliverPersonalTaskUpload(request);
+        saveDeliverUploadTask(deliver,request.getChangedResponseList());
     }
 
     //创建上传者任务，用于快速跳转到上传目录
-    private void createDeliverPersonalTaskResponse(DeliverEditDTO request){
-        List<MyTaskEntity> list = createMyTaskEntityFrom(request,MyTaskEntity.DELIVER_CONFIRM_FINISH);
-        myTaskDao.insert(list);
+    private List<MyTaskEntity> saveDeliverResponseTask(DeliverEntity deliver, List<ResponseEditDTO> responseList){
+        return saveMyTaskFrom(deliver,responseList,MyTaskEntity.DELIVER_CONFIRM_FINISH);
     }
 
     //创建负责人任务，用于标记上传任务完成
-    private void createDeliverPersonalTaskUpload(DeliverEditDTO request){
-        List<MyTaskEntity> list = createMyTaskEntityFrom(request,MyTaskEntity.DELIVER_EXECUTE);
-        myTaskDao.insert(list);
+    private List<MyTaskEntity> saveDeliverUploadTask(DeliverEntity deliver, List<ResponseEditDTO> responseList){
+        return saveMyTaskFrom(deliver,responseList,MyTaskEntity.DELIVER_EXECUTE);
     }
 
-    //创建交付任务，用于查找交付历史
-    private void createDeliverPersonalTaskDeliver(DeliverEditDTO request){
-        List<MyTaskEntity> list = createMyTaskEntityFrom(request,MyTaskEntity.DELIVER_EXECUTE);
-        myTaskDao.insert(list);
+
+    //根据交付信息创建并保存deliver记录
+    private DeliverEntity saveDeliverAction(DeliverEditDTO request, int actionType){
+        DeliverEntity entity = new DeliverEntity();
+        if (StringUtils.isEmpty(request.getId())){
+            entity.initEntity();
+        } else {
+            entity.setId(request.getId());
+            entity.resetUpdateDate();
+        }
+        entity.setCompanyId(request.getCompanyId());
+        entity.setProjectId(request.getProjectId());
+        entity.setTaskType(actionType);
+        entity.setHandlerId(request.getCreateBy());
+        entity.setCreateBy(request.getCreateBy());
+        entity.setSendCompanyId(request.getCompanyId());
+        entity.setCreateDate(new Date());
+        entity.setDeadline(request.getEndTime());
+        entity.setTargetId(request.getIssueId());
+        entity.setTaskTitle(request.getName());
+        entity.setTaskContent(request.getDescription());
+
+        if (StringUtils.isEmpty(request.getId())) {
+            deliverDao.insert(entity);
+        } else {
+            deliverDao.updateById(entity);
+        }
+        return entity;
     }
 
     //根据交付信息创建myTask记录
     //taskType: 要创建的myTask类型，DELIVER_CONFIRM_FINISH:确认交付文件上传完毕, DELIVER_EXECUTE:进行交付文件上传
-    private List<MyTaskEntity> createMyTaskEntityFrom(DeliverEditDTO request, int myTaskType){
+    private List<MyTaskEntity> saveMyTaskFrom(DeliverEntity deliver, List<ResponseEditDTO> changedResponseList,int myTaskType){
         List<MyTaskEntity> entityList = new ArrayList<>();
-        if (!ObjectUtils.isEmpty(request.getChangedResponseList())) {
-            request.getChangedResponseList().forEach(response -> {
+        if (!ObjectUtils.isEmpty(changedResponseList)) {
+            changedResponseList.forEach(response -> {
                 if (isNewResponse(response)) {
                     MyTaskEntity entity = new MyTaskEntity();
                     entity.setId(StringUtil.buildUUID());
-                    entity.setCompanyId(request.getCompanyId());
-                    entity.setProjectId(request.getProjectId());
+                    entity.setCompanyId(deliver.getCompanyId());
+                    entity.setProjectId(deliver.getProjectId());
                     entity.setTaskType(myTaskType);
                     entity.setHandlerId(response.getId());
-                    entity.setCreateBy(request.getCreateBy());
-                    entity.setSendCompanyId(request.getCompanyId());
+                    entity.setCreateBy(deliver.getCreateBy());
+                    entity.setSendCompanyId(deliver.getCompanyId());
                     entity.setCreateDate(new Date());
-                    entity.setDeadline(request.getEndTime());
-                    entity.setTargetId(request.getIssueId());
-                    entity.setTaskTitle(request.getName());
-                    entity.setTaskContent(request.getDescription());
+                    entity.setDeadline(deliver.getDeadline());
+                    entity.setTargetId(deliver.getId());
+                    entity.setTaskTitle(deliver.getTaskTitle());
+                    entity.setTaskContent(deliver.getTaskContent());
                     entityList.add(entity);
                 }
             });
         }
+        myTaskDao.insert(entityList);
         return entityList;
     }
 
     //判断负责人是否尚未添加个人任务
     private boolean isNewResponse(ResponseEditDTO response){
-        return "1".equals(response.getIsSelected());
+        return !"0".equals(response.getIsSelected());
     }
 
     /**
