@@ -2069,18 +2069,28 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
      **/
     @Override
     public void createDeliverPersonalTask(DeliverEditDTO request) {
+        //创建交付任务，用于查找交付历史
+        createDeliverPersonalTaskDeliver(request);
         //创建负责人任务，用于标记上传任务完成
         createDeliverPersonalTaskResponse(request);
         //创建上传者任务，用于快速跳转到上传目录
         createDeliverPersonalTaskUpload(request);
     }
-    
+
+    //创建上传者任务，用于快速跳转到上传目录
     private void createDeliverPersonalTaskResponse(DeliverEditDTO request){
         List<MyTaskEntity> list = createMyTaskEntityFrom(request,MyTaskEntity.DELIVER_CONFIRM_FINISH);
         myTaskDao.insert(list);
     }
 
+    //创建负责人任务，用于标记上传任务完成
     private void createDeliverPersonalTaskUpload(DeliverEditDTO request){
+        List<MyTaskEntity> list = createMyTaskEntityFrom(request,MyTaskEntity.DELIVER_EXECUTE);
+        myTaskDao.insert(list);
+    }
+
+    //创建交付任务，用于查找交付历史
+    private void createDeliverPersonalTaskDeliver(DeliverEditDTO request){
         List<MyTaskEntity> list = createMyTaskEntityFrom(request,MyTaskEntity.DELIVER_EXECUTE);
         myTaskDao.insert(list);
     }

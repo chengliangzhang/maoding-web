@@ -374,7 +374,7 @@
         ,account.id as response_id -- 负责人编号
         ,account.user_name as response_name -- 负责人姓名
         ,if(response_task.complete_date is null,'0','1') as response_is_finised -- 负责人是否已结束任务
-    from maoding_web_my_task deliver_task -- 交付任务
+    from md_list_deliver deliver_task -- 交付任务
         inner join maoding_web_my_task response_task on (response_task.target_id = deliver_task.id and response_task.task_type = 26) -- 负责人任务
         inner join maoding_web_company_user company_user on (company_user.id = response_task.handler_id) -- 负责人角色
         inner join maoding_web_account account on (account.id = company_user.user_id) -- 用户名
@@ -390,6 +390,5 @@
               and issue_task.id = #{taskId}) -- 签发任务
           </if>
         </if>
-    where deliver_task.task_type = 28
   </select>
 </mapper>

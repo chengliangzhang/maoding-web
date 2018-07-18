@@ -11,6 +11,8 @@ public class MyTaskEntity extends BaseEntity{
     public static final int DELIVER_CONFIRM_FINISH = 26;
     /** 进行交付文件上传 */
     public static final int DELIVER_EXECUTE = 27;
+    /** 交付任务 */
+    public static final int DELIVER_ACTION = 28;
 
     private String taskTitle;
 
