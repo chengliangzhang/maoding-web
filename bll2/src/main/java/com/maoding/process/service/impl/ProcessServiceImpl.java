@@ -5,6 +5,8 @@ import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.constant.ProcessConst;
 import com.maoding.core.constant.ProjectMemberType;
 import com.maoding.core.util.StringUtil;
+import com.maoding.exception.CustomException;
+import com.maoding.org.dao.CompanyDao;
 import com.maoding.org.dao.CompanyUserDao;
 import com.maoding.process.dao.ProcessDao;
 import com.maoding.process.dao.ProcessNodeDao;
@@ -17,6 +19,8 @@ import com.maoding.process.entity.ProcessNodeMemberEntity;
 import com.maoding.process.entity.ProcessOrgRelationEntity;
 import com.maoding.process.service.ProcessService;
 import com.maoding.project.dto.ProjectProcessNode;
+import com.maoding.project.dto.ProjectProcessNodeDTO;
+import com.maoding.project.entity.ProjectProcessNodeEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +45,9 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
     @Autowired
     private CompanyUserDao companyUserDao;
+
+    @Autowired
+    private CompanyDao companyDao;
 
     private void initDefaultProcessRelation(String companyId,Integer processType){
         ProcessOrgRelationEntity processOrgRelation = new ProcessOrgRelationEntity();
@@ -105,32 +112,52 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         return map;
     }
 
+
+    public void validateSaveProcess(ProcessEditDTO dto){
+        if(dto.getProcessType()==null){
+            throw new CustomException("类型不能为空");
+        }
+    }
+
     @Override
     public int saveProcess(ProcessEditDTO dto) throws Exception {
-
         //todo 添加数据校验
-
+        validateSaveProcess(dto);
         //添加判断
         if(StringUtil.isNullOrEmpty(dto.getCompanyId())){
             dto.setCompanyId(dto.getCurrentCompanyId());
         }
+        int i = 0;
         ProcessEntity process = (ProcessEntity)BaseDTO.copyFields(dto,ProcessEntity.class);
-        process.initEntity();
-        process.setDeleted(0);
-        if(StringUtil.isNullOrEmpty(dto.getProcessName())){
-            process.setProcessName(ProcessConst.PROCESS_NAME_MAP.get(dto.getProcessType().toString()));
+        if(StringUtil.isNullOrEmpty(dto.getId())){
+            process.initEntity();
+            process.setDeleted(0);
+            if(StringUtil.isNullOrEmpty(dto.getProcessName())){
+                process.setProcessName(ProcessConst.PROCESS_NAME_MAP.get(dto.getProcessType().toString()));
+            }
+            i = processDao.insert(process);
+            ProcessOrgRelationEntity processOrgRelation = new ProcessOrgRelationEntity();
+            processOrgRelation.initEntity();
+            processOrgRelation.setStatus(ProcessConst.STOP_STATUS);
+            processOrgRelation.setDeleted(0);
+            processOrgRelation.setProcessId(process.getId());
+            processOrgRelation.setCompanyId(dto.getCompanyId());
+            processOrgRelation.setRelationCompanyId(dto.getRelationCompanyId());
+            processOrgRelation.setCompanyType(this.getCompanyType(dto.getRelationCompanyId()));
+            processOrgRelationDao.insert(processOrgRelation);
+            initProcessNode(process.getId(),dto.getCompanyId(),process.getProcessType());
+        }else {
+            ProcessOrgRelationEntity processOrgRelation = new ProcessOrgRelationEntity();
+            processOrgRelation.setId(dto.getId());
+            processOrgRelation.setRelationCompanyId(dto.getRelationCompanyId());
+            processOrgRelation.setCompanyType(this.getCompanyType(dto.getRelationCompanyId()));
+            processOrgRelationDao.updateById(processOrgRelation);
+
+            process.setId(dto.getProcessId());
+            process.setProcessType(null);//编辑不处理类型
+            processDao.updateById(process);
         }
-        int i = processDao.insert(process);
-        ProcessOrgRelationEntity processOrgRelation = new ProcessOrgRelationEntity();
-        processOrgRelation.initEntity();
-        processOrgRelation.setStatus(ProcessConst.STOP_STATUS);
-        processOrgRelation.setDeleted(0);
-        processOrgRelation.setProcessId(process.getId());
-        processOrgRelation.setCompanyId(dto.getCompanyId());
-        processOrgRelation.setRelationCompanyId(dto.getRelationCompanyId());
-        processOrgRelation.setCompanyType(this.getCompanyType(dto.getRelationCompanyId()));
-        processOrgRelationDao.insert(processOrgRelation);
-        initProcessNode(process.getId(),dto.getCompanyId(),process.getProcessType());
+
         return i;
     }
 
@@ -146,6 +173,28 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         });
 
         return nodeList;
+    }
+
+    @Override
+    public int deleteProcessForProjectPay(ProcessEditDTO dto) throws Exception {
+        ProcessOrgRelationEntity processOrgRelation = new ProcessOrgRelationEntity();
+        processOrgRelation.setId(dto.getId());
+        processOrgRelation.setDeleted(1);//设置删除表示
+        return processOrgRelationDao.updateById(processOrgRelation);
+    }
+
+    @Override
+    public int selectedProcessForProjectPay(ProcessEditDTO dto) throws Exception {
+        ProcessOrgRelationEntity processOrgRelation = new ProcessOrgRelationEntity();
+        processOrgRelation.setId(dto.getId());
+        processOrgRelation.setStatus(dto.getStatus());
+        return processOrgRelationDao.updateById(processOrgRelation);
+    }
+
+    @Override
+    public int selectedProcessNodeStatus(ProcessEditDTO dto) throws Exception {
+        ProcessNodeEntity node = (ProcessNodeEntity) BaseDTO.copyFields(dto,ProcessNodeEntity.class);
+        return processNodeDao.updateById(node);
     }
 
 
@@ -165,7 +214,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             }
             //todo 查询相应的组织
             if(p.getCompanyType()==ProcessConst.COMPANY_TYPE_SINGLE){
-                return "";
+                return companyDao.getCompanyName(p.getRelationCompanyId());
             }
         }
 

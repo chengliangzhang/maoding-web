@@ -10,7 +10,11 @@ public class ProcessDTO {
 
     private String description;//说明
 
+    private String companyId;
+
     private String companyName;//使用团队
+
+    private String relationCompanyId;//关联团队Id
 
     private String relationCompanyName;//关联团队
 
@@ -56,12 +60,28 @@ public class ProcessDTO {
         this.description = description;
     }
 
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
     public String getCompanyName() {
         return companyName;
     }
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public String getRelationCompanyId() {
+        return relationCompanyId;
+    }
+
+    public void setRelationCompanyId(String relationCompanyId) {
+        this.relationCompanyId = relationCompanyId;
     }
 
     public String getRelationCompanyName() {

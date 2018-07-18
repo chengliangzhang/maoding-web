@@ -67,4 +67,55 @@ public class ProcessController extends BaseController{
         return AjaxMessage.succeed( processService.listProcessNode(dto));
     }
 
+    /**
+     * 方法描述：删除项目收支流程
+     * 作者：MaoSF
+     * 日期：2016/11/30
+     */
+    @RequestMapping(value = "/deleteProcessForProjectPay", method = RequestMethod.POST)
+    @ResponseBody
+    // @RequiresPermissions(value = {RoleConst.ADMIN_NOTICE}, logical = Logical.OR)
+    public AjaxMessage deleteProcessForProjectPay(@RequestBody ProcessEditDTO dto) throws Exception {
+        dto.setCurrentCompanyId(this.currentCompanyId);
+        int data = processService.deleteProcessForProjectPay(dto);
+        if(data>0){
+            return AjaxMessage.succeed("操作成功");
+        }
+        return AjaxMessage.error("操作失败");
+    }
+
+    /**
+     * 方法描述：选择，取消流程
+     * 作者：MaoSF
+     * 日期：2016/11/30
+     */
+    @RequestMapping(value = "/selectedProcessForProjectPay", method = RequestMethod.POST)
+    @ResponseBody
+    // @RequiresPermissions(value = {RoleConst.ADMIN_NOTICE}, logical = Logical.OR)
+    public AjaxMessage selectedProcessForProjectPay(@RequestBody ProcessEditDTO dto) throws Exception {
+        dto.setCurrentCompanyId(this.currentCompanyId);
+        int data = processService.selectedProcessForProjectPay(dto);
+        if(data>0){
+            return AjaxMessage.succeed("操作成功");
+        }
+        return AjaxMessage.error("操作失败");
+    }
+
+    /**
+     * 方法描述：选择，取消流程节点中的状态
+     * 作者：MaoSF
+     * 日期：2016/11/30
+     */
+    @RequestMapping(value = "/selectedProcessNodeStatus", method = RequestMethod.POST)
+    @ResponseBody
+    // @RequiresPermissions(value = {RoleConst.ADMIN_NOTICE}, logical = Logical.OR)
+    public AjaxMessage selectedProcessNodeStatus(@RequestBody ProcessEditDTO dto) throws Exception {
+        dto.setCurrentCompanyId(this.currentCompanyId);
+        int data = processService.selectedProcessNodeStatus(dto);
+        if(data>0){
+            return AjaxMessage.succeed("操作成功");
+        }
+        return AjaxMessage.error("操作失败");
+    }
+
 }

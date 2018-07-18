@@ -4,6 +4,8 @@ import com.maoding.core.base.dto.BaseDTO;
 
 public class ProcessEditDTO extends BaseDTO {
 
+    private String processId;
+
     private String processName;//流程名称
 
     private String description;//说明
@@ -15,6 +17,21 @@ public class ProcessEditDTO extends BaseDTO {
     private Integer processType;//流程类型（请参考ProcessConst）
 
     private Integer companyType;//组织类型（前端暂不需要）
+
+    private Integer status;//选中状态（1：被选择，0：取消选中）
+
+    /** 项目收支流程节点状态 **/
+    private Integer nodeStatus1;//应收状态，1：选择状态，0：取消状态
+    private Integer nodeStatus2;//到账/付款状态 1：选择状态 0：取消状态
+    private Integer nodeStatus3;//同步状态 1：选择状态 0：取消状态
+
+    public String getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
 
     public String getProcessName() {
         return processName;
@@ -62,5 +79,37 @@ public class ProcessEditDTO extends BaseDTO {
 
     public void setCompanyType(Integer companyType) {
         this.companyType = companyType;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getNodeStatus1() {
+        return nodeStatus1;
+    }
+
+    public void setNodeStatus1(Integer nodeStatus1) {
+        this.nodeStatus1 = nodeStatus1;
+    }
+
+    public Integer getNodeStatus2() {
+        return nodeStatus2;
+    }
+
+    public void setNodeStatus2(Integer nodeStatus2) {
+        this.nodeStatus2 = nodeStatus2;
+    }
+
+    public Integer getNodeStatus3() {
+        return nodeStatus3;
+    }
+
+    public void setNodeStatus3(Integer nodeStatus3) {
+        this.nodeStatus3 = nodeStatus3;
     }
 }

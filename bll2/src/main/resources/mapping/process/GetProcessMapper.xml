@@ -23,6 +23,8 @@
     select a.id
     ,a.status
     ,a.company_type
+    ,a.company_id
+    ,a.relation_company_id
     ,b.id as process_id
     ,b.process_name
     ,description
