@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetProcessMapper" >
+
+  <resultMap id="BaseResultMap" type="com.maoding.process.entity.ProcessOrgRelationEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="process_id" property="processId" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="relation_company_id" property="relationCompanyId" jdbcType="VARCHAR" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+
+    <result column="company_type" property="companyType" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="deleted" property="deleted" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+
+  
+  <select id="getProcessByCompany" parameterType="com.maoding.process.dto.QueryProcessDTO" resultType="com.maoding.process.dto.ProcessDTO">
+    select a.id
+    ,a.status
+    ,a.company_type
+    ,b.id as process_id
+    ,b.process_name
+    ,description
+    ,process_type
+    ,c.company_name
+    ,d.user_name as update_user_name
+    from maoding_process_org_relation a
+    INNER JOIN maoding_process b on a.process_id = b.id
+    INNER JOIN maoding_web_company c on a.company_id = c.id
+    LEFT JOIN maoding_web_company_user d on a.company_id = d.company_id and a.update_by = d.user_id
+    where  a.company_id = #{companyId}
+    and a.deleted = 0
+    and b.deleted = 0
+    order by b.process_type,b.seq
+  </select>
+</mapper>

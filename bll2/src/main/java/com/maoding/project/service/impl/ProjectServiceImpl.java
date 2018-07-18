@@ -1072,12 +1072,9 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
 //            }
         }
 
-        //处理协同
-
-
         //处理乙方变更
         if (1 == partBFlag || 2 == partBFlag || 4 == partBFlag) {
-            //处理乙方负责人
+            //处理乙方财务
             this.projectCostService.handPartBChange(projectEntity.getId(), accountId, partBFlag);
 
             if ((2 == partBFlag || 4 == partBFlag) && !StringUtil.isNullOrEmpty(companyBid)) {//删除经营负责人

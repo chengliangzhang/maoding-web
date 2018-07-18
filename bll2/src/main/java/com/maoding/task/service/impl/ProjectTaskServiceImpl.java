@@ -130,9 +130,6 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
     private ProjectService projectService;
 
     @Autowired
-    private ProjectCostDao projectCostDao;
-
-    @Autowired
     private ProjectMemberService projectMemberService;
 
     @Autowired
@@ -896,22 +893,23 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
      */
     private void handleProjectTaskRelationForCooperatorFee(ProjectEntity projectEntity, List<ProjectTaskRelationEntity> taskRelationList, String accountId) throws Exception {
 
-        for (ProjectTaskRelationEntity taskRelationEntity : taskRelationList) {
-            //查询签发记录
-            Map<String, Object> stringMap = new HashMap<>();
-            stringMap.put("fromCompanyId", taskRelationEntity.getFromCompanyId());
-            stringMap.put("toCompanyId", taskRelationEntity.getToCompanyId());
-            stringMap.put("projectId", projectEntity.getId());
-            //处理经营负责人和设计负责人
-            List<ProjectTaskRelationEntity> relationEntities = this.projectTaskRelationDao.getTaskRelationParam(stringMap);
-            if (CollectionUtils.isEmpty(relationEntities)) {//如果为空，则删除合作设计费
-                stringMap.put("type", "3"); //合作设计费的标示
-                List<ProjectCostDTO> costList = this.projectCostDao.selectByParam(stringMap);
-                for (ProjectCostDTO costDTO : costList) {
-                    this.projectCostService.deleteProjectCost(costDTO.getId(), accountId);
-                }
-            }
-        }
+        //以下内容与 2018-07-16 屏蔽。原因：取消 任务签发与合作设计费的关联关系
+//        for (ProjectTaskRelationEntity taskRelationEntity : taskRelationList) {
+//            //查询签发记录
+//            Map<String, Object> stringMap = new HashMap<>();
+//            stringMap.put("fromCompanyId", taskRelationEntity.getFromCompanyId());
+//            stringMap.put("toCompanyId", taskRelationEntity.getToCompanyId());
+//            stringMap.put("projectId", projectEntity.getId());
+//            //处理经营负责人和设计负责人
+//            List<ProjectTaskRelationEntity> relationEntities = this.projectTaskRelationDao.getTaskRelationParam(stringMap);
+//            if (CollectionUtils.isEmpty(relationEntities)) {//如果为空，则删除合作设计费
+//                stringMap.put("type", "3"); //合作设计费的标示
+//                List<ProjectCostDTO> costList = this.projectCostDao.selectByParam(stringMap);
+//                for (ProjectCostDTO costDTO : costList) {
+//                    this.projectCostService.deleteProjectCost(costDTO.getId(), accountId);
+//                }
+//            }
+//        }
     }
 
     /**

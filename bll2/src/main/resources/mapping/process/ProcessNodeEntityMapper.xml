@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ProcessNodeEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.process.entity.ProcessNodeEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="process_id" property="processId" jdbcType="VARCHAR" />
+    <result column="node_name" property="nodeName" jdbcType="VARCHAR" />
+    <result column="node_value" property="nodeValue" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="node_type" property="nodeType" jdbcType="INTEGER" />
+    <result column="relation_content" property="relationContent" jdbcType="VARCHAR" />
+    <result column="node_status_1" property="nodeStatus1" jdbcType="INTEGER" />
+    <result column="node_status_2" property="nodeStatus2" jdbcType="INTEGER" />
+    <result column="node_status_3" property="nodeStatus3" jdbcType="INTEGER" />
+    <result column="is_all_agree" property="isAllAgree" jdbcType="INTEGER" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+    <result column="deleted" property="deleted" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, process_id, node_name,node_value, description, node_type, is_all_agree, seq, deleted, create_date,
+    create_by, update_date, update_by,relation_content,node_status_1,node_status_2,node_status_3
+  </sql>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_process_node
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="listProcessNode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_process_node
+    where process_id = #{processId,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_process_node
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maoding.process.entity.ProcessNodeEntity" >
+    insert into maoding_process_node (id, process_id, node_name, node_value,
+      description, node_type, is_all_agree, 
+      seq, deleted, create_date, 
+      create_by, update_date, update_by,relation_content,node_status_1,node_status_2,node_status_3
+      )
+    values (#{id,jdbcType=VARCHAR}, #{processId,jdbcType=VARCHAR}, #{nodeName,jdbcType=VARCHAR}, #{nodeValue,jdbcType=VARCHAR},
+      #{description,jdbcType=VARCHAR}, #{nodeType,jdbcType=INTEGER}, #{isAllAgree,jdbcType=INTEGER}, 
+      #{seq,jdbcType=INTEGER}, #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+       ,#{relationContent,jdbcType=VARCHAR},#{nodeStatus1,jdbcType=INTEGER},#{nodeStatus2,jdbcType=INTEGER},#{nodeStatus3,jdbcType=INTEGER}
+      )
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.process.entity.ProcessNodeEntity" >
+    update maoding_process_node
+    <set >
+      <if test="processId != null" >
+        process_id = #{processId,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeName != null" >
+        node_name = #{nodeName,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeValue != null" >
+        node_value = #{nodeValue,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeType != null" >
+        node_type = #{nodeType,jdbcType=INTEGER},
+      </if>
+      <if test="isAllAgree != null" >
+        is_all_agree = #{isAllAgree,jdbcType=INTEGER},
+      </if>
+      <if test="seq != null" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="deleted != null" >
+        deleted = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="relationContent != null" >
+        relation_content = #{relationContent,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeStatus1 != null" >
+        node_status_1 = #{nodeStatus1,jdbcType=INTEGER},
+      </if>
+      <if test="nodeStatus2 != null" >
+        node_status_2 = #{nodeStatus2,jdbcType=INTEGER},
+      </if>
+      <if test="nodeStatus3 != null" >
+        node_status_3 = #{nodeStatus3,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="update" parameterType="com.maoding.process.entity.ProcessNodeEntity" >
+    update maoding_process_node
+    set process_id = #{processId,jdbcType=VARCHAR},
+      node_name = #{nodeName,jdbcType=VARCHAR},
+      node_value = #{nodeValue,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      node_type = #{nodeType,jdbcType=INTEGER},
+      is_all_agree = #{isAllAgree,jdbcType=INTEGER},
+      seq = #{seq,jdbcType=INTEGER},
+      deleted = #{deleted,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      relation_content = #{relationContent,jdbcType=VARCHAR},
+      node_status_1 = #{nodeStatus1,jdbcType=INTEGER},
+      node_status_2 = #{nodeStatus2,jdbcType=INTEGER},
+      node_status_3 = #{nodeStatus3,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

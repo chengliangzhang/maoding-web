@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ProcessEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.process.entity.ProcessEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="process_name" property="processName" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="process_type" property="processType" jdbcType="INTEGER" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+    <result column="deleted" property="deleted" jdbcType="INTEGER" />
+    <result column="last_process" property="lastProcess" jdbcType="INTEGER" />
+    <result column="start_flag" property="startFlag" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, company_id, process_name, description, process_type, seq, deleted, last_process, 
+    start_flag, create_date, create_by, update_date, update_by
+  </sql>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_process
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getDefaultProcessByType" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_process
+    where process_type = #{processType} and company_id is null
+    limit 1
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_process
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maoding.process.entity.ProcessEntity" >
+    insert into maoding_process (id, company_id, process_name, 
+      description, process_type, seq, 
+      deleted, last_process, start_flag, 
+      create_date, create_by, update_date, 
+      update_by)
+    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{processName,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{processType,jdbcType=INTEGER}, #{seq,jdbcType=INTEGER}, 
+      #{deleted,jdbcType=INTEGER}, #{lastProcess,jdbcType=INTEGER}, #{startFlag,jdbcType=INTEGER}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.process.entity.ProcessEntity" >
+    update maoding_process
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="processName != null" >
+        process_name = #{processName,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="processType != null" >
+        process_type = #{processType,jdbcType=INTEGER},
+      </if>
+      <if test="seq != null" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="deleted != null" >
+        deleted = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="lastProcess != null" >
+        last_process = #{lastProcess,jdbcType=INTEGER},
+      </if>
+      <if test="startFlag != null" >
+        start_flag = #{startFlag,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="update" parameterType="com.maoding.process.entity.ProcessEntity" >
+    update maoding_process
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      process_name = #{processName,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      process_type = #{processType,jdbcType=INTEGER},
+      seq = #{seq,jdbcType=INTEGER},
+      deleted = #{deleted,jdbcType=INTEGER},
+      last_process = #{lastProcess,jdbcType=INTEGER},
+      start_flag = #{startFlag,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

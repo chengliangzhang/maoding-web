@@ -1376,20 +1376,22 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
      */
     @Override
     public AjaxMessage handPartBChange(String projectId, String accountId, int flag) throws Exception {
-        if (flag != 0) {
-            if (flag == 1) {
-                //saveTechnicalReviewFeePoint(projectId, "2");
-            }
-            if (flag == 2) {
-                deleteTechnicalFee(projectId,"2");
-                deletePoint(projectId, "2",accountId);
-            }
-            if (flag == 4) {
-                deleteTechnicalFee(projectId,"2");
-                deletePoint(projectId, "2",accountId);
-               // saveTechnicalReviewFeePoint(projectId, "2");
-            }
-        }
+
+        //以下内容与 2018-07-16 屏蔽。原因：取消 添加乙方与技术审查费的关联关系
+//        if (flag != 0) {
+//            if (flag == 1) {
+//                //saveTechnicalReviewFeePoint(projectId, "2");
+//            }
+//            if (flag == 2) {
+//                deleteTechnicalFee(projectId,"2");
+//                deletePoint(projectId, "2",accountId);
+//            }
+//            if (flag == 4) {
+//                deleteTechnicalFee(projectId,"2");
+//                deletePoint(projectId, "2",accountId);
+//               // saveTechnicalReviewFeePoint(projectId, "2");
+//            }
+//        }
         return null;
     }
 
@@ -1976,26 +1978,27 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
     public void saveProjectCost(ProjectTaskEntity task, String currentCompanyId) throws Exception {
         //查询是否存在总金额
         //查询总费用
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("projectId", task.getProjectId());
-        map.put("fromCompanyId", currentCompanyId);
-        map.put("toCompanyId", task.getCompanyId());
-        map.put("type", "3"); //代表合作设计费类型
-        map.put("flag", "1"); //代表正式合同
-        List<ProjectCostDTO> totalCost = this.projectCostDao.selectByParam(map);//理论上只会存在一条
-        String costId = null;
-        if (!CollectionUtils.isEmpty(totalCost)) {
-            costId = totalCost.get(0).getId();
-        } else {
-            costId = StringUtil.buildUUID();
-            ProjectCostEntity costEntity = new ProjectCostEntity();
-            costEntity.setId(costId);
-            costEntity.setProjectId(task.getProjectId());
-            costEntity.setFromCompanyId(currentCompanyId);
-            costEntity.setToCompanyId(task.getCompanyId());
-            costEntity.setType("3");
-            costEntity.setFlag("1");
-            this.projectCostDao.insert(costEntity);
-        }
+        //以下内容与 2018-07-16 屏蔽。原因：取消 任务签发与合作设计费的关联关系
+//        Map<String, Object> map = new HashMap<String, Object>();
+//        map.put("projectId", task.getProjectId());
+//        map.put("fromCompanyId", currentCompanyId);
+//        map.put("toCompanyId", task.getCompanyId());
+//        map.put("type", "3"); //代表合作设计费类型
+//        map.put("flag", "1"); //代表正式合同
+//        List<ProjectCostDTO> totalCost = this.projectCostDao.selectByParam(map);//理论上只会存在一条
+//        String costId = null;
+//        if (!CollectionUtils.isEmpty(totalCost)) {
+//            costId = totalCost.get(0).getId();
+//        } else {
+//            costId = StringUtil.buildUUID();
+//            ProjectCostEntity costEntity = new ProjectCostEntity();
+//            costEntity.setId(costId);
+//            costEntity.setProjectId(task.getProjectId());
+//            costEntity.setFromCompanyId(currentCompanyId);
+//            costEntity.setToCompanyId(task.getCompanyId());
+//            costEntity.setType("3");
+//            costEntity.setFlag("1");
+//            this.projectCostDao.insert(costEntity);
+//        }
     }
 }
