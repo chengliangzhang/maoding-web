@@ -2,10 +2,7 @@ package com.maoding.mytask.dao.impl;
 
 import com.maoding.core.base.dao.GenericDao;
 import com.maoding.mytask.dao.MyTaskDao;
-import com.maoding.mytask.dto.MyTaskDTO;
-import com.maoding.mytask.dto.MyTaskList2DTO;
-import com.maoding.mytask.dto.MyTaskListDTO;
-import com.maoding.mytask.dto.MyTaskQueryDTO;
+import com.maoding.mytask.dto.*;
 import com.maoding.mytask.entity.MyTaskEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
@@ -234,5 +231,17 @@ public class MyTaskDaoImpl extends GenericDao<MyTaskEntity> implements MyTaskDao
     @PostConstruct
     public void init(){
         dao = sqlSession.getMapper(MyTaskDao.class);
+    }
+
+    /**
+     * @param query 交付任务查询条件
+     * @return 交付任务列表
+     * @author 张成亮
+     * @date 2018/7/18
+     * @description 查询交付任务
+     **/
+    @Override
+    public List<DeliverDTO> listDeliver(MyTaskQueryDTO query) {
+        return sqlSession.selectList("MyTaskEntityMapper.listDeliver",query);
     }
 }

@@ -28,6 +28,16 @@ public class MyTaskQueryDTO {
     private String isDeliver;
     /** 归档目录编号 */
     private String nodeId;
+    /** 要查询的个人任务类型 */
+    private Integer myTaskType;
+
+    public Integer getMyTaskType() {
+        return myTaskType;
+    }
+
+    public void setMyTaskType(Integer myTaskType) {
+        this.myTaskType = myTaskType;
+    }
 
     public String getIssueTaskId() {
         return getTaskId();

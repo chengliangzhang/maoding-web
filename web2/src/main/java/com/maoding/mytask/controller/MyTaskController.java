@@ -2,6 +2,7 @@ package com.maoding.mytask.controller;
 
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.mytask.dto.DeliverDTO;
 import com.maoding.mytask.dto.HandleMyTaskDTO;
 import com.maoding.mytask.dto.MyTaskQueryDTO;
 import com.maoding.mytask.service.MyTaskService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -170,6 +172,7 @@ public class MyTaskController extends BaseController {
     @RequestMapping("/handleMyTask")
     @ResponseBody
     public AjaxMessage listDeliver(@RequestBody MyTaskQueryDTO query) throws Exception {
-        return AjaxMessage.succeed(null);
+        List<DeliverDTO> list = myTaskService.listDeliver(query);
+        return AjaxMessage.succeed(list);
     }
 }

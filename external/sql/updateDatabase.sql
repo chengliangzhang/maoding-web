@@ -1626,6 +1626,24 @@ CREATE OR REPLACE VIEW `md_type_built_custom` AS
     md_list_const_custom built_type
   where deleted = 0 and built_type.classic_id = 33;
 
+-- -- 交付视图
+CREATE OR REPLACE VIEW `md_deliver` AS
+  select
+    deliver_task.id, -- 交付任务编号
+    deliver_task.task_title as name, -- 交付任务名称
+    deliver_task.task_content as description, -- 说明
+    deliver_task.deadline as end_time, -- 截止时间
+    deliver_task.create_by, -- 发起人
+    deliver_task.create_date, -- 发起时间
+    if(deliver_task.complete_date is null,'0','1') as is_finished, -- 是否已经结束
+    account.id as response_id, -- 负责人编号
+    account.user_name as response_name, -- 负责人姓名
+    if(response_task.complete_date is null,'0','1') as response_is_finised -- 负责人是否已结束任务
+  from maoding_web_my_task deliver_task -- 交付任务
+    inner join maoding_web_my_task response_task on (response_task.target_id = deliver_task.id and response_task.task_type = 26) -- 负责人任务
+    inner join maoding_web_company_user company_user on (company_user.id = response_task.handler_id) -- 负责人角色
+    inner join maoding_web_account account on (account.id = company_user.user_id) -- 用户名
+  where deliver_task.task_type = 28;
 
 -- 建立创建视图的存储过程
 DROP PROCEDURE IF EXISTS updateViews;

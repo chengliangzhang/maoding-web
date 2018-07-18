@@ -181,4 +181,13 @@ import java.util.Map;
      * @param   request 交付申请信息
      **/
     void createDeliverPersonalTask(DeliverEditDTO request);
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/18
+     * @description     查询交付任务
+     * @param   query 交付任务查询条件
+     * @return  交付任务列表
+     **/
+    List<DeliverDTO> listDeliver(MyTaskQueryDTO query);
 }
