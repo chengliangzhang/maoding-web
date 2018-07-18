@@ -2113,7 +2113,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         entity.setSendCompanyId(request.getCompanyId());
         entity.setCreateDate(new Date());
         entity.setDeadline(request.getEndTime());
-        entity.setTargetId(request.getIssueId());
+        entity.setTargetId(request.getNodeId());
         entity.setTaskTitle(request.getName());
         entity.setTaskContent(request.getDescription());
 

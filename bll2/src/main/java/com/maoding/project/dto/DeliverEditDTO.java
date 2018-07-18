@@ -41,6 +41,16 @@ public class DeliverEditDTO extends BaseDTO {
     private Integer type;
     /** 排序序号 */
     private Integer seq;
+    /** 交付目录编号 */
+    private String nodeId;
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
 
     public Integer getSeq() {
         return seq;
