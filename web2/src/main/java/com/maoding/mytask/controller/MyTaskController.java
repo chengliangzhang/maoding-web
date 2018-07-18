@@ -2,7 +2,7 @@ package com.maoding.mytask.controller;
 
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
-import com.maoding.mytask.dto.DeliverDTO;
+import com.maoding.deliver.dto.DeliverDTO;
 import com.maoding.mytask.dto.HandleMyTaskDTO;
 import com.maoding.mytask.dto.MyTaskQueryDTO;
 import com.maoding.mytask.service.MyTaskService;

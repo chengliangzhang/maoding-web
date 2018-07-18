@@ -448,9 +448,9 @@ public class ProjectSkyDriverController extends BaseController {
             //***********原来的代码*****************/
 
             //创建交付目录
-            this.projectSkyDriverService.createDeliver(taskEntity,request);
-            //创建负责人任务
-            myTaskService.createDeliverPersonalTask(request);
+            this.projectSkyDriverService.createDeliverDir(taskEntity,request);
+            //创建并保存交付任务，包括发起的交付任务，各个负责人的交付任务和上传任务
+            myTaskService.saveDeliverTask(request);
 
             //为每个负责人发送一条消息
             List<MessageEntity> messageList = messageService.createDeliverChangedMessageListFrom(request);

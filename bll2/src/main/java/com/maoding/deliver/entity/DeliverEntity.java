@@ -1,40 +1,17 @@
-package com.maoding.mytask.entity;
+package com.maoding.deliver.entity;
 
 import com.maoding.core.base.entity.BaseEntity;
 
 import java.util.Date;
 
 
-public class MyTaskEntity extends BaseEntity{
-
-    /** 确认交付文件上传完毕 */
-    public static final int DELIVER_CONFIRM_FINISH = 26;
-    /** 进行交付文件上传 */
-    public static final int DELIVER_EXECUTE = 27;
+public class DeliverEntity extends BaseEntity{
+    /** 交付任务类型 */
+    public static final int DELIVER_ACTION = 28;
 
 
     private String taskTitle;
 
-    /**
-     * 任务类型(1.签发：经营负责人,2.生产安排（项目设计负责人）.13.生产安排（任务负责人的任务）12.生产安排（界面跳转）,
-     3.设计（设计，校对，审核），
-     4.付款（技术审查费-确认付款金额（经营负责人）），
-     5.付款（技术审查费-确认付款（企业负责人）），-- 没有此任务
-     6.付款（合作设计费-确认付款金额（经营负责人）），
-     7.付款（合作设计费-付款确认（企业负责人）），-- 没有此任务
-     8.到款（技术审查费-确认到款），
-     9.到款（合作设计费-到款确认）
-     10.到款（合同回款-到款确认）
-     11.报销单审核,
-    --  14,设置设计负责人，15，设置任务负责人 （已经没有此两种任务了）
-     16.技术审查费-财务-付款，17.技术审查费-财务-到款 ，
-     18.合作设计费-财务-付款，19.合作设计费-财务-到款,
-     20.其他费-财务-付款，21.其他费-财务-到款
-     22.所有设计任务已完成，给组织的设计负责人推送任务
-     23.费用申请审核
-//     24.请假出差审核 请假出差没有任务
-//     25.出差审核
-     */
     private Integer taskType;
 
     /** 处理人编号，使用company_user的id */

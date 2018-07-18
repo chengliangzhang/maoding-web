@@ -1,4 +1,4 @@
-package com.maoding.mytask.dto;
+package com.maoding.deliver.dto;
 
 import com.maoding.core.base.dto.BaseShowDTO;
 
