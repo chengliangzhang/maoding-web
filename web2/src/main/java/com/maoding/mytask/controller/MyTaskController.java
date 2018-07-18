@@ -3,6 +3,7 @@ package com.maoding.mytask.controller;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.deliver.dto.DeliverDTO;
+import com.maoding.deliver.service.DeliverService;
 import com.maoding.mytask.dto.HandleMyTaskDTO;
 import com.maoding.mytask.dto.MyTaskQueryDTO;
 import com.maoding.mytask.service.MyTaskService;
@@ -27,6 +28,9 @@ public class MyTaskController extends BaseController {
 
     @Autowired
     private MyTaskService myTaskService;
+
+    @Autowired
+    private DeliverService deliverService;
 
     @Autowired
     private SystemService systemService;
@@ -172,7 +176,7 @@ public class MyTaskController extends BaseController {
     @RequestMapping("/listDeliver")
     @ResponseBody
     public AjaxMessage listDeliver(@RequestBody MyTaskQueryDTO query) throws Exception {
-        List<DeliverDTO> list = myTaskService.listDeliver(query);
+        List<DeliverDTO> list = deliverService.listDeliver(query);
         return AjaxMessage.succeed(list);
     }
 }

@@ -2,8 +2,9 @@ package com.maoding.mytask.service;
 
 import com.maoding.core.base.service.BaseService;
 import com.maoding.core.bean.AjaxMessage;
-import com.maoding.deliver.dto.DeliverDTO;
-import com.maoding.mytask.dto.*;
+import com.maoding.mytask.dto.HandleMyTaskDTO;
+import com.maoding.mytask.dto.MyTaskActiveRequestDTO;
+import com.maoding.mytask.dto.MyTaskListDTO;
 import com.maoding.mytask.entity.MyTaskEntity;
 import com.maoding.project.dto.DeliverEditDTO;
 
@@ -183,12 +184,4 @@ import java.util.Map;
      **/
     void saveDeliverTask(DeliverEditDTO request);
 
-    /**
-     * @author  张成亮
-     * @date    2018/7/18
-     * @description     查询交付任务
-     * @param   query 交付任务查询条件
-     * @return  交付任务列表
-     **/
-    List<DeliverDTO> listDeliver(MyTaskQueryDTO query);
 }

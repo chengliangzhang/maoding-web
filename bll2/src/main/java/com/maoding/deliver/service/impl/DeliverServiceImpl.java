@@ -5,6 +5,7 @@ import com.maoding.deliver.dto.DeliverDTO;
 import com.maoding.deliver.entity.DeliverEntity;
 import com.maoding.deliver.service.DeliverService;
 import com.maoding.mytask.dto.MyTaskQueryDTO;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
  * @date : 2018/7/18
  * @description :
  */
+@Service("deliverService")
 public class DeliverServiceImpl extends GenericService<DeliverEntity> implements DeliverService {
     /**
      * @param query 交付任务查询条件

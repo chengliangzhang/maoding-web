@@ -128,13 +128,4 @@ public interface MyTaskDao extends BaseDao<MyTaskEntity> {
 
     /** 根据taskId设置mytask及相应的子mytask为完成状态 */
     int finishMyTaskByTaskIdWithoutId(@Param("taskId") String taskId, @Param("ignoreId") String ignoreId);
-
-    /**
-     * @author  张成亮
-     * @date    2018/7/18
-     * @description     查询交付任务
-     * @param   query 交付任务查询条件
-     * @return  交付任务列表
-     **/
-    List<DeliverDTO> listDeliver(MyTaskQueryDTO query);
 }

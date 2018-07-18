@@ -2158,16 +2158,4 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         return !"0".equals(response.getIsSelected());
     }
 
-    /**
-     * @param query 交付任务查询条件
-     * @return 交付任务列表
-     * @author 张成亮
-     * @date 2018/7/18
-     * @description 查询交付任务
-     **/
-    @Override
-    public List<DeliverDTO> listDeliver(MyTaskQueryDTO query) {
-        query.setMyTaskType(MyTaskEntity.DELIVER_CONFIRM_FINISH);
-        return myTaskDao.listDeliver(query);
-    }
 }
