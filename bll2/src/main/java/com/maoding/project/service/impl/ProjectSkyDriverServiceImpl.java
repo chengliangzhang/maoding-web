@@ -200,29 +200,29 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
             map.put("fileNames", fileNames);
         }
         List<ProjectSkyDriveEntity> list = this.projectSkyDriverDao.getSkyDriveByParam(map);
-        List<ProjectSkyDriveData> resulList = new ArrayList<>();
+        List<ProjectSkyDriveData> resultList = new ArrayList<>();
         for (ProjectSkyDriveEntity entity : list) {
-            setResultList(accountId, companyId, resulList, entity);
+            setResultList(accountId, companyId, resultList, entity);
         }
         Map<String, Object> para = new HashMap<>();
         para.put("projectId", 0 < list.size() ? list.get(0).getProjectId() : null);
         para.put("fileName", "设计文件");
         para.put("companyId", companyId);
         List<ProjectSkyDriveEntity> entities = projectSkyDriverDao.getProjectSkyDriveEntityByProjectIdAndFileName(para);
-        for (ProjectSkyDriveData projectSkyDriveData : resulList) {
+        for (ProjectSkyDriveData projectSkyDriveData : resultList) {
             if ("设计依据".equals(projectSkyDriveData.getFileName())) {
                 projectSkyDriveData.setChildId(true);
             }
         }
         if (0 < entities.size()) {
-            for (ProjectSkyDriveData projectSkyDriveData : resulList) {
+            for (ProjectSkyDriveData projectSkyDriveData : resultList) {
                 if ("设计文件".equals(projectSkyDriveData.getFileName()) || "交付文件".equals(projectSkyDriveData.getFileName())) {
                     projectSkyDriveData.setChildId(true);
                 }
             }
         }
         //设计文件查看是否有子类
-        for (ProjectSkyDriveData entity : resulList) {
+        for (ProjectSkyDriveData entity : resultList) {
             Map<String, Object> param = new HashMap<>();
             param.put("projectId", entity.getProjectId());
             param.put("fileName", entity.getFileName());
@@ -236,7 +236,11 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
                 }
             }
         }
-        returnData.put("list", resulList);
+
+        //增加目录可写标记
+        resultList.forEach(node-> node.setIsWritable(toString(isWritable(node,accountId))));
+
+        returnData.put("list", resultList);
         returnData.put("uploadFlag", 0);
         if (null != map.get("pid")) {
             ProjectSkyDriveEntity parent = this.selectById(map.get("pid"));
