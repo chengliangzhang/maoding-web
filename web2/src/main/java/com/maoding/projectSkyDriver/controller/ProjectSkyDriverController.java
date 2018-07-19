@@ -422,40 +422,8 @@ public class ProjectSkyDriverController extends BaseController {
             }
             request.setChangedResponseList(createResponseEditListFrom((List<Map<String,Object>>) param.get("userArr")));
 
-            //***********原来的代码*****************/
-            //创建归档通知文件夹
-            ProjectTaskEntity taskEntity = new ProjectTaskEntity();
-            //原有代码必须要有id，为了和以前代码兼容，在id为空时生成一个id
-            String id = (String) param.get("id");
-            if (StringUtils.isNullOrEmpty(id)){
-                id = StringUtil.buildUUID();
-            }
-            taskEntity.setTaskPid(id);
-            //保存原有id
-            param.put("oldId", id);
-            List<String> ids = new ArrayList<>();
-            ids.add(id);
-            param.put("id", ids);
-            List<ProjectSkyDriveEntity> entities = projectSkyDriverService.getDirectoryDTOList(param);
-            taskEntity.setTaskType(SystemParameters.TASK_TYPE_ISSUE);
-            taskEntity.setProjectId((String) param.get("projectId"));
-            taskEntity.setCompanyId((String) param.get("companyId"));
-            taskEntity.setTaskName((String) param.get("taskName"));
-            taskEntity.setSeq(null != entities ? entities.size() + 1 : 0);
-            taskEntity.setIsOperaterTask(0);
-            taskEntity.setType(NetFileType.DIRECTORY_SEND_ARCHIVE_NOTICE);
-            taskEntity.setFileSize(0);
-            //***********原来的代码*****************/
-
-            //创建交付目录
-            String nodeId = this.projectSkyDriverService.createDeliverDir(taskEntity,request);
-            //创建并保存交付任务，包括发起的交付任务，各个负责人的交付任务和上传任务
-            request.setNodeId(nodeId);
-            myTaskService.saveDeliverTask(request);
-
-            //为每个负责人发送一条消息
-            List<MessageEntity> messageList = messageService.createDeliverChangedMessageListFrom(request);
-            messageService.sendMessage(messageList);
+            //调用创建或修改交付接口
+            myTaskService.changeDeliver(request);
 
         } catch (Exception e) {
             e.printStackTrace();

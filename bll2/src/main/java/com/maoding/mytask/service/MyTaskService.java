@@ -184,4 +184,13 @@ import java.util.Map;
      **/
     void saveDeliverTask(DeliverEditDTO request);
 
+    /**
+     * @author  张成亮
+     * @date    2018/7/19
+     * @description     创建或修改交付任务
+     * @param   request 交付任务申请
+     * @return  创建或修改后的交付任务
+     **/
+    void changeDeliver(DeliverEditDTO request);
+
 }

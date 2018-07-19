@@ -2,13 +2,17 @@ package com.maoding.mytask.controller;
 
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.core.constant.RoleConst;
 import com.maoding.deliver.dto.DeliverDTO;
 import com.maoding.deliver.service.DeliverService;
 import com.maoding.mytask.dto.HandleMyTaskDTO;
 import com.maoding.mytask.dto.MyTaskQueryDTO;
 import com.maoding.mytask.service.MyTaskService;
+import com.maoding.project.dto.DeliverEditDTO;
 import com.maoding.system.service.SystemService;
 import org.apache.shiro.authc.AccountException;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -161,11 +165,11 @@ public class MyTaskController extends BaseController {
      * 作者：MaoSF
      * 日期：2017/1/11
      */
-    @RequestMapping("/handleMyTask")
+    @RequestMapping(value = "/handleMyTask", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage handleMyTask(@RequestBody HandleMyTaskDTO dto) throws Exception {
         dto.setAccountId(this.currentUserId);
-        return   this.myTaskService.handleMyTask(dto);
+        return this.myTaskService.handleMyTask(dto);
     }
 
     /**
@@ -173,10 +177,23 @@ public class MyTaskController extends BaseController {
      * @date    2018/7/18
      * @description     查询交付任务
      **/
-    @RequestMapping("/listDeliver")
+    @RequestMapping(value = "/listDeliver", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage listDeliver(@RequestBody MyTaskQueryDTO query) throws Exception {
         List<DeliverDTO> list = deliverService.listDeliver(query);
         return AjaxMessage.succeed(list);
+    }
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/19
+     * @description     编辑交付申请
+     **/
+    @RequestMapping(value = "/changeDeliver", method = RequestMethod.POST)
+    @ResponseBody
+    @RequiresPermissions(value = {RoleConst.PROJECT_EDIT}, logical = Logical.OR)
+    public AjaxMessage changeDeliver(@RequestBody DeliverEditDTO request) throws Exception {
+        myTaskService.changeDeliver(request);
+        return AjaxMessage.succeed("修改成功");
     }
 }

@@ -249,11 +249,10 @@ public interface ProjectSkyDriverService extends BaseService<ProjectSkyDriveEnti
      * @author  张成亮
      * @date    2018/7/16
      * @description 在任务对应的文档目录下创建或更改交付文件夹
-     * @param task 任务
-     *        request 交付申请
+     * @param request 交付申请
      * @return 创建或更改的交付文件夹
      */
-    String createDeliverDir(ProjectTaskEntity task, DeliverEditDTO request);
+    String createDeliverDir(DeliverEditDTO request);
 
     /**
      * 查询归档通知下的所有文件夹和文件

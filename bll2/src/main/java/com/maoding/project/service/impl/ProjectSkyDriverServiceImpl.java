@@ -920,16 +920,14 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
     }
 
     /**
-     * @param task    任务
-     *                request 交付申请
-     * @param request 如果为空，同原有的createSendarchivedFileNotifier
-     * @return 创建或更改的交付文件夹
+     * @param request 交付申请
+     * @return 创建或更改交付文件夹
      * @author 张成亮
      * @date 2018/7/16
      * @description 创建的文档的编号
      */
     @Override
-    public String createDeliverDir(ProjectTaskEntity task, DeliverEditDTO request) {
+    public String createDeliverDir(DeliverEditDTO request) {
         String id = "";
 
         if (request != null) {

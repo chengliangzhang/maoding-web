@@ -39,6 +39,7 @@ import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.entity.ProjectProcessNodeEntity;
 import com.maoding.project.service.ProjectProcessService;
 import com.maoding.project.service.ProjectService;
+import com.maoding.project.service.ProjectSkyDriverService;
 import com.maoding.projectcost.dao.ProjectCostPaymentDetailDao;
 import com.maoding.projectcost.dao.ProjectCostPointDao;
 import com.maoding.projectcost.dao.ProjectCostPointDetailDao;
@@ -81,6 +82,8 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
     @Autowired
     private MyTaskDao myTaskDao;
 
+    @Autowired
+    private ProjectSkyDriverService projectSkyDriverService;
 
     @Autowired
     private DeliverDao deliverDao;
@@ -2202,4 +2205,24 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         return !"0".equals(response.getIsSelected());
     }
 
+    /**
+     * @param request 交付任务申请
+     * @return 创建或修改后的交付任务
+     * @author 张成亮
+     * @date 2018/7/19
+     * @description 创建或修改交付任务
+     **/
+    @Override
+    public void changeDeliver(DeliverEditDTO request) {
+        //创建交付目录
+        String nodeId = projectSkyDriverService.createDeliverDir(request);
+
+        //创建并保存交付任务，包括发起的交付任务，各个负责人的交付任务和上传任务
+        request.setNodeId(nodeId);
+        saveDeliverTask(request);
+
+        //为每个负责人发送一条消息
+        List<MessageEntity> messageList = messageService.createDeliverChangedMessageListFrom(request);
+        messageService.sendMessage(messageList);
+    }
 }
