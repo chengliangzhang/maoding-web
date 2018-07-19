@@ -99,7 +99,7 @@
     <collection property="responseList" ofType="com.maoding.deliver.dto.ResponseDTO">
       <id column="response_id" property="id"/>
       <result column="response_name" property="name"/>
-      <result column="response_is_finised" property="isFinished"/>
+      <result column="response_is_finished" property="isFinished"/>
     </collection>
   </resultMap>
 
@@ -111,10 +111,10 @@
         ,deliver_task.deadline as end_time
         ,deliver_task.create_by
         ,deliver_task.create_date
-        ,if(deliver_task.complete_date is null,'0','1') as is_finiscmhed
+        ,if(deliver_task.complete_date is null,'0','1') as is_finished
         ,company_user.id as response_id
         ,user_response.user_name as response_name
-        ,if(response_task.complete_date is null,'0','1') as response_is_finised
+        ,if(response_task.complete_date is null,'0','1') as response_is_finished
         ,user_create.user_name as create_by_name
     from md_list_deliver deliver_task
         inner join maoding_web_my_task response_task on (response_task.target_id = deliver_task.id and response_task.task_type = 26)
