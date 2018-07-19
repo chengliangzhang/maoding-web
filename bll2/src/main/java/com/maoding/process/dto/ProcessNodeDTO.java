@@ -2,6 +2,8 @@ package com.maoding.process.dto;
 
 public class ProcessNodeDTO {
 
+    private String id;
+
     private String processId;//所属流程id
 
     private String nodeName;//节点的名称
@@ -17,11 +19,24 @@ public class ProcessNodeDTO {
     private Integer isAllAgree;
 
     /** 项目收支流程 **/
-    private Integer nodeStatus1;//应收状态，1：选择状态
-    private Integer nodeStatus2;//到账/付款状态 1：选择状态
-    private Integer nodeStatus3;//同步状态 1：选择状态
 
-    private String operatorName;
+    private Integer invoiceStatus;//发票状态，1：选择状态
+
+    private Integer receiveOrPayStatus;//到账/付款状态，1：选择状态
+
+    private Integer receiveOrPayAbleStatus;//应收状态，1：选择状态
+
+    private Integer syncStatus;//同步状态 1：选择状态
+
+    private String operatorName;//操作人
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getProcessId() {
         return processId;
@@ -71,28 +86,36 @@ public class ProcessNodeDTO {
         this.isAllAgree = isAllAgree;
     }
 
-    public Integer getNodeStatus1() {
-        return nodeStatus1;
+    public Integer getInvoiceStatus() {
+        return invoiceStatus;
     }
 
-    public void setNodeStatus1(Integer nodeStatus1) {
-        this.nodeStatus1 = nodeStatus1;
+    public void setInvoiceStatus(Integer invoiceStatus) {
+        this.invoiceStatus = invoiceStatus;
     }
 
-    public Integer getNodeStatus2() {
-        return nodeStatus2;
+    public Integer getReceiveOrPayStatus() {
+        return receiveOrPayStatus;
     }
 
-    public void setNodeStatus2(Integer nodeStatus2) {
-        this.nodeStatus2 = nodeStatus2;
+    public void setReceiveOrPayStatus(Integer receiveOrPayStatus) {
+        this.receiveOrPayStatus = receiveOrPayStatus;
     }
 
-    public Integer getNodeStatus3() {
-        return nodeStatus3;
+    public Integer getReceiveOrPayAbleStatus() {
+        return receiveOrPayAbleStatus;
     }
 
-    public void setNodeStatus3(Integer nodeStatus3) {
-        this.nodeStatus3 = nodeStatus3;
+    public void setReceiveOrPayAbleStatus(Integer receiveOrPayAbleStatus) {
+        this.receiveOrPayAbleStatus = receiveOrPayAbleStatus;
+    }
+
+    public Integer getSyncStatus() {
+        return syncStatus;
+    }
+
+    public void setSyncStatus(Integer syncStatus) {
+        this.syncStatus = syncStatus;
     }
 
     public String getRelationContent() {

@@ -13,4 +13,5 @@ public interface ProcessNodeDao extends BaseDao<ProcessNodeEntity> {
 
     List<ProcessNodeEntity> listProcessNode(String processId);
 
+    ProcessNodeEntity getProcessNodeByType(String processId,Integer nodeType);
 }

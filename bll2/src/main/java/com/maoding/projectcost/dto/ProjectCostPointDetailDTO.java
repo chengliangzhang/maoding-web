@@ -1,6 +1,7 @@
 package com.maoding.projectcost.dto;
 
 import com.maoding.core.base.dto.BaseDTO;
+import com.maoding.invoice.dto.InvoiceEditDTO;
 
 import java.math.BigDecimal;
 
@@ -12,7 +13,7 @@ import java.math.BigDecimal;
  * 作    者：MaoSF
  * 日    期：2017年4月25日-下午4:11:50
  */
-public class ProjectCostPointDetailDTO extends BaseDTO{
+public class ProjectCostPointDetailDTO extends InvoiceEditDTO {
 
     private String projectId;
 

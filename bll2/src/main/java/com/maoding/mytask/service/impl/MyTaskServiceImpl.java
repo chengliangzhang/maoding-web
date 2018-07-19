@@ -1116,7 +1116,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                         return handleType3(myTaskEntity, status, currentUserId);
                     case 4:
                     case 6:
-                        return handleType4(myTaskEntity, result, currentUserId);
+                        return handleType4(myTaskEntity, result, currentUserId);//todo 此接口需要走流程
                     case 22: //确认签发完成
                         return handleType22(myTaskEntity, result, currentUserId);
                     case 10:

@@ -8,15 +8,9 @@ import com.maoding.core.util.StringUtil;
 import com.maoding.exception.CustomException;
 import com.maoding.org.dao.CompanyDao;
 import com.maoding.org.dao.CompanyUserDao;
-import com.maoding.process.dao.ProcessDao;
-import com.maoding.process.dao.ProcessNodeDao;
-import com.maoding.process.dao.ProcessNodeMemberDao;
-import com.maoding.process.dao.ProcessOrgRelationDao;
+import com.maoding.process.dao.*;
 import com.maoding.process.dto.*;
-import com.maoding.process.entity.ProcessEntity;
-import com.maoding.process.entity.ProcessNodeEntity;
-import com.maoding.process.entity.ProcessNodeMemberEntity;
-import com.maoding.process.entity.ProcessOrgRelationEntity;
+import com.maoding.process.entity.*;
 import com.maoding.process.service.ProcessService;
 import com.maoding.project.dto.ProjectProcessNode;
 import com.maoding.project.dto.ProjectProcessNodeDTO;
@@ -39,6 +33,9 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
     @Autowired
     private ProcessNodeMemberDao processNodeMemberDao;
+
+    @Autowired
+    private ProcessNodeConditionDao processNodeConditionDao;
 
     @Autowired
     private ProcessOrgRelationDao processOrgRelationDao;
@@ -98,6 +95,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         List<ProcessDTO> processList = this.processDao.getProcessByCompany(query);
         //todo 重新封装
         processList.stream().forEach(p->{
+            //设置关联组织的名称
             p.setRelationCompanyName(this.getRelationCompanyName(p));
             if(p.getProcessType()==ProcessConst.PROCESS_TYPE_CONTRACT
                     ||p.getProcessType()==ProcessConst.PROCESS_TYPE_RECEIVE_TECHNICAL
@@ -112,10 +110,14 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         return map;
     }
 
-
-    public void validateSaveProcess(ProcessEditDTO dto){
+    private void validateSaveProcess(ProcessEditDTO dto){
         if(dto.getProcessType()==null){
             throw new CustomException("类型不能为空");
+        }
+        if(!StringUtil.isNullOrEmpty(dto.getId())){
+            if(StringUtil.isNullOrEmpty(dto.getProcessId())){
+                throw new CustomException("参数错误");
+            }
         }
     }
 
@@ -156,6 +158,8 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             process.setId(dto.getProcessId());
             process.setProcessType(null);//编辑不处理类型
             processDao.updateById(process);
+
+            i = 1;//返回成功
         }
 
         return i;
@@ -165,10 +169,13 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
     public List<ProcessNodeDTO> listProcessNode(QueryProcessDTO query) {
         List<ProcessNodeDTO> nodeList = new ArrayList<>();
         List<ProcessNodeEntity> list = processNodeDao.listProcessNode(query.getProcessId());
+        List<ProcessNodeConditionEntity> processNodeConditionList = this.processNodeConditionDao.listProcessNodeCondition(query.getProcessId());
         list.stream().forEach(node->{
             ProcessNodeDTO nodeDTO = (ProcessNodeDTO)BaseDTO.copyFields(node,ProcessNodeDTO.class);
             //处理操作人
             nodeDTO.setOperatorName(this.getProcessNodeMemberName(node.getId()));
+            //设置每个节点的状态值
+            getProcessNodeCondition(nodeDTO,processNodeConditionList);
             nodeList.add(nodeDTO);
         });
 
@@ -193,8 +200,37 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
     @Override
     public int selectedProcessNodeStatus(ProcessEditDTO dto) throws Exception {
-        ProcessNodeEntity node = (ProcessNodeEntity) BaseDTO.copyFields(dto,ProcessNodeEntity.class);
-        return processNodeDao.updateById(node);
+        if(StringUtil.isNullOrEmpty(dto.getStatusType()) || StringUtil.isNullOrEmpty(dto.getNodeId()) || StringUtil.isNullOrEmpty(dto.getProcessId())){
+            throw new CustomException("参数错误");
+        }
+        int i = 0;
+        //查询节点的条件
+        ProcessNodeConditionEntity condition = this.processNodeConditionDao.getProcessNodeConditionByDataType(dto.getNodeId(),dto.getStatusType().toString());
+        if(ProcessConst.IS_SELECTED==dto.getStatus()){
+            if(condition==null){//如果系统中不存在，则新增一条记录
+                condition = new ProcessNodeConditionEntity();
+                condition.initEntity();
+                condition.setDeleted(0);
+                condition.setDataType(dto.getStatusType().toString());
+                condition.setProcessId(dto.getProcessId());
+                condition.setNodeId(dto.getNodeId());
+                condition.setNodeCondition(ProcessConst.IS_SELECTED.toString());
+                i= this.processNodeConditionDao.insert(condition);
+            }else {
+                condition.setNodeCondition(dto.getStatus().toString());
+                i=  this.processNodeConditionDao.updateById(condition);
+            }
+        }
+
+        //todo 把财务确认发票信息的记录设置为有效。目前没有设置路由。通过代码把记录设置为有效
+        if(ProcessConst.CONDITION_INVOICE.equals(dto.getStatusType().toString())){
+            ProcessNodeEntity node = this.processNodeDao.getProcessNodeByType(dto.getProcessId(),ProcessConst.NODE_TYPE_FINANCE_INVOICE_CONFIRM);
+            if(node!=null){
+                node.setDeleted(0);//设置为有效
+                this.processNodeDao.updateById(node);
+            }
+        }
+        return i;
     }
 
 
@@ -221,6 +257,33 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         return "";
     }
 
+    /**
+     * 获取关联组织的名称
+     */
+    private void getProcessNodeCondition(ProcessNodeDTO node,List<ProcessNodeConditionEntity> processNodeConditionList){
+        processNodeConditionList.stream().forEach(condition->{
+            //如果条件的nodeId不为空，并且是这个节点的条件，并且值是1的情况下：1：代表已选择
+            if(!StringUtil.isNullOrEmpty(condition.getNodeId()) && node.getId().equals(condition.getNodeId())){
+                Integer status = StringUtil.isNullOrEmpty(condition.getNodeCondition())?0: Integer.parseInt(condition.getNodeCondition());
+                //发票字段设置
+                if(ProcessConst.CONDITION_INVOICE.equals(condition.getDataType())){
+                    node.setInvoiceStatus(status);
+                }
+                //应付应收的字段设置
+                if(ProcessConst.CONDITION_RECEIVE_ABLE.equals(condition.getDataType()) || ProcessConst.CONDITION_PAY_ABLE.equals(condition.getDataType()) ){
+                    node.setReceiveOrPayAbleStatus(status);
+                }
+                //已付已收的字段设置
+                if(ProcessConst.CONDITION_RECEIVE.equals(condition.getDataType()) || ProcessConst.CONDITION_PAY.equals(condition.getDataType()) ){
+                    node.setReceiveOrPayStatus(status);
+                }
+                //同步的状态设置
+                if(ProcessConst.CONDITION_SYNC.equals(condition.getDataType())){
+                    node.setSyncStatus(status);
+                }
+            }
+        });
+    }
 
     /**
      * 初始化流程节点
@@ -231,11 +294,14 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         if(defaultProcess!=null){
             List<ProcessNodeEntity> processNodeList = this.processNodeDao.listProcessNode(defaultProcess.getId());
             List<ProcessNodeMemberEntity> processNodeMemberList = this.processNodeMemberDao.listProcessNodeMember(defaultProcess.getId());
+            List<ProcessNodeConditionEntity> processNodeConditionList = this.processNodeConditionDao.listProcessNodeCondition(defaultProcess.getId());
+            //保存每个节点，把默认流程的节点复制到新增的流程中来
             processNodeList.stream().forEach(node->{
                 String defaultNodeId = node.getId();
                 node.initEntity();
                 node.setProcessId(processId);
                 this.processNodeDao.insert(node);
+                //把每个节点上面的处理人复制到新的流程节点中
                 processNodeMemberList.stream().forEach(member->{
                     if(defaultNodeId.equals(member.getNodeId())){
                         member.initEntity();
@@ -244,11 +310,23 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
                         this.processNodeMemberDao.insert(member);
                     }
                 });
+                //把每个节点上面的条件复制到新的流程节点中
+                processNodeConditionList.stream().forEach(condition->{
+                    if(defaultNodeId.equals(condition.getNodeId())){
+                        condition.initEntity();
+                        condition.setNodeId(node.getId());
+                        condition.setProcessId(processId);
+                        this.processNodeConditionDao.insert(condition);
+                    }
+                });
             });
         }
     }
 
 
+    /**
+     * 获取流程节点的处理人名称
+     */
     private String getProcessNodeMemberName(String nodeId){
         List<String> memberNameList = new ArrayList<>();
         List<ProcessNodeMemberEntity> memberList = processNodeMemberDao.listMemberByNodeId(nodeId);
@@ -267,6 +345,9 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         return StringUtils.join(memberNameList,",");
     }
 
+    /**
+     * 获取从前端返回到后台来的组织类型，方便后面查询及业务处理
+     */
     private Integer getCompanyType(String relationCompanyId){
         if(!StringUtil.isNullOrEmpty(relationCompanyId)){
             if(relationCompanyId.equals("root")){

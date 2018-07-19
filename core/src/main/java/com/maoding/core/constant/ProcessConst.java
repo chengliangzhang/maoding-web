@@ -25,15 +25,19 @@ public class ProcessConst {
     public static final Integer START_STATUS = 1;
     public static final Integer STOP_STATUS = 0;
 
-    public static final Integer COMPANY_TYPE_ALL = 0;//所有组织
+    //所有组织
+    public static final Integer COMPANY_TYPE_ALL = 0;
 
-    public static final Integer COMPANY_TYPE_SUB = 1;//分机组织
+    //分机组织
+    public static final Integer COMPANY_TYPE_SUB = 1;
 
-    public static final Integer COMPANY_TYPE_PARTNER = 2;//合伙人
+    //合伙人
+    public static final Integer COMPANY_TYPE_PARTNER = 2;
 
-    public static final Integer COMPANY_TYPE_SINGLE = 3;//单个组织
+    //单个组织
+    public static final Integer COMPANY_TYPE_SINGLE = 3;
 
-
+    //流程对应的类型
     public static final Map<String,String> PROCESS_NAME_MAP = new HashMap<String,String>(){
         {
             put("2","合同回款流程");
@@ -45,4 +49,26 @@ public class ProcessConst {
 
     };
 
+    //发票类型
+    public static final String CONDITION_INVOICE = "1";
+
+    //应收状态
+    public static final String CONDITION_RECEIVE_ABLE = "2";
+
+    //应付状态
+    public static final String CONDITION_PAY_ABLE = "3";
+
+    //已收状态
+    public static final String CONDITION_RECEIVE = "4";
+
+    //已付状态
+    public static final String CONDITION_PAY = "5";
+
+    //同步
+    public static final String CONDITION_SYNC = "6";
+
+    public static final Integer IS_SELECTED = 1;
+
+    //财务确认发票信息
+    public static final Integer NODE_TYPE_FINANCE_INVOICE_CONFIRM = 4;
 }

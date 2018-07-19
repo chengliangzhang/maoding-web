@@ -21,10 +21,20 @@ public class ProcessEditDTO extends BaseDTO {
     private Integer status;//选中状态（1：被选择，0：取消选中）
 
     /** 项目收支流程节点状态 **/
-    private Integer nodeStatus1;//应收状态，1：选择状态，0：取消状态
-    private Integer nodeStatus2;//到账/付款状态 1：选择状态 0：取消状态
-    private Integer nodeStatus3;//同步状态 1：选择状态 0：取消状态
-    private String relationContent;//关联的内容
+    /** 项目收支流程 **/
+//    private Integer invoiceStatus;//发票状态，1：选择状态
+//
+//    private Integer receiveOrPayStatus;//到账/付款状态，1：选择状态
+//
+//    private Integer receiveOrPayAbleStatus;//应收状态，1：选择状态
+//
+//    private Integer syncStatus;//同步状态 1：选择状态
+
+    //1：发票类型，2：应收状态，3：应付状态，4：已收状态，5：已付状态，6：同步
+    private Integer statusType;
+
+    //节点id
+    private String nodeId;
 
     public String getProcessId() {
         return processId;
@@ -90,35 +100,19 @@ public class ProcessEditDTO extends BaseDTO {
         this.status = status;
     }
 
-    public Integer getNodeStatus1() {
-        return nodeStatus1;
+    public Integer getStatusType() {
+        return statusType;
     }
 
-    public void setNodeStatus1(Integer nodeStatus1) {
-        this.nodeStatus1 = nodeStatus1;
+    public void setStatusType(Integer statusType) {
+        this.statusType = statusType;
     }
 
-    public Integer getNodeStatus2() {
-        return nodeStatus2;
+    public String getNodeId() {
+        return nodeId;
     }
 
-    public void setNodeStatus2(Integer nodeStatus2) {
-        this.nodeStatus2 = nodeStatus2;
-    }
-
-    public Integer getNodeStatus3() {
-        return nodeStatus3;
-    }
-
-    public void setNodeStatus3(Integer nodeStatus3) {
-        this.nodeStatus3 = nodeStatus3;
-    }
-
-    public String getRelationContent() {
-        return relationContent;
-    }
-
-    public void setRelationContent(String relationContent) {
-        this.relationContent = relationContent;
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
     }
 }

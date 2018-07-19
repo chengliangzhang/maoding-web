@@ -128,32 +128,32 @@
     <bean id="mailSender" class="com.maoding.core.component.mail.MailSender"
           factory-bean="mailSenderFactory" factory-method="getMailSender"/>
     <!-- FastDFS -->
-    <bean id="storageClientFactory" class="com.maoding.core.component.fastdfs.StorageClientFactory"
-          factory-method="getInstance">
-        <property name="initProperties">
-            <map>
-                <entry key="connect_timeout">
-                    <value>${fastdfs.connect_timeout}</value>
-                </entry>
-                <entry key="network_timeout">
-                    <value>${fastdfs.network_timeout}</value>
-                </entry>
-                <entry key="charset">
-                    <value>${fastdfs.charset}</value>
-                </entry>
-                <entry key="tracker_http_port">
-                    <value>${fastdfs.tracker_http_port}</value>
-                </entry>
-                <entry key="anti_steal_token">
-                    <value>${fastdfs.anti_steal_token}</value>
-                </entry>
-                <entry key="secret_key">
-                    <value>${fastdfs.secret_key}</value>
-                </entry>
-                <entry key="tracker_server">
-                    <value>${fastdfs.tracker_server}</value>
-                </entry>
-            </map>
-        </property>
-    </bean>
+    <!--<bean id="storageClientFactory" class="com.maoding.core.component.fastdfs.StorageClientFactory"-->
+          <!--factory-method="getInstance">-->
+        <!--<property name="initProperties">-->
+            <!--<map>-->
+                <!--<entry key="connect_timeout">-->
+                    <!--<value>${fastdfs.connect_timeout}</value>-->
+                <!--</entry>-->
+                <!--<entry key="network_timeout">-->
+                    <!--<value>${fastdfs.network_timeout}</value>-->
+                <!--</entry>-->
+                <!--<entry key="charset">-->
+                    <!--<value>${fastdfs.charset}</value>-->
+                <!--</entry>-->
+                <!--<entry key="tracker_http_port">-->
+                    <!--<value>${fastdfs.tracker_http_port}</value>-->
+                <!--</entry>-->
+                <!--<entry key="anti_steal_token">-->
+                    <!--<value>${fastdfs.anti_steal_token}</value>-->
+                <!--</entry>-->
+                <!--<entry key="secret_key">-->
+                    <!--<value>${fastdfs.secret_key}</value>-->
+                <!--</entry>-->
+                <!--<entry key="tracker_server">-->
+                    <!--<value>${fastdfs.tracker_server}</value>-->
+                <!--</entry>-->
+            <!--</map>-->
+        <!--</property>-->
+    <!--</bean>-->
 </beans>

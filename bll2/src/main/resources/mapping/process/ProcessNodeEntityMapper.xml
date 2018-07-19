@@ -35,9 +35,17 @@
     select
     <include refid="Base_Column_List" />
     from maoding_process_node
-    where process_id = #{processId,jdbcType=VARCHAR}
+    where process_id = #{processId}
     and deleted = 0
     order by seq
+  </select>
+
+  <select id="getProcessNodeByType" resultMap="BaseResultMap" parameterType="com.maoding.process.dto.QueryProcessDTO" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_process_node
+    where process_id = #{processId}
+    and node_type = #{nodeType}
   </select>
 
   <delete id="deleteById" parameterType="java.lang.String" >
