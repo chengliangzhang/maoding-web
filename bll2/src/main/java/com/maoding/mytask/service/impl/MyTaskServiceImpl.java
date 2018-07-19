@@ -53,6 +53,7 @@ import com.maoding.projectcost.entity.ProjectCostPaymentDetailEntity;
 import com.maoding.projectcost.entity.ProjectCostPointDetailEntity;
 import com.maoding.projectcost.entity.ProjectCostPointEntity;
 import com.maoding.projectcost.service.ProjectCostService;
+import com.maoding.projectmember.dto.MemberQueryDTO;
 import com.maoding.projectmember.entity.ProjectMemberEntity;
 import com.maoding.projectmember.service.ProjectMemberService;
 import com.maoding.role.service.PermissionService;
@@ -2201,13 +2202,47 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         DeliverEntity deliver = saveDeliverAction(request,DeliverEntity.DELIVER_ACTION);
         //创建负责人任务，用于标记上传任务完成
         saveDeliverResponseTask(deliver,request.getChangedResponseList());
+
         //创建上传者任务，用于快速跳转到上传目录
-        saveDeliverUploadTask(deliver,request.getChangedResponseList());
+        if (!StringUtils.isEmpty(request.getIssueId())) {
+            //如果指定了任务，为所有参与此任务的人员创建上传者任务
+            List<ResponseEditDTO> memberList = listMember(request.getIssueId());
+            saveDeliverUploadTask(deliver, memberList);
+        } else {
+            //如果没有指定任务（有可能使用目录来生成交付），为选择的负责人创建上传者任务
+            saveDeliverUploadTask(deliver, request.getChangedResponseList());
+        }
 
         //如果设置了状态，进行状态修改
         if (request.getIsFinished() != null){
             handleMyTaskDeliver(deliver,request);
         }
+    }
+
+    //把项目成员列表转换为负责人编辑列表
+    private List<ResponseEditDTO> toResponseEditList(List<ProjectMemberEntity> memberList){
+        List<ResponseEditDTO> list = new ArrayList<>();
+        if (!ObjectUtils.isEmpty(memberList)) {
+            memberList.forEach(member -> {
+                ResponseEditDTO response = new ResponseEditDTO();
+                //只设置id号，设置全部成员为选中状态
+                response.setId(member.getCompanyUserId());
+                response.setIsSelected("1");
+                list.add(response);
+            });
+        }
+        return list;
+    }
+
+    //以ResponseEditDTO类型获取所有任务及子任务的成员
+    private List<ResponseEditDTO> listMember(String taskId){
+        if (StringUtils.isEmpty(taskId)){
+            return null;
+        }
+        MemberQueryDTO query = new MemberQueryDTO();
+        query.setParentTaskId(taskId);
+        List<ProjectMemberEntity> list = projectMemberService.listByQuery(query);
+        return toResponseEditList(list);
     }
 
     private boolean isTrue(String b){

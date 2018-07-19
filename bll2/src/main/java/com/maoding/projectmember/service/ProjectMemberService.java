@@ -3,6 +3,7 @@ package com.maoding.projectmember.service;
 import com.maoding.project.dto.ProjectDesignUserList;
 import com.maoding.project.dto.ProjectTaskProcessNodeDTO;
 import com.maoding.project.dto.ProjectWorkingHoursDTO;
+import com.maoding.projectmember.dto.MemberQueryDTO;
 import com.maoding.projectmember.dto.ProjectMemberDTO;
 import com.maoding.projectmember.entity.ProjectMemberEntity;
 
@@ -280,4 +281,13 @@ public interface ProjectMemberService {
      * 判断查询条件是否包含经营负责人、经营负责人助理、设计负责人、设计负责人助理
      * */
     List<String> getProjectMemberByUserIdAndTyep(Map<String, Object> map);
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/19
+     * @description     查询项目成员
+     * @param   query 查询条件
+     * @return  项目成员列表
+     **/
+    List<ProjectMemberEntity> listByQuery(MemberQueryDTO query);
 }

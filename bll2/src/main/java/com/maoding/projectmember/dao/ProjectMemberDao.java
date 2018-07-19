@@ -104,4 +104,13 @@ public interface ProjectMemberDao extends BaseDao<ProjectMemberEntity> {
     String getProjectWorkingHoursSum(ProjectWorkingHoursDTO hoursDTO) throws Exception;
 
     List<String> getProjectMemberByUserIdAndTyep(Map<String, Object> map);
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/19
+     * @description     通用查找项目成员
+     * @param   query 查询条件
+     * @return  项目成员列表
+     **/
+    List<ProjectMemberEntity> listEntityByQuery(MemberQueryDTO query);
 }

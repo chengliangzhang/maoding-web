@@ -1097,4 +1097,16 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
             this.saveProjectMember(projectId, companyId, m.getCompanyUserId(), null, memberType, nodeId, targetId, m.getSeq(), accountId, isSendMessage, companyId);
         }
     }
+
+    /**
+     * @param query 查询条件
+     * @return 项目成员列表
+     * @author 张成亮
+     * @date 2018/7/19
+     * @description 查询项目成员
+     **/
+    @Override
+    public List<ProjectMemberEntity> listByQuery(MemberQueryDTO query) {
+        return projectMemberDao.listEntityByQuery(query);
+    }
 }

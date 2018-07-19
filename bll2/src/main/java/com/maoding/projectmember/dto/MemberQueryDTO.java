@@ -39,6 +39,17 @@ public class MemberQueryDTO extends BaseQueryDTO {
 
     private String notContainHeadImg;
 
+    /** 相关父任务 */
+    private String parentTaskId;
+
+    public String getParentTaskId() {
+        return parentTaskId;
+    }
+
+    public void setParentTaskId(String parentTaskId) {
+        this.parentTaskId = parentTaskId;
+    }
+
     public MemberQueryDTO(){}
     public MemberQueryDTO(String companyId, String projectId, Integer memberType){
         setCompanyId(companyId);

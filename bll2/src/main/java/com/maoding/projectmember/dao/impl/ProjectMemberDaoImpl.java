@@ -138,4 +138,16 @@ public class ProjectMemberDaoImpl extends GenericDao<ProjectMemberEntity> implem
     public List<String> getProjectMemberByUserIdAndTyep(Map<String, Object> map) {
         return this.sqlSession.selectList("ProjectMemberMapper.getProjectMemberByUserIdAndTyep", map);
     }
+
+    /**
+     * @param query 查询条件
+     * @return 项目成员列表
+     * @author 张成亮
+     * @date 2018/7/19
+     * @description 通用查找项目成员
+     **/
+    @Override
+    public List<ProjectMemberEntity> listEntityByQuery(MemberQueryDTO query) {
+        return sqlSession.selectList("ProjectMemberEntityMapper.listEntityByQuery",query);
+    }
 }
