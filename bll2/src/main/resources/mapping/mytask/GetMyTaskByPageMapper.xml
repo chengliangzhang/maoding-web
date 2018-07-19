@@ -128,7 +128,7 @@
         select
         a.id, a.task_title, a.task_content,a.task_type, a.handler_id, a.company_id,  param1, a.target_id,
         a.project_id, b.project_name,
-        if(a.task_type=11 or a.task_type = 23,a.task_title,c.task_name) as task_name,
+        if(a.task_type=11 or a.task_type = 23 or a.task_type = 26 or a.task_type = 27,a.task_title,c.task_name) as task_name,
         c.task_remark as description,
         c.start_time,c.end_time,c.complete_date,
         <![CDATA[  if(a.task_type=13 or a.task_type=22,1,

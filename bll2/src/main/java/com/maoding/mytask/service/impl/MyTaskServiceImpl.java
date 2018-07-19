@@ -1856,6 +1856,10 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                 return "其他费用 - 到账确认";
             case 22://所有设计任务已完成，给组织的设计负责人推送任务
                 return "审批任务 - "+taskName;
+            case MyTaskEntity.DELIVER_CONFIRM_FINISH:
+                return "交付确认 - " + taskName;
+            case MyTaskEntity.DELIVER_EXECUTE:
+                return "交付执行 - " + taskName;
             default:
                 return null;
         }
@@ -1875,7 +1879,15 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
             } else {//合作方
                 dto.setDescription("进行"+dto.getProjectName()+"的“"+this.projectTaskDao.getIssueTaskName(dto.getProjectId(), dto.getCompanyId(), 2,null)+"”等的签发工作");
             }
+        } else if (isDeliverType(taskType)) {
+            dto.setDescription(dto.getTaskContent());
         }
+    }
+
+    //是否交付任务（有两个类型）
+    private boolean isDeliverType(int taskType){
+        return (MyTaskEntity.DELIVER_CONFIRM_FINISH == taskType)
+                || (MyTaskEntity.DELIVER_EXECUTE == taskType);
     }
 
     public String getRole(MyTaskList2DTO dto) {
@@ -1915,6 +1927,10 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                     return "设计负责人";
                 }
                 return "设计助理";
+            case MyTaskEntity.DELIVER_CONFIRM_FINISH:
+                return "任务负责人";
+            case MyTaskEntity.DELIVER_EXECUTE:
+                return "任务执行人";
             default:
                 return null;
         }
