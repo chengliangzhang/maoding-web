@@ -1,6 +1,7 @@
 package com.maoding.mytask.controller;
 
 import com.maoding.core.base.controller.BaseController;
+import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.deliver.dto.DeliverDTO;
@@ -195,5 +196,17 @@ public class MyTaskController extends BaseController {
     public AjaxMessage changeDeliver(@RequestBody DeliverEditDTO request) throws Exception {
         myTaskService.changeDeliver(request);
         return AjaxMessage.succeed("修改成功");
+    }
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/19
+     * @description     删除交付信息
+     **/
+    @RequestMapping(value = "/deleteDeliver", method = RequestMethod.POST)
+    @ResponseBody
+    @RequiresPermissions(value = {RoleConst.PROJECT_EDIT}, logical = Logical.OR)
+    public AjaxMessage deleteDeliver(@RequestBody BaseDTO request) throws Exception {
+        return AjaxMessage.failed("删除失败");
     }
 }
