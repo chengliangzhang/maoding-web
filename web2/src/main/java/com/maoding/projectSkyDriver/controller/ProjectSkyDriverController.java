@@ -467,14 +467,16 @@ public class ProjectSkyDriverController extends BaseController {
 
     private List<ResponseEditDTO> createResponseEditListFrom(List<Map<String,Object>> userArr){
         List<ResponseEditDTO> responseEditList = new ArrayList<>();
-        userArr.forEach(user->{
-            ResponseEditDTO responseEditRequest = new ResponseEditDTO();
-            responseEditRequest.setId((String) user.get("id"));
-            responseEditRequest.setName((String) user.get("name"));
-            responseEditRequest.setIsSelected(
-                    getWithDefault((String) user.get("isSelected"),"1"));
-            responseEditList.add(responseEditRequest);
-        });
+        if (!ObjectUtils.isEmpty(userArr)) {
+            userArr.forEach(user -> {
+                ResponseEditDTO responseEditRequest = new ResponseEditDTO();
+                responseEditRequest.setId((String) user.get("id"));
+                responseEditRequest.setName((String) user.get("name"));
+                responseEditRequest.setIsSelected(
+                        getWithDefault((String) user.get("isSelected"), "1"));
+                responseEditList.add(responseEditRequest);
+            });
+        }
         return responseEditList;
     }
 
