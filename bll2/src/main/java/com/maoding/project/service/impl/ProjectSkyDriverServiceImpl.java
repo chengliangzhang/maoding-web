@@ -928,7 +928,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
      */
     @Override
     public String createDeliverDir(DeliverEditDTO request) {
-        String nodeId = "";
+        String nodeId = null;
 
         if (request != null) {
             ProjectTaskEntity issue = projectTaskDao.selectById(request.getIssueId());
@@ -941,17 +941,21 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
                     taskDir = createTaskDirFrom(rootDir, issue, request.getCreateBy());
                     this.projectSkyDriverDao.insert(taskDir);
                 }
+                nodeId = taskDir.getId();
 
-                //如果nodeId为空，创建交付目录，否则更改交付目录
-                ProjectSkyDriveEntity deliverDir = createDeliverDirFrom(taskDir,request);
-                if (StringUtils.isEmpty(request.getNodeId())) {
-                    //创建交付目录
-                    projectSkyDriverDao.insert(deliverDir);
-                } else {
-                    //更新交付目录
-                    projectSkyDriverDao.updateById(deliverDir);
+                //如果交付名称不为空，则需要创建或修改交付目录
+                if (StringUtils.isEmpty(request.getTaskName())){
+                    ProjectSkyDriveEntity deliverDir = getChildByName(rootDir,issue.getTaskName());
+                    if (deliverDir == null){
+                        //创建交付目录
+                        deliverDir = createDeliverDirFrom(taskDir,request);
+                        projectSkyDriverDao.insert(deliverDir);
+                    } else {
+                        //更新交付目录
+                        projectSkyDriverDao.updateById(deliverDir);
+                    }
+                    nodeId = deliverDir.getId();
                 }
-                nodeId = deliverDir.getId();
             }
         }
 
