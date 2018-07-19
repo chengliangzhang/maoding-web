@@ -1,9 +1,11 @@
 package com.maoding.mytask.dto;
 
+import com.maoding.core.base.dto.BaseDTO;
+
 /**
  * Created by Chengliang.zhang on 2017/5/20.
  */
-public class MyTaskQueryDTO {
+public class MyTaskQueryDTO extends BaseDTO {
     /**
      * 匹配的任务ID
      */

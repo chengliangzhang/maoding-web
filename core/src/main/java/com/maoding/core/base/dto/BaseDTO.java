@@ -7,7 +7,6 @@ import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
-import java.rmi.server.ExportException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,7 @@ import java.util.Map;
  * 日    期：2016年7月7日-下午3:18:22
  */
 @SuppressWarnings("serial")
-public abstract class BaseDTO implements Serializable {
+public class BaseDTO implements Serializable {
 
     private String id;
 

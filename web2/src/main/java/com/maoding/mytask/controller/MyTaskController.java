@@ -4,6 +4,7 @@ import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.RoleConst;
+import com.maoding.core.util.StringUtils;
 import com.maoding.deliver.dto.DeliverDTO;
 import com.maoding.deliver.service.DeliverService;
 import com.maoding.mytask.dto.HandleMyTaskDTO;
@@ -207,6 +208,10 @@ public class MyTaskController extends BaseController {
     @ResponseBody
     @RequiresPermissions(value = {RoleConst.PROJECT_EDIT}, logical = Logical.OR)
     public AjaxMessage deleteDeliver(@RequestBody BaseDTO request) throws Exception {
-        return AjaxMessage.failed("删除失败");
+        if (StringUtils.isEmpty(request.getAccountId())){
+            request.setAccountId(currentUserId);
+        }
+        deliverService.deleteDeliver(request);
+        return AjaxMessage.succeed("删除成功");
     }
 }

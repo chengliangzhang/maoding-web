@@ -86,7 +86,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
-  <!-- 查询交付任务 -->
+  <!-- 交付任务对象（包含负责人） -->
   <resultMap id="DeliverMap" type="com.maoding.deliver.dto.DeliverDTO">
     <id column="id" property="id"/>
     <result column="name" property="name"/>
@@ -103,6 +103,7 @@
     </collection>
   </resultMap>
 
+  <!-- 查询交付任务，包括负责人列表 -->
   <select id="listDeliver" parameterType="com.maoding.mytask.dto.MyTaskQueryDTO" resultMap="DeliverMap">
     select
         deliver_task.id
@@ -134,4 +135,21 @@
           </if>
         </if>
   </select>
+
+  <!-- 删除交付任务，包括所有负责人的确认完成和执行任务 -->
+  <update id="fakeDeleteDeliver" parameterType="com.maoding.core.base.dto.BaseDTO">
+    update md_list_deliver deliver
+    inner join maoding_web_my_task my_task on (my_task.target_id = deliver.id)
+    <set>
+        deliver.param4 = 1,
+        my_task.param4 = 1,
+        deliver.update_date = now(),
+        my_task.update_date = now(),
+        <if test="accountId != null">
+          deliver.update_by = #{accountId},
+          my_task.update_by = #{accountId},
+        </if>
+    </set>
+    where deliver.id = #{id,jdbcType=VARCHAR}
+  </update>
 </mapper>

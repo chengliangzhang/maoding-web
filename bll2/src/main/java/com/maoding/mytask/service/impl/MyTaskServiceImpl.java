@@ -1190,7 +1190,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
     }
 
     //完成总的交付任务
-    public void completeMyTaskDeliver(DeliverEntity deliver){
+    private void completeMyTaskDeliver(DeliverEntity deliver){
         //标记交付任务完成
         deliver.setStatus("1");
         deliverDao.updateById(deliver);

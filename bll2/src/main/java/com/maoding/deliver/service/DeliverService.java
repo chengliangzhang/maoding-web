@@ -1,5 +1,6 @@
 package com.maoding.deliver.service;
 
+import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.BaseService;
 import com.maoding.deliver.dto.DeliverDTO;
 import com.maoding.deliver.entity.DeliverEntity;
@@ -24,4 +25,11 @@ public interface DeliverService extends BaseService<DeliverEntity> {
      **/
     List<DeliverDTO> listDeliver(MyTaskQueryDTO query);
 
+    /**
+     * @author  张成亮
+     * @date    2018/7/19
+     * @description     删除交付任务，同时把所有分配给其他人的确认任务和执行任务一并删除
+     * @param   request 删除申请
+     **/
+    void deleteDeliver(BaseDTO request);
 }
