@@ -111,7 +111,7 @@
         ,deliver_task.deadline as end_time
         ,deliver_task.create_by
         ,deliver_task.create_date
-        ,if(deliver_task.complete_date is null,'0','1') as is_finished
+        ,if(deliver_task.complete_date is null,'0','1') as is_finiscmhed
         ,company_user.id as response_id
         ,user_response.user_name as response_name
         ,if(response_task.complete_date is null,'0','1') as response_is_finised
