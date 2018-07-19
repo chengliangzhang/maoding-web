@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ProcessNodeConditionEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.process.entity.ProcessNodeConditionEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="route_id" property="routeId" jdbcType="VARCHAR" />
+    <result column="process_id" property="processId" jdbcType="VARCHAR" />
+    <result column="node_id" property="nodeId" jdbcType="VARCHAR" />
+    <result column="node_condition" property="nodeCondition" jdbcType="VARCHAR" />
+    <result column="data_type" property="dataType" jdbcType="VARCHAR" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+    <result column="deleted" property="deleted" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, route_id, process_id, node_id, node_condition, data_type, seq, deleted, create_date,
+    create_by, update_date, update_by
+  </sql>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_process_node_condition
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="listProcessNodeCondition" resultMap="BaseResultMap" parameterType="com.maoding.process.dto.QueryProcessDTO" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_process_node_condition
+    where 1=1
+    <if test="processId!=null">
+      and process_id = #{processId}
+    </if>
+    <if test="nodeId!=null">
+      and node_id = #{nodeId}
+    </if>
+    <if test="dataType!=null">
+      and data_type = #{dataType}
+    </if>
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_process_node_condition
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maoding.process.entity.ProcessNodeConditionEntity" >
+    insert into maoding_process_node_condition (id, route_id, process_id, 
+      node_id, node_condition, data_type,
+      seq, deleted, create_date, 
+      create_by, update_date, update_by
+      )
+    values (#{id,jdbcType=VARCHAR}, #{routeId,jdbcType=VARCHAR}, #{processId,jdbcType=VARCHAR}, 
+      #{nodeId,jdbcType=VARCHAR}, #{nodeCondition,jdbcType=VARCHAR}, #{dataType,jdbcType=VARCHAR},
+      #{seq,jdbcType=INTEGER}, #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.process.entity.ProcessNodeConditionEntity" >
+    update maoding_process_node_condition
+    <set >
+      <if test="routeId != null" >
+        route_id = #{routeId,jdbcType=VARCHAR},
+      </if>
+      <if test="processId != null" >
+        process_id = #{processId,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeId != null" >
+        node_id = #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeCondition != null" >
+        node_condition = #{nodeCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="dataType != null" >
+        data_type = #{dataType,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="deleted != null" >
+        deleted = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="update" parameterType="com.maoding.process.entity.ProcessNodeConditionEntity" >
+    update maoding_process_node_condition
+    set route_id = #{routeId,jdbcType=VARCHAR},
+      process_id = #{processId,jdbcType=VARCHAR},
+      node_id = #{nodeId,jdbcType=VARCHAR},
+      node_condition = #{nodeCondition,jdbcType=VARCHAR},
+      data_type = #{dataType,jdbcType=VARCHAR},
+      seq = #{seq,jdbcType=INTEGER},
+      deleted = #{deleted,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

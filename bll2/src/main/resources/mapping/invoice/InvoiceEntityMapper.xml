@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="InvoiceEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.invoice.entity.InvoiceEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="invoice_title" property="invoiceTitle" jdbcType="VARCHAR" />
+    <result column="invoice_no" property="invoiceNo" jdbcType="VARCHAR" />
+    <result column="invoice_amount" property="invoiceAmount" jdbcType="DECIMAL" />
+    <result column="invoice_property" property="invoiceProperty" jdbcType="INTEGER" />
+    <result column="invoice_type" property="invoiceType" jdbcType="INTEGER" />
+    <result column="invoice_content" property="invoiceContent" jdbcType="VARCHAR" />
+    <result column="invoice_remark" property="invoiceRemark" jdbcType="VARCHAR" />
+    <result column="recipients" property="recipients" jdbcType="VARCHAR" />
+    <result column="cellphone" property="cellphone" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="postcode" property="postcode" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+    <result column="deleted" property="deleted" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, company_id, company_name, invoice_title, invoice_no, invoice_amount, invoice_property, 
+    invoice_type, invoice_content, invoice_remark, recipients, cellphone, address, postcode, 
+    email, seq, deleted, create_date, create_by, update_date, update_by
+  </sql>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_invoice
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_invoice
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maoding.invoice.entity.InvoiceEntity" >
+    insert into maoding_invoice (id, company_id, company_name, 
+      invoice_title, invoice_no, invoice_amount, 
+      invoice_property, invoice_type, invoice_content, 
+      invoice_remark, recipients, cellphone, 
+      address, postcode, email, 
+      seq, deleted, create_date, 
+      create_by, update_date, update_by
+      )
+    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
+      #{invoiceTitle,jdbcType=VARCHAR}, #{invoiceNo,jdbcType=VARCHAR}, #{invoiceAmount,jdbcType=DECIMAL}, 
+      #{invoiceProperty,jdbcType=INTEGER}, #{invoiceType,jdbcType=INTEGER}, #{invoiceContent,jdbcType=VARCHAR}, 
+      #{invoiceRemark,jdbcType=VARCHAR}, #{recipients,jdbcType=VARCHAR}, #{cellphone,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{seq,jdbcType=INTEGER}, #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.invoice.entity.InvoiceEntity" >
+    update maoding_invoice
+    <set >
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null" >
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceTitle != null" >
+        invoice_title = #{invoiceTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceNo != null" >
+        invoice_no = #{invoiceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceAmount != null" >
+        invoice_amount = #{invoiceAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceProperty != null" >
+        invoice_property = #{invoiceProperty,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceType != null" >
+        invoice_type = #{invoiceType,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceContent != null" >
+        invoice_content = #{invoiceContent,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceRemark != null" >
+        invoice_remark = #{invoiceRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="recipients != null" >
+        recipients = #{recipients,jdbcType=VARCHAR},
+      </if>
+      <if test="cellphone != null" >
+        cellphone = #{cellphone,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="postcode != null" >
+        postcode = #{postcode,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="deleted != null" >
+        deleted = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="update" parameterType="com.maoding.invoice.entity.InvoiceEntity" >
+    update maoding_invoice
+    set company_id = #{companyId,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      invoice_title = #{invoiceTitle,jdbcType=VARCHAR},
+      invoice_no = #{invoiceNo,jdbcType=VARCHAR},
+      invoice_amount = #{invoiceAmount,jdbcType=DECIMAL},
+      invoice_property = #{invoiceProperty,jdbcType=INTEGER},
+      invoice_type = #{invoiceType,jdbcType=INTEGER},
+      invoice_content = #{invoiceContent,jdbcType=VARCHAR},
+      invoice_remark = #{invoiceRemark,jdbcType=VARCHAR},
+      recipients = #{recipients,jdbcType=VARCHAR},
+      cellphone = #{cellphone,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      postcode = #{postcode,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      seq = #{seq,jdbcType=INTEGER},
+      deleted = #{deleted,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
