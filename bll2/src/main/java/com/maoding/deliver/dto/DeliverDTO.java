@@ -17,14 +17,14 @@ public class DeliverDTO extends BaseShowDTO {
     /** 交付说明 */
     private String description;
     /** 截止时间 */
-    @JsonFormat(pattern="yyyy/MM/dd",timezone = "GMT+8")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date endTime;
     /** 发起人 */
     private String createBy;
     /** 发起人名称 */
     private String createByName;
     /** 发起时间 */
-    @JsonFormat(pattern="yyyy/MM/dd HH:mm",timezone = "GMT+8")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date createDate;
     /** 交付是否已经结束 */
     private String isFinished;

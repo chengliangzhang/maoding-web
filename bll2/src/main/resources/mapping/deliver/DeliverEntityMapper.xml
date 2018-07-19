@@ -20,7 +20,7 @@
 
   <!-- 根据id进行更新 -->
   <update id="updateById" parameterType="com.maoding.deliver.entity.DeliverEntity" >
-    update maoding_web_my_task
+    update md_list_deliver
     <set >
       <if test="taskTitle != null" >
         task_title = #{taskTitle,jdbcType=VARCHAR},

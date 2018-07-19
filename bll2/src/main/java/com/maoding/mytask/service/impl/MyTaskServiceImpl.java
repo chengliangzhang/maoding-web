@@ -2218,7 +2218,9 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         String nodeId = projectSkyDriverService.createDeliverDir(request);
 
         //创建并保存交付任务，包括发起的交付任务，各个负责人的交付任务和上传任务
-        request.setNodeId(nodeId);
+        if (!StringUtils.isEmpty(nodeId)) {
+            request.setNodeId(nodeId);
+        }
         saveDeliverTask(request);
 
         //为每个负责人发送一条消息

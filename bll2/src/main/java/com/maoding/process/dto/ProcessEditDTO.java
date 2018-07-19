@@ -24,6 +24,7 @@ public class ProcessEditDTO extends BaseDTO {
     private Integer nodeStatus1;//应收状态，1：选择状态，0：取消状态
     private Integer nodeStatus2;//到账/付款状态 1：选择状态 0：取消状态
     private Integer nodeStatus3;//同步状态 1：选择状态 0：取消状态
+    private String relationContent;//关联的内容
 
     public String getProcessId() {
         return processId;
@@ -111,5 +112,13 @@ public class ProcessEditDTO extends BaseDTO {
 
     public void setNodeStatus3(Integer nodeStatus3) {
         this.nodeStatus3 = nodeStatus3;
+    }
+
+    public String getRelationContent() {
+        return relationContent;
+    }
+
+    public void setRelationContent(String relationContent) {
+        this.relationContent = relationContent;
     }
 }

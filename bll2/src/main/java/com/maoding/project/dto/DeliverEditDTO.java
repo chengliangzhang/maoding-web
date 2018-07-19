@@ -1,5 +1,6 @@
 package com.maoding.project.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.maoding.core.base.dto.BaseDTO;
 
 import java.util.Date;
@@ -18,10 +19,12 @@ public class DeliverEditDTO extends BaseDTO {
     /** 说明 */
     private String description;
     /** 截止时间 */
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date endTime;
     /** 发起人 */
     private String createBy;
     /** 发起时间 */
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date createDate;
     /** 交付是否已经结束 */
     private String isFinished;
@@ -43,6 +46,18 @@ public class DeliverEditDTO extends BaseDTO {
     private Integer seq;
     /** 交付目录编号 */
     private String nodeId;
+
+    /** 兼容保留字段 */
+    /** 交付名称 */
+    private String taskName;
+
+    public String getTaskName() {
+        return getName();
+    }
+
+    public void setTaskName(String taskName) {
+        setName(taskName);
+    }
 
     public String getNodeId() {
         return nodeId;
