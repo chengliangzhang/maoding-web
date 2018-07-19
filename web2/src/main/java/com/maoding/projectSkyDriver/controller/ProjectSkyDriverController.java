@@ -420,6 +420,7 @@ public class ProjectSkyDriverController extends BaseController {
             if (!ObjectUtils.isEmpty(param.get("deadline"))) {
                 request.setEndTime(DateUtils.parseDate((String) param.get("deadline"), "yyyy-MM-dd"));
             }
+            request.setIsFinished((String) param.get("isFinished"));
             request.setChangedResponseList(createResponseEditListFrom((List<Map<String,Object>>) param.get("userArr")));
 
             //调用创建或修改交付接口

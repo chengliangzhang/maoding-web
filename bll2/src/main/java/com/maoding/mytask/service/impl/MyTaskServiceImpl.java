@@ -1129,7 +1129,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                     case 19:
                         return handleType16(myTaskEntity, result, status, currentUserId, dto.getPaidDate());
                     case MyTaskEntity.DELIVER_CONFIRM_FINISH:
-                        handleMyTaskDeliver(myTaskEntity,dto);
+                        handleMyTaskDeliverResponse(myTaskEntity,dto);
                         return AjaxMessage.succeed(null);
                     default:
                         return null;
@@ -1144,12 +1144,28 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
 
     /**
      * @author  张成亮
+     * @date    2018/7/19
+     * @description     处理交付任务
+     * @param   deliver 交付任务
+     **/
+    private void handleMyTaskDeliver(DeliverEntity deliver, DeliverEditDTO request){
+        if (isTrue(request.getIsFinished())){
+            completeMyTaskDeliver(deliver);
+        } else {
+            deliver.setStatus("0");
+            deliverDao.updateById(deliver);
+        }
+    }
+
+
+    /**
+     * @author  张成亮
      * @date    2018/7/18
      * @description     处理交付负责人任务
      * @param   myTask 要处理的个人任务
      * @param   param 处理任务时的参数
      **/
-    private void handleMyTaskDeliver(MyTaskEntity myTask, HandleMyTaskDTO param){
+    private void handleMyTaskDeliverResponse(MyTaskEntity myTask, HandleMyTaskDTO param){
         if (isComplete(param)){
             completeMyTaskDeliverResponse(myTask,param);
         }
@@ -1157,26 +1173,35 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
 
     //完成负责人的交付任务
     private void completeMyTaskDeliverResponse(MyTaskEntity myTask, HandleMyTaskDTO param){
-        //标记同负责人、同交付目录的所有任务（确认交付任务、执行上传）完成
-        MyTaskEntity changed = new MyTaskEntity();
-        changed.setStatus("0"); //完成标志
-        MyTaskQueryDTO changedQuery = new MyTaskQueryDTO();
-        changedQuery.setCompanyId(myTask.getCompanyId());
-        changedQuery.setTaskId(myTask.getTargetId());
-        changedQuery.setUserId(myTask.getHandlerId());
-        myTaskDao.updateByQuery(changed,changedQuery);
+        //标记此所有任务完成
+        finishMyTask(myTask);
+
         //如果已经此交付目录没有负责人要从事的交付任务了
         MyTaskQueryDTO query = new MyTaskQueryDTO();
-        query.setCompanyId(changedQuery.getCompanyId());
-        query.setTaskId(changedQuery.getTaskId());
+        query.setCompanyId(myTask.getCompanyId());
+        query.setTaskId(myTask.getTargetId());
         List<MyTaskEntity> list = myTaskDao.listByQuery(query);
         if (ObjectUtils.isEmpty(list)) {
             //标记交付任务完成
             DeliverEntity deliver = new DeliverEntity();
             deliver.setId(myTask.getTargetId());
-            deliver.setStatus("1");
-            deliverDao.updateById(deliver);
+            completeMyTaskDeliver(deliver);
         }
+    }
+
+    //完成总的交付任务
+    public void completeMyTaskDeliver(DeliverEntity deliver){
+        //标记交付任务完成
+        deliver.setStatus("1");
+        deliverDao.updateById(deliver);
+
+        //标记所有交付任务的所有子任务完成 （包括所有属于此交付任务的负责人确认任务和执行交付任务，targetId等于此交付任务的id)
+        MyTaskEntity changed = new MyTaskEntity();
+        changed.setStatus("1"); //完成标志
+        MyTaskQueryDTO changedQuery = new MyTaskQueryDTO();
+        changedQuery.setCompanyId(deliver.getCompanyId());
+        changedQuery.setTaskId(deliver.getId());
+        myTaskDao.updateByQuery(changed,changedQuery);
     }
 
     //判断处理任务参数是激活还是完成
@@ -2130,6 +2155,15 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         saveDeliverResponseTask(deliver,request.getChangedResponseList());
         //创建上传者任务，用于快速跳转到上传目录
         saveDeliverUploadTask(deliver,request.getChangedResponseList());
+
+        //如果设置了状态，进行状态修改
+        if (request.getIsFinished() != null){
+            handleMyTaskDeliver(deliver,request);
+        }
+    }
+
+    private boolean isTrue(String b){
+        return "1".equals(b);
     }
 
     //创建上传者任务，用于快速跳转到上传目录
