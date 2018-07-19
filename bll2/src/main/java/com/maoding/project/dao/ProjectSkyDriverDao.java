@@ -3,6 +3,7 @@ package com.maoding.project.dao;
 
 import com.maoding.core.base.dao.BaseDao;
 import com.maoding.project.dto.ProjectSkyDriveRenameDTO;
+import com.maoding.project.dto.ProjectSkyDriverQueryDTO;
 import com.maoding.project.dto.SkyDriveUpdateDTO;
 import com.maoding.project.entity.ProjectSkyDriveEntity;
 
@@ -225,4 +226,13 @@ public interface ProjectSkyDriverDao extends BaseDao<ProjectSkyDriveEntity> {
     List<ProjectSkyDriveEntity> getProjectFileByFileName(Map<String, Object> map);
 
     Integer getProjectFileTotil(Map<String, Object> map);
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/19
+     * @description     通用查询文件方法
+     * @param   query 查询条件
+     * @return  文件列表
+     **/
+    List<ProjectSkyDriveEntity> listEntityByQuery(ProjectSkyDriverQueryDTO query);
 }

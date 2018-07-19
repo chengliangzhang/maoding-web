@@ -879,4 +879,18 @@
             and company_id=#{companyId}
         </if>
     </select>
+
+
+    <!-- 通用文件查询 -->
+    <select id="listEntityByQuery" resultMap="BaseResultMap" parameterType="com.maoding.project.dto.ProjectSkyDriverQueryDTO">
+        select sky_drive.*
+        from maoding_web_project_sky_drive sky_drive
+        <if test="deliverId != null">
+            inner join md_list_deliver deliver on (
+            deliver.param4 = 0 and deliver.target_id = sky_drive.id
+            and deliver.id = #{deliverId}
+            )
+        </if>
+        where sky_drive.status = '0'
+    </select>
 </mapper>

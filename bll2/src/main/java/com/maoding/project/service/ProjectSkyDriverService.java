@@ -6,6 +6,7 @@ import com.maoding.core.bean.AjaxMessage;
 import com.maoding.project.dto.DeliverEditDTO;
 import com.maoding.project.dto.ProjectSkyDriveDTO;
 import com.maoding.project.dto.ProjectSkyDriveRenameDTO;
+import com.maoding.project.dto.ProjectSkyDriverQueryDTO;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.entity.ProjectSkyDriveEntity;
 import com.maoding.task.dto.SaveProjectTaskDTO;
@@ -308,4 +309,22 @@ public interface ProjectSkyDriverService extends BaseService<ProjectSkyDriveEnti
      **/
 
     void createDesignerDir(SaveProjectTaskDTO request, List<ProjectTaskEntity> taskList, List<BaseShowDTO> designerList);
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/19
+     * @description     通用查询文件方法
+     * @param   query 查询条件
+     * @return  文件列表
+     **/
+    List<ProjectSkyDriveEntity> listEntityByQuery(ProjectSkyDriverQueryDTO query);
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/19
+     * @description     查询文件，预期只有一个
+     * @param   query 查询条件
+     * @return  文件
+     **/
+    ProjectSkyDriveEntity getEntityByQuery(ProjectSkyDriverQueryDTO query);
 }
