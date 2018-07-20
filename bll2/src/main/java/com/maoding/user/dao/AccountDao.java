@@ -40,4 +40,14 @@ public interface AccountDao extends BaseDao<AccountEntity>{
 	String getUserIdByCompanyNameAndUserName(@Param("companyName") String companyName, @Param("userName") String userName);
 	/** 根据用户ID取得用户名 */
 	String getUserName(String id);
+
+	/**
+	 * @author  张成亮
+	 * @date    2018/7/19
+	 * @description     通用用户
+	 * @param   query 查询条件
+	 * @return  用户列表
+	 **/
+//	List<UserDTO> listByQuery(UserQueryDTO query);
+
 }

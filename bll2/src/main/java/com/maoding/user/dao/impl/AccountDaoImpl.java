@@ -1,5 +1,7 @@
 package com.maoding.user.dao.impl;
 
+import com.maoding.user.dto.UserDTO;
+import com.maoding.user.dto.UserQueryDTO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
@@ -69,4 +71,5 @@ public class AccountDaoImpl extends GenericDao<AccountEntity> implements Account
 		AccountEntity entity = selectById(id);
 		return (entity != null) ? entity.getUserName() : "";
 	}
+
 }
