@@ -236,23 +236,6 @@
 
 
 
-  <select id="listEntityByQuery" parameterType="com.maoding.user.dto.UserQueryDTO" resultMap="BaseResultMap">
-    select distinct account.*
-    from
-        maoding_web_account account
-        <if test="parentTaskId != null">
-            inner join maoding_web_project_member project_member on (project_member.deleted = 0 and project_member.account_id = account.id)
-            inner join maoding_web_project_task task on (
-                task.task_status = '0'
-                and (project_member.node_id = task.id or project_member.target_id = task.id)
-                and task.id = #{parentTaskId}
-            )
-            inner join maoding_web_project_task sub_task on (
-                task.task_status = '0'
-                and position(task.task_path in sub_task.task_path) > 0
-            )
-        </if>
-    where account.status = '0'
-  </select>
+
 
 </mapper>

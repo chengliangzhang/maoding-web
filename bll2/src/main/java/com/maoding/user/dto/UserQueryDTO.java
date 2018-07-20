@@ -10,14 +10,14 @@ import com.maoding.core.base.dto.BaseDTO;
  * @description :
  */
 public class UserQueryDTO extends BaseDTO {
-    /** 用户被分配的任务编号 */
-    private String taskId;
+    /** 用户参与的任务编号（包括参与了子任务） */
+    private String parentTaskId;
 
-    public String getTaskId() {
-        return taskId;
+    public String getParentTaskId() {
+        return parentTaskId;
     }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
+    public void setParentTaskId(String parentTaskId) {
+        this.parentTaskId = parentTaskId;
     }
 }

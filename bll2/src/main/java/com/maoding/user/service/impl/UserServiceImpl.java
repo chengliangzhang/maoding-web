@@ -1,6 +1,7 @@
 package com.maoding.user.service.impl;
 
 import com.maoding.core.base.dto.BaseDTO;
+import com.maoding.core.base.dto.BaseShowDTO;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.util.JsonUtils;
@@ -269,10 +270,10 @@ public class UserServiceImpl extends GenericService<UserEntity>  implements User
 	 * @return 用户列表
 	 * @author 张成亮
 	 * @date 2018/7/19
-	 * @description 查询用户
+	 * @description 查询用户，id存放的是companyUserId
 	 **/
 	@Override
-	public List<UserDTO> listByQuery(UserQueryDTO query) {
-		return null;
+	public List<BaseShowDTO> listWithCompanyUserIdByQuery(UserQueryDTO query) {
+		return accountDao.listBaseShowByQuery(query);
 	}
 }

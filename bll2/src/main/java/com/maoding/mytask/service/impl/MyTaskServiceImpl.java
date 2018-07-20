@@ -53,7 +53,6 @@ import com.maoding.projectcost.entity.ProjectCostPaymentDetailEntity;
 import com.maoding.projectcost.entity.ProjectCostPointDetailEntity;
 import com.maoding.projectcost.entity.ProjectCostPointEntity;
 import com.maoding.projectcost.service.ProjectCostService;
-import com.maoding.projectmember.dto.MemberQueryDTO;
 import com.maoding.projectmember.entity.ProjectMemberEntity;
 import com.maoding.projectmember.service.ProjectMemberService;
 import com.maoding.role.service.PermissionService;
@@ -62,6 +61,8 @@ import com.maoding.task.dto.ProjectTaskDataDTO;
 import com.maoding.task.dto.TaskDescDTO;
 import com.maoding.task.entity.ProjectTaskEntity;
 import com.maoding.task.service.ProjectTaskService;
+import com.maoding.user.dto.UserQueryDTO;
+import com.maoding.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +86,9 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
 
     @Autowired
     private MyTaskDao myTaskDao;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private ProjectSkyDriverService projectSkyDriverService;
@@ -2220,13 +2224,13 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
     }
 
     //把项目成员列表转换为负责人编辑列表
-    private List<ResponseEditDTO> toResponseEditList(List<ProjectMemberEntity> memberList){
+    private List<ResponseEditDTO> toResponseEditList(List<BaseShowDTO> companyUserList){
         List<ResponseEditDTO> list = new ArrayList<>();
-        if (!ObjectUtils.isEmpty(memberList)) {
-            memberList.forEach(member -> {
+        if (!ObjectUtils.isEmpty(companyUserList)) {
+            companyUserList.forEach(companyUser -> {
                 ResponseEditDTO response = new ResponseEditDTO();
                 //只设置id号，设置全部成员为选中状态
-                response.setId(member.getCompanyUserId());
+                response.setId(companyUser.getId());
                 response.setIsSelected("1");
                 list.add(response);
             });
@@ -2239,9 +2243,9 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         if (StringUtils.isEmpty(taskId)){
             return null;
         }
-        MemberQueryDTO query = new MemberQueryDTO();
+        UserQueryDTO query = new UserQueryDTO();
         query.setParentTaskId(taskId);
-        List<ProjectMemberEntity> list = projectMemberService.listByQuery(query);
+        List<BaseShowDTO> list = userService.listWithCompanyUserIdByQuery(query);
         return toResponseEditList(list);
     }
 

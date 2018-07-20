@@ -3,6 +3,7 @@ package com.maoding.user.service;
 import java.util.List;
 import java.util.Map;
 
+import com.maoding.core.base.dto.BaseShowDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.projectmember.dto.MemberQueryDTO;
@@ -357,8 +358,8 @@ public interface UserService extends BaseService<UserEntity>{
 	 * @date    2018/7/19
 	 * @description     查询用户
 	 * @param   query 查询条件
-	 * @return  用户列表
+	 * @return  用户列表，id存放的是companyUserId
 	 **/
-	List<UserDTO> listByQuery(UserQueryDTO query);
+	List<BaseShowDTO> listWithCompanyUserIdByQuery(UserQueryDTO query);
 
 }

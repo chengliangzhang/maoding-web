@@ -1,6 +1,8 @@
 package com.maoding.user.dao;
 
 import com.maoding.core.base.dao.BaseDao;
+import com.maoding.core.base.dto.BaseShowDTO;
+import com.maoding.user.dto.UserQueryDTO;
 import com.maoding.user.entity.AccountEntity;
 import org.apache.ibatis.annotations.Param;
 
@@ -48,6 +50,6 @@ public interface AccountDao extends BaseDao<AccountEntity>{
 	 * @param   query 查询条件
 	 * @return  用户列表
 	 **/
-//	List<UserDTO> listByQuery(UserQueryDTO query);
+	List<BaseShowDTO> listBaseShowByQuery(UserQueryDTO query);
 
 }

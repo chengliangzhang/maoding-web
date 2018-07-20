@@ -1,13 +1,12 @@
 package com.maoding.user.dao.impl;
 
-import com.maoding.user.dto.UserDTO;
+import com.maoding.core.base.dao.GenericDao;
+import com.maoding.core.base.dto.BaseShowDTO;
+import com.maoding.user.dao.AccountDao;
 import com.maoding.user.dto.UserQueryDTO;
+import com.maoding.user.entity.AccountEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
-
-import com.maoding.core.base.dao.GenericDao;
-import com.maoding.user.dao.AccountDao;
-import com.maoding.user.entity.AccountEntity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -72,4 +71,15 @@ public class AccountDaoImpl extends GenericDao<AccountEntity> implements Account
 		return (entity != null) ? entity.getUserName() : "";
 	}
 
+	/**
+	 * @param query 查询条件
+	 * @return 用户列表
+	 * @author 张成亮
+	 * @date 2018/7/19
+	 * @description 查询用户
+	 **/
+	@Override
+	public List<BaseShowDTO> listBaseShowByQuery(UserQueryDTO query) {
+		return sqlSession.selectList("UserMapper.listBaseShowByQuery");
+	}
 }
