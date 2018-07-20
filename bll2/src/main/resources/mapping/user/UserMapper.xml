@@ -22,22 +22,22 @@
         limit 1
     </select>
 
-    <select id="listBaseShowByQuery" parameterType="com.maoding.user.dto.UserQueryDTO" resultMap="BaseShowMap">
+    <select id="listWithCompanyUserIdByQuery" parameterType="com.maoding.user.dto.UserQueryDTO" resultMap="BaseShowMap">
         select distinct account.*,member_list.company_user_id
         from
-        maoding_web_account account
-        <if test="parentTaskId != null">
-            inner join maoding_web_member_list member_list on (member_list.deleted = 0 and member_list.account_id = account.id)
+            maoding_web_account account
+            inner join maoding_web_project_member member_list on (member_list.deleted = 0 and member_list.account_id = account.id)
             inner join maoding_web_project_task task on (
-            task.task_status = '0'
-                and (member_list.node_id = task.id or member_list.target_id = task.id)
-                and task.id = #{parentTaskId}
-            )
-            inner join maoding_web_project_task sub_task on (
                 task.task_status = '0'
-                and position(task.task_path in sub_task.task_path) > 0
+                and (member_list.node_id = task.id or member_list.target_id = task.id)
             )
-        </if>
+            <if test="parentTaskId != null">
+                inner join maoding_web_project_task parent_task on (
+                    parent_task.task_status = '0'
+                    and position(parent_task.task_path in task.task_path) > 0
+                    and parent_task.id = #{parentTaskId}
+                )
+            </if>
         where account.status = '0'
     </select>
 </mapper>

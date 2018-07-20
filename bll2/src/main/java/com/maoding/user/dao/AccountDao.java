@@ -50,6 +50,6 @@ public interface AccountDao extends BaseDao<AccountEntity>{
 	 * @param   query 查询条件
 	 * @return  用户列表
 	 **/
-	List<BaseShowDTO> listBaseShowByQuery(UserQueryDTO query);
+	List<BaseShowDTO> listWithCompanyUserIdByQuery(UserQueryDTO query);
 
 }

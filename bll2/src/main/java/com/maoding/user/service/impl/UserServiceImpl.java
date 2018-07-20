@@ -274,6 +274,6 @@ public class UserServiceImpl extends GenericService<UserEntity>  implements User
 	 **/
 	@Override
 	public List<BaseShowDTO> listWithCompanyUserIdByQuery(UserQueryDTO query) {
-		return accountDao.listBaseShowByQuery(query);
+		return accountDao.listWithCompanyUserIdByQuery(query);
 	}
 }

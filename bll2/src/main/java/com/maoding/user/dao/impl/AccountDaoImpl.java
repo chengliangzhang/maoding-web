@@ -79,7 +79,7 @@ public class AccountDaoImpl extends GenericDao<AccountEntity> implements Account
 	 * @description 查询用户
 	 **/
 	@Override
-	public List<BaseShowDTO> listBaseShowByQuery(UserQueryDTO query) {
-		return sqlSession.selectList("UserMapper.listBaseShowByQuery");
+	public List<BaseShowDTO> listWithCompanyUserIdByQuery(UserQueryDTO query) {
+		return sqlSession.selectList("UserMapper.listWithCompanyUserIdByQuery",query);
 	}
 }
