@@ -28,8 +28,18 @@ public class DeliverDTO extends BaseShowDTO {
     private Date createDate;
     /** 交付是否已经结束 */
     private String isFinished;
+    /** 交付目录编号 */
+    private String targetId;
     /** 负责人列表 */
     private List<ResponseDTO> responseList;
+
+    public String getTargetId() {
+        return targetId;
+    }
+
+    public void setTargetId(String targetId) {
+        this.targetId = targetId;
+    }
 
     public String getCreateByName() {
         return createByName;

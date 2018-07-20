@@ -96,6 +96,7 @@
     <result column="create_by_name" property="createByName"/>
     <result column="create_date" property="createDate"/>
     <result column="is_finished" property="isFinished"/>
+    <result column="target_id" property="targetId"/>
     <collection property="responseList" ofType="com.maoding.deliver.dto.ResponseDTO">
       <id column="response_id" property="id"/>
       <result column="response_name" property="name"/>
@@ -113,6 +114,7 @@
         ,deliver_task.create_by
         ,deliver_task.create_date
         ,if(deliver_task.complete_date is null,'0','1') as is_finished
+        ,deliver_task.target_id
         ,company_user.id as response_id
         ,user_response.user_name as response_name
         ,if(response_task.complete_date is null,'0','1') as response_is_finished
