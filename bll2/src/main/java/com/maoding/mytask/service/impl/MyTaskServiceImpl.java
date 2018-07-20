@@ -1816,7 +1816,10 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
             getMyTaskDesc(dto);
 
             //为交付执行任务填充相关目录编号和目录名
-            BaseShowDTO dir = getDirInfo(dto.getTargetId());
+            if (isDeliverType(dto.getTaskType())) {
+                BaseShowDTO dir = getDirInfo(dto.getTargetId());
+                dto.setTargetId(dir.getId());
+            }
         }
 
         long time4 = System.currentTimeMillis();
