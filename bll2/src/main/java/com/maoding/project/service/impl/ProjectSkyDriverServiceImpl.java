@@ -941,7 +941,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
                 nodeId = taskDir.getId();
 
                 //如果交付名称不为空，则需要创建或修改交付目录
-                if (StringUtils.isEmpty(request.getTaskName())){
+                if (!StringUtils.isEmpty(request.getTaskName())){
                     ProjectSkyDriveEntity deliverDir = getChildByName(rootDir,issue.getTaskName());
                     if (deliverDir == null){
                         //创建交付目录
