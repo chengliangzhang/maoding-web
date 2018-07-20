@@ -12,6 +12,7 @@ import com.maoding.user.dao.*;
 import com.maoding.user.dto.AccountDTO;
 import com.maoding.user.dto.AppUseDTO;
 import com.maoding.user.dto.UserDTO;
+import com.maoding.user.dto.UserQueryDTO;
 import com.maoding.user.entity.*;
 import com.maoding.user.service.UserAttachService;
 import com.maoding.user.service.UserService;
@@ -262,4 +263,16 @@ public class UserServiceImpl extends GenericService<UserEntity>  implements User
       return  new AjaxMessage().setCode("0").setInfo("保存成功");
 
    }
+
+	/**
+	 * @param query 查询条件
+	 * @return 用户列表
+	 * @author 张成亮
+	 * @date 2018/7/19
+	 * @description 查询用户
+	 **/
+	@Override
+	public List<UserDTO> listByQuery(UserQueryDTO query) {
+		return null;
+	}
 }

@@ -5,7 +5,10 @@ import java.util.Map;
 
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.org.entity.CompanyUserEntity;
+import com.maoding.projectmember.dto.MemberQueryDTO;
+import com.maoding.projectmember.entity.ProjectMemberEntity;
 import com.maoding.user.dto.AppUseDTO;
+import com.maoding.user.dto.UserQueryDTO;
 import com.maoding.user.entity.*;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -348,5 +351,14 @@ public interface UserService extends BaseService<UserEntity>{
 	 * @return
 	 */
 	public AjaxMessage saveOrUpdateUserAttach(Map<String,Object> param)throws Exception;
+
+	/**
+	 * @author  张成亮
+	 * @date    2018/7/19
+	 * @description     查询用户
+	 * @param   query 查询条件
+	 * @return  用户列表
+	 **/
+	List<UserDTO> listByQuery(UserQueryDTO query);
 
 }
