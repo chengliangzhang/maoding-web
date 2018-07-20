@@ -46,7 +46,7 @@ public interface AccountDao extends BaseDao<AccountEntity>{
 	/**
 	 * @author  张成亮
 	 * @date    2018/7/19
-	 * @description     通用用户
+	 * @description     查询用户，id内存放companyUserId
 	 * @param   query 查询条件
 	 * @return  用户列表
 	 **/
