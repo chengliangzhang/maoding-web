@@ -233,9 +233,4 @@
       update_by = #{updateBy,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
-
-
-
-
-
 </mapper>
