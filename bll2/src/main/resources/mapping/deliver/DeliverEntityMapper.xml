@@ -134,6 +134,8 @@
               and issue_task.id = #{taskId})
           </if>
         </if>
+    where
+        deliver_task.param4 = '0'
   </select>
 
   <!-- 删除交付任务，包括所有负责人的确认完成和执行任务 -->
