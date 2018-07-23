@@ -198,6 +198,9 @@ public class MyTaskController extends BaseController {
         if (StringUtils.isEmpty(request.getCurrentCompanyId())){
             request.setCurrentCompanyId(currentCompanyId);
         }
+        if (StringUtils.isEmpty(request.getAccountId())){
+            request.setAccountId(currentUserId);
+        }
         myTaskService.changeDeliver(request);
         return AjaxMessage.succeed("修改成功");
     }

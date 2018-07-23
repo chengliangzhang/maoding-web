@@ -422,6 +422,7 @@ public class ProjectSkyDriverController extends BaseController {
             }
             request.setIsFinished((String) param.get("isFinished"));
             request.setCurrentCompanyId(currentCompanyId);
+            request.setAccountId(currentUserId);
             request.setChangedResponseList(createResponseEditListFrom((List<Map<String,Object>>) param.get("userArr")));
 
             //调用创建或修改交付接口

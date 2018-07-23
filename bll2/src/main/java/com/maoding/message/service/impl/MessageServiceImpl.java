@@ -1590,6 +1590,8 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
                 message.setTargetId(targetId);
                 //发送消息者所在的companyId
                 message.setSendCompanyId(request.getCurrentCompanyId());
+                //发送者id
+                message.setCreateBy(request.getAccountId());
                 //接收者所在的组织id
                 message.setCompanyId(request.getCompanyId());
                 //项目id
