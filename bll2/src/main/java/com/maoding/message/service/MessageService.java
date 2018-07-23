@@ -87,7 +87,8 @@ public interface MessageService extends BaseService<MessageEntity> {
      * @param   request 交付申请
      * @return  消息队列
      **/
-    List<MessageEntity> createDeliverChangedMessageListFrom(DeliverEditDTO request, List<BaseShowDTO> receiverList, int messageType);
+    List<MessageEntity> createDeliverChangedMessageListFrom(DeliverEditDTO request, List<BaseShowDTO> receiverList,
+                                                            int messageType, String targetId, String extra);
 
 
     void initOldData();

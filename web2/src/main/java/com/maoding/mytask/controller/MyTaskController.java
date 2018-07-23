@@ -195,6 +195,9 @@ public class MyTaskController extends BaseController {
     @ResponseBody
     @RequiresPermissions(value = {RoleConst.PROJECT_EDIT}, logical = Logical.OR)
     public AjaxMessage changeDeliver(@RequestBody DeliverEditDTO request) throws Exception {
+        if (StringUtils.isEmpty(request.getCurrentCompanyId())){
+            request.setCurrentCompanyId(currentCompanyId);
+        }
         myTaskService.changeDeliver(request);
         return AjaxMessage.succeed("修改成功");
     }

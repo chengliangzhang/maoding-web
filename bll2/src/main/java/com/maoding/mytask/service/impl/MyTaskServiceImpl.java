@@ -2218,11 +2218,25 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                 receiverConfirmList = addUserToListByResponse(receiverConfirmList,response);
             }
         }
-        List<MessageEntity> messageConfirmList = messageService.createDeliverChangedMessageListFrom(request,receiverConfirmList,SystemParameters.MESSAGE_TYPE_DELIVER_CONFIRM);
+        List<MessageEntity> messageConfirmList = messageService.createDeliverChangedMessageListFrom(
+                request,receiverConfirmList,SystemParameters.MESSAGE_TYPE_DELIVER_CONFIRM,request.getIssueId(),
+                "");
         messageService.sendMessage(messageConfirmList);
 
-        //创建上传者列表，默认为所有负责人
+        //创建上传者列表，默认为新增加的所有负责人
         List<BaseShowDTO> receiverUploadList = receiverConfirmList;
+
+        //获取负责人名称列表
+        StringBuilder responseNameBuilder = new StringBuilder();
+        List<ResponseDTO> responseList = listResponse(deliver);
+        responseList.forEach(response->{
+            final String SPLIT_RESPONSE_NAME = "、";
+            if (responseNameBuilder.length() > 0){
+                responseNameBuilder.append(SPLIT_RESPONSE_NAME);
+            }
+            responseNameBuilder.append(response.getName());
+        });
+
 
         //创建上传者任务，用于快速跳转到上传目录,同时添加任务参与人到上传者列表，为发送上传消息做准备
         if (!StringUtils.isEmpty(request.getIssueId())) {
@@ -2239,7 +2253,9 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
             saveDeliverUploadTask(deliver, request.getChangedResponseList());
         }
         //为每个上传者发送一条上传的消息
-        List<MessageEntity> messageUploadList = messageService.createDeliverChangedMessageListFrom(request,receiverUploadList,SystemParameters.MESSAGE_TYPE_DELIVER_UPLOAD);
+        List<MessageEntity> messageUploadList = messageService.createDeliverChangedMessageListFrom(
+                request,receiverUploadList,SystemParameters.MESSAGE_TYPE_DELIVER_UPLOAD,
+                deliver.getTargetId(), responseNameBuilder.toString());
         messageService.sendMessage(messageUploadList);
 
         //如果设置了状态，进行状态修改
@@ -2247,6 +2263,23 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
             handleMyTaskDeliver(deliver,request);
         }
 
+    }
+
+    //获取交付任务负责人列表
+    private List<ResponseDTO> listResponse(DeliverEntity deliver){
+        MyTaskQueryDTO query = new MyTaskQueryDTO();
+        query.setMyTaskType(MyTaskEntity.DELIVER_CONFIRM_FINISH);
+        query.setStatus(0);
+        query.setTaskId(deliver.getId());
+        List<MyTaskEntity> list = myTaskDao.listEntityByQuery(query);
+        List<ResponseDTO> responseList = new ArrayList<>();
+        list.forEach(myTask->{
+            ResponseDTO response = new ResponseDTO();
+            response.setId(myTask.getHandlerId());
+            response.setName(companyUserDao.getUserName(myTask.getHandlerId()));
+            responseList.add(response);
+        });
+        return responseList;
     }
 
     //把项目成员列表转换为负责人编辑列表
@@ -2258,6 +2291,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                 //只设置id号，设置全部成员为选中状态
                 response.setId(companyUser.getId());
                 response.setIsSelected("1");
+                response.setName(companyUser.getName());
                 list.add(response);
             });
         }

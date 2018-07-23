@@ -655,6 +655,23 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
                 para.put("toNodeName", messageEntity.getUserName());
                 para.put("remarks", messageEntity.getRemarks());
                 break;
+            case SystemParameters.MESSAGE_TYPE_DELIVER_CONFIRM: //XXX发起了XX交付任务，并将你设置为任务负责人，截止时间：2018/08/08，请你确认
+                para.put("deadline", messageEntity.getDeadline());
+                para.put("projectName", messageEntity.getTaskName() );
+                para.put("toNodeName", messageEntity.getUserName());
+                para.put("deliverName",messageEntity.getMessageTitle());
+                para.put("remarks", messageEntity.getMessageContent());
+                para.put("issueId",messageEntity.getTargetId());
+                break;
+            case SystemParameters.MESSAGE_TYPE_DELIVER_UPLOAD: //XXX发起了XX交付任务，任务负责人为XX、XX ; 截止时间为：2018/08/07，请您提交交付文件
+                para.put("deadline", messageEntity.getDeadline());
+                para.put("projectName", messageEntity.getTaskName() );
+                para.put("toNodeName", messageEntity.getUserName());
+                para.put("deliverName",messageEntity.getMessageTitle());
+                para.put("remarks", messageEntity.getMessageContent());
+                para.put("responseName",messageEntity.getRemarks());
+                para.put("nodeId",messageEntity.getTargetId());
+                break;
             default:
                 break;
         }
@@ -1558,20 +1575,36 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
      * @description 根据个人任务创建消息
      **/
     @Override
-    public List<MessageEntity> createDeliverChangedMessageListFrom(DeliverEditDTO request, List<BaseShowDTO> receiverList, int messageType) {
+    public List<MessageEntity> createDeliverChangedMessageListFrom(DeliverEditDTO request, List<BaseShowDTO> receiverList,
+                                                                   int messageType, String targetId, String extra) {
         List<MessageEntity> messageList = new ArrayList<>();
         if (!ObjectUtils.isEmpty(receiverList)){
             receiverList.forEach(user->{
                 MessageEntity message = new MessageEntity();
                 message.initEntity();
+                //接收者id
                 message.setUserId(user.getId());
+                //接收者名字
                 message.setUserName(user.getName());
+                //如果是交付任务确认，targetId为签发任务编号，否则是交付目录id
+                message.setTargetId(targetId);
+                //发送消息者所在的companyId
+                message.setSendCompanyId(request.getCurrentCompanyId());
+                //接收者所在的组织id
                 message.setCompanyId(request.getCompanyId());
+                //项目id
                 message.setProjectId(request.getProjectId());
+                //截止时间
                 message.setDeadline(DateUtils.date2Str(request.getEndTime(), DateUtils.date_sdf2));
                 //使用原有发送消息语句，使用TaskName代替ProjectName
                 message.setTaskName(getProjectName(message.getProjectId()));
+                //交付说明
                 message.setRemarks(request.getDescription());
+                //交付名称
+                message.setMessageTitle(request.getTaskName());
+                //负责人名字列表
+                message.setMessageContent(extra);
+                //是交付确认还是上传
                 message.setMessageType(messageType);
                 messageList.add(message);
             });
