@@ -1558,7 +1558,7 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
      * @description 根据个人任务创建消息
      **/
     @Override
-    public List<MessageEntity> createDeliverChangedMessageListFrom(DeliverEditDTO request, List<BaseShowDTO> receiverList) {
+    public List<MessageEntity> createDeliverChangedMessageListFrom(DeliverEditDTO request, List<BaseShowDTO> receiverList, int messageType) {
         List<MessageEntity> messageList = new ArrayList<>();
         if (!ObjectUtils.isEmpty(receiverList)){
             receiverList.forEach(user->{
@@ -1572,7 +1572,7 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
                 //使用原有发送消息语句，使用TaskName代替ProjectName
                 message.setTaskName(getProjectName(message.getProjectId()));
                 message.setRemarks(request.getDescription());
-                message.setMessageType(SystemParameters.MESSAGE_TYPE_FILING_NOTICE);
+                message.setMessageType(messageType);
                 messageList.add(message);
             });
         }

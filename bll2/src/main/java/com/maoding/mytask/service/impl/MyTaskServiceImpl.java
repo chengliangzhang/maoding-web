@@ -2208,40 +2208,45 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         //创建交付任务，用于查找交付历史
         DeliverEntity deliver = saveDeliverAction(request,DeliverEntity.DELIVER_ACTION);
 
-        //创建任务接收者列表
-        List<BaseShowDTO> receiverList = new ArrayList<>();
-        if (!ObjectUtils.isEmpty(request.getChangedResponseList())) {
-            for (ResponseEditDTO response : request.getChangedResponseList()) {
-                receiverList = addUserToListByResponse(receiverList,response);
-            }
-        }
-
         //创建负责人任务，用于标记上传任务完成
         saveDeliverResponseTask(deliver,request.getChangedResponseList());
 
-        //创建上传者任务，用于快速跳转到上传目录
+        //为每个负责人发送一条需要完成上传的消息
+        List<BaseShowDTO> receiverConfirmList = new ArrayList<>();
+        if (!ObjectUtils.isEmpty(request.getChangedResponseList())) {
+            for (ResponseEditDTO response : request.getChangedResponseList()) {
+                receiverConfirmList = addUserToListByResponse(receiverConfirmList,response);
+            }
+        }
+        List<MessageEntity> messageConfirmList = messageService.createDeliverChangedMessageListFrom(request,receiverConfirmList,SystemParameters.MESSAGE_TYPE_DELIVER_CONFIRM);
+        messageService.sendMessage(messageConfirmList);
+
+        //创建上传者列表，默认为所有负责人
+        List<BaseShowDTO> receiverUploadList = receiverConfirmList;
+
+        //创建上传者任务，用于快速跳转到上传目录,同时添加任务参与人到上传者列表，为发送上传消息做准备
         if (!StringUtils.isEmpty(request.getIssueId())) {
             //如果指定了任务，为所有参与此任务的人员创建上传者任务
             List<ResponseEditDTO> memberList = listMember(request.getIssueId());
             if (!ObjectUtils.isEmpty(memberList)) {
                 saveDeliverUploadTask(deliver, memberList);
                 for (ResponseEditDTO member : memberList) {
-                    receiverList = addUserToListByResponse(receiverList,member);
+                    receiverUploadList = addUserToListByResponse(receiverUploadList,member);
                 }
             }
         } else {
-            //如果没有指定任务（有可能使用目录来生成交付），为选择的负责人创建上传者任务
+            //如果没有指定任务（有可能使用目录来生成交付），把负责人当做上传者
             saveDeliverUploadTask(deliver, request.getChangedResponseList());
         }
+        //为每个上传者发送一条上传的消息
+        List<MessageEntity> messageUploadList = messageService.createDeliverChangedMessageListFrom(request,receiverUploadList,SystemParameters.MESSAGE_TYPE_DELIVER_UPLOAD);
+        messageService.sendMessage(messageUploadList);
 
         //如果设置了状态，进行状态修改
         if (request.getIsFinished() != null){
             handleMyTaskDeliver(deliver,request);
         }
 
-        //为每个创建任务的人发送一条消息
-        List<MessageEntity> messageList = messageService.createDeliverChangedMessageListFrom(request,receiverList);
-        messageService.sendMessage(messageList);
     }
 
     //把项目成员列表转换为负责人编辑列表

@@ -1052,8 +1052,11 @@ public interface SystemParameters {
     int MESSAGE_TYPE_234 = 234;//您申请的报销“办公费用”共计1200元，财务已拨款。
     int MESSAGE_TYPE_235 = 235;//您申请的报销“办公费用”共计1200元，财务已拨款。
 
-    //发送归档通知
+    //发送归档通知（已被交付确认和上传任务取代）
     int MESSAGE_TYPE_FILING_NOTICE = 240;
+
+    int MESSAGE_TYPE_DELIVER_CONFIRM = 241;
+    int MESSAGE_TYPE_DELIVER_UPLOAD = 242;
 
     int MESSAGE_TYPE_23 = 23;//技术审查费财务人员付款操作
     int MESSAGE_TYPE_24 = 24;//技术审查费财务人员到账操作
