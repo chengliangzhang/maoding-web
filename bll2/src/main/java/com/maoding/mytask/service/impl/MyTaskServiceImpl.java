@@ -1188,12 +1188,15 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         MyTaskQueryDTO query = new MyTaskQueryDTO();
         query.setCompanyId(myTask.getCompanyId());
         query.setTaskId(myTask.getTargetId());
-        List<MyTaskEntity> list = myTaskDao.listByQuery(query);
-        if (ObjectUtils.isEmpty(list)) {
+        query.setMyTaskType(MyTaskEntity.DELIVER_CONFIRM_FINISH);
+        query.setStatus(0);
+        List<MyTaskEntity> list = myTaskDao.listEntityByQuery(query);
+        if (ObjectUtils.isEmpty(list) && !com.maoding.core.util.StringUtils.isEmpty(myTask.getTargetId())) {
             //标记交付任务完成
-            DeliverEntity deliver = new DeliverEntity();
-            deliver.setId(myTask.getTargetId());
-            completeMyTaskDeliver(deliver);
+            DeliverEntity deliver = deliverDao.selectById(myTask.getTargetId());
+            if (deliver != null) {
+                completeMyTaskDeliver(deliver);
+            }
         }
     }
 
@@ -2204,6 +2207,15 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
     public void saveDeliverTask(DeliverEditDTO request) {
         //创建交付任务，用于查找交付历史
         DeliverEntity deliver = saveDeliverAction(request,DeliverEntity.DELIVER_ACTION);
+
+        //创建任务接收者列表
+        List<BaseShowDTO> receiverList = new ArrayList<>();
+        if (!ObjectUtils.isEmpty(request.getChangedResponseList())) {
+            for (ResponseEditDTO response : request.getChangedResponseList()) {
+                receiverList = addUserToListByResponse(receiverList,response);
+            }
+        }
+
         //创建负责人任务，用于标记上传任务完成
         saveDeliverResponseTask(deliver,request.getChangedResponseList());
 
@@ -2211,7 +2223,12 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         if (!StringUtils.isEmpty(request.getIssueId())) {
             //如果指定了任务，为所有参与此任务的人员创建上传者任务
             List<ResponseEditDTO> memberList = listMember(request.getIssueId());
-            saveDeliverUploadTask(deliver, memberList);
+            if (!ObjectUtils.isEmpty(memberList)) {
+                saveDeliverUploadTask(deliver, memberList);
+                for (ResponseEditDTO member : memberList) {
+                    receiverList = addUserToListByResponse(receiverList,member);
+                }
+            }
         } else {
             //如果没有指定任务（有可能使用目录来生成交付），为选择的负责人创建上传者任务
             saveDeliverUploadTask(deliver, request.getChangedResponseList());
@@ -2221,6 +2238,10 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         if (request.getIsFinished() != null){
             handleMyTaskDeliver(deliver,request);
         }
+
+        //为每个创建任务的人发送一条消息
+        List<MessageEntity> messageList = messageService.createDeliverChangedMessageListFrom(request,receiverList);
+        messageService.sendMessage(messageList);
     }
 
     //把项目成员列表转换为负责人编辑列表
@@ -2251,6 +2272,32 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
 
     private boolean isTrue(String b){
         return "1".equals(b);
+    }
+
+    //如果添加response,根据companyUserId查找user,如果在列表内不存在User，添加User到列表
+    private List<BaseShowDTO> addUserToListByResponse(List<BaseShowDTO> list, ResponseEditDTO response){
+        if (isTrue(response.getIsSelected())){
+            CompanyUserEntity companyUser = companyUserDao.selectById(response.getId());
+            if (companyUser != null) {
+                list = addToListWhenNotExist(list, new BaseShowDTO(companyUser.getId(), response.getName()));
+            }
+        }
+        return list;
+    }
+
+    //如果在列表内不存在数据，添加数据到列表，否则不添加
+    private <T extends BaseShowDTO> List<T> addToListWhenNotExist(List<T> list, T dto){
+        boolean isFound = false;
+        for (T t : list) {
+            if (t.getId().equals(dto.getId())){
+                isFound = true;
+                break;
+            }
+        }
+        if (!isFound){
+            list.add(dto);
+        }
+        return list;
     }
 
     //创建上传者任务，用于快速跳转到上传目录
@@ -2344,8 +2391,5 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         }
         saveDeliverTask(request);
 
-        //为每个负责人发送一条消息
-        List<MessageEntity> messageList = messageService.createDeliverChangedMessageListFrom(request);
-        messageService.sendMessage(messageList);
     }
 }

@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="DeliverEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.deliver.entity.DeliverEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="task_title" property="taskTitle" jdbcType="VARCHAR" />
+    <result column="task_type" property="taskType" jdbcType="INTEGER" />
+    <result column="handler_id" property="handlerId" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="target_id" property="targetId" jdbcType="VARCHAR" />
+    <result column="param1" property="param1" jdbcType="VARCHAR" />
+    <result column="param2" property="param2" jdbcType="VARCHAR" />
+    <result column="param3" property="param3" jdbcType="VARCHAR" />
+    <result column="param4" property="param4" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="task_content" property="taskContent" jdbcType="LONGVARCHAR" />
+    <result column="deadline" property="deadline" jdbcType="DATE" />
+    <result column="complete_date" property="completeDate" jdbcType="DATE"/>
+    <result column="start_date" property="startDate" jdbcType="DATE"/>
+    <result column="send_company_id" property="sendCompanyId" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, task_title, task_content,task_type, handler_id, company_id, status, create_date, create_by,
+    update_date, update_by, target_id, param1, param2, param3, param4, project_id,send_company_id,
+    deadline,complete_date,start_date
+  </sql>
+
   <!-- 插入交付任务 -->
   <insert id="insert" parameterType="com.maoding.deliver.entity.DeliverEntity" >
     insert into md_list_deliver (id, task_title, task_type,
@@ -85,6 +115,13 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from md_list_deliver
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
 
   <!-- 交付任务对象（包含负责人） -->
   <resultMap id="DeliverMap" type="com.maoding.deliver.dto.DeliverDTO">

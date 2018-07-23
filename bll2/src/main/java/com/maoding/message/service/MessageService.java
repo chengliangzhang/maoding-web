@@ -1,5 +1,6 @@
 package com.maoding.message.service;
 
+import com.maoding.core.base.dto.BaseShowDTO;
 import com.maoding.core.base.service.BaseService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.message.dto.QueryMessageDTO;
@@ -86,7 +87,7 @@ public interface MessageService extends BaseService<MessageEntity> {
      * @param   request 交付申请
      * @return  消息队列
      **/
-    List<MessageEntity> createDeliverChangedMessageListFrom(DeliverEditDTO request);
+    List<MessageEntity> createDeliverChangedMessageListFrom(DeliverEditDTO request, List<BaseShowDTO> receiverList);
 
 
     void initOldData();

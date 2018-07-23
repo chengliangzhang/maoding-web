@@ -147,5 +147,5 @@ public interface MyTaskDao extends BaseDao<MyTaskEntity> {
      * @param   query 查询的条件
      * @return  个人任务列表
      **/
-    List<MyTaskEntity> listByQuery(MyTaskQueryDTO query);
+    List<MyTaskEntity> listEntityByQuery(MyTaskQueryDTO query);
 }

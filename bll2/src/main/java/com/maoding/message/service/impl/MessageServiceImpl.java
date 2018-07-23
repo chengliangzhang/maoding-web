@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.maoding.commonModule.dto.QueryCopyRecordDTO;
 import com.maoding.commonModule.entity.CopyRecordEntity;
 import com.maoding.commonModule.service.CopyRecordService;
+import com.maoding.core.base.dto.BaseShowDTO;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.SystemParameters;
@@ -34,7 +35,6 @@ import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.dao.ProjectProcessNodeDao;
 import com.maoding.project.dto.DeliverEditDTO;
-import com.maoding.project.dto.ResponseEditDTO;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.entity.ProjectProcessNodeEntity;
 import com.maoding.projectcost.dao.ProjectCostPaymentDetailDao;
@@ -1558,24 +1558,22 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
      * @description 根据个人任务创建消息
      **/
     @Override
-    public List<MessageEntity> createDeliverChangedMessageListFrom(DeliverEditDTO request) {
+    public List<MessageEntity> createDeliverChangedMessageListFrom(DeliverEditDTO request, List<BaseShowDTO> receiverList) {
         List<MessageEntity> messageList = new ArrayList<>();
-        if (!ObjectUtils.isEmpty(request.getChangedResponseList())){
-            List<ResponseEditDTO> responseList = request.getChangedResponseList();
-            responseList.forEach(response->{
-                if (isTrue(response.getIsSelected())) {
-                    MessageEntity message = new MessageEntity();
-                    message.setUserId(response.getId());
-                    message.setUserName(response.getName());
-                    message.setCompanyId(request.getCompanyId());
-                    message.setProjectId(request.getProjectId());
-                    message.setDeadline(DateUtils.date2Str(request.getEndTime(),DateUtils.date_sdf2));
-                    //使用原有发送消息语句，使用TaskName代替ProjectName
-                    message.setTaskName(getProjectName(message.getProjectId()));
-                    message.setRemarks(request.getDescription());
-                    message.setMessageType(SystemParameters.MESSAGE_TYPE_FILING_NOTICE);
-                    messageList.add(message);
-                }
+        if (!ObjectUtils.isEmpty(receiverList)){
+            receiverList.forEach(user->{
+                MessageEntity message = new MessageEntity();
+                message.initEntity();
+                message.setUserId(user.getId());
+                message.setUserName(user.getName());
+                message.setCompanyId(request.getCompanyId());
+                message.setProjectId(request.getProjectId());
+                message.setDeadline(DateUtils.date2Str(request.getEndTime(), DateUtils.date_sdf2));
+                //使用原有发送消息语句，使用TaskName代替ProjectName
+                message.setTaskName(getProjectName(message.getProjectId()));
+                message.setRemarks(request.getDescription());
+                message.setMessageType(SystemParameters.MESSAGE_TYPE_FILING_NOTICE);
+                messageList.add(message);
             });
         }
         return messageList;

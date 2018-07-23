@@ -23,7 +23,7 @@
     </select>
 
     <select id="listWithCompanyUserIdByQuery" parameterType="com.maoding.user.dto.UserQueryDTO" resultMap="BaseShowMap">
-        select distinct account.*,member_list.company_user_id
+        select distinct account.*,member_list.company_user_id,account.user_name as name
         from
             maoding_web_account account
             inner join maoding_web_project_member member_list on (member_list.deleted = 0 and member_list.account_id = account.id)
