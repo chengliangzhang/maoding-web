@@ -72,16 +72,6 @@ public class MessageJsonDTO {
     private String deliverName;
     /** 交付负责人名称 */
     private String responseName;
-    /** 归档目录id */
-    private String nodeId;
-
-    public String getNodeId() {
-        return nodeId;
-    }
-
-    public void setNodeId(String nodeId) {
-        this.nodeId = nodeId;
-    }
 
     public String getDeliverName() {
         return deliverName;

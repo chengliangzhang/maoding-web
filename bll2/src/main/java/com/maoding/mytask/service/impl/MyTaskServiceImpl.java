@@ -2318,7 +2318,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         if (isTrue(response.getIsSelected())){
             CompanyUserEntity companyUser = companyUserDao.selectById(response.getId());
             if (companyUser != null) {
-                list = addToListWhenNotExist(list, new BaseShowDTO(companyUser.getId(), response.getName()));
+                list = addToListWhenNotExist(list, new BaseShowDTO(companyUser.getUserId(), response.getName()));
             }
         }
         return list;
