@@ -660,15 +660,15 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
                 para.put("projectName", messageEntity.getTaskName() );
                 para.put("toNodeName", messageEntity.getUserName());
                 para.put("deliverName",messageEntity.getMessageTitle());
-                para.put("remarks", messageEntity.getMessageContent());
+                para.put("remarks", messageEntity.getRemarks());
                 break;
             case SystemParameters.MESSAGE_TYPE_DELIVER_UPLOAD: //XXX发起了XX交付任务，任务负责人为XX、XX ; 截止时间为：2018/08/07，请您提交交付文件
                 para.put("deadline", messageEntity.getDeadline());
                 para.put("projectName", messageEntity.getTaskName() );
                 para.put("toNodeName", messageEntity.getUserName());
                 para.put("deliverName",messageEntity.getMessageTitle());
-                para.put("remarks", messageEntity.getMessageContent());
-                para.put("responseName",messageEntity.getRemarks());
+                para.put("remarks", messageEntity.getRemarks());
+                para.put("responseName",messageEntity.getMessageContent());
                 break;
             default:
                 break;
