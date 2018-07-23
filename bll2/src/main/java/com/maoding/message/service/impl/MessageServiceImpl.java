@@ -661,7 +661,6 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
                 para.put("toNodeName", messageEntity.getUserName());
                 para.put("deliverName",messageEntity.getMessageTitle());
                 para.put("remarks", messageEntity.getMessageContent());
-                para.put("issueId",messageEntity.getTargetId());
                 break;
             case SystemParameters.MESSAGE_TYPE_DELIVER_UPLOAD: //XXX发起了XX交付任务，任务负责人为XX、XX ; 截止时间为：2018/08/07，请您提交交付文件
                 para.put("deadline", messageEntity.getDeadline());
@@ -670,7 +669,6 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
                 para.put("deliverName",messageEntity.getMessageTitle());
                 para.put("remarks", messageEntity.getMessageContent());
                 para.put("responseName",messageEntity.getRemarks());
-                para.put("nodeId",messageEntity.getTargetId());
                 break;
             default:
                 break;
@@ -1512,6 +1510,8 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
                 .replaceAll("%reason%", getValue(dto.getReason()))
                 .replaceAll("%leaveTypeName%", getValue(dto.getLeaveTypeName()))
                 .replaceAll("%remarks%", getValue(dto.getRemarks()))
+                .replaceAll("%responseName%", getValue(dto.getResponseName()))
+                .replaceAll("%deliverName%", getValue(dto.getDeliverName()))
                 ;
 
     }

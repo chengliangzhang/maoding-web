@@ -68,6 +68,37 @@ public class MessageJsonDTO {
 
     private String userName;
 
+    /** 交付名称 */
+    private String deliverName;
+    /** 交付负责人名称 */
+    private String responseName;
+    /** 归档目录id */
+    private String nodeId;
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public String getDeliverName() {
+        return deliverName;
+    }
+
+    public void setDeliverName(String deliverName) {
+        this.deliverName = deliverName;
+    }
+
+    public String getResponseName() {
+        return responseName;
+    }
+
+    public void setResponseName(String responseName) {
+        this.responseName = responseName;
+    }
+
     public String getProjectName() {
         return projectName;
     }
