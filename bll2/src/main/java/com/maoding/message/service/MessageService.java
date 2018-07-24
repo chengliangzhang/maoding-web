@@ -6,6 +6,7 @@ import com.maoding.core.bean.AjaxMessage;
 import com.maoding.message.dto.QueryMessageDTO;
 import com.maoding.message.dto.SendMessageDTO;
 import com.maoding.message.entity.MessageEntity;
+import com.maoding.mytask.entity.MyTaskEntity;
 import com.maoding.project.dto.DeliverEditDTO;
 
 import java.util.List;
@@ -81,15 +82,18 @@ public interface MessageService extends BaseService<MessageEntity> {
     List<MessageEntity> getMessageByParam(QueryMessageDTO dto);
 
     /**
-     * @author  张成亮
-     * @date    2018/7/17
-     * @description     创建交付信息更改消息队列
-     * @param   request 交付申请
-     * @return  消息队列
+     * @param request 交付申请
+     * @param receiver 接受者信息
+     * @param myTask 相关个人任务
+     * @param messageType 消息类型
+     * @param extra 负责人列表字符串
+     * @return 消息对象
+     * @author 张成亮
+     * @date 2018/7/17
+     * @description 根据个人任务创建消息
      **/
-    List<MessageEntity> createDeliverChangedMessageListFrom(DeliverEditDTO request, List<BaseShowDTO> receiverList,
-                                                            int messageType, String targetId, String extra);
-
+    MessageEntity createDeliverChangedMessageFrom(DeliverEditDTO request, BaseShowDTO receiver, MyTaskEntity myTask,
+                                                         int messageType, String extra);
 
     void initOldData();
 

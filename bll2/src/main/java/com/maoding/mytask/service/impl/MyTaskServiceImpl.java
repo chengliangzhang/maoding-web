@@ -2209,22 +2209,28 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         DeliverEntity deliver = saveDeliverAction(request,DeliverEntity.DELIVER_ACTION);
 
         //创建负责人任务，用于标记上传任务完成
-        saveDeliverResponseTask(deliver,request.getChangedResponseList());
+        //创建任务同时发送一条消息
+        saveMyTaskFrom(request, deliver, request.getChangedResponseList(), MyTaskEntity.DELIVER_CONFIRM_FINISH, "");
 
-        //为每个负责人发送一条需要完成上传的消息
-        List<BaseShowDTO> receiverConfirmList = new ArrayList<>();
+        //创建上传者列表，默认为新增加的负责人
+        List<ResponseEditDTO> companyUserUploaderList = new ArrayList<>();
         if (!ObjectUtils.isEmpty(request.getChangedResponseList())) {
+            //添加新增加的负责人
             for (ResponseEditDTO response : request.getChangedResponseList()) {
-                receiverConfirmList = addUserToListByResponse(receiverConfirmList,response);
+                if (isNewResponse(response)){
+                    addToListWhenNotExist(companyUserUploaderList,response);
+                }
             }
         }
-        List<MessageEntity> messageConfirmList = messageService.createDeliverChangedMessageListFrom(
-                request,receiverConfirmList,SystemParameters.MESSAGE_TYPE_DELIVER_CONFIRM,request.getIssueId(),
-                "");
-        messageService.sendMessage(messageConfirmList);
-
-        //创建上传者列表，默认为新增加的所有负责人
-        List<BaseShowDTO> receiverUploadList = receiverConfirmList;
+        if (!StringUtils.isEmpty(request.getIssueId())) {
+            //如果指定了任务，添加所有参与此任务的人员
+            List<ResponseEditDTO> memberList = listMember(request.getIssueId());
+            if (!ObjectUtils.isEmpty(memberList)) {
+                for (ResponseEditDTO member : memberList) {
+                    companyUserUploaderList = addToListWhenNotExist(companyUserUploaderList,member);
+                }
+            }
+        }
 
         //获取负责人名称列表
         StringBuilder responseNameBuilder = new StringBuilder();
@@ -2238,25 +2244,8 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         });
 
 
-        //创建上传者任务，用于快速跳转到上传目录,同时添加任务参与人到上传者列表，为发送上传消息做准备
-        if (!StringUtils.isEmpty(request.getIssueId())) {
-            //如果指定了任务，为所有参与此任务的人员创建上传者任务
-            List<ResponseEditDTO> memberList = listMember(request.getIssueId());
-            if (!ObjectUtils.isEmpty(memberList)) {
-                saveDeliverUploadTask(deliver, memberList);
-                for (ResponseEditDTO member : memberList) {
-                    receiverUploadList = addUserToListByResponse(receiverUploadList,member);
-                }
-            }
-        } else {
-            //如果没有指定任务（有可能使用目录来生成交付），把负责人当做上传者
-            saveDeliverUploadTask(deliver, request.getChangedResponseList());
-        }
-        //为每个上传者发送一条上传的消息
-        List<MessageEntity> messageUploadList = messageService.createDeliverChangedMessageListFrom(
-                request,receiverUploadList,SystemParameters.MESSAGE_TYPE_DELIVER_UPLOAD,
-                deliver.getTargetId(), responseNameBuilder.toString());
-        messageService.sendMessage(messageUploadList);
+        //创建上传者任务，用于快速跳转到上传目录
+        saveMyTaskFrom(request, deliver, companyUserUploaderList, MyTaskEntity.DELIVER_EXECUTE,responseNameBuilder.toString());
 
         //如果设置了状态，进行状态修改
         if (request.getIsFinished() != null){
@@ -2313,19 +2302,8 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         return "1".equals(b);
     }
 
-    //如果添加response,根据companyUserId查找user,如果在列表内不存在User，添加User到列表
-    private List<BaseShowDTO> addUserToListByResponse(List<BaseShowDTO> list, ResponseEditDTO response){
-        if (isTrue(response.getIsSelected())){
-            CompanyUserEntity companyUser = companyUserDao.selectById(response.getId());
-            if (companyUser != null) {
-                list = addToListWhenNotExist(list, new BaseShowDTO(companyUser.getUserId(), response.getName()));
-            }
-        }
-        return list;
-    }
-
     //如果在列表内不存在数据，添加数据到列表，否则不添加
-    private <T extends BaseShowDTO> List<T> addToListWhenNotExist(List<T> list, T dto){
+    private <T extends BaseDTO> List<T> addToListWhenNotExist(List<T> list, T dto){
         boolean isFound = false;
         for (T t : list) {
             if (t.getId().equals(dto.getId())){
@@ -2338,17 +2316,6 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         }
         return list;
     }
-
-    //创建上传者任务，用于快速跳转到上传目录
-    private List<MyTaskEntity> saveDeliverResponseTask(DeliverEntity deliver, List<ResponseEditDTO> responseList){
-        return saveMyTaskFrom(deliver,responseList,MyTaskEntity.DELIVER_CONFIRM_FINISH);
-    }
-
-    //创建负责人任务，用于标记上传任务完成
-    private List<MyTaskEntity> saveDeliverUploadTask(DeliverEntity deliver, List<ResponseEditDTO> responseList){
-        return saveMyTaskFrom(deliver,responseList,MyTaskEntity.DELIVER_EXECUTE);
-    }
-
 
     //根据交付信息创建并保存deliver记录
     private DeliverEntity saveDeliverAction(DeliverEditDTO request, int actionType){
@@ -2381,7 +2348,8 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
 
     //根据交付信息创建myTask记录
     //taskType: 要创建的myTask类型，DELIVER_CONFIRM_FINISH:确认交付文件上传完毕, DELIVER_EXECUTE:进行交付文件上传
-    private List<MyTaskEntity> saveMyTaskFrom(DeliverEntity deliver, List<ResponseEditDTO> changedResponseList,int myTaskType){
+    private List<MyTaskEntity> saveMyTaskFrom(DeliverEditDTO request, DeliverEntity deliver,
+                                              List<ResponseEditDTO> changedResponseList,int myTaskType, String responseStr){
         List<MyTaskEntity> entityList = new ArrayList<>();
         if (!ObjectUtils.isEmpty(changedResponseList)) {
             changedResponseList.forEach(response -> {
@@ -2400,11 +2368,26 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                     entity.setTaskTitle(deliver.getTaskTitle());
                     entity.setTaskContent(deliver.getTaskContent());
                     entityList.add(entity);
+                    //发送一条消息
+                    sendDeliverMessage(request,response,entity,responseStr);
                 }
             });
         }
         myTaskDao.insert(entityList);
         return entityList;
+    }
+
+    //发送一条消息
+    private void sendDeliverMessage(DeliverEditDTO request, ResponseEditDTO response, MyTaskEntity myTask, String responseStr){
+        CompanyUserEntity companyUser = companyUserDao.selectById(myTask.getHandlerId());
+        if (companyUser != null){
+            BaseShowDTO receiver = new BaseShowDTO(companyUser.getUserId(), response.getName());
+            int messageType = (MyTaskEntity.DELIVER_CONFIRM_FINISH == myTask.getTaskType()) ?
+                    SystemParameters.MESSAGE_TYPE_DELIVER_CONFIRM : SystemParameters.MESSAGE_TYPE_DELIVER_UPLOAD;
+            MessageEntity message = messageService.createDeliverChangedMessageFrom(
+                    request,receiver,myTask,messageType,responseStr);
+            messageService.sendMessage(message);
+        }
     }
 
     //判断负责人是否尚未添加个人任务

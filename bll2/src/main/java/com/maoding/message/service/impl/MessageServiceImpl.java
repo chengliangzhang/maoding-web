@@ -55,7 +55,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 
 import java.net.URLEncoder;
 import java.util.*;
@@ -1569,52 +1568,48 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
 
     /**
      * @param request 交付申请
-     * @return 消息队列
+     * @param receiver 接受者信息
+     * @param myTask 相关个人任务
+     * @param messageType 消息类型
+     * @param extra 负责人列表字符串
+     * @return 消息对象
      * @author 张成亮
      * @date 2018/7/17
      * @description 根据个人任务创建消息
      **/
+
     @Override
-    public List<MessageEntity> createDeliverChangedMessageListFrom(DeliverEditDTO request, List<BaseShowDTO> receiverList,
-                                                                   int messageType, String targetId, String extra) {
-        List<MessageEntity> messageList = new ArrayList<>();
-        if (!ObjectUtils.isEmpty(receiverList)){
-            receiverList.forEach(user->{
-                MessageEntity message = new MessageEntity();
-                message.initEntity();
-                //接收者id
-                message.setUserId(user.getId());
-                //接收者名字
-                message.setUserName(user.getName());
-                //如果是交付任务确认，targetId为签发任务编号，否则是交付目录id
-                message.setTargetId(targetId);
-                //发送消息者所在的companyId
-                message.setSendCompanyId(request.getCurrentCompanyId());
-                //发送者id
-                message.setCreateBy(request.getAccountId());
-                //接收者所在的组织id
-                message.setCompanyId(request.getCompanyId());
-                //项目id
-                message.setProjectId(request.getProjectId());
-                //截止时间
-                message.setDeadline(DateUtils.date2Str(request.getEndTime(), DateUtils.date_sdf2));
-                //使用原有发送消息语句，使用TaskName代替ProjectName
-                message.setTaskName(getProjectName(message.getProjectId()));
-                //交付说明
-                message.setRemarks(request.getDescription());
-                //交付名称
-                message.setMessageTitle(request.getTaskName());
-                //负责人名字列表
-                message.setMessageContent(extra);
-                //是交付确认还是上传
-                message.setMessageType(messageType);
-                messageList.add(message);
-            });
-        }
-        return messageList;
+    public MessageEntity createDeliverChangedMessageFrom(DeliverEditDTO request, BaseShowDTO receiver, MyTaskEntity myTask,
+                                                                   int messageType, String extra) {
+        MessageEntity message = new MessageEntity();
+        message.initEntity();
+        //接收者id
+        message.setUserId(receiver.getId());
+        //接收者名字
+        message.setUserName(receiver.getName());
+        //如果是交付任务确认，targetId为签发任务编号，否则是交付目录id
+        message.setTargetId(myTask.getId());
+        //发送消息者所在的companyId
+        message.setSendCompanyId(request.getCurrentCompanyId());
+        //发送者id
+        message.setCreateBy(request.getAccountId());
+        //接收者所在的组织id
+        message.setCompanyId(request.getCompanyId());
+        //项目id
+        message.setProjectId(request.getProjectId());
+        //截止时间
+        message.setDeadline(DateUtils.date2Str(request.getEndTime(), DateUtils.date_sdf2));
+        //使用原有发送消息语句，使用TaskName代替ProjectName
+        message.setTaskName(getProjectName(message.getProjectId()));
+        //交付说明
+        message.setRemarks(request.getDescription());
+        //交付名称
+        message.setMessageTitle(request.getTaskName());
+        //负责人名字列表
+        message.setMessageContent(extra);
+        //是交付确认还是上传
+        message.setMessageType(messageType);
+        return message;
     }
 
-    private boolean isTrue(String isSelected){
-        return "1".equals(isSelected);
-    }
 }
