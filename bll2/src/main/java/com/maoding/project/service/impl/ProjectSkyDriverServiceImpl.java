@@ -936,7 +936,6 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
                 //如果任务目录不存在，创建任务目录
                 if (taskDir == null) {
                     taskDir = createTaskDirFrom(rootDir, issue, request.getCreateBy());
-                    this.projectSkyDriverDao.insert(taskDir);
                 }
                 nodeId = taskDir.getId();
 
@@ -969,9 +968,10 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
     //查找某公司，某项目的交付文件根目录，如果没有，则创建一个
     private ProjectSkyDriveEntity getDeliverRoot(DeliverEditDTO request){
         final String deliverRoot = "交付文件";
+        final int deliverRootOrder = 2;
         ProjectSkyDriveEntity rootDir = getRoot(request.getProjectId(),request.getCompanyId(),deliverRoot);
         if (!isValid(rootDir)){
-            rootDir = createRootDir(request.getProjectId(),request.getCompanyId(),deliverRoot,request.getCreateBy());
+            rootDir = createRootDir(request.getProjectId(),request.getCompanyId(),deliverRoot,request.getCreateBy(),deliverRootOrder);
         }
         return rootDir;
     }
@@ -994,7 +994,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
     }
 
     //创建名字为fileName的项目根目录
-    private ProjectSkyDriveEntity createRootDir(String projectId, String companyId, String fileName, String createBy){
+    private ProjectSkyDriveEntity createRootDir(String projectId, String companyId, String fileName, String createBy, int order){
         ProjectSkyDriveEntity rootDir = new ProjectSkyDriveEntity();
         rootDir.initEntity();
         rootDir.setSkyDrivePath(rootDir.getId());
@@ -1005,6 +1005,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         rootDir.setFileName(fileName);
         rootDir.setStatus("0");
         rootDir.setCreateBy(createBy);
+        rootDir.setParam4(order);
         projectSkyDriverDao.insert(rootDir);
         return rootDir;
     }
@@ -1464,9 +1465,10 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
     //查找某公司，某项目的设计文件根目录，如果没有，则创建一个
     private ProjectSkyDriveEntity getDesignRoot(SaveProjectTaskDTO request){
         final String designRoot = "设计文件";
+        final int designRootOrder = 1;
         ProjectSkyDriveEntity rootDir = getRoot(request.getProjectId(),request.getCompanyId(),designRoot);
         if (!isValid(rootDir)){
-            rootDir = createRootDir(request.getProjectId(),request.getCompanyId(),designRoot,request.getAccountId());
+            rootDir = createRootDir(request.getProjectId(),request.getCompanyId(),designRoot,request.getAccountId(),designRootOrder);
         }
         return rootDir;
     }
