@@ -2210,7 +2210,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
 
         //创建负责人任务，用于标记上传任务完成
         //创建任务同时发送一条消息
-        saveMyTaskFrom(request, deliver, request.getChangedResponseList(), MyTaskEntity.DELIVER_CONFIRM_FINISH, "");
+        saveMyTaskFrom(deliver, request.getChangedResponseList(), MyTaskEntity.DELIVER_CONFIRM_FINISH, "");
 
         //创建上传者列表，默认为新增加的负责人
         List<ResponseEditDTO> companyUserUploaderList = new ArrayList<>();
@@ -2245,7 +2245,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
 
 
         //创建上传者任务，用于快速跳转到上传目录
-        saveMyTaskFrom(request, deliver, companyUserUploaderList, MyTaskEntity.DELIVER_EXECUTE,responseNameBuilder.toString());
+        saveMyTaskFrom(deliver, companyUserUploaderList, MyTaskEntity.DELIVER_EXECUTE,responseNameBuilder.toString());
 
         //如果设置了状态，进行状态修改
         if (request.getIsFinished() != null){
@@ -2329,9 +2329,13 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         entity.setCompanyId(request.getCompanyId());
         entity.setProjectId(request.getProjectId());
         entity.setTaskType(actionType);
-        entity.setHandlerId(request.getCreateBy());
+        entity.setParam1(request.getIssueId());
+        CompanyUserEntity companyUser = companyUserDao.getCompanyUserByUserIdAndCompanyId(request.getCompanyId(),request.getAccountId());
+        if (companyUser != null){
+            entity.setHandlerId(companyUser.getId());
+        }
         entity.setCreateBy(request.getCreateBy());
-        entity.setSendCompanyId(request.getCompanyId());
+        entity.setSendCompanyId(request.getCurrentCompanyId());
         entity.setCreateDate(new Date());
         entity.setDeadline(request.getEndTime());
         entity.setTargetId(request.getNodeId());
@@ -2348,7 +2352,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
 
     //根据交付信息创建myTask记录
     //taskType: 要创建的myTask类型，DELIVER_CONFIRM_FINISH:确认交付文件上传完毕, DELIVER_EXECUTE:进行交付文件上传
-    private List<MyTaskEntity> saveMyTaskFrom(DeliverEditDTO request, DeliverEntity deliver,
+    private List<MyTaskEntity> saveMyTaskFrom(DeliverEntity deliver,
                                               List<ResponseEditDTO> changedResponseList,int myTaskType, String responseStr){
         List<MyTaskEntity> entityList = new ArrayList<>();
         if (!ObjectUtils.isEmpty(changedResponseList)) {
@@ -2369,7 +2373,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                     entity.setTaskContent(deliver.getTaskContent());
                     entityList.add(entity);
                     //发送一条消息
-                    sendDeliverMessage(request,response,entity,responseStr);
+                    sendDeliverMessage(deliver,response,entity,responseStr);
                 }
             });
         }
@@ -2378,14 +2382,14 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
     }
 
     //发送一条消息
-    private void sendDeliverMessage(DeliverEditDTO request, ResponseEditDTO response, MyTaskEntity myTask, String responseStr){
+    private void sendDeliverMessage(DeliverEntity deliver, ResponseEditDTO response, MyTaskEntity myTask, String responseStr){
         CompanyUserEntity companyUser = companyUserDao.selectById(myTask.getHandlerId());
         if (companyUser != null){
             BaseShowDTO receiver = new BaseShowDTO(companyUser.getUserId(), response.getName());
             int messageType = (MyTaskEntity.DELIVER_CONFIRM_FINISH == myTask.getTaskType()) ?
                     SystemParameters.MESSAGE_TYPE_DELIVER_CONFIRM : SystemParameters.MESSAGE_TYPE_DELIVER_UPLOAD;
             MessageEntity message = messageService.createDeliverChangedMessageFrom(
-                    request,receiver,myTask,messageType,responseStr);
+                    deliver,receiver,myTask,messageType,responseStr);
             messageService.sendMessage(message);
         }
     }

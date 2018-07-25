@@ -14,6 +14,7 @@ import com.maoding.core.util.BeanUtilsEx;
 import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.JsonUtils;
 import com.maoding.core.util.StringUtil;
+import com.maoding.deliver.entity.DeliverEntity;
 import com.maoding.dynamic.dao.ZInfoDAO;
 import com.maoding.financial.dao.ExpAuditDao;
 import com.maoding.financial.dao.ExpMainDao;
@@ -34,7 +35,6 @@ import com.maoding.org.dao.CompanyUserDao;
 import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.dao.ProjectProcessNodeDao;
-import com.maoding.project.dto.DeliverEditDTO;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.entity.ProjectProcessNodeEntity;
 import com.maoding.projectcost.dao.ProjectCostPaymentDetailDao;
@@ -1567,7 +1567,7 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
     }
 
     /**
-     * @param request 交付申请
+     * @param deliver 总交付任务
      * @param receiver 接受者信息
      * @param myTask 相关个人任务
      * @param messageType 消息类型
@@ -1579,32 +1579,36 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
      **/
 
     @Override
-    public MessageEntity createDeliverChangedMessageFrom(DeliverEditDTO request, BaseShowDTO receiver, MyTaskEntity myTask,
-                                                                   int messageType, String extra) {
+    public MessageEntity createDeliverChangedMessageFrom(DeliverEntity deliver, BaseShowDTO receiver, MyTaskEntity myTask,
+                                                         int messageType, String extra) {
         MessageEntity message = new MessageEntity();
         message.initEntity();
         //接收者id
         message.setUserId(receiver.getId());
         //接收者名字
         message.setUserName(receiver.getName());
-        //如果是交付任务确认，targetId为签发任务编号，否则是交付目录id
-        message.setTargetId(myTask.getId());
+        //如果是交付任务确认，targetId为总交付任务编号，否则是交付目录id
+        if (isDeliverConfirm(myTask)) {
+            message.setTargetId(myTask.getId());
+        } else {
+            message.setTargetId(deliver.getTargetId());
+        }
         //发送消息者所在的companyId
-        message.setSendCompanyId(request.getCurrentCompanyId());
+        message.setSendCompanyId(deliver.getSendCompanyId());
         //发送者id
-        message.setCreateBy(request.getAccountId());
+        message.setCreateBy(deliver.getCreateBy());
         //接收者所在的组织id
-        message.setCompanyId(request.getCompanyId());
+        message.setCompanyId(deliver.getCompanyId());
         //项目id
-        message.setProjectId(request.getProjectId());
+        message.setProjectId(deliver.getProjectId());
         //截止时间
-        message.setDeadline(DateUtils.date2Str(request.getEndTime(), DateUtils.date_sdf2));
+        message.setDeadline(DateUtils.date2Str(deliver.getDeadline(), DateUtils.date_sdf2));
         //使用原有发送消息语句，使用TaskName代替ProjectName
         message.setTaskName(getProjectName(message.getProjectId()));
         //交付说明
-        message.setRemarks(request.getDescription());
+        message.setRemarks(deliver.getTaskContent());
         //交付名称
-        message.setMessageTitle(request.getTaskName());
+        message.setMessageTitle(deliver.getTaskTitle());
         //负责人名字列表
         message.setMessageContent(extra);
         //是交付确认还是上传
@@ -1612,4 +1616,7 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
         return message;
     }
 
+    private boolean isDeliverConfirm(MyTaskEntity myTask){
+        return MyTaskEntity.DELIVER_CONFIRM_FINISH == myTask.getTaskType();
+    }
 }

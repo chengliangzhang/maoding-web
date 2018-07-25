@@ -3,11 +3,11 @@ package com.maoding.message.service;
 import com.maoding.core.base.dto.BaseShowDTO;
 import com.maoding.core.base.service.BaseService;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.deliver.entity.DeliverEntity;
 import com.maoding.message.dto.QueryMessageDTO;
 import com.maoding.message.dto.SendMessageDTO;
 import com.maoding.message.entity.MessageEntity;
 import com.maoding.mytask.entity.MyTaskEntity;
-import com.maoding.project.dto.DeliverEditDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -82,7 +82,7 @@ public interface MessageService extends BaseService<MessageEntity> {
     List<MessageEntity> getMessageByParam(QueryMessageDTO dto);
 
     /**
-     * @param request 交付申请
+     * @param deliver 总交付任务
      * @param receiver 接受者信息
      * @param myTask 相关个人任务
      * @param messageType 消息类型
@@ -92,8 +92,8 @@ public interface MessageService extends BaseService<MessageEntity> {
      * @date 2018/7/17
      * @description 根据个人任务创建消息
      **/
-    MessageEntity createDeliverChangedMessageFrom(DeliverEditDTO request, BaseShowDTO receiver, MyTaskEntity myTask,
-                                                         int messageType, String extra);
+    MessageEntity createDeliverChangedMessageFrom(DeliverEntity deliver, BaseShowDTO receiver, MyTaskEntity myTask,
+                                                  int messageType, String extra);
 
     void initOldData();
 
