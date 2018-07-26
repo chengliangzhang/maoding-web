@@ -22,7 +22,11 @@
             <artifactId>bll2</artifactId>
             <version>1.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.designplus</groupId>
+            <artifactId>activiti</artifactId>
+            <version>1.0</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -313,6 +317,33 @@
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+
+
+        <!--<dependency>-->
+            <!--<groupId>org.activiti</groupId>-->
+            <!--<artifactId>activiti-spring</artifactId>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.activiti</groupId>-->
+            <!--<artifactId>activiti-engine</artifactId>-->
+        <!--</dependency>-->
+
+        <!--&lt;!&ndash; UUID &ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>com.fasterxml.uuid</groupId>-->
+            <!--<artifactId>java-uuid-generator</artifactId>-->
+        <!--</dependency>-->
+        <!-- GENERAL UTILS end -->
+
     </dependencies>
 
     <build>

@@ -1,3 +1,16 @@
+-- 调整已有网盘目录次序
+DROP PROCEDURE IF EXISTS `setSkyDriveOrder`;
+CREATE PROCEDURE `setSkyDriveOrder`()
+BEGIN
+  update maoding_web_project_sky_drive set param4 = 0 where pid is null and file_name = '设计依据';
+  update maoding_web_project_sky_drive set param4 = 1 where pid is null and file_name = '设计文件';
+  update maoding_web_project_sky_drive set param4 = 2 where pid is null and file_name = '交付文件';
+  update maoding_web_project_sky_drive set param4 = 3 where pid is null and file_name = '设计成果';
+  update maoding_web_project_sky_drive set param4 = 4 where pid is null and file_name = '归档文件';
+END;
+call setSkyDriveOrder();
+DROP PROCEDURE IF EXISTS `setSkyDriveOrder`;
+
 -- 创建协同服务和客户端版本
 DROP PROCEDURE IF EXISTS `createVersion`;
 CREATE PROCEDURE `createVersion`()

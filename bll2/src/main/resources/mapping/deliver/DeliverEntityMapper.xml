@@ -133,48 +133,93 @@
     <result column="create_by_name" property="createByName"/>
     <result column="create_date" property="createDate"/>
     <result column="is_finished" property="isFinished"/>
-    <result column="target_id" property="targetId"/>
+    <result column="node_id" property="targetId"/>
     <collection property="responseList" ofType="com.maoding.deliver.dto.ResponseDTO">
       <id column="response_id" property="id"/>
-      <result column="response_name" property="name"/>
       <result column="response_is_finished" property="isFinished"/>
     </collection>
   </resultMap>
 
+  <!-- 查询交付任务的过滤器 -->
+  <sql id="FilterByMyTaskQuery">
+    <if test="id != null">
+      and (deliver_task.id = #{id})
+    </if>
+  </sql>
+
   <!-- 查询交付任务，包括负责人列表 -->
   <select id="listDeliver" parameterType="com.maoding.mytask.dto.MyTaskQueryDTO" resultMap="DeliverMap">
     select
-        deliver_task.id
-        ,deliver_task.task_title as name
-        ,deliver_task.task_content as description
-        ,deliver_task.deadline as end_time
-        ,deliver_task.create_by
-        ,deliver_task.create_date
-        ,if(deliver_task.complete_date is null,'0','1') as is_finished
-        ,deliver_task.target_id
-        ,company_user.id as response_id
-        ,user_response.user_name as response_name
-        ,if(response_task.complete_date is null,'0','1') as response_is_finished
-        ,user_create.user_name as create_by_name
+      deliver_task.id
+      ,deliver_task.task_title as name
+      ,deliver_task.task_content as description
+      ,deliver_task.deadline as end_time
+      ,deliver_task.create_by
+      ,deliver_task.create_date
+      ,if(deliver_task.complete_date is null,'0','1') as is_finished
+      ,user_create.user_name as create_by_name
+      ,deliver_task.target_id as node_id
+      ,node.task_id as issue_id
+      ,response_task.handler_id as response_id
+      ,company_user.user_name as response_company_user_name
+      ,company_user.user_id as response_user_id
+      ,user_response.cellphone as response_cell_phone
+      ,user_response.user_name as response_user_name
+      ,user_response.email as response_email
+      ,if(response_task.complete_date is null,'0','1') as response_is_finished
+      ,concat(response_attach.file_group,'/',response_attach.attach_path) as response_file_full_path
+      ,if(partner_list.nick_name is null or partner_list.nick_name='',
+      company_list.company_name,partner_list.nick_name) as response_company_alias_name
+      ,group_concat(
+        distinct
+        (case member_list.member_type
+          when 0 then '立项人'
+          when 1 then '经营负责人'
+          when 2 then '设计负责人'
+          when 3 then '任务负责人'
+          when 4 then '设计人'
+          when 5 then '校对人'
+          when 6 then '审核人'
+          when 7 then '经营助理'
+          when 8 then '设计助理'
+          else ''
+        end) order by member_list.member_type asc
+        separator '/'
+      ) as `response_title`
     from md_list_deliver deliver_task
-        inner join maoding_web_my_task response_task on (response_task.target_id = deliver_task.id and response_task.task_type = 26)
-        inner join maoding_web_company_user company_user on (company_user.id = response_task.handler_id)
-        inner join maoding_web_account user_response on (user_response.id = company_user.user_id)
-        inner join maoding_web_account user_create on (user_create.id = deliver_task.create_by)
-        <if test="taskId != null or nodeId != null">
-          inner join maoding_web_project_sky_drive node on (
-              deliver_task.target_id = node.id
-              <if test="nodeId != null">
-                and node.id = #{nodeId}
-              </if>
-            )
-          <if test="taskId != null">
-            inner join maoding_web_project_task issue_task on (issue_task.id = node.task_id
-              and issue_task.id = #{taskId})
-          </if>
+      inner join maoding_web_my_task response_task on (response_task.target_id = deliver_task.id and response_task.task_type = 26)
+      inner join maoding_web_company_user company_user on (company_user.id = response_task.handler_id)
+      inner join maoding_web_account user_response on (user_response.id = company_user.user_id)
+      inner join maoding_web_account user_create on (user_create.id = deliver_task.create_by)
+      inner join maoding_web_project_sky_drive node on (
+        deliver_task.target_id = node.id
+        <if test="nodeId != null">
+          and node.id = #{nodeId}
         </if>
+      )
+      <if test="taskId != null">
+        inner join maoding_web_project_task issue_task on (issue_task.id = node.task_id
+        and issue_task.id = #{taskId}
+        )
+      </if>
+      inner join maoding_web_project_member member_list on (
+        member_list.deleted = 0
+        and member_list.account_id = company_user.user_id
+      )
+      inner JOIN maoding_web_company company_list on (
+        company_list.id = deliver_task.company_id
+      )
+      left join maoding_web_user_attach response_attach on (
+        response_attach.attach_type = 5
+        and response_attach.user_id = user_response.id
+      )
+      left join maoding_web_business_partner partner_list on (
+        partner_list.type = 3
+        and partner_list.id = deliver_task.company_id
+      )
     where
-        deliver_task.param4 = '0'
+      deliver_task.param4 = '0'
+      <include refid="FilterByMyTaskQuery"/>
   </select>
 
   <!-- 删除交付任务，包括所有负责人的确认完成和执行任务 -->
