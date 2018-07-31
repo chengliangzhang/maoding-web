@@ -21,7 +21,6 @@
     <result column="task_content" property="taskContent" jdbcType="LONGVARCHAR" />
     <result column="deadline" property="deadline" jdbcType="DATE" />
     <result column="complete_date" property="completeDate" jdbcType="DATE"/>
-    <result column="start_date" property="startDate" jdbcType="DATE"/>
     <result column="send_company_id" property="sendCompanyId" jdbcType="VARCHAR" />
   </resultMap>
 

@@ -35,8 +35,17 @@ import java.util.Map;
      */
     ProductTaskInfoDTO getProductTaskInfo(QueryProjectTaskDTO query) throws Exception;
 
-
     /**
+     * @author  张成亮
+     * @date    2018/7/31
+     * @description     获取生产任务设计管理人员信息，包括设计负责人，设计助理等
+     * @param   query 生产任务查询信息
+     * @return  生产任务设计管理人员信息
+     **/
+    DesignManagerDTO getDesignManagerInfo(QueryProjectTaskDTO query) throws Exception;
+
+
+        /**
      * 查询经营列表
      * @param companyId
      * @param projectId

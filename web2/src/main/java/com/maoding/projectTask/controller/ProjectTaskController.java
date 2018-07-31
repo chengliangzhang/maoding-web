@@ -245,6 +245,25 @@ public class ProjectTaskController extends BaseController {
         return this.ajaxResponseSuccess().setData(resultMap);
     }
 
+    /**
+     * @author  张成亮
+     * @date    2018/7/31
+     * @description     获取生产任务设计管理人员信息，包括设计负责人，设计助理等
+     **/
+    @RequestMapping(value = "/getDesignManagerInfo", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage getDesignManagerInfo(@RequestBody QueryProjectTaskDTO query) throws Exception {
+        if(StringUtil.isNullOrEmpty(query.getCompanyId())){
+            query.setCompanyId(this.currentCompanyId);
+        }
+        if(StringUtil.isNullOrEmpty(query.getAccountId())){
+            query.setAccountId(this.currentUserId);
+        }
+
+        DesignManagerDTO info = projectTaskService.getDesignManagerInfo(query);
+        return ajaxResponseSuccess().setData(info);
+    }
+
 
     /**
      * 方法描述：获取生产界面数据

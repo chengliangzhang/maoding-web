@@ -14,6 +14,7 @@ DROP PROCEDURE IF EXISTS `clearTables`;
 DROP FUNCTION IF EXISTS `getIssueId`;
 DROP FUNCTION IF EXISTS `getPath`;
 DROP FUNCTION IF EXISTS `getTaskPath`;
+DROP FUNCTION IF EXISTS `updateTables`;
 
 --  清理无效表
 DROP TABLE IF EXISTS `maoding_const`;
@@ -30,7 +31,7 @@ DROP TABLE IF EXISTS `sys_maoding_web_org_relation`;
 DROP TABLE IF EXISTS `sys_maoding_web_user`;
 DROP TABLE IF EXISTS `sys_maoding_web_user_admin`;
 
---清理无效的im表
+-- 清理无效的im表
 DROP TABLE IF EXISTS `maoding_web_im_error_user`;
 DROP TABLE IF EXISTS `maoding_web_im_chat_history`;
 DROP TABLE IF EXISTS `maoding_web_im_group`;
@@ -50,7 +51,6 @@ DROP VIEW IF EXISTS `maoding_storage_copy`;
 DROP VIEW IF EXISTS `maoding_storage_old_node_copy`;
 DROP VIEW IF EXISTS `maoding_range`;
 DROP VIEW IF EXISTS `maoding_permission`;
--- DROP VIEW IF EXISTS `maoding_role`;
 DROP VIEW IF EXISTS `maoding_role_permission`;
 DROP VIEW IF EXISTS `maoding_role_permission_all`;
 DROP VIEW IF EXISTS `maoding_task`;
@@ -77,8 +77,10 @@ DROP VIEW IF EXISTS `maoding_storage_range`;
 DROP VIEW IF EXISTS `maoding_storage_storage`;
 DROP VIEW IF EXISTS `maoding_storage_task`;
 DROP VIEW IF EXISTS `maoding_task_node`;
+DROP VIEW IF EXISTS `md_web_role`;
 
 -- -- 清理无用字段
+-- md_tree_storage
 DROP PROCEDURE IF EXISTS `clearFields`;
 CREATE PROCEDURE `clearFields`()
 BEGIN
@@ -89,8 +91,10 @@ BEGIN
 
 END;
 call clearFields();
+DROP PROCEDURE IF EXISTS `clearFields`;
 
 -- -- 清理无效数据
+-- 协同文件
 DROP PROCEDURE IF EXISTS `clearData`;
 CREATE PROCEDURE `clearData`()
 BEGIN
@@ -99,15 +103,15 @@ BEGIN
   delete from md_tree_storage;
 END;
 call clearData();
+DROP PROCEDURE IF EXISTS `clearData`;
+
+-- 已删除的SkyDrive文件
+DROP PROCEDURE IF EXISTS `clearData`;
+CREATE PROCEDURE `clearData`()
+  BEGIN
+    delete from maoding_web_project_sky_drive where pid is null and status != '0';
+  END;
+call clearData();
+DROP PROCEDURE IF EXISTS `clearData`;
 
 
-
-
--- 清理已删除的文件
-DROP PROCEDURE IF EXISTS `clearSkyDrive`;
-CREATE PROCEDURE `clearSkyDrive`()
-BEGIN
-  delete from maoding_web_project_sky_drive where pid is null and status != '0';
-END;
-call clearSkyDrive();
-DROP PROCEDURE IF EXISTS `clearSkyDrive`;

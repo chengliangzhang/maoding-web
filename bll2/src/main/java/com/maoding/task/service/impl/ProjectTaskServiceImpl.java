@@ -46,8 +46,6 @@ import com.maoding.project.service.ProjectProcessService;
 import com.maoding.project.service.ProjectService;
 import com.maoding.project.service.ProjectSkyDriverService;
 import com.maoding.project.service.ProjectTaskResponsibleService;
-import com.maoding.projectcost.dao.ProjectCostDao;
-import com.maoding.projectcost.dto.ProjectCostDTO;
 import com.maoding.projectcost.service.ProjectCostService;
 import com.maoding.projectmember.dto.ProjectMemberDTO;
 import com.maoding.projectmember.entity.ProjectMemberEntity;
@@ -1519,6 +1517,40 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         }
     }
 
+    /**
+     * @param query 生产任务查询信息
+     * @return 生产任务设计管理人员信息
+     * @author 张成亮
+     * @date 2018/7/31
+     * @description 获取生产任务设计管理人员信息，包括设计负责人，设计助理等
+     **/
+    @Override
+    public DesignManagerDTO getDesignManagerInfo(QueryProjectTaskDTO query) throws Exception {
+        DesignManagerDTO info = new DesignManagerDTO();
+
+        //获取输入信息
+        String projectId = query.getProjectId();
+        String companyId = query.getCompanyId();
+        String accountId = query.getAccountId();
+
+        // 获取设计负责人信息
+        ProjectMemberDTO managerEntity = this.projectMemberService.getDesignManagerDTO(projectId, companyId);
+        if (managerEntity == null) {
+            managerEntity = new ProjectMemberDTO();
+        }
+
+        //设置是否可以设置经营负责人的权限
+        if (permissionService.isDesignManager(companyId, accountId)) {
+            managerEntity.setIsUpdateOperator(1);
+        }
+
+        info.setProjectManager(managerEntity);
+
+        //设置设计助理信息
+        info.setAssistant(this.projectMemberService.getProjectMemberByParam(projectId, companyId, ProjectMemberType.PROJECT_DESIGNER_MANAGER_ASSISTANT, null));
+
+        return info;
+    }
 
     @Override
     public ProductTaskInfoDTO getProductTaskInfo(QueryProjectTaskDTO query) throws Exception {
@@ -1547,22 +1579,22 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         //查询乙方
 //        ProjectManagerDataDTO partB = getProjectTaskPartBCompany(param);
 
-        ProjectMemberDTO managerEntity = this.projectMemberService.getDesignManagerDTO(projectId, companyId);
-        if (managerEntity == null) {
-            managerEntity = new ProjectMemberDTO();
-        }
-        //设置是否可以设置经营负责人的权限
-        if (permissionService.isDesignManager(companyId, accountId)) {
-            managerEntity.setIsUpdateOperator(1);
-        }
-        info.setManagerId(managerEntity.getCompanyUserId() != null ? managerEntity.getCompanyUserId() : "");
+//        ProjectMemberDTO managerEntity = this.projectMemberService.getDesignManagerDTO(projectId, companyId);
+//        if (managerEntity == null) {
+//            managerEntity = new ProjectMemberDTO();
+//        }
+//        //设置是否可以设置经营负责人的权限
+//        if (permissionService.isDesignManager(companyId, accountId)) {
+//            managerEntity.setIsUpdateOperator(1);
+//        }
+//        info.setManagerId(managerEntity.getCompanyUserId() != null ? managerEntity.getCompanyUserId() : "");
         info.setProjectDesignContentShowList(projectDesignContentShowList);
 //        info.setProjectManagerDataDTOList(projectManagerDataDTOList);
 //        info.setPartB(partB);
         info.setProjectCreateBy(null != projectEntity ? projectEntity.getCreateBy() : null);
         info.setProjectCompanyId(null != projectEntity ? projectEntity.getCompanyId() : null);
-        info.setProjectManager(managerEntity);
-        info.setAssistant(this.projectMemberService.getProjectMemberByParam(projectId, companyId, ProjectMemberType.PROJECT_DESIGNER_MANAGER_ASSISTANT, null));
+//        info.setProjectManager(managerEntity);
+//        info.setAssistant(this.projectMemberService.getProjectMemberByParam(projectId, companyId, ProjectMemberType.PROJECT_DESIGNER_MANAGER_ASSISTANT, null));
         info.setProjectName(projectEntity.getProjectName());
         info.setDataCompanyId(companyId);
         return info;
