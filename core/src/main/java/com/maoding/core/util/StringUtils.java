@@ -1,12 +1,145 @@
 package com.maoding.core.util;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 
 /**
- * Created by Wuwq on 2016/11/14.
+ * 深圳市设计同道技术有限公司
+ * @author : 张成亮
+ * @date   : 2018/7/31
+ * @package: StringUtils
+ * @description : 字符串类通用方法
  */
 public class StringUtils extends org.apache.commons.lang3.StringUtils {
+    /** 日志对象 */
+    private static final Logger log = LoggerFactory.getLogger(StringUtils.class);
+
     private static final String CHARSET_NAME = "UTF-8";
+
+    /** 时间戳转换为字符串的各种格式 */
+    public static final String STAMP_FORMAT_COMPACT_DATE = "yyyyMMdd";
+    public static final String STAMP_FORMAT_COMPACT_DATE_TIME = "yyyyMMddHHmmss";
+    public static final String STAMP_FORMAT_DATE = "yyyy-MM-dd";
+    public static final String STAMP_FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
+    public static final String STAMP_FORMAT_DATE_TIME_MS = "yyyy-MM-dd HH:mm:ss.sss";
+    public static final String DEFAULT_STAMP_FORMAT = STAMP_FORMAT_DATE;
+
+    /** json转换器 */
+    private static ObjectMapper objectMapper = null;
+    private static ObjectMapper getObjectMapper() {
+        if (objectMapper == null){
+            objectMapper = new ObjectMapper();
+            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+            objectMapper.setDateFormat(new SimpleDateFormat(DEFAULT_STAMP_FORMAT));
+            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+        }
+        return objectMapper;
+    }
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/31
+     * @description     比较两个字符串是否相同
+     * @param   s1 第一个字符串
+     * @param   s2 第二个字符串
+     * @return 相同返回true，不相同返回false
+     **/
+    public static boolean isSame(String s1, String s2){
+        return equals(s1,s2);
+    }
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/31
+     * @description     比较两个字符串是否不相同
+     * @param   s1 第一个字符串
+     * @param   s2 第二个字符串
+     * @return 相同返回false，不相同返回true
+     **/
+    public static boolean isNotSame(String s1,String s2){
+        return !equals(s1,s2);
+    }
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/31
+     * @description     获取输入字符串，如果输入字符串为空，返回默认字符串
+     * @param   s 输入字符串
+     * @param   defaultStr 默认字符串
+     * @return  输入字符串或默认字符串
+     **/
+    public static String getStringOrDefault(String s, String defaultStr){
+        return (isEmpty(s)) ? defaultStr : s;
+    }
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/31
+     * @description     获取字符串中第n个字符，如果超出范围，返回默认字符
+     * @param   s 输入字符串
+     * @param   n 要返回的字符所在位置
+     * @param   defaultCh 默认字符
+     * @return  字符串中第n个字符或默认字符
+     **/
+    public static Character getChar(String s, int n, Character defaultCh){
+        return (isNotEmpty(s) && (s.length() >= n)) ? getCharOrDefault(s.charAt(n-1),defaultCh) : defaultCh;
+    }
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/31
+     * @description     获取字符串中第n个字符，如果超出范围，返回null
+     * @param   s 输入字符串
+     * @param   n 要返回的字符所在位置
+     * @return  字符串中第n个字符或null
+     **/
+    public static Character getChar(String s, int n){
+        return getChar(s,n,null);
+    }
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/31
+     * @description     获取输入字符或默认字符
+     * @param   ch 输入字符
+     * @param   defaultCh 默认字符
+     * @return  如果输入属于unicode字符集，返回输入字符，否则返回默认字符
+     **/
+    public static Character  getCharOrDefault(Character ch, Character defaultCh){
+        return (Character.isDefined(ch)) ? ch : defaultCh;
+    }
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/31
+     * @description     把对象转为json字符串
+     * @param   obs 对象序列
+     * @return  json字符串
+     **/
+    public static String toJsonString(Object... obs){
+        if (obs == null) {
+            return "";
+        }
+
+        StringBuilder s = new StringBuilder();
+        for (Object o : obs) {
+            try {
+                s.append(getObjectMapper().writeValueAsString(o));
+            } catch (JsonProcessingException e) {
+                log.warn("Json转换时出现错误：", e);
+            }
+        }
+        return s.toString();
+    }
 
     /**
      * 转换为字节数组
