@@ -1,18 +1,18 @@
 package com.maoding.activiti.dto;
 
 
-import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.dto.CoreQueryDTO;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author  张成亮
  * @date    2018/7/27
  * @description     执行任务查询条件
  **/
-public class WorkTaskQueryDTO extends CoreQueryDTO<WorkTaskDTO> {
+public class WorkTaskQueryDTO extends CoreQueryDTO {
+    /** id: 工作流执行任务编号 */
+
     /** 执行人员的编号 */
     private String userId;
     /** 签发任务编号 */

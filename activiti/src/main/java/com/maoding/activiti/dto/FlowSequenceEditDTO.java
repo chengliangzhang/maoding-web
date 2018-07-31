@@ -6,6 +6,8 @@ package com.maoding.activiti.dto;
  * @description     流程的连接线编辑信息
  **/
 public class FlowSequenceEditDTO extends FlowElementEditDTO {
+    /** id: 连接线编号 */
+
     /** 起始流程元素编号 */
     private String startFlowId;
     /** 终止流程元素编号 */

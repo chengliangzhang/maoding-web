@@ -11,7 +11,9 @@ import com.maoding.core.base.dto.CoreEditDTO;
  * @description : 流程元素（包括任务节点、连接线、判断节点等）的编辑信息
  */
 public class FlowElementEditDTO extends CoreEditDTO {
-    /** 元素名称 */
+    /** id:流程内节点编号，例如：用户任务、序列、网关的编号 */
+
+    /** 流程内节点元素名称 */
     private String name;
 
     public String getName() {

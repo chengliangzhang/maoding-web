@@ -7,5 +7,6 @@ package com.maoding.activiti.dto;
  * @date : 2018/7/30
  * @description :
  */
-public class FlowTaskQueryDTO extends FlowElementQueryDTO<FlowTaskDTO> {
+public class FlowTaskQueryDTO extends FlowElementQueryDTO {
+    /** id: 流程任务编号 */
 }

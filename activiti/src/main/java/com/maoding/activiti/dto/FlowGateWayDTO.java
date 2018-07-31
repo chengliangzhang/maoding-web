@@ -5,7 +5,8 @@ package com.maoding.activiti.dto;
  *
  * @author : 张成亮
  * @date : 2018/7/30
- * @description :
+ * @description : 网关节点信息
  */
 public class FlowGateWayDTO extends FlowElementDTO {
+    /** id:网关编号 */
 }

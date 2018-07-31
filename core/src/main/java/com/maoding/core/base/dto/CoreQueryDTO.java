@@ -11,7 +11,7 @@ import java.util.List;
  * @description : 前端发送给后台的用于查询信息的条件
  *      当调用list、count、listPage等方法时，进行实际的数据查找
  */
-public abstract class CoreQueryDTO<T extends CoreDTO> extends BaseDTO implements Serializable,Cloneable {
+public abstract class CoreQueryDTO extends BaseDTO implements Serializable,Cloneable {
     /** 要查找多个元素时，目标元素编号列表 */
     private List<String> idList;
     /** 分页查找时指定的页码，如果不进行分页查找，设置为null */

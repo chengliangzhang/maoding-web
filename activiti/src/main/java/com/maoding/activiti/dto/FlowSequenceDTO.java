@@ -5,30 +5,32 @@ package com.maoding.activiti.dto;
  *
  * @author : 张成亮
  * @date : 2018/7/30
- * @description :
+ * @description : 流程的连接线信息
  */
 public class FlowSequenceDTO extends FlowElementDTO {
+    /** id: 连接线编号 */
+
     /** 起始流程元素编号 */
-    private String startFlowId;
+    private String startFlowElementId;
     /** 终止流程元素编号 */
-    private String endFlowId;
+    private String endFlowElementId;
     /** 执行条件 */
     private String condition;
 
-    public String getStartFlowId() {
-        return startFlowId;
+    public String getStartFlowElementId() {
+        return startFlowElementId;
     }
 
-    public void setStartFlowId(String startFlowId) {
-        this.startFlowId = startFlowId;
+    public void setStartFlowElementId(String startFlowElementId) {
+        this.startFlowElementId = startFlowElementId;
     }
 
-    public String getEndFlowId() {
-        return endFlowId;
+    public String getEndFlowElementId() {
+        return endFlowElementId;
     }
 
-    public void setEndFlowId(String endFlowId) {
-        this.endFlowId = endFlowId;
+    public void setEndFlowElementId(String endFlowElementId) {
+        this.endFlowElementId = endFlowElementId;
     }
 
     public String getCondition() {

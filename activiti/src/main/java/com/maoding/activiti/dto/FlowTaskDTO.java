@@ -12,6 +12,8 @@ import java.util.List;
  * @description :
  */
 public class FlowTaskDTO extends FlowElementDTO {
+    /** id: 流程任务编号 */
+
     /** 任务说明 */
     private String content;
     /** 允许执行任务的角色(group)列表 */

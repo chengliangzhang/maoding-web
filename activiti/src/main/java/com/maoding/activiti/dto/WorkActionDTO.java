@@ -11,8 +11,21 @@ import java.util.Map;
  * @description     工作流任务执行信息
  **/
 public class WorkActionDTO extends CoreEditDTO {
-    /** 工作流任务执行结果 */
+    /** id: 启动流程时，是流程编号，完成工作流任务时，是工作流执行任务编号 */
+
+    /** 是否通过 */
+    private String isPass;
+
+    /** 任务执行附加参数 */
     private Map<String,Object> resultMap;
+
+    public String getIsPass() {
+        return isPass;
+    }
+
+    public void setIsPass(String isPass) {
+        this.isPass = isPass;
+    }
 
     public Map<String, Object> getResultMap() {
         return resultMap;

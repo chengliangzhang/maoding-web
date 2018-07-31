@@ -9,4 +9,5 @@ import com.maoding.core.base.dto.CoreDTO;
  * @description     工作流任务信息
  **/
 public class WorkTaskDTO extends CoreDTO {
+    /** id: 工作流执行任务编号 */
 }

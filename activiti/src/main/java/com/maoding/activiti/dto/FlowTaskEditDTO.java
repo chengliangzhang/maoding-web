@@ -13,6 +13,8 @@ import java.util.List;
  * @description : 流程的任务节点编辑信息
  */
 public class FlowTaskEditDTO extends FlowElementEditDTO {
+    /** id: 流程任务编号 */
+
     /** 任务说明 */
     private String content;
     /** 允许执行任务的角色(group)列表 */
