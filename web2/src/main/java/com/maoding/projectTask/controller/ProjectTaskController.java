@@ -253,9 +253,6 @@ public class ProjectTaskController extends BaseController {
     @RequestMapping(value = "/getDesignManagerInfo", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage getDesignManagerInfo(@RequestBody QueryProjectTaskDTO query) throws Exception {
-        if(StringUtil.isNullOrEmpty(query.getCompanyId())){
-            query.setCompanyId(this.currentCompanyId);
-        }
         if(StringUtil.isNullOrEmpty(query.getCurrentCompanyId())){
             query.setCurrentCompanyId(this.currentCompanyId);
         }
