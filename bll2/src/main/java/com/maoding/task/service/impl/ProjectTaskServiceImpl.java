@@ -1535,6 +1535,21 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         String companyId = query.getCompanyId();
         String accountId = query.getAccountId();
 
+        //获取任务所属组织编号
+        if (!StringUtils.isEmpty(query.getId())) {
+            ProjectTaskEntity entity = projectTaskDao.selectById(query.getId());
+            if (entity != null){
+                info.setDataCompanyId(entity.getCompanyId());
+            }
+        }
+
+        //获取任务的组织信息
+        ProjectEntity projectEntity = this.projectDao.selectById(projectId);
+        if(projectEntity==null){
+            return info;
+        }
+        info.setOrgList(this.getSelectOrg(query,projectEntity));
+
         // 获取设计负责人信息
         ProjectMemberDTO managerEntity = this.projectMemberService.getDesignManagerDTO(projectId, companyId);
         if (managerEntity == null) {
@@ -1568,7 +1583,7 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         if(projectEntity==null){
             return info;
         }
-        info.setOrgList(this.getSelectOrg(query,projectEntity));
+//        info.setOrgList(this.getSelectOrg(query,projectEntity));
         String companyId = query.getCompanyId();//此句必须在getSelectOrg后面。因为在getSelectOrg中可能改变了companyId
 
         List<ProjectDesignTaskShow> projectDesignContentShowList = getProjectDesignTaskList(companyId, query.getProjectId(), currentCompanyUserId,query.getIssueTaskId());
