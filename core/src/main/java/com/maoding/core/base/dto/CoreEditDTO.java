@@ -21,11 +21,9 @@ import java.util.List;
  *
  *      accountId为修改者编号，对应数据库内createBy、updateBy等字段
  */
-public abstract class CoreEditDTO extends CoreDTO {
+public abstract class CoreEditDTO extends BaseDTO {
     /** 要编辑多个元素时，目标元素编号列表 */
     private List<String> idList;
-    /** 修改者编号 */
-    private String accountId;
 
     public List<String> getIdList() {
         return idList;
@@ -35,11 +33,4 @@ public abstract class CoreEditDTO extends CoreDTO {
         this.idList = idList;
     }
 
-    public String getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(String accountId) {
-        this.accountId = accountId;
-    }
 }

@@ -158,10 +158,25 @@
 
         <activiti.version>5.22.0</activiti.version>
         <hibernate.javax.persistence.version>1.0.1.Final</hibernate.javax.persistence.version>
+
+        <!-- kryo -->
+        <kryo.version>2.24.0</kryo.version>
     </properties>
 
+    <!-- 子模块必然用到的依赖库 -->
+    <dependencies>
+        <!-- kryo -->
+        <dependency>
+            <groupId>com.esotericsoftware.kryo</groupId>
+            <artifactId>kryo</artifactId>
+            <version>${kryo.version}</version>
+        </dependency>
+    </dependencies>
+
+    <!-- 子模块可能用到的依赖库 -->
     <dependencyManagement>
         <dependencies>
+            <!-- junit -->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
