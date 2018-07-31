@@ -326,7 +326,7 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         }
         CompanyUserEntity companyUser = this.companyUserDao.getCompanyUserByUserIdAndCompanyId(dto.getAccountId(), dto.getCurrentCompanyId());
         if (companyUser == null) {
-            AjaxMessage.failed("保存失败");
+            return AjaxMessage.failed("保存失败");
         }
         ProjectTaskEntity entity = new ProjectTaskEntity();
         BaseDTO.copyFields(dto, entity);
@@ -387,7 +387,7 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         projectSkyDriverService.createDesignerDir(dto,listIssueParentByTaskId(entity),designerList);
 
         //返回信息
-        return AjaxMessage.succeed("保存成功");
+        return AjaxMessage.succeed("保存成功").setData(entity.getId());
     }
 
     //获取生产任务所属的签发任务
@@ -501,8 +501,9 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
         AjaxMessage result = validateSaveProjectTask(dto);
         if (result != null) return result;
 
+        String issueTaskId = null;
         if (dto.getId() == null) {
-            return (saveNewIssueTask(dto, null) < 1) ? AjaxMessage.failed("操作失败") : AjaxMessage.succeed("操作成功");
+            return (saveNewIssueTask(dto, null) < 1) ? AjaxMessage.failed("操作失败") : AjaxMessage.succeed("操作成功").setData(dto.getId());
         } else {
             //已经发布的任务，修改名称，时间，任务描述，不需要发布
             if (!StringUtil.isNullOrEmpty(dto.getTaskName()) || !StringUtil.isNullOrEmpty(dto.getTaskRemark())) {
@@ -524,7 +525,7 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
                     param.put("accountId", dto.getAccountId());
                     projectSkyDriverDao.updateSkyDriveForFileName(param);
                 }
-                return AjaxMessage.succeed("操作成功");
+                return AjaxMessage.succeed("操作成功").setData(entity.getId());
             }
 
             ProjectTaskEntity entity = projectTaskDao.selectById(dto.getId());
@@ -533,7 +534,7 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
             //此处修改的内容
             //如果当期修改的任务是被签发过来的任务，或许是根任务，并且已发布的版本。则新增
             if (entity.getTaskType() == SystemParameters.TASK_TYPE_ISSUE || entity.getTaskType() == SystemParameters.TASK_TYPE_PHASE) {
-                return (saveNewIssueTask(dto, entity) < 1) ? AjaxMessage.failed("操作失败") : AjaxMessage.succeed("操作成功");
+                return (saveNewIssueTask(dto, entity) < 1) ? AjaxMessage.failed("操作失败") : AjaxMessage.succeed("操作成功").setData(dto.getId());
             }
             String tempCompanyId = entity.getCompanyId();
             BaseDTO.copyFields(dto, entity);
@@ -566,9 +567,10 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
                 }
                 saveTaskTime(entity, dto.getStartTime(), dto.getEndTime(), dto.getMemo(), SystemParameters.PROCESS_TYPE_NOT_PUBLISH);
             }
+            issueTaskId = entity.getId();
         }
 
-        return AjaxMessage.succeed("操作成功");
+        return AjaxMessage.succeed("操作成功").setData(issueTaskId);
     }
 
 
