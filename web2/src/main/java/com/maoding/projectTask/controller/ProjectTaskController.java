@@ -256,6 +256,9 @@ public class ProjectTaskController extends BaseController {
         if(StringUtil.isNullOrEmpty(query.getCompanyId())){
             query.setCompanyId(this.currentCompanyId);
         }
+        if(StringUtil.isNullOrEmpty(query.getCurrentCompanyId())){
+            query.setCurrentCompanyId(this.currentCompanyId);
+        }
         if(StringUtil.isNullOrEmpty(query.getAccountId())){
             query.setAccountId(this.currentUserId);
         }
