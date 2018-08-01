@@ -18,6 +18,10 @@ public class DeploymentEditDTO extends CoreEditDTO {
     /** id: 流程编号 */
     /** 流程名称 */
     private String name;
+    /** 流程键值，定义见ProcessTypeConst.PROCESS_TYPE_xxx */
+    private String key;
+    /** 流程类型，定义见ProcessTypeConst.TYPE_xxx */
+    private Integer type;
     /** 允许启动流程的角色(group)列表 */
     private List<CoreDTO> candidateGroupList;
     /** 允许启动流程的用户(user)列表 */
@@ -32,6 +36,22 @@ public class DeploymentEditDTO extends CoreEditDTO {
     /** 仅后台使用属性 */
     /** 被编辑流程元素列表 */
     private List<FlowElementEditDTO> flowElementEditList;
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public DigitConditionEditDTO getStartDigitCondition() {
         return startDigitCondition;

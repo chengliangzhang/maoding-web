@@ -5,7 +5,12 @@ import com.maoding.activiti.service.WorkflowService;
 import com.maoding.core.base.dto.CoreEditDTO;
 import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.service.NewBaseService;
+import com.maoding.core.util.StringUtils;
 import com.maoding.user.dto.UserDTO;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +24,10 @@ import java.util.List;
  */
 @Service("workflowServiceImpl")
 public class WorkflowServiceImpl extends NewBaseService implements WorkflowService {
+
+    @Autowired
+    private RepositoryService repositoryService;
+
     /**
      * @param deployment            指定的流程，可以为空
      * @param deploymentEditRequest 包含数字条件、修改任务的流程编辑信息，可以为空
@@ -44,7 +53,29 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      **/
     @Override
     public DeploymentDTO changeDeployment(DeploymentEditDTO deploymentEditRequest) {
+        if (isCreateRequest(deploymentEditRequest)){
+
+        }
         return null;
+    }
+
+    //判断是否是创建流程申请
+    private boolean isCreateRequest(DeploymentEditDTO deploymentEditRequest){
+        return StringUtils.isEmpty(deploymentEditRequest.getId());
+    }
+
+    //创建一个新流程
+    private DeploymentBuilder createDeploymentBuilder(DeploymentEditDTO deploymentEditRequest){
+        return repositoryService.createDeployment()
+                .name(deploymentEditRequest.getName());
+    }
+
+    //从流程引擎获取指定流程
+    private Deployment getDeployment(DeploymentEditDTO deploymentEditRequest){
+        List<Deployment> deploymentList = repositoryService.createDeploymentQuery()
+                .deploymentId(deploymentEditRequest.getId())
+                .list();
+        repositoryService.getProcessDefinition()
     }
 
     /**
