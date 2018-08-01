@@ -11,7 +11,6 @@ import com.maoding.core.util.ObjectUtils;
 import com.maoding.core.util.StringUtils;
 import com.maoding.core.util.TraceUtils;
 import com.maoding.user.dto.UserDTO;
-import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.RepositoryService;
@@ -95,7 +94,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     private BpmnModel createModel(Process process){
         BpmnModel model = new BpmnModel();
         model.addProcess(process);
-        new BpmnAutoLayout(model).execute();
+//        new BpmnAutoLayout(model).execute();
         return model;
     }
 
