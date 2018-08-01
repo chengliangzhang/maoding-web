@@ -1,5 +1,7 @@
 package com.maoding.core.base.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public abstract class NewBaseService {
+    /** 日志对象，不能用于static方法 */
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
+
     public Object AopContextCurrentProxy(){
         return AopContext.currentProxy();
     }
