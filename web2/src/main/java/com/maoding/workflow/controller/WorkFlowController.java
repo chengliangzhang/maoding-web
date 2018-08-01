@@ -8,7 +8,7 @@ import com.maoding.activiti.service.WorkflowService;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.base.dto.CoreEditDTO;
 import com.maoding.core.bean.AjaxMessage;
-import com.maoding.core.util.BeanUtils;
+import com.maoding.core.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +35,7 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping("/createDeployment")
     public AjaxMessage createDeployment(@RequestBody DeploymentEditDTO deploymentEditRequest) throws Exception {
+        updateCurrentEditRequest(deploymentEditRequest);
         DeploymentDTO deployment = workflowService.changeDeployment(deploymentEditRequest);
         return AjaxMessage.succeed("创建成功").setData(deployment);
     }
@@ -46,6 +47,7 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping("/changeDigitCondition")
     public AjaxMessage changeDigitCondition(@RequestBody DeploymentEditDTO deploymentEditRequest) throws Exception {
+        updateCurrentEditRequest(deploymentEditRequest);
         DeploymentDTO deployment = workflowService.changeDeployment(deploymentEditRequest);
         return AjaxMessage.succeed("修改成功").setData(deployment);
     }
@@ -57,6 +59,7 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping("/changeFlowTask")
     public AjaxMessage changeFlowTask(@RequestBody DeploymentEditDTO deploymentEditRequest) throws Exception {
+        updateCurrentEditRequest(deploymentEditRequest);
         DeploymentDTO deployment = workflowService.changeDeployment(deploymentEditRequest);
         return AjaxMessage.succeed("修改成功").setData(deployment);
     }
@@ -68,6 +71,7 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping("/deleteDeployment")
     public AjaxMessage deleteDeployment(@RequestBody CoreEditDTO deleteRequest) throws Exception {
+        updateCurrentEditRequest(deleteRequest);
         workflowService.deleteDeploy(deleteRequest);
         return AjaxMessage.succeed("删除成功");
     }
@@ -79,6 +83,7 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping("/startDeployment")
     public AjaxMessage startDeployment(@RequestBody WorkActionDTO startRequest) throws Exception {
+        updateCurrentEditRequest(startRequest);
         WorkTaskDTO workTask = workflowService.startDeployment(startRequest);
         return AjaxMessage.succeed("删除成功").setData(workTask);
     }
@@ -90,7 +95,18 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping("/completeWorkTask")
     public AjaxMessage completeWorkTask(@RequestBody WorkActionDTO completeRequest) throws Exception {
+        updateCurrentEditRequest(completeRequest);
         workflowService.completeWorkTask(completeRequest);
         return AjaxMessage.succeed("完成成功");
+    }
+
+    //补充当前公司编号、当前用户编号
+    private void updateCurrentEditRequest(CoreEditDTO editDTO){
+        if (StringUtils.isEmpty(editDTO.getCurrentCompanyId())){
+            editDTO.setCurrentCompanyId(currentCompanyId);
+        }
+        if (StringUtils.isEmpty(editDTO.getAccountId())){
+            editDTO.setAccountId(currentUserId);
+        }
     }
 }
