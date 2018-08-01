@@ -10,36 +10,35 @@ public interface ProcessTypeConst {
     /**
      * 报销类型
      */
-    public static final String  EXPENSE_PROCESS_TYPE = "expense";
+      String  PROCESS_TYPE_EXPENSE = "expense";
 
     /**
      * 费用申请类型
      */
-    public static final String  COST_APPLY_PROCESS_TYPE = "costApply";
+      String  PROCESS_TYPE_COST_APPLY = "costApply";
 
     /**
      * 请假类型
      */
-    public static final String  LEAVE_PROCESS_TYPE = "leave";
+      String  PROCESS_TYPE_LEAVE = "leave";
 
     /**
      * 出差类型
      */
-    public static final String   ON_BUSINESS_PROCESS_TYPE = "onBusiness";
-
+      String  PROCESS_TYPE_ON_BUSINESS = "onBusiness";
 
     /**
      * 自由流程
      */
-    public static final Integer  FREE_PROCESS_TYPE = 1;
+      Integer TYPE_FREE = 1;
 
     /**
      * 固定流程
      */
-    public static final Integer  FIXED_PROCESS_TYPE = 2;
+      Integer TYPE_FIXED = 2;
 
     /**
      * 分条件流程
      */
-    public static final Integer CONDITION_PROCESS_TYPE = 3;
+      Integer PROCESS_TYPE_CONDITION = 3;
 }
