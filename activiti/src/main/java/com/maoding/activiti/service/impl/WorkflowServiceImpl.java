@@ -19,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
  */
 @Service("workflowServiceImpl")
 public class WorkflowServiceImpl extends NewBaseService implements WorkflowService {
+    public static final String DEFAULT_FLOW_TASK_KEY = "last";
 
     @Autowired
     private RepositoryService repositoryService;
@@ -61,16 +64,45 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     @Override
     public DeploymentDTO changeDeployment(DeploymentEditDTO deploymentEditRequest) {
         if (isCreateRequest(deploymentEditRequest)){
-            Deployment deployment = createDeployment(deploymentEditRequest);
-            return toDeploymentDTO(deployment);
+            Process process = createDeployment(deploymentEditRequest);
+            return toDeploymentDTO(process);
         } else {
             return null;
         }
     }
 
     //转换工作流引擎内流程模型对象为DeploymentDTO
-    private DeploymentDTO toDeploymentDTO(Deployment deployment){
-        return null;
+    private DeploymentDTO toDeploymentDTO(Process process){
+        //检查参数
+        TraceUtils.check(ObjectUtils.isNotEmpty(process),log,null);
+
+        //复制同名属性
+        DeploymentDTO deploymentDTO = BeanUtils.createFrom(process,DeploymentDTO.class);
+
+        //获取start节点
+        StartEvent startElement = (StartEvent) process.getFlowElement("start");
+        List<SequenceFlow> sequenceFlowList = startElement.getOutgoingFlows();
+        if (sequenceFlowList.size() > 1){
+            List<Integer> pointList = new ArrayList<>();
+            Map<String,List<FlowTaskDTO>> taskListMap = new HashMap<>();
+            sequenceFlowList.forEach(sequence ->{
+                String condition = sequence.getConditionExpression();
+
+                //获取节点，如果key和point都是null则是默认路径，如果key是null,point不是null是最大路径
+                String key = getKeyFromCondition(condition);
+                Integer point = getPointFromCondition(condition);
+                if (point != null){
+                    pointList.add(point);
+
+                    FlowElement nextElement = process.getFlowElement(sequence.getTargetRef());
+                }
+
+
+
+            });
+        }
+
+        return deploymentDTO;
     }
 
     //判断是否是创建流程申请
@@ -79,13 +111,13 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //创建一个新流程定义
-    private Process createProcess(List<FlowElement> flowElementList){
-        if (ObjectUtils.isEmpty(flowElementList)){
-            return null;
-        }
+    private Process createProcess(List<FlowElement> flowElementList,DeploymentEditDTO otherInfo){
+        TraceUtils.check(ObjectUtils.isNotEmpty(flowElementList),log,null);
+        TraceUtils.check(ObjectUtils.isNotEmpty(otherInfo),log,null);
 
-        Process process = new Process();
+        Process process = BeanUtils.createFrom(otherInfo,Process.class);
         flowElementList.forEach(process::addFlowElement);
+        process.setId(getDeploymentKey(otherInfo));
 
         return process;
     }
@@ -99,7 +131,10 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //创建一个新流程
-    private Deployment createDeployment(DeploymentEditDTO deploymentEditRequest){
+    private Process createDeployment(DeploymentEditDTO deploymentEditRequest){
+        //检查参数
+        TraceUtils.check(ObjectUtils.isNotEmpty(deploymentEditRequest),log,null);
+
         List<FlowElement> flowElementList = new ArrayList<>();
         //如果模板为空
         if (StringUtils.isEmpty(deploymentEditRequest.getSrcDeployId())) {
@@ -118,45 +153,76 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                         .sorted()
                         .collect(Collectors.toList());
 
-                for (int i=0; i<pointList.size(); i++){
+                //添加条件及条件内的用户任务和连线
+                for (int i=0; i<=pointList.size(); i++){
                     //获取此数字条件节点判断字符串
                     String condition = getCondition(pointList,startDigitCondition.getVarKey(),i);
                     //添加从起点开始的用户任务和连接线
+                    String key = (i == pointList.size()) ? DEFAULT_FLOW_TASK_KEY : pointList.get(i).toString();
                     List<FlowTaskEditDTO> taskEditList = (deploymentEditRequest.getFlowTaskEditListMap() != null) ?
-                            deploymentEditRequest.getFlowTaskEditListMap().get(pointList.get(i).toString()) : null;
+                            deploymentEditRequest.getFlowTaskEditListMap().get(key) : null;
                     UserTask userTask = appendUserTask(flowElementList,startEvent,taskEditList,condition);
                     //添加最后一个用户任务到终点的连接线
                     appendSequence(flowElementList,userTask,endEvent,null);
                 }
+            } else {
+                //如果是自由流程或固定流程，添加默认关键字标注的用户任务序列
+                List<FlowTaskEditDTO> taskEditList = (deploymentEditRequest.getFlowTaskEditListMap() != null) ?
+                        deploymentEditRequest.getFlowTaskEditListMap().get(DEFAULT_FLOW_TASK_KEY) : null;
+                UserTask userTask = appendUserTask(flowElementList,startEvent,taskEditList,null);
+                //添加最后一个用户任务到终点的连接线
+                appendSequence(flowElementList,userTask,endEvent,null);
             }
         }
 
         //创建流程
-        Process process = createProcess(flowElementList);
+        Process process = createProcess(flowElementList,deploymentEditRequest);
         BpmnModel model = createModel(process);
-        return repositoryService.createDeployment()
-                .addBpmnModel(getDeploymentKey(deploymentEditRequest) + ".bpmn",model)
-                .name(deploymentEditRequest.getName())
-                .deploy();
+        repositoryService.createDeployment()
+            .addBpmnModel(getDeploymentKey(deploymentEditRequest) + ".bpmn",model)
+            .name(deploymentEditRequest.getName())
+            .deploy();
+        return process;
+    }
+
+    //根据表达式获取关键字名称
+    private String getKeyFromCondition(String condition){
+        String[] sArray = condition.split(" and ");
+        if (sArray.length <= 1){
+            //不是中间节点
+            return null;
+        }
+        String[] sArray2 = sArray[0].split(">=");
+        return sArray2[0];
+    }
+
+    //根据表达式获取数字条件节点
+    private Integer getPointFromCondition(String condition){
+        String s = condition.replace("${","").replace("}","");
+        if (s.contains(">=")){
+            return Integer.valueOf(s.substring(s.indexOf(">=")));
+        } else {
+            return null;
+        }
     }
 
     //获取第n段条件的数字条件表达式
     private String getCondition(List<Long> pointList, String key, int n){
         //检查参数
-        TraceUtils.check(log,ObjectUtils.isNotEmpty(pointList),null);
-        TraceUtils.check(log,StringUtils.isNotEmpty(key),null);
-        TraceUtils.check(log,(pointList.size() > n) && (n >= 0),null);
+        TraceUtils.check(ObjectUtils.isNotEmpty(pointList),log,null);
+        TraceUtils.check(StringUtils.isNotEmpty(key),log,null);
+        TraceUtils.check((pointList.size() >= n) && (n >= 0),log,null);
 
         //组装 ${max > key and key >= min}
         StringBuilder conditionBuilder = new StringBuilder("${");
 
-        if (pointList.size()-1 > n) {
+        if (pointList.size() > n) {
             conditionBuilder.append(pointList.get(n))
                     .append(">")
                     .append(key);
         }
 
-        if ((pointList.size()-1 > n) && (n > 0)){
+        if ((pointList.size() > n) && (n > 0)){
             conditionBuilder.append(" and ");
         }
 
@@ -171,21 +237,27 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
     //是否条件流程
     private boolean isConditionDeploy(DeploymentEditDTO deploymentEditRequest){
-        return deploymentEditRequest.getType() == ProcessTypeConst.PROCESS_TYPE_CONDITION
+        //检查参数
+        TraceUtils.check(ObjectUtils.isNotEmpty(deploymentEditRequest),log,null);
+
+        return ProcessTypeConst.PROCESS_TYPE_CONDITION.equals(deploymentEditRequest.getType())
                 && (deploymentEditRequest.getStartDigitCondition() != null)
                 && (StringUtils.isNotEmpty(deploymentEditRequest.getStartDigitCondition().getVarKey()))
                 && (ObjectUtils.isNotEmpty(deploymentEditRequest.getStartDigitCondition().getPointList()));
     }
 
-    //通过输入参数组合成流程key：companyId_key_type
+    //通过输入参数组合成流程key：p_companyId_key_type, id不可以以数字开始，因此添加p_前缀
     private String getDeploymentKey(DeploymentEditDTO deploymentEditRequest){
-        return deploymentEditRequest.getCurrentCompanyId() + "_"
+        return "p_" + deploymentEditRequest.getCurrentCompanyId() + "_"
                 + deploymentEditRequest.getKey() + "_"
                 + deploymentEditRequest.getType();
     }
 
     //从流程引擎获取指定流程
     private Deployment getDeployment(DeploymentEditDTO deploymentEditRequest){
+        //检查参数
+        TraceUtils.check(ObjectUtils.isNotEmpty(deploymentEditRequest),log,null);
+
         List<Deployment> deploymentList = repositoryService.createDeploymentQuery()
                 .deploymentId(deploymentEditRequest.getId())
                 .list();
@@ -195,7 +267,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     //创建并添加起始节点
     private StartEvent appendStartEvent(List<FlowElement> flowElementList) {
         //检查参数
-        TraceUtils.check(log,flowElementList != null,null);
+        TraceUtils.check(flowElementList != null,log,null);
 
         //创建并添加起始节点
         StartEvent startEvent = new StartEvent();
@@ -207,20 +279,21 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     //创建并添加终止节点
     private EndEvent appendEndEvent(List<FlowElement> flowElementList) {
         //检查参数
-        TraceUtils.check(log,flowElementList != null,null);
+        TraceUtils.check(ObjectUtils.isNotEmpty(flowElementList),log,null);
 
         //创建并添加终止节点
         EndEvent endEvent = new EndEvent();
         endEvent.setId("end");
+        flowElementList.add(endEvent);
         return endEvent;
     }
 
     //创建任务连接线
     private SequenceFlow appendSequence(List<FlowElement> flowElementList,FlowElement flowElement1,FlowElement flowElement2,String condition){
         //检查参数
-        TraceUtils.check(log,ObjectUtils.isNotEmpty(flowElementList),null);
-        TraceUtils.check(log,ObjectUtils.isNotEmpty(flowElement1),null);
-        TraceUtils.check(log,ObjectUtils.isNotEmpty(flowElement2),null);
+        TraceUtils.check(ObjectUtils.isNotEmpty(flowElementList),log,null);
+        TraceUtils.check(ObjectUtils.isNotEmpty(flowElement1),log,null);
+        TraceUtils.check(ObjectUtils.isNotEmpty(flowElement2),log,null);
 
         //添加连接线
         SequenceFlow sequence = new SequenceFlow();
@@ -236,9 +309,9 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     //在一个节点后创建并添加用户任务节点及连接线
     private UserTask appendUserTask(List<FlowElement> flowElementList,FlowElement prevFlowElement,FlowTaskEditDTO flowTaskInfo,String condition){
         //检查参数
-        TraceUtils.check(log,ObjectUtils.isNotEmpty(flowElementList),null);
-        TraceUtils.check(log,ObjectUtils.isNotEmpty(prevFlowElement),null);
-        TraceUtils.check(log,ObjectUtils.isNotEmpty(flowTaskInfo),null);
+        TraceUtils.check(ObjectUtils.isNotEmpty(flowElementList),log,null);
+        TraceUtils.check(ObjectUtils.isNotEmpty(prevFlowElement),log,null);
+        TraceUtils.check(ObjectUtils.isNotEmpty(flowTaskInfo),log,null);
 
         //创建并添加用户任务节点
         UserTask userTask = BeanUtils.createFrom(flowTaskInfo,UserTask.class);
@@ -251,6 +324,9 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
     //在一个节点后添加用户任务节点序列及连接线，返回最后添加的用户任务
     private UserTask appendUserTask(List<FlowElement> flowElementList,FlowElement prevFlowElement,List<FlowTaskEditDTO> flowTaskInfoList,String condition){
+        //检查参数
+        TraceUtils.check(ObjectUtils.isNotEmpty(flowElementList),log,null);
+        TraceUtils.check(ObjectUtils.isNotEmpty(prevFlowElement),log,null);
 
         //UserTask也是FlowElement,因此可以使用UserTask代替prevFlowElement传递第一个参数
         UserTask userTask = BeanUtils.createFrom(prevFlowElement,UserTask.class);
@@ -265,9 +341,17 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             }
         } else {
             //如果不存在用户任务，添加一个默认的用户任务
-            userTask = appendUserTask(flowElementList,userTask,new FlowTaskEditDTO(),condition);
+            userTask = appendUserTask(flowElementList,userTask,getDefaultFlowTaskInfo(),condition);
         }
         return userTask;
+    }
+
+    //获取一个默认用户任务信息
+    private FlowTaskEditDTO getDefaultFlowTaskInfo(){
+        FlowTaskEditDTO defaultFlowTaskInfo = new FlowTaskEditDTO();
+        defaultFlowTaskInfo.setId("t_" + StringUtils.getUUID());
+        defaultFlowTaskInfo.setName(defaultFlowTaskInfo.getId());
+        return defaultFlowTaskInfo;
     }
 
     /**

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.UUID;
 
 /**
  * 深圳市设计同道技术有限公司
@@ -169,5 +170,15 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         } catch (UnsupportedEncodingException e) {
             return EMPTY;
         }
+    }
+
+    /**
+     * 描述     获取唯一编号
+     * 日期     2018/8/1
+     * @author  张成亮
+     * @return  唯一编号
+     **/
+    public static String getUUID(){
+        return UUID.randomUUID().toString().replaceAll("-", "");
     }
 }

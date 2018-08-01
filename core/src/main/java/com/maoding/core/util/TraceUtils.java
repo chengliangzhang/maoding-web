@@ -57,7 +57,7 @@ public class TraceUtils {
      * @param   condition   断言条件
      * @param   eClass 要抛出的异常的类型
      **/
-    public static void check(Logger log, boolean condition, Class<? extends RuntimeException> eClass) {
+    public static void check(boolean condition, Logger log, Class<? extends RuntimeException> eClass) {
         if (!(condition)) {
             if (eClass != null) {
                 RuntimeException e = null;
