@@ -2,6 +2,7 @@ package com.maoding.activiti.service.impl;
 
 import com.maoding.activiti.dto.*;
 import com.maoding.activiti.service.WorkflowService;
+import com.maoding.core.base.dto.CoreEditDTO;
 import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.user.dto.UserDTO;
@@ -19,14 +20,30 @@ import java.util.List;
 @Service("workflowServiceImpl")
 public class WorkflowServiceImpl extends NewBaseService implements WorkflowService {
     /**
-     * @param deployment 指定的流程，可以为空
+     * @param deployment            指定的流程，可以为空
+     * @param deploymentEditRequest 包含数字条件、修改任务的流程编辑信息，可以为空
      * @return 流程编辑信息
      * @author 张成亮
      * @date 2018/7/30
      * @description 获取一个流程的编辑器
      **/
+    @Deprecated
     @Override
-    public DeploymentEditDTO createDeploymentEdit(DeploymentDTO deployment) {
+    public DeploymentEditDTO createDeploymentEdit(DeploymentDTO deployment, DeploymentEditDTO deploymentEditRequest) {
+        return null;
+    }
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/30
+     * @description     创建或修改一个流程
+     * @param   deploymentEditRequest 包含名称、数字条件、修改任务的流程编辑信息，除名称外，各属性可以为空
+     *                                如果id为空，则是创建流程，如果srcDeployId不为空，需要从模板流程复制流程到新流程中
+     *                                否则，如果id不为空，则是修改流程，srcDeployId无效
+     * @return  新建或修改后的流程信息
+     **/
+    @Override
+    public DeploymentDTO changeDeployment(DeploymentEditDTO deploymentEditRequest) {
         return null;
     }
 
@@ -58,19 +75,20 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      * @date 2018/7/30
      * @description 删除流程
      **/
+    @Deprecated
     @Override
     public void deleteDeploy(DeploymentEditDTO deploymentEdit) {
 
     }
 
     /**
-     * @param deploymentEdit 挂起内容
+     * @param deleteRequest 删除申请
      * @author 张成亮
      * @date 2018/7/30
-     * @description 挂起流程
+     * @description 删除流程
      **/
     @Override
-    public void suspendDeploy(DeploymentEditDTO deploymentEdit) {
+    public void deleteDeploy(CoreEditDTO deleteRequest) {
 
     }
 
@@ -124,28 +142,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     /**
-     * @param flowTaskEdit 编辑内容
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 保存流程任务
-     **/
-    @Override
-    public void saveFlowTask(FlowTaskEditDTO flowTaskEdit) {
-
-    }
-
-    /**
-     * @param flowTaskEdit 删除内容
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 删除流程任务
-     **/
-    @Override
-    public void deleteFlowTask(FlowTaskEditDTO flowTaskEdit) {
-
-    }
-
-    /**
      * @return 流程任务查询信息
      * @author 张成亮
      * @date 2018/7/30
@@ -178,28 +174,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     @Override
     public FlowSequenceEditDTO createFlowSequenceEdit(DeploymentEditDTO deploymentEdit, FlowSequenceDTO sequence) {
         return null;
-    }
-
-    /**
-     * @param flowSequenceEdit 编辑内容
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 保存流程路径
-     **/
-    @Override
-    public void saveFlowSequence(FlowSequenceEditDTO flowSequenceEdit) {
-
-    }
-
-    /**
-     * @param flowSequenceEdit 删除内容
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 删除流程路径
-     **/
-    @Override
-    public void deleteFlowSequence(FlowSequenceEditDTO flowSequenceEdit) {
-
     }
 
     /**
@@ -237,29 +211,8 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         return null;
     }
 
-    /**
-     * @param flowGateWayEdit 编辑内容
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 保存流程网关
-     **/
-    @Override
-    public void saveFlowGateWay(FlowGateWayEditDTO flowGateWayEdit) {
 
-    }
-
-    /**
-     * @param flowGateWayEdit 删除内容
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 删除流程网关
-     **/
-    @Override
-    public void deleteFlowGateWay(FlowGateWayEditDTO flowGateWayEdit) {
-
-    }
-
-    /**
+   /**
      * @return 流程网关查询器
      * @author 张成亮
      * @date 2018/7/30
@@ -359,8 +312,21 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      * @date 2018/7/30
      * @description 启动流程
      **/
+    @Deprecated
     @Override
     public WorkTaskDTO startDeployment(DeploymentDTO deployment) {
+        return null;
+    }
+
+    /**
+     * 描述       启动流程
+     * 日期       2018/8/1
+     *
+     * @param workTask
+     * @author 张成亮
+     */
+    @Override
+    public WorkTaskDTO startDeployment(WorkActionDTO workTask) {
         return null;
     }
 

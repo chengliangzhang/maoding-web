@@ -1,10 +1,15 @@
 package com.maoding.workflow.controller;
 
+import com.maoding.activiti.dto.DeploymentDTO;
 import com.maoding.activiti.dto.DeploymentEditDTO;
 import com.maoding.activiti.dto.WorkActionDTO;
+import com.maoding.activiti.dto.WorkTaskDTO;
+import com.maoding.activiti.service.WorkflowService;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.base.dto.CoreEditDTO;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.core.util.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/iWork/workflow")
 public class WorkFlowController extends BaseController {
+    /** 工作流服务接口 */
+    @Autowired
+    private WorkflowService workflowService;
+
     /**
      * 描述       创建流程
      * 日期       2018/7/31
@@ -26,7 +35,8 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping("/createDeployment")
     public AjaxMessage createDeployment(@RequestBody DeploymentEditDTO deploymentEditRequest) throws Exception {
-        return null;
+        DeploymentDTO deployment = workflowService.changeDeployment(deploymentEditRequest);
+        return AjaxMessage.succeed("创建成功").setData(deployment);
     }
 
     /**
@@ -36,7 +46,8 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping("/changeDigitCondition")
     public AjaxMessage changeDigitCondition(@RequestBody DeploymentEditDTO deploymentEditRequest) throws Exception {
-        return null;
+        DeploymentDTO deployment = workflowService.changeDeployment(deploymentEditRequest);
+        return AjaxMessage.succeed("修改成功").setData(deployment);
     }
     
     /**
@@ -46,7 +57,8 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping("/changeFlowTask")
     public AjaxMessage changeFlowTask(@RequestBody DeploymentEditDTO deploymentEditRequest) throws Exception {
-        return null;
+        DeploymentDTO deployment = workflowService.changeDeployment(deploymentEditRequest);
+        return AjaxMessage.succeed("修改成功").setData(deployment);
     }
 
     /**
@@ -56,7 +68,8 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping("/deleteDeployment")
     public AjaxMessage deleteDeployment(@RequestBody CoreEditDTO deleteRequest) throws Exception {
-        return null;
+        workflowService.deleteDeploy(deleteRequest);
+        return AjaxMessage.succeed("删除成功");
     }
 
     /**
@@ -66,7 +79,8 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping("/startDeployment")
     public AjaxMessage startDeployment(@RequestBody WorkActionDTO startRequest) throws Exception {
-        return null;
+        WorkTaskDTO workTask = workflowService.startDeployment(startRequest);
+        return AjaxMessage.succeed("删除成功").setData(workTask);
     }
 
     /**
@@ -76,6 +90,7 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping("/completeWorkTask")
     public AjaxMessage completeWorkTask(@RequestBody WorkActionDTO completeRequest) throws Exception {
-        return null;
+        workflowService.completeWorkTask(completeRequest);
+        return AjaxMessage.succeed("完成成功");
     }
 }

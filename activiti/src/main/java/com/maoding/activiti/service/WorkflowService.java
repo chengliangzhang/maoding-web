@@ -1,6 +1,7 @@
 package com.maoding.activiti.service;
 
 import com.maoding.activiti.dto.*;
+import com.maoding.core.base.dto.CoreEditDTO;
 import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.user.dto.UserDTO;
 
@@ -19,10 +20,23 @@ public interface WorkflowService {
      * @date    2018/7/30
      * @description     获取一个流程的编辑器
      * @param   deployment 指定的流程，可以为空
+     * @param   deploymentEditRequest 包含数字条件、修改任务的流程编辑信息，可以为空
      * @return  流程编辑信息
      **/
-    DeploymentEditDTO createDeploymentEdit(DeploymentDTO deployment);
+    @Deprecated
+    DeploymentEditDTO createDeploymentEdit(DeploymentDTO deployment, DeploymentEditDTO deploymentEditRequest);
     
+    /**
+     * @author  张成亮
+     * @date    2018/7/30
+     * @description     创建或修改一个流程
+     * @param   deploymentEditRequest 包含名称、数字条件、修改任务的流程编辑信息，除名称外，各属性可以为空
+     *                                如果id为空，则是创建流程，如果srcDeployId不为空，需要从模板流程复制流程到新流程中
+     *                                否则，如果id不为空，则是修改流程，srcDeployId无效
+     * @return  新建或修改后的流程信息
+     **/
+    DeploymentDTO changeDeployment(DeploymentEditDTO deploymentEditRequest);
+
     /**
      * @author  张成亮
      * @date    2018/7/30
@@ -37,15 +51,16 @@ public interface WorkflowService {
      * @description     删除流程
      * @param   deploymentEdit 删除内容
      **/
+    @Deprecated
     void deleteDeploy(DeploymentEditDTO deploymentEdit);
 
     /**
      * @author  张成亮
      * @date    2018/7/30
-     * @description     挂起流程
-     * @param   deploymentEdit 挂起内容
+     * @description     删除流程
+     * @param   deleteRequest 删除申请
      **/
-    void suspendDeploy(DeploymentEditDTO deploymentEdit);
+    void deleteDeploy(CoreEditDTO deleteRequest);
 
     /**
      * @author  张成亮
@@ -95,22 +110,6 @@ public interface WorkflowService {
     /**
      * @author  张成亮
      * @date    2018/7/30
-     * @description     保存流程任务
-     * @param   flowTaskEdit 编辑内容
-     **/
-    void saveFlowTask(FlowTaskEditDTO flowTaskEdit);
-
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     删除流程任务
-     * @param   flowTaskEdit 删除内容
-     **/
-    void deleteFlowTask(FlowTaskEditDTO flowTaskEdit);
-
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
      * @description     获取一个流程任务的查询器
      * @return  流程任务查询信息
      **/
@@ -134,22 +133,6 @@ public interface WorkflowService {
      **/
     FlowSequenceEditDTO createFlowSequenceEdit(DeploymentEditDTO deploymentEdit, FlowSequenceDTO sequence);
 
-
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     保存流程路径
-     * @param   flowSequenceEdit 编辑内容
-     **/
-    void saveFlowSequence(FlowSequenceEditDTO flowSequenceEdit);
-
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     删除流程路径
-     * @param   flowSequenceEdit 删除内容
-     **/
-    void deleteFlowSequence(FlowSequenceEditDTO flowSequenceEdit);
 
     /**
      * @author  张成亮
@@ -178,22 +161,6 @@ public interface WorkflowService {
     FlowGateWayEditDTO createFlowGateWayEdit(DeploymentEditDTO deploymentEdit, FlowGateWayDTO gateWay);
 
 
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     保存流程网关
-     * @param   flowGateWayEdit 编辑内容
-     **/
-    void saveFlowGateWay(FlowGateWayEditDTO flowGateWayEdit);
-
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     删除流程网关
-     * @param   flowGateWayEdit 删除内容
-     **/
-    void deleteFlowGateWay(FlowGateWayEditDTO flowGateWayEdit);
-    
     /**
      * @author  张成亮
      * @date    2018/7/30
@@ -270,7 +237,16 @@ public interface WorkflowService {
      * @param   deployment 流程
      * @return  当前流程任务
      **/
+    @Deprecated
     WorkTaskDTO startDeployment(DeploymentDTO deployment);
+
+    /**
+     * 描述       启动流程
+     * 日期       2018/8/1
+     * @author   张成亮
+     **/
+    WorkTaskDTO startDeployment(WorkActionDTO workTask);
+
 
     /**
      * @author  张成亮
