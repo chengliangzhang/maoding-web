@@ -513,7 +513,7 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
                 entity.setTaskRemark(dto.getTaskRemark());
                 entity.setUpdateBy(dto.getAccountId());
                 //修改名称
-                projectTaskDao.updateById(entity);
+                projectTaskDao.updateByIdOrModifyId(entity);
 
                 if (!StringUtil.isNullOrEmpty(dto.getTaskName()) ) {
                     //修改文件夹名称
