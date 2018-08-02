@@ -27,15 +27,28 @@ public class DeploymentEditDTO extends CoreEditDTO {
     /** 允许启动流程的用户(user)列表 */
     private List<CoreDTO> candidateUserList;
     /** 模板流程编号 */
+    @Deprecated
     private String srcDeployId;
     /** 流程启动时的数字式的审批条件 */
+    @Deprecated
     private DigitConditionEditDTO startDigitCondition;
-    /** 流程需更改的任务节点序列，以条件编号-任务序列对展现 */
+    /** 流程需更改的任务节点序列，以条件节点值-任务序列对展现，存在默认节点分支defaultFlow */
     private Map<String,List<FlowTaskEditDTO>> flowTaskEditListMap;
+    /** 流程启动时的数字式的审批条件使用的条件变量名 */
+    private String varKey;
 
     /** 仅后台使用属性 */
     /** 被编辑流程元素列表 */
+    @Deprecated
     private List<FlowElementEditDTO> flowElementEditList;
+
+    public String getVarKey() {
+        return varKey;
+    }
+
+    public void setVarKey(String varKey) {
+        this.varKey = varKey;
+    }
 
     public Integer getType() {
         return type;

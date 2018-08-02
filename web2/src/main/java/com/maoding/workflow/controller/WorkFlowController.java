@@ -31,12 +31,36 @@ public class WorkFlowController extends BaseController {
 
     /**
      * 描述       创建流程
+     *           根据companyId,key,type生成流程key
+     *           不判断流程是否已存在
+     *           如果srcDeployId不为空，从指定的流程模板进行复制，
+     *              复制流程时，不判断流程模板和新流程是否为相同类型
+     *           不根据流程类型更改组、人员设置
+     *           如果新流程是条件流程，且taskListMap包含defaultFlow之外的值，从中获取节点信息和用户任务信息
+     *           如果新流程不是条件流程，taskListMap内非defaultFlow的值无效
      * 日期       2018/7/31
      * @author   张成亮
      **/
     @RequestMapping("/createDeployment")
     @ResponseBody
+    @Deprecated
     public AjaxMessage createDeployment(@RequestBody DeploymentEditDTO deploymentEditRequest) throws Exception {
+        updateCurrentEditRequest(deploymentEditRequest);
+        DeploymentDTO deployment = workflowService.changeDeployment(deploymentEditRequest);
+        return AjaxMessage.succeed("创建成功").setData(deployment);
+    }
+
+    /**
+     * 描述       加载流程进行编辑
+     *           根据companyId,key,type生成流程key，查找指定流程
+     *           找到则加载此流程，未找到则创建新流程
+     *           如果找到流程，加载流程时，srcDeployId，taskListMap无效
+     * 日期       2018/8/2
+     * @author   张成亮
+     **/
+    @RequestMapping("/prepareDeployment")
+    @ResponseBody
+    public AjaxMessage prepareDeployment(@RequestBody DeploymentEditDTO deploymentEditRequest) throws Exception {
         updateCurrentEditRequest(deploymentEditRequest);
         DeploymentDTO deployment = workflowService.changeDeployment(deploymentEditRequest);
         return AjaxMessage.succeed("创建成功").setData(deployment);

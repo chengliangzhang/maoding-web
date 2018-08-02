@@ -25,14 +25,32 @@ public interface WorkflowService {
      **/
     @Deprecated
     DeploymentEditDTO createDeploymentEdit(DeploymentDTO deployment, DeploymentEditDTO deploymentEditRequest);
-    
+
     /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     创建或修改一个流程
-     * @param   deploymentEditRequest 包含名称、数字条件、修改任务的流程编辑信息，除名称外，各属性可以为空
-     *                                如果id为空，则是创建流程，如果srcDeployId不为空，需要从模板流程复制流程到新流程中
-     *                                否则，如果id不为空，则是修改流程，srcDeployId无效
+     * 描述       加载流程进行编辑
+     *           根据companyId,key,type生成流程key，查找指定流程
+     *           找到则加载此流程，未找到则创建新流程
+     *           如果找到流程，加载流程时，srcDeployId，startDigitCondition无效
+     *           如果未找到流程，且指定了srcDeployId时
+     *              复制srcDeployId流程，不判断流程模板和新流程是否为相同类型
+     * 日期       2018/8/2
+     * @author   张成亮
+     * @param   deploymentPrepareRequest 包含组织编号、类型、流程名称、分支条件等信息
+     * @return  新建或修改后的流程信息
+     **/
+    DeploymentDTO prepareDeployment(DeploymentPrepareDTO deploymentPrepareRequest);
+
+
+    /**
+     * 描述       创建或修改一个流程
+     *           根据companyId,key,type生成流程key
+     *           不判断流程是否已存在
+     *           不根据流程类型更改组、人员设置
+     *           如果新流程是条件流程，且taskListMap包含defaultFlow之外的值，从中获取节点信息和用户任务信息
+     *           如果新流程不是条件流程，taskListMap内非defaultFlow的值无效
+     * 日期       2018/7/31
+     * @author   张成亮
+     * @param   deploymentEditRequest 包含名称、流程内用户任务的编辑信息
      * @return  新建或修改后的流程信息
      **/
     DeploymentDTO changeDeployment(DeploymentEditDTO deploymentEditRequest);
@@ -43,6 +61,7 @@ public interface WorkflowService {
      * @description     保存流程
      * @param   deploymentEdit 编辑内容
      **/
+    @Deprecated
     void saveDeploy(DeploymentEditDTO deploymentEdit);
 
     /**
