@@ -1,9 +1,6 @@
 package com.maoding.workflow.controller;
 
-import com.maoding.activiti.dto.DeploymentDTO;
-import com.maoding.activiti.dto.DeploymentEditDTO;
-import com.maoding.activiti.dto.WorkActionDTO;
-import com.maoding.activiti.dto.WorkTaskDTO;
+import com.maoding.activiti.dto.*;
 import com.maoding.activiti.service.WorkflowService;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.base.dto.CoreEditDTO;
@@ -60,10 +57,10 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping("/prepareDeployment")
     @ResponseBody
-    public AjaxMessage prepareDeployment(@RequestBody DeploymentEditDTO deploymentEditRequest) throws Exception {
-        updateCurrentEditRequest(deploymentEditRequest);
-        DeploymentDTO deployment = workflowService.changeDeployment(deploymentEditRequest);
-        return AjaxMessage.succeed("创建成功").setData(deployment);
+    public AjaxMessage prepareDeployment(@RequestBody DeploymentPrepareDTO deploymentPrepareRequest) throws Exception {
+        updateCurrentEditRequest(deploymentPrepareRequest);
+        DeploymentDTO deployment = workflowService.prepareDeployment(deploymentPrepareRequest);
+        return AjaxMessage.succeed("加载成功").setData(deployment);
     }
 
     /**

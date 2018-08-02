@@ -15,16 +15,27 @@ import java.util.Map;
  */
 public class DeploymentDTO extends CoreShowDTO {
     /** id: 流程编号 */
+    /** 流程说明 */
+    private String documentation;
     /** 允许启动流程的角色(group)列表 */
     private List<CoreDTO> candidateGroupList;
     /** 允许启动流程的用户(user)列表 */
     private List<CoreDTO> candidateUserList;
     /** 流程启动时的判断条件 */
+    @Deprecated
     private List<FlowSequenceDTO> startSequenceList;
     /** 流程所拥有的任务节点序列，以条件编号-任务序列对展现 */
     private Map<String,List<FlowTaskDTO>> flowTaskListMap;
     /** 流程判断条件的名称 */
     private String varKey;
+
+    public String getDocumentation() {
+        return documentation;
+    }
+
+    public void setDocumentation(String documentation) {
+        this.documentation = documentation;
+    }
 
     public String getVarKey() {
         return varKey;

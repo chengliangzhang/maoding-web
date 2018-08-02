@@ -18,6 +18,8 @@ public class DeploymentEditDTO extends CoreEditDTO {
     /** id: 流程编号 */
     /** 流程名称 */
     private String name;
+    /** 流程说明 */
+    private String documentation;
     /** 流程键值，定义见ProcessTypeConst.PROCESS_TYPE_xxx */
     private String key;
     /** 流程类型，定义见ProcessTypeConst.TYPE_xxx */
@@ -120,5 +122,13 @@ public class DeploymentEditDTO extends CoreEditDTO {
 
     public void setCandidateUserList(List<CoreDTO> candidateUserList) {
         this.candidateUserList = candidateUserList;
+    }
+
+    public String getDocumentation() {
+        return documentation;
+    }
+
+    public void setDocumentation(String documentation) {
+        this.documentation = documentation;
     }
 }
