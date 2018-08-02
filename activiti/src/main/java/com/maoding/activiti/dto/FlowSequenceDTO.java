@@ -7,37 +7,38 @@ package com.maoding.activiti.dto;
  * @date : 2018/7/30
  * @description : 流程的连接线信息
  */
+@Deprecated
 public class FlowSequenceDTO extends FlowElementDTO {
     /** id: 连接线编号 */
 
     /** 起始流程元素编号 */
-    private String startFlowElementId;
+    private String sourceRef;
     /** 终止流程元素编号 */
-    private String endFlowElementId;
+    private String targetRef;
     /** 执行条件 */
-    private String condition;
+    private String conditionExpression;
 
-    public String getStartFlowElementId() {
-        return startFlowElementId;
+    public String getSourceRef() {
+        return sourceRef;
     }
 
-    public void setStartFlowElementId(String startFlowElementId) {
-        this.startFlowElementId = startFlowElementId;
+    public void setSourceRef(String sourceRef) {
+        this.sourceRef = sourceRef;
     }
 
-    public String getEndFlowElementId() {
-        return endFlowElementId;
+    public String getTargetRef() {
+        return targetRef;
     }
 
-    public void setEndFlowElementId(String endFlowElementId) {
-        this.endFlowElementId = endFlowElementId;
+    public void setTargetRef(String targetRef) {
+        this.targetRef = targetRef;
     }
 
-    public String getCondition() {
-        return condition;
+    public String getConditionExpression() {
+        return conditionExpression;
     }
 
-    public void setCondition(String condition) {
-        this.condition = condition;
+    public void setConditionExpression(String conditionExpression) {
+        this.conditionExpression = conditionExpression;
     }
 }

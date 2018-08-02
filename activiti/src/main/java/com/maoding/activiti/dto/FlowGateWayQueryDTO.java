@@ -7,6 +7,7 @@ package com.maoding.activiti.dto;
  * @date : 2018/7/30
  * @description : 流程的网关节点查询条件信息
  */
+@Deprecated
 public class FlowGateWayQueryDTO extends FlowElementQueryDTO {
     /** id:网关编号 */
 }

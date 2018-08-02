@@ -1,8 +1,6 @@
 package com.maoding.activiti.dto;
 
 
-import com.maoding.core.base.dto.CoreDTO;
-
 import java.util.List;
 
 /**
@@ -16,43 +14,43 @@ public class FlowTaskEditDTO extends FlowElementEditDTO {
     /** id: 流程任务编号 */
 
     /** 任务说明 */
-    private String content;
-    /** 允许执行任务的角色(group)列表 */
-    private List<CoreDTO> candidateGroupList;
-    /** 允许执行任务的用户(user)列表 */
-    private List<CoreDTO> candidateUserList;
+    private String documentation;
+    /** 允许执行任务的角色(group)组合字符串 */
+    private List<String> candidateGroups;
+    /** 允许执行任务的用户(user)组合字符串 */
+    private List<String> candidateUsers;
     /** 默认执行人 */
-    private CoreDTO assignee;
+    private String assignee;
 
-    public String getContent() {
-        return content;
+    public String getDocumentation() {
+        return documentation;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setDocumentation(String documentation) {
+        this.documentation = documentation;
     }
 
-    public List<CoreDTO> getCandidateGroupList() {
-        return candidateGroupList;
+    public List<String> getCandidateGroups() {
+        return candidateGroups;
     }
 
-    public void setCandidateGroupList(List<CoreDTO> candidateGroupList) {
-        this.candidateGroupList = candidateGroupList;
+    public void setCandidateGroups(List<String> candidateGroups) {
+        this.candidateGroups = candidateGroups;
     }
 
-    public List<CoreDTO> getCandidateUserList() {
-        return candidateUserList;
+    public List<String> getCandidateUsers() {
+        return candidateUsers;
     }
 
-    public void setCandidateUserList(List<CoreDTO> candidateUserList) {
-        this.candidateUserList = candidateUserList;
+    public void setCandidateUsers(List<String> candidateUsers) {
+        this.candidateUsers = candidateUsers;
     }
 
-    public CoreDTO getAssignee() {
+    public String getAssignee() {
         return assignee;
     }
 
-    public void setAssignee(CoreDTO assignee) {
+    public void setAssignee(String assignee) {
         this.assignee = assignee;
     }
 }

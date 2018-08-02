@@ -10,10 +10,11 @@ import com.maoding.core.base.dto.CoreQueryDTO;
  * @description : 流程查询信息
  */
 public class DeploymentQueryDTO extends CoreQueryDTO {
-    /** id: 流程编号 */
+    /** id: 流程key */
+
     /** 可以启动流程的用户编号 */
     private String userId;
-    /** 流程的key值 */
+    /** 流程分类关键字，定义见ProcessTypeConst.PROCESS_TYPE_xxx */
     private String key;
 
     public String getKey() {

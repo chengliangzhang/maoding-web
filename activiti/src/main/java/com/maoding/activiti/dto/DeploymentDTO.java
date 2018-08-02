@@ -1,6 +1,5 @@
 package com.maoding.activiti.dto;
 
-import com.maoding.core.base.dto.CoreDTO;
 import com.maoding.core.base.dto.CoreShowDTO;
 
 import java.util.List;
@@ -17,21 +16,18 @@ public class DeploymentDTO extends CoreShowDTO {
     /** id: 流程key */
     /** 流程说明 */
     private String documentation;
-    /** 允许启动流程的角色(group)列表 */
-    private List<CoreDTO> candidateGroupList;
-    /** 允许启动流程的用户(user)列表 */
-    private List<CoreDTO> candidateUserList;
-    /** 流程启动时的判断条件 */
-    @Deprecated
-    private List<FlowSequenceDTO> startSequenceList;
-    /** 流程所拥有的任务节点序列，以条件编号-任务序列对展现 */
-    private Map<String,List<FlowTaskDTO>> flowTaskListMap;
-    /** 流程判断条件的名称 */
-    private String varKey;
     /** 流程分类关键字，定义见ProcessTypeConst.PROCESS_TYPE_xxx */
     private String key;
     /** 流程类型，定义见ProcessTypeConst.TYPE_xxx */
     private Integer type;
+    /** 允许启动流程的角色(group)列表 */
+    private List<String> candidateStarterGroups;
+    /** 允许启动流程的用户(user)列表 */
+    private List<String> candidateStarterUsers;
+    /** 流程所拥有的任务节点序列，以条件编号-任务序列对展现 */
+    private Map<String,List<FlowTaskDTO>> flowTaskListMap;
+    /** 流程判断条件的名称 */
+    private String varKey;
 
     public String getKey() {
         return key;
@@ -65,14 +61,6 @@ public class DeploymentDTO extends CoreShowDTO {
         this.varKey = varKey;
     }
 
-    public List<FlowSequenceDTO> getStartSequenceList() {
-        return startSequenceList;
-    }
-
-    public void setStartSequenceList(List<FlowSequenceDTO> startSequenceList) {
-        this.startSequenceList = startSequenceList;
-    }
-
     public Map<String, List<FlowTaskDTO>> getFlowTaskListMap() {
         return flowTaskListMap;
     }
@@ -81,19 +69,19 @@ public class DeploymentDTO extends CoreShowDTO {
         this.flowTaskListMap = flowTaskListMap;
     }
 
-    public List<CoreDTO> getCandidateGroupList() {
-        return candidateGroupList;
+    public List<String> getCandidateStarterGroups() {
+        return candidateStarterGroups;
     }
 
-    public void setCandidateGroupList(List<CoreDTO> candidateGroupList) {
-        this.candidateGroupList = candidateGroupList;
+    public void setCandidateStarterGroups(List<String> candidateStarterGroups) {
+        this.candidateStarterGroups = candidateStarterGroups;
     }
 
-    public List<CoreDTO> getCandidateUserList() {
-        return candidateUserList;
+    public List<String> getCandidateStarterUsers() {
+        return candidateStarterUsers;
     }
 
-    public void setCandidateUserList(List<CoreDTO> candidateUserList) {
-        this.candidateUserList = candidateUserList;
+    public void setCandidateStarterUsers(List<String> candidateStarterUsers) {
+        this.candidateStarterUsers = candidateStarterUsers;
     }
 }

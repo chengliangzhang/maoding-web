@@ -16,17 +16,6 @@ import java.util.Map;
  */
 public interface WorkflowService {
     /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     获取一个流程的编辑器
-     * @param   deployment 指定的流程，可以为空
-     * @param   deploymentEditRequest 包含数字条件、修改任务的流程编辑信息，可以为空
-     * @return  流程编辑信息
-     **/
-    @Deprecated
-    DeploymentEditDTO createDeploymentEdit(DeploymentDTO deployment, DeploymentEditDTO deploymentEditRequest);
-
-    /**
      * 描述       加载流程进行编辑
      *           根据companyId,key,type生成流程key，查找指定流程
      *           找到则加载此流程，未找到则创建新流程
@@ -54,24 +43,6 @@ public interface WorkflowService {
      * @return  新建或修改后的流程信息
      **/
     DeploymentDTO changeDeployment(DeploymentEditDTO deploymentEditRequest);
-
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     保存流程
-     * @param   deploymentEdit 编辑内容
-     **/
-    @Deprecated
-    void saveDeploy(DeploymentEditDTO deploymentEdit);
-
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     删除流程
-     * @param   deploymentEdit 删除内容
-     **/
-    @Deprecated
-    void deleteDeploy(DeploymentEditDTO deploymentEdit);
 
     /**
      * @author  张成亮
@@ -257,16 +228,6 @@ public interface WorkflowService {
      * @return  当前任务分页数据
      **/
     CorePageDTO<WorkTaskDTO> listPageWorkTask(WorkTaskQueryDTO query);
-
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     启动流程
-     * @param   deployment 流程
-     * @return  当前流程任务
-     **/
-    @Deprecated
-    WorkTaskDTO startDeployment(DeploymentDTO deployment);
 
     /**
      * 描述       启动流程

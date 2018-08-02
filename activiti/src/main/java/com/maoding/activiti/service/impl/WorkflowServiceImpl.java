@@ -43,20 +43,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     private RepositoryService repositoryService;
 
     /**
-     * @param deployment            指定的流程，可以为空
-     * @param deploymentEditRequest 包含数字条件、修改任务的流程编辑信息，可以为空
-     * @return 流程编辑信息
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 获取一个流程的编辑器
-     **/
-    @Deprecated
-    @Override
-    public DeploymentEditDTO createDeploymentEdit(DeploymentDTO deployment, DeploymentEditDTO deploymentEditRequest) {
-        return null;
-    }
-
-    /**
      * 描述       加载流程进行编辑
      *           根据companyId,key,type生成流程key，查找指定流程
      *           找到则加载此流程，未找到则创建新流程
@@ -207,6 +193,9 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             taskListMap.put(DEFAULT_FLOW_TASK_KEY,taskList);
         }
         deploymentDTO.setFlowTaskListMap(taskListMap);
+        String key = process.getId();
+        deploymentDTO.setType(DigitUtils.parseInt(StringUtils.lastRight(key,ID_SPLIT)));
+        deploymentDTO.setKey(StringUtils.getContent(key,-2,ID_SPLIT));
 
         return deploymentDTO;
     }
@@ -586,29 +575,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     /**
-     * @param deploymentEdit 编辑内容
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 保存流程
-     **/
-    @Override
-    public void saveDeploy(DeploymentEditDTO deploymentEdit) {
-
-    }
-
-    /**
-     * @param deploymentEdit 删除内容
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 删除流程
-     **/
-    @Deprecated
-    @Override
-    public void deleteDeploy(DeploymentEditDTO deploymentEdit) {
-
-    }
-
-    /**
      * @param deleteRequest 删除申请
      * @author 张成亮
      * @date 2018/7/30
@@ -690,6 +656,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         dto.setId(key);
         dto.setType(DigitUtils.parseInt(StringUtils.lastRight(key,ID_SPLIT)));
         dto.setKey(StringUtils.getContent(key,-2,ID_SPLIT));
+        dto.setDocumentation(src.getDescription());
         return dto;
     }
 
@@ -906,19 +873,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      **/
     @Override
     public CorePageDTO<WorkTaskDTO> listPageWorkTask(WorkTaskQueryDTO query) {
-        return null;
-    }
-
-    /**
-     * @param deployment 流程
-     * @return 当前流程任务
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 启动流程
-     **/
-    @Deprecated
-    @Override
-    public WorkTaskDTO startDeployment(DeploymentDTO deployment) {
         return null;
     }
 

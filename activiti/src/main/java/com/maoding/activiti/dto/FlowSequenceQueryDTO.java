@@ -7,6 +7,7 @@ package com.maoding.activiti.dto;
  * @date : 2018/7/30
  * @description : 流程的连接线查询条件信息
  */
+@Deprecated
 public class FlowSequenceQueryDTO extends FlowElementQueryDTO {
     /** id:连接线编号 */
 }

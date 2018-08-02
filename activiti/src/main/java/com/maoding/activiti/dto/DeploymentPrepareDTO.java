@@ -10,6 +10,8 @@ import com.maoding.core.base.dto.CoreEditDTO;
  * @description :
  */
 public class DeploymentPrepareDTO extends CoreEditDTO {
+    /** id:流程key */
+
     /** 流程名称 */
     private String name;
     /** 流程键值，定义见ProcessTypeConst.PROCESS_TYPE_xxx */

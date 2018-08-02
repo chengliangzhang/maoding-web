@@ -11,6 +11,7 @@ import com.maoding.core.base.dto.CoreShowDTO;
  */
 public class DeploymentSimpleDTO extends CoreShowDTO {
     /** id: 流程key */
+
     /** 流程说明 */
     private String documentation;
     /** 流程分类关键字，定义见ProcessTypeConst.PROCESS_TYPE_xxx */
