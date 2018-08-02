@@ -78,7 +78,7 @@ public class TraceUtils {
                 try {
                     RuntimeException e = eClass.newInstance();
                     if (e != null) {
-                        log.error("\t!!!>>> " + Thread.currentThread().getStackTrace()[2].getMethodName() + ":" + e.getMessage());
+                        log.error("\t!!!>>> " + Thread.currentThread().getStackTrace()[3].getMethodName() + ":" + e.getMessage());
                         if (isThrow) {
                             throw e;
                         }
@@ -87,7 +87,7 @@ public class TraceUtils {
                     log.error("\t!!!!! " + ex.getMessage());
                 }
             } else {
-                log.warn("\t!!!>>> " + Thread.currentThread().getStackTrace()[2].getMethodName() + "存在错误");
+                log.warn("\t!!!>>> " + Thread.currentThread().getStackTrace()[3].getMethodName() + "存在错误");
             }
         }
     }

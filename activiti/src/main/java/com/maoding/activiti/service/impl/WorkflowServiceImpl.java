@@ -6,15 +6,13 @@ import com.maoding.core.base.dto.CoreEditDTO;
 import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.constant.ProcessTypeConst;
-import com.maoding.core.util.BeanUtils;
-import com.maoding.core.util.ObjectUtils;
-import com.maoding.core.util.StringUtils;
-import com.maoding.core.util.TraceUtils;
+import com.maoding.core.util.*;
 import com.maoding.user.dto.UserDTO;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -98,7 +96,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                 List<FlowTaskDTO> taskList = listFlowTask(process,sequence);
 
                 //获取节点值并保存路径，默认路径节点值为空
-                Integer point = getPointFromCondition(condition);
+                Long point = getPointFromCondition(condition);
                 String mapKey = (isDefaultFlow(point)) ? DEFAULT_FLOW_TASK_KEY : point.toString();
                 taskListMap.put(mapKey,taskList);
 
@@ -127,7 +125,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //判断condition路径是否默认路径
-    private boolean isDefaultFlow(Integer point){
+    private boolean isDefaultFlow(Long point){
         return (point == null);
     }
 
@@ -247,25 +245,32 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             .addBpmnModel(getDeploymentKey(deploymentEditRequest) + ".bpmn",model)
             .name(deploymentEditRequest.getName())
             .deploy();
-        return process;
+
+        ProcessDefinition pd = repositoryService.createProcessDefinitionQuery()
+                .processDefinitionKey(getDeploymentKey(deploymentEditRequest))
+                .latestVersion()
+                .singleResult();
+
+        BpmnModel bm = repositoryService.getBpmnModel(pd.getId());
+        Process p = bm.getProcessById(getDeploymentKey(deploymentEditRequest));
+        return p;
     }
 
     //根据表达式获取关键字名称
     private String getKeyFromCondition(String condition){
-        String[] sArray = condition.split(" and ");
-        if (sArray.length <= 1){
+        String s = StringUtils.lastRight(condition," and ");
+        if (StringUtils.isEmpty(s)){
             //不是中间节点
             return null;
         }
-        String[] sArray2 = sArray[0].split(">=");
-        return sArray2[0];
+        return StringUtils.left(s,">=");
     }
 
     //根据表达式获取数字条件节点
-    private Integer getPointFromCondition(String condition){
-        String s = condition.replace("${","").replace("}","");
-        if (s.contains(">=")){
-            return Integer.valueOf(s.substring(s.indexOf(">=")));
+    private Long getPointFromCondition(String condition){
+        String s = StringUtils.left(condition,"}");
+        if (StringUtils.contains(s,">=")){
+            return DigitUtils.parseLong(StringUtils.lastRight(s,">="));
         } else {
             //是默认条件分支
             return null;
