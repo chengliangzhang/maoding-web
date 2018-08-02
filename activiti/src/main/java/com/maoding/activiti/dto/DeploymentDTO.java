@@ -23,6 +23,16 @@ public class DeploymentDTO extends CoreShowDTO {
     private List<FlowSequenceDTO> startSequenceList;
     /** 流程所拥有的任务节点序列，以条件编号-任务序列对展现 */
     private Map<String,List<FlowTaskDTO>> flowTaskListMap;
+    /** 流程判断条件的名称 */
+    private String varKey;
+
+    public String getVarKey() {
+        return varKey;
+    }
+
+    public void setVarKey(String varKey) {
+        this.varKey = varKey;
+    }
 
     public List<FlowSequenceDTO> getStartSequenceList() {
         return startSequenceList;

@@ -181,4 +181,17 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static String getUUID(){
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
+    
+    /**
+     * 描述     获取最右边分隔符右边的字符串
+     * 日期     2018/8/2
+     * @author  张成亮
+     * @return  符合条件的字符串或空字符串
+     * @param   s 源字符串
+     * @param   split 分隔符
+     **/
+    public static String lastRight(String s, String split){
+        if ((s == null) || (split == null) || (!s.contains(split))) return "";
+        return (s.substring(s.lastIndexOf(split) + split.length()));
+    }
 }
