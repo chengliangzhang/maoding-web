@@ -6,6 +6,7 @@ import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.user.dto.UserDTO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -88,7 +89,16 @@ public interface WorkflowService {
      * @return  流程查询信息
      **/
     DeploymentQueryDTO createDeploymentQuery();
-    
+
+    /**
+     * 描述     查询流程，并返回分类结果
+     * 日期     2018/8/2
+     * @author  张成亮
+     * @return  分类流程，key为流程组名称，list为流程列表
+     * @param   query 流程查询条件
+     **/
+    Map<String,List<DeploymentSimpleDTO>> listDeploymentWithKey(DeploymentQueryDTO query);
+
     /**
      * @author  张成亮
      * @date    2018/7/30
@@ -96,7 +106,7 @@ public interface WorkflowService {
      * @param   query 流程查询器
      * @return  流程列表
      **/
-    List<DeploymentDTO> listDeployment(DeploymentQueryDTO query);
+    List<DeploymentSimpleDTO> listDeployment(DeploymentQueryDTO query);
     
     /**
      * @author  张成亮
@@ -114,7 +124,7 @@ public interface WorkflowService {
      * @param   query 流程查询器
      * @return  流程分页数据
      **/
-    CorePageDTO<DeploymentDTO> listPageDeployment(DeploymentQueryDTO query);
+    CorePageDTO<DeploymentSimpleDTO> listPageDeployment(DeploymentQueryDTO query);
     
     /**
      * @author  张成亮

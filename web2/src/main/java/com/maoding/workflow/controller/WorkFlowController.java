@@ -4,6 +4,7 @@ import com.maoding.activiti.dto.*;
 import com.maoding.activiti.service.WorkflowService;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.base.dto.CoreEditDTO;
+import com.maoding.core.base.dto.CoreQueryDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -42,7 +46,7 @@ public class WorkFlowController extends BaseController {
     @ResponseBody
     @Deprecated
     public AjaxMessage createDeployment(@RequestBody DeploymentEditDTO deploymentEditRequest) throws Exception {
-        updateCurrentEditRequest(deploymentEditRequest);
+        updateCurrentUserInfo(deploymentEditRequest);
         DeploymentDTO deployment = workflowService.changeDeployment(deploymentEditRequest);
         return AjaxMessage.succeed("创建成功").setData(deployment);
     }
@@ -58,9 +62,22 @@ public class WorkFlowController extends BaseController {
     @RequestMapping("/prepareDeployment")
     @ResponseBody
     public AjaxMessage prepareDeployment(@RequestBody DeploymentPrepareDTO deploymentPrepareRequest) throws Exception {
-        updateCurrentEditRequest(deploymentPrepareRequest);
+        updateCurrentUserInfo(deploymentPrepareRequest);
         DeploymentDTO deployment = workflowService.prepareDeployment(deploymentPrepareRequest);
         return AjaxMessage.succeed("加载成功").setData(deployment);
+    }
+
+    /**
+     * 描述       列出全部流程
+     * 日期       2018/8/2
+     * @author   张成亮
+     **/
+    @RequestMapping("/listDeployment")
+    @ResponseBody
+    public AjaxMessage listDeployment(@RequestBody DeploymentQueryDTO query) throws Exception {
+        updateCurrentUserInfo(query);
+        Map<String,List<DeploymentSimpleDTO>> result = workflowService.listDeploymentWithKey(query);
+        return AjaxMessage.succeed("查询成功").setData(result);
     }
 
     /**
@@ -70,8 +87,9 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping("/changeDigitCondition")
     @ResponseBody
+    @Deprecated
     public AjaxMessage changeDigitCondition(@RequestBody DeploymentEditDTO deploymentEditRequest) throws Exception {
-        updateCurrentEditRequest(deploymentEditRequest);
+        updateCurrentUserInfo(deploymentEditRequest);
         DeploymentDTO deployment = workflowService.changeDeployment(deploymentEditRequest);
         return AjaxMessage.succeed("修改成功").setData(deployment);
     }
@@ -84,7 +102,7 @@ public class WorkFlowController extends BaseController {
     @RequestMapping("/changeFlowTask")
     @ResponseBody
     public AjaxMessage changeFlowTask(@RequestBody DeploymentEditDTO deploymentEditRequest) throws Exception {
-        updateCurrentEditRequest(deploymentEditRequest);
+        updateCurrentUserInfo(deploymentEditRequest);
         DeploymentDTO deployment = workflowService.changeDeployment(deploymentEditRequest);
         return AjaxMessage.succeed("修改成功").setData(deployment);
     }
@@ -97,7 +115,7 @@ public class WorkFlowController extends BaseController {
     @RequestMapping("/deleteDeployment")
     @ResponseBody
     public AjaxMessage deleteDeployment(@RequestBody CoreEditDTO deleteRequest) throws Exception {
-        updateCurrentEditRequest(deleteRequest);
+        updateCurrentUserInfo(deleteRequest);
         workflowService.deleteDeploy(deleteRequest);
         return AjaxMessage.succeed("删除成功");
     }
@@ -110,7 +128,7 @@ public class WorkFlowController extends BaseController {
     @RequestMapping("/startDeployment")
     @ResponseBody
     public AjaxMessage startDeployment(@RequestBody WorkActionDTO startRequest) throws Exception {
-        updateCurrentEditRequest(startRequest);
+        updateCurrentUserInfo(startRequest);
         WorkTaskDTO workTask = workflowService.startDeployment(startRequest);
         return AjaxMessage.succeed("删除成功").setData(workTask);
     }
@@ -123,18 +141,27 @@ public class WorkFlowController extends BaseController {
     @RequestMapping("/completeWorkTask")
     @ResponseBody
     public AjaxMessage completeWorkTask(@RequestBody WorkActionDTO completeRequest) throws Exception {
-        updateCurrentEditRequest(completeRequest);
+        updateCurrentUserInfo(completeRequest);
         workflowService.completeWorkTask(completeRequest);
         return AjaxMessage.succeed("完成成功");
     }
 
     //补充当前公司编号、当前用户编号
-    private void updateCurrentEditRequest(CoreEditDTO editDTO){
+    private void updateCurrentUserInfo(CoreEditDTO editDTO){
         if (StringUtils.isEmpty(editDTO.getCurrentCompanyId())){
             editDTO.setCurrentCompanyId(currentCompanyId);
         }
         if (StringUtils.isEmpty(editDTO.getAccountId())){
             editDTO.setAccountId(currentUserId);
+        }
+    }
+
+    private void updateCurrentUserInfo(CoreQueryDTO query){
+        if (StringUtils.isEmpty(query.getCurrentCompanyId())){
+            query.setCurrentCompanyId(currentCompanyId);
+        }
+        if (StringUtils.isEmpty(query.getAccountId())){
+            query.setAccountId(currentUserId);
         }
     }
 }

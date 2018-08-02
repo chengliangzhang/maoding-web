@@ -13,6 +13,7 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -620,6 +621,39 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     /**
+     * 描述     查询流程，并返回分类结果
+     * 日期     2018/8/2
+     *
+     * @param query 流程查询条件
+     * @return 分类流程，key为流程组名称，list为流程列表
+     * @author 张成亮
+     **/
+    @Override
+    public Map<String, List<DeploymentSimpleDTO>> listDeploymentWithKey(DeploymentQueryDTO query) {
+        Map<String,List<DeploymentSimpleDTO>> result = new HashMap<>();
+
+        //行政审批包含两种，因此都需要过滤出来
+        query.setKey(ProcessTypeConst.PROCESS_TYPE_LEAVE);
+        List<DeploymentSimpleDTO> leaveList = listDeployment(query);
+        query.setKey(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS);
+        List<DeploymentSimpleDTO> onBusinessList = listDeployment(query);
+        List<DeploymentSimpleDTO> normalList = new ArrayList<>();
+        normalList.addAll(leaveList);
+        normalList.addAll(onBusinessList);
+        result.put("行政审批",normalList);
+
+        //财务审批
+        query.setKey(ProcessTypeConst.PROCESS_TYPE_FINANCE);
+        result.put("财务审批",listDeployment(query));
+
+        //项目审批
+        query.setKey(ProcessTypeConst.PROCESS_TYPE_PROJECT);
+        result.put("项目审批",listDeployment(query));
+
+        return result;
+    }
+
+    /**
      * @param query 流程查询器
      * @return 流程列表
      * @author 张成亮
@@ -627,8 +661,32 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      * @description 查询流程
      **/
     @Override
-    public List<DeploymentDTO> listDeployment(DeploymentQueryDTO query) {
-        return null;
+    public List<DeploymentSimpleDTO> listDeployment(DeploymentQueryDTO query) {
+        List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery()
+                .processDefinitionKeyLike(ID_PREFIX_PROCESS + query.getCurrentCompanyId() + ID_SPLIT + query.getKey() + "%")
+                .latestVersion()
+                .active()
+                .list();
+        return toDeploymentSimpleDTOList(list);
+    }
+
+    //转换流程部署信息列表到卯丁流程信息列表
+    private List<DeploymentSimpleDTO> toDeploymentSimpleDTOList(List<ProcessDefinition> srcList){
+        List<DeploymentSimpleDTO> dstList = new ArrayList<>();
+        srcList.forEach(src ->
+            dstList.add(toDeploymentSimpleDTO(src))
+        );
+        return dstList;
+    }
+
+    //转换流程部署信息到卯丁流程信息
+    private DeploymentSimpleDTO toDeploymentSimpleDTO(ProcessDefinition src){
+        DeploymentSimpleDTO dto = BeanUtils.createFrom(src,DeploymentSimpleDTO.class);
+        String key = src.getKey();
+        dto.setId(key);
+        dto.setType(DigitUtils.parseInt(StringUtils.lastRight(key,ID_SPLIT)));
+        dto.setKey(StringUtils.getContent(key,-2,ID_SPLIT));
+        return dto;
     }
 
     /**
@@ -640,7 +698,11 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      **/
     @Override
     public int countDeployment(DeploymentQueryDTO query) {
-        return 0;
+        return (int) repositoryService.createProcessDefinitionQuery()
+                .processDefinitionKeyLike(ID_PREFIX_PROCESS + query.getCurrentCompanyId() + ID_SPLIT + query.getKey() + "%")
+                .latestVersion()
+                .active()
+                .count();
     }
 
     /**
@@ -651,8 +713,19 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      * @description 分页获取流程列表
      **/
     @Override
-    public CorePageDTO<DeploymentDTO> listPageDeployment(DeploymentQueryDTO query) {
-        return null;
+    public CorePageDTO<DeploymentSimpleDTO> listPageDeployment(DeploymentQueryDTO query) {
+        ProcessDefinitionQuery pdQuery = repositoryService.createProcessDefinitionQuery()
+                .processDefinitionKeyLike(ID_PREFIX_PROCESS + query.getCurrentCompanyId() + ID_SPLIT + query.getKey() + "%")
+                .latestVersion()
+                .active();
+        List<ProcessDefinition> list = pdQuery.listPage(query.getPageIndex()*query.getPageSize(),query.getPageSize());
+
+        CorePageDTO<DeploymentSimpleDTO> result = new CorePageDTO<>();
+        result.setPageIndex(query.getPageIndex());
+        result.setPageSize(query.getPageSize());
+        result.setCount((int)pdQuery.count());
+        result.setList(toDeploymentSimpleDTOList(list));
+        return result;
     }
 
     /**

@@ -27,6 +27,16 @@ public interface ProcessTypeConst {
      */
       String  PROCESS_TYPE_ON_BUSINESS = "onBusiness";
 
+    /** 行政审批 */
+    String PROCESS_TYPE_NORMAL = PROCESS_TYPE_LEAVE;
+
+    /** 财务审批 */
+    String PROCESS_TYPE_FINANCE = PROCESS_TYPE_EXPENSE;
+
+    /** 项目审批 */
+    String PROCESS_TYPE_PROJECT = PROCESS_TYPE_COST_APPLY;
+
+
     /**
      * 自由流程
      */

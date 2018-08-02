@@ -20,7 +20,7 @@ public class DeploymentEditDTO extends CoreEditDTO {
     private String name;
     /** 流程说明 */
     private String documentation;
-    /** 流程键值，定义见ProcessTypeConst.PROCESS_TYPE_xxx */
+    /** 流程分类关键字，定义见ProcessTypeConst.PROCESS_TYPE_xxx */
     private String key;
     /** 流程类型，定义见ProcessTypeConst.TYPE_xxx */
     private Integer type;

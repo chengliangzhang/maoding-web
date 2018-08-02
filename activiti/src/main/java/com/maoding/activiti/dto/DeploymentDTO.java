@@ -14,7 +14,7 @@ import java.util.Map;
  * @description : 流程信息，用于显示流程、启动流程
  */
 public class DeploymentDTO extends CoreShowDTO {
-    /** id: 流程编号 */
+    /** id: 流程key */
     /** 流程说明 */
     private String documentation;
     /** 允许启动流程的角色(group)列表 */
@@ -28,6 +28,26 @@ public class DeploymentDTO extends CoreShowDTO {
     private Map<String,List<FlowTaskDTO>> flowTaskListMap;
     /** 流程判断条件的名称 */
     private String varKey;
+    /** 流程分类关键字，定义见ProcessTypeConst.PROCESS_TYPE_xxx */
+    private String key;
+    /** 流程类型，定义见ProcessTypeConst.TYPE_xxx */
+    private Integer type;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
 
     public String getDocumentation() {
         return documentation;

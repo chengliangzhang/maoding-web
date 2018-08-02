@@ -191,7 +191,10 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param   split 分隔符
      **/
     public static String left(String str,String split){
-        if ((str == null) || (split == null) || (!str.contains(split))) return str;
+        if ((str == null) || (split == null) || (!str.contains(split))) {
+            return (str == null) ? EMPTY : str;
+        }
+
         return (str.substring(0,str.indexOf(split)));
     }
 
@@ -204,7 +207,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param   split 分隔符
      **/
     public static String right(String str,String split){
-        if ((str == null) || (split == null) || (!str.contains(split))) return "";
+        if ((str == null) || (split == null) || (!str.contains(split))) return EMPTY;
         return (str.substring(str.indexOf(split) + split.length()));
     }
 
@@ -217,8 +220,29 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param   split 分隔符
      **/
     public static String lastRight(String str, String split){
-        if ((str == null) || (split == null) || (!str.contains(split))) return "";
+        if ((str == null) || (split == null) || (!str.contains(split))) return EMPTY;
         return (str.substring(str.lastIndexOf(split) + split.length()));
     }
 
+    /**
+     * 描述     取出字符串中以split分隔的第n段字符串，如果n小于0从右边数
+     * 日期     2018/8/2
+     * @author  张成亮
+     * @return  符合条件的字符串或空字符串
+     * @param   str 源字符串
+     * @param   n 第几段
+     * @param   split 分隔符
+     **/
+    public static String getContent(String str,int n,String split){
+        if ((str == null) || (isEmpty(split))) {
+            return (str == null) ? EMPTY : str;
+        }
+
+        String[] arr = str.split(split);
+        //如果n<0从右边数
+        if (n < 0){
+            n = arr.length + n + 1;
+        }
+        return (0 < n && n <= arr.length) ? arr[n-1] : EMPTY;
+    }
 }

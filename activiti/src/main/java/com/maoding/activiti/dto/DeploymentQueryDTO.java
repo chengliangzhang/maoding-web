@@ -13,6 +13,16 @@ public class DeploymentQueryDTO extends CoreQueryDTO {
     /** id: 流程编号 */
     /** 可以启动流程的用户编号 */
     private String userId;
+    /** 流程的key值 */
+    private String key;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public String getUserId() {
         return userId;
