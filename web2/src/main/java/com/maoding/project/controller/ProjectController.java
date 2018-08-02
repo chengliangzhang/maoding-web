@@ -556,6 +556,13 @@ public class ProjectController extends BaseController {
         //数据
         Map<String, Object> result = projectService.getProcessingProjectsByPage(param);
         //显示列查询
+        Map<String, Object> para = setProjectUserPermissionParam();
+        List<PermissionDTO> permissionDTOS = permissionService.getProjectUserPermission(para);
+        if (0 < permissionDTOS.size()) {
+            result.put("flag", 1);
+        } else {
+            result.put("flag", 0);
+        }
         String columnCodes = "";
         Map<String, Object> proCondition = getProConditionMap(param, companyId);
         List<ProjectConditionDTO> conditionDTOS = projectConditionService.selProjectConditionList(proCondition);
@@ -573,6 +580,7 @@ public class ProjectController extends BaseController {
      */
     @RequestMapping(value = "/getProjectConditions", method = RequestMethod.POST)
     @ResponseBody
+    @Deprecated
     public AjaxMessage getProjectConditions(@RequestBody Map<String, Object> param) throws Exception {
         String companyId = this.currentCompanyId;
         String companyUserId = (String) param.get("companyUserId");
