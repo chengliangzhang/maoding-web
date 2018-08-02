@@ -10,6 +10,15 @@ import org.slf4j.Logger;
  * @description : 跟踪日志类通用方法
  */
 public class TraceUtils {
+    /** 是否打印进入退出信息 */
+    private static boolean isLogEnterAndExitInfo = true;
+    /** 是否打印调试信息 */
+    private static boolean isLogDebugInfo = true;
+    /** 是否检查断言条件 */
+    private static boolean isCheckCondition = true;
+    /** 是否抛出异常 */
+    private static boolean isThrow = true;
+
     /**
      * @author  张成亮
      * @date    2018/7/31
@@ -19,7 +28,9 @@ public class TraceUtils {
      * @return  当前时间
      **/
     public static long enter(Logger log, Object... obs){
-        log.info("\t===>>> 进入" + Thread.currentThread().getStackTrace()[2].getMethodName() + ":" + getJsonString(obs));
+        if (isLogEnterAndExitInfo) {
+            log.info("\t===>>> 进入" + Thread.currentThread().getStackTrace()[2].getMethodName() + ":" + getJsonString(obs));
+        }
         return System.currentTimeMillis();
     }
 
@@ -32,7 +43,9 @@ public class TraceUtils {
      * @param   obs 退出方法时要打印的变量
      **/
     public static void exit(Logger log, long t, Object... obs){
-        log.info("\t<<<=== 退出" + Thread.currentThread().getStackTrace()[2].getMethodName() + ":" + (System.currentTimeMillis() - t) + "ms," + getJsonString(obs));
+        if (isLogEnterAndExitInfo) {
+            log.info("\t<<<=== 退出" + Thread.currentThread().getStackTrace()[2].getMethodName() + ":" + (System.currentTimeMillis() - t) + "ms," + getJsonString(obs));
+        }
     }
 
     /**
@@ -45,7 +58,9 @@ public class TraceUtils {
      * @return  系统当前时间
      **/
     public static long info(Logger log, String message, long t, Object... obs){
-        log.info("\t===>>> " + message + ":" + (System.currentTimeMillis() - t) + "ms," + getJsonString(obs));
+        if (isLogDebugInfo) {
+            log.info("\t===>>> " + message + ":" + (System.currentTimeMillis() - t) + "ms," + getJsonString(obs));
+        }
         return System.currentTimeMillis();
     }
 
@@ -58,17 +73,18 @@ public class TraceUtils {
      * @param   eClass 要抛出的异常的类型
      **/
     public static void check(boolean condition, Logger log, Class<? extends RuntimeException> eClass) {
-        if (!(condition)) {
+        if (isCheckCondition && !(condition)) {
             if (eClass != null) {
-                RuntimeException e = null;
                 try {
-                    e = eClass.newInstance();
-                    log.error("\t!!!>>> " + Thread.currentThread().getStackTrace()[2].getMethodName() + ":" + e.getMessage());
+                    RuntimeException e = eClass.newInstance();
+                    if (e != null) {
+                        log.error("\t!!!>>> " + Thread.currentThread().getStackTrace()[2].getMethodName() + ":" + e.getMessage());
+                        if (isThrow) {
+                            throw e;
+                        }
+                    }
                 } catch (InstantiationException | IllegalAccessException ex) {
                     log.error("\t!!!!! " + ex.getMessage());
-                }
-                if (e != null) {
-                    throw e;
                 }
             } else {
                 log.warn("\t!!!>>> " + Thread.currentThread().getStackTrace()[2].getMethodName() + "存在错误");
@@ -76,8 +92,48 @@ public class TraceUtils {
         }
     }
 
+    public static void check(boolean condition, Logger log) {
+        check(condition,log,null);
+    }
+
+    public static void check(boolean condition) {
+        assert(condition);
+    }
+
     //获取要打印的字符串
     private static String getJsonString(Object... obs){
         return StringUtils.toJsonString(obs);
+    }
+
+    public static boolean isIsLogEnterAndExitInfo() {
+        return isLogEnterAndExitInfo;
+    }
+
+    public static void setIsLogEnterAndExitInfo(boolean isLogEnterAndExitInfo) {
+        TraceUtils.isLogEnterAndExitInfo = isLogEnterAndExitInfo;
+    }
+
+    public static boolean isIsLogDebugInfo() {
+        return isLogDebugInfo;
+    }
+
+    public static void setIsLogDebugInfo(boolean isLogDebugInfo) {
+        TraceUtils.isLogDebugInfo = isLogDebugInfo;
+    }
+
+    public static boolean isIsCheckCondition() {
+        return isCheckCondition;
+    }
+
+    public static void setIsCheckCondition(boolean isCheckCondition) {
+        TraceUtils.isCheckCondition = isCheckCondition;
+    }
+
+    public static boolean isIsThrow() {
+        return isThrow;
+    }
+
+    public static void setIsThrow(boolean isThrow) {
+        TraceUtils.isThrow = isThrow;
     }
 }

@@ -33,7 +33,9 @@ import java.util.stream.Collectors;
  */
 @Service("workflowServiceImpl")
 public class WorkflowServiceImpl extends NewBaseService implements WorkflowService {
-    public static final String DEFAULT_FLOW_TASK_KEY = "last";
+    public static final String DEFAULT_FLOW_TASK_KEY = "defaultFlow";
+    public static final String FLOW_ELEMENT_KEY_START = "start";
+    public static final String FLOW_ELEMENT_KEY_END = "end";
 
     @Autowired
     private RepositoryService repositoryService;
@@ -80,7 +82,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         DeploymentDTO deploymentDTO = BeanUtils.createFrom(process,DeploymentDTO.class);
 
         //获取start节点
-        StartEvent startElement = (StartEvent) process.getFlowElement("start");
+        StartEvent startElement = (StartEvent) process.getFlowElement(FLOW_ELEMENT_KEY_START);
         List<SequenceFlow> sequenceFlowList = startElement.getOutgoingFlows();
         if (sequenceFlowList.size() > 1){
             List<Integer> pointList = new ArrayList<>();
@@ -271,7 +273,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
         //创建并添加起始节点
         StartEvent startEvent = new StartEvent();
-        startEvent.setId("start");
+        startEvent.setId(FLOW_ELEMENT_KEY_START);
         flowElementList.add(startEvent);
         return startEvent;
     }
@@ -283,7 +285,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
         //创建并添加终止节点
         EndEvent endEvent = new EndEvent();
-        endEvent.setId("end");
+        endEvent.setId(FLOW_ELEMENT_KEY_END);
         flowElementList.add(endEvent);
         return endEvent;
     }
