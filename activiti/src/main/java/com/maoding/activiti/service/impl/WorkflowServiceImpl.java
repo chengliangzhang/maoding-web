@@ -2,7 +2,6 @@ package com.maoding.activiti.service.impl;
 
 import com.maoding.activiti.dto.*;
 import com.maoding.activiti.service.WorkflowService;
-import com.maoding.core.base.dto.CoreEditDTO;
 import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.constant.ProcessTypeConst;
