@@ -616,8 +616,13 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      * @description 删除流程
      **/
     @Override
-    public void deleteDeploy(CoreEditDTO deleteRequest) {
-
+    public void deleteDeploy(DeploymentQueryDTO deleteRequest) {
+        List<Deployment> list = repositoryService.createDeploymentQuery()
+                .processDefinitionKeyLike(ID_PREFIX_PROCESS + deleteRequest.getCurrentCompanyId() + ID_SPLIT + deleteRequest.getKey() + "%")
+                .list();
+        list.forEach(deployment ->
+            repositoryService.deleteDeployment(deployment.getId())
+        );
     }
 
     /**

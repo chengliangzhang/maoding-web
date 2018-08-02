@@ -1,7 +1,6 @@
 package com.maoding.activiti.service;
 
 import com.maoding.activiti.dto.*;
-import com.maoding.core.base.dto.CoreEditDTO;
 import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.user.dto.UserDTO;
 
@@ -80,7 +79,7 @@ public interface WorkflowService {
      * @description     删除流程
      * @param   deleteRequest 删除申请
      **/
-    void deleteDeploy(CoreEditDTO deleteRequest);
+    void deleteDeploy(DeploymentQueryDTO deleteRequest);
 
     /**
      * @author  张成亮

@@ -114,7 +114,7 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping("/deleteDeployment")
     @ResponseBody
-    public AjaxMessage deleteDeployment(@RequestBody CoreEditDTO deleteRequest) throws Exception {
+    public AjaxMessage deleteDeployment(@RequestBody DeploymentQueryDTO deleteRequest) throws Exception {
         updateCurrentUserInfo(deleteRequest);
         workflowService.deleteDeploy(deleteRequest);
         return AjaxMessage.succeed("删除成功");
