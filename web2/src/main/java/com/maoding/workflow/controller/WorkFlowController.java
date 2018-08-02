@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -34,6 +35,7 @@ public class WorkFlowController extends BaseController {
      * @author   张成亮
      **/
     @RequestMapping("/createDeployment")
+    @ResponseBody
     public AjaxMessage createDeployment(@RequestBody DeploymentEditDTO deploymentEditRequest) throws Exception {
         updateCurrentEditRequest(deploymentEditRequest);
         DeploymentDTO deployment = workflowService.changeDeployment(deploymentEditRequest);
@@ -46,6 +48,7 @@ public class WorkFlowController extends BaseController {
      * @author   张成亮
      **/
     @RequestMapping("/changeDigitCondition")
+    @ResponseBody
     public AjaxMessage changeDigitCondition(@RequestBody DeploymentEditDTO deploymentEditRequest) throws Exception {
         updateCurrentEditRequest(deploymentEditRequest);
         DeploymentDTO deployment = workflowService.changeDeployment(deploymentEditRequest);
@@ -58,6 +61,7 @@ public class WorkFlowController extends BaseController {
      * @author   张成亮
      **/
     @RequestMapping("/changeFlowTask")
+    @ResponseBody
     public AjaxMessage changeFlowTask(@RequestBody DeploymentEditDTO deploymentEditRequest) throws Exception {
         updateCurrentEditRequest(deploymentEditRequest);
         DeploymentDTO deployment = workflowService.changeDeployment(deploymentEditRequest);
@@ -70,6 +74,7 @@ public class WorkFlowController extends BaseController {
      * @author   张成亮
      **/
     @RequestMapping("/deleteDeployment")
+    @ResponseBody
     public AjaxMessage deleteDeployment(@RequestBody CoreEditDTO deleteRequest) throws Exception {
         updateCurrentEditRequest(deleteRequest);
         workflowService.deleteDeploy(deleteRequest);
@@ -82,6 +87,7 @@ public class WorkFlowController extends BaseController {
      * @author   张成亮
      **/
     @RequestMapping("/startDeployment")
+    @ResponseBody
     public AjaxMessage startDeployment(@RequestBody WorkActionDTO startRequest) throws Exception {
         updateCurrentEditRequest(startRequest);
         WorkTaskDTO workTask = workflowService.startDeployment(startRequest);
@@ -94,6 +100,7 @@ public class WorkFlowController extends BaseController {
      * @author   张成亮
      **/
     @RequestMapping("/completeWorkTask")
+    @ResponseBody
     public AjaxMessage completeWorkTask(@RequestBody WorkActionDTO completeRequest) throws Exception {
         updateCurrentEditRequest(completeRequest);
         workflowService.completeWorkTask(completeRequest);
