@@ -3516,7 +3516,7 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
             for (ProjectTaskEntity entity : taskList) {
                 taskNames += entity.getTaskName() + "、";
             }
-            taskNames = taskNames.substring(0, taskNames.length() - 1);
+            taskNames = "\"" + taskNames.substring(0, taskNames.length() - 1) + "\"";
             return AjaxMessage.failed("此任务中" + taskNames + "还未完成，该任务不能标记成完成状态");
         }
 
