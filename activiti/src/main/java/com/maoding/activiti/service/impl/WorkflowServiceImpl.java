@@ -155,6 +155,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         repositoryService.createDeployment()
                 .addBpmnModel(getProcessDefineKey(editRequest) + ".bpmn",model)
                 .name(editRequest.getName())
+                .tenantId(editRequest.getCurrentCompanyId())
                 .deploy();
 
         process = getProcessByKey(getProcessDefineKey(editRequest));
