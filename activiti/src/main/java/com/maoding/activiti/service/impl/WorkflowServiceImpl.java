@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
+
 /**
  * 深圳市卯丁技术有限公司
  *
@@ -46,53 +48,51 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      * 描述       加载流程进行编辑
      *           根据companyId,key,type生成流程key，查找指定流程
      *           找到则加载此流程，未找到则创建新流程
-     *           如果找到流程，加载流程时，srcDeployId，startDigitCondition无效
-     *           如果未找到流程，且指定了srcDeployId时
-     *              复制srcDeployId流程，不判断流程模板和新流程是否为相同类型
+     *           如果找到流程，加载流程时，srcProcessDefineId，startDigitCondition无效
+     *           如果未找到流程，且指定了srcProcessDefineId时
+     *              复制srcProcessDefineId流程，不判断流程模板和新流程是否为相同类型
      * 日期       2018/8/2
-     * @param   deploymentPrepareRequest 包含组织编号、类型、流程名称、分支条件等信息
+     * @param   prepareRequest 包含组织编号、类型、流程名称、分支条件等信息
      * @return  新建或修改后的流程信息
      * @author  张成亮
      **/
     @Override
-    public DeploymentDTO prepareDeployment(DeploymentPrepareDTO deploymentPrepareRequest) {
-        DeploymentDTO deploymentDTO;
+    public ProcessDefineDetailDTO prepareProcessDefine(ProcessDetailPrepareDTO prepareRequest) {
+        ProcessDefineDetailDTO processDefineDetailDTO;
 
         //查找已有流程
-        Process process = getProcessByKey(getDeploymentKey(deploymentPrepareRequest));
+        Process process = getProcessByKey(getProcessDefineKey(prepareRequest));
         //如果是已有流程，转换已有流程
         if (process != null){
-            deploymentDTO = toDeploymentDTO(process);
+            processDefineDetailDTO = toProcessDefineDetailDTO(process);
         } else {
             //如果是新流程
             //如果指定流程模板，复制流程
-            if (StringUtils.isNotEmpty(deploymentPrepareRequest.getSrcDeployId())) {
-                process = getProcessByKey(deploymentPrepareRequest.getSrcDeployId());
+            if (StringUtils.isNotEmpty(prepareRequest.getSrcProcessDefineId())) {
+                process = getProcessByKey(prepareRequest.getSrcProcessDefineId());
             }
             //如果找到模板，设定模板参数，否则创建流程
             if (process != null) {
                 //设定模板参数
-                process.setName(deploymentPrepareRequest.getName());
-                process.setId(getDeploymentKey(deploymentPrepareRequest));
-                deploymentDTO = toDeploymentDTO(process);
+                process.setName(prepareRequest.getName());
+                process.setId(getProcessDefineKey(prepareRequest));
+                processDefineDetailDTO = toProcessDefineDetailDTO(process);
             } else {
-                deploymentDTO = BeanUtils.createFrom(deploymentPrepareRequest, DeploymentDTO.class);
+                processDefineDetailDTO = BeanUtils.createFrom(prepareRequest, ProcessDefineDetailDTO.class);
                 //如果是条件流程，转换数字条件为编辑信息
-                if (isConditionType(deploymentPrepareRequest)) {
-                    DigitConditionEditDTO condition = deploymentPrepareRequest.getStartDigitCondition();
-                    deploymentDTO.setVarKey(condition.getVarKey());
-                    deploymentDTO.setFlowTaskListMap(toFlowTaskListMap(condition));
+                if (isConditionType(prepareRequest)) {
+                    DigitConditionEditDTO condition = prepareRequest.getStartDigitCondition();
+                    processDefineDetailDTO.setFlowTaskListMap(toFlowTaskListMap(condition));
                 }
             }
         }
-        return deploymentDTO;
+        return processDefineDetailDTO;
     }
 
     //转换数字条件为用户任务编辑信息
     private Map<String,List<FlowTaskDTO>> toFlowTaskListMap(DigitConditionEditDTO digitConditionEditRequest){
         //检查参数
         TraceUtils.check(ObjectUtils.isNotEmpty(digitConditionEditRequest),log);
-        TraceUtils.check(ObjectUtils.isNotEmpty(digitConditionEditRequest.getVarKey()),log);
         TraceUtils.check(ObjectUtils.isNotEmpty(digitConditionEditRequest.getPointList()),log);
 
         Map<String,List<FlowTaskDTO>> taskListMap = new HashMap<>();
@@ -107,10 +107,10 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //查找已有流程
-    private Process getProcessByKey(String deploymentKey){
+    private Process getProcessByKey(String processDefineKey){
         //查找最后发布的流程版本
         ProcessDefinition pd = repositoryService.createProcessDefinitionQuery()
-                .processDefinitionKey(deploymentKey)
+                .processDefinitionKey(processDefineKey)
                 .latestVersion()
                 .singleResult();
         if (pd == null){
@@ -124,7 +124,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         }
         
         //查找流程定义
-        return bm.getProcessById(deploymentKey);
+        return bm.getProcessById(processDefineKey);
     }
 
     /**
@@ -136,30 +136,30 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      *           如果新流程不是条件流程，taskListMap内非defaultFlow的值无效
      * 日期       2018/7/30
      * @author  张成亮
-     * @param   deploymentEditRequest 包含名称、流程内用户任务的编辑信息
+     * @param   editRequest 包含名称、流程内用户任务的编辑信息
      * @return  新建或修改后的流程信息
      **/
     @Override
-    public DeploymentDTO changeDeployment(DeploymentEditDTO deploymentEditRequest) {
-        Process process = createProcess(deploymentEditRequest);
+    public ProcessDefineDetailDTO changeProcessDefine(ProcessDefineDetailEditDTO editRequest) {
+        Process process = createProcess(editRequest);
         BpmnModel model = createModel(process);
         repositoryService.createDeployment()
-                .addBpmnModel(getDeploymentKey(deploymentEditRequest) + ".bpmn",model)
-                .name(deploymentEditRequest.getName())
+                .addBpmnModel(getProcessDefineKey(editRequest) + ".bpmn",model)
+                .name(editRequest.getName())
                 .deploy();
 
-        process = getProcessByKey(getDeploymentKey(deploymentEditRequest));
+        process = getProcessByKey(getProcessDefineKey(editRequest));
 
-        return toDeploymentDTO(process);
+        return toProcessDefineDetailDTO(process);
     }
 
-    //转换工作流引擎内流程模型对象为DeploymentDTO
-    private DeploymentDTO toDeploymentDTO(Process process){
+    //转换工作流引擎内流程模型对象为ProcessDefineDetailDTO
+    private ProcessDefineDetailDTO toProcessDefineDetailDTO(Process process){
         //检查参数
         TraceUtils.check(ObjectUtils.isNotEmpty(process),log);
 
         //复制同名属性
-        DeploymentDTO deploymentDTO = BeanUtils.createFrom(process,DeploymentDTO.class);
+        ProcessDefineDetailDTO processDefineDetailDTO = BeanUtils.createFrom(process,ProcessDefineDetailDTO.class);
 
         //获取start节点
         StartEvent startElement = (StartEvent) process.getFlowElement(FLOW_ELEMENT_KEY_START);
@@ -177,14 +177,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                 Long point = getPointFromCondition(condition);
                 String mapKey = (isDefaultFlow(point)) ? DEFAULT_FLOW_TASK_KEY : point.toString();
                 taskListMap.put(mapKey,taskList);
-
-                //保存条件名称到结果
-                if (needSaveKey(deploymentDTO)){
-                    String key = getKeyFromCondition(condition);
-                    if (StringUtils.isNotEmpty(key)) {
-                        deploymentDTO.setVarKey(key);
-                    }
-                }
             });
         } else {
             //获取默认路径
@@ -192,17 +184,12 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             List<FlowTaskDTO> taskList = listFlowTask(process,sequence);
             taskListMap.put(DEFAULT_FLOW_TASK_KEY,taskList);
         }
-        deploymentDTO.setFlowTaskListMap(taskListMap);
+        processDefineDetailDTO.setFlowTaskListMap(taskListMap);
         String key = process.getId();
-        deploymentDTO.setType(DigitUtils.parseInt(StringUtils.lastRight(key,ID_SPLIT)));
-        deploymentDTO.setKey(StringUtils.getContent(key,-2,ID_SPLIT));
+        processDefineDetailDTO.setType(DigitUtils.parseInt(StringUtils.lastRight(key,ID_SPLIT)));
+        processDefineDetailDTO.setKey(StringUtils.getContent(key,-2,ID_SPLIT));
 
-        return deploymentDTO;
-    }
-
-    //判断是否需要保存条件名称
-    private boolean needSaveKey(DeploymentDTO deploymentDTO){
-        return StringUtils.isEmpty(deploymentDTO.getVarKey());
+        return processDefineDetailDTO;
     }
 
     //判断condition路径是否默认路径
@@ -249,19 +236,19 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //判断是否是创建流程申请
-    private boolean isCreateRequest(DeploymentEditDTO deploymentEditRequest){
+    private boolean isCreateRequest(ProcessDefineDetailEditDTO deploymentEditRequest){
         return StringUtils.isEmpty(deploymentEditRequest.getId());
     }
 
     //创建一个新流程定义
-    private Process createProcess(List<FlowElement> flowElementList,DeploymentEditDTO otherInfo){
+    private Process createProcess(List<FlowElement> flowElementList,ProcessDefineDetailEditDTO otherInfo){
         //检查参数
         TraceUtils.check(ObjectUtils.isNotEmpty(flowElementList),log);
         TraceUtils.check(ObjectUtils.isNotEmpty(otherInfo),log);
 
         Process process = BeanUtils.createFrom(otherInfo,Process.class);
         flowElementList.forEach(process::addFlowElement);
-        process.setId(getDeploymentKey(otherInfo));
+        process.setId(getProcessDefineKey(otherInfo));
 
         return process;
     }
@@ -275,7 +262,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //创建一个新流程
-    private Process createProcess(DeploymentEditDTO deploymentEditRequest){
+    private Process createProcess(ProcessDefineDetailEditDTO deploymentEditRequest){
         //检查参数
         TraceUtils.check(ObjectUtils.isNotEmpty(deploymentEditRequest),log);
 
@@ -294,7 +281,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             //添加条件及条件内的用户任务和连线
             for (int i=0; i<=pointList.size(); i++){
                 //获取此数字条件节点判断字符串
-                String condition = getCondition(pointList,deploymentEditRequest.getVarKey(),i);
+                String condition = getCondition(pointList,deploymentEditRequest.getKey(),i);
 
                 //添加从起点开始的用户任务和连接线
                 String key = (i == 0) ? DEFAULT_FLOW_TASK_KEY : pointList.get(i-1).toString();
@@ -411,51 +398,38 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //判断是否条件流程，其他类型参数
-    private boolean isConditionType(DeploymentPrepareDTO deploymentPrepareRequest){
+    private boolean isConditionType(ProcessDetailPrepareDTO deploymentPrepareRequest){
         //检查参数
         TraceUtils.check(ObjectUtils.isNotEmpty(deploymentPrepareRequest),log);
 
         return isConditionType(deploymentPrepareRequest.getType())
                 && (deploymentPrepareRequest.getStartDigitCondition() != null)
-                && (StringUtils.isNotEmpty(deploymentPrepareRequest.getStartDigitCondition().getVarKey()))
                 && (ObjectUtils.isNotEmpty(deploymentPrepareRequest.getStartDigitCondition().getPointList()));
     }
 
 
     //是否条件流程，其他类型参数
-    private boolean isConditionType(DeploymentEditDTO deploymentEditRequest){
+    private boolean isConditionType(ProcessDefineDetailEditDTO deploymentEditRequest){
         //检查参数
         TraceUtils.check(ObjectUtils.isNotEmpty(deploymentEditRequest),log);
 
-        return isConditionType(deploymentEditRequest.getType())
-                && (StringUtils.isNotEmpty(deploymentEditRequest.getVarKey()));
+        return isConditionType(deploymentEditRequest.getType());
     }
 
 
     //通过输入参数组合成流程key：p_companyId_key_type, id不可以以数字开始，因此添加p_前缀
-    private <T> String getDeploymentKey(String companyId, String key, T type){
+    private <T> String getProcessDefineKey(String companyId, String key, T type){
         return ID_PREFIX_PROCESS + companyId + ID_SPLIT
                 + key + ID_SPLIT
                 + type.toString();
     }
     
     //通过输入参数组合成流程, 兼容的其他参数类型
-    private String getDeploymentKey(DeploymentEditDTO deploymentEditRequest){
-        return getDeploymentKey(deploymentEditRequest.getCurrentCompanyId(),deploymentEditRequest.getKey(),deploymentEditRequest.getType());
+    private String getProcessDefineKey(ProcessDefineDetailEditDTO deploymentEditRequest){
+        return getProcessDefineKey(deploymentEditRequest.getCurrentCompanyId(),deploymentEditRequest.getKey(),deploymentEditRequest.getType());
     }
-    private String getDeploymentKey(DeploymentPrepareDTO deployPrepareRequest){
-        return getDeploymentKey(deployPrepareRequest.getCurrentCompanyId(),deployPrepareRequest.getKey(),deployPrepareRequest.getType());
-    }
-
-    //从流程引擎获取指定流程
-    private Deployment getDeployment(DeploymentEditDTO deploymentEditRequest){
-        //检查参数
-        TraceUtils.check(ObjectUtils.isNotEmpty(deploymentEditRequest),log);
-
-        List<Deployment> deploymentList = repositoryService.createDeploymentQuery()
-                .deploymentId(deploymentEditRequest.getId())
-                .list();
-        return ObjectUtils.getFirst(deploymentList);
+    private String getProcessDefineKey(ProcessDetailPrepareDTO deployPrepareRequest){
+        return getProcessDefineKey(deployPrepareRequest.getCurrentCompanyId(),deployPrepareRequest.getKey(),deployPrepareRequest.getType());
     }
 
     //创建并添加起始节点
@@ -564,24 +538,13 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     /**
-     * @return 流程查询信息
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 获取一个流程查询器
-     **/
-    @Override
-    public DeploymentQueryDTO createDeploymentQuery() {
-        return null;
-    }
-
-    /**
      * @param deleteRequest 删除申请
      * @author 张成亮
      * @date 2018/7/30
      * @description 删除流程
      **/
     @Override
-    public void deleteDeploy(DeploymentQueryDTO deleteRequest) {
+    public void deleteProcessDefine(ProcessDefineQueryDTO deleteRequest) {
         List<Deployment> list = repositoryService.createDeploymentQuery()
                 .processDefinitionKeyLike(ID_PREFIX_PROCESS + deleteRequest.getCurrentCompanyId() + ID_SPLIT + deleteRequest.getKey() + "%")
                 .list();
@@ -599,26 +562,43 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      * @author 张成亮
      **/
     @Override
-    public Map<String, List<DeploymentSimpleDTO>> listDeploymentWithKey(DeploymentQueryDTO query) {
-        Map<String,List<DeploymentSimpleDTO>> result = new HashMap<>();
+    public List<ProcessDefineGroupDTO> listProcessDefineWithGroup(ProcessDefineQueryDTO query) {
+        List<ProcessDefineGroupDTO> result = new ArrayList<>();
 
         //行政审批包含两种，因此都需要过滤出来
-        query.setKey(ProcessTypeConst.PROCESS_TYPE_LEAVE);
-        List<DeploymentSimpleDTO> leaveList = listDeployment(query);
-        query.setKey(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS);
-        List<DeploymentSimpleDTO> onBusinessList = listDeployment(query);
-        List<DeploymentSimpleDTO> normalList = new ArrayList<>();
-        normalList.addAll(leaveList);
-        normalList.addAll(onBusinessList);
-        result.put("行政审批",normalList);
+        //因项目需求，现在不从数据库内读取，而直接提供固定信息
+//        query.setKey(ProcessTypeConst.PROCESS_TYPE_LEAVE);
+//        List<ProcessDefineDTO> leaveList = listProcessDefine(query);
+//        query.setKey(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS);
+//        List<ProcessDefineDTO> onBusinessList = listProcessDefine(query);
+//        List<ProcessDefineDTO> normalList = new ArrayList<>();
+//        normalList.addAll(leaveList);
+//        normalList.addAll(onBusinessList);
+        List<ProcessDefineDTO> normalList = asList(
+                new ProcessDefineDTO("请假","适用于公司请假审批",ProcessTypeConst.PROCESS_TYPE_LEAVE,1,query.getCurrentCompanyId()),
+                new ProcessDefineDTO("出差","适用于公司出差审批",ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS,1,query.getCurrentCompanyId())
+        );
+        result.add(new ProcessDefineGroupDTO("行政审批",normalList));
 
         //财务审批
-        query.setKey(ProcessTypeConst.PROCESS_TYPE_FINANCE);
-        result.put("财务审批",listDeployment(query));
+        //因项目需求，现在不从数据库内读取，而直接提供固定信息
+//        query.setKey(ProcessTypeConst.PROCESS_TYPE_FINANCE);
+//        List<ProcessDefineDTO> financeList = listProcessDefine(query)
+        List<ProcessDefineDTO> financeList = asList(
+                new ProcessDefineDTO("报销","适用于公司报销审批",ProcessTypeConst.PROCESS_TYPE_FINANCE,1,query.getCurrentCompanyId()),
+                new ProcessDefineDTO("费用申请","适用于公司费用审批",ProcessTypeConst.PROCESS_TYPE_FINANCE,1,query.getCurrentCompanyId())
+        );
+        result.add(new ProcessDefineGroupDTO("财务审批", financeList));
 
         //项目审批
-        query.setKey(ProcessTypeConst.PROCESS_TYPE_PROJECT);
-        result.put("项目审批",listDeployment(query));
+        //因项目需求，现在不从数据库内读取，而直接提供固定信息
+//        query.setKey(ProcessTypeConst.PROCESS_TYPE_PROJECT);
+//        List<ProcessDefineDTO> projectList = listProcessDefine(query)
+        List<ProcessDefineDTO> projectList = asList(
+                new ProcessDefineDTO("立项审批","适用于公司立项审批",ProcessTypeConst.PROCESS_TYPE_PROJECT,1,query.getCurrentCompanyId()),
+                new ProcessDefineDTO("付款审批","适用于公司付款审批",ProcessTypeConst.PROCESS_TYPE_PROJECT,1,query.getCurrentCompanyId())
+        );
+        result.add(new ProcessDefineGroupDTO("项目审批", projectList));
 
         return result;
     }
@@ -631,7 +611,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      * @description 查询流程
      **/
     @Override
-    public List<DeploymentSimpleDTO> listDeployment(DeploymentQueryDTO query) {
+    public List<ProcessDefineDTO> listProcessDefine(ProcessDefineQueryDTO query) {
         List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionKeyLike(ID_PREFIX_PROCESS + query.getCurrentCompanyId() + ID_SPLIT + query.getKey() + "%")
                 .latestVersion()
@@ -641,8 +621,8 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //转换流程部署信息列表到卯丁流程信息列表
-    private List<DeploymentSimpleDTO> toDeploymentSimpleDTOList(List<ProcessDefinition> srcList){
-        List<DeploymentSimpleDTO> dstList = new ArrayList<>();
+    private List<ProcessDefineDTO> toDeploymentSimpleDTOList(List<ProcessDefinition> srcList){
+        List<ProcessDefineDTO> dstList = new ArrayList<>();
         srcList.forEach(src ->
             dstList.add(toDeploymentSimpleDTO(src))
         );
@@ -650,8 +630,8 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //转换流程部署信息到卯丁流程信息
-    private DeploymentSimpleDTO toDeploymentSimpleDTO(ProcessDefinition src){
-        DeploymentSimpleDTO dto = BeanUtils.createFrom(src,DeploymentSimpleDTO.class);
+    private ProcessDefineDTO toDeploymentSimpleDTO(ProcessDefinition src){
+        ProcessDefineDTO dto = BeanUtils.createFrom(src,ProcessDefineDTO.class);
         String key = src.getKey();
         dto.setId(key);
         dto.setType(DigitUtils.parseInt(StringUtils.lastRight(key,ID_SPLIT)));
@@ -668,7 +648,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      * @description 获取流程总个数
      **/
     @Override
-    public int countDeployment(DeploymentQueryDTO query) {
+    public int countProcessDefine(ProcessDefineQueryDTO query) {
         return (int) repositoryService.createProcessDefinitionQuery()
                 .processDefinitionKeyLike(ID_PREFIX_PROCESS + query.getCurrentCompanyId() + ID_SPLIT + query.getKey() + "%")
                 .latestVersion()
@@ -684,137 +664,19 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      * @description 分页获取流程列表
      **/
     @Override
-    public CorePageDTO<DeploymentSimpleDTO> listPageDeployment(DeploymentQueryDTO query) {
+    public CorePageDTO<ProcessDefineDTO> listPageProcessDefine(ProcessDefineQueryDTO query) {
         ProcessDefinitionQuery pdQuery = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionKeyLike(ID_PREFIX_PROCESS + query.getCurrentCompanyId() + ID_SPLIT + query.getKey() + "%")
                 .latestVersion()
                 .active();
         List<ProcessDefinition> list = pdQuery.listPage(query.getPageIndex()*query.getPageSize(),query.getPageSize());
 
-        CorePageDTO<DeploymentSimpleDTO> result = new CorePageDTO<>();
+        CorePageDTO<ProcessDefineDTO> result = new CorePageDTO<>();
         result.setPageIndex(query.getPageIndex());
         result.setPageSize(query.getPageSize());
         result.setCount((int)pdQuery.count());
         result.setList(toDeploymentSimpleDTOList(list));
         return result;
-    }
-
-    /**
-     * @param deploymentEdit 指定的流程编辑器，不能为空
-     * @param flowTask       指定的流程任务，可以为空
-     * @return 流程任务编辑器
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 获取一个流程任务的编辑器
-     **/
-    @Override
-    public FlowTaskEditDTO createFlowTaskEdit(DeploymentEditDTO deploymentEdit, FlowTaskDTO flowTask) {
-        return null;
-    }
-
-    /**
-     * @return 流程任务查询信息
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 获取一个流程任务的查询器
-     **/
-    @Override
-    public FlowTaskQueryDTO createFlowTaskQuery() {
-        return null;
-    }
-
-    /**
-     * @param query 流程任务查询器
-     * @return 流程任务列表
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 查询流程任务
-     **/
-    @Override
-    public List<FlowTaskDTO> listFlowTask(FlowTaskQueryDTO query) {
-        return null;
-    }
-
-    /**
-     * @param deploymentEdit
-     * @param sequence       指定的流程路径，可以为空  @return  流程路径编辑器
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 获取一个流程路径编辑器
-     **/
-    @Override
-    public FlowSequenceEditDTO createFlowSequenceEdit(DeploymentEditDTO deploymentEdit, FlowSequenceDTO sequence) {
-        return null;
-    }
-
-    /**
-     * @return 流程路径查询器
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 获取一个流程路径查询器
-     **/
-    @Override
-    public FlowSequenceQueryDTO createFlowSequenceQuery() {
-        return null;
-    }
-
-    /**
-     * @param query 流程路径查询器
-     * @return 流程路径列表
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 查询流程路径
-     **/
-    @Override
-    public List<FlowSequenceDTO> listFlowSequence(FlowSequenceQueryDTO query) {
-        return null;
-    }
-
-    /**
-     * @param deploymentEdit
-     * @param gateWay        指定的流程网关，可以为空  @return  流程路径编辑器
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 获取一个流程网关编辑器
-     **/
-    @Override
-    public FlowGateWayEditDTO createFlowGateWayEdit(DeploymentEditDTO deploymentEdit, FlowGateWayDTO gateWay) {
-        return null;
-    }
-
-
-   /**
-     * @return 流程网关查询器
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 获取一个流程网关查询器
-     **/
-    @Override
-    public FlowGateWayQueryDTO createFlowGateWayQuery() {
-        return null;
-    }
-
-    /**
-     * @param query 流程网关查询器
-     * @return 流程网关列表
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 查询流程网关
-     **/
-    @Override
-    public List<FlowGateWayDTO> listFlowGateWay(FlowGateWayQueryDTO query) {
-        return null;
-    }
-
-    /**
-     * @return 流程用户查询器
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 获取一个流程用户查询器
-     **/
-    @Override
-    public UserQueryDTO createUserQuery() {
-        return null;
     }
 
     /**
@@ -826,17 +688,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      **/
     @Override
     public List<UserDTO> listUser(UserQueryDTO query) {
-        return null;
-    }
-
-    /**
-     * @return 当前流程任务查询器
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 获取一个正在当前流程任务查询器
-     **/
-    @Override
-    public WorkTaskQueryDTO createWorkTaskQuery() {
         return null;
     }
 
@@ -884,7 +735,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      * @author 张成亮
      */
     @Override
-    public WorkTaskDTO startDeployment(WorkActionDTO workTask) {
+    public WorkTaskDTO startProcess(WorkActionDTO workTask) {
         return null;
     }
 

@@ -5,7 +5,6 @@ import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.user.dto.UserDTO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -16,33 +15,49 @@ import java.util.Map;
  */
 public interface WorkflowService {
     /**
-     * 描述       加载流程进行编辑
+     * 描述       加载流程，准备进行编辑
      *           根据companyId,key,type生成流程key，查找指定流程
      *           找到则加载此流程，未找到则创建新流程
-     *           如果找到流程，加载流程时，srcDeployId，startDigitCondition无效
-     *           如果未找到流程，且指定了srcDeployId时
-     *              复制srcDeployId流程，不判断流程模板和新流程是否为相同类型
+     *           如果找到流程，加载流程时，srcProcessDefineId，startDigitCondition无效
      * 日期       2018/8/2
      * @author   张成亮
-     * @param   deploymentPrepareRequest 包含组织编号、类型、流程名称、分支条件等信息
-     * @return  新建或修改后的流程信息
+     * @param    prepareRequest 加载信息
+     *              根据companyId,key,type生成流程编号，查找指定流程定义
+     *                  如果找到流程定义，则加载此流程
+     *                      加载流程时，srcProcessDefineId，startDigitCondition无效
+     *                  否则，如果未找到流程定义，则创建新流程
+     *                      创建流程时，如果指定了srcProcessDefineId时，则复制srcProcessDefineId流程
+     *                          复制srcProcessDefineId流程时，不判断流程模板和新流程是否为相同类型
+     *                      否则，如果未指定srcProcessDefineId，则根据type创建新流程
+     *                          如果type为ProcessTypeConst.PROCESS_TYPE_CONDITION(3)
+     *                              根据startDigitCondition创建多个分支，每个分支有一个默认审批节点
+     *                          否则，如果type不为ProcessTypeConst.PROCESS_TYPE_CONDITION(3)
+     *                              创建单分支，一个默认审批节点的流程
+     *              调用此接口时，如果创建了一个流程，不会存储流程定义到数据库
+     * @return  查找到的或创建的流程定义信息
      **/
-    DeploymentDTO prepareDeployment(DeploymentPrepareDTO deploymentPrepareRequest);
+    ProcessDefineDetailDTO prepareProcessDefine(ProcessDetailPrepareDTO prepareRequest);
 
 
     /**
-     * 描述       创建或修改一个流程
-     *           根据companyId,key,type生成流程key
-     *           不判断流程是否已存在
-     *           不根据流程类型更改组、人员设置
-     *           如果新流程是条件流程，且taskListMap包含defaultFlow之外的值，从中获取节点信息和用户任务信息
-     *           如果新流程不是条件流程，taskListMap内非defaultFlow的值无效
+     * 描述       创建或修改一个流程，并保存到数据库
+     *           调用此接口时，会存储流程定义到数据库
      * 日期       2018/7/31
      * @author   张成亮
-     * @param   deploymentEditRequest 包含名称、流程内用户任务的编辑信息
-     * @return  新建或修改后的流程信息
+     * @param    editRequest 更改信息
+     *              根据companyId,key,type生成流程编号
+     *              如果type为ProcessTypeConst.PROCESS_TYPE_CONDITION(3)
+     *                  使用taskListMap中defaultFlow之外的分组名，作为条件节点信息
+     *                  使用key值作为条件节点变量名
+     *              否则，如果type不为ProcessTypeConst.PROCESS_TYPE_CONDITION(3)
+     *                  taskListMap中defaultFlow之外的分组无效
+     *              存储流程定义到数据库时
+     *                 不会判断数据库内是否已经存在同编号流程，如果存在，会生成新版本
+     *                 不会根据type值更改组、人员等设置
+     *              taskListMap需要包含所有节点信息，无论是否曾被修改
+     * @return   保存后的流程定义
      **/
-    DeploymentDTO changeDeployment(DeploymentEditDTO deploymentEditRequest);
+    ProcessDefineDetailDTO changeProcessDefine(ProcessDefineDetailEditDTO editRequest);
 
     /**
      * @author  张成亮
@@ -50,140 +65,43 @@ public interface WorkflowService {
      * @description     删除流程
      * @param   deleteRequest 删除申请
      **/
-    void deleteDeploy(DeploymentQueryDTO deleteRequest);
+    void deleteProcessDefine(ProcessDefineQueryDTO deleteRequest);
 
     /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     获取一个流程查询器
-     * @return  流程查询信息
+     * 描述       查询所有流程定义，分组返回列表，组名为中文
+     * 日期       2018/8/2
+     * @author   张成亮
+     * @param    query 流程查询条件
+     * @return   分组流程列表
      **/
-    DeploymentQueryDTO createDeploymentQuery();
+    List<ProcessDefineGroupDTO> listProcessDefineWithGroup(ProcessDefineQueryDTO query);
 
     /**
-     * 描述     查询流程，并返回分类结果
-     * 日期     2018/8/2
-     * @author  张成亮
-     * @return  分类流程，key为流程组名称，list为流程列表
-     * @param   query 流程查询条件
+     * 描述       查询流程定义，返回列表
+     * 日期       2018/8/2
+     * @author   张成亮
+     * @param    query 流程查询条件
+     * @return   流程列表
      **/
-    Map<String,List<DeploymentSimpleDTO>> listDeploymentWithKey(DeploymentQueryDTO query);
+    List<ProcessDefineDTO> listProcessDefine(ProcessDefineQueryDTO query);
 
     /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     查询流程
-     * @param   query 流程查询器
-     * @return  流程列表
+     * @param query 流程查询器
+     * @return 流程个数
+     * @author 张成亮
+     * @date 2018/7/30
+     * @description 获取流程总个数
      **/
-    List<DeploymentSimpleDTO> listDeployment(DeploymentQueryDTO query);
-    
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     获取流程总个数
-     * @param   query 流程查询器
-     * @return  流程个数
-     **/
-    int countDeployment(DeploymentQueryDTO query);
-    
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     分页获取流程列表
-     * @param   query 流程查询器
-     * @return  流程分页数据
-     **/
-    CorePageDTO<DeploymentSimpleDTO> listPageDeployment(DeploymentQueryDTO query);
-    
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     获取一个流程任务的编辑器
-     * @param   deploymentEdit 指定的流程编辑器，不能为空
-     * @param   flowTask 指定的流程任务，可以为空
-     * @return  流程任务编辑器
-     **/
-    FlowTaskEditDTO createFlowTaskEdit(DeploymentEditDTO deploymentEdit, FlowTaskDTO flowTask);
+    int countProcessDefine(ProcessDefineQueryDTO query);
 
     /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     获取一个流程任务的查询器
-     * @return  流程任务查询信息
+     * @param query 流程查询器
+     * @return 流程分页数据
+     * @author 张成亮
+     * @date 2018/7/30
+     * @description 分页获取流程列表
      **/
-    FlowTaskQueryDTO createFlowTaskQuery();
-
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     查询流程任务
-     * @param   query 流程任务查询器
-     * @return  流程任务列表
-     **/
-    List<FlowTaskDTO> listFlowTask(FlowTaskQueryDTO query);
-
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     获取一个流程路径编辑器
-     * @param   sequence 指定的流程路径，可以为空
-     * @return  流程路径编辑器
-     **/
-    FlowSequenceEditDTO createFlowSequenceEdit(DeploymentEditDTO deploymentEdit, FlowSequenceDTO sequence);
-
-
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     获取一个流程路径查询器
-     * @return  流程路径查询器
-     **/
-    FlowSequenceQueryDTO createFlowSequenceQuery();
-
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     查询流程路径
-     * @param   query 流程路径查询器
-     * @return  流程路径列表
-     **/
-    List<FlowSequenceDTO> listFlowSequence(FlowSequenceQueryDTO query);
-
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     获取一个流程网关编辑器
-     * @param   gateWay 指定的流程网关，可以为空
-     * @return  流程路径编辑器
-     **/
-    FlowGateWayEditDTO createFlowGateWayEdit(DeploymentEditDTO deploymentEdit, FlowGateWayDTO gateWay);
-
-
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     获取一个流程网关查询器
-     * @return  流程网关查询器
-     **/
-    FlowGateWayQueryDTO createFlowGateWayQuery();
-
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     查询流程网关
-     * @param   query 流程网关查询器
-     * @return  流程网关列表
-     **/
-    List<FlowGateWayDTO> listFlowGateWay(FlowGateWayQueryDTO query);
-    
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     获取一个流程用户查询器
-     * @return  流程用户查询器
-     **/
-    UserQueryDTO createUserQuery();
+    CorePageDTO<ProcessDefineDTO> listPageProcessDefine(ProcessDefineQueryDTO query);
 
     /**
      * @author  张成亮
@@ -193,15 +111,7 @@ public interface WorkflowService {
      * @return  用户列表
      **/
     List<UserDTO> listUser(UserQueryDTO query);
-    
-    /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     获取一个正在当前流程任务查询器
-     * @return  当前流程任务查询器
-     **/
-    WorkTaskQueryDTO createWorkTaskQuery();
-    
+
     /**
      * @author  张成亮
      * @date    2018/7/30
@@ -234,7 +144,7 @@ public interface WorkflowService {
      * 日期       2018/8/1
      * @author   张成亮
      **/
-    WorkTaskDTO startDeployment(WorkActionDTO workTask);
+    WorkTaskDTO startProcess(WorkActionDTO workTask);
 
 
     /**

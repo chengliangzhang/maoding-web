@@ -15,12 +15,16 @@ public class WorkTaskQueryDTO extends CoreQueryDTO {
 
     /** 执行人员的编号 */
     private String userId;
+
     /** 签发任务编号 */
     private String issueId;
+
     /** 生产任务编号 */
     private String taskId;
+
     /** 最小起始时间 */
     private Date startMinTime;
+
     /** 最大终止时间 */
     private Date endMaxTime;
 

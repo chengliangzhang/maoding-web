@@ -14,28 +14,8 @@ import java.util.List;
 public class DigitConditionEditDTO extends CoreEditDTO {
     /** id：流程编号 */
 
-    /** 判断条件变量名 */
-    private String varKey;
-    /** 判断条件显示名 */
-    private String varName;
     /** 判断条件取值序列，如果是金额，以分为单位 */
     private List<Long> pointList;
-
-    public String getVarKey() {
-        return varKey;
-    }
-
-    public void setVarKey(String varKey) {
-        this.varKey = varKey;
-    }
-
-    public String getVarName() {
-        return varName;
-    }
-
-    public void setVarName(String varName) {
-        this.varName = varName;
-    }
 
     public List<Long> getPointList() {
         return pointList;

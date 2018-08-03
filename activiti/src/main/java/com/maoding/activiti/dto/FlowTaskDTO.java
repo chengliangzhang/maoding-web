@@ -14,10 +14,13 @@ public class FlowTaskDTO extends FlowElementDTO {
 
     /** 任务说明 */
     private String documentation;
+
     /** 允许执行任务的角色(group)组合字符串 */
     private List<String> candidateGroups;
+
     /** 允许执行任务的用户(user)组合字符串 */
     private List<String> candidateUsers;
+
     /** 默认执行人 */
     private String assignee;
 

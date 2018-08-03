@@ -14,8 +14,10 @@ public class FlowElementQueryDTO extends CoreQueryDTO {
 
     /** 所处的流程编号 */
     private String deploymentId;
+
     /** 上一个元素的编号 */
     private String prevElementId;
+
     /** 下一个元素的编号 */
     private String nextElementId;
 
