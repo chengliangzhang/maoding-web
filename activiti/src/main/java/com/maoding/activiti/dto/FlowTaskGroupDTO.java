@@ -22,4 +22,10 @@ public class FlowTaskGroupDTO extends CoreShowDTO {
     public void setFlowTaskList(List<FlowTaskDTO> flowTaskList) {
         this.flowTaskList = flowTaskList;
     }
+
+    public FlowTaskGroupDTO(){}
+    public FlowTaskGroupDTO(String name,List<FlowTaskDTO> flowTaskList){
+        setName(name);
+        setFlowTaskList(flowTaskList);
+    }
 }

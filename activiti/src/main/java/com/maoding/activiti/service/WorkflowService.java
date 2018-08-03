@@ -16,23 +16,19 @@ import java.util.List;
 public interface WorkflowService {
     /**
      * 描述       加载流程，准备进行编辑
-     *           根据companyId,key,type生成流程key，查找指定流程
-     *           找到则加载此流程，未找到则创建新流程
-     *           如果找到流程，加载流程时，srcProcessDefineId，startDigitCondition无效
      * 日期       2018/8/2
      * @author   张成亮
      * @param    prepareRequest 加载信息
-     *              根据companyId,key,type生成流程编号，查找指定流程定义
+     *              如果type为ProcessTypeConst.PROCESS_TYPE_CONDITION(3)，且startDigitCondition不为空
+     *                  根据startDigitCondition创建多个分支
+     *              否则，根据companyId,key,type生成流程编号，查找指定流程定义
      *                  如果找到流程定义，则加载此流程
-     *                      加载流程时，srcProcessDefineId，startDigitCondition无效
+     *                      加载流程时，srcProcessDefineId无效
      *                  否则，如果未找到流程定义，则创建新流程
      *                      创建流程时，如果指定了srcProcessDefineId时，则复制srcProcessDefineId流程
      *                          复制srcProcessDefineId流程时，不判断流程模板和新流程是否为相同类型
-     *                      否则，如果未指定srcProcessDefineId，则根据type创建新流程
-     *                          如果type为ProcessTypeConst.PROCESS_TYPE_CONDITION(3)
-     *                              根据startDigitCondition创建多个分支，每个分支有一个默认审批节点
-     *                          否则，如果type不为ProcessTypeConst.PROCESS_TYPE_CONDITION(3)
-     *                              创建单分支，一个默认审批节点的流程
+     *                      否则，如果未指定srcProcessDefineId
+     *                          创建单分支，一个默认审批节点的流程
      *              调用此接口时，如果创建了一个流程，不会存储流程定义到数据库
      * @return  查找到的或创建的流程定义信息
      **/
