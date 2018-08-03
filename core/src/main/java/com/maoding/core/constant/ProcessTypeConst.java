@@ -51,4 +51,22 @@ public interface ProcessTypeConst {
      * 分条件流程
      */
       Integer PROCESS_TYPE_CONDITION = 3;
+
+    /** 流程定义内默认流程路径名称 */
+    String DEFAULT_FLOW_TASK_KEY = "defaultFlow";
+
+    /** 流程定义内默认启动节点编号 */
+    String FLOW_ELEMENT_KEY_START = "start";
+
+    /** 流程定义内默认结束节点编号 */
+    String FLOW_ELEMENT_KEY_END = "end";
+
+    /** 流程定义编号分隔符 */
+    String ID_SPLIT = "_";
+
+    /** 流程定义编号前缀 */
+    String ID_PREFIX_PROCESS = "p" + ID_SPLIT;
+
+    /** 流程定义内用户任务编号前缀 */
+    String ID_PREFIX_TASK = "t" + ID_SPLIT;
 }

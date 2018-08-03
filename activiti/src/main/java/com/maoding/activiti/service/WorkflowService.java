@@ -60,10 +60,11 @@ public interface WorkflowService {
     ProcessDefineDetailDTO changeProcessDefine(ProcessDefineDetailEditDTO editRequest);
 
     /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     删除流程
-     * @param   deleteRequest 删除申请
+     * 描述       删除流程
+     * 日期       2018/7/31
+     * @author   张成亮
+     * @param    deleteRequest 更改信息
+     *              如果未指定id，则根据currentCompanyId,key生成部分流程编号，只要编号符合这部分的流程都将被删除
      **/
     void deleteProcessDefine(ProcessDefineQueryDTO deleteRequest);
 
@@ -77,7 +78,7 @@ public interface WorkflowService {
     List<ProcessDefineGroupDTO> listProcessDefineWithGroup(ProcessDefineQueryDTO query);
 
     /**
-     * 描述       查询流程定义，返回列表
+     * 描述       查询符合条件的流程定义，返回列表
      * 日期       2018/8/2
      * @author   张成亮
      * @param    query 流程查询条件
@@ -86,20 +87,20 @@ public interface WorkflowService {
     List<ProcessDefineDTO> listProcessDefine(ProcessDefineQueryDTO query);
 
     /**
-     * @param query 流程查询器
-     * @return 流程个数
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 获取流程总个数
+     * 描述       查询符合条件的流程定义个数
+     * 日期       2018/8/2
+     * @author   张成亮
+     * @param    query 流程查询条件
+     * @return   流程定义个数
      **/
     int countProcessDefine(ProcessDefineQueryDTO query);
 
     /**
-     * @param query 流程查询器
-     * @return 流程分页数据
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 分页获取流程列表
+     * 描述       查询符合条件的流程定义，返回分页结果
+     * 日期       2018/8/2
+     * @author   张成亮
+     * @param    query 流程查询条件
+     * @return   流程定义分页信息
      **/
     CorePageDTO<ProcessDefineDTO> listPageProcessDefine(ProcessDefineQueryDTO query);
 
