@@ -177,6 +177,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
         //获取用户任务及条件节点，如果不是条件流程，用户任务序列保存在默认路径内
         Map<String,List<FlowTaskDTO>> taskListMap = new HashMap<>();
+        List<FlowTaskGroupDTO> taskGroupList = new ArrayList<>();
         if (isConditionType(process)){
             sequenceList.forEach(sequence ->{
                 //获取一条路径
@@ -185,8 +186,16 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
                 //获取节点值并保存路径，默认路径节点值为空
                 Long point = getPointFromCondition(condition);
-                String mapKey = (isDefaultFlow(point)) ? ProcessTypeConst.DEFAULT_FLOW_TASK_KEY : point.toString();
-                taskListMap.put(mapKey,taskList);
+                String groupName = (isDefaultFlow(point)) ? ProcessTypeConst.DEFAULT_FLOW_TASK_KEY : point.toString();
+
+                //保存路径到taskGroup
+                FlowTaskGroupDTO taskGroup = new FlowTaskGroupDTO();
+                taskGroup.setName(groupName);
+                taskGroup.setFlowTaskList(taskList);
+                taskGroupList.add(taskGroup);
+
+                //维持兼容性
+                taskListMap.put(groupName,taskList);
             });
         } else {
             //获取默认路径
@@ -195,11 +204,17 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             taskListMap.put(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY,taskList);
         }
         processDefineDetailDTO.setFlowTaskListMap(taskListMap);
+        processDefineDetailDTO.setFlowTaskGroupList(toOrderedFlowTaskGroupList(taskGroupList));
         String key = process.getId();
         processDefineDetailDTO.setType(DigitUtils.parseInt(StringUtils.lastRight(key,ProcessTypeConst.ID_SPLIT)));
         processDefineDetailDTO.setKey(StringUtils.getContent(key,-2,ProcessTypeConst.ID_SPLIT));
 
         return processDefineDetailDTO;
+    }
+
+    //把taskListMap转换为排好序的路径序列
+    private List<FlowTaskGroupDTO> toOrderedFlowTaskGroupList(List<FlowTaskGroupDTO> taskGroupList){
+        return taskGroupList;
     }
 
     //判断condition路径是否默认路径
@@ -296,7 +311,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                 //添加从起点开始的用户任务和连接线
                 String key = (i == 0) ? ProcessTypeConst.DEFAULT_FLOW_TASK_KEY : pointList.get(i-1).toString();
 
-                TraceUtils.check(deploymentEditRequest.getFlowTaskEditListMap() != null);
                 List<FlowTaskEditDTO> taskEditList = deploymentEditRequest.getFlowTaskEditListMap().get(key);
 
                 UserTask userTask = appendUserTask(flowElementList,startEvent,endEvent,taskEditList,condition);

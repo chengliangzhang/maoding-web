@@ -31,7 +31,11 @@ public class ProcessDefineDetailDTO extends CoreShowDTO {
     private List<String> candidateStarterUsers;
 
     /** 流程所拥有的任务节点序列，以条件编号-任务序列对展现 */
+    @Deprecated
     private Map<String,List<FlowTaskDTO>> flowTaskListMap;
+
+    /** 流程所拥有的路径序列 */
+    private List<FlowTaskGroupDTO> flowTaskGroupList;
 
     public String getKey() {
         return key;
@@ -57,10 +61,20 @@ public class ProcessDefineDetailDTO extends CoreShowDTO {
         this.documentation = documentation;
     }
 
+    public List<FlowTaskGroupDTO> getFlowTaskGroupList() {
+        return flowTaskGroupList;
+    }
+
+    public void setFlowTaskGroupList(List<FlowTaskGroupDTO> flowTaskGroupList) {
+        this.flowTaskGroupList = flowTaskGroupList;
+    }
+
+    @Deprecated
     public Map<String, List<FlowTaskDTO>> getFlowTaskListMap() {
         return flowTaskListMap;
     }
 
+    @Deprecated
     public void setFlowTaskListMap(Map<String, List<FlowTaskDTO>> flowTaskListMap) {
         this.flowTaskListMap = flowTaskListMap;
     }
