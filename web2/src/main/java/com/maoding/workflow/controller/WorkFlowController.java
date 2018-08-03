@@ -5,6 +5,7 @@ import com.maoding.activiti.service.WorkflowService;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.util.StringUtils;
+import com.maoding.user.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -122,6 +123,42 @@ public class WorkFlowController extends BaseController {
         updateCurrentUserInfo(deleteRequest);
         workflowService.deleteProcessDefine(deleteRequest);
         return AjaxMessage.succeed("删除成功");
+    }
+
+    /**
+     * 描述     查询流程用到的用户
+     * 日期     2018/8/3
+     * @author   张成亮
+     * @param    query 查询条件
+     *              如果未指定accountId，currentCompanyId，则使用当前用户信息
+     *              如果指定了idList，id无效
+     *              如果同时指定了多个条件，各条件之间是“与”的关系
+     * @return   符合条件的用户列表
+     **/
+    @RequestMapping("/listUser")
+    @ResponseBody
+    public AjaxMessage listUser(@RequestBody UserQueryDTO query) throws Exception {
+        updateCurrentUserInfo(query);
+        List<UserDTO> result = workflowService.listUser(query);
+        return AjaxMessage.succeed("查询成功").setData(result);
+    }
+
+    /**
+     * 描述     查询流程用到的群组
+     * 日期     2018/8/3
+     * @author   张成亮
+     * @param    query 查询条件
+     *              如果未指定accountId，currentCompanyId，则使用当前用户信息
+     *              如果指定了idList，id无效
+     *              如果同时指定了多个条件，各条件之间是“与”的关系
+     * @return   符合条件的用户列表
+     **/
+    @RequestMapping("/listUser")
+    @ResponseBody
+    public AjaxMessage listUser(@RequestBody UserQueryDTO query) throws Exception {
+        updateCurrentUserInfo(query);
+        List<UserDTO> result = workflowService.listUser(query);
+        return AjaxMessage.succeed("查询成功").setData(result);
     }
 
     /**
