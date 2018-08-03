@@ -3,8 +3,6 @@ package com.maoding.workflow.controller;
 import com.maoding.activiti.dto.*;
 import com.maoding.activiti.service.WorkflowService;
 import com.maoding.core.base.controller.BaseController;
-import com.maoding.core.base.dto.CoreEditDTO;
-import com.maoding.core.base.dto.CoreQueryDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,24 +148,5 @@ public class WorkFlowController extends BaseController {
         updateCurrentUserInfo(completeRequest);
         workflowService.completeWorkTask(completeRequest);
         return AjaxMessage.succeed("完成成功");
-    }
-
-    //补充当前公司编号、当前用户编号
-    private void updateCurrentUserInfo(CoreEditDTO editDTO){
-        if (StringUtils.isEmpty(editDTO.getCurrentCompanyId())){
-            editDTO.setCurrentCompanyId(currentCompanyId);
-        }
-        if (StringUtils.isEmpty(editDTO.getAccountId())){
-            editDTO.setAccountId(currentUserId);
-        }
-    }
-
-    private void updateCurrentUserInfo(CoreQueryDTO query){
-        if (StringUtils.isEmpty(query.getCurrentCompanyId())){
-            query.setCurrentCompanyId(currentCompanyId);
-        }
-        if (StringUtils.isEmpty(query.getAccountId())){
-            query.setAccountId(currentUserId);
-        }
     }
 }

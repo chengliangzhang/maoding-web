@@ -1,7 +1,9 @@
 package com.maoding.core.base.controller;
 
+import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.SystemParameters;
+import com.maoding.core.util.StringUtils;
 import com.maoding.exception.CustomException;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -299,4 +301,14 @@ public abstract class BaseController {
             return ajaxResponseExceptionError(ex);
     	}
     }
+
+	//补充当前公司编号、当前用户编号
+	protected void updateCurrentUserInfo(BaseDTO editDTO){
+		if (StringUtils.isEmpty(editDTO.getCurrentCompanyId())){
+			editDTO.setCurrentCompanyId(currentCompanyId);
+		}
+		if (StringUtils.isEmpty(editDTO.getAccountId())){
+			editDTO.setAccountId(currentUserId);
+		}
+	}
 }
