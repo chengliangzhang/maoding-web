@@ -127,40 +127,54 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
     //同步流程类型数据表内的流程类型，如果指定类型，更新数据库，如果没有指定，返回数据库内的类型
     private int syncProcessType(ProcessDetailPrepareDTO prepareRequest){
-        //从数据库内读取当前的流程类型
         TraceUtils.check(prepareRequest != null,log);
         TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getCurrentCompanyId()),log);
         TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),log);
+        return syncProcessType(prepareRequest.getType(),prepareRequest.getCurrentCompanyId(),
+                prepareRequest.getKey(),prepareRequest.getAccountId(),isConditionType(prepareRequest));
+    }
+
+    private int syncProcessType(ProcessDefineDetailEditDTO editRequest){
+        TraceUtils.check(editRequest != null,log);
+        TraceUtils.check(StringUtils.isNotEmpty(editRequest.getCurrentCompanyId()),log);
+        TraceUtils.check(StringUtils.isNotEmpty(editRequest.getKey()),log);
+        return syncProcessType(editRequest.getType(),editRequest.getCurrentCompanyId(),
+                editRequest.getKey(),editRequest.getAccountId(),isConditionType(editRequest));
+    }
+
+
+    private int syncProcessType(Integer type,String companyId,String key,String accountId,boolean isConditionType){
+        //从数据库内读取当前的流程类型
         ProcessTypeEntity typeEntity = processTypeDao
-                .getCurrentProcessType(prepareRequest.getCurrentCompanyId(),prepareRequest.getKey());
+                .getCurrentProcessType(companyId,key);
 
         //如果数据库内没有类型值，或者指定了类型，保存到数据库
-        if ((typeEntity == null) || ObjectUtils.isNotEmpty(prepareRequest.getType())) {
+        if ((typeEntity == null) || ObjectUtils.isNotEmpty(type)) {
             boolean isFound = true;
             if (typeEntity == null) {
                 isFound = false;
                 typeEntity = new ProcessTypeEntity();
                 typeEntity.initEntity();
-                typeEntity.setCompanyId(prepareRequest.getCurrentCompanyId());
-                typeEntity.setCreateBy(prepareRequest.getAccountId());
+                typeEntity.setCompanyId(companyId);
+                typeEntity.setCreateBy(accountId);
             } else {
-                typeEntity.setUpdateBy(prepareRequest.getAccountId());
+                typeEntity.setUpdateBy(accountId);
             }
             //设置此类型为启用状态
             typeEntity.setStatus(1);
             //设置此类型为未删除状态
             typeEntity.setDeleted(0);
             //设置业务类型
-            typeEntity.setTargetType(prepareRequest.getKey());
+            typeEntity.setTargetType(key);
             //设置类型
-            if (isNotInvalid(prepareRequest.getType())){
-                if (isConditionType(prepareRequest)) {
+            if (isNotInvalid(type)){
+                if (isConditionType) {
                     typeEntity.setType(ProcessTypeConst.PROCESS_TYPE_CONDITION);
                 } else {
                     typeEntity.setType(ProcessTypeConst.TYPE_FREE);
                 }
             } else {
-                typeEntity.setType(prepareRequest.getType());
+                typeEntity.setType(type);
             }
 
             if (isFound) {
@@ -170,6 +184,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             }
         }
         return typeEntity.getType();
+
     }
 
     //判断是否是设置条件分支
@@ -475,6 +490,9 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         //获取输入
         //原始代码使用map做输入参数，现在改为list,为加快开发速度，将其转换为原有的map参数
         Map<String,List<FlowTaskEditDTO>> editListMap = toListMap(editRequest.getFlowTaskGroupEditList());
+
+        //同步流程类型
+        editRequest.setType(syncProcessType(editRequest));
 
 
         //添加开始终止节点
