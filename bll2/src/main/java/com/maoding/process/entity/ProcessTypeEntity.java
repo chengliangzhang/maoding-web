@@ -4,14 +4,29 @@ import com.maoding.core.base.entity.BaseEntity;
 
 public class ProcessTypeEntity extends BaseEntity {
 
+    /**
+     * 组织id
+     */
     private String companyId;
 
+    /**
+     * 流程的类型（参考processTypeConst）
+     */
     private String targetType;
 
+    /**
+     * （1：自由流程，2：固定流程，3：分条件流程）
+     */
     private Integer type;
 
+    /**
+     * 0:未启用，1：启用
+     */
     private Integer status;
 
+    /**
+     * 1:删除，0：有效
+     */
     private Integer deleted;
 
     public String getCompanyId() {

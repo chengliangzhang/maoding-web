@@ -8,6 +8,7 @@ import com.maoding.core.util.StringUtils;
 import com.maoding.user.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -181,5 +182,12 @@ public class WorkFlowController extends BaseController {
         updateCurrentUserInfo(completeRequest);
         workflowService.completeWorkTask(completeRequest);
         return AjaxMessage.succeed("完成成功");
+    }
+
+    @ModelAttribute
+    public void before() {
+        this.currentUserId = this.getFromSession("userId", String.class);
+        this.currentCompanyId = this.getFromSession("companyId", String.class);
+        this.currentCompanyUserId = this.getFromSession("companyUserId", String.class);
     }
 }
