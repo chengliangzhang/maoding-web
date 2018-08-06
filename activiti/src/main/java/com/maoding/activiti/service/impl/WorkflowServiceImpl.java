@@ -84,6 +84,8 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                     processDefineDetailDTO = toProcessDefineDetailDTO(process);
                 } else {
                     processDefineDetailDTO = BeanUtils.createFrom(prepareRequest, ProcessDefineDetailDTO.class);
+                    //添加默认路径
+                    processDefineDetailDTO.setFlowTaskGroupList(toFlowTaskGroupList(null));
                 }
             }
         }
@@ -113,22 +115,26 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
     //转换数字条件为用户任务信息
     private List<FlowTaskGroupDTO> toFlowTaskGroupList(DigitConditionEditDTO digitConditionEditRequest) {
-        //检查参数
-        TraceUtils.check(ObjectUtils.isNotEmpty(digitConditionEditRequest),log);
-        TraceUtils.check(ObjectUtils.isNotEmpty(digitConditionEditRequest.getPointList()),log);
-
         List<FlowTaskGroupDTO> taskGroupList = new ArrayList<>();
         //添加默认路径
         taskGroupList.add(new FlowTaskGroupDTO(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY,null));
 
         //添加条件分支路径
-        List<Long> pointList = digitConditionEditRequest.getPointList().stream()
-                .sorted()
-                .collect(Collectors.toList());
-        for (Long point : pointList) {
-            taskGroupList.add(new FlowTaskGroupDTO(point.toString(),null));
+        if (isValid(digitConditionEditRequest)) {
+            List<Long> pointList = digitConditionEditRequest.getPointList().stream()
+                    .sorted()
+                    .collect(Collectors.toList());
+            for (Long point : pointList) {
+                taskGroupList.add(new FlowTaskGroupDTO(point.toString(), null));
+            }
         }
         return taskGroupList;
+    }
+
+    //条件分支是否有效
+    private boolean isValid(DigitConditionEditDTO digitConditionEditRequest){
+        return (digitConditionEditRequest != null)
+                && (ObjectUtils.isNotEmpty(digitConditionEditRequest));
     }
 
     private List<FlowTaskDTO> toFlowTaskList(List<FlowTaskEditDTO> flowTaskEditList){
@@ -313,9 +319,9 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //创建一个新流程
-    private Process createProcess(ProcessDefineDetailEditDTO deploymentEditRequest){
+    private Process createProcess(ProcessDefineDetailEditDTO editRequest){
         //检查参数
-        TraceUtils.check(ObjectUtils.isNotEmpty(deploymentEditRequest),log);
+        TraceUtils.check(ObjectUtils.isNotEmpty(editRequest),log);
 
         List<FlowElement> flowElementList = new ArrayList<>();
 
@@ -324,37 +330,44 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         EndEvent endEvent = appendEndEvent(flowElementList);
 
         //添加流程启动时的数字式的审批条件
-        if (isConditionType(deploymentEditRequest)){
+        if (isConditionType(editRequest)){
             //添加相应审批条件下的用户任务和连接线
             //提取数字条件，并对数字条件节点进行排序
-            List<Long> pointList = toOrderedPointList(deploymentEditRequest.getFlowTaskEditListMap());
+            List<Long> pointList = toOrderedPointList(editRequest.getFlowTaskEditListMap());
 
             //添加条件及条件内的用户任务和连线
             for (int i=0; i<=pointList.size(); i++){
                 //获取此数字条件节点判断字符串
-                String condition = getCondition(pointList,deploymentEditRequest.getKey(),i);
+                String condition = getCondition(pointList,editRequest.getKey(),i);
 
                 //添加从起点开始的用户任务和连接线
                 String key = (i == 0) ? ProcessTypeConst.DEFAULT_FLOW_TASK_KEY : pointList.get(i-1).toString();
 
-                List<FlowTaskEditDTO> taskEditList = deploymentEditRequest.getFlowTaskEditListMap().get(key);
+                List<FlowTaskEditDTO> taskEditList = editRequest.getFlowTaskEditListMap().get(key);
 
-                UserTask userTask = appendUserTask(flowElementList,startEvent,endEvent,taskEditList,condition);
+                //如果此路径为空，直接添加从起始节点到终止节点的连线，否则建立用户任务节点，每个用户任务添加从上一节点到此节点的连线，并添加上一个用户任务节点到结束节点的连线
+                if (ObjectUtils.isNotEmpty(taskEditList)) {
+                    //添加用户任务路径
+                    UserTask userTask = appendUserTask(flowElementList, startEvent, endEvent, taskEditList, condition);
 
-                //添加最后一个用户任务到终点的连接线
-                appendSequence(flowElementList,userTask,endEvent,null);
+                    //添加最后一个用户任务到终点的连接线
+                    appendSequence(flowElementList, userTask, endEvent, null);
+                } else {
+                    //添加从起始节点到终止节点的路径
+                    appendSequence(flowElementList, startEvent, endEvent, condition);
+                }
             }
         } else {
             //如果是自由流程或固定流程，添加默认关键字标注的用户任务序列
-            List<FlowTaskEditDTO> taskEditList = (deploymentEditRequest.getFlowTaskEditListMap() != null) ?
-                    deploymentEditRequest.getFlowTaskEditListMap().get(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY) : null;
+            List<FlowTaskEditDTO> taskEditList = (editRequest.getFlowTaskEditListMap() != null) ?
+                    editRequest.getFlowTaskEditListMap().get(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY) : null;
             UserTask userTask = appendUserTask(flowElementList,startEvent,endEvent,taskEditList,null);
             //添加最后一个用户任务到终点的连接线
             appendSequence(flowElementList,userTask,endEvent,null);
         }
 
         //创建流程
-        return createProcess(flowElementList,deploymentEditRequest);
+        return createProcess(flowElementList,editRequest);
     }
 
     //从用户任务编辑信息中提取数字式条件序列
