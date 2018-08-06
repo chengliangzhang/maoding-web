@@ -12,8 +12,30 @@ import java.util.List;
  * 描述:
  **/
 public class FlowTaskGroupDTO extends CoreShowDTO {
+    /** 条件最小值 */
+    private Integer minValue;
+
+    /** 条件最大值 */
+    private Integer maxValue;
+
     /** 此组包含的用户任务序列 */
     private List<FlowTaskDTO> flowTaskList;
+
+    public Integer getMinValue() {
+        return minValue;
+    }
+
+    public void setMinValue(Integer minValue) {
+        this.minValue = minValue;
+    }
+
+    public Integer getMaxValue() {
+        return maxValue;
+    }
+
+    public void setMaxValue(Integer maxValue) {
+        this.maxValue = maxValue;
+    }
 
     public List<FlowTaskDTO> getFlowTaskList() {
         return flowTaskList;

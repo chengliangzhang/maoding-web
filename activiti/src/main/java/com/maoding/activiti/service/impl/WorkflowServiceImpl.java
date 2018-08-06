@@ -246,7 +246,61 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
     //把taskListMap转换为排好序的路径序列
     private List<FlowTaskGroupDTO> toOrderedFlowTaskGroupList(List<FlowTaskGroupDTO> taskGroupList){
-        return taskGroupList;
+        final HashMap<String,String> titleMap = new HashMap<String,String>(){
+            {
+                put(ProcessTypeConst.PROCESS_TYPE_EXPENSE,"报销金额");
+                put(ProcessTypeConst.PROCESS_TYPE_COST_APPLY,"费用申请金额");
+                put(ProcessTypeConst.PROCESS_TYPE_LEAVE,"请假时长");
+                put(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS,"出差时长");
+            }
+        };
+
+        List<FlowTaskGroupDTO> dstList = new ArrayList<>();
+        if (ObjectUtils.isNotEmpty(taskGroupList)){
+            //添加默认路径
+            FlowTaskGroupDTO prevGroup = null;
+            for (FlowTaskGroupDTO taskGroup : taskGroupList){
+                if (StringUtils.isSame(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY,taskGroup.getName())){
+                    prevGroup = taskGroup;
+                    dstList.add(taskGroup);
+                }
+            }
+
+
+            Integer point = null;
+            for (FlowTaskGroupDTO taskGroup : taskGroupList){
+                if (isRemainMin(taskGroupList,taskGroup,point)){
+                    point = DigitUtils.parseInt(taskGroup.getName());
+                    if (prevGroup != null) {
+                        prevGroup.setMaxValue(point);
+                    }
+                    taskGroup.setMinValue(point);
+                    dstList.add(taskGroup);
+                }
+            }
+        }
+        return dstList;
+    }
+
+    //判断是否是余下来的最小节点路径
+    private boolean isRemainMin(List<FlowTaskGroupDTO> taskGroupList, FlowTaskGroupDTO taskGroup, Integer point){
+        boolean isMin = true;
+        if (ObjectUtils.isEmpty(taskGroupList) || ObjectUtils.isEmpty(taskGroup) || StringUtils.isSame(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY,taskGroup.getName())){
+            isMin = false;
+        } else {
+            int taskPoint = DigitUtils.parseInt(taskGroup.getName());
+            for (FlowTaskGroupDTO tg : taskGroupList) {
+                if (StringUtils.isNotSame(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY,tg.getName())){
+                    int tgPoint = DigitUtils.parseInt(tg.getName());
+                    if (((point == null) || (point < tgPoint))
+                        && (tgPoint < taskPoint)){
+                        isMin = false;
+                        break;
+                    }
+                }
+            }
+        }
+        return isMin;
     }
 
     //判断condition路径是否默认路径
