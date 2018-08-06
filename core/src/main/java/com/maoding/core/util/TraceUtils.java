@@ -2,6 +2,9 @@ package com.maoding.core.util;
 
 import org.slf4j.Logger;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * 深圳市设计同道技术有限公司
  * @author : 张成亮
@@ -68,22 +71,29 @@ public class TraceUtils {
      * @author  张成亮
      * @date    2018/7/31
      * @description     检查断言条件，如果断言条件为假则打印日志，并且抛出异常
-     * @param   log 调用日志的类所使用的日志对象
      * @param   condition   断言条件
+     * @param   log 调用日志的类所使用的日志对象
      * @param   eClass 要抛出的异常的类型
+     * @param   message 异常信息
      **/
-    public static void check(boolean condition, Logger log, Class<? extends RuntimeException> eClass) {
+    public static void check(boolean condition, Logger log, Class<? extends RuntimeException> eClass, String message) {
         if (isCheckCondition && !(condition)) {
             if (eClass != null) {
                 try {
-                    RuntimeException e = eClass.newInstance();
+                    RuntimeException e;
+                    if (StringUtils.isEmpty(message)) {
+                        e = eClass.newInstance();
+                    } else {
+                        Constructor<?> c = getConstructor(eClass,String.class);
+                        e = eClass.cast(c.newInstance(message));
+                    }
                     if (e != null) {
                         log.error("\t!!!>>> " + Thread.currentThread().getStackTrace()[3].getMethodName() + ":" + e.getMessage());
                         if (isThrow) {
                             throw e;
                         }
                     }
-                } catch (InstantiationException | IllegalAccessException ex) {
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
                     log.error("\t!!!!! " + ex.getMessage());
                 }
             } else {
@@ -93,7 +103,7 @@ public class TraceUtils {
     }
 
     public static void check(boolean condition, Logger log) {
-        check(condition,log,null);
+        check(condition,log,null,null);
     }
 
     public static void check(boolean condition) {
@@ -135,5 +145,43 @@ public class TraceUtils {
 
     public static void setIsThrow(boolean isThrow) {
         TraceUtils.isThrow = isThrow;
+    }
+
+    //获取以paramClassArray类型为参数的构造函数
+    private static Constructor<?> getConstructor(Class<?> clazz,Class<?>... lookForParamClassArray){
+        if (clazz == null){
+            return null;
+        }
+
+
+        //参数个数
+        int pCnt = (lookForParamClassArray == null) ? 0 : lookForParamClassArray.length;
+
+
+        //查找构造函数
+        Constructor<?> result = null;
+        Constructor<?>[] constructorArray = clazz.getConstructors();
+        for (Constructor<?> c : constructorArray) {
+            if (c.getParameterCount() == pCnt) {
+                if (lookForParamClassArray == null) {
+                    result = c;
+                    break;
+                } else {
+                    Class<?>[] paramArray = c.getParameterTypes();
+                    boolean isMatch = true;
+                    for (int i = 0; i < pCnt; i++) {
+                        if (!paramArray[i].isAssignableFrom(lookForParamClassArray[i])) {
+                            isMatch = false;
+                            break;
+                        }
+                    }
+                    if (isMatch) {
+                        result = c;
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
     }
 }
