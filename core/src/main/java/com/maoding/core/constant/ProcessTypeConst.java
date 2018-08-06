@@ -44,8 +44,11 @@ public interface ProcessTypeConst {
     /** 财务审批 */
     String PROCESS_TYPE_FINANCE = PROCESS_TYPE_EXPENSE;
 
-    /** 项目审批 */
-    String PROCESS_TYPE_PROJECT = PROCESS_TYPE_COST_APPLY;
+    /** 立项审批 */
+    String PROCESS_TYPE_PROJECT_CREATE = PROCESS_TYPE_COST_APPLY;
+
+    /** 付款审批 */
+    String PROCESS_TYPE_PROJECT_COST_APPLY = PROCESS_TYPE_COST_APPLY;
 
 
     /**

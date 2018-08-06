@@ -816,6 +816,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                 new ProcessDefineDTO("请假","适用于公司请假审批",ProcessTypeConst.PROCESS_TYPE_LEAVE,1,query.getCurrentCompanyId()),
                 new ProcessDefineDTO("出差","适用于公司出差审批",ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS,1,query.getCurrentCompanyId())
         );
+        updateType(normalList, query.getCurrentCompanyId());
         result.add(new ProcessDefineGroupDTO("行政审批",normalList));
 
         //财务审批
@@ -823,9 +824,10 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 //        query.setKey(ProcessTypeConst.PROCESS_TYPE_FINANCE);
 //        List<ProcessDefineDTO> financeList = listProcessDefine(query)
         List<ProcessDefineDTO> financeList = asList(
-                new ProcessDefineDTO("报销","适用于公司报销审批",ProcessTypeConst.PROCESS_TYPE_FINANCE,1,query.getCurrentCompanyId()),
-                new ProcessDefineDTO("费用申请","适用于公司费用审批",ProcessTypeConst.PROCESS_TYPE_FINANCE,1,query.getCurrentCompanyId())
+                new ProcessDefineDTO("报销","适用于公司报销审批",ProcessTypeConst.PROCESS_TYPE_EXPENSE,1,query.getCurrentCompanyId()),
+                new ProcessDefineDTO("费用申请","适用于公司费用审批",ProcessTypeConst.PROCESS_TYPE_COST_APPLY,1,query.getCurrentCompanyId())
         );
+        updateType(financeList, query.getCurrentCompanyId());
         result.add(new ProcessDefineGroupDTO("财务审批", financeList));
 
         //项目审批
@@ -833,13 +835,28 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 //        query.setKey(ProcessTypeConst.PROCESS_TYPE_PROJECT);
 //        List<ProcessDefineDTO> projectList = listProcessDefine(query)
         List<ProcessDefineDTO> projectList = asList(
-                new ProcessDefineDTO("立项审批","适用于公司立项审批",ProcessTypeConst.PROCESS_TYPE_PROJECT,1,query.getCurrentCompanyId()),
-                new ProcessDefineDTO("付款审批","适用于公司付款审批",ProcessTypeConst.PROCESS_TYPE_PROJECT,1,query.getCurrentCompanyId())
+                new ProcessDefineDTO("立项审批","适用于公司立项审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP,1,query.getCurrentCompanyId()),
+                new ProcessDefineDTO("付款审批","适用于公司付款审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY,1,query.getCurrentCompanyId())
         );
+        updateType(projectList, query.getCurrentCompanyId());
         result.add(new ProcessDefineGroupDTO("项目审批", projectList));
 
         return result;
     }
+
+    //更新列表内的流程type值
+    private void updateType(List<ProcessDefineDTO> pdList,String companyId){
+        pdList.forEach(pd -> {
+            ProcessTypeEntity type = processTypeDao.getCurrentProcessType(companyId,pd.getKey());
+            if (type != null){
+                pd.setType(type.getType());
+                pd.setId(StringUtils.lastLeft(pd.getId(),ProcessTypeConst.ID_SPLIT)
+                        + ProcessTypeConst.ID_SPLIT
+                        + pd.getType());
+            }
+        });
+    }
+
 
     /**
      * 描述       查询流程定义，返回列表

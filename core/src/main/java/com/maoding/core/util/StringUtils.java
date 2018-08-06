@@ -212,6 +212,21 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     }
 
     /**
+     * 描述     获取最右边分隔符左边的字符串
+     * 日期     2018/8/2
+     * @author  张成亮
+     * @return  符合条件的字符串或空字符串
+     * @param   str 源字符串
+     * @param   split 分隔符
+     **/
+    public static String lastLeft(String str, String split){
+        if ((str == null) || (split == null) || (!str.contains(split))) {
+            return (str == null) ? EMPTY : str;
+        }
+        return (str.substring(0,str.lastIndexOf(split)));
+    }
+
+    /**
      * 描述     获取最右边分隔符右边的字符串
      * 日期     2018/8/2
      * @author  张成亮
