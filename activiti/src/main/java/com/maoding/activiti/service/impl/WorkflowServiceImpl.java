@@ -235,17 +235,19 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             List<FlowTaskDTO> taskList = listFlowTask(process,sequence);
             taskListMap.put(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY,taskList);
         }
-        processDefineDetailDTO.setFlowTaskListMap(taskListMap);
-        processDefineDetailDTO.setFlowTaskGroupList(toOrderedFlowTaskGroupList(taskGroupList));
-        String key = process.getId();
-        processDefineDetailDTO.setType(DigitUtils.parseInt(StringUtils.lastRight(key,ProcessTypeConst.ID_SPLIT)));
-        processDefineDetailDTO.setKey(StringUtils.getContent(key,-2,ProcessTypeConst.ID_SPLIT));
+        String id = process.getId();
+        String key = StringUtils.getContent(id,-2,ProcessTypeConst.ID_SPLIT);
+        Integer type = DigitUtils.parseInt(StringUtils.lastRight(id,ProcessTypeConst.ID_SPLIT));
+
+        processDefineDetailDTO.setType(type);
+        processDefineDetailDTO.setKey(key);
+        processDefineDetailDTO.setFlowTaskGroupList(toOrderedFlowTaskGroupList(taskGroupList,key));
 
         return processDefineDetailDTO;
     }
 
     //把taskListMap转换为排好序的路径序列
-    private List<FlowTaskGroupDTO> toOrderedFlowTaskGroupList(List<FlowTaskGroupDTO> taskGroupList){
+    private List<FlowTaskGroupDTO> toOrderedFlowTaskGroupList(List<FlowTaskGroupDTO> taskGroupList,String key){
         final HashMap<String,String> titleMap = new HashMap<String,String>(){
             {
                 put(ProcessTypeConst.PROCESS_TYPE_EXPENSE,"报销金额");
@@ -271,10 +273,15 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             for (FlowTaskGroupDTO taskGroup : taskGroupList){
                 if (isRemainMin(taskGroupList,taskGroup,point)){
                     point = DigitUtils.parseInt(taskGroup.getName());
+                    String title = point + "=<" + titleMap.get(key);
+
+                    taskGroup.setMinValue(point);
+                    taskGroup.setTitle(title);
                     if (prevGroup != null) {
                         prevGroup.setMaxValue(point);
+                        prevGroup.setTitle(prevGroup.getTitle() + "<" + point);
                     }
-                    taskGroup.setMinValue(point);
+
                     dstList.add(taskGroup);
                 }
             }
