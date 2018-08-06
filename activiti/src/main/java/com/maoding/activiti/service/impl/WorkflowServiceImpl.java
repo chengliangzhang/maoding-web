@@ -6,6 +6,8 @@ import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.constant.ProcessTypeConst;
 import com.maoding.core.util.*;
+import com.maoding.process.dao.ProcessTypeDao;
+import com.maoding.process.entity.ProcessTypeEntity;
 import com.maoding.user.dto.UserDTO;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
@@ -36,6 +38,9 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
     @Autowired
     private RepositoryService repositoryService;
+
+    @Autowired
+    private ProcessTypeDao processTypeDao;
 
     /**
      * 描述       加载流程，准备进行编辑
@@ -71,12 +76,15 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         };
 
         //补充未填写字段
+        //name字段
         if (StringUtils.isEmpty(prepareRequest.getName())){
             prepareRequest.setName(nameMap.get(prepareRequest.getKey()));
         }
         if (prepareRequest.getType() == null){
             prepareRequest.setType(ProcessTypeConst.TYPE_FREE);
         }
+        //type字段
+        prepareRequest.setType(syncProcessType(prepareRequest));
 
         //如果是设置条件分支，生成新流程
         if (isEditConditionType(prepareRequest)){
@@ -109,6 +117,59 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             }
         }
         return processDefineDetailDTO;
+    }
+
+    private boolean isNotInvalid(Integer type){
+        return (type == null)
+                || (type < ProcessTypeConst.TYPE_FREE)
+                || (type > ProcessTypeConst.PROCESS_TYPE_CONDITION);
+    }
+
+    //同步流程类型数据表内的流程类型，如果指定类型，更新数据库，如果没有指定，返回数据库内的类型
+    private int syncProcessType(ProcessDetailPrepareDTO prepareRequest){
+        //从数据库内读取当前的流程类型
+        TraceUtils.check(prepareRequest != null,log);
+        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getCurrentCompanyId()),log);
+        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),log);
+        ProcessTypeEntity typeEntity = processTypeDao
+                .getCurrentProcessType(prepareRequest.getCurrentCompanyId(),prepareRequest.getKey());
+
+        //如果数据库内没有类型值，或者指定了类型，保存到数据库
+        if ((typeEntity == null) || ObjectUtils.isNotEmpty(prepareRequest.getType())) {
+            boolean isFound = true;
+            if (typeEntity == null) {
+                isFound = false;
+                typeEntity = new ProcessTypeEntity();
+                typeEntity.initEntity();
+                typeEntity.setCompanyId(prepareRequest.getCurrentCompanyId());
+                typeEntity.setCreateBy(prepareRequest.getAccountId());
+            } else {
+                typeEntity.setUpdateBy(prepareRequest.getAccountId());
+            }
+            //设置此类型为启用状态
+            typeEntity.setStatus(1);
+            //设置此类型为未删除状态
+            typeEntity.setDeleted(0);
+            //设置业务类型
+            typeEntity.setTargetType(prepareRequest.getKey());
+            //设置类型
+            if (isNotInvalid(prepareRequest.getType())){
+                if (isConditionType(prepareRequest)) {
+                    typeEntity.setType(ProcessTypeConst.PROCESS_TYPE_CONDITION);
+                } else {
+                    typeEntity.setType(ProcessTypeConst.TYPE_FREE);
+                }
+            } else {
+                typeEntity.setType(prepareRequest.getType());
+            }
+
+            if (isFound) {
+                processTypeDao.updateById(typeEntity);
+            } else {
+                processTypeDao.insert(typeEntity);
+            }
+        }
+        return typeEntity.getType();
     }
 
     //判断是否是设置条件分支
@@ -565,8 +626,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         //检查参数
         TraceUtils.check(ObjectUtils.isNotEmpty(deploymentPrepareRequest),log);
 
-        return isConditionType(deploymentPrepareRequest.getType())
-                && (deploymentPrepareRequest.getStartDigitCondition() != null)
+        return (deploymentPrepareRequest.getStartDigitCondition() != null)
                 && (ObjectUtils.isNotEmpty(deploymentPrepareRequest.getStartDigitCondition().getPointList()));
     }
 
