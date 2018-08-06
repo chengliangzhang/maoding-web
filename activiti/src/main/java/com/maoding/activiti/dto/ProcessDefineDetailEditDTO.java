@@ -37,6 +37,17 @@ public class ProcessDefineDetailEditDTO extends CoreEditDTO {
     /** 流程需更改的任务节点序列，以条件节点值-任务序列对展现，存在默认节点分支defaultFlow */
     private Map<String,List<FlowTaskEditDTO>> flowTaskEditListMap;
 
+    /** 流程需更改的任务节点序列 */
+    private List<FlowTaskGroupEditDTO> flowTaskGroupEditList;
+
+    public List<FlowTaskGroupEditDTO> getFlowTaskGroupEditList() {
+        return flowTaskGroupEditList;
+    }
+
+    public void setFlowTaskGroupEditList(List<FlowTaskGroupEditDTO> flowTaskGroupEditList) {
+        this.flowTaskGroupEditList = flowTaskGroupEditList;
+    }
+
     public Integer getType() {
         return type;
     }

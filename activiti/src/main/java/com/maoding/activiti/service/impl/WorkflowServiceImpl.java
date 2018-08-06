@@ -406,6 +406,11 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
         List<FlowElement> flowElementList = new ArrayList<>();
 
+        //获取输入
+        //原始代码使用map做输入参数，现在改为list,为加快开发速度，将其转换为原有的map参数
+        Map<String,List<FlowTaskEditDTO>> editListMap = toListMap(editRequest.getFlowTaskGroupEditList());
+
+
         //添加开始终止节点
         StartEvent startEvent = appendStartEvent(flowElementList);
         EndEvent endEvent = appendEndEvent(flowElementList);
@@ -414,7 +419,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         if (isConditionType(editRequest)){
             //添加相应审批条件下的用户任务和连接线
             //提取数字条件，并对数字条件节点进行排序
-            List<Long> pointList = toOrderedPointList(editRequest.getFlowTaskEditListMap());
+            List<Long> pointList = toOrderedPointList(editListMap);
 
             //添加条件及条件内的用户任务和连线
             for (int i=0; i<=pointList.size(); i++){
@@ -424,7 +429,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                 //添加从起点开始的用户任务和连接线
                 String key = (i == 0) ? ProcessTypeConst.DEFAULT_FLOW_TASK_KEY : pointList.get(i-1).toString();
 
-                List<FlowTaskEditDTO> taskEditList = editRequest.getFlowTaskEditListMap().get(key);
+                List<FlowTaskEditDTO> taskEditList = editListMap.get(key);
 
                 //如果此路径为空，直接添加从起始节点到终止节点的连线，否则建立用户任务节点，每个用户任务添加从上一节点到此节点的连线，并添加上一个用户任务节点到结束节点的连线
                 if (ObjectUtils.isNotEmpty(taskEditList)) {
@@ -440,8 +445,8 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             }
         } else {
             //如果是自由流程或固定流程，添加默认关键字标注的用户任务序列
-            List<FlowTaskEditDTO> taskEditList = (editRequest.getFlowTaskEditListMap() != null) ?
-                    editRequest.getFlowTaskEditListMap().get(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY) : null;
+            List<FlowTaskEditDTO> taskEditList = (editListMap != null) ?
+                    editListMap.get(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY) : null;
             UserTask userTask = appendUserTask(flowElementList,startEvent,endEvent,taskEditList,null);
             //添加最后一个用户任务到终点的连接线
             appendSequence(flowElementList,userTask,endEvent,null);
@@ -449,6 +454,15 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
         //创建流程
         return createProcess(flowElementList,editRequest);
+    }
+
+    //转换
+    private Map<String,List<FlowTaskEditDTO>> toListMap(List<FlowTaskGroupEditDTO> flowTaskGroupEditList){
+        Map<String,List<FlowTaskEditDTO>> dstMap = new HashMap<>();
+        flowTaskGroupEditList.forEach(tg ->
+            dstMap.put(tg.getName(),tg.getFlowTaskEditList())
+        );
+        return dstMap;
     }
 
     //从用户任务编辑信息中提取数字式条件序列
