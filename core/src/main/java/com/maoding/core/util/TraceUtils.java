@@ -2,6 +2,7 @@ package com.maoding.core.util;
 
 import org.slf4j.Logger;
 
+import javax.lang.model.type.UnknownTypeException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -21,6 +22,10 @@ public class TraceUtils {
     private static boolean isCheckCondition = true;
     /** 是否抛出异常 */
     private static boolean isThrow = true;
+    /** 使用字符串调用时是否产生异常 */
+    private static boolean isThrowAuto = true;
+    /** 是否在异常内增加调用位置 */
+    private static boolean isShowCaller = true;
 
     /**
      * @author  张成亮
@@ -77,18 +82,30 @@ public class TraceUtils {
      * @param   message 异常信息
      **/
     public static void check(boolean condition, Logger log, Class<? extends RuntimeException> eClass, String message) {
+        //调用者在堆栈中的未知
+        final int posStack = 3;
         if (isCheckCondition && !(condition)) {
+            String caller = Thread.currentThread().getStackTrace()[posStack].getMethodName();
             if (eClass != null) {
                 try {
-                    RuntimeException e;
-                    if (StringUtils.isEmpty(message)) {
-                        e = eClass.newInstance();
-                    } else {
-                        Constructor<?> c = getConstructor(eClass,String.class);
-                        e = eClass.cast(c.newInstance(message));
+                    StringBuilder msgBuilder = new StringBuilder(message);
+                    if (isShowCaller) {
+                        if (msgBuilder.length() > 0){
+                            msgBuilder.append("\n");
+                        }
+                        msgBuilder.append(caller);
                     }
+
+                    RuntimeException e;
+                    if (msgBuilder.length() > 0) {
+                        Constructor<?> c = getConstructor(eClass, String.class);
+                        e = eClass.cast(c.newInstance(message));
+                    } else {
+                        e = eClass.newInstance();
+                    }
+
                     if (e != null) {
-                        log.error("\t!!!>>> " + Thread.currentThread().getStackTrace()[3].getMethodName() + ":" + e.getMessage());
+                        log.error("\t!!!>>> " + caller + ":" + e.getMessage());
                         if (isThrow) {
                             throw e;
                         }
@@ -97,7 +114,7 @@ public class TraceUtils {
                     log.error("\t!!!!! " + ex.getMessage());
                 }
             } else {
-                log.warn("\t!!!>>> " + Thread.currentThread().getStackTrace()[3].getMethodName() + "存在错误");
+                log.warn("\t!!!>>> " + caller + "存在错误");
             }
         }
     }
@@ -108,10 +125,16 @@ public class TraceUtils {
      * @description     检查断言条件，如果断言条件为假则打印日志，并且抛出异常
      * @param   condition   断言条件
      * @param   log 调用日志的类所使用的日志对象
-     * @param   message 异常信息，如果以“!”起始，产生参数异常，否则产生断言异常
+     * @param   message 异常信息，如果以“!”起始，产生参数异常，否则如果不为空产生未知类型异常，为空不产生异常
      **/
     public static void check(boolean condition, Logger log, String message) {
-        check(condition,log,null,null);
+        if ((message != null) && (message.startsWith("!"))){
+            check(condition,log,IllegalArgumentException.class,message);
+        } else if (isThrowAuto) {
+            check(condition,log,UnknownTypeException.class,message);
+        } else {
+            check(condition,log,null,message);
+        }
     }
 
     public static void check(boolean condition, Logger log) {
