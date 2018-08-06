@@ -147,13 +147,13 @@ public class WorkFlowController extends BaseController {
      *              如果未指定accountId，currentCompanyId，则使用当前用户信息
      *              如果指定了idList，id无效
      *              如果同时指定了多个条件，各条件之间是“与”的关系
-     * @return   符合条件的用户列表
+     * @return   符合条件的群组列表
      **/
-    @RequestMapping("/listUser")
+    @RequestMapping("/listGroup")
     @ResponseBody
-    public AjaxMessage listUser(@RequestBody UserQueryDTO query) throws Exception {
+    public AjaxMessage listGroup(@RequestBody GroupQueryDTO query) throws Exception {
         updateCurrentUserInfo(query);
-        List<UserDTO> result = workflowService.listUser(query);
+        List<GroupDTO> result = workflowService.listGroup(query);
         return AjaxMessage.succeed("查询成功").setData(result);
     }
 

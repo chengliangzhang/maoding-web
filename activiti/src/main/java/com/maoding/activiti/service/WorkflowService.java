@@ -101,13 +101,28 @@ public interface WorkflowService {
     CorePageDTO<ProcessDefineDTO> listPageProcessDefine(ProcessDefineQueryDTO query);
 
     /**
-     * @author  张成亮
-     * @date    2018/7/30
-     * @description     查询用户
-     * @param   query 用户查询器
-     * @return  用户列表
+     * 描述     查询流程用到的用户
+     * 日期     2018/8/3
+     * @author   张成亮
+     * @param    query 查询条件
+     *              如果未指定accountId，currentCompanyId，则使用当前用户信息
+     *              如果指定了idList，id无效
+     *              如果同时指定了多个条件，各条件之间是“与”的关系
+     * @return   符合条件的用户列表
      **/
     List<UserDTO> listUser(UserQueryDTO query);
+
+    /**
+     * 描述     查询流程用到的群组
+     * 日期     2018/8/3
+     * @author   张成亮
+     * @param    query 查询条件
+     *              如果未指定accountId，currentCompanyId，则使用当前用户信息
+     *              如果指定了idList，id无效
+     *              如果同时指定了多个条件，各条件之间是“与”的关系
+     * @return   符合条件的群组列表
+     **/
+    List<GroupDTO> listGroup(GroupQueryDTO query);
 
     /**
      * @author  张成亮

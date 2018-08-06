@@ -82,7 +82,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         if (isEditConditionType(prepareRequest)){
             processDefineDetailDTO = BeanUtils.createFrom(prepareRequest, ProcessDefineDetailDTO.class);
             DigitConditionEditDTO condition = prepareRequest.getStartDigitCondition();
-            processDefineDetailDTO.setFlowTaskGroupList(toFlowTaskGroupList(condition));
+            processDefineDetailDTO.setFlowTaskGroupList(toOrderedFlowTaskGroupList(toFlowTaskGroupList(condition),prepareRequest.getKey()));
         } else {
             //查找已有流程
             Process process = getProcessByKey(getProcessDefineKey(prepareRequest));
@@ -136,7 +136,8 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     private List<FlowTaskGroupDTO> toFlowTaskGroupList(DigitConditionEditDTO digitConditionEditRequest) {
         List<FlowTaskGroupDTO> taskGroupList = new ArrayList<>();
         //添加默认路径
-        taskGroupList.add(new FlowTaskGroupDTO(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY,null));
+        FlowTaskGroupDTO prevGroup = new FlowTaskGroupDTO(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY,null);
+        taskGroupList.add(prevGroup);
 
         //添加条件分支路径
         if (isValid(digitConditionEditRequest)) {
@@ -144,7 +145,8 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                     .sorted()
                     .collect(Collectors.toList());
             for (Long point : pointList) {
-                taskGroupList.add(new FlowTaskGroupDTO(point.toString(), null));
+                FlowTaskGroupDTO taskGroup = new FlowTaskGroupDTO(point.toString(),null);
+                taskGroupList.add(taskGroup);
             }
         }
         return taskGroupList;
@@ -163,10 +165,12 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     //查找已有流程
     private Process getProcessByKey(String processDefineKey){
         //查找最后发布的流程版本
-        ProcessDefinition pd = repositoryService.createProcessDefinitionQuery()
+        ProcessDefinitionQuery pdQuery = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionKey(processDefineKey)
                 .latestVersion()
-                .singleResult();
+                .orderByProcessDefinitionVersion().desc();
+        List<ProcessDefinition> pdList = pdQuery.list();
+        ProcessDefinition pd = ObjectUtils.getFirst(pdList);
         if (pd == null){
             return null;
         }
@@ -301,6 +305,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                         String prevTitle = StringUtils.isEmpty(prevGroup.getTitle()) ? titleMap.get(key) : prevGroup.getTitle();
                         prevGroup.setTitle(prevTitle + "<" + point);
                     }
+                    prevGroup = taskGroup;
 
                     dstList.add(taskGroup);
                 }
@@ -592,9 +597,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
     //创建并添加起始节点
     private StartEvent appendStartEvent(List<FlowElement> flowElementList) {
-        //检查参数
-        TraceUtils.check(ObjectUtils.isNotEmpty(flowElementList),log);
-
         //创建并添加起始节点
         StartEvent startEvent = new StartEvent();
         startEvent.setId(ProcessTypeConst.FLOW_ELEMENT_KEY_START);
@@ -838,14 +840,33 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     /**
-     * @param query 用户查询器
-     * @return 用户列表
-     * @author 张成亮
-     * @date 2018/7/30
-     * @description 查询用户
+     * 描述     查询流程用到的用户
+     * 日期     2018/8/3
+     * @author   张成亮
+     * @param    query 查询条件
+     *              如果未指定accountId，currentCompanyId，则使用当前用户信息
+     *              如果指定了idList，id无效
+     *              如果同时指定了多个条件，各条件之间是“与”的关系
+     * @return   符合条件的用户列表
      **/
     @Override
     public List<UserDTO> listUser(UserQueryDTO query) {
+        return null;
+    }
+
+    /**
+     * 描述     查询流程用到的群组
+     * 日期     2018/8/3
+     *
+     * @param query 查询条件
+     *              如果未指定accountId，currentCompanyId，则使用当前用户信息
+     *              如果指定了idList，id无效
+     *              如果同时指定了多个条件，各条件之间是“与”的关系
+     * @return 符合条件的群组列表
+     * @author 张成亮
+     **/
+    @Override
+    public List<GroupDTO> listGroup(GroupQueryDTO query) {
         return null;
     }
 
