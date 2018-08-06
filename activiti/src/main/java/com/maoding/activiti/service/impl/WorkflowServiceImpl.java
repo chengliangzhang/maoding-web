@@ -59,6 +59,25 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     public ProcessDefineDetailDTO prepareProcessDefine(ProcessDetailPrepareDTO prepareRequest) {
         ProcessDefineDetailDTO processDefineDetailDTO;
 
+        List<ProcessDefineGroupDTO> result = new ArrayList<>();
+
+        Map<String,String> nameMap = new HashMap<String,String>(){
+            {
+                put(ProcessTypeConst.PROCESS_TYPE_LEAVE,"请假");
+                put(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS,"出差");
+                put(ProcessTypeConst.PROCESS_TYPE_EXPENSE,"报销");
+                put(ProcessTypeConst.PROCESS_TYPE_FINANCE,"费用申请");
+            }
+        };
+
+        //补充未填写字段
+        if (StringUtils.isEmpty(prepareRequest.getName())){
+            prepareRequest.setName(nameMap.get(prepareRequest.getKey()));
+        }
+        if (prepareRequest.getType() == null){
+            prepareRequest.setType(ProcessTypeConst.TYPE_FREE);
+        }
+
         //如果是设置条件分支，生成新流程
         if (isEditConditionType(prepareRequest)){
             processDefineDetailDTO = BeanUtils.createFrom(prepareRequest, ProcessDefineDetailDTO.class);
@@ -273,13 +292,14 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             for (FlowTaskGroupDTO taskGroup : taskGroupList){
                 if (isRemainMin(taskGroupList,taskGroup,point)){
                     point = DigitUtils.parseInt(taskGroup.getName());
-                    String title = point + "=<" + titleMap.get(key);
+                    String title = point + "<=" + titleMap.get(key);
 
                     taskGroup.setMinValue(point);
                     taskGroup.setTitle(title);
                     if (prevGroup != null) {
                         prevGroup.setMaxValue(point);
-                        prevGroup.setTitle(prevGroup.getTitle() + "<" + point);
+                        String prevTitle = StringUtils.isEmpty(prevGroup.getTitle()) ? titleMap.get(key) : prevGroup.getTitle();
+                        prevGroup.setTitle(prevTitle + "<" + point);
                     }
 
                     dstList.add(taskGroup);
