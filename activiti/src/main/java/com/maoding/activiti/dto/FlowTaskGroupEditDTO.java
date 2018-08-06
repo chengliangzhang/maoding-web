@@ -17,7 +17,7 @@ public class FlowTaskGroupEditDTO extends CoreEditDTO {
     private String name;
 
     /** 此组包含的用户任务序列 */
-    private List<FlowTaskEditDTO> flowTaskEditList;
+    private List<FlowTaskEditDTO> flowTaskList;
 
     public String getName() {
         return name;
@@ -27,16 +27,16 @@ public class FlowTaskGroupEditDTO extends CoreEditDTO {
         this.name = name;
     }
 
-    public List<FlowTaskEditDTO> getFlowTaskEditList() {
-        return flowTaskEditList;
+    public List<FlowTaskEditDTO> getFlowTaskList() {
+        return flowTaskList;
     }
 
-    public void setFlowTaskEditList(List<FlowTaskEditDTO> flowTaskEditList) {
-        this.flowTaskEditList = flowTaskEditList;
+    public void setFlowTaskList(List<FlowTaskEditDTO> flowTaskList) {
+        this.flowTaskList = flowTaskList;
     }
 
     public FlowTaskGroupEditDTO(){}
-    public FlowTaskGroupEditDTO(List<FlowTaskEditDTO> flowTaskEditList){
-        setFlowTaskEditList(flowTaskEditList);
+    public FlowTaskGroupEditDTO(List<FlowTaskEditDTO> flowTaskList){
+        setFlowTaskList(flowTaskList);
     }
 }

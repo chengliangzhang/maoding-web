@@ -486,7 +486,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
         //获取输入
         //原始代码使用map做输入参数，现在改为list,为加快开发速度，将其转换为原有的map参数
-        Map<String,List<FlowTaskEditDTO>> editListMap = toListMap(editRequest.getFlowTaskGroupEditList());
+        Map<String,List<FlowTaskEditDTO>> editListMap = toListMap(editRequest.getFlowTaskGroupList());
 
         //同步流程类型
         editRequest.setType(syncProcessType(editRequest));
@@ -541,7 +541,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     private Map<String,List<FlowTaskEditDTO>> toListMap(List<FlowTaskGroupEditDTO> flowTaskGroupEditList){
         Map<String,List<FlowTaskEditDTO>> dstMap = new HashMap<>();
         flowTaskGroupEditList.forEach(tg ->
-            dstMap.put(tg.getName(),tg.getFlowTaskEditList())
+            dstMap.put(tg.getName(),tg.getFlowTaskList())
         );
         return dstMap;
     }

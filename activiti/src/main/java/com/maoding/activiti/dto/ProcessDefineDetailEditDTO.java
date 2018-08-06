@@ -4,7 +4,6 @@ package com.maoding.activiti.dto;
 import com.maoding.core.base.dto.CoreEditDTO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 深圳市设计同道技术有限公司
@@ -34,18 +33,15 @@ public class ProcessDefineDetailEditDTO extends CoreEditDTO {
     /** 允许启动流程的用户(user)列表 */
     private List<String> candidateStarterUsers;
 
-    /** 流程需更改的任务节点序列，以条件节点值-任务序列对展现，存在默认节点分支defaultFlow */
-    private Map<String,List<FlowTaskEditDTO>> flowTaskEditListMap;
-
     /** 流程需更改的任务节点序列 */
-    private List<FlowTaskGroupEditDTO> flowTaskGroupEditList;
+    private List<FlowTaskGroupEditDTO> flowTaskGroupList;
 
-    public List<FlowTaskGroupEditDTO> getFlowTaskGroupEditList() {
-        return flowTaskGroupEditList;
+    public List<FlowTaskGroupEditDTO> getFlowTaskGroupList() {
+        return flowTaskGroupList;
     }
 
-    public void setFlowTaskGroupEditList(List<FlowTaskGroupEditDTO> flowTaskGroupEditList) {
-        this.flowTaskGroupEditList = flowTaskGroupEditList;
+    public void setFlowTaskGroupList(List<FlowTaskGroupEditDTO> flowTaskGroupList) {
+        this.flowTaskGroupList = flowTaskGroupList;
     }
 
     public Integer getType() {
@@ -62,14 +58,6 @@ public class ProcessDefineDetailEditDTO extends CoreEditDTO {
 
     public void setKey(String key) {
         this.key = key;
-    }
-
-    public Map<String, List<FlowTaskEditDTO>> getFlowTaskEditListMap() {
-        return flowTaskEditListMap;
-    }
-
-    public void setFlowTaskEditListMap(Map<String, List<FlowTaskEditDTO>> flowTaskEditListMap) {
-        this.flowTaskEditListMap = flowTaskEditListMap;
     }
 
     public String getName() {
