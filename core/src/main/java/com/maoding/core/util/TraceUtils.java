@@ -102,6 +102,18 @@ public class TraceUtils {
         }
     }
 
+    /**
+     * @author  张成亮
+     * @date    2018/7/31
+     * @description     检查断言条件，如果断言条件为假则打印日志，并且抛出异常
+     * @param   condition   断言条件
+     * @param   log 调用日志的类所使用的日志对象
+     * @param   message 异常信息，如果以“!”起始，产生参数异常，否则产生断言异常
+     **/
+    public static void check(boolean condition, Logger log, String message) {
+        check(condition,log,null,null);
+    }
+
     public static void check(boolean condition, Logger log) {
         check(condition,log,null,null);
     }
