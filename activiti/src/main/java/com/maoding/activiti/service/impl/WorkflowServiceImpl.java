@@ -80,9 +80,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         if (StringUtils.isEmpty(prepareRequest.getName())){
             prepareRequest.setName(nameMap.get(prepareRequest.getKey()));
         }
-        if (prepareRequest.getType() == null){
-            prepareRequest.setType(ProcessTypeConst.TYPE_FREE);
-        }
         //type字段
         prepareRequest.setType(syncProcessType(prepareRequest));
 
