@@ -10,22 +10,33 @@ public interface ProcessTypeConst {
     /**
      * 报销类型
      */
-      String  PROCESS_TYPE_EXPENSE = "expense";
+    String  PROCESS_TYPE_EXPENSE = "expense";
 
     /**
      * 费用申请类型
      */
-      String  PROCESS_TYPE_COST_APPLY = "costApply";
+    String  PROCESS_TYPE_COST_APPLY = "costApply";
 
     /**
      * 请假类型
      */
-      String  PROCESS_TYPE_LEAVE = "leave";
+    String  PROCESS_TYPE_LEAVE = "leave";
 
     /**
      * 出差类型
      */
-      String  PROCESS_TYPE_ON_BUSINESS = "onBusiness";
+    String  PROCESS_TYPE_ON_BUSINESS = "onBusiness";
+
+    /**
+     * 项目立项
+     */
+    String PROCESS_TYPE_PROJECT_SET_UP = "projectSetUp";
+
+    /**
+     * 项目立项
+     */
+    String PROCESS_TYPE_PROJECT_PAY_APPLY = "projectPayApply";
+
 
     /** 行政审批 */
     String PROCESS_TYPE_NORMAL = PROCESS_TYPE_LEAVE;
