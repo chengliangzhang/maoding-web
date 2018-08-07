@@ -24,16 +24,6 @@ public class FlowTaskDTO extends FlowElementDTO {
     /** 默认执行人 */
     private FlowUserDTO assigneeUser;
 
-    //维持兼容性
-    @Deprecated
-    private List<String> candidateGroups;
-
-    @Deprecated
-    private List<String> candidateUsers;
-
-    @Deprecated
-    private String assignee;
-
     public String getDocumentation() {
         return documentation;
     }
@@ -48,30 +38,6 @@ public class FlowTaskDTO extends FlowElementDTO {
 
     public void setCandidateGroupList(List<FlowGroupDTO> candidateGroupList) {
         this.candidateGroupList = candidateGroupList;
-    }
-
-    public List<String> getCandidateGroups() {
-        return candidateGroups;
-    }
-
-    public void setCandidateGroups(List<String> candidateGroups) {
-        this.candidateGroups = candidateGroups;
-    }
-
-    public List<String> getCandidateUsers() {
-        return candidateUsers;
-    }
-
-    public void setCandidateUsers(List<String> candidateUsers) {
-        this.candidateUsers = candidateUsers;
-    }
-
-    public String getAssignee() {
-        return assignee;
-    }
-
-    public void setAssignee(String assignee) {
-        this.assignee = assignee;
     }
 
     public List<FlowUserDTO> getCandidateUserList() {

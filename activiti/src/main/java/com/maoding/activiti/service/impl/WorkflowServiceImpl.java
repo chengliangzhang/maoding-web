@@ -6,9 +6,12 @@ import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.constant.ProcessTypeConst;
 import com.maoding.core.util.*;
+import com.maoding.org.dao.CompanyUserDao;
+import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.process.dao.ProcessTypeDao;
 import com.maoding.process.entity.ProcessTypeEntity;
 import com.maoding.user.dto.UserDTO;
+import com.maoding.user.service.UserAttachService;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.IdentityService;
@@ -47,6 +50,12 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
     @Autowired
     private ProcessTypeDao processTypeDao;
+
+    @Autowired
+    private UserAttachService userAttachService;
+
+    @Autowired
+    private CompanyUserDao companyUserDao;
 
     /**
      * 描述       加载流程，准备进行编辑
@@ -112,6 +121,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                     process.setName(prepareRequest.getName());
                     process.setId(getProcessDefineKey(prepareRequest));
                     processDefineDetailDTO = toProcessDefineDetailDTO(process);
+                    processDefineDetailDTO = updateProcessDefineDetailDTO(processDefineDetailDTO,process);
                 } else {
                     processDefineDetailDTO = BeanUtils.createFrom(prepareRequest, ProcessDefineDetailDTO.class);
                     //添加默认路径
@@ -122,27 +132,34 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
 
         //更新组名称和用户名称并返回
-        return updateProcessDefineDetailDTO(processDefineDetailDTO);
+        return processDefineDetailDTO;
     }
 
     //更新流程定义内的组名称和用户名称
-    private ProcessDefineDetailDTO updateProcessDefineDetailDTO(ProcessDefineDetailDTO processDefineDetailDTO){
+    private ProcessDefineDetailDTO updateProcessDefineDetailDTO(ProcessDefineDetailDTO processDefineDetailDTO, Process process){
         //添加可以启动的组和用户名称
-        if (ObjectUtils.isNotEmpty(processDefineDetailDTO.getCandidateStarterGroups())){
+        if (ObjectUtils.isNotEmpty(process.getCandidateStarterGroups())){
             List<FlowGroupDTO> groupList = new ArrayList<>();
-            for (String groupId : processDefineDetailDTO.getCandidateStarterGroups()) {
+            for (String groupId : process.getCandidateStarterGroups()) {
                 groupList.add(new FlowGroupDTO(groupId,getGroupName(groupId)));
             }
             processDefineDetailDTO.setCandidateStarterGroupList(groupList);
         }
-        if (ObjectUtils.isNotEmpty(processDefineDetailDTO.getCandidateStarterUsers())){
+        if (ObjectUtils.isNotEmpty(process.getCandidateStarterUsers())){
             List<FlowUserDTO> userList = new ArrayList<>();
-            for (String userId : processDefineDetailDTO.getCandidateStarterUsers()) {
-                userList.add(new FlowUserDTO(userId,getUserName(userId)));
+            for (String companyUserId : process.getCandidateStarterUsers()) {
+                userList.add(getFlowUser(companyUserId));
             }
             processDefineDetailDTO.setCandidateStarterUserList(userList);
         }
         return processDefineDetailDTO;
+    }
+
+    //根据用户编号获取用户信息
+    private FlowUserDTO getFlowUser(String companyUserId){
+        String name = getUserName(companyUserId);
+        String img = getUserHeadImg(companyUserId);
+        return new FlowUserDTO(companyUserId,name,img);
     }
 
     private boolean isNotInvalid(Integer type){
@@ -375,7 +392,9 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         processDefineDetailDTO.setKey(key);
         processDefineDetailDTO.setFlowTaskGroupList(toOrderedFlowTaskGroupList(taskGroupList,key));
 
-        return updateProcessDefineDetailDTO(processDefineDetailDTO);
+        processDefineDetailDTO = updateProcessDefineDetailDTO(processDefineDetailDTO,process);
+
+        return processDefineDetailDTO;
     }
 
     //把taskListMap转换为排好序的路径序列
@@ -494,23 +513,37 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         }
         if (ObjectUtils.isNotEmpty(userTask.getCandidateUsers())){
             List<FlowUserDTO> userList = new ArrayList<>();
-            for (String userId : userTask.getCandidateUsers()) {
-                userList.add(new FlowUserDTO(userId,getUserName(userId)));
+            for (String companyUserId : userTask.getCandidateUsers()) {
+                userList.add(getFlowUser(companyUserId));
             }
             task.setCandidateUserList(userList);
         }
         if (ObjectUtils.isNotEmpty(userTask.getAssignee())){
-            String userId = userTask.getAssignee();
-            task.setAssigneeUser(new FlowUserDTO(userId,getUserName(userId)));
+            String companyUserId = userTask.getAssignee();
+            task.setAssigneeUser(getFlowUser(companyUserId));
         }
         return task;
     }
 
+    //获取用户头像
+    private String getUserHeadImg(String companyUserId){
+        String url = null;
+        CompanyUserEntity companyUser = companyUserDao.selectById(companyUserId);
+        if (companyUser != null){
+            try {
+                url = userAttachService.getHeadImgUrl(companyUser.getUserId());
+            } catch (Exception e) {
+                TraceUtils.check(false,log);
+            }
+        }
+        return url;
+    }
+
 
     //获取用户名称
-    private String getUserName(String userId){
+    private String getUserName(String companyUserId){
         User user = identityService.createUserQuery()
-                .userId(userId)
+                .userId(companyUserId)
                 .singleResult();
         return (user != null) ? user.getFirstName() : null;
     }

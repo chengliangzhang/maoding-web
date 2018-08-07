@@ -29,17 +29,6 @@ public class ProcessDefineDetailDTO extends CoreShowDTO {
     /** 允许启动流程的用户(user)列表 */
     private List<FlowUserDTO> candidateStarterUserList;
 
-    //维持兼容性
-    /** 允许启动流程的角色编号列表 */
-    @Deprecated
-    private List<String> candidateStarterGroups;
-
-    /** 允许启动流程的用户编号列表 */
-    @Deprecated
-    private List<String> candidateStarterUsers;
-
-
-
     /** 流程所拥有的路径序列 */
     private List<FlowTaskGroupDTO> flowTaskGroupList;
 
@@ -82,15 +71,6 @@ public class ProcessDefineDetailDTO extends CoreShowDTO {
     public void setCandidateStarterGroupList(List<FlowGroupDTO> candidateStarterGroupList) {
         this.candidateStarterGroupList = candidateStarterGroupList;
     }
-
-    public List<String> getCandidateStarterGroups() {
-        return candidateStarterGroups;
-    }
-
-    public void setCandidateStarterGroups(List<String> candidateStarterGroups) {
-        this.candidateStarterGroups = candidateStarterGroups;
-    }
-
     public List<FlowUserDTO> getCandidateStarterUserList() {
         return candidateStarterUserList;
     }
@@ -99,11 +79,4 @@ public class ProcessDefineDetailDTO extends CoreShowDTO {
         this.candidateStarterUserList = candidateStarterUserList;
     }
 
-    public List<String> getCandidateStarterUsers() {
-        return candidateStarterUsers;
-    }
-
-    public void setCandidateStarterUsers(List<String> candidateStarterUsers) {
-        this.candidateStarterUsers = candidateStarterUsers;
-    }
 }

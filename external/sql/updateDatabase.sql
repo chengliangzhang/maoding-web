@@ -2081,7 +2081,7 @@ CREATE OR REPLACE VIEW `md_web_role_project` AS
     from
         maoding_web_project_member task_role
         inner join md_type_web_role_project web_role_type on (task_role.member_type = web_role_type.type_id and web_role_type.is_project_role = 1)
-        inner join maoding_web_account account on (account.status = '0' and task_role.account_id = account.id)
+        inner join maoding_web_account account on (task_role.account_id = account.id)
         inner join maoding_web_project project on (project.pstatus = '0' and task_role.project_id = project.id)
         inner join maoding_web_company company on (company.status = '0' and task_role.company_id = company.id)
         left join maoding_web_project_task task on (task.task_status = '0' and (task_role.node_id = task.id or task_role.target_id = task.id))
@@ -2123,7 +2123,7 @@ CREATE OR REPLACE VIEW `md_web_role_task` AS
     from
         maoding_web_project_member task_role
         inner join md_type_web_role_project web_role_type on (task_role.member_type = web_role_type.type_id and web_role_type.is_task_role = 1)
-        inner join maoding_web_account account on (account.status = '0' and task_role.account_id = account.id)
+        inner join maoding_web_account account on (task_role.account_id = account.id)
         inner join maoding_web_project project on (project.pstatus = '0' and task_role.project_id = project.id)
         inner join maoding_web_project_task task on (task.task_status = '0' and (task_role.node_id = task.id or task_role.target_id = task.id))
         inner join maoding_web_company company on (company.status = '0' and task_role.company_id = company.id)
@@ -2225,8 +2225,7 @@ CREATE OR REPLACE VIEW `act_id_user` AS
   from
     maoding_web_company_user company_user_list
     inner join maoding_web_account account_list on (
-      account_list.status = '0'
-      and company_user_list.user_id = account_list.id
+      company_user_list.user_id = account_list.id
     )
     left join maoding_web_user_attach account_attach on (
       account_attach.attach_type = 5

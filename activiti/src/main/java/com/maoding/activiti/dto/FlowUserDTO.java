@@ -10,11 +10,23 @@ import com.maoding.core.base.dto.CoreShowDTO;
  * 描述: 流程用户信息
  **/
 public class FlowUserDTO extends CoreShowDTO {
-    /** id: activiti user id */
+    /** id: activiti user id - company user id */
+
+    /** 账号头像 */
+    private String imgUrl;
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
 
     public FlowUserDTO(){}
-    public FlowUserDTO(String id, String name){
+    public FlowUserDTO(String id, String name, String imgUrl){
         setId(id);
         setName(name);
+        setImgUrl(imgUrl);
     }
 }
