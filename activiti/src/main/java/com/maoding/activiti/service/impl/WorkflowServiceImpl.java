@@ -467,7 +467,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             for (String groupId : userTask.getCandidateGroups()) {
                 groupList.add(new GroupDTO(groupId,getGroupName(groupId)));
             }
-            task.setCandidateGroups(groupList);
+            task.setCandidateGroupList(groupList);
         }
         if (ObjectUtils.isNotEmpty(userTask.getCandidateUsers())){
             List<UserDTO> userList = new ArrayList<>();
@@ -477,14 +477,14 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                 user.setUserName(getUserName(userId));
                 userList.add(user);
             }
-            task.setCandidateUsers(userList);
+            task.setCandidateUserList(userList);
         }
         if (ObjectUtils.isNotEmpty(userTask.getAssignee())){
             String userId = userTask.getAssignee();
             UserDTO user = new UserDTO();
             user.setId(userId);
             user.setUserName(getUserName(userId));
-            task.setAssignee(user);
+            task.setAssigneeUser(user);
         }
         return task;
     }

@@ -2,7 +2,6 @@ package com.maoding.activiti.dto;
 
 
 import com.maoding.core.base.dto.CoreEditDTO;
-import com.maoding.user.dto.UserDTO;
 
 import java.util.List;
 
@@ -28,11 +27,17 @@ public class ProcessDefineDetailEditDTO extends CoreEditDTO {
     /** 流程类型，定义见ProcessTypeConst.TYPE_xxx */
     private Integer type;
 
-    /** 允许启动流程的角色(group)列表 */
-    private List<GroupDTO> candidateStarterGroups;
+    /** 允许启动流程的角色编号列表 */
+    private List<String> candidateStarterGroups;
 
-    /** 允许启动流程的用户(user)列表 */
-    private List<UserDTO> candidateStarterUsers;
+    /** 允许启动流程的角色列表 */
+    private List<GroupDTO> candidateStarterGroupList;
+
+    /** 允许启动流程的用户编号列表 */
+    private List<String> candidateStarterUsers;
+
+    /** 允许启动流程的用户列表 */
+    private List<String> candidateStarterUserList;
 
     /** 流程需更改的任务节点序列 */
     private List<FlowTaskGroupEditDTO> flowTaskGroupList;
@@ -69,20 +74,36 @@ public class ProcessDefineDetailEditDTO extends CoreEditDTO {
         this.name = name;
     }
 
-    public List<GroupDTO> getCandidateStarterGroups() {
+    public List<String> getCandidateStarterGroups() {
         return candidateStarterGroups;
     }
 
-    public void setCandidateStarterGroups(List<GroupDTO> candidateStarterGroups) {
+    public void setCandidateStarterGroups(List<String> candidateStarterGroups) {
         this.candidateStarterGroups = candidateStarterGroups;
     }
 
-    public List<UserDTO> getCandidateStarterUsers() {
+    public List<GroupDTO> getCandidateStarterGroupList() {
+        return candidateStarterGroupList;
+    }
+
+    public void setCandidateStarterGroupList(List<GroupDTO> candidateStarterGroupList) {
+        this.candidateStarterGroupList = candidateStarterGroupList;
+    }
+
+    public List<String> getCandidateStarterUsers() {
         return candidateStarterUsers;
     }
 
-    public void setCandidateStarterUsers(List<UserDTO> candidateStarterUsers) {
+    public void setCandidateStarterUsers(List<String> candidateStarterUsers) {
         this.candidateStarterUsers = candidateStarterUsers;
+    }
+
+    public List<String> getCandidateStarterUserList() {
+        return candidateStarterUserList;
+    }
+
+    public void setCandidateStarterUserList(List<String> candidateStarterUserList) {
+        this.candidateStarterUserList = candidateStarterUserList;
     }
 
     public String getDocumentation() {

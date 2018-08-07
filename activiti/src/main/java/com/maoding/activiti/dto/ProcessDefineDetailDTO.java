@@ -4,7 +4,6 @@ import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.user.dto.UserDTO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -26,14 +25,19 @@ public class ProcessDefineDetailDTO extends CoreShowDTO {
     private Integer type;
 
     /** 允许启动流程的角色(group)列表 */
-    private List<GroupDTO> candidateStarterGroups;
+    private List<GroupDTO> candidateStarterGroupList;
+
+    @Deprecated
+    private List<String> candidateStarterGroups;
+
 
     /** 允许启动流程的用户(user)列表 */
-    private List<UserDTO> candidateStarterUsers;
+    private List<UserDTO> candidateStarterUserList;
 
-    /** 流程所拥有的任务节点序列，以条件编号-任务序列对展现 */
     @Deprecated
-    private Map<String,List<FlowTaskDTO>> flowTaskListMap;
+    private List<String> candidateStarterUsers;
+
+
 
     /** 流程所拥有的路径序列 */
     private List<FlowTaskGroupDTO> flowTaskGroupList;
@@ -70,29 +74,35 @@ public class ProcessDefineDetailDTO extends CoreShowDTO {
         this.flowTaskGroupList = flowTaskGroupList;
     }
 
-    @Deprecated
-    public Map<String, List<FlowTaskDTO>> getFlowTaskListMap() {
-        return flowTaskListMap;
+    public List<GroupDTO> getCandidateStarterGroupList() {
+        return candidateStarterGroupList;
     }
 
-    @Deprecated
-    public void setFlowTaskListMap(Map<String, List<FlowTaskDTO>> flowTaskListMap) {
-        this.flowTaskListMap = flowTaskListMap;
+    public void setCandidateStarterGroupList(List<GroupDTO> candidateStarterGroupList) {
+        this.candidateStarterGroupList = candidateStarterGroupList;
     }
 
-    public List<GroupDTO> getCandidateStarterGroups() {
+    public List<String> getCandidateStarterGroups() {
         return candidateStarterGroups;
     }
 
-    public void setCandidateStarterGroups(List<GroupDTO> candidateStarterGroups) {
+    public void setCandidateStarterGroups(List<String> candidateStarterGroups) {
         this.candidateStarterGroups = candidateStarterGroups;
     }
 
-    public List<UserDTO> getCandidateStarterUsers() {
+    public List<UserDTO> getCandidateStarterUserList() {
+        return candidateStarterUserList;
+    }
+
+    public void setCandidateStarterUserList(List<UserDTO> candidateStarterUserList) {
+        this.candidateStarterUserList = candidateStarterUserList;
+    }
+
+    public List<String> getCandidateStarterUsers() {
         return candidateStarterUsers;
     }
 
-    public void setCandidateStarterUsers(List<UserDTO> candidateStarterUsers) {
+    public void setCandidateStarterUsers(List<String> candidateStarterUsers) {
         this.candidateStarterUsers = candidateStarterUsers;
     }
 }
