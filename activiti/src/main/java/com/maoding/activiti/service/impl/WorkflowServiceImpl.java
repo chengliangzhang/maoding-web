@@ -625,6 +625,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             //添加条件及条件内的用户任务和连线
             for (int i=0; i<=pointList.size(); i++){
                 //获取此数字条件节点判断字符串
+                TraceUtils.check(StringUtils.isNotEmpty(editRequest.getKey()),log,"!key不能为空");
                 String condition = getCondition(pointList,editRequest.getKey(),i);
 
                 //添加从起点开始的用户任务和连接线

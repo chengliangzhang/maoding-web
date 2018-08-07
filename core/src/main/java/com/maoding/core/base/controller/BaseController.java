@@ -282,6 +282,10 @@ public abstract class BaseController {
 			log.error("空指针异常:",ex);
 			return  AjaxMessage.failed("系统异常");
 		}
+		if(ex instanceof IllegalArgumentException) {
+			return AjaxMessage.error("参数错误：" + ex.getMessage());
+		}
+
 		if (ex != null) {
 			log.error("发生异常:", ex);
 		}
@@ -297,7 +301,9 @@ public abstract class BaseController {
     		return ajaxResponseLoginExceptionError();
     	} else if(ex instanceof UnauthorizedException){
 			return ajaxResponseUnauthorizedException();
-		} else{
+    	} else if(ex instanceof IllegalArgumentException){
+			return ajaxResponseError(ex.getMessage());
+		} else {
             return ajaxResponseExceptionError(ex);
     	}
     }

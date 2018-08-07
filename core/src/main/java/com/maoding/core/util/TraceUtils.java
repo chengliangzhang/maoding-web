@@ -1,8 +1,8 @@
 package com.maoding.core.util;
 
+import com.maoding.exception.CustomException;
 import org.slf4j.Logger;
 
-import javax.lang.model.type.UnknownTypeException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -27,6 +27,12 @@ public class TraceUtils {
     /** 是否在异常内增加调用位置 */
     private static boolean isShowCaller = true;
 
+    //参数检查错误前导字符
+    private static String prefixIllegalArgumentMessage = "!";
+    private static String prefixIgnoreException = "~";
+
+    //调用者在堆栈中的位置
+    private static final int posStack = 3;
     /**
      * @author  张成亮
      * @date    2018/7/31
@@ -37,7 +43,8 @@ public class TraceUtils {
      **/
     public static long enter(Logger log, Object... obs){
         if (isLogEnterAndExitInfo) {
-            log.info("\t===>>> 进入" + Thread.currentThread().getStackTrace()[2].getMethodName() + ":" + getJsonString(obs));
+            String prefixEnter = "\t===>>>\t进入";
+            log.info(prefixEnter + Thread.currentThread().getStackTrace()[posStack].getMethodName() + ":" + getJsonString(obs));
         }
         return System.currentTimeMillis();
     }
@@ -52,7 +59,9 @@ public class TraceUtils {
      **/
     public static void exit(Logger log, long t, Object... obs){
         if (isLogEnterAndExitInfo) {
-            log.info("\t<<<=== 退出" + Thread.currentThread().getStackTrace()[2].getMethodName() + ":" + (System.currentTimeMillis() - t) + "ms," + getJsonString(obs));
+            String prefixExit = "\t===>>>\t退出";
+            log.info(prefixExit + Thread.currentThread().getStackTrace()[posStack].getMethodName()
+                    + ":" + (System.currentTimeMillis() - t) + "ms," + getJsonString(obs));
         }
     }
 
@@ -67,7 +76,8 @@ public class TraceUtils {
      **/
     public static long info(Logger log, String message, long t, Object... obs){
         if (isLogDebugInfo) {
-            log.info("\t===>>> " + message + ":" + (System.currentTimeMillis() - t) + "ms," + getJsonString(obs));
+            String prefixInfo = "\t===>>>\t";
+            log.info(prefixInfo + message + ":" + (System.currentTimeMillis() - t) + "ms," + getJsonString(obs));
         }
         return System.currentTimeMillis();
     }
@@ -82,39 +92,55 @@ public class TraceUtils {
      * @param   message 异常信息
      **/
     public static void check(boolean condition, Logger log, Class<? extends RuntimeException> eClass, String message) {
-        //调用者在堆栈中的未知
-        final int posStack = 3;
         if (isCheckCondition && !(condition)) {
-            String caller = Thread.currentThread().getStackTrace()[posStack].getMethodName();
+            //生成调用位置
+            StackTraceElement element = Thread.currentThread().getStackTrace()[posStack];
+            String caller = StringUtils.lastRight(element.getClassName(),".") + "." + element.getMethodName();
+
+            //生成异常
+            RuntimeException e = null;
             if (eClass != null) {
                 try {
-                    StringBuilder msgBuilder = new StringBuilder(message);
-                    if (isShowCaller) {
-                        if (msgBuilder.length() > 0){
-                            msgBuilder.append("\n");
-                        }
-                        msgBuilder.append(caller);
+                    StringBuilder msgBuilder = new StringBuilder();
+                    if (StringUtils.startsWith(message,prefixIllegalArgumentMessage)){
+                        msgBuilder.append(StringUtils.right(message,prefixIllegalArgumentMessage));
+                    } else {
+                        msgBuilder.append(message);
                     }
 
-                    RuntimeException e;
+                    if (isShowCaller) {
+                        msgBuilder.append(":")
+                                .append(caller);
+                    }
+
                     if (msgBuilder.length() > 0) {
                         Constructor<?> c = getConstructor(eClass, String.class);
-                        e = eClass.cast(c.newInstance(message));
+                        e = eClass.cast(c.newInstance(msgBuilder.toString()));
                     } else {
                         e = eClass.newInstance();
                     }
-
-                    if (e != null) {
-                        log.error("\t!!!>>> " + caller + ":" + e.getMessage());
-                        if (isThrow) {
-                            throw e;
-                        }
-                    }
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
-                    log.error("\t!!!!! " + ex.getMessage());
+                    if (log != null){
+                        String prefixInternalError = "\t!!!!!\t";
+                        log.error(prefixInternalError + ex.getMessage());
+                    } else {
+                        ex.printStackTrace();
+                    }
                 }
-            } else {
-                log.warn("\t!!!>>> " + caller + "存在错误");
+            }
+
+            //记录日志并抛出异常
+            if (log != null){
+                String msg = (message != null) ? caller + ":" + message : caller + "发现错误";
+                String prefixError = "\t!!!>>>\t";
+                if (e != null) {
+                    log.error(prefixError + msg);
+                    if (isThrow) {
+                        throw e;
+                    }
+                } else {
+                    log.warn(prefixError + msg);
+                }
             }
         }
     }
@@ -128,10 +154,12 @@ public class TraceUtils {
      * @param   message 异常信息，如果以“!”起始，产生参数异常，否则如果不为空产生未知类型异常，为空不产生异常
      **/
     public static void check(boolean condition, Logger log, String message) {
-        if ((message != null) && (message.startsWith("!"))){
-            check(condition,log,IllegalArgumentException.class,message);
+        if (StringUtils.startsWith(message,prefixIllegalArgumentMessage)) {
+            check(condition, log, IllegalArgumentException.class, message);
+        } else if (StringUtils.startsWith(message,prefixIgnoreException)){
+            check(condition,log,null,message);
         } else if (isThrowAuto) {
-            check(condition,log,UnknownTypeException.class,message);
+            check(condition,log,CustomException.class,message);
         } else {
             check(condition,log,null,message);
         }
@@ -180,6 +208,22 @@ public class TraceUtils {
 
     public static void setIsThrow(boolean isThrow) {
         TraceUtils.isThrow = isThrow;
+    }
+
+    public static boolean isIsThrowAuto() {
+        return isThrowAuto;
+    }
+
+    public static void setIsThrowAuto(boolean isThrowAuto) {
+        TraceUtils.isThrowAuto = isThrowAuto;
+    }
+
+    public static boolean isIsShowCaller() {
+        return isShowCaller;
+    }
+
+    public static void setIsShowCaller(boolean isShowCaller) {
+        TraceUtils.isShowCaller = isShowCaller;
     }
 
     //获取以paramClassArray类型为参数的构造函数
