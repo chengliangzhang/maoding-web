@@ -12,6 +12,7 @@ import com.maoding.process.dao.ProcessTypeDao;
 import com.maoding.process.entity.ProcessTypeEntity;
 import com.maoding.user.dto.UserDTO;
 import com.maoding.user.service.UserAttachService;
+import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.IdentityService;
@@ -326,10 +327,10 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     public ProcessDefineDetailDTO changeProcessDefine(ProcessDefineDetailEditDTO editRequest) {
         Process process = createProcess(editRequest);
         BpmnModel model = createModel(process);
+        new BpmnAutoLayout(model).execute();
         repositoryService.createDeployment()
                 .addBpmnModel(getProcessDefineKey(editRequest) + ".bpmn",model)
                 .name(editRequest.getName())
-                .tenantId(editRequest.getCurrentCompanyId())
                 .deploy();
 
         process = getProcessByKey(getProcessDefineKey(editRequest));
