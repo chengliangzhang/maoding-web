@@ -78,7 +78,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      **/
     @Override
     public ProcessDefineDetailDTO prepareProcessDefine(ProcessDetailPrepareDTO prepareRequest) {
-        ProcessDefineDetailDTO processDefineDetailDTO;
+        ProcessDefineDetailDTO processDefineDetailDTO = null;
 
         //补充未填写字段
         //name字段
@@ -93,7 +93,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             processDefineDetailDTO = BeanUtils.createFrom(prepareRequest, ProcessDefineDetailDTO.class);
             DigitConditionEditDTO condition = prepareRequest.getStartDigitCondition();
             processDefineDetailDTO.setFlowTaskGroupList(toOrderedFlowTaskGroupList(toFlowTaskGroupList(condition),prepareRequest.getKey()));
-        } else {
+        } else if (!isFreeType(prepareRequest)){
             //查找已有流程
             Process process = getProcessByKey(getProcessDefineKey(prepareRequest));
             //如果是已有流程，转换已有流程
@@ -123,6 +123,11 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
         //更新组名称和用户名称并返回
         return processDefineDetailDTO;
+    }
+
+    //判断是否自由流程
+    private boolean isFreeType(ProcessDetailPrepareDTO prepareRequest){
+        return (prepareRequest == null) || (isFreeType(prepareRequest.getType()));
     }
 
     //更新流程定义内的组名称和用户名称
@@ -314,17 +319,27 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      **/
     @Override
     public ProcessDefineDetailDTO changeProcessDefine(ProcessDefineDetailEditDTO editRequest) {
-        Process process = createProcess(editRequest);
-        BpmnModel model = createModel(process);
-        new BpmnAutoLayout(model).execute();
-        repositoryService.createDeployment()
-                .addBpmnModel(getProcessDefineKey(editRequest) + ".bpmn",model)
-                .name(editRequest.getName())
-                .deploy();
+        if (!isFreeType(editRequest)) {
+            Process process = createProcess(editRequest);
+            BpmnModel model = createModel(process);
+            new BpmnAutoLayout(model).execute();
+            repositoryService.createDeployment()
+                    .addBpmnModel(getProcessDefineKey(editRequest) + ".bpmn", model)
+                    .name(editRequest.getName())
+                    .deploy();
 
-        process = getProcessByKey(getProcessDefineKey(editRequest));
+            process = getProcessByKey(getProcessDefineKey(editRequest));
 
-        return toProcessDefineDetailDTO(process);
+            return toProcessDefineDetailDTO(process);
+        } else {
+            syncProcessType(editRequest);
+            return null;
+        }
+    }
+
+    //判断是否自由流程
+    private boolean isFreeType(ProcessDefineDetailEditDTO editRequest){
+        return (editRequest == null) || (isFreeType(editRequest.getType()));
     }
 
     //转换工作流引擎内流程模型对象为ProcessDefineDetailDTO
@@ -349,7 +364,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                 List<FlowTaskDTO> taskList = listFlowTask(process,sequence);
 
                 //获取节点值并保存路径，默认路径节点值为空
-                Long point = getPointFromCondition(condition);
+                Double point = getPointFromCondition(condition);
                 String groupName = (isDefaultFlow(point)) ? ProcessTypeConst.DEFAULT_FLOW_TASK_KEY : point.toString();
 
                 //保存路径到taskGroup
@@ -430,7 +445,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         if (ObjectUtils.isEmpty(taskGroupList) || ObjectUtils.isEmpty(taskGroup) || StringUtils.isSame(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY,taskGroup.getName())){
             isMin = false;
         } else {
-            int taskPoint = DigitUtils.parseInt(taskGroup.getName());
+            double taskPoint = DigitUtils.parseDouble(taskGroup.getName());
             for (FlowTaskGroupDTO tg : taskGroupList) {
                 if (StringUtils.isNotSame(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY,tg.getName())){
                     double tgPoint = DigitUtils.parseDouble(tg.getName());
@@ -446,7 +461,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //判断condition路径是否默认路径
-    private boolean isDefaultFlow(Long point){
+    private boolean isDefaultFlow(Double point){
         return (point == null);
     }
 
@@ -602,7 +617,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         if (isConditionType(editRequest)){
             //添加相应审批条件下的用户任务和连接线
             //提取数字条件，并对数字条件节点进行排序
-            List<Long> pointList = toOrderedPointList(editListMap);
+            List<Double> pointList = toOrderedPointList(editListMap);
 
             //添加条件及条件内的用户任务和连线
             for (int i=0; i<=pointList.size(); i++){
@@ -719,7 +734,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //获取第n段条件的数字条件表达式
-    private String getCondition(List<Long> pointList, String key, int n){
+    private String getCondition(List<Double> pointList, String key, int n){
         //检查参数
         TraceUtils.check(ObjectUtils.isNotEmpty(pointList),log);
         TraceUtils.check(StringUtils.isNotEmpty(key),log);
@@ -751,6 +766,12 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     private boolean isConditionType(Integer type){
         return ProcessTypeConst.PROCESS_TYPE_CONDITION.equals(type);
     }
+
+    //是否自由流程类型
+    private boolean isFreeType(Integer type){
+        return ProcessTypeConst.TYPE_FREE.equals(type);
+    }
+
 
     //判断是否条件流程，其他类型参数
     private boolean isConditionType(Process process){
