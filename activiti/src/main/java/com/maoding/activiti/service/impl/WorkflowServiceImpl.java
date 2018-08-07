@@ -538,6 +538,21 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         flowElementList.forEach(process::addFlowElement);
         process.setId(getProcessDefineKey(otherInfo));
 
+        //添加启动组和用户信息
+        if (ObjectUtils.isNotEmpty(otherInfo.getCandidateStarterGroupList())){
+            process.setCandidateStarterGroups(new ArrayList<>());
+            for (FlowGroupDTO g : otherInfo.getCandidateStarterGroupList()) {
+                process.getCandidateStarterGroups().add(g.getId());
+            }
+        }
+
+        if (ObjectUtils.isNotEmpty(otherInfo.getCandidateStarterUserList())){
+            process.setCandidateStarterUsers(new ArrayList<>());
+            for (FlowUserDTO u : otherInfo.getCandidateStarterUserList()) {
+                process.getCandidateStarterUsers().add(u.getId());
+            }
+        }
+
         return process;
     }
 
@@ -616,6 +631,25 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             flowTaskGroupEditList.forEach(tg -> {
                 if (StringUtils.isEmpty(tg.getName())) {
                     tg.setName(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY);
+                }
+                if (ObjectUtils.isNotEmpty(tg.getFlowTaskList())){
+                    for (FlowTaskEditDTO t : tg.getFlowTaskList()) {
+                        if (ObjectUtils.isNotEmpty(t.getCandidateGroupList())){
+                            t.setCandidateGroups(new ArrayList<>());
+                            for (FlowGroupDTO g : t.getCandidateGroupList()) {
+                                t.getCandidateGroups().add(g.getId());
+                            }
+                        }
+                        if (ObjectUtils.isNotEmpty(t.getCandidateUserList())){
+                            t.setCandidateUsers(new ArrayList<>());
+                            for (FlowUserDTO u : t.getCandidateUserList()) {
+                                t.getCandidateUsers().add(u.getId());
+                            }
+                        }
+                        if (ObjectUtils.isNotEmpty(t.getAssigneeUser())){
+                            t.setAssignee(t.getAssigneeUser().getId());
+                        }
+                    }
                 }
                 dstMap.put(tg.getName(), tg.getFlowTaskList());
             });
