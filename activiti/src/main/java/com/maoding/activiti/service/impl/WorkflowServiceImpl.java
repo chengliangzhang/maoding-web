@@ -119,6 +119,29 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                 }
             }
         }
+
+
+        //更新组名称和用户名称并返回
+        return updateProcessDefineDetailDTO(processDefineDetailDTO);
+    }
+
+    //更新流程定义内的组名称和用户名称
+    private ProcessDefineDetailDTO updateProcessDefineDetailDTO(ProcessDefineDetailDTO processDefineDetailDTO){
+        //添加可以启动的组和用户名称
+        if (ObjectUtils.isNotEmpty(processDefineDetailDTO.getCandidateStarterGroups())){
+            List<FlowGroupDTO> groupList = new ArrayList<>();
+            for (String groupId : processDefineDetailDTO.getCandidateStarterGroups()) {
+                groupList.add(new FlowGroupDTO(groupId,getGroupName(groupId)));
+            }
+            processDefineDetailDTO.setCandidateStarterGroupList(groupList);
+        }
+        if (ObjectUtils.isNotEmpty(processDefineDetailDTO.getCandidateStarterUsers())){
+            List<FlowUserDTO> userList = new ArrayList<>();
+            for (String userId : processDefineDetailDTO.getCandidateStarterUsers()) {
+                userList.add(new FlowUserDTO(userId,getUserName(userId)));
+            }
+            processDefineDetailDTO.setCandidateStarterUserList(userList);
+        }
         return processDefineDetailDTO;
     }
 
@@ -352,7 +375,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         processDefineDetailDTO.setKey(key);
         processDefineDetailDTO.setFlowTaskGroupList(toOrderedFlowTaskGroupList(taskGroupList,key));
 
-        return processDefineDetailDTO;
+        return updateProcessDefineDetailDTO(processDefineDetailDTO);
     }
 
     //把taskListMap转换为排好序的路径序列
