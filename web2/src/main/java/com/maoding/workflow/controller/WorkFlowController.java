@@ -154,7 +154,7 @@ public class WorkFlowController extends BaseController {
     @ResponseBody
     public AjaxMessage listGroup(@RequestBody GroupQueryDTO query) throws Exception {
         updateCurrentUserInfo(query);
-        List<GroupDTO> result = workflowService.listGroup(query);
+        List<FlowGroupDTO> result = workflowService.listGroup(query);
         return AjaxMessage.succeed("查询成功").setData(result);
     }
 

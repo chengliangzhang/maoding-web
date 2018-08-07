@@ -463,28 +463,22 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     private FlowTaskDTO toFlowTask(UserTask userTask){
         FlowTaskDTO task = BeanUtils.createFrom(userTask,FlowTaskDTO.class);
         if (ObjectUtils.isNotEmpty(userTask.getCandidateGroups())){
-            List<GroupDTO> groupList = new ArrayList<>();
+            List<FlowGroupDTO> groupList = new ArrayList<>();
             for (String groupId : userTask.getCandidateGroups()) {
-                groupList.add(new GroupDTO(groupId,getGroupName(groupId)));
+                groupList.add(new FlowGroupDTO(groupId,getGroupName(groupId)));
             }
             task.setCandidateGroupList(groupList);
         }
         if (ObjectUtils.isNotEmpty(userTask.getCandidateUsers())){
-            List<UserDTO> userList = new ArrayList<>();
+            List<FlowUserDTO> userList = new ArrayList<>();
             for (String userId : userTask.getCandidateUsers()) {
-                UserDTO user = new UserDTO();
-                user.setId(userId);
-                user.setUserName(getUserName(userId));
-                userList.add(user);
+                userList.add(new FlowUserDTO(userId,getUserName(userId)));
             }
             task.setCandidateUserList(userList);
         }
         if (ObjectUtils.isNotEmpty(userTask.getAssignee())){
             String userId = userTask.getAssignee();
-            UserDTO user = new UserDTO();
-            user.setId(userId);
-            user.setUserName(getUserName(userId));
-            task.setAssigneeUser(user);
+            task.setAssigneeUser(new FlowUserDTO(userId,getUserName(userId)));
         }
         return task;
     }
@@ -595,12 +589,14 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     //转换
     private Map<String,List<FlowTaskEditDTO>> toListMap(List<FlowTaskGroupEditDTO> flowTaskGroupEditList){
         Map<String,List<FlowTaskEditDTO>> dstMap = new HashMap<>();
-        flowTaskGroupEditList.forEach(tg -> {
-            if (StringUtils.isEmpty(tg.getName())){
-                tg.setName(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY);
-            }
-            dstMap.put(tg.getName(), tg.getFlowTaskList());
-        });
+        if (ObjectUtils.isNotEmpty(flowTaskGroupEditList)) {
+            flowTaskGroupEditList.forEach(tg -> {
+                if (StringUtils.isEmpty(tg.getName())) {
+                    tg.setName(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY);
+                }
+                dstMap.put(tg.getName(), tg.getFlowTaskList());
+            });
+        }
         return dstMap;
     }
 
@@ -1016,7 +1012,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      * @author 张成亮
      **/
     @Override
-    public List<GroupDTO> listGroup(GroupQueryDTO query) {
+    public List<FlowGroupDTO> listGroup(GroupQueryDTO query) {
         return null;
     }
 

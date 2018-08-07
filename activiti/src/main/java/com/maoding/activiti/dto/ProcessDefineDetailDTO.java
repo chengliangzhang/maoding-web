@@ -1,7 +1,6 @@
 package com.maoding.activiti.dto;
 
 import com.maoding.core.base.dto.CoreShowDTO;
-import com.maoding.user.dto.UserDTO;
 
 import java.util.List;
 
@@ -25,15 +24,17 @@ public class ProcessDefineDetailDTO extends CoreShowDTO {
     private Integer type;
 
     /** 允许启动流程的角色(group)列表 */
-    private List<GroupDTO> candidateStarterGroupList;
+    private List<FlowGroupDTO> candidateStarterGroupList;
 
+    /** 允许启动流程的用户(user)列表 */
+    private List<FlowUserDTO> candidateStarterUserList;
+
+    //维持兼容性
+    /** 允许启动流程的角色编号列表 */
     @Deprecated
     private List<String> candidateStarterGroups;
 
-
-    /** 允许启动流程的用户(user)列表 */
-    private List<UserDTO> candidateStarterUserList;
-
+    /** 允许启动流程的用户编号列表 */
     @Deprecated
     private List<String> candidateStarterUsers;
 
@@ -74,11 +75,11 @@ public class ProcessDefineDetailDTO extends CoreShowDTO {
         this.flowTaskGroupList = flowTaskGroupList;
     }
 
-    public List<GroupDTO> getCandidateStarterGroupList() {
+    public List<FlowGroupDTO> getCandidateStarterGroupList() {
         return candidateStarterGroupList;
     }
 
-    public void setCandidateStarterGroupList(List<GroupDTO> candidateStarterGroupList) {
+    public void setCandidateStarterGroupList(List<FlowGroupDTO> candidateStarterGroupList) {
         this.candidateStarterGroupList = candidateStarterGroupList;
     }
 
@@ -90,11 +91,11 @@ public class ProcessDefineDetailDTO extends CoreShowDTO {
         this.candidateStarterGroups = candidateStarterGroups;
     }
 
-    public List<UserDTO> getCandidateStarterUserList() {
+    public List<FlowUserDTO> getCandidateStarterUserList() {
         return candidateStarterUserList;
     }
 
-    public void setCandidateStarterUserList(List<UserDTO> candidateStarterUserList) {
+    public void setCandidateStarterUserList(List<FlowUserDTO> candidateStarterUserList) {
         this.candidateStarterUserList = candidateStarterUserList;
     }
 

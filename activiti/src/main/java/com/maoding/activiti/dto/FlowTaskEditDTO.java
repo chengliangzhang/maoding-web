@@ -1,8 +1,6 @@
 package com.maoding.activiti.dto;
 
 
-import com.maoding.user.dto.UserDTO;
-
 import java.util.List;
 
 /**
@@ -28,13 +26,13 @@ public class FlowTaskEditDTO extends FlowElementEditDTO {
     private String assignee;
 
     /** 允许执行任务的角色编号组合字符串 */
-    private List<GroupDTO> candidateGroupList;
+    private List<FlowGroupDTO> candidateGroupList;
 
     /** 允许执行任务的用户编号组合字符串 */
-    private List<UserDTO> candidateUserList;
+    private List<FlowUserDTO> candidateUserList;
 
     /** 默认执行人 */
-    private UserDTO assigneeUser;
+    private FlowUserDTO assigneeUser;
 
     public String getDocumentation() {
         return documentation;
@@ -68,27 +66,27 @@ public class FlowTaskEditDTO extends FlowElementEditDTO {
         this.assignee = assignee;
     }
 
-    public List<GroupDTO> getCandidateGroupList() {
+    public List<FlowGroupDTO> getCandidateGroupList() {
         return candidateGroupList;
     }
 
-    public void setCandidateGroupList(List<GroupDTO> candidateGroupList) {
+    public void setCandidateGroupList(List<FlowGroupDTO> candidateGroupList) {
         this.candidateGroupList = candidateGroupList;
     }
 
-    public List<UserDTO> getCandidateUserList() {
+    public List<FlowUserDTO> getCandidateUserList() {
         return candidateUserList;
     }
 
-    public void setCandidateUserList(List<UserDTO> candidateUserList) {
+    public void setCandidateUserList(List<FlowUserDTO> candidateUserList) {
         this.candidateUserList = candidateUserList;
     }
 
-    public UserDTO getAssigneeUser() {
+    public FlowUserDTO getAssigneeUser() {
         return assigneeUser;
     }
 
-    public void setAssigneeUser(UserDTO assigneeUser) {
+    public void setAssigneeUser(FlowUserDTO assigneeUser) {
         this.assigneeUser = assigneeUser;
     }
 }

@@ -7,12 +7,13 @@ import com.maoding.core.base.dto.CoreShowDTO;
  * 日期: 2018/8/6
  * 类名: com.maoding.activiti.dto.GroupDTO
  * 作者: 张成亮
- * 描述: 流程群组信息
+ * 描述: 流程用户信息
  **/
-public class GroupDTO extends CoreShowDTO {
+public class FlowUserDTO extends CoreShowDTO {
+    /** id: activiti user id */
 
-    public GroupDTO(){}
-    public GroupDTO(String id,String name){
+    public FlowUserDTO(){}
+    public FlowUserDTO(String id, String name){
         setId(id);
         setName(name);
     }

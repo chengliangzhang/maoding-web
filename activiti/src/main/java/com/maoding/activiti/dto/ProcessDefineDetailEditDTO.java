@@ -30,14 +30,14 @@ public class ProcessDefineDetailEditDTO extends CoreEditDTO {
     /** 允许启动流程的角色编号列表 */
     private List<String> candidateStarterGroups;
 
-    /** 允许启动流程的角色列表 */
-    private List<GroupDTO> candidateStarterGroupList;
-
     /** 允许启动流程的用户编号列表 */
     private List<String> candidateStarterUsers;
 
+    /** 允许启动流程的角色列表 */
+    private List<FlowGroupDTO> candidateStarterGroupList;
+
     /** 允许启动流程的用户列表 */
-    private List<String> candidateStarterUserList;
+    private List<FlowUserDTO> candidateStarterUserList;
 
     /** 流程需更改的任务节点序列 */
     private List<FlowTaskGroupEditDTO> flowTaskGroupList;
@@ -82,11 +82,11 @@ public class ProcessDefineDetailEditDTO extends CoreEditDTO {
         this.candidateStarterGroups = candidateStarterGroups;
     }
 
-    public List<GroupDTO> getCandidateStarterGroupList() {
+    public List<FlowGroupDTO> getCandidateStarterGroupList() {
         return candidateStarterGroupList;
     }
 
-    public void setCandidateStarterGroupList(List<GroupDTO> candidateStarterGroupList) {
+    public void setCandidateStarterGroupList(List<FlowGroupDTO> candidateStarterGroupList) {
         this.candidateStarterGroupList = candidateStarterGroupList;
     }
 
@@ -98,11 +98,11 @@ public class ProcessDefineDetailEditDTO extends CoreEditDTO {
         this.candidateStarterUsers = candidateStarterUsers;
     }
 
-    public List<String> getCandidateStarterUserList() {
+    public List<FlowUserDTO> getCandidateStarterUserList() {
         return candidateStarterUserList;
     }
 
-    public void setCandidateStarterUserList(List<String> candidateStarterUserList) {
+    public void setCandidateStarterUserList(List<FlowUserDTO> candidateStarterUserList) {
         this.candidateStarterUserList = candidateStarterUserList;
     }
 

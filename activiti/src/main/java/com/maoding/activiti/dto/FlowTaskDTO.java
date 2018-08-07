@@ -1,7 +1,5 @@
 package com.maoding.activiti.dto;
 
-import com.maoding.user.dto.UserDTO;
-
 import java.util.List;
 
 /**
@@ -18,19 +16,20 @@ public class FlowTaskDTO extends FlowElementDTO {
     private String documentation;
 
     /** 允许执行任务的角色(group)组合字符串 */
-    private List<GroupDTO> candidateGroupList;
+    private List<FlowGroupDTO> candidateGroupList;
 
+    /** 允许执行任务的用户(user)组合字符串 */
+    private List<FlowUserDTO> candidateUserList;
+
+    /** 默认执行人 */
+    private FlowUserDTO assigneeUser;
+
+    //维持兼容性
     @Deprecated
     private List<String> candidateGroups;
 
-    /** 允许执行任务的用户(user)组合字符串 */
-    private List<UserDTO> candidateUserList;
-
     @Deprecated
     private List<String> candidateUsers;
-
-    /** 默认执行人 */
-    private UserDTO assigneeUser;
 
     @Deprecated
     private String assignee;
@@ -43,11 +42,11 @@ public class FlowTaskDTO extends FlowElementDTO {
         this.documentation = documentation;
     }
 
-    public List<GroupDTO> getCandidateGroupList() {
+    public List<FlowGroupDTO> getCandidateGroupList() {
         return candidateGroupList;
     }
 
-    public void setCandidateGroupList(List<GroupDTO> candidateGroupList) {
+    public void setCandidateGroupList(List<FlowGroupDTO> candidateGroupList) {
         this.candidateGroupList = candidateGroupList;
     }
 
@@ -59,14 +58,6 @@ public class FlowTaskDTO extends FlowElementDTO {
         this.candidateGroups = candidateGroups;
     }
 
-    public List<UserDTO> getCandidateUserList() {
-        return candidateUserList;
-    }
-
-    public void setCandidateUserList(List<UserDTO> candidateUserList) {
-        this.candidateUserList = candidateUserList;
-    }
-
     public List<String> getCandidateUsers() {
         return candidateUsers;
     }
@@ -75,19 +66,27 @@ public class FlowTaskDTO extends FlowElementDTO {
         this.candidateUsers = candidateUsers;
     }
 
-    public UserDTO getAssigneeUser() {
-        return assigneeUser;
-    }
-
-    public void setAssigneeUser(UserDTO assigneeUser) {
-        this.assigneeUser = assigneeUser;
-    }
-
     public String getAssignee() {
         return assignee;
     }
 
     public void setAssignee(String assignee) {
         this.assignee = assignee;
+    }
+
+    public List<FlowUserDTO> getCandidateUserList() {
+        return candidateUserList;
+    }
+
+    public void setCandidateUserList(List<FlowUserDTO> candidateUserList) {
+        this.candidateUserList = candidateUserList;
+    }
+
+    public FlowUserDTO getAssigneeUser() {
+        return assigneeUser;
+    }
+
+    public void setAssigneeUser(FlowUserDTO assigneeUser) {
+        this.assigneeUser = assigneeUser;
     }
 }

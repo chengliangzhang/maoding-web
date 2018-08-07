@@ -122,7 +122,7 @@ public interface WorkflowService {
      *              如果同时指定了多个条件，各条件之间是“与”的关系
      * @return   符合条件的群组列表
      **/
-    List<GroupDTO> listGroup(GroupQueryDTO query);
+    List<FlowGroupDTO> listGroup(GroupQueryDTO query);
 
     /**
      * @author  张成亮
