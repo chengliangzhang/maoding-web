@@ -18,10 +18,10 @@ public class FlowTaskDTO extends FlowElementDTO {
     private String documentation;
 
     /** 允许执行任务的角色(group)组合字符串 */
-    private List<String> candidateGroups;
+    private List<GroupDTO> candidateGroups;
 
     /** 允许执行任务的用户(user)组合字符串 */
-    private List<String> candidateUsers;
+    private List<UserDTO> candidateUsers;
 
     /** 默认执行人 */
     private UserDTO assignee;
@@ -34,27 +34,27 @@ public class FlowTaskDTO extends FlowElementDTO {
         this.documentation = documentation;
     }
 
-    public List<String> getCandidateGroups() {
+    public List<GroupDTO> getCandidateGroups() {
         return candidateGroups;
     }
 
-    public void setCandidateGroups(List<String> candidateGroups) {
+    public void setCandidateGroups(List<GroupDTO> candidateGroups) {
         this.candidateGroups = candidateGroups;
     }
 
-    public List<String> getCandidateUsers() {
+    public List<UserDTO> getCandidateUsers() {
         return candidateUsers;
     }
 
-    public void setCandidateUsers(List<String> candidateUsers) {
+    public void setCandidateUsers(List<UserDTO> candidateUsers) {
         this.candidateUsers = candidateUsers;
     }
 
-    public String getAssignee() {
+    public UserDTO getAssignee() {
         return assignee;
     }
 
-    public void setAssignee(String assignee) {
+    public void setAssignee(UserDTO assignee) {
         this.assignee = assignee;
     }
 }

@@ -11,7 +11,10 @@ import com.maoding.process.entity.ProcessTypeEntity;
 import com.maoding.user.dto.UserDTO;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.identity.Group;
+import org.activiti.engine.identity.User;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
@@ -38,6 +41,9 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
     @Autowired
     private RepositoryService repositoryService;
+
+    @Autowired
+    private IdentityService identityService;
 
     @Autowired
     private ProcessTypeDao processTypeDao;
@@ -455,7 +461,39 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     private FlowTaskDTO toFlowTask(UserTask userTask){
-        return BeanUtils.createFrom(userTask,FlowTaskDTO.class);
+        FlowTaskDTO task = BeanUtils.createFrom(userTask,FlowTaskDTO.class);
+        if (ObjectUtils.isNotEmpty(task)){
+            if (ObjectUtils.isNotEmpty(task.getCandidateGroups())) {
+                task.getCandidateGroups().forEach(grp -> {
+                    Group group = identityService.createGroupQuery()
+                            .groupId(grp.getId())
+                            .singleResult();
+                    if (group != null) {
+                        grp.setName(group.getName());
+                    }
+                });
+            }
+            if (ObjectUtils.isNotEmpty(task.getCandidateUsers())) {
+                task.getCandidateUsers().forEach(usr -> {
+                    User user = identityService.createUserQuery()
+                            .userId(usr.getId())
+                            .singleResult();
+                    if (user != null) {
+                        usr.setUserName(user.getFirstName());
+                    }
+                });
+            }
+            if (ObjectUtils.isNotEmpty(task.getAssignee())) {
+                UserDTO usr = task.getAssignee();
+                User user = identityService.createUserQuery()
+                        .userId(usr.getId())
+                        .singleResult();
+                if (user != null) {
+                    usr.setUserName(user.getFirstName());
+                }
+            }
+        }
+        return task;
     }
 
     //判断是否是创建流程申请

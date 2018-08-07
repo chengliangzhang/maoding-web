@@ -10,4 +10,5 @@ import com.maoding.core.base.dto.CoreQueryDTO;
  * 描述: 群组查询条件
  **/
 public class GroupQueryDTO extends CoreQueryDTO {
+    /** id: activiti group id */
 }
