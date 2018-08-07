@@ -2,6 +2,7 @@ package com.maoding.activiti.dto;
 
 
 import com.maoding.core.base.dto.CoreEditDTO;
+import com.maoding.user.dto.UserDTO;
 
 import java.util.List;
 
@@ -28,10 +29,10 @@ public class ProcessDefineDetailEditDTO extends CoreEditDTO {
     private Integer type;
 
     /** 允许启动流程的角色(group)列表 */
-    private List<String> candidateStarterGroups;
+    private List<GroupDTO> candidateStarterGroups;
 
     /** 允许启动流程的用户(user)列表 */
-    private List<String> candidateStarterUsers;
+    private List<UserDTO> candidateStarterUsers;
 
     /** 流程需更改的任务节点序列 */
     private List<FlowTaskGroupEditDTO> flowTaskGroupList;
@@ -68,19 +69,19 @@ public class ProcessDefineDetailEditDTO extends CoreEditDTO {
         this.name = name;
     }
 
-    public List<String> getCandidateStarterGroups() {
+    public List<GroupDTO> getCandidateStarterGroups() {
         return candidateStarterGroups;
     }
 
-    public void setCandidateStarterGroups(List<String> candidateStarterGroups) {
+    public void setCandidateStarterGroups(List<GroupDTO> candidateStarterGroups) {
         this.candidateStarterGroups = candidateStarterGroups;
     }
 
-    public List<String> getCandidateStarterUsers() {
+    public List<UserDTO> getCandidateStarterUsers() {
         return candidateStarterUsers;
     }
 
-    public void setCandidateStarterUsers(List<String> candidateStarterUsers) {
+    public void setCandidateStarterUsers(List<UserDTO> candidateStarterUsers) {
         this.candidateStarterUsers = candidateStarterUsers;
     }
 

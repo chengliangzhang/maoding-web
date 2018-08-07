@@ -1,5 +1,7 @@
 package com.maoding.activiti.dto;
 
+import com.maoding.user.dto.UserDTO;
+
 import java.util.List;
 
 /**
@@ -22,7 +24,7 @@ public class FlowTaskDTO extends FlowElementDTO {
     private List<String> candidateUsers;
 
     /** 默认执行人 */
-    private String assignee;
+    private UserDTO assignee;
 
     public String getDocumentation() {
         return documentation;

@@ -1,6 +1,7 @@
 package com.maoding.activiti.dto;
 
 import com.maoding.core.base.dto.CoreShowDTO;
+import com.maoding.user.dto.UserDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -25,10 +26,10 @@ public class ProcessDefineDetailDTO extends CoreShowDTO {
     private Integer type;
 
     /** 允许启动流程的角色(group)列表 */
-    private List<String> candidateStarterGroups;
+    private List<GroupDTO> candidateStarterGroups;
 
     /** 允许启动流程的用户(user)列表 */
-    private List<String> candidateStarterUsers;
+    private List<UserDTO> candidateStarterUsers;
 
     /** 流程所拥有的任务节点序列，以条件编号-任务序列对展现 */
     @Deprecated
@@ -79,19 +80,19 @@ public class ProcessDefineDetailDTO extends CoreShowDTO {
         this.flowTaskListMap = flowTaskListMap;
     }
 
-    public List<String> getCandidateStarterGroups() {
+    public List<GroupDTO> getCandidateStarterGroups() {
         return candidateStarterGroups;
     }
 
-    public void setCandidateStarterGroups(List<String> candidateStarterGroups) {
+    public void setCandidateStarterGroups(List<GroupDTO> candidateStarterGroups) {
         this.candidateStarterGroups = candidateStarterGroups;
     }
 
-    public List<String> getCandidateStarterUsers() {
+    public List<UserDTO> getCandidateStarterUsers() {
         return candidateStarterUsers;
     }
 
-    public void setCandidateStarterUsers(List<String> candidateStarterUsers) {
+    public void setCandidateStarterUsers(List<UserDTO> candidateStarterUsers) {
         this.candidateStarterUsers = candidateStarterUsers;
     }
 }
