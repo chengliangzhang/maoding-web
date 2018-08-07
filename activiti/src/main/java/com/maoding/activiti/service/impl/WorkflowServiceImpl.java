@@ -646,9 +646,16 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             //如果是自由流程或固定流程，添加默认关键字标注的用户任务序列
             List<FlowTaskEditDTO> taskEditList = (editListMap != null) ?
                     editListMap.get(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY) : null;
-            UserTask userTask = appendUserTask(flowElementList,startEvent,endEvent,taskEditList,null);
-            //添加最后一个用户任务到终点的连接线
-            appendSequence(flowElementList,userTask,endEvent,null);
+            //如果此路径为空，直接添加从起始节点到终止节点的连线，否则建立用户任务节点，每个用户任务添加从上一节点到此节点的连线，并添加上一个用户任务节点到结束节点的连线
+            if (ObjectUtils.isNotEmpty(taskEditList)) {
+                //添加用户任务路径
+                UserTask userTask = appendUserTask(flowElementList,startEvent,endEvent,taskEditList,null);
+                //添加最后一个用户任务到终点的连接线
+                appendSequence(flowElementList, userTask, endEvent, null);
+            } else {
+                //添加从起始节点到终止节点的路径
+                appendSequence(flowElementList, startEvent, endEvent, null);
+            }
         }
 
         //创建流程
@@ -888,7 +895,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         TraceUtils.check(ObjectUtils.isNotEmpty(flowElementList),log);
         TraceUtils.check(ObjectUtils.isNotEmpty(prevFlowElement),log);
 
-        UserTask userTask;
+        UserTask userTask = null;
         //如果存在用户任务，添加用户任务
         if (ObjectUtils.isNotEmpty(flowTaskInfoList)){
             //在第一次使用传入的flowElement,其后使用创建的userTask作为上一个节点
@@ -898,9 +905,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                 condition = "${isPass=='1'}";
             }
             userTask = (UserTask) prevFlowElement;
-        } else {
-            //如果不存在用户任务，添加一个默认的用户任务
-            userTask = appendUserTask(flowElementList,prevFlowElement,endEvent,getDefaultFlowTaskInfo(),condition);
         }
         return userTask;
     }
