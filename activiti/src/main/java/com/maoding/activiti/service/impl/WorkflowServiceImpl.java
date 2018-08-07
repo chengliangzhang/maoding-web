@@ -462,38 +462,48 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
     private FlowTaskDTO toFlowTask(UserTask userTask){
         FlowTaskDTO task = BeanUtils.createFrom(userTask,FlowTaskDTO.class);
-        if (ObjectUtils.isNotEmpty(task)){
-            if (ObjectUtils.isNotEmpty(task.getCandidateGroups())) {
-                task.getCandidateGroups().forEach(grp -> {
-                    Group group = identityService.createGroupQuery()
-                            .groupId(grp.getId())
-                            .singleResult();
-                    if (group != null) {
-                        grp.setName(group.getName());
-                    }
-                });
+        if (ObjectUtils.isNotEmpty(userTask.getCandidateGroups())){
+            List<GroupDTO> groupList = new ArrayList<>();
+            for (String groupId : userTask.getCandidateGroups()) {
+                groupList.add(new GroupDTO(groupId,getGroupName(groupId)));
             }
-            if (ObjectUtils.isNotEmpty(task.getCandidateUsers())) {
-                task.getCandidateUsers().forEach(usr -> {
-                    User user = identityService.createUserQuery()
-                            .userId(usr.getId())
-                            .singleResult();
-                    if (user != null) {
-                        usr.setUserName(user.getFirstName());
-                    }
-                });
+            task.setCandidateGroups(groupList);
+        }
+        if (ObjectUtils.isNotEmpty(userTask.getCandidateUsers())){
+            List<UserDTO> userList = new ArrayList<>();
+            for (String userId : userTask.getCandidateUsers()) {
+                UserDTO user = new UserDTO();
+                user.setId(userId);
+                user.setUserName(getUserName(userId));
+                userList.add(user);
             }
-            if (ObjectUtils.isNotEmpty(task.getAssignee())) {
-                UserDTO usr = task.getAssignee();
-                User user = identityService.createUserQuery()
-                        .userId(usr.getId())
-                        .singleResult();
-                if (user != null) {
-                    usr.setUserName(user.getFirstName());
-                }
-            }
+            task.setCandidateUsers(userList);
+        }
+        if (ObjectUtils.isNotEmpty(userTask.getAssignee())){
+            String userId = userTask.getAssignee();
+            UserDTO user = new UserDTO();
+            user.setId(userId);
+            user.setUserName(getUserName(userId));
+            task.setAssignee(user);
         }
         return task;
+    }
+
+
+    //获取用户名称
+    private String getUserName(String userId){
+        User user = identityService.createUserQuery()
+                .userId(userId)
+                .singleResult();
+        return (user != null) ? user.getFirstName() : null;
+    }
+
+    //获取群组名称
+    private String getGroupName(String groupId){
+        Group group = identityService.createGroupQuery()
+                .groupId(groupId)
+                .singleResult();
+        return (group != null) ? group.getName() : null;
     }
 
     //判断是否是创建流程申请

@@ -10,4 +10,10 @@ import com.maoding.core.base.dto.CoreShowDTO;
  * 描述: 流程群组信息
  **/
 public class GroupDTO extends CoreShowDTO {
+
+    public GroupDTO(){}
+    public GroupDTO(String id,String name){
+        setId(id);
+        setName(name);
+    }
 }
