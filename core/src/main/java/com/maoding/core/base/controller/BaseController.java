@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import redis.clients.jedis.Jedis;
@@ -282,8 +283,12 @@ public abstract class BaseController {
 			log.error("空指针异常:",ex);
 			return  AjaxMessage.failed("系统异常");
 		}
+		if (ex instanceof HttpMessageNotReadableException){
+			log.error("无法读取输入参数异常:",ex);
+			return AjaxMessage.error("输入参数格式错误");
+		}
 		if(ex instanceof IllegalArgumentException) {
-			return AjaxMessage.error("参数错误：" + ex.getMessage());
+			return AjaxMessage.error("参数错误:" + ex.getMessage());
 		}
 
 		if (ex != null) {

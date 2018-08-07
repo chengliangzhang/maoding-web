@@ -80,21 +80,10 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     public ProcessDefineDetailDTO prepareProcessDefine(ProcessDetailPrepareDTO prepareRequest) {
         ProcessDefineDetailDTO processDefineDetailDTO;
 
-        List<ProcessDefineGroupDTO> result = new ArrayList<>();
-
-        Map<String,String> nameMap = new HashMap<String,String>(){
-            {
-                put(ProcessTypeConst.PROCESS_TYPE_LEAVE,"请假");
-                put(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS,"出差");
-                put(ProcessTypeConst.PROCESS_TYPE_EXPENSE,"报销");
-                put(ProcessTypeConst.PROCESS_TYPE_FINANCE,"费用申请");
-            }
-        };
-
         //补充未填写字段
         //name字段
         if (StringUtils.isEmpty(prepareRequest.getName())){
-            prepareRequest.setName(nameMap.get(prepareRequest.getKey()));
+            prepareRequest.setName(ProcessTypeConst.nameMap.get(prepareRequest.getKey()));
         }
         //type字段
         prepareRequest.setType(syncProcessType(prepareRequest));
@@ -247,7 +236,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
         Map<String,List<FlowTaskDTO>> taskListMap = new HashMap<>();
         taskListMap.put(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY,toFlowTaskList(getDefaultFlowTaskListInfo()));
-        List<Long> pointList = digitConditionEditRequest.getPointList();
+        List<Double> pointList = digitConditionEditRequest.getPointList();
         pointList.forEach(point -> taskListMap.put(point.toString(),toFlowTaskList(getDefaultFlowTaskListInfo())));
         return taskListMap;
     }
@@ -261,10 +250,10 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
         //添加条件分支路径
         if (isValid(digitConditionEditRequest)) {
-            List<Long> pointList = digitConditionEditRequest.getPointList().stream()
+            List<Double> pointList = digitConditionEditRequest.getPointList().stream()
                     .sorted()
                     .collect(Collectors.toList());
-            for (Long point : pointList) {
+            for (Double point : pointList) {
                 FlowTaskGroupDTO taskGroup = new FlowTaskGroupDTO(point.toString(),null);
                 taskGroupList.add(taskGroup);
             }
@@ -400,15 +389,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
     //把taskListMap转换为排好序的路径序列
     private List<FlowTaskGroupDTO> toOrderedFlowTaskGroupList(List<FlowTaskGroupDTO> taskGroupList,String key){
-        final HashMap<String,String> titleMap = new HashMap<String,String>(){
-            {
-                put(ProcessTypeConst.PROCESS_TYPE_EXPENSE,"报销金额");
-                put(ProcessTypeConst.PROCESS_TYPE_COST_APPLY,"费用申请金额");
-                put(ProcessTypeConst.PROCESS_TYPE_LEAVE,"请假时长");
-                put(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS,"出差时长");
-            }
-        };
-
         List<FlowTaskGroupDTO> dstList = new ArrayList<>();
         if (ObjectUtils.isNotEmpty(taskGroupList)){
             //添加默认路径
@@ -421,18 +401,19 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             }
 
 
-            Integer point = null;
+            Double point = null;
             for (FlowTaskGroupDTO taskGroup : taskGroupList){
                 if (isRemainMin(taskGroupList,taskGroup,point)){
-                    point = DigitUtils.parseInt(taskGroup.getName());
-                    String title = point + "<=" + titleMap.get(key);
+                    point = DigitUtils.parseDouble(taskGroup.getName());
+                    String unit = ProcessTypeConst.unitMap.get(key);
+                    String title = point + unit + "<=" + ProcessTypeConst.titleMap.get(key);
 
                     taskGroup.setMinValue(point);
                     taskGroup.setTitle(title);
                     if (prevGroup != null) {
                         prevGroup.setMaxValue(point);
-                        String prevTitle = StringUtils.isEmpty(prevGroup.getTitle()) ? titleMap.get(key) : prevGroup.getTitle();
-                        prevGroup.setTitle(prevTitle + "<" + point);
+                        String prevTitle = StringUtils.isEmpty(prevGroup.getTitle()) ? ProcessTypeConst.titleMap.get(key) : prevGroup.getTitle();
+                        prevGroup.setTitle(prevTitle + "<" + point + unit);
                     }
                     prevGroup = taskGroup;
 
@@ -444,7 +425,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //判断是否是余下来的最小节点路径
-    private boolean isRemainMin(List<FlowTaskGroupDTO> taskGroupList, FlowTaskGroupDTO taskGroup, Integer point){
+    private boolean isRemainMin(List<FlowTaskGroupDTO> taskGroupList, FlowTaskGroupDTO taskGroup, Double point){
         boolean isMin = true;
         if (ObjectUtils.isEmpty(taskGroupList) || ObjectUtils.isEmpty(taskGroup) || StringUtils.isSame(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY,taskGroup.getName())){
             isMin = false;
@@ -452,7 +433,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             int taskPoint = DigitUtils.parseInt(taskGroup.getName());
             for (FlowTaskGroupDTO tg : taskGroupList) {
                 if (StringUtils.isNotSame(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY,tg.getName())){
-                    int tgPoint = DigitUtils.parseInt(tg.getName());
+                    double tgPoint = DigitUtils.parseDouble(tg.getName());
                     if (((point == null) || (point < tgPoint))
                         && (tgPoint < taskPoint)){
                         isMin = false;
@@ -693,14 +674,14 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //从用户任务编辑信息中提取数字式条件序列
-    private List<Long> toOrderedPointList(Map<String, List<FlowTaskEditDTO>> taskListMap){
+    private List<Double> toOrderedPointList(Map<String, List<FlowTaskEditDTO>> taskListMap){
         //检查参数
         TraceUtils.check(ObjectUtils.isNotEmpty(taskListMap),log);
 
-        List<Long> pointList = new ArrayList<>();
+        List<Double> pointList = new ArrayList<>();
         taskListMap.forEach((key, value) -> {
             if (StringUtils.isNotSame(key, ProcessTypeConst.DEFAULT_FLOW_TASK_KEY)) {
-                pointList.add(DigitUtils.parseLong(key));
+                pointList.add(DigitUtils.parseDouble(key));
             }
         });
 
@@ -727,10 +708,10 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //根据表达式获取数字条件节点
-    private Long getPointFromCondition(String condition){
+    private Double getPointFromCondition(String condition){
         String s = StringUtils.left(condition,"}");
         if (StringUtils.contains(s,">=")){
-            return DigitUtils.parseLong(StringUtils.lastRight(s,">="));
+            return DigitUtils.parseDouble(StringUtils.lastRight(s,">="));
         } else {
             //是默认条件分支
             return null;
@@ -956,8 +937,8 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 //        normalList.addAll(leaveList);
 //        normalList.addAll(onBusinessList);
         List<ProcessDefineDTO> normalList = asList(
-                new ProcessDefineDTO("请假","适用于公司请假审批",ProcessTypeConst.PROCESS_TYPE_LEAVE,1,query.getCurrentCompanyId()),
-                new ProcessDefineDTO("出差","适用于公司出差审批",ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS,1,query.getCurrentCompanyId())
+                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_LEAVE),"适用于公司请假审批",ProcessTypeConst.PROCESS_TYPE_LEAVE,1,query.getCurrentCompanyId()),
+                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS),"适用于公司出差审批",ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS,1,query.getCurrentCompanyId())
         );
         updateType(normalList, query.getCurrentCompanyId());
         result.add(new ProcessDefineGroupDTO("行政审批",normalList));
@@ -967,8 +948,8 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 //        query.setKey(ProcessTypeConst.PROCESS_TYPE_FINANCE);
 //        List<ProcessDefineDTO> financeList = listProcessDefine(query)
         List<ProcessDefineDTO> financeList = asList(
-                new ProcessDefineDTO("报销","适用于公司报销审批",ProcessTypeConst.PROCESS_TYPE_EXPENSE,1,query.getCurrentCompanyId()),
-                new ProcessDefineDTO("费用申请","适用于公司费用审批",ProcessTypeConst.PROCESS_TYPE_COST_APPLY,1,query.getCurrentCompanyId())
+                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_EXPENSE),"适用于公司报销审批",ProcessTypeConst.PROCESS_TYPE_EXPENSE,1,query.getCurrentCompanyId()),
+                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_COST_APPLY),"适用于公司费用审批",ProcessTypeConst.PROCESS_TYPE_COST_APPLY,1,query.getCurrentCompanyId())
         );
         updateType(financeList, query.getCurrentCompanyId());
         result.add(new ProcessDefineGroupDTO("财务审批", financeList));
@@ -978,8 +959,8 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 //        query.setKey(ProcessTypeConst.PROCESS_TYPE_PROJECT);
 //        List<ProcessDefineDTO> projectList = listProcessDefine(query)
         List<ProcessDefineDTO> projectList = asList(
-                new ProcessDefineDTO("立项审批","适用于公司立项审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP,1,query.getCurrentCompanyId()),
-                new ProcessDefineDTO("付款审批","适用于公司付款审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY,1,query.getCurrentCompanyId())
+                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP),"适用于公司立项审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP,1,query.getCurrentCompanyId()),
+                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY),"适用于公司付款审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY,1,query.getCurrentCompanyId())
         );
         updateType(projectList, query.getCurrentCompanyId());
         result.add(new ProcessDefineGroupDTO("项目审批", projectList));

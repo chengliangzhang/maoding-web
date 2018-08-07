@@ -1,5 +1,8 @@
 package com.maoding.core.constant;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 流程类型定义
  */
@@ -83,4 +86,43 @@ public interface ProcessTypeConst {
 
     /** 流程定义内用户任务编号前缀 */
     String ID_PREFIX_TASK = "t" + ID_SPLIT;
+
+    /** 流程中英文对照表 */
+    Map<String,String> nameMap = new HashMap<String,String>(){
+        {
+            put(ProcessTypeConst.PROCESS_TYPE_LEAVE,"请假");
+            put(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS,"出差");
+            put(ProcessTypeConst.PROCESS_TYPE_EXPENSE,"报销");
+            put(ProcessTypeConst.PROCESS_TYPE_COST_APPLY,"费用申请");
+            put(ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP,"立项审批");
+            put(ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY,"付款审批");
+        }
+    };
+
+    /** 流程数字条件名称对照表 */
+    HashMap<String,String> titleMap = new HashMap<String,String>(){
+        {
+            put(ProcessTypeConst.PROCESS_TYPE_LEAVE,"请假时长");
+            put(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS,"出差时长");
+            put(ProcessTypeConst.PROCESS_TYPE_EXPENSE,"报销金额");
+            put(ProcessTypeConst.PROCESS_TYPE_COST_APPLY,"费用申请金额");
+            put(ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP,"立项审批");
+            put(ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY,"付款审批金额");
+        }
+    };
+
+
+    /** 流程数字条件单位对照表 */
+    Map<String,String> unitMap = new HashMap<String,String>(){
+        {
+            put(ProcessTypeConst.PROCESS_TYPE_LEAVE,"天");
+            put(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS,"天");
+            put(ProcessTypeConst.PROCESS_TYPE_EXPENSE,"元");
+            put(ProcessTypeConst.PROCESS_TYPE_COST_APPLY,"万元");
+            put(ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP,"");
+            put(ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY,"万元");
+        }
+    };
+
+
 }

@@ -15,13 +15,13 @@ public class DigitConditionEditDTO extends CoreEditDTO {
     /** id：流程编号 */
 
     /** 判断条件取值序列，如果是金额，以分为单位 */
-    private List<Long> pointList;
+    private List<Double> pointList;
 
-    public List<Long> getPointList() {
+    public List<Double> getPointList() {
         return pointList;
     }
 
-    public void setPointList(List<Long> pointList) {
+    public void setPointList(List<Double> pointList) {
         this.pointList = pointList;
     }
 }
