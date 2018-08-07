@@ -329,6 +329,13 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             //获取默认路径
             SequenceFlow sequence = ObjectUtils.getFirst(sequenceList);
             List<FlowTaskDTO> taskList = listFlowTask(process,sequence);
+            //保存路径到taskGroup
+            FlowTaskGroupDTO taskGroup = new FlowTaskGroupDTO();
+            taskGroup.setName(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY);
+            taskGroup.setFlowTaskList(taskList);
+            taskGroupList.add(taskGroup);
+
+            //维持兼容性
             taskListMap.put(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY,taskList);
         }
         String id = process.getId();
@@ -540,9 +547,12 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     //转换
     private Map<String,List<FlowTaskEditDTO>> toListMap(List<FlowTaskGroupEditDTO> flowTaskGroupEditList){
         Map<String,List<FlowTaskEditDTO>> dstMap = new HashMap<>();
-        flowTaskGroupEditList.forEach(tg ->
-            dstMap.put(tg.getName(),tg.getFlowTaskList())
-        );
+        flowTaskGroupEditList.forEach(tg -> {
+            if (StringUtils.isEmpty(tg.getName())){
+                tg.setName(ProcessTypeConst.DEFAULT_FLOW_TASK_KEY);
+            }
+            dstMap.put(tg.getName(), tg.getFlowTaskList());
+        });
         return dstMap;
     }
 
