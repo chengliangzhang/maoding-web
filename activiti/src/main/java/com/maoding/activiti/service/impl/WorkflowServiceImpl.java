@@ -118,6 +118,8 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                     processDefineDetailDTO.setFlowTaskGroupList(toFlowTaskGroupList(null));
                 }
             }
+        } else {
+            processDefineDetailDTO = BeanUtils.createFrom(prepareRequest, ProcessDefineDetailDTO.class);
         }
 
 
@@ -333,7 +335,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             return toProcessDefineDetailDTO(process);
         } else {
             syncProcessType(editRequest);
-            return null;
+            return BeanUtils.createFrom(editRequest,ProcessDefineDetailDTO.class);
         }
     }
 
