@@ -49,13 +49,13 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /**
      * @author  张成亮
      * @date    2018/7/31
-     * @description     比较两个字符串是否相同
+     * @description     判断两个字符串是否相同，视null和""为相同的字符串，区分大小写
      * @param   s1 第一个字符串
      * @param   s2 第二个字符串
      * @return 相同返回true，不相同返回false
      **/
     public static boolean isSame(String s1, String s2){
-        return equals(s1,s2);
+        return (isEmpty(s1) && isEmpty(s2)) || equals(s1,s2);
     }
 
     /**

@@ -17,14 +17,6 @@ public class DigitUtils {
     private static final double LIMIT_0 = 0.0000001; //归零值
 
     /**
-     * 描述      比较两个数值是否相同
-     * 日期      2018/7/31
-     * @author  张成亮
-     * @return  如果数值差别小于误差值，返回真，否则返回假
-     * @param   num1 第一个数值
-     * @param   num2 第二个数值
-     **/
-    /**
      * @author  张成亮
      * @date    2018/7/31
      * @description     比较两个数值是否相同
@@ -37,7 +29,6 @@ public class DigitUtils {
         if ((num1 == null) || (num2 == null)) return false;
         String n1 = num1.toString();
         String n2 = num2.toString();
-        assert (StringUtils.isNumeric(n1) && StringUtils.isNumeric(n2));
         Double d1 = Double.parseDouble(n1);
         Double d2 = Double.parseDouble(n2);
         return ((-LIMIT_0 < (d2 - d1)) && ((d2 - d1) < LIMIT_0));
