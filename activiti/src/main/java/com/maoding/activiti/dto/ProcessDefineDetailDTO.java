@@ -32,6 +32,17 @@ public class ProcessDefineDetailDTO extends CoreShowDTO {
     /** 流程所拥有的路径序列 */
     private List<FlowTaskGroupDTO> flowTaskGroupList;
 
+    /** 启动数字条件单位 */
+    private String unit;
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
     public String getKey() {
         return key;
     }

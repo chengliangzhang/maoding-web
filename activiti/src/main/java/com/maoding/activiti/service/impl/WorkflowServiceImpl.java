@@ -78,7 +78,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      **/
     @Override
     public ProcessDefineDetailDTO prepareProcessDefine(ProcessDetailPrepareDTO prepareRequest) {
-        ProcessDefineDetailDTO processDefineDetailDTO = null;
+        ProcessDefineDetailDTO processDefineDetail;
 
         //补充未填写字段
         //name字段
@@ -88,17 +88,19 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         //type字段
         prepareRequest.setType(syncProcessType(prepareRequest));
 
-        //如果是设置条件分支，生成新流程
+        //生成新流程或返回已有流程
         if (isEditConditionType(prepareRequest)){
-            processDefineDetailDTO = BeanUtils.createFrom(prepareRequest, ProcessDefineDetailDTO.class);
+            //如果是设置条件分支，生成新流程
+            processDefineDetail = BeanUtils.createFrom(prepareRequest, ProcessDefineDetailDTO.class);
             DigitConditionEditDTO condition = prepareRequest.getStartDigitCondition();
-            processDefineDetailDTO.setFlowTaskGroupList(toOrderedFlowTaskGroupList(toFlowTaskGroupList(condition),prepareRequest.getKey()));
+            processDefineDetail.setFlowTaskGroupList(toOrderedFlowTaskGroupList(toFlowTaskGroupList(condition),prepareRequest.getKey()));
         } else if (!isFreeType(prepareRequest)){
+            //否则如果不是自由流程，读取流程或生成新流程
             //查找已有流程
             Process process = getProcessByKey(getProcessDefineKey(prepareRequest));
             //如果是已有流程，转换已有流程
             if (process != null){
-                processDefineDetailDTO = toProcessDefineDetailDTO(process);
+                processDefineDetail = toProcessDefineDetailDTO(process);
             } else {
                 //如果是新流程
                 //如果指定流程模板，复制流程
@@ -110,21 +112,24 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                     //设定模板参数
                     process.setName(prepareRequest.getName());
                     process.setId(getProcessDefineKey(prepareRequest));
-                    processDefineDetailDTO = toProcessDefineDetailDTO(process);
-                    processDefineDetailDTO = updateProcessDefineDetailDTO(processDefineDetailDTO,process);
+                    processDefineDetail = toProcessDefineDetailDTO(process);
+                    processDefineDetail = updateProcessDefineDetailDTO(processDefineDetail,process);
                 } else {
-                    processDefineDetailDTO = BeanUtils.createFrom(prepareRequest, ProcessDefineDetailDTO.class);
+                    processDefineDetail = BeanUtils.createFrom(prepareRequest, ProcessDefineDetailDTO.class);
                     //添加默认路径
-                    processDefineDetailDTO.setFlowTaskGroupList(toFlowTaskGroupList(null));
+                    processDefineDetail.setFlowTaskGroupList(toFlowTaskGroupList(null));
                 }
             }
         } else {
-            processDefineDetailDTO = BeanUtils.createFrom(prepareRequest, ProcessDefineDetailDTO.class);
+            //如果是自由流程，返回空，需要保证id正确
+            processDefineDetail = BeanUtils.createFrom(prepareRequest, ProcessDefineDetailDTO.class);
+            processDefineDetail.setId(getProcessDefineKey(prepareRequest.getCurrentCompanyId(),prepareRequest.getKey(),prepareRequest.getType()));
         }
 
 
-        //更新组名称和用户名称并返回
-        return processDefineDetailDTO;
+        //添加单位并返回
+        processDefineDetail.setUnit(ProcessTypeConst.unitMap.get(prepareRequest.getKey()));
+        return processDefineDetail;
     }
 
     //判断是否自由流程
@@ -321,6 +326,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      **/
     @Override
     public ProcessDefineDetailDTO changeProcessDefine(ProcessDefineDetailEditDTO editRequest) {
+        ProcessDefineDetailDTO processDefineDetail;
         if (!isFreeType(editRequest)) {
             Process process = createProcess(editRequest);
             BpmnModel model = createModel(process);
@@ -332,11 +338,16 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
             process = getProcessByKey(getProcessDefineKey(editRequest));
 
-            return toProcessDefineDetailDTO(process);
+            processDefineDetail = toProcessDefineDetailDTO(process);
         } else {
             syncProcessType(editRequest);
-            return BeanUtils.createFrom(editRequest,ProcessDefineDetailDTO.class);
+            processDefineDetail = BeanUtils.createFrom(editRequest,ProcessDefineDetailDTO.class);
+            processDefineDetail.setId(getProcessDefineKey(editRequest.getCurrentCompanyId(),editRequest.getKey(),editRequest.getType()));
         }
+
+        //设置单位并返回
+        processDefineDetail.setUnit(ProcessTypeConst.unitMap.get(editRequest.getKey()));
+        return processDefineDetail;
     }
 
     //判断是否自由流程
@@ -935,7 +946,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      **/
     @Override
     public void deleteProcessDefine(ProcessDefineQueryDTO deleteRequest) {
-        TraceUtils.check(deleteRequest != null,log,"!参数不可以为空");
+        TraceUtils.check(deleteRequest != null);
         //删除已定义流程
         TraceUtils.check(StringUtils.isNotEmpty(deleteRequest.getCurrentCompanyId()),log,"!currentCompanyId不能为空");
         TraceUtils.check(StringUtils.isNotEmpty(deleteRequest.getKey()),log,"!key不能为空");
