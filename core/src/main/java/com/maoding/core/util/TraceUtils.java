@@ -154,14 +154,16 @@ public class TraceUtils {
      * @param   message 异常信息，如果以“!”起始，产生参数异常，否则如果不为空产生未知类型异常，为空不产生异常
      **/
     public static void check(boolean condition, Logger log, String message) {
-        if (StringUtils.startsWith(message,prefixIllegalArgumentMessage)) {
-            check(condition, log, IllegalArgumentException.class, message);
-        } else if (StringUtils.startsWith(message,prefixIgnoreException)){
-            check(condition,log,null,message);
-        } else if (isThrowAuto) {
-            check(condition,log,CustomException.class,message);
-        } else {
-            check(condition,log,null,message);
+        if (isCheckCondition) {
+            if (StringUtils.startsWith(message, prefixIllegalArgumentMessage)) {
+                check(condition, log, IllegalArgumentException.class, message);
+            } else if (StringUtils.startsWith(message, prefixIgnoreException)) {
+                check(condition, log, null, message);
+            } else if (isThrowAuto) {
+                check(condition, log, CustomException.class, message);
+            } else {
+                check(condition, log, null, message);
+            }
         }
     }
 

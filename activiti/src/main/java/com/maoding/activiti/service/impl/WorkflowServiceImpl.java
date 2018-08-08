@@ -933,12 +933,26 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      **/
     @Override
     public void deleteProcessDefine(ProcessDefineQueryDTO deleteRequest) {
+        TraceUtils.check(deleteRequest != null,log,"!参数不可以为空");
+        //删除已定义流程
+        TraceUtils.check(StringUtils.isNotEmpty(deleteRequest.getCurrentCompanyId()),log,"!currentCompanyId不能为空");
+        TraceUtils.check(StringUtils.isNotEmpty(deleteRequest.getKey()),log,"!key不能为空");
         List<Deployment> list = repositoryService.createDeploymentQuery()
-                .processDefinitionKeyLike(ProcessTypeConst.ID_PREFIX_PROCESS + deleteRequest.getCurrentCompanyId() + ProcessTypeConst.ID_SPLIT + deleteRequest.getKey() + "%")
+                .processDefinitionKeyLike(ProcessTypeConst.ID_PREFIX_PROCESS
+                        + deleteRequest.getCurrentCompanyId()
+                        + ProcessTypeConst.ID_SPLIT
+                        + deleteRequest.getKey() + "%")
                 .list();
         list.forEach(deployment ->
             repositoryService.deleteDeployment(deployment.getId())
         );
+
+        //把类型库内流程设定为自由流程
+        syncProcessType(ProcessTypeConst.TYPE_FREE,
+                deleteRequest.getCurrentCompanyId(),
+                deleteRequest.getKey(),
+                deleteRequest.getAccountId(),
+                false);
     }
 
     /**
