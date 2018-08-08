@@ -1880,4 +1880,14 @@ public class OrgController extends BaseController {
         return tree==null?AjaxMessage.error("无权限设置"):AjaxMessage.succeed(tree);
     }
 
+    /**
+     * 描述       根据收付款类型获取单位列表
+     * 日期       2018/8/8
+     * @author   张成亮
+     **/
+    @RequestMapping(value = "/listCompany", method = RequestMethod.GET)
+    @ResponseBody
+    public AjaxMessage listCompany(@RequestBody OrgAuthenticationQueryDTO query) throws Exception {
+
+
 }
