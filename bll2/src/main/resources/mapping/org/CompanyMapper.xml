@@ -187,4 +187,71 @@
             maoding_web_company t
         WHERE t.company_name = #{companyName} LIMIT 1
     </select>
+
+    <resultMap id="CompanyMap" type="com.maoding.org.dto.CompanyDTO" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+        <result column="major_type" property="majorType" jdbcType="VARCHAR" />
+        <result column="certificate" property="certificate" jdbcType="VARCHAR" />
+        <result column="main_field" property="mainField" jdbcType="VARCHAR" />
+        <result column="is_authentication" property="isAuthentication" jdbcType="VARCHAR" />
+        <result column="operator_name" property="operatorName" jdbcType="VARCHAR" />
+        <result column="reject_reason" property="rejectReason" jdbcType="VARCHAR" />
+        <result column="company_type" property="companyType" jdbcType="VARCHAR" />
+        <result column="company_email" property="companyEmail" jdbcType="VARCHAR" />
+        <result column="company_short_name" property="companyShortName" jdbcType="VARCHAR" />
+        <result column="company_fax" property="companyFax" jdbcType="VARCHAR" />
+        <result column="server_type" property="serverType" jdbcType="VARCHAR" />
+        <result column="province" property="province" jdbcType="VARCHAR" />
+        <result column="city" property="city" jdbcType="VARCHAR" />
+        <result column="county" property="county" jdbcType="VARCHAR" />
+        <result column="legal_representative" property="legalRepresentative" jdbcType="VARCHAR" />
+        <result column="company_phone" property="companyPhone" jdbcType="VARCHAR" />
+        <result column="company_address" property="companyAddress" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="VARCHAR" />
+        <result column="business_license_number" property="businessLicenseNumber" jdbcType="VARCHAR" />
+        <result column="organization_code_number" property="organizationCodeNumber" jdbcType="VARCHAR" />
+        <result column="micro_url" property="microUrl" jdbcType="VARCHAR" />
+        <result column="micro_template" property="microTemplate" jdbcType="VARCHAR" />
+        <result column="file_path" property="filePath" jdbcType="VARCHAR" />
+        <result column="file_group" property="fileGroup" jdbcType="VARCHAR" />
+        <result column="company_comment" property="companyComment" jdbcType="VARCHAR" />
+        <result column="relation_type" property="relationType" jdbcType="VARCHAR" />
+        <result column="sys_role" property="sysRole" jdbcType="VARCHAR" />
+    </resultMap>
+
+
+        <!-- 查询相关甲方 -->
+    <select id="listCompanyA" resultMap="CompanyMap" parameterType="com.maoding.org.dto.CompanyQueryDTO">
+
+    </select>
+
+    <!-- 查询相关合作方 -->
+    <select id="listCompanyCooperate" resultMap="CompanyMap" parameterType="com.maoding.org.dto.CompanyQueryDTO">
+        select distinct company_list.*
+        from maoding_web_company company_list
+            inner join maoding_web_project_task_relation task_relation on (
+              (task_relation.relation_status = '0')
+              and ((task_relation.from_company_id = company_list.id)
+                  or (task_relation.to_company_id = company_list.id))
+              <if test="projectId != null">
+                  and (task_relation.project_id = #{projectId})
+              </if>
+              <if test="currentCompanyId != null">
+                  <choose>
+                      <when test="isPay == '0'.toString()">
+                          and (task_relation.from_company_id = #{currentCompanyId})
+                      </when>
+                      <when test="isPay == '1'.toString()">
+                          and (task_relation.to_company_id = #{currentCompanyId})
+                      </when>
+                      <otherwise>
+                          and ((task_relation.from_company_id = #{currentCompanyId}) or
+                              (task_relation.to_company_id = #{currentCompanyId}))
+                      </otherwise>
+                  </choose>
+              </if>
+            )
+        where company_list.status = '0'
+    </select>
 </mapper>

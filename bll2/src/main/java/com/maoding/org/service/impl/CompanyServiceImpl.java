@@ -9,11 +9,9 @@ import com.maoding.core.component.sms.SmsSender;
 import com.maoding.core.component.sms.bean.Sms;
 import com.maoding.core.constant.CompanyType;
 import com.maoding.core.constant.NetFileType;
+import com.maoding.core.constant.ProjectCostConst;
 import com.maoding.core.constant.SystemParameters;
-import com.maoding.core.util.BeanUtilsEx;
-import com.maoding.core.util.DateUtils;
-import com.maoding.core.util.MD5Helper;
-import com.maoding.core.util.StringUtil;
+import com.maoding.core.util.*;
 import com.maoding.exception.CustomException;
 import com.maoding.hxIm.constDefine.ImGroupType;
 import com.maoding.hxIm.service.ImService;
@@ -42,7 +40,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -2172,5 +2169,80 @@ public class CompanyServiceImpl extends GenericService<CompanyEntity> implements
 
     private String getFilePath(ProjectSkyDriveEntity entity) {
         return this.fastdfsUrl + entity.getFileGroup() + "/" + entity.getFilePath();
+    }
+
+    /**
+     * 描述     查询组织信息
+     *
+     * @param query 组织查询条件
+     * @return 组织信息
+     * @author 张成亮
+     **/
+    @Override
+    public List<CompanyDTO> listCompany(CompanyQueryDTO query) {
+        List<CompanyDTO> result = null;
+        if (isPayQuery(query)) {
+            if (isContract(query.getFeeType()) && isCreatorQuery(query)){
+                result = companyDao.listCompanyA(query);
+            } else if (isCheck(query.getFeeType()) && !isCreatorQuery(query)) {
+                result = new ArrayList<>();
+                result.add(getCreator(query));
+            } else if (isCooperate(query.getFeeType())){
+                result = companyDao.listCompanyCooperate(query);
+            }
+        } else {
+            if (isCheck(query.getFeeType()) && isCreatorQuery(query)){
+                result = companyDao.listCompanyCooperate(query);
+            } else if (isCooperate(query.getFeeType())) {
+                result = companyDao.listCompanyCooperate(query);
+            }
+        }
+        return result;
+    }
+
+    //是否合同回款
+    private boolean isContract(Integer type){
+        return (ProjectCostConst.FEE_TYPE_CONTRACT == type);
+    }
+
+    //是否技术审查费
+    private boolean isCheck(Integer type){
+        return (ProjectCostConst.FEE_TYPE_CHECK == type);
+    }
+
+    //是否合作设计费
+    private boolean isCooperate(Integer type){
+        return (ProjectCostConst.FEE_TYPE_COOPERATE == type);
+    }
+
+    //是否付款查询
+    private boolean isPayQuery(CompanyQueryDTO query){
+        return StringUtils.isEmpty(query.getIsPay()) || StringUtils.isSame("0",query.getIsPay());
+    }
+
+    //是否立项方发起的查询
+    private boolean isCreatorQuery(CompanyQueryDTO query){
+        TraceUtils.check(query != null);
+        TraceUtils.check(!StringUtils.isEmpty(query.getProjectId()),log,"!projectId不能为空");
+        ProjectEntity project = projectDao.selectById(query.getProjectId());
+        TraceUtils.check(project != null);
+        TraceUtils.check(!StringUtils.isEmpty(query.getCurrentCompanyId()),log,"!currentCompanyId不能为空");
+        return StringUtils.isSame(query.getCurrentCompanyId(),project.getCompanyId());
+    }
+
+    //获取项目立项方信息
+    private CompanyDTO getCreator(CompanyQueryDTO query){
+        TraceUtils.check(query != null);
+        TraceUtils.check(!StringUtils.isEmpty(query.getProjectId()),log,"!projectId不能为空");
+        ProjectEntity project = projectDao.selectById(query.getProjectId());
+        TraceUtils.check(project != null);
+        CompanyEntity company = companyDao.selectById(project.getId());
+        TraceUtils.check(!StringUtils.isEmpty(query.getCurrentCompanyId()),log,"!currentCompanyId不能为空");
+        return BeanUtils.createFrom(company,CompanyDTO.class);
+    }
+
+    //获取项目信息
+    private ProjectEntity getProjectInfo(String projectId){
+        return projectDao.selectById(projectId);
     }
 }

@@ -8,10 +8,7 @@ import com.maoding.core.component.sms.bean.Sms;
 import com.maoding.core.constant.NetFileType;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.core.constant.SystemParameters;
-import com.maoding.core.util.DateUtils;
-import com.maoding.core.util.ExcelUtils;
-import com.maoding.core.util.MD5Helper;
-import com.maoding.core.util.StringUtil;
+import com.maoding.core.util.*;
 import com.maoding.org.dto.*;
 import com.maoding.org.entity.CompanyEntity;
 import com.maoding.org.entity.CompanyUserEntity;
@@ -1885,9 +1882,20 @@ public class OrgController extends BaseController {
      * 日期       2018/8/8
      * @author   张成亮
      **/
-    @RequestMapping(value = "/listCompany", method = RequestMethod.GET)
+    @RequestMapping(value = "/listCompany", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxMessage listCompany(@RequestBody OrgAuthenticationQueryDTO query) throws Exception {
+    public AjaxMessage listCompany(@RequestBody CompanyQueryDTO query) throws Exception {
+        List<CompanySimpleDTO> result = new ArrayList<>();
+        List<CompanyDTO> list = companyService.listCompany(query);
+        if (ObjectUtils.isNotEmpty(list)){
+            list.forEach(c -> {
+                CompanySimpleDTO company = BeanUtils.createFrom(c,CompanySimpleDTO.class);
+                company.setName(c.getCompanyName());
+                result.add(company);
+            });
+        }
+        return AjaxMessage.succeed(result);
+    }
 
 
 }

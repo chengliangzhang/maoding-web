@@ -480,4 +480,12 @@ public interface CompanyService extends BaseService<CompanyEntity> {
 
     List<String> getExpensesDetailLedgerCompanyList(String companyId,String flag) throws Exception;
 
+    /**
+     * 描述     查询组织信息
+     * 日期     2018/8/8
+     * @author  张成亮
+     * @return  组织信息
+     * @param   query 组织查询条件
+     **/
+    List<CompanyDTO> listCompany(CompanyQueryDTO query);
 }

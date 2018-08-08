@@ -2,6 +2,8 @@ package com.maoding.core.base.service;
 
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.maoding.core.base.dao.BaseDao;
@@ -17,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional(rollbackFor=Exception.class)
 public class GenericService<T extends BaseEntity> implements BaseService<T>{
+	/** 日志对象，不能用于static方法 */
+	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
 	protected BaseDao<T> baseDao;

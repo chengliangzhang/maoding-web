@@ -4,6 +4,7 @@ package com.maoding.org.dao.impl;
 import com.maoding.core.base.dao.GenericDao;
 import com.maoding.org.dao.CompanyDao;
 import com.maoding.org.dto.CompanyDTO;
+import com.maoding.org.dto.CompanyQueryDTO;
 import com.maoding.org.dto.CompanyRelationDTO;
 import com.maoding.org.dto.CompanyUserDTO;
 import com.maoding.org.entity.CompanyEntity;
@@ -256,4 +257,29 @@ public class CompanyDaoImpl extends GenericDao<CompanyEntity> implements Company
         return this.sqlSession.selectOne("QueryCompanyRelationEntityMapper.getOrgType", orgId);
     }
 
+    /**
+     * 描述     查询相关甲方
+     * 日期     2018/8/8
+     *
+     * @param query 查询条件
+     * @return 符合条件的公司信息列表
+     * @author 张成亮
+     **/
+    @Override
+    public List<CompanyDTO> listCompanyA(CompanyQueryDTO query) {
+        return sqlSession.selectList("CompanyMapper.listCompanyA", query);
+    }
+
+    /**
+     * 描述     查询相关合作方
+     * 日期     2018/8/8
+     *
+     * @param query 查询条件
+     * @return 符合条件的公司信息列表
+     * @author 张成亮
+     **/
+    @Override
+    public List<CompanyDTO> listCompanyCooperate(CompanyQueryDTO query) {
+        return sqlSession.selectList("CompanyMapper.listCompanyCooperate", query);
+    }
 }
