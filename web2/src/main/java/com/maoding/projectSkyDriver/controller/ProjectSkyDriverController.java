@@ -42,8 +42,10 @@ import java.util.*;
 public class ProjectSkyDriverController extends BaseController {
     @Autowired
     private ProjectSkyDriverService projectSkyDriverService;
+
     @Autowired
     private ProjectService projectService;
+
     @Autowired
     private ProjectTaskService projectTaskService;
 
@@ -757,7 +759,7 @@ public class ProjectSkyDriverController extends BaseController {
      */
     @RequestMapping(value = "/getProjectContract", method = RequestMethod.POST)
     @ResponseBody
-    private AjaxMessage getProjectContract(@RequestBody Map<String, Object> param) throws Exception{
+    public AjaxMessage getProjectContract(@RequestBody Map<String, Object> param) throws Exception{
         return AjaxMessage.succeed(this.projectSkyDriverService.listProjectContractAttach((String)param.get("projectId")));
     }
 

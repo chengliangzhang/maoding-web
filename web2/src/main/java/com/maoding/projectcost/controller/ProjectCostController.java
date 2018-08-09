@@ -126,7 +126,7 @@ public class ProjectCostController extends BaseController {
      */
     @RequestMapping(value ={"/saveProjectCost"} , method = RequestMethod.POST)
     @ResponseBody
-    public AjaxMessage saveProjectCost(@RequestBody ProjectCostDTO dto) throws Exception{
+    public AjaxMessage saveProjectCost(@RequestBody ProjectCostEditDTO dto) throws Exception{
         dto.setCurrentCompanyId(this.currentCompanyId);
         dto.setAccountId(this.currentUserId);
         return this.projectCostService.saveOrUpdateProjectCost(dto);

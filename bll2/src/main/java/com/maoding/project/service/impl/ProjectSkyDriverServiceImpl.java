@@ -20,6 +20,7 @@ import com.maoding.project.dto.*;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.entity.ProjectSkyDriveEntity;
 import com.maoding.project.service.ProjectSkyDriverService;
+import com.maoding.projectcost.dto.ProjectCostEditDTO;
 import com.maoding.projectmember.entity.ProjectMemberEntity;
 import com.maoding.projectmember.service.ProjectMemberService;
 import com.maoding.task.dao.ProjectTaskDao;
@@ -56,6 +57,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
 
     @Autowired
     private ProjectSkyDriverDao projectSkyDriverDao;
+
     @Autowired
     private ProjectDao projectDao;
 
@@ -1518,5 +1520,30 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
     public ProjectSkyDriveEntity getEntityByQuery(ProjectSkyDriverQueryDTO query) {
         List<ProjectSkyDriveEntity> list = listEntityByQuery(query);
         return (ObjectUtils.isEmpty(list)) ? null : list.get(0);
+    }
+
+    @Override
+    public void saveProjectFeeContractAttach(ProjectCostEditDTO dto) throws Exception {
+        //先删除原来的，删除在做添加修改处理
+        Map<String,Object> deleteParam = new HashMap<>();
+        deleteParam.put("targetId",dto.getId());
+        deleteParam.put("accountId",dto.getAccountId());
+        projectSkyDriverDao.updateSkyDriveStatus(deleteParam);
+        dto.getContactAttachList().stream().forEach(attach->{
+            String id = attach.get("id");
+            ProjectSkyDriveEntity file = this.projectSkyDriverDao.selectById(id);
+            file.setTargetId(dto.getId());
+            file.setProjectId(dto.getProjectId());
+            file.setType(NetFileType.PROJECT_FEE_ARCHIVE);
+            if(!(attach.get("isUploadFile")!=null && "1".equals(attach.get("isUploadFile")))){
+                file.setId(StringUtil.buildUUID());
+                projectSkyDriverDao.insert(file);
+            }else {
+                file.setId(attach.get("id"));
+                file.setStatus("0");
+                projectSkyDriverDao.updateById(file);
+            }
+        });
+
     }
 }

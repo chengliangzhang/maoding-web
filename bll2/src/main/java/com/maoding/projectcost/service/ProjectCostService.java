@@ -22,7 +22,7 @@ public interface ProjectCostService extends BaseService<ProjectCostEntity>{
      * 作者：chenzhujie
      * 日期：2017/3/1
      */
-    AjaxMessage saveOrUpdateProjectCost(ProjectCostDTO projectCostDto)throws Exception;
+    AjaxMessage saveOrUpdateProjectCost(ProjectCostEditDTO projectCostDto)throws Exception;
 
 
     /**

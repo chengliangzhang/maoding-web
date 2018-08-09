@@ -32,6 +32,7 @@ import com.maoding.process.dto.ProcessNodeDTO;
 import com.maoding.process.entity.ProcessNodeEntity;
 import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.entity.ProjectEntity;
+import com.maoding.project.service.ProjectSkyDriverService;
 import com.maoding.projectcost.dao.*;
 import com.maoding.projectcost.dto.*;
 import com.maoding.projectcost.entity.*;
@@ -126,13 +127,16 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
     @Autowired
     private ExpMainService expMainService;
 
+    @Autowired
+    private ProjectSkyDriverService projectSkyDriverService;
+
     /**
      * 方法描述：设置合同总金额/技术审查费
      * 作者：chenzhujie
      * 日期：2017/3/1
      */
     @Override
-    public AjaxMessage saveOrUpdateProjectCost(ProjectCostDTO projectCostDto) throws Exception {
+    public AjaxMessage saveOrUpdateProjectCost(ProjectCostEditDTO projectCostDto) throws Exception {
         ProjectCostEntity entity = new ProjectCostEntity();
         BaseDTO.copyFields(projectCostDto, entity);
         //类型1:合同总金额，2：技术审查费,3合作设计费付款 (字符串)，
@@ -164,10 +168,13 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         } else {
             updateCostFee(projectCostDto);
         }
+        //处理附件
+        projectCostDto.setId(entity.getId());
+        projectSkyDriverService.saveProjectFeeContractAttach(projectCostDto);
         return AjaxMessage.succeed("操作成功");
     }
 
-    private void updateCostFee(ProjectCostDTO projectCostDto) throws Exception {
+    private void updateCostFee(ProjectCostEditDTO projectCostDto) throws Exception {
         ProjectCostEntity entity = this.selectById(projectCostDto.getId());
         ProjectCostEntity origin = new ProjectCostEntity();
         BeanUtilsEx.copyProperties(entity,origin);

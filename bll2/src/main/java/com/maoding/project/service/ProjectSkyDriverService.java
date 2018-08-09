@@ -9,6 +9,7 @@ import com.maoding.project.dto.ProjectSkyDriveRenameDTO;
 import com.maoding.project.dto.ProjectSkyDriverQueryDTO;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.entity.ProjectSkyDriveEntity;
+import com.maoding.projectcost.dto.ProjectCostEditDTO;
 import com.maoding.task.dto.SaveProjectTaskDTO;
 import com.maoding.task.entity.ProjectTaskEntity;
 
@@ -327,4 +328,9 @@ public interface ProjectSkyDriverService extends BaseService<ProjectSkyDriveEnti
      * @return  文件
      **/
     ProjectSkyDriveEntity getEntityByQuery(ProjectSkyDriverQueryDTO query);
+
+    /**
+     * 项目费用附件记录与关联记录进行保存（附件的上传在文件服务器上进行了上传，此处只保存他们的关联关系）
+     */
+    void saveProjectFeeContractAttach(ProjectCostEditDTO dto) throws Exception;
 }
