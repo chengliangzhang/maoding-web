@@ -7,13 +7,12 @@ import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.core.constant.SystemParameters;
+import com.maoding.core.util.ObjectUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.mytask.entity.MyTaskEntity;
 import com.maoding.mytask.service.MyTaskService;
-import com.maoding.org.dto.CompanyDTO;
-import com.maoding.org.dto.CompanyUserTableDTO;
-import com.maoding.org.dto.DepartDTO;
-import com.maoding.org.dto.DepartRoleDTO;
+import com.maoding.org.dao.CompanyDao;
+import com.maoding.org.dto.*;
 import com.maoding.org.entity.CompanyEntity;
 import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.org.service.CompanyService;
@@ -105,6 +104,9 @@ public class ProjectController extends BaseController {
 
     @Autowired
     private ConstService constService;
+
+    @Autowired
+    private CompanyDao companyDao;
 
     @Value("${project}")
     private String projectUrl;
@@ -613,14 +615,23 @@ public class ProjectController extends BaseController {
         } else {
             param.put("flag", 0);
         }
-//        String columnCodes = "";
-//        //查询条件
-//        Map<String, Object> proCondition = getProConditionMap(param, companyId);
-//        List<ProjectConditionDTO> conditionDTOS = projectConditionService.selProjectConditionList(proCondition);
-//        if (0 < conditionDTOS.size()) {
-//            columnCodes = conditionDTOS.get(0).getCode();
-//        }
-//        param.put("columnCodes", columnCodes);
+
+        //为项目列表添加合作组织信息过滤选择列表，即当前组织发布了签发任务给到的组织，不包含自己
+        //这里需要查询所有项目的合作组织
+        CompanyQueryDTO cooperatorCompanyQuery = new CompanyQueryDTO();
+        cooperatorCompanyQuery.setCurrentCompanyId(companyId);
+        //只查询外发的组织
+        cooperatorCompanyQuery.setIsPay("1");
+        List<CompanyDTO> cooperatorCompanyList = companyDao.listCompanyCooperate(cooperatorCompanyQuery);
+        //生成查询组织列表
+        Map<String, String> designCompanyNames = new HashMap<>();
+        if (ObjectUtils.isNotEmpty(cooperatorCompanyList)){
+            cooperatorCompanyList.forEach(company->
+                    designCompanyNames.put(company.getId(),company.getCompanyName())
+            );
+        }
+
+        param.put("designCompanyNames",designCompanyNames);
         param.put("companyNames", companyNames);
         param.put("partyANames", partyANames);
         param.put("partyBNames", partyBNames);

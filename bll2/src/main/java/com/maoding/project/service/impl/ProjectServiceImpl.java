@@ -1494,7 +1494,8 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             total = projectDao.getProjectListByProcessingCount(query);
         }
 
-        //为每个项目行添加合作组织信息，即本查询组织发布了签发任务给到的组织，不包含自己
+        //为每个项目行添加合作组织信息，即当前组织发布了签发任务给到的组织，不包含自己
+        //这里只查询显示出的项目行，不包括所有项目的合作组织
         if (ObjectUtils.isNotEmpty(data)){
             //把当前公司编号保存到查询的currentCompanyId字段中备用
             if (StringUtils.isEmpty(query.getCurrentCompanyId())){
