@@ -2188,7 +2188,7 @@ public class CompanyServiceImpl extends GenericService<CompanyEntity> implements
         }
 
         //获取项目信息用于判断是否立项方，及获取甲方名称
-        TraceUtils.check(StringUtils.isNotEmpty(query.getProjectId()));
+        TraceUtils.check(StringUtils.isNotEmpty(query.getProjectId()),log,"!projectId不能为空");
         ProjectEntity project = getProjectInfo(query.getProjectId());
 
         List<CompanyDTO> result = null;
@@ -2245,14 +2245,19 @@ public class CompanyServiceImpl extends GenericService<CompanyEntity> implements
     private List<CompanyDTO> listCompanyA(ProjectEntity project){
         TraceUtils.check(project != null);
 
-        String id = project.getConstructCompany();
-        String name = projectDao.getEnterpriseName(id);
-        CompanyDTO company = new CompanyDTO();
-        company.setId(id);
-        company.setCompanyName(name);
-
         List<CompanyDTO> result = new ArrayList<>();
-        result.add(company);
+
+        //如果甲方不为空返回甲方
+        String id = project.getConstructCompany();
+        if (StringUtils.isNotEmpty(id)) {
+            String name = projectDao.getEnterpriseName(id);
+            CompanyDTO company = new CompanyDTO();
+            company.setId(id);
+            company.setCompanyName(name);
+
+            result.add(company);
+        }
+
         return result;
     }
 }
