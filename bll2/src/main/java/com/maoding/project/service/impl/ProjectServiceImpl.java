@@ -1540,6 +1540,9 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             param.remove("projectName");
         }
         BeanUtilsEx.copyProperties(param, dto);
+        if (ObjectUtils.isNotEmpty(param.get("designCompanyNames"))){
+            dto.setDesignCompanyNames((List<String>)param.get("designCompanyNames"));
+        }
         if (null != param.get("companyNames") && !"".equals(param.get("companyNames"))) {
             dto.setCompanyId(param.get("companyNames").toString());
         }

@@ -90,10 +90,17 @@
         LEFT JOIN maoding_web_company_user b on a.helper_company_user_id = b.id
         LEFT JOIN maoding_web_company c1 on c1.id=b.company_id
         LEFT JOIN maoding_web_project_task_relation c on a.id = c.project_id and c.relation_status ='0'
-       --  LEFT JOIN maoding_data_dictionary h on POSITION(h.id in built_type)>0
         WHERE a.pstatus='0'
         and (a.company_id = #{relationCompany} or a.company_bid = #{relationCompany}
         or c.to_company_id = #{relationCompany} or c.from_company_id = #{relationCompany})
+        <!-- 根据合作设计组织编号序列进行过滤 -->
+        <if test="designCompanyNames != null and designCompanyNames.size() > 0">
+            and (c.to_company_id in
+            <foreach collection="designCompanyNames" item="designCompanyId" open="(" close=")" separator=",">
+                #{designCompanyId}
+            </foreach>
+            )
+        </if>
         <if test="status!=null">
             and a.status = #{status,jdbcType=VARCHAR}
         </if>

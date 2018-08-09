@@ -51,7 +51,18 @@ public class QueryProjectDTO extends BaseDTO {
     List<String> memberProjects;
     String memberStatusType;//判断是否查询条件memberProjects为空
 
+    /** 合作组织过滤条件 */
+    List<String> designCompanyNames;
+
     boolean isNeedSearchBuildType;
+
+    public List<String> getDesignCompanyNames() {
+        return designCompanyNames;
+    }
+
+    public void setDesignCompanyNames(List<String> designCompanyNames) {
+        this.designCompanyNames = designCompanyNames;
+    }
 
     public Integer getStartLine() {
         return startLine;

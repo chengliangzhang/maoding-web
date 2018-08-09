@@ -180,9 +180,11 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                 if (val != null) {
                     String setKey = output.getClass().getName() + DOT + SET + StringUtils.capitalize(k.toString());
                     Integer setIndex = methodIndexMap.get(setKey);
-                    assert (outputParameterTypes != null);
-                    Class<?> outputFieldClass = outputParameterTypes[setIndex][0];
-                    callSetMethod(outputMethodAccess,output,setIndex,outputFieldClass,val,isClean);
+                    if (setIndex != null) {
+                        assert (outputParameterTypes != null);
+                        Class<?> outputFieldClass = outputParameterTypes[setIndex][0];
+                        callSetMethod(outputMethodAccess, output, setIndex, outputFieldClass, val, isClean);
+                    }
                 }
             }
         }
