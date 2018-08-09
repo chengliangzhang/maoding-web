@@ -1,5 +1,6 @@
 package com.maoding.project.service.impl;
 
+import com.maoding.attach.dto.FileDataDTO;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.dto.BaseShowDTO;
 import com.maoding.core.base.entity.BaseEntity;
@@ -1545,5 +1546,27 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
             }
         });
 
+    }
+
+    @Override
+    public List<FileDataDTO> getAttachDataList(Map<String, Object> map) throws Exception {
+        List<ProjectSkyDriveEntity> list = this.getNetFileByParam(map);
+        List<FileDataDTO> fileList = new ArrayList<>();
+        list.stream().forEach(c->{
+            FileDataDTO dto = new FileDataDTO();
+            dto.setId(c.getId());
+            dto.setFileName(c.getFileName());
+            dto.setPid(c.getPid());
+            dto.setFileFullPath(fastdfsUrl + c.getFileGroup() + "/" + c.getFilePath());
+            fileList.add(dto);
+        });
+        return fileList;
+    }
+
+    @Override
+    public List<FileDataDTO> getAttachListByTargetId(String targetId) throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        map.put("targetId",targetId);
+        return getAttachDataList(map);
     }
 }

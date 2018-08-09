@@ -1,5 +1,6 @@
 package com.maoding.project.service;
 
+import com.maoding.attach.dto.FileDataDTO;
 import com.maoding.core.base.dto.BaseShowDTO;
 import com.maoding.core.base.service.BaseService;
 import com.maoding.core.bean.AjaxMessage;
@@ -333,4 +334,14 @@ public interface ProjectSkyDriverService extends BaseService<ProjectSkyDriveEnti
      * 项目费用附件记录与关联记录进行保存（附件的上传在文件服务器上进行了上传，此处只保存他们的关联关系）
      */
     void saveProjectFeeContractAttach(ProjectCostEditDTO dto) throws Exception;
+
+    /**
+     * 根据参数查找，把数据重新做封装
+     */
+    List<FileDataDTO> getAttachDataList(Map<String, Object> map) throws Exception;
+
+    /**
+     * @param targetId 根据关联对象的id查询相应的附近
+     */
+    List<FileDataDTO> getAttachListByTargetId(String targetId) throws Exception;
 }

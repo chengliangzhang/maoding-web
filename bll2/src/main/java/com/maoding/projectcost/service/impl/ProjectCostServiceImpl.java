@@ -800,44 +800,21 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
 
 
     private Map<String, Object> getReviewFeeInfo(Map<String, Object> map, ProjectCostDTO cost) throws Exception {
-        List<ProjectCostPointDTO> projectCostPointDTOS = new ArrayList<>();
+        String companyId = (String) map.get("companyId");
         map.put("costId",cost.getId());
         map.put("fromCompanyId",cost.getFromCompanyId());
         map.put("toCompanyId",cost.getToCompanyId());
         //查询是否是内部组织
-        map.put("isInnerCompany",this.isInnerCompany(cost));
+        //map.put("isInnerCompany",this.isInnerCompany(cost));
         //查询收款节点
         Map<String,Object> costPointParam = new HashMap<>();
         costPointParam.put("pidIsNull", "1");//标示，只查父节点
         costPointParam.put("flag", "1");//标示,查询正式合同记录
         costPointParam.put("costId",cost.getId());
-        projectCostPointDTOS = this.projectCostPointDao.selectByParam(costPointParam);
+        List<ProjectCostPointDTO> projectCostPointDTOS = this.projectCostPointDao.selectByParam(costPointParam);
         //处理返回数据
         List<ProjectCostPointDataDTO> projectCostPointDataList = new ArrayList<>();
         ProjectCostTotalDTO totalDTO = new ProjectCostTotalDTO();
-        Map<String, Object> result = new HashMap<String, Object>();
-        result.put("totalCost", cost.getFee());
-        result.put("costId", cost.getId());
-        result.put("type",cost.getType());
-        if ("3".equals(cost.getType())) {
-            String companyId = (String) map.get("companyId");
-            String projectCompanyId = (String) map.get("projectCompanyId");
-            if (projectCompanyId.equals((String) map.get("fromCompanyId")) && !projectCompanyId.equals(companyId)) {
-                result.put("isSetUpProject", "1");
-            } else {
-                result.put("isSetUpProject", "0");
-            }
-            CompanyEntity companyEntity = null;
-            if (companyId.equals((String) map.get("fromCompanyId"))) {
-                companyEntity = this.companyDao.selectById(map.get("toCompanyId"));
-            } else {
-                companyEntity = this.companyDao.selectById(map.get("fromCompanyId"));
-            }
-            if (companyEntity != null) {
-                result.put("companyName", companyEntity.getAliasName());
-            }
-
-        }
         for (ProjectCostPointDTO dto : projectCostPointDTOS) {
             this.getProjectCostPointData(dto, totalDTO, projectCostPointDataList,map,cost.getFee());
         }
@@ -849,10 +826,67 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
             totalDTO.setFeeProportion(p.doubleValue());
         }
 
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalCost", cost.getFee());//总金额
+        result.put("costId", cost.getId());
+        result.put("type",cost.getType());
+        result.put("isSetUpProject", this.getIsSetUpProject(companyId, (String)map.get("projectCompanyId")));
+        result.put("companyName", this.getRelationCompanyName(cost,companyId));
         result.put("pointList", projectCostPointDataList);
         result.put("total", totalDTO);
         result.put("currentFeeOrgId",map.get("companyId"));
+        result.put("startReceiveFlag",this.getStartReceiveFlag(map));
+        result.put("startPayFlag",this.getStartPayFlag(map,cost));
+        //获取附件
+        result.put("attachList",projectSkyDriverService.getAttachListByTargetId(cost.getId()));
         return result;
+    }
+
+    /**
+     * 发起收款的标识 1：可以发起收款，2：不可以发起收款
+     */
+    private String getStartReceiveFlag(Map<String, Object> map){
+        if(((String)map.get("companyId")).equals((String)map.get("toCompanyId")) && "1".equals(map.get("isManager"))){
+            return "1";
+        }
+        return "0";
+    }
+
+    private String getStartPayFlag(Map<String, Object> map,ProjectCostDTO cost){
+        if(((String)map.get("companyId")).equals((String)map.get("fromCompanyId")) && "1".equals(map.get("isManager")) && this.isInnerCompany(cost)){
+            return "1";
+        }
+        return "0";
+    }
+
+
+    /**
+     * 获取立项方组织的名称
+     */
+    private String getRelationCompanyName(ProjectCostDTO cost,String currentCompanyId){
+        CompanyEntity companyEntity = null;
+        String relationCompanyId = null;
+        if (currentCompanyId.equals(cost.getFromCompanyId())) {
+            relationCompanyId = cost.getToCompanyId();
+        } else {
+            relationCompanyId = cost.getFromCompanyId();
+        }
+        companyEntity = this.companyDao.selectById(relationCompanyId);
+        if (companyEntity != null) {
+            return  companyEntity.getAliasName();
+        }
+        return relationCompanyId;
+    }
+
+    /**
+     * 当前组织是否是立项方
+     */
+    private String getIsSetUpProject(String currentCompanyId,String projectCompanyId ){
+        if (projectCompanyId.equals(currentCompanyId)) {
+           return "1";//是立项方
+        } else {
+           return "0";//不是立项方
+        }
     }
 
     /**
@@ -917,14 +951,30 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
 
     @Override
     public List<Map<String, Object>> listProjectCost(Map<String, Object> map) throws Exception {
-        String currentCompanyId = (String)map.get("currentCompanyId");
+        List<Map<String, Object>> resultList =  new ArrayList<>();
+        String currentCompanyId = (String)map.get("companyId");
+        String companyUserId = (String)map.get("companyUserId");
+        String accountId = (String)map.get("accountId");
+        String payType = (String)map.get("payType");
+        ProjectEntity project = this.projectDao.selectById(map.get("projectId"));
+        if(project==null){
+            return resultList;
+        }
+        map.put("projectCompanyId",project.getCompanyId());
+
+        //获取要返回到前端的部分数据
+        Map<String, Object> resultData = new HashMap<>();
+        String isManager = this.getManagerFlag(project.getId(), currentCompanyId,companyUserId);
+        map.put("isManager", isManager);//便于传递到 getReviewFeeInfo 处理其他业务
+        resultData.put("isManager", isManager);
+        resultData.put("isFinancial", getIsFinancial(currentCompanyId,accountId,payType));
         //先查询主记录
         List<ProjectCostDTO> costList = this.getProjectCostList(map);
-        List<Map<String, Object>> resultList =  new ArrayList<>();
         for(ProjectCostDTO cost:costList){
-            resultList.add(this.getReviewFeeInfo(map,cost));
+            Map<String,Object> result = this.getReviewFeeInfo(map,cost);
+            result.putAll(resultData);
+            resultList.add(result);
         }
-
         return resultList;
     }
 
@@ -941,18 +991,25 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         }
         return this.projectCostDao.selectByParam(costParam);
     }
-    @Override
-    public String getProjectCostCompany(String myTaskId) {
-        MyTaskEntity task = myTaskService.selectById(myTaskId);
-        if(task!=null){
-            if(task.getTaskType()==10){
 
+    /**
+     * 当前是否是财务 1=是，0=不是
+     */
+    private String getIsFinancial(String companyId,String accountId,String payType){
+        String isFinancial = "0";
+        if("1".equals(payType) && permissionService.isFinancialReceive(companyId,accountId)){
+            isFinancial = "1";
+        }else {
+            if(permissionService.isFinancial(companyId,accountId)){
+                isFinancial = "1";
             }
         }
-        return null;
+        return isFinancial;
     }
 
-
+    /**
+     * 当前是否是经营负责人 1=是，0=不是
+     */
     private String getManagerFlag(String projectId,String companyId,String companyUserId) throws Exception{
         ProjectMemberEntity managerEntity = this.projectMemberService.getOperatorManager(projectId,companyId);
         if(managerEntity!=null && managerEntity.getCompanyUserId().equals(companyUserId)){

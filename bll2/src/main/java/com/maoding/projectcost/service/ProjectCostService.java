@@ -85,10 +85,6 @@ public interface ProjectCostService extends BaseService<ProjectCostEntity>{
      */
     List<Map<String, Object>> listProjectCost(Map<String,Object> map)throws Exception;
 
-    /**
-     * 获取当前任务所属组织
-     */
-    String getProjectCostCompany(String myTaskId);
 
     /**
      * 方法描述：删除费用（目前界面上没有删除操作。用于删除签发的任务时候，如果不存在签发的记录，则合作设计费删除）
