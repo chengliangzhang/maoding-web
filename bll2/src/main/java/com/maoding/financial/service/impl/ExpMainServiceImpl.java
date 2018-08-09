@@ -1,15 +1,15 @@
 package com.maoding.financial.service.impl;
 
-import com.maoding.commonModule.dao.CopyRecordDao;
+import com.maoding.commonModule.dto.RelationTypeDTO;
+import com.maoding.commonModule.dto.SaveRelationRecordDTO;
+import com.maoding.commonModule.service.RelationRecordService;
 import com.maoding.companybill.dto.SaveCompanyBillDTO;
 import com.maoding.companybill.service.CompanyBalanceService;
 import com.maoding.companybill.service.CompanyBillService;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.bean.AjaxMessage;
-import com.maoding.core.constant.CompanyBillType;
-import com.maoding.core.constant.NetFileType;
-import com.maoding.core.constant.SystemParameters;
+import com.maoding.core.constant.*;
 import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.exception.CustomException;
@@ -21,7 +21,6 @@ import com.maoding.financial.entity.ExpAuditEntity;
 import com.maoding.financial.entity.ExpDetailEntity;
 import com.maoding.financial.entity.ExpMainEntity;
 import com.maoding.financial.service.ExpMainService;
-import com.maoding.message.dto.MessageDTO;
 import com.maoding.message.dto.SendMessageDTO;
 import com.maoding.message.entity.MessageEntity;
 import com.maoding.message.service.MessageService;
@@ -32,6 +31,8 @@ import com.maoding.org.dto.CompanyRelationDTO;
 import com.maoding.org.dto.CompanyUserTableDTO;
 import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.org.service.CompanyUserService;
+import com.maoding.process.dto.ActivitiDTO;
+import com.maoding.process.service.ProcessService;
 import com.maoding.project.dao.ProjectSkyDriverDao;
 import com.maoding.project.entity.ProjectSkyDriveEntity;
 import com.maoding.project.service.ProjectSkyDriverService;
@@ -42,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -95,6 +97,13 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
     @Autowired
     private CompanyBalanceService companyBalanceService;
 
+    @Autowired
+    private ProcessService processService;
+
+    @Autowired
+    private RelationRecordService relationRecordService;
+
+
     /**
      * 方法描述：报销增加或者修改
      * 作   者：LY
@@ -116,15 +125,15 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         if (!StringUtil.isNullOrEmpty(dto.getRemark()) && dto.getRemark().length() > 255) {
             return new AjaxMessage().setCode("1").setInfo("备注长度过长");
         }
-        for (ExpDetailDTO detailDTO : detailList) {
-            if (detailDTO.getExpAmount() == null) {
-                return new AjaxMessage().setCode("1").setInfo("报销金额不能为空");
-            } else if (StringUtil.isNullOrEmpty(detailDTO.getExpType())) {
-                return new AjaxMessage().setCode("1").setInfo("报销类别不能为空");
-            } else if (StringUtil.isNullOrEmpty(detailDTO.getExpUse())) {
-                return new AjaxMessage().setCode("1").setInfo("用途说明不能为空");
-            }
-        }
+//        for (ExpDetailDTO detailDTO : detailList) {
+//            if (detailDTO.getExpAmount() == null) {
+//                return new AjaxMessage().setCode("1").setInfo("报销金额不能为空");
+//            } else if (StringUtil.isNullOrEmpty(detailDTO.getExpType())) {
+//                return new AjaxMessage().setCode("1").setInfo("报销类别不能为空");
+//            } else if (StringUtil.isNullOrEmpty(detailDTO.getExpUse())) {
+//                return new AjaxMessage().setCode("1").setInfo("用途说明不能为空");
+//            }
+//        }
         // 验证end
 
         //保存报销主表
@@ -168,6 +177,9 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
             }
             if (dto.getType() == null) {
                 entity.setType(1);
+            }
+            if(entity.getId()==null){
+                entity.setId(StringUtil.buildUUID());
             }
             dto.setExpNo(expNo);
             entity.setExpNo(expNo);
@@ -249,7 +261,136 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
             //指派任务 ，新增报销，发送任务
             this.myTaskService.saveMyTask(entity.getId(), myTaskType, companyId, dto.getAuditPerson(), true, userId, companyId);
         }
+        dto.setId(entity.getId());
         return new AjaxMessage().setCode("0").setInfo("保存成功").setData(dto);
+    }
+
+    @Override
+    public AjaxMessage applyProjectCost(ApplyProjectCostDTO dto) throws Exception {
+        String userId = dto.getAccountId();
+        String companyId = dto.getCurrentCompanyId();
+
+        CompanyUserEntity currentCompanyUser = companyUserDao.getCompanyUserByUserIdAndCompanyId(userId,companyId);
+        if(currentCompanyUser==null){
+            return AjaxMessage.failed("数据错误");
+        }
+
+        //是增加true还是修改false操作
+        //保存报销主表
+        ExpMainEntity entity = new ExpMainEntity();
+        BaseDTO.copyFields(dto, entity);
+        entity.setApproveStatus("0");
+        if (StringUtil.isNullOrEmpty(dto.getId())) {//插入
+            saveExpMain(entity,dto,userId,companyId);
+        }  else {//保存
+            int result = 0;
+            ExpMainEntity exp = expMainDao.selectById(dto.getId());
+            if(exp!=null && "2".equals(exp.getApproveStatus())){
+                if(!StringUtil.isNullOrEmpty(dto.getTargetId()) && dto.getId().equals(dto.getTargetId())){
+                    return AjaxMessage.failed("参数错误");
+                }
+                //判断是否退回后的编辑
+                exp.setExpFlag(1);
+                entity.setExpFlag(2);
+                expMainDao.updateById(exp);
+                //dto.setTargetId(null); //此处为了防止前端 更新的时候传递了targetId过来(前端生成)
+                //新开一个新的报销单
+                saveExpMain(entity,dto,userId,companyId);
+                //复制原来的附件记录
+//                projectSkyDriverService.copyFileToNewObject(entity.getId(),dto.getId(),NetFileType.EXPENSE_ATTACH,dto.getDeleteAttachList());
+            }else {
+                entity.set4Base(null, userId, null, new Date());
+                //版本控制
+                entity.setExpDate(DateUtils.getDate());
+                result = expMainDao.updateById(entity);
+                if (result == 0) {
+                    return new AjaxMessage().setCode("0").setInfo("保存失败").setData(dto);
+                }
+            }
+        }
+        //主表Id
+        String id = entity.getId();
+        //处理图片
+//        if(!CollectionUtils.isEmpty(dto.getDeleteAttachList())){
+//            projectSkyDriverService.deleteSysDrive(dto.getDeleteAttachList(),dto.getAccountId(),id);
+//        }
+        //保存报销明细表
+        this.saveExpDetail(dto ,id);
+        //处理审核记录
+        Integer myTaskType = this.getMyTaskType(entity);
+        //处理抄送
+//        this.saveCopy(dto.getCcCompanyUserList(),currentCompanyUser.getId(),id,id);
+        return new AjaxMessage().setCode("0").setInfo("保存成功").setData(dto);
+    }
+
+
+    private void saveExpDetail(ApplyProjectCostDTO dto,String mainId) throws Exception {
+        //按照MainId先删除原来明细
+        String userId = dto.getAccountId();
+        expDetailDao.deleteByMainId(mainId);
+        ExpDetailEntity detailEntity = null;
+        detailEntity = new ExpDetailEntity();
+        detailEntity.setId(StringUtil.buildUUID());
+        detailEntity.setProjectId(dto.getProjectId());
+        detailEntity.setMainId(mainId);
+        detailEntity.setSeq(1);
+        BigDecimal expAmount = dto.getApplyAmount().multiply(new BigDecimal("10000"));//换成元
+        detailEntity.setExpAmount(expAmount);
+        detailEntity.set4Base(userId, userId, new Date(), new Date());
+        expDetailDao.insert(detailEntity);
+
+        //处理关联项
+        SaveRelationRecordDTO relation = new SaveRelationRecordDTO();
+        relation.setAccountId(userId);
+        relation.setTargetId(mainId);
+        RelationTypeDTO relationTypeDTO = new RelationTypeDTO();
+        relationTypeDTO.setRelationId(dto.getTargetId());
+        relationTypeDTO.setOperateRecordId(detailEntity.getId());
+        relationTypeDTO.setRecordType(CopyTargetType.PROJECT_COST_POINT_DETAIL);
+        this.relationRecordService.saveRelationRecord(relation);
+    }
+
+    private ExpMainEntity saveExpMain(ExpMainEntity entity,ApplyProjectCostDTO dto,String userId,String companyId) throws Exception{
+        String expNo = this.getExpNo(companyId);
+        entity.setExpFlag(0);
+      //  dto.setExpNo(expNo);
+        if(StringUtil.isNullOrEmpty(dto.getType())){
+            entity.setType(1); //默认为报销费用
+        }
+        entity.setExpNo(expNo);
+        entity.set4Base(userId, userId, new Date(), new Date());
+        entity.setCompanyId(companyId);
+        expMainDao.insert(entity);
+
+        String targetType = ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY;
+//        if(entity.getType()==1){
+//            targetType = ProcessTypeConst.PROCESS_TYPE_EXPENSE;
+//        }else {
+//            targetType= ProcessTypeConst.PROCESS_TYPE_COST_APPLY;
+//        }
+        // 启动流程
+        ActivitiDTO activitiDTO = new ActivitiDTO(entity.getId(),entity.getCompanyUserId(),companyId,userId,dto.getApplyAmount(),targetType);
+
+        activitiDTO.getParam().put("approveUser",dto.getAuditPerson());
+        this.processService.startProcessInstance(activitiDTO);
+        return entity;
+    }
+
+
+    private String getExpNo(String companyId){
+        Map<String, Object> map = new HashMap<>();
+        map.put("companyId", companyId);
+        String expNo = expMainDao.getMaxExpNo(map);
+        String yyMMdd = DateUtils.date2Str(DateUtils.yyyyMMdd);
+        if ("1001".equals(expNo)) {
+            //自动生成一个
+            expNo = yyMMdd + "0001";
+        } else if (yyMMdd.equals(expNo.substring(0, expNo.length() - 4))) {
+
+        } else {
+            expNo = yyMMdd + "0001";
+        }
+        return expNo;
     }
 
     private Integer getMyTaskType(ExpMainEntity entity) {

@@ -2180,20 +2180,30 @@ public class CompanyServiceImpl extends GenericService<CompanyEntity> implements
      **/
     @Override
     public List<CompanyDTO> listCompany(CompanyQueryDTO query) {
+        TraceUtils.check(query != null);
+
+        //默认设置为收款
+        if (StringUtils.isEmpty(query.getIsPay())){
+            query.setIsPay("0");
+        }
+
+        //获取项目信息用于判断是否立项方，及获取甲方名称
+        TraceUtils.check(StringUtils.isNotEmpty(query.getProjectId()));
+        ProjectEntity project = getProjectInfo(query.getProjectId());
+
         List<CompanyDTO> result = null;
-        if (isPayQuery(query)) {
-            if (isContract(query.getFeeType()) && isCreatorQuery(query)){
-                result = companyDao.listCompanyA(query);
-            } else if (isCheck(query.getFeeType()) && !isCreatorQuery(query)) {
-                result = new ArrayList<>();
-                result.add(getCreator(query));
-            } else if (isCooperate(query.getFeeType())){
+        if (!isPayQuery(query)) {
+            //如果是收款查询，合同回款返回甲方，技术审查费、合作设计费返回合作方
+            if (isContract(query.getFeeType()) && isCreator(project,query.getCurrentCompanyId())){
+                //合同回款
+                result = listCompanyA(project);
+            } else if ((isCheck(query.getFeeType()) && !isCreator(project,query.getCurrentCompanyId())) || (isCooperate(query.getFeeType()))) {
+                //技术审查费或合作设计费
                 result = companyDao.listCompanyCooperate(query);
             }
         } else {
-            if (isCheck(query.getFeeType()) && isCreatorQuery(query)){
-                result = companyDao.listCompanyCooperate(query);
-            } else if (isCooperate(query.getFeeType())) {
+            if ((isCheck(query.getFeeType()) && isCreator(project,query.getCurrentCompanyId())) || (isCooperate(query.getFeeType()))){
+                //技术审查费或合作设计费
                 result = companyDao.listCompanyCooperate(query);
             }
         }
@@ -2217,32 +2227,32 @@ public class CompanyServiceImpl extends GenericService<CompanyEntity> implements
 
     //是否付款查询
     private boolean isPayQuery(CompanyQueryDTO query){
-        return StringUtils.isEmpty(query.getIsPay()) || StringUtils.isSame("0",query.getIsPay());
+        return StringUtils.isSame("1",query.getIsPay());
     }
 
     //是否立项方发起的查询
-    private boolean isCreatorQuery(CompanyQueryDTO query){
-        TraceUtils.check(query != null);
-        TraceUtils.check(!StringUtils.isEmpty(query.getProjectId()),log,"!projectId不能为空");
-        ProjectEntity project = projectDao.selectById(query.getProjectId());
+    private boolean isCreator(ProjectEntity project, String companyId){
         TraceUtils.check(project != null);
-        TraceUtils.check(!StringUtils.isEmpty(query.getCurrentCompanyId()),log,"!currentCompanyId不能为空");
-        return StringUtils.isSame(query.getCurrentCompanyId(),project.getCompanyId());
-    }
-
-    //获取项目立项方信息
-    private CompanyDTO getCreator(CompanyQueryDTO query){
-        TraceUtils.check(query != null);
-        TraceUtils.check(!StringUtils.isEmpty(query.getProjectId()),log,"!projectId不能为空");
-        ProjectEntity project = projectDao.selectById(query.getProjectId());
-        TraceUtils.check(project != null);
-        CompanyEntity company = companyDao.selectById(project.getId());
-        TraceUtils.check(!StringUtils.isEmpty(query.getCurrentCompanyId()),log,"!currentCompanyId不能为空");
-        return BeanUtils.createFrom(company,CompanyDTO.class);
+        return StringUtils.isSame(project.getCompanyId(),companyId);
     }
 
     //获取项目信息
     private ProjectEntity getProjectInfo(String projectId){
         return projectDao.selectById(projectId);
+    }
+
+    //获取甲方信息
+    private List<CompanyDTO> listCompanyA(ProjectEntity project){
+        TraceUtils.check(project != null);
+
+        String id = project.getConstructCompany();
+        String name = projectDao.getEnterpriseName(id);
+        CompanyDTO company = new CompanyDTO();
+        company.setId(id);
+        company.setCompanyName(name);
+
+        List<CompanyDTO> result = new ArrayList<>();
+        result.add(company);
+        return result;
     }
 }

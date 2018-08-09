@@ -22,6 +22,7 @@ import com.maoding.task.service.ProjectTaskService;
 import com.mysql.jdbc.StringUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
@@ -748,6 +749,16 @@ public class ProjectSkyDriverController extends BaseController {
         data.put("data", entities);
         data.put("total", total);
         return this.ajaxResponseSuccess().setData(data);
+    }
+
+    /**
+     * 项目合同接口
+     * param(projectId)
+     */
+    @RequestMapping(value = "/getProjectContract", method = RequestMethod.POST)
+    @ResponseBody
+    private AjaxMessage getProjectContract(@RequestBody Map<String, Object> param) throws Exception{
+        return AjaxMessage.succeed(this.projectSkyDriverService.listProjectContractAttach((String)param.get("projectId")));
     }
 
 }

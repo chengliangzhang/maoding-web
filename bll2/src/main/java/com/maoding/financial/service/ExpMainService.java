@@ -28,6 +28,13 @@ public interface ExpMainService extends BaseService<ExpMainEntity>{
     */
      AjaxMessage saveOrUpdateExpMainAndDetail(ExpMainDTO dto, String userId, String companyId) throws Exception;
 
+    /**
+     * 方法描述：项目费用申请
+     * 作   者：MaoSF
+     * 日   期：2016/7/26 17:35
+     */
+    AjaxMessage applyProjectCost(ApplyProjectCostDTO dto) throws Exception;
+
 
     /**
      * 方法描述：得到当前公司和当前组织下面人员

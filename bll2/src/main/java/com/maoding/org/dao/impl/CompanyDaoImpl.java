@@ -258,19 +258,6 @@ public class CompanyDaoImpl extends GenericDao<CompanyEntity> implements Company
     }
 
     /**
-     * 描述     查询相关甲方
-     * 日期     2018/8/8
-     *
-     * @param query 查询条件
-     * @return 符合条件的公司信息列表
-     * @author 张成亮
-     **/
-    @Override
-    public List<CompanyDTO> listCompanyA(CompanyQueryDTO query) {
-        return sqlSession.selectList("CompanyMapper.listCompanyA", query);
-    }
-
-    /**
      * 描述     查询相关合作方
      * 日期     2018/8/8
      *

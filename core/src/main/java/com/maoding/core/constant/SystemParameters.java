@@ -191,6 +191,12 @@ public interface SystemParameters {
     int LEAVE_AUDIT= 24;//请假申请审核
     int EVECTION_AUDIT= 25;//出差审核
     int CUSTOM_TASK= 100;//12.自定义的轻量型任务
+    /** 确认交付文件上传完毕 */
+    int DELIVER_CONFIRM_FINISH = 26;
+    /** 进行交付文件上传 */
+    int DELIVER_EXECUTE = 27;
+    int INVOICE_FINN_IN_FOR_PAID = 29;//（财务填写发票信息）
+
     //任务签发权限
     String PROJECT_TASK_ISSUE = "project_task_issue";
 

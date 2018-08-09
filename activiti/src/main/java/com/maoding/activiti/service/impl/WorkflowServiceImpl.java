@@ -6,22 +6,17 @@ import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.constant.ProcessTypeConst;
 import com.maoding.core.util.*;
-import com.maoding.org.dao.CompanyUserDao;
-import com.maoding.org.entity.CompanyUserEntity;
-import com.maoding.process.dao.ProcessTypeDao;
-import com.maoding.process.entity.ProcessTypeEntity;
-import com.maoding.user.dto.UserDTO;
-import com.maoding.user.service.UserAttachService;
 import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.RepositoryService;
+import org.activiti.engine.*;
 import org.activiti.engine.identity.Group;
-import org.activiti.engine.identity.User;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,14 +44,16 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     @Autowired
     private IdentityService identityService;
 
-    @Autowired
-    private ProcessTypeDao processTypeDao;
+
 
     @Autowired
-    private UserAttachService userAttachService;
+    private ProcessEngine processEngine;
 
     @Autowired
-    private CompanyUserDao companyUserDao;
+    private TaskService taskService;
+
+    @Autowired
+    private RuntimeService runtimeService;
 
     /**
      * 描述       加载流程，准备进行编辑
@@ -85,8 +82,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         if (StringUtils.isEmpty(prepareRequest.getName())){
             prepareRequest.setName(ProcessTypeConst.nameMap.get(prepareRequest.getKey()));
         }
-        //type字段
-        prepareRequest.setType(syncProcessType(prepareRequest));
+
 
         //生成新流程或返回已有流程
         if (isEditConditionType(prepareRequest)){
@@ -150,19 +146,16 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         if (ObjectUtils.isNotEmpty(process.getCandidateStarterUsers())){
             List<FlowUserDTO> userList = new ArrayList<>();
             for (String companyUserId : process.getCandidateStarterUsers()) {
-                userList.add(getFlowUser(companyUserId));
+                FlowUserDTO user = new FlowUserDTO();
+                user.setId(companyUserId);
+                userList.add(user);
             }
             processDefineDetailDTO.setCandidateStarterUserList(userList);
         }
         return processDefineDetailDTO;
     }
 
-    //根据用户编号获取用户信息
-    private FlowUserDTO getFlowUser(String companyUserId){
-        String name = getUserName(companyUserId);
-        String img = getUserHeadImg(companyUserId);
-        return new FlowUserDTO(companyUserId,name,img);
-    }
+
 
     private boolean isNotInvalid(Integer type){
         return (type == null)
@@ -170,67 +163,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                 || (type > ProcessTypeConst.PROCESS_TYPE_CONDITION);
     }
 
-    //同步流程类型数据表内的流程类型，如果指定类型，更新数据库，如果没有指定，返回数据库内的类型
-    private int syncProcessType(ProcessDetailPrepareDTO prepareRequest){
-        TraceUtils.check(prepareRequest != null,log);
-        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getCurrentCompanyId()),log);
-        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),log);
-        return syncProcessType(prepareRequest.getType(),prepareRequest.getCurrentCompanyId(),
-                prepareRequest.getKey(),prepareRequest.getAccountId(),isConditionType(prepareRequest));
-    }
-
-    private int syncProcessType(ProcessDefineDetailEditDTO editRequest){
-        TraceUtils.check(editRequest != null,log);
-        TraceUtils.check(StringUtils.isNotEmpty(editRequest.getCurrentCompanyId()),log);
-        TraceUtils.check(StringUtils.isNotEmpty(editRequest.getKey()),log);
-        return syncProcessType(editRequest.getType(),editRequest.getCurrentCompanyId(),
-                editRequest.getKey(),editRequest.getAccountId(),isConditionType(editRequest));
-    }
-
-
-    private int syncProcessType(Integer type,String companyId,String key,String accountId,boolean isConditionType){
-        //从数据库内读取当前的流程类型
-        ProcessTypeEntity typeEntity = processTypeDao
-                .getCurrentProcessType(companyId,key);
-
-        //如果数据库内没有类型值，或者指定了类型，保存到数据库
-        if ((typeEntity == null) || ObjectUtils.isNotEmpty(type)) {
-            boolean isFound = true;
-            if (typeEntity == null) {
-                isFound = false;
-                typeEntity = new ProcessTypeEntity();
-                typeEntity.initEntity();
-                typeEntity.setCompanyId(companyId);
-                typeEntity.setCreateBy(accountId);
-            } else {
-                typeEntity.setUpdateBy(accountId);
-            }
-            //设置此类型为启用状态
-            typeEntity.setStatus(1);
-            //设置此类型为未删除状态
-            typeEntity.setDeleted(0);
-            //设置业务类型
-            typeEntity.setTargetType(key);
-            //设置类型
-            if (isNotInvalid(type)){
-                if (isConditionType) {
-                    typeEntity.setType(ProcessTypeConst.PROCESS_TYPE_CONDITION);
-                } else {
-                    typeEntity.setType(ProcessTypeConst.TYPE_FREE);
-                }
-            } else {
-                typeEntity.setType(type);
-            }
-
-            if (isFound) {
-                processTypeDao.updateById(typeEntity);
-            } else {
-                processTypeDao.insert(typeEntity);
-            }
-        }
-        return typeEntity.getType();
-
-    }
 
     //判断是否是设置条件分支
     private boolean isEditConditionType(ProcessDetailPrepareDTO prepareRequest){
@@ -340,7 +272,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
             processDefineDetail = toProcessDefineDetailDTO(process);
         } else {
-            syncProcessType(editRequest);
             processDefineDetail = BeanUtils.createFrom(editRequest,ProcessDefineDetailDTO.class);
             processDefineDetail.setId(getProcessDefineKey(editRequest.getCurrentCompanyId(),editRequest.getKey(),editRequest.getType()));
         }
@@ -524,39 +455,25 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         if (ObjectUtils.isNotEmpty(userTask.getCandidateUsers())){
             List<FlowUserDTO> userList = new ArrayList<>();
             for (String companyUserId : userTask.getCandidateUsers()) {
-                userList.add(getFlowUser(companyUserId));
+                FlowUserDTO user = new FlowUserDTO();
+                user.setId(companyUserId);
+                userList.add(user);
             }
             task.setCandidateUserList(userList);
         }
         if (ObjectUtils.isNotEmpty(userTask.getAssignee())){
             String companyUserId = userTask.getAssignee();
-            task.setAssigneeUser(getFlowUser(companyUserId));
+            FlowUserDTO user = new FlowUserDTO();
+            user.setId(companyUserId);
+            task.setAssigneeUser(user);
         }
         return task;
     }
 
-    //获取用户头像
-    private String getUserHeadImg(String companyUserId){
-        String url = null;
-        CompanyUserEntity companyUser = companyUserDao.selectById(companyUserId);
-        if (companyUser != null){
-            try {
-                url = userAttachService.getHeadImgUrl(companyUser.getUserId());
-            } catch (Exception e) {
-                TraceUtils.check(false,log);
-            }
-        }
-        return url;
-    }
 
 
-    //获取用户名称
-    private String getUserName(String companyUserId){
-        User user = identityService.createUserQuery()
-                .userId(companyUserId)
-                .singleResult();
-        return (user != null) ? user.getFirstName() : null;
-    }
+
+
 
     //获取群组名称
     private String getGroupName(String groupId){
@@ -619,7 +536,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         Map<String,List<FlowTaskEditDTO>> editListMap = toListMap(editRequest.getFlowTaskGroupList());
 
         //同步流程类型
-        editRequest.setType(syncProcessType(editRequest));
+       // editRequest.setType(syncProcessType(editRequest));
 
 
         //添加开始终止节点
@@ -960,77 +877,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             repositoryService.deleteDeployment(deployment.getId())
         );
 
-        //把类型库内流程设定为自由流程
-        syncProcessType(ProcessTypeConst.TYPE_FREE,
-                deleteRequest.getCurrentCompanyId(),
-                deleteRequest.getKey(),
-                deleteRequest.getAccountId(),
-                false);
-    }
-
-    /**
-     * 描述       查询所有流程定义，分组返回列表，组名为中文
-     * 日期       2018/8/2
-     * @author   张成亮
-     * @param    query 流程查询条件
-     * @return   分组流程列表
-     **/
-    @Override
-    public List<ProcessDefineGroupDTO> listProcessDefineWithGroup(ProcessDefineQueryDTO query) {
-        List<ProcessDefineGroupDTO> result = new ArrayList<>();
-
-        //行政审批包含两种，因此都需要过滤出来
-        //因项目需求，现在不从数据库内读取，而直接提供固定信息
-//        query.setKey(ProcessTypeConst.PROCESS_TYPE_LEAVE);
-//        List<ProcessDefineDTO> leaveList = listProcessDefine(query);
-//        query.setKey(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS);
-//        List<ProcessDefineDTO> onBusinessList = listProcessDefine(query);
-//        List<ProcessDefineDTO> normalList = new ArrayList<>();
-//        normalList.addAll(leaveList);
-//        normalList.addAll(onBusinessList);
-        List<ProcessDefineDTO> normalList = asList(
-                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_LEAVE),"适用于公司请假审批",ProcessTypeConst.PROCESS_TYPE_LEAVE,1,query.getCurrentCompanyId()),
-                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS),"适用于公司出差审批",ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS,1,query.getCurrentCompanyId())
-        );
-        updateType(normalList, query.getCurrentCompanyId());
-        result.add(new ProcessDefineGroupDTO("行政审批",normalList));
-
-        //财务审批
-        //因项目需求，现在不从数据库内读取，而直接提供固定信息
-//        query.setKey(ProcessTypeConst.PROCESS_TYPE_FINANCE);
-//        List<ProcessDefineDTO> financeList = listProcessDefine(query)
-        List<ProcessDefineDTO> financeList = asList(
-                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_EXPENSE),"适用于公司报销审批",ProcessTypeConst.PROCESS_TYPE_EXPENSE,1,query.getCurrentCompanyId()),
-                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_COST_APPLY),"适用于公司费用审批",ProcessTypeConst.PROCESS_TYPE_COST_APPLY,1,query.getCurrentCompanyId())
-        );
-        updateType(financeList, query.getCurrentCompanyId());
-        result.add(new ProcessDefineGroupDTO("财务审批", financeList));
-
-        //项目审批
-        //因项目需求，现在不从数据库内读取，而直接提供固定信息
-//        query.setKey(ProcessTypeConst.PROCESS_TYPE_PROJECT);
-//        List<ProcessDefineDTO> projectList = listProcessDefine(query)
-        List<ProcessDefineDTO> projectList = asList(
-                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP),"适用于公司立项审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP,1,query.getCurrentCompanyId()),
-                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY),"适用于公司付款审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY,1,query.getCurrentCompanyId())
-        );
-        updateType(projectList, query.getCurrentCompanyId());
-        result.add(new ProcessDefineGroupDTO("项目审批", projectList));
-
-        return result;
-    }
-
-    //更新列表内的流程type值
-    private void updateType(List<ProcessDefineDTO> pdList,String companyId){
-        pdList.forEach(pd -> {
-            ProcessTypeEntity type = processTypeDao.getCurrentProcessType(companyId,pd.getKey());
-            if (type != null){
-                pd.setType(type.getType());
-                pd.setId(StringUtils.lastLeft(pd.getId(),ProcessTypeConst.ID_SPLIT)
-                        + ProcessTypeConst.ID_SPLIT
-                        + pd.getType());
-            }
-        });
     }
 
 
@@ -1120,10 +966,10 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      *              如果同时指定了多个条件，各条件之间是“与”的关系
      * @return   符合条件的用户列表
      **/
-    @Override
-    public List<UserDTO> listUser(UserQueryDTO query) {
-        return null;
-    }
+//    @Override
+//    public List<UserDTO> listUser(UserQueryDTO query) {
+//        return null;
+//    }
 
     /**
      * 描述     查询流程用到的群组
@@ -1151,6 +997,41 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     @Override
     public List<WorkTaskDTO> listWorkTask(WorkTaskQueryDTO query) {
         return null;
+    }
+
+
+    @Override
+    public List<FlowTaskDTO> listWorkTask(String businessKey) {
+        List<FlowTaskDTO> taskList = new ArrayList<>();
+        List<Task> list = processEngine.getTaskService()
+                .createTaskQuery()
+                .processInstanceBusinessKey(businessKey)
+                .list();
+
+        //处理 getVariables ，创建下一个人要处理的任务，并且返回任务的id，可能是多个任务的id。把返回的任务id 放入 dto.getVariables() 中进行保存
+        list.stream().forEach(task->{
+            List<IdentityLink> userList = taskService.getIdentityLinksForTask(task.getId());
+            userList.stream().forEach(u->{
+                String userIdStr = null;
+                if("assignee".equals(u.getType())){
+                    userIdStr = u.getUserId();
+                }
+                if("candidate".equals(u.getType())){
+                    userIdStr = u.getUserId();
+                }
+                String[] userIds = userIdStr.split(",");
+                for(String userId:userIds){
+                    FlowTaskDTO flowTask = new FlowTaskDTO();
+                    flowTask.setId(task.getId());
+                    flowTask.setName(task.getName());
+                    FlowUserDTO assignee = new FlowUserDTO();
+                    assignee.setId(userId);
+                    flowTask.setAssigneeUser(assignee);
+                    taskList.add(flowTask);
+                }
+            });
+        });
+        return taskList;
     }
 
     /**
@@ -1186,8 +1067,19 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      */
     @Override
     public WorkTaskDTO startProcess(WorkActionDTO workTask) {
-        return null;
+        ProcessInstance processInstance = null;
+        try {
+            // 用来设置启动流程的人员ID，引擎会自动把用户ID保存到activiti:initiator中
+            identityService.setAuthenticatedUserId(workTask.getCompanyUserId());
+            processInstance = runtimeService.startProcessInstanceByKey(workTask.getKey(),workTask.getBusinessKey(), workTask.getResultMap());
+        } finally {
+            identityService.setAuthenticatedUserId(null);
+        }
+        WorkTaskDTO workTaskDTO = new WorkTaskDTO();
+        workTaskDTO.setId(processInstance.getId());
+        return workTaskDTO;
     }
+
 
     /**
      * @param workTask 当前任务
@@ -1197,6 +1089,16 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      **/
     @Override
     public void completeWorkTask(WorkActionDTO workTask) {
+
+    }
+
+    @Override
+    public Map<String, Object> getTaskVariables(String taskId) {
+        return null;
+    }
+
+    @Override
+    public void setTaskVariables(String taskId, Map<String, Object> variables) {
 
     }
 

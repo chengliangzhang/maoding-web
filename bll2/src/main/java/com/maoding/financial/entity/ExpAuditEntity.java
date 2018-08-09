@@ -44,6 +44,11 @@ public class ExpAuditEntity extends BaseEntity {
     private String auditPerson;
 
     /**
+     * 提交审核的人的id
+     */
+    private String submitAuditId;
+
+    /**
      * 审批意见
      */
     private String auditMessage;
@@ -115,4 +120,11 @@ public class ExpAuditEntity extends BaseEntity {
         this.auditMessage = auditMessage == null ? null : auditMessage.trim();
     }
 
+    public String getSubmitAuditId() {
+        return submitAuditId;
+    }
+
+    public void setSubmitAuditId(String submitAuditId) {
+        this.submitAuditId = submitAuditId;
+    }
 }

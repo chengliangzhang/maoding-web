@@ -20,12 +20,7 @@
             <version>1.0</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.designplus</groupId>
-            <artifactId>bll2</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-spring</artifactId>
@@ -84,6 +79,10 @@
         </dependency>
         <!-- GENERAL UTILS end -->
 
-
+        <!-- servlet -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
     </dependencies>
 </project>

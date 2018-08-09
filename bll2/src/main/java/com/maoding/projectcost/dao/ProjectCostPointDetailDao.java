@@ -1,6 +1,7 @@
 package com.maoding.projectcost.dao;
 
 import com.maoding.core.base.dao.BaseDao;
+import com.maoding.projectcost.dto.ProjectCostPointDetailDataDTO;
 import com.maoding.projectcost.entity.ProjectCostPointDetailEntity;
 
 import java.util.List;
@@ -19,10 +20,13 @@ public interface ProjectCostPointDetailDao extends BaseDao<ProjectCostPointDetai
      * 方法描述：根据pointId查询
      * 作者：MaoSF
      * 日期：2017/4/25
-     * @param:
-     * @return:
      */
     List<ProjectCostPointDetailEntity> getCostPointDetailByPointId(String pointId);
+
+    /**
+     * 根据pointId查询（带有发票信息）
+     */
+    List<ProjectCostPointDetailDataDTO> getCostPointDetail(String pointId,String companyId);
 
     /**
      * 方法描述：获取发起收款的总金额

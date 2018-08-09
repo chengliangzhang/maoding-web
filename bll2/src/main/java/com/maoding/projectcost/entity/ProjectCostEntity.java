@@ -19,12 +19,12 @@ public class ProjectCostEntity extends BaseEntity {
     private String projectId;
 
     /**
-     * 付款方公司id
+     * 付款方公司id(或者名字，如果付款方组织不在卯丁系统内的情况下)
      */
     private String fromCompanyId;
 
     /**
-     * 收款方公司id
+     * 收款方公司id(或者名字，如果收款方组织不在卯丁系统内的情况下)
      */
     private String toCompanyId;
 
@@ -46,7 +46,6 @@ public class ProjectCostEntity extends BaseEntity {
      * 备注
      */
     private String remark;
-
 
     /**
      * 状态：0：生效，1：不生效（删除）

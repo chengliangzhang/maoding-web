@@ -19,6 +19,12 @@ public class WorkActionDTO extends CoreEditDTO {
     /** 是否通过 */
     private String isPass;
 
+    /** 启动流程的实体id */
+    private String businessKey;
+
+    /** 当前认领人id */
+    private String companyUserId;
+
     /** 任务执行附加参数 */
     private Map<String,Object> resultMap;
 
@@ -44,5 +50,21 @@ public class WorkActionDTO extends CoreEditDTO {
 
     public void setResultMap(Map<String, Object> resultMap) {
         this.resultMap = resultMap;
+    }
+
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
+    }
+
+    public String getCompanyUserId() {
+        return companyUserId;
+    }
+
+    public void setCompanyUserId(String companyUserId) {
+        this.companyUserId = companyUserId;
     }
 }

@@ -693,9 +693,10 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
             type = MyTaskRole.FINANCE_PAY;
         }
         if(taskType==SystemParameters.CONTRACT_FEE_PAYMENT_CONFIRM
-                || taskType==SystemParameters.TECHNICAL_REVIEW_FEE_FOR_PAID
-                || taskType==SystemParameters.COOPERATIVE_DESIGN_FEE_FOR_PAID
-                || taskType==SystemParameters.OTHER_FEE_FOR_PAID){
+                || taskType == SystemParameters.TECHNICAL_REVIEW_FEE_FOR_PAID
+                || taskType == SystemParameters.COOPERATIVE_DESIGN_FEE_FOR_PAID
+                || taskType == SystemParameters.OTHER_FEE_FOR_PAID
+                || taskType == SystemParameters.INVOICE_FINN_IN_FOR_PAID){
             companyUserList = this.companyUserService.getFinancialManagerForReceive(companyId);
             type = MyTaskRole.FINANCE_RECEIVE;
         }
@@ -783,7 +784,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
             sendMessageForMyTask(taskEntity,currentCompanyId);
         }
         saveProductTask(taskEntity,taskType,createBy,currentCompanyId);
-        return null;
+        return AjaxMessage.succeed(taskEntity);
     }
 
     /**
@@ -1136,7 +1137,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                     case 18:
                     case 19:
                         return handleType16(myTaskEntity, result, status, currentUserId, dto.getPaidDate());
-                    case MyTaskEntity.DELIVER_CONFIRM_FINISH:
+                    case SystemParameters.DELIVER_CONFIRM_FINISH:
                         handleMyTaskDeliverResponse(myTaskEntity,dto);
                         return AjaxMessage.succeed(null);
                     default:
@@ -1188,7 +1189,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         MyTaskQueryDTO query = new MyTaskQueryDTO();
         query.setCompanyId(myTask.getCompanyId());
         query.setTaskId(myTask.getTargetId());
-        query.setMyTaskType(MyTaskEntity.DELIVER_CONFIRM_FINISH);
+        query.setMyTaskType(SystemParameters.DELIVER_CONFIRM_FINISH);
         query.setStatus(0);
         List<MyTaskEntity> list = myTaskDao.listEntityByQuery(query);
         if (ObjectUtils.isEmpty(list) && !com.maoding.core.util.StringUtils.isEmpty(myTask.getTargetId())) {
@@ -1461,7 +1462,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
 
     //判断是否确认交付完成任务
     private boolean isDeliverResponseType(MyTaskEntity myTask){
-        return Integer.valueOf(MyTaskEntity.DELIVER_CONFIRM_FINISH)
+        return Integer.valueOf(SystemParameters.DELIVER_CONFIRM_FINISH)
                 .equals(myTask.getTaskType());
     }
 
@@ -1472,7 +1473,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         query.put("projectId",myTask.getProjectId());
         query.put("companyId",myTask.getCompanyId());
         query.put("targetId",myTask.getTargetId());
-        query.put("taskType",MyTaskEntity.DELIVER_CONFIRM_FINISH);
+        query.put("taskType",SystemParameters.DELIVER_CONFIRM_FINISH);
         query.put("status","0");
         List<MyTaskEntity> list = myTaskDao.getMyTaskByParam(query);
         return ObjectUtils.isEmpty(list);
@@ -1485,7 +1486,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         query.put("projectId",myTask.getProjectId());
         query.put("companyId",myTask.getCompanyId());
         query.put("targetId",myTask.getTargetId());
-        query.put("taskType",MyTaskEntity.DELIVER_EXECUTE);
+        query.put("taskType",SystemParameters.DELIVER_EXECUTE);
         query.put("status","0");
         List<MyTaskEntity> list = myTaskDao.getMyTaskByParam(query);
         if (!ObjectUtils.isEmpty(list)){
@@ -1633,7 +1634,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
             case 21:
                 messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_32);
                 break;
-            case MyTaskEntity.DELIVER_CONFIRM_FINISH:
+            case SystemParameters.DELIVER_CONFIRM_FINISH:
                 messageEntity.setUserId(task.getCreateBy());
                 messageEntity.setSendCompanyId(task.getSendCompanyId());
                 messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_DELIVER_FINISHED);
@@ -1874,9 +1875,9 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                 return "其他费用 - 到账确认";
             case 22://所有设计任务已完成，给组织的设计负责人推送任务
                 return "审批任务 - "+taskName;
-            case MyTaskEntity.DELIVER_CONFIRM_FINISH:
+            case SystemParameters.DELIVER_CONFIRM_FINISH:
                 return "交付确认 - " + taskName;
-            case MyTaskEntity.DELIVER_EXECUTE:
+            case SystemParameters.DELIVER_EXECUTE:
                 return "交付执行 - " + taskName;
             default:
                 return null;
@@ -1926,8 +1927,8 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
 
     //是否交付任务（有两个类型）
     private boolean isDeliverType(int taskType){
-        return (MyTaskEntity.DELIVER_CONFIRM_FINISH == taskType)
-                || (MyTaskEntity.DELIVER_EXECUTE == taskType);
+        return (SystemParameters.DELIVER_CONFIRM_FINISH == taskType)
+                || (SystemParameters.DELIVER_EXECUTE == taskType);
     }
 
     public String getRole(MyTaskList2DTO dto) {
@@ -1967,9 +1968,9 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                     return "设计负责人";
                 }
                 return "设计助理";
-            case MyTaskEntity.DELIVER_CONFIRM_FINISH:
+            case SystemParameters.DELIVER_CONFIRM_FINISH:
                 return "任务负责人";
-            case MyTaskEntity.DELIVER_EXECUTE:
+            case SystemParameters.DELIVER_EXECUTE:
                 return "任务执行人";
             default:
                 return null;
@@ -2210,7 +2211,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
 
         //创建负责人任务，用于标记上传任务完成
         //创建任务同时发送一条消息
-        saveMyTaskFrom(deliver, request.getChangedResponseList(), MyTaskEntity.DELIVER_CONFIRM_FINISH, "");
+        saveMyTaskFrom(deliver, request.getChangedResponseList(), SystemParameters.DELIVER_CONFIRM_FINISH, "");
 
         //创建上传者列表，默认为新增加的负责人
         List<ResponseEditDTO> companyUserUploaderList = new ArrayList<>();
@@ -2245,7 +2246,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
 
 
         //创建上传者任务，用于快速跳转到上传目录
-        saveMyTaskFrom(deliver, companyUserUploaderList, MyTaskEntity.DELIVER_EXECUTE,responseNameBuilder.toString());
+        saveMyTaskFrom(deliver, companyUserUploaderList, SystemParameters.DELIVER_EXECUTE,responseNameBuilder.toString());
 
         //如果设置了状态，进行状态修改
         if (request.getIsFinished() != null){
@@ -2257,7 +2258,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
     //获取交付任务负责人列表
     private List<ResponseDTO> listResponse(DeliverEntity deliver){
         MyTaskQueryDTO query = new MyTaskQueryDTO();
-        query.setMyTaskType(MyTaskEntity.DELIVER_CONFIRM_FINISH);
+        query.setMyTaskType(SystemParameters.DELIVER_CONFIRM_FINISH);
         query.setStatus(0);
         query.setTaskId(deliver.getId());
         List<MyTaskEntity> list = myTaskDao.listEntityByQuery(query);
@@ -2386,7 +2387,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         CompanyUserEntity companyUser = companyUserDao.selectById(myTask.getHandlerId());
         if (companyUser != null){
             BaseShowDTO receiver = new BaseShowDTO(companyUser.getUserId(), response.getName());
-            int messageType = (MyTaskEntity.DELIVER_CONFIRM_FINISH == myTask.getTaskType()) ?
+            int messageType = (SystemParameters.DELIVER_CONFIRM_FINISH == myTask.getTaskType()) ?
                     SystemParameters.MESSAGE_TYPE_DELIVER_CONFIRM : SystemParameters.MESSAGE_TYPE_DELIVER_UPLOAD;
             MessageEntity message = messageService.createDeliverChangedMessageFrom(
                     deliver,receiver,myTask,messageType,responseStr);

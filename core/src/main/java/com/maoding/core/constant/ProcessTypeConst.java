@@ -40,6 +40,11 @@ public interface ProcessTypeConst {
      */
     String PROCESS_TYPE_PROJECT_PAY_APPLY = "projectPayApply";
 
+    /**
+     * 默认流程
+     */
+    String PROCESS_TYPE_FREE="free_process";
+
 
     /** 行政审批 */
     String PROCESS_TYPE_NORMAL = PROCESS_TYPE_LEAVE;

@@ -6,6 +6,7 @@ import com.maoding.projectcost.dto.*;
 import com.maoding.projectcost.entity.ProjectCostEntity;
 import com.maoding.task.entity.ProjectTaskEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -76,6 +77,13 @@ public interface ProjectCostService extends BaseService<ProjectCostEntity>{
      * 日期：2017/3/1
      */
     AjaxMessage getCooperativeDesignFeeInfo(Map<String,Object> map)throws Exception;
+
+    /**
+     * 方法描述：合作设计费（projectId，companyId:当前公司id,payType:1=收款，2=付款 ）
+     * 作者：MaoSF
+     * 日期：2018/8/8
+     */
+    List<Map<String, Object>> listProjectCost(Map<String,Object> map)throws Exception;
 
     /**
      * 获取当前任务所属组织

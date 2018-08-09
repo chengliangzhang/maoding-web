@@ -86,4 +86,16 @@
     where e.id = #{taskId}
     LIMIT 1
   </select>
+
+
+  <select id="getCostPointDetail" resultType="com.maoding.projectcost.dto.ProjectCostPointDetailDataDTO" parameterType="java.util.Map">
+    select
+    a.*,b.*
+    from maoding_web_project_cost_point_detail a
+    LEFT JOIN maoding_invoice b on a.invoice = b.id
+    where  a.status='0'
+    and a.point_id = #{pointId}
+    and (a.company_id = #{companyId} or a.relation_company_id  = #{companyId})
+    order by a.create_date
+  </select>
 </mapper>

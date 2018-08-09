@@ -2,9 +2,9 @@ package com.maoding.activiti.service;
 
 import com.maoding.activiti.dto.*;
 import com.maoding.core.base.dto.CorePageDTO;
-import com.maoding.user.dto.UserDTO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -65,15 +65,6 @@ public interface WorkflowService {
     void deleteProcessDefine(ProcessDefineQueryDTO deleteRequest);
 
     /**
-     * 描述       查询所有流程定义，分组返回列表，组名为中文
-     * 日期       2018/8/2
-     * @author   张成亮
-     * @param    query 流程查询条件
-     * @return   分组流程列表
-     **/
-    List<ProcessDefineGroupDTO> listProcessDefineWithGroup(ProcessDefineQueryDTO query);
-
-    /**
      * 描述       查询符合条件的流程定义，返回列表
      * 日期       2018/8/2
      * @author   张成亮
@@ -110,7 +101,7 @@ public interface WorkflowService {
      *              如果同时指定了多个条件，各条件之间是“与”的关系
      * @return   符合条件的用户列表
      **/
-    List<UserDTO> listUser(UserQueryDTO query);
+   // List<UserDTO> listUser(UserQueryDTO query);
 
     /**
      * 描述     查询流程用到的群组
@@ -132,6 +123,15 @@ public interface WorkflowService {
      * @return  当前任务列表
      **/
     List<WorkTaskDTO> listWorkTask(WorkTaskQueryDTO query);
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/30
+     * @description     查询当前任务
+     * @param   businessKey 业务数据的id
+     * @return  当前任务列表
+     **/
+    List<FlowTaskDTO> listWorkTask(String businessKey);
 
     /**
      * @author  张成亮
@@ -166,6 +166,20 @@ public interface WorkflowService {
      * @param   workTask 当前任务
      **/
     void completeWorkTask(WorkActionDTO workTask);
+
+    /**
+     * 获取任务的参数
+     * @param taskId 任务id
+     */
+    Map<String,Object> getTaskVariables(String taskId);
+
+
+    /**
+     * 设置任务的参数
+     * @param taskId 任务id
+     *  variables：任务的参数
+     */
+    void setTaskVariables(String taskId,Map<String,Object> variables);
     
     /**
      * @author  张成亮
@@ -174,4 +188,5 @@ public interface WorkflowService {
      * @param   workTask 当前任务
      **/
     void claimWorkTask(WorkActionDTO workTask);
+
 }

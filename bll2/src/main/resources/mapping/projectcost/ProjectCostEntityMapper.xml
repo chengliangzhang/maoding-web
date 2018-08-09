@@ -30,7 +30,15 @@
     from maoding_web_project_cost
     where id = #{id,jdbcType=VARCHAR}
   </select>
-  
+
+  <select id="getProjectCostByPointId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    a.*
+    from maoding_web_project_cost a
+    INNER JOIN maoding_web_project_cost_point b on a.id = b.cost_id
+    where b.id = #{pointId}
+  </select>
+
   <delete id="deleteById" parameterType="java.lang.String" >
     delete from maoding_web_project_cost
     where id = #{id,jdbcType=VARCHAR}

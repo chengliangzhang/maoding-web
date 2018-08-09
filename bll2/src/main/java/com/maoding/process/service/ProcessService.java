@@ -1,44 +1,74 @@
 package com.maoding.process.service;
 
-import com.maoding.process.dto.ProcessDTO;
-import com.maoding.process.dto.ProcessEditDTO;
-import com.maoding.process.dto.ProcessNodeDTO;
-import com.maoding.process.dto.QueryProcessDTO;
+
+import com.maoding.activiti.dto.*;
+import com.maoding.process.dto.ActivitiDTO;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
-import java.util.Map;
 
-public interface ProcessService  {
-
-    /**
-     * 初始化流程
-     */
-    void initProcess(QueryProcessDTO query);
+public interface ProcessService {
 
     /**
-     * 查询组织的流程列表
+     * 启动流程实例
+     * @param dto -> processKey:act_re_procdef 中的key_
+     * @param dto -> businessKey:业务表中的id（比如中报销审批启动流程，businessKey = expMain 表中的id)
+     * @param dto -> param:启动流程的时候，携带的参数，可以是空
      */
-    Map<String,List<ProcessDTO>> getProcessByCompany(QueryProcessDTO query);
+    void startProcessInstance(ActivitiDTO dto) throws Exception;
 
     /**
-     * 保存流程（如果是 新增流程的化，流程的节点默认系统中同类型的节点信息）
-     */
-    int saveProcess(ProcessEditDTO dto) throws Exception;
+     * 描述       加载流程，准备进行编辑
+     * 日期       2018/8/2
+     * @author   张成亮
+     * @param    prepareRequest 加载信息
+     *              如果type为ProcessTypeConst.PROCESS_TYPE_CONDITION(3)，且startDigitCondition不为空
+     *                  根据startDigitCondition创建多个分支
+     *              否则，根据companyId,key,type生成流程编号，查找指定流程定义
+     *                  如果找到流程定义，则加载此流程
+     *                      加载流程时，srcProcessDefineId无效
+     *                  否则，如果未找到流程定义，则创建新流程
+     *                      创建流程时，如果指定了srcProcessDefineId时，则复制srcProcessDefineId流程
+     *                          复制srcProcessDefineId流程时，不判断流程模板和新流程是否为相同类型
+     *                      否则，如果未指定srcProcessDefineId
+     *                          创建单分支，一个默认审批节点的流程
+     *              调用此接口时，如果创建了一个流程，不会存储流程定义到数据库
+     * @return  查找到的或创建的流程定义信息
+     **/
+    ProcessDefineDetailDTO prepareProcessDefine(ProcessDetailPrepareDTO prepareRequest) throws Exception;
+
+    ProcessDefineDetailDTO changeProcessDefine(ProcessDefineDetailEditDTO editRequest);
+
+    void deleteProcessDefine(ProcessDefineQueryDTO deleteRequest);
 
     /**
-     * 流程节点查询
-     */
-    List<ProcessNodeDTO> listProcessNode(QueryProcessDTO query);
+     * 描述       查询所有流程定义，分组返回列表，组名为中文
+     * 日期       2018/8/2
+     * @author   张成亮
+     * @param    query 流程查询条件
+     * @return   分组流程列表
+     **/
+    List<ProcessDefineGroupDTO> listProcessDefineWithGroup(ProcessDefineQueryDTO query);
 
-    /**
-     * （项目收支）删除流程
-     */
-    int deleteProcessForProjectPay(ProcessEditDTO dto) throws Exception;
-
-    /**
-     * 选择取消流程
-     */
-    int selectedProcessForProjectPay(ProcessEditDTO dto) throws Exception;
-
-    int selectedProcessNodeStatus(ProcessEditDTO dto) throws Exception;
+//    /**
+//     * 任务签收
+//     */
+//    void claimTask(TaskDTO dto) throws Exception;
+//
+//    /**
+//     * 任务完成(直接完成activiti中的任务，id 为ru_task 中的id)
+//     */
+//    void completeTask(TaskDTO dto) throws Exception;
+//
+//    /**
+//     * 任务完成(直接完成审核表中的任务（audit），id 为exp_audit 中的id)
+//     */
+//    void completeTask2(TaskDTO dto) throws Exception;
+//
+//    /**
+//     * id:审批记录的id
+//     */
+//    Map<String,Object> getCurrentProcess(AuditEditDTO dto);
+//
+//    List<UserTaskNodeDTO> getUserListForAudit(AuditEditDTO dto);
 }

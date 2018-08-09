@@ -19,4 +19,9 @@ public interface ProjectCostDao extends BaseDao<ProjectCostEntity> {
 
     List<ProjectCostDTO> selectByParam(Map<String, Object> map);
 
+    /**
+     * @param pointId (费用节点的id)
+     */
+    ProjectCostEntity getProjectCostByPointId(String pointId);
+
 }

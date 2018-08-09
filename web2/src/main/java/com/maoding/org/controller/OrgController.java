@@ -1881,10 +1881,18 @@ public class OrgController extends BaseController {
      * 描述       根据收付款类型获取单位列表
      * 日期       2018/8/8
      * @author   张成亮
+     * @param   query 查询条件
+     *                projectId 项目编号
+     *                feeType 费用类型：1-合同回款，2-技术审查费，3-合作设计费，4-其他费用（付款），5-其他费用（收款）
+     *                isPay 0/null-查询收款，1-查询付款
+     * @return  组织信息序列
+     *              id 组织编号
+     *              name 组织名称
      **/
     @RequestMapping(value = "/listCompany", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage listCompany(@RequestBody CompanyQueryDTO query) throws Exception {
+        updateCurrentUserInfo(query);
         List<CompanySimpleDTO> result = new ArrayList<>();
         List<CompanyDTO> list = companyService.listCompany(query);
         if (ObjectUtils.isNotEmpty(list)){

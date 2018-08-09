@@ -21,6 +21,13 @@
         </dependency>
 
         <dependency>
+            <groupId>com.designplus</groupId>
+            <artifactId>activiti</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -247,6 +254,11 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.designplus</groupId>
+            <artifactId>activiti</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 

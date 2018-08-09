@@ -25,6 +25,19 @@ public class ProjectCostPointDetailDTO extends InvoiceEditDTO {
 
     private String field2;
 
+    private String invoice;
+    /**
+     * 1:开发票，0/其他：不开发票
+     */
+    private String isInvoice;
+
+    /**
+     * 1:收款，2：付款
+     */
+    private Integer payType;
+
+    private String auditPerson;
+
     public String getProjectId() {
         return projectId;
     }
@@ -63,5 +76,37 @@ public class ProjectCostPointDetailDTO extends InvoiceEditDTO {
 
     public void setField2(String field2) {
         this.field2 = field2 == null ? null : field2.trim();
+    }
+
+    public String getIsInvoice() {
+        return isInvoice;
+    }
+
+    public void setIsInvoice(String isInvoice) {
+        this.isInvoice = isInvoice;
+    }
+
+    public Integer getPayType() {
+        return payType;
+    }
+
+    public void setPayType(Integer payType) {
+        this.payType = payType;
+    }
+
+    public String getAuditPerson() {
+        return auditPerson;
+    }
+
+    public void setAuditPerson(String auditPerson) {
+        this.auditPerson = auditPerson;
+    }
+
+    public String getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(String invoice) {
+        this.invoice = invoice;
     }
 }

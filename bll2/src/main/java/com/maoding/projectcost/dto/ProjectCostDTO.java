@@ -45,6 +45,11 @@ public class ProjectCostDTO extends BaseDTO {
     private BigDecimal fee;
 
     /**
+     * 1:收款计划，2：付款计划
+     */
+    private Integer payType;
+
+    /**
      * 备注
      */
     private String remark;
@@ -54,6 +59,12 @@ public class ProjectCostDTO extends BaseDTO {
      * 状态：0：生效，1：不生效（删除）
      */
     private String status;
+
+    /**
+     * 是否是内部组织
+     */
+    private boolean isInnerCompany;
+
 
 
     private String 	createBy;
@@ -155,5 +166,21 @@ public class ProjectCostDTO extends BaseDTO {
 
     public void setFlag(String flag) {
         this.flag = flag;
+    }
+
+    public boolean isInnerCompany() {
+        return isInnerCompany;
+    }
+
+    public void setInnerCompany(boolean innerCompany) {
+        isInnerCompany = innerCompany;
+    }
+
+    public Integer getPayType() {
+        return payType;
+    }
+
+    public void setPayType(Integer payType) {
+        this.payType = payType;
     }
 }

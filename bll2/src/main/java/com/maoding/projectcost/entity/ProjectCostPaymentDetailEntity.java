@@ -29,7 +29,6 @@ public class ProjectCostPaymentDetailEntity extends BaseEntity {
      */
     private BigDecimal fee;
 
-
     /**
      * 发票信息
      */
@@ -45,6 +44,9 @@ public class ProjectCostPaymentDetailEntity extends BaseEntity {
      */
     private String payDate;
 
+    /**
+     * 0：有效，1：无效
+     */
     private String status;
 
     public String getProjectId() {

@@ -28,6 +28,11 @@ public class ProjectCostPointDetailDataDTO {
     private String pointId;
 
     /**
+     * 费用状态
+     */
+    private String feeStatus;
+
+    /**
      * 金额
      */
     private BigDecimal fee;
@@ -89,6 +94,15 @@ public class ProjectCostPointDetailDataDTO {
 
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date createDate;
+
+
+    private String invoiceNo;
+
+    private BigDecimal invoiceAmount;
+
+    private String invoiceType;
+
+
     /**
      * 权限map:
      * 4.付款（技术审查费-确认付款款（经营负责人）），
@@ -271,5 +285,37 @@ public class ProjectCostPointDetailDataDTO {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public String getInvoiceNo() {
+        return invoiceNo;
+    }
+
+    public void setInvoiceNo(String invoiceNo) {
+        this.invoiceNo = invoiceNo;
+    }
+
+    public BigDecimal getInvoiceAmount() {
+        return invoiceAmount;
+    }
+
+    public void setInvoiceAmount(BigDecimal invoiceAmount) {
+        this.invoiceAmount = invoiceAmount;
+    }
+
+    public String getInvoiceType() {
+        return invoiceType;
+    }
+
+    public void setInvoiceType(String invoiceType) {
+        this.invoiceType = invoiceType;
+    }
+
+    public String getFeeStatus() {
+        return feeStatus;
+    }
+
+    public void setFeeStatus(String feeStatus) {
+        this.feeStatus = feeStatus;
     }
 }

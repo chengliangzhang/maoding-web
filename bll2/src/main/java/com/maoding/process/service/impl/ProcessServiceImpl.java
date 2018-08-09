@@ -1,367 +1,551 @@
 package com.maoding.process.service.impl;
 
+import com.maoding.activiti.dto.*;
+import com.maoding.activiti.service.WorkflowService;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.NewBaseService;
-import com.maoding.core.constant.ProcessConst;
-import com.maoding.core.constant.ProjectMemberType;
-import com.maoding.core.util.StringUtil;
-import com.maoding.exception.CustomException;
-import com.maoding.org.dao.CompanyDao;
+import com.maoding.core.constant.ProcessTypeConst;
+import com.maoding.core.util.BeanUtils;
+import com.maoding.core.util.ObjectUtils;
+import com.maoding.core.util.StringUtils;
+import com.maoding.core.util.TraceUtils;
+import com.maoding.financial.dto.SaveExpMainDTO;
+import com.maoding.financial.entity.ExpMainEntity;
+import com.maoding.financial.service.ExpAuditService;
+import com.maoding.financial.service.ExpMainService;
 import com.maoding.org.dao.CompanyUserDao;
-import com.maoding.process.dao.*;
-import com.maoding.process.dto.*;
-import com.maoding.process.entity.*;
+import com.maoding.org.entity.CompanyUserEntity;
+import com.maoding.process.dao.ProcessInstanceRelationDao;
+import com.maoding.process.dao.ProcessTypeDao;
+import com.maoding.process.dto.ActivitiDTO;
+import com.maoding.process.entity.ProcessInstanceRelationEntity;
+import com.maoding.process.entity.ProcessTypeEntity;
 import com.maoding.process.service.ProcessService;
-import com.maoding.project.dto.ProjectProcessNode;
-import com.maoding.project.dto.ProjectProcessNodeDTO;
-import com.maoding.project.entity.ProjectProcessNodeEntity;
-import org.apache.commons.lang3.StringUtils;
+import com.maoding.user.service.UserAttachService;
+import org.activiti.bpmn.model.Process;
+import org.activiti.engine.identity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import static java.util.Arrays.asList;
+
+/**
+ * activiti Service
+ * 流程定义，部署，启动,任务 处理接口实现
+ */
 @Service("processService")
 public class ProcessServiceImpl extends NewBaseService implements ProcessService {
 
     @Autowired
-    private ProcessDao processDao;
+    private ProcessInstanceRelationDao processInstanceRelationDao;
 
     @Autowired
-    private ProcessNodeDao processNodeDao;
+    private ExpAuditService expAuditService;
 
     @Autowired
-    private ProcessNodeMemberDao processNodeMemberDao;
-
-    @Autowired
-    private ProcessNodeConditionDao processNodeConditionDao;
-
-    @Autowired
-    private ProcessOrgRelationDao processOrgRelationDao;
+    private ExpMainService expMainService;
 
     @Autowired
     private CompanyUserDao companyUserDao;
 
     @Autowired
-    private CompanyDao companyDao;
+    private ProcessTypeDao processTypeDao;
 
-    private void initDefaultProcessRelation(String companyId,Integer processType){
-        ProcessOrgRelationEntity processOrgRelation = new ProcessOrgRelationEntity();
-        processOrgRelation.initEntity();
-        processOrgRelation.setDeleted(0);//设置为有效状态
-        processOrgRelation.setStatus(ProcessConst.START_STATUS);//0：代表没启用，1：代表启用
-        processOrgRelation.setCompanyId(companyId);
-        processOrgRelation.setCompanyType(ProcessConst.COMPANY_TYPE_ALL);//代表适合所有
-        processOrgRelation.setProcessId(processType.toString());//由于系统中默认的流程的id与processType一致。
-        processOrgRelationDao.insert(processOrgRelation);
-    }
+    @Autowired
+    private UserAttachService userAttachService;
+
+    @Autowired
+    private WorkflowService workflowService;
+
+    private static final String auditIdKey = "auditId";
 
     @Override
-    public void initProcess(QueryProcessDTO query) {
-        if(StringUtil.isNullOrEmpty(query.getCompanyId())){
-            query.setCompanyId(query.getCurrentCompanyId());
-        }
-        String companyId = query.getCompanyId();
-        ProcessCountDTO count = processOrgRelationDao.countProcess(query);
-
-        if(count.getContractReceiveCount()==null || count.getContractReceiveCount()==0){//初始化系统的默认的合同回款流程
-            initDefaultProcessRelation(companyId, ProcessConst.PROCESS_TYPE_CONTRACT);
-        }
-        if(count.getTechnicalReceiveCount()==null || count.getTechnicalReceiveCount()==0){//初始化系统的默认的技术审查费收款流程
-            initDefaultProcessRelation(companyId, ProcessConst.PROCESS_TYPE_RECEIVE_TECHNICAL);
-        }
-        if(count.getTechnicalPayCount()==null || count.getTechnicalPayCount()==0){//初始化系统的默认的技术审查费付款流程
-            initDefaultProcessRelation(companyId, ProcessConst.PROCESS_TYPE_PAY_TECHNICAL);
-        }
-        if(count.getCooperativeReceiveCount()==null || count.getCooperativeReceiveCount()==0){//初始化系统的默认的合作设计费收款流程
-            initDefaultProcessRelation(companyId, ProcessConst.PROCESS_TYPE_RECEIVE_COOPERATIVE);
-        }
-        if(count.getCooperativePayCount()==null || count.getCooperativePayCount()==0){//初始化系统的默认的合作设计费付款流程
-            initDefaultProcessRelation(companyId, ProcessConst.PROCESS_TYPE_PAY_COOPERATIVE);
+    public void startProcessInstance(ActivitiDTO dto) throws Exception {
+        String processInstanceId = null;
+        //获取流程的key值，确定启动哪个流程
+        String processKey = this.getProcessKey(dto.getTargetType(),dto.getCurrentCompanyId());
+        if(processKey != null){
+            //启动流程
+            WorkActionDTO workAction = new WorkActionDTO();
+            workAction.setResultMap(dto.getParam());
+            workAction.setKey(processKey);
+            workAction.setBusinessKey(dto.getBusinessKey());
+            workAction.setCompanyUserId(dto.getCompanyUserId());
+            workAction.setResultMap(dto.getParam());
+            processInstanceId = workflowService.startProcess(workAction).getId();
+            //保存审核记录
+            saveAudit(dto.getBusinessKey(),dto,true);
+            //保存流程实例与业务表的关系
+            ProcessInstanceRelationEntity instanceRelation = new ProcessInstanceRelationEntity(dto.getBusinessKey(),processInstanceId,dto.getTargetType());
+            processInstanceRelationDao.insert(instanceRelation);
         }
     }
 
     @Override
-    public Map<String, List<ProcessDTO>> getProcessByCompany(QueryProcessDTO query) {
-        if(StringUtil.isNullOrEmpty(query.getCompanyId())){
-            query.setCompanyId(query.getCurrentCompanyId());
+    public ProcessDefineDetailDTO prepareProcessDefine(ProcessDetailPrepareDTO prepareRequest) throws Exception {
+        //type字段
+        prepareRequest.setType(syncProcessType(prepareRequest));
+        ProcessDefineDetailDTO processDefineDetail  = this.workflowService.prepareProcessDefine(prepareRequest);
+        if(processDefineDetail!=null){
+            //重新组织一下数据，设置人员头像
+            this.setUserInfo(processDefineDetail);
+            //添加单位并返回
+            processDefineDetail.setUnit(ProcessTypeConst.unitMap.get(prepareRequest.getKey()));
         }
-        this.initProcess(query);//处理默认数据
-        Map<String, List<ProcessDTO>> map = new HashMap<>();
-        List<ProcessDTO> receiveProcessList = new ArrayList<>();
-        List<ProcessDTO> payProcessList = new ArrayList<>();
-        //todo 查询业务流程数据
-        List<ProcessDTO> processList = this.processDao.getProcessByCompany(query);
-        //todo 重新封装
-        processList.stream().forEach(p->{
-            //设置关联组织的名称
-            p.setRelationCompanyName(this.getRelationCompanyName(p));
-            if(p.getProcessType()==ProcessConst.PROCESS_TYPE_CONTRACT
-                    ||p.getProcessType()==ProcessConst.PROCESS_TYPE_RECEIVE_TECHNICAL
-                    ||p.getProcessType()==ProcessConst.PROCESS_TYPE_RECEIVE_COOPERATIVE){
-                receiveProcessList.add(p);
-            }else {
-                payProcessList.add(p);
-            }
-        });
-        map.put("receiveProcessList",receiveProcessList);
-        map.put("payProcessList",payProcessList);
-        return map;
+        return processDefineDetail;
     }
 
-    private void validateSaveProcess(ProcessEditDTO dto){
-        if(dto.getProcessType()==null){
-            throw new CustomException("类型不能为空");
-        }
-        if(!StringUtil.isNullOrEmpty(dto.getId())){
-            if(StringUtil.isNullOrEmpty(dto.getProcessId())){
-                throw new CustomException("参数错误");
-            }
-        }
-    }
-
-    @Override
-    public int saveProcess(ProcessEditDTO dto) throws Exception {
-        //todo 添加数据校验
-        validateSaveProcess(dto);
-        //添加判断
-        if(StringUtil.isNullOrEmpty(dto.getCompanyId())){
-            dto.setCompanyId(dto.getCurrentCompanyId());
-        }
-        int i = 0;
-        ProcessEntity process = (ProcessEntity)BaseDTO.copyFields(dto,ProcessEntity.class);
-        if(StringUtil.isNullOrEmpty(dto.getId())){
-            process.initEntity();
-            process.setDeleted(0);
-            if(StringUtil.isNullOrEmpty(dto.getProcessName())){
-                process.setProcessName(ProcessConst.PROCESS_NAME_MAP.get(dto.getProcessType().toString()));
-            }
-            i = processDao.insert(process);
-            ProcessOrgRelationEntity processOrgRelation = new ProcessOrgRelationEntity();
-            processOrgRelation.initEntity();
-            processOrgRelation.setStatus(ProcessConst.STOP_STATUS);
-            processOrgRelation.setDeleted(0);
-            processOrgRelation.setProcessId(process.getId());
-            processOrgRelation.setCompanyId(dto.getCompanyId());
-            processOrgRelation.setRelationCompanyId(dto.getRelationCompanyId());
-            processOrgRelation.setCompanyType(this.getCompanyType(dto.getRelationCompanyId()));
-            processOrgRelationDao.insert(processOrgRelation);
-            initProcessNode(process.getId(),dto.getCompanyId(),process.getProcessType());
-        }else {
-            ProcessOrgRelationEntity processOrgRelation = new ProcessOrgRelationEntity();
-            processOrgRelation.setId(dto.getId());
-            processOrgRelation.setRelationCompanyId(dto.getRelationCompanyId());
-            processOrgRelation.setCompanyType(this.getCompanyType(dto.getRelationCompanyId()));
-            processOrgRelationDao.updateById(processOrgRelation);
-
-            process.setId(dto.getProcessId());
-            process.setProcessType(null);//编辑不处理类型
-            processDao.updateById(process);
-
-            i = 1;//返回成功
-        }
-
-        return i;
-    }
-
-    @Override
-    public List<ProcessNodeDTO> listProcessNode(QueryProcessDTO query) {
-        List<ProcessNodeDTO> nodeList = new ArrayList<>();
-        List<ProcessNodeEntity> list = processNodeDao.listProcessNode(query.getProcessId());
-        List<ProcessNodeConditionEntity> processNodeConditionList = this.processNodeConditionDao.listProcessNodeCondition(query.getProcessId());
-        list.stream().forEach(node->{
-            ProcessNodeDTO nodeDTO = (ProcessNodeDTO)BaseDTO.copyFields(node,ProcessNodeDTO.class);
-            //处理操作人
-            nodeDTO.setOperatorName(this.getProcessNodeMemberName(node.getId()));
-            //设置每个节点的状态值
-            getProcessNodeCondition(nodeDTO,processNodeConditionList);
-            nodeList.add(nodeDTO);
-        });
-
-        return nodeList;
-    }
-
-    @Override
-    public int deleteProcessForProjectPay(ProcessEditDTO dto) throws Exception {
-        ProcessOrgRelationEntity processOrgRelation = new ProcessOrgRelationEntity();
-        processOrgRelation.setId(dto.getId());
-        processOrgRelation.setDeleted(1);//设置删除表示
-        return processOrgRelationDao.updateById(processOrgRelation);
-    }
-
-    @Override
-    public int selectedProcessForProjectPay(ProcessEditDTO dto) throws Exception {
-        ProcessOrgRelationEntity processOrgRelation = new ProcessOrgRelationEntity();
-        processOrgRelation.setId(dto.getId());
-        processOrgRelation.setStatus(dto.getStatus());
-        return processOrgRelationDao.updateById(processOrgRelation);
-    }
-
-    @Override
-    public int selectedProcessNodeStatus(ProcessEditDTO dto) throws Exception {
-        if(StringUtil.isNullOrEmpty(dto.getStatusType()) || StringUtil.isNullOrEmpty(dto.getNodeId()) || StringUtil.isNullOrEmpty(dto.getProcessId())){
-            throw new CustomException("参数错误");
-        }
-        int i = 0;
-        //查询节点的条件
-        ProcessNodeConditionEntity condition = this.processNodeConditionDao.getProcessNodeConditionByDataType(dto.getNodeId(),dto.getStatusType().toString());
-        if(ProcessConst.IS_SELECTED==dto.getStatus()){
-            if(condition==null){//如果系统中不存在，则新增一条记录
-                condition = new ProcessNodeConditionEntity();
-                condition.initEntity();
-                condition.setDeleted(0);
-                condition.setDataType(dto.getStatusType().toString());
-                condition.setProcessId(dto.getProcessId());
-                condition.setNodeId(dto.getNodeId());
-                condition.setNodeCondition(ProcessConst.IS_SELECTED.toString());
-                i= this.processNodeConditionDao.insert(condition);
-            }else {
-                condition.setNodeCondition(dto.getStatus().toString());
-                i=  this.processNodeConditionDao.updateById(condition);
-            }
-        }
-
-        //todo 把财务确认发票信息的记录设置为有效。目前没有设置路由。通过代码把记录设置为有效
-        if(ProcessConst.CONDITION_INVOICE.equals(dto.getStatusType().toString())){
-            ProcessNodeEntity node = this.processNodeDao.getProcessNodeByType(dto.getProcessId(),ProcessConst.NODE_TYPE_FINANCE_INVOICE_CONFIRM);
-            if(node!=null){
-                node.setDeleted(0);//设置为有效
-                this.processNodeDao.updateById(node);
-            }
-        }
-        return i;
-    }
-
-
-    /**
-     * 获取关联组织的名称
-     */
-    private String getRelationCompanyName(ProcessDTO p){
-        if(!StringUtil.isNullOrEmpty(p.getCompanyType())){
-            if(p.getCompanyType()==ProcessConst.COMPANY_TYPE_ALL){
-                return "所有组织";
-            }
-            if(p.getCompanyType()==ProcessConst.COMPANY_TYPE_SUB){
-                return "分支机构";
-            }
-            if(p.getCompanyType()==ProcessConst.COMPANY_TYPE_ALL){
-                return "事业合伙人";
-            }
-            //todo 查询相应的组织
-            if(p.getCompanyType()==ProcessConst.COMPANY_TYPE_SINGLE){
-                return companyDao.getCompanyName(p.getRelationCompanyId());
-            }
-        }
-
-        return "";
-    }
-
-    /**
-     * 获取关联组织的名称
-     */
-    private void getProcessNodeCondition(ProcessNodeDTO node,List<ProcessNodeConditionEntity> processNodeConditionList){
-        processNodeConditionList.stream().forEach(condition->{
-            //如果条件的nodeId不为空，并且是这个节点的条件，并且值是1的情况下：1：代表已选择
-            if(!StringUtil.isNullOrEmpty(condition.getNodeId()) && node.getId().equals(condition.getNodeId())){
-                Integer status = StringUtil.isNullOrEmpty(condition.getNodeCondition())?0: Integer.parseInt(condition.getNodeCondition());
-                //发票字段设置
-                if(ProcessConst.CONDITION_INVOICE.equals(condition.getDataType())){
-                    node.setInvoiceStatus(status);
-                }
-                //应付应收的字段设置
-                if(ProcessConst.CONDITION_RECEIVE_ABLE.equals(condition.getDataType()) || ProcessConst.CONDITION_PAY_ABLE.equals(condition.getDataType()) ){
-                    node.setReceiveOrPayAbleStatus(status);
-                }
-                //已付已收的字段设置
-                if(ProcessConst.CONDITION_RECEIVE.equals(condition.getDataType()) || ProcessConst.CONDITION_PAY.equals(condition.getDataType()) ){
-                    node.setReceiveOrPayStatus(status);
-                }
-                //同步的状态设置
-                if(ProcessConst.CONDITION_SYNC.equals(condition.getDataType())){
-                    node.setSyncStatus(status);
-                }
-            }
-        });
-    }
-
-    /**
-     * 初始化流程节点
-     */
-    private void initProcessNode(String processId,String companyId,Integer processType){
-        //查找默认流程
-        ProcessEntity defaultProcess = processDao.getDefaultProcessByType(processType);
-        if(defaultProcess!=null){
-            List<ProcessNodeEntity> processNodeList = this.processNodeDao.listProcessNode(defaultProcess.getId());
-            List<ProcessNodeMemberEntity> processNodeMemberList = this.processNodeMemberDao.listProcessNodeMember(defaultProcess.getId());
-            List<ProcessNodeConditionEntity> processNodeConditionList = this.processNodeConditionDao.listProcessNodeCondition(defaultProcess.getId());
-            //保存每个节点，把默认流程的节点复制到新增的流程中来
-            processNodeList.stream().forEach(node->{
-                String defaultNodeId = node.getId();
-                node.initEntity();
-                node.setProcessId(processId);
-                this.processNodeDao.insert(node);
-                //把每个节点上面的处理人复制到新的流程节点中
-                processNodeMemberList.stream().forEach(member->{
-                    if(defaultNodeId.equals(member.getNodeId())){
-                        member.initEntity();
-                        member.setNodeId(node.getId());
-                        member.setProcessId(processId);
-                        this.processNodeMemberDao.insert(member);
+    private void setUserInfo(ProcessDefineDetailDTO processDefineDetail) {
+        //重新组织一下数据，设置人员头像
+        if(processDefineDetail!=null) {
+            if (ObjectUtils.isNotEmpty(processDefineDetail.getFlowTaskGroupList())) {
+                processDefineDetail.getFlowTaskGroupList().stream().forEach(task -> {
+                    if (ObjectUtils.isNotEmpty(task.getFlowTaskList())) {
+                        task.getFlowTaskList().stream().forEach(t -> {
+                            if (t.getAssigneeUser() != null && StringUtils.isNotEmpty(t.getAssigneeUser().getId())) {
+                                t.setAssigneeUser(this.getFlowUser(t.getAssigneeUser().getId()));
+                            }
+                            if (ObjectUtils.isNotEmpty(t.getCandidateUserList())) {
+                                t.getCandidateUserList().stream().forEach(user -> {
+                                    if (StringUtils.isNotEmpty(user.getId())) {
+                                        this.getFlowUser(user);
+                                    }
+                                });
+                            }
+                        });
                     }
                 });
-                //把每个节点上面的条件复制到新的流程节点中
-                processNodeConditionList.stream().forEach(condition->{
-                    if(defaultNodeId.equals(condition.getNodeId())){
-                        condition.initEntity();
-                        condition.setNodeId(node.getId());
-                        condition.setProcessId(processId);
-                        this.processNodeConditionDao.insert(condition);
-                    }
-                });
-            });
+            }
         }
     }
 
+    @Override
+    public ProcessDefineDetailDTO changeProcessDefine(ProcessDefineDetailEditDTO editRequest) {
+        ProcessDefineDetailDTO processDefineDetail = workflowService.changeProcessDefine(editRequest);
+        syncProcessType(editRequest);
+        if(processDefineDetail!=null){
+            //重新组织一下数据，设置人员头像
+            this.setUserInfo(processDefineDetail);
+        }
+        return processDefineDetail;
+    }
+
+    @Override
+    public void deleteProcessDefine(ProcessDefineQueryDTO deleteRequest) {
+        this.workflowService.deleteProcessDefine(deleteRequest);
+        //把类型库内流程设定为自由流程
+        syncProcessType(ProcessTypeConst.TYPE_FREE,
+                deleteRequest.getCurrentCompanyId(),
+                deleteRequest.getKey(),
+                deleteRequest.getAccountId(),
+                false);
+    }
+
+    //同步流程类型数据表内的流程类型，如果指定类型，更新数据库，如果没有指定，返回数据库内的类型
+    private int syncProcessType(ProcessDetailPrepareDTO prepareRequest){
+        TraceUtils.check(prepareRequest != null,log);
+        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getCurrentCompanyId()),log);
+        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),log);
+        return syncProcessType(prepareRequest.getType(),prepareRequest.getCurrentCompanyId(),
+                prepareRequest.getKey(),prepareRequest.getAccountId(),isConditionType(prepareRequest));
+    }
+
+    private int syncProcessType(ProcessDefineDetailEditDTO editRequest){
+        TraceUtils.check(editRequest != null,log);
+        TraceUtils.check(StringUtils.isNotEmpty(editRequest.getCurrentCompanyId()),log);
+        TraceUtils.check(StringUtils.isNotEmpty(editRequest.getKey()),log);
+        return syncProcessType(editRequest.getType(),editRequest.getCurrentCompanyId(),
+                editRequest.getKey(),editRequest.getAccountId(),isConditionType(editRequest));
+    }
+
+
+    //判断是否条件流程，其他类型参数
+    private boolean isConditionType(ProcessDetailPrepareDTO deploymentPrepareRequest){
+        //检查参数
+        TraceUtils.check(ObjectUtils.isNotEmpty(deploymentPrepareRequest),log);
+
+        return (deploymentPrepareRequest.getStartDigitCondition() != null)
+                && (ObjectUtils.isNotEmpty(deploymentPrepareRequest.getStartDigitCondition().getPointList()));
+    }
+
+
+    //是否条件流程，其他类型参数
+    private boolean isConditionType(ProcessDefineDetailEditDTO deploymentEditRequest){
+        //检查参数
+        TraceUtils.check(ObjectUtils.isNotEmpty(deploymentEditRequest),log);
+
+        return isConditionType(deploymentEditRequest.getType());
+    }
+
+
+    //是否条件流程类型
+    private boolean isConditionType(Integer type){
+        return ProcessTypeConst.PROCESS_TYPE_CONDITION.equals(type);
+    }
+
+    private int syncProcessType(Integer type,String companyId,String key,String accountId,boolean isConditionType){
+        //从数据库内读取当前的流程类型
+        ProcessTypeEntity typeEntity = processTypeDao
+                .getCurrentProcessType(companyId,key);
+
+        //如果数据库内没有类型值，或者指定了类型，保存到数据库
+        if ((typeEntity == null) || ObjectUtils.isNotEmpty(type)) {
+            boolean isFound = true;
+            if (typeEntity == null) {
+                isFound = false;
+                typeEntity = new ProcessTypeEntity();
+                typeEntity.initEntity();
+                typeEntity.setCompanyId(companyId);
+                typeEntity.setCreateBy(accountId);
+            } else {
+                typeEntity.setUpdateBy(accountId);
+            }
+            //设置此类型为启用状态
+            typeEntity.setStatus(1);
+            //设置此类型为未删除状态
+            typeEntity.setDeleted(0);
+            //设置业务类型
+            typeEntity.setTargetType(key);
+            //设置类型
+            if (isNotInvalid(type)){
+                if (isConditionType) {
+                    typeEntity.setType(ProcessTypeConst.PROCESS_TYPE_CONDITION);
+                } else {
+                    typeEntity.setType(ProcessTypeConst.TYPE_FREE);
+                }
+            } else {
+                typeEntity.setType(type);
+            }
+
+            if (isFound) {
+                processTypeDao.updateById(typeEntity);
+            } else {
+                processTypeDao.insert(typeEntity);
+            }
+        }
+        return typeEntity.getType();
+
+    }
+    private boolean isNotInvalid(Integer type){
+        return (type == null)
+                || (type < ProcessTypeConst.TYPE_FREE)
+                || (type > ProcessTypeConst.PROCESS_TYPE_CONDITION);
+    }
+
+    //根据用户编号获取用户信息
+    private FlowUserDTO getFlowUser(String companyUserId){
+        String name = getUserName(companyUserId);
+        String img = getUserHeadImg(companyUserId);
+        return new FlowUserDTO(companyUserId,name,img);
+    }
+
+    //根据用户编号获取用户信息
+    private void getFlowUser(FlowUserDTO user){
+        String name = getUserName(user.getId());
+        String img = getUserHeadImg(user.getId());
+        user.setImgUrl(img);
+        user.setName(name);
+    }
+
+    //获取用户头像
+    private String getUserHeadImg(String companyUserId){
+        String url = null;
+        CompanyUserEntity companyUser = companyUserDao.selectById(companyUserId);
+        if (companyUser != null){
+            try {
+                url = userAttachService.getHeadImgUrl(companyUser.getUserId());
+            } catch (Exception e) {
+                TraceUtils.check(false,log);
+            }
+        }
+        return url;
+    }
+
+    //获取用户名称
+    private String getUserName(String companyUserId){
+        return this.companyUserDao.getUserName(companyUserId);
+    }
+    /**
+     *
+     * @param businessKey:主业务id（比如报销单id）
+     * @param dto：从前端传递过来的基础参数
+     * @param isPass ：当前审批是否通过
+     * @description ：完成该任务后，如果不是结束流程，则存在下一个任务，为下一个审批人增加一条审批记录(为了兼容原有的做法，并且不改动原来的查询)
+     * 如果审核通过，并且已经结束流程，则把审批的主记录设置为审批通过状态
+     * 如果没有审批通过，则把当前记录设置为退回状态
+     */
+    private void saveAudit(String businessKey, BaseDTO dto, boolean isPass) throws Exception{
+        List<FlowTaskDTO> taskList = null;
+        if(isPass){
+            taskList = workflowService.listWorkTask(businessKey);
+            //处理 getVariables ，创建下一个人要处理的任务，并且返回任务的id，可能是多个任务的id。把返回的任务id 放入 dto.getVariables() 中进行保存
+            for(FlowTaskDTO task:taskList){
+                // todo 处理审核记录
+                SaveExpMainDTO saveExpMain = new SaveExpMainDTO();
+                saveExpMain.setCompanyUserId(dto.getCurrentCompanyUserId());
+                saveExpMain.setAuditPerson(task.getAssigneeUser().getId());
+                saveExpMain.setAppOrgId(dto.getAppOrgId());
+                saveExpMain.setAccountId(dto.getAccountId());
+                saveExpMain.setId(businessKey);
+                String auditId = this.expAuditService.saveAudit(saveExpMain);
+                Map<String,Object> map = new HashMap<>();
+                map.put(auditIdKey,auditId);
+                workflowService.setTaskVariables(task.getId(),map);
+            }
+        }
+
+        //没有任务，说明流程已经结束
+        if(isPass && CollectionUtils.isEmpty(taskList)){
+            ExpMainEntity exp = new ExpMainEntity();
+            exp.setId(businessKey);
+            exp.setApproveStatus("1");//审批通过的状态
+            this.expMainService.updateById(exp);
+        }
+        if(!isPass){
+            ExpMainEntity exp = new ExpMainEntity();
+            exp.setId(businessKey);
+            exp.setApproveStatus("2");//退回的状态
+            this.expMainService.updateById(exp);
+        }
+    }
 
     /**
-     * 获取流程节点的处理人名称
+     * 根据类型获取流程的Key值
      */
-    private String getProcessNodeMemberName(String nodeId){
-        List<String> memberNameList = new ArrayList<>();
-        List<ProcessNodeMemberEntity> memberList = processNodeMemberDao.listMemberByNodeId(nodeId);
-        //以下代码后续还需要优化
-        memberList.stream().forEach(m->{
-            if(!StringUtil.isNullOrEmpty(m.getMemberId())){
-                memberNameList.add(companyUserDao.getUserName(m.getMemberId()));
-            } else if(!StringUtil.isNullOrEmpty(m.getRoleType())){
-                if(m.getRoleType().equals(ProjectMemberType.PROJECT_OPERATOR_MANAGER.toString()) ){
-                    if(ProjectMemberType.projectMemberRole.get(m.getRoleType())!=null){
-                        memberNameList.add(ProjectMemberType.projectMemberRole.get(m.getRoleType()));
-                    }
-                }
+    private String getProcessKey(String targetType,String companyId){
+        //如果是自由流程，则启动系统中的默认的流程
+        ProcessTypeEntity processType = this.processTypeDao.getCurrentProcessType(companyId,targetType);
+        if(processType==null){
+            return ProcessTypeConst.PROCESS_TYPE_FREE;
+        }
+        return "p_"+processType.getCompanyId()+"_"+processType.getTargetType()+"_"+processType.getType();
+       // return processType.getCompanyId()+"_"+processType.getTargetType()+"_"+processType.getType();
+    }
+
+    /**
+     * 描述       查询所有流程定义，分组返回列表，组名为中文
+     * 日期       2018/8/2
+     * @author   张成亮
+     * @param    query 流程查询条件
+     * @return   分组流程列表
+     **/
+    @Override
+    public List<ProcessDefineGroupDTO> listProcessDefineWithGroup(ProcessDefineQueryDTO query) {
+        List<ProcessDefineGroupDTO> result = new ArrayList<>();
+
+        //行政审批包含两种，因此都需要过滤出来
+        //因项目需求，现在不从数据库内读取，而直接提供固定信息
+//        query.setKey(ProcessTypeConst.PROCESS_TYPE_LEAVE);
+//        List<ProcessDefineDTO> leaveList = listProcessDefine(query);
+//        query.setKey(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS);
+//        List<ProcessDefineDTO> onBusinessList = listProcessDefine(query);
+//        List<ProcessDefineDTO> normalList = new ArrayList<>();
+//        normalList.addAll(leaveList);
+//        normalList.addAll(onBusinessList);
+        List<ProcessDefineDTO> normalList = asList(
+                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_LEAVE),"适用于公司请假审批",ProcessTypeConst.PROCESS_TYPE_LEAVE,1,query.getCurrentCompanyId()),
+                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS),"适用于公司出差审批",ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS,1,query.getCurrentCompanyId())
+        );
+        updateType(normalList, query.getCurrentCompanyId());
+        result.add(new ProcessDefineGroupDTO("行政审批",normalList));
+
+        //财务审批
+        //因项目需求，现在不从数据库内读取，而直接提供固定信息
+//        query.setKey(ProcessTypeConst.PROCESS_TYPE_FINANCE);
+//        List<ProcessDefineDTO> financeList = listProcessDefine(query)
+        List<ProcessDefineDTO> financeList = asList(
+                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_EXPENSE),"适用于公司报销审批",ProcessTypeConst.PROCESS_TYPE_EXPENSE,1,query.getCurrentCompanyId()),
+                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_COST_APPLY),"适用于公司费用审批",ProcessTypeConst.PROCESS_TYPE_COST_APPLY,1,query.getCurrentCompanyId())
+        );
+        updateType(financeList, query.getCurrentCompanyId());
+        result.add(new ProcessDefineGroupDTO("财务审批", financeList));
+
+        //项目审批
+        //因项目需求，现在不从数据库内读取，而直接提供固定信息
+//        query.setKey(ProcessTypeConst.PROCESS_TYPE_PROJECT);
+//        List<ProcessDefineDTO> projectList = listProcessDefine(query)
+        List<ProcessDefineDTO> projectList = asList(
+                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP),"适用于公司立项审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP,1,query.getCurrentCompanyId()),
+                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY),"适用于公司付款审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY,1,query.getCurrentCompanyId())
+        );
+        updateType(projectList, query.getCurrentCompanyId());
+        result.add(new ProcessDefineGroupDTO("项目审批", projectList));
+
+        return result;
+    }
+
+    //更新列表内的流程type值
+    private void updateType(List<ProcessDefineDTO> pdList,String companyId){
+        pdList.forEach(pd -> {
+            ProcessTypeEntity type = processTypeDao.getCurrentProcessType(companyId,pd.getKey());
+            if (type != null){
+                pd.setType(type.getType());
+                pd.setId(StringUtils.lastLeft(pd.getId(),ProcessTypeConst.ID_SPLIT)
+                        + ProcessTypeConst.ID_SPLIT
+                        + pd.getType());
             }
         });
-        return StringUtils.join(memberNameList,",");
     }
 
-    /**
-     * 获取从前端返回到后台来的组织类型，方便后面查询及业务处理
-     */
-    private Integer getCompanyType(String relationCompanyId){
-        if(!StringUtil.isNullOrEmpty(relationCompanyId)){
-            if(relationCompanyId.equals("root")){
-                return ProcessConst.COMPANY_TYPE_ALL;
-            }
-            else if(relationCompanyId.contains("subCompany")){
-                return ProcessConst.COMPANY_TYPE_SUB;
-            }
-            else if(relationCompanyId.contains("partnerId")){
-                return ProcessConst.COMPANY_TYPE_PARTNER;
-            }else if(relationCompanyId.length()==32){
-                return ProcessConst.COMPANY_TYPE_SINGLE;
-            }
-        }
-        return ProcessConst.COMPANY_TYPE_ALL;
-    }
+//    /**
+//     * 签收任务
+//     */
+//    @Override
+//    public void claimTask(TaskDTO dto) throws Exception {
+//        WorkActionDTO actionDTO = new WorkActionDTO();
+//        actionDTO.setCompanyUserId(dto.getCompanyUserId());
+//        actionDTO.setId(dto.getTaskId());
+//        workflowService.claimWorkTask(actionDTO);
+//
+//    }
+
+//    /**
+//     * 完成任务
+//     */
+//    @Override
+//    public void completeTask(TaskDTO dto) throws Exception {
+//      //  claimTask(dto);
+//        Map<String, Object> variable =  workflowService.getTaskVariables(dto.getTaskId());
+//        //处理当前任务 对应 myTask 表中的任务 先获取，再处理，myTask表中的id保存在activiti对应的任务的variable对应的myTaskId中
+//        if(variable.containsKey(auditIdKey) && !StringUtil.isNullOrEmpty(auditIdKey)){
+//            SaveExpMainDTO saveExpMain = new SaveExpMainDTO();
+//            saveExpMain.setId(dto.getBusinessKey());
+//            saveExpMain.setCompanyUserId(dto.getCompanyUserId());
+//            saveExpMain.setVersionNum(dto.getVersionNum());
+//            expAuditService.completeAudit(saveExpMain);
+//        }
+//        //以便在我的任务列表中，能获取到activiti中的任务。
+//        WorkActionDTO workAction = new WorkActionDTO();
+//        workAction.setId(dto.getTaskId());
+//        workAction.setResultMap(dto.getVariables());
+//        workflowService.completeWorkTask(workAction);
+//        //保存我的任务（当前任务完成，如果下一个节点不是结束节点，系统会自动为下一个节点产生一个任务，系统需要保存一条相应的审核记录中）
+//        this.saveAudit(dto.getBusinessKey(),dto,false);
+//
+//    }
+
+
+//    /**
+//     * 完成任务
+//     */
+//    @Override
+//    public void completeTask2(TaskDTO dto) throws Exception {
+//        //  claimTask(dto);
+//
+//        List<FlowTaskDTO> list = workflowService.listWorkTaskVariableValueEquals(auditIdKey,dto.getId());
+//        for(FlowTaskDTO task:list){
+//            //查询当前流程是否是自由流程
+//            String processKey = workflowService.getProcessKeyByTaskId(task.getId());
+//            WorkActionDTO workAction = new WorkActionDTO();
+//            workAction.setId(task.getId());
+//            //如果是自由流程，如果前端没有传递审批人，则直接结束流程
+//            if(ProcessTypeConst.PROCESS_TYPE_FREE.equals(processKey) && StringUtil.isNullOrEmpty(dto.getNextCompanyUserId())){
+//                workAction.setIsPass(ProcessTypeConst.NOT_PASS);
+//            }else if(StringUtil.isNullOrEmpty(dto.getApproveStatus()) || ProcessTypeConst.PASS.equals(dto.getApproveStatus())){
+//                workAction.setIsPass(ProcessTypeConst.PASS);
+//            }else {
+//                workAction.setIsPass(ProcessTypeConst.NOT_PASS);
+//            }
+//            dto.getVariables().put("approveUser",dto.getNextCompanyUserId());
+//            workAction.setResultMap(dto.getVariables());
+//            workAction.setCompanyUserId(dto.getCurrentCompanyUserId());
+//            if(task.getAssignee()==null || task.getAssignee().getId()==null){
+//                workAction.getResultMap().put("isNotSign","1");
+//            }
+//            workflowService.completeWorkTask(workAction);
+//            //保存我的任务（当前任务完成，如果下一个节点不是结束节点，系统会自动为下一个节点产生一个任务，系统需要保存一条相应的审核记录中）
+//            this.saveAudit(dto.getBusinessKey(),dto, ProcessTypeConst.PASS.equals(workAction.getIsPass()));
+//        }
+//    }
+
+//    /**
+//     *
+//     * @param dto:mainId:审批主记录的id
+//     * @param dto:targetType 审批类型
+//     * @return 返回到前端的标识，1：代表是自由流程，需要前端传递审批人 0：代表不是自由流程，不需要前端传递审批人
+//     */
+//    @Override
+//    public  Map<String,Object>  getCurrentProcess(AuditEditDTO dto) {
+//        String processDefineId = null;
+//        Map<String,Object> result = new HashMap<>();
+//        result.put("processFlag",1);//返回到前端的标识，1：代表是自由流程，需要前端传递审批人
+//        result.put("conditionList",new ArrayList<>());//首先默认返回个空数组
+//        result.put("processType", ProcessTypeConst.TYPE_FREE);
+//        if(StringUtil.isNullOrEmpty(dto.getMainId())){
+//            ProcessTypeEntity processType = this.processTypeDao.getCurrentProcessType(dto.getAppOrgId(),dto.getAuditType());
+//            if(!(processType==null || ProcessTypeConst.TYPE_FREE == processType.getType())){
+//                processDefineId = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getAppOrgId()));
+//            }
+//        }else {
+//            ProcessInstanceRelationEntity instanceRelation = processInstanceRelationDao.getProcessInstanceRelation(dto.getMainId());
+//            if(instanceRelation!=null){
+//                processDefineId = workflowService.getProcessDefineIdByProcessInstanceId(instanceRelation.getProcessInstanceId());
+//            }
+//        }
+//        if(!StringUtil.isNullOrEmpty(processDefineId) && !processDefineId.contains(ProcessTypeConst.PROCESS_TYPE_FREE)){
+//            List<UserTaskNodeDTO> userList = new ArrayList<>();
+//            ProcessDetailPrepareDTO detailPrepareDTO = new ProcessDetailPrepareDTO();
+//            detailPrepareDTO.setSrcProcessDefineId(processDefineId);
+//            List<UserTaskDTO> userTaskList = this.workflowService.listFlowTaskUser(detailPrepareDTO);
+//            //todo 重新封装
+//            userList = this.getUserList(userTaskList);
+//            result.put("processFlag",0);//代表不是自由流程，不需要前端传递审批人
+//            result.put("conditionList",userList);
+//            String key = processDefineId.split(":")[0];
+//            result.put("processType",key.substring(key.lastIndexOf("_")+1));
+//        }
+//        return result;
+//    }
+//
+//    @Override
+//    public List<UserTaskNodeDTO> getUserListForAudit(AuditEditDTO dto) {
+//        List<UserTaskNodeDTO> userList = new ArrayList<>();
+//        String processDefineId = null;
+//        if(StringUtil.isNullOrEmpty(dto.getMainId())){
+//            ProcessTypeEntity processType = this.processTypeDao.getCurrentProcessType(dto.getAppOrgId(),dto.getAuditType());
+//            if(processType==null || ProcessTypeConst.TYPE_FREE == processType.getType()){
+//                return userList;
+//            }else {
+//                processDefineId = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getAppOrgId()));
+//            }
+//        }else {
+//            ProcessInstanceRelationEntity instanceRelation = processInstanceRelationDao.getProcessInstanceRelation(dto.getMainId());
+//            if(instanceRelation!=null){
+//                processDefineId = workflowService.getProcessDefineIdByProcessInstanceId(instanceRelation.getProcessInstanceId());
+//            }
+//        }
+//        if(!StringUtil.isNullOrEmpty(processDefineId) && !processDefineId.equals(ProcessTypeConst.PROCESS_TYPE_FREE)){
+//            ProcessDetailPrepareDTO detailPrepareDTO = new ProcessDetailPrepareDTO();
+//            detailPrepareDTO.setSrcProcessDefineId(processDefineId);
+//            List<UserTaskDTO> userTaskList = this.workflowService.listFlowTaskUser(detailPrepareDTO);
+//            //todo 重新封装
+//            userList = this.getUserList(userTaskList);
+//        }
+//        return userList;
+//    }
+//
+//
+//    /**
+//     * 重新组织数据，根据id，把用户的信息获取，返回到前端
+//     */
+//    private List<UserTaskNodeDTO> getUserList(List<UserTaskDTO> userTaskList){
+//        List<UserTaskNodeDTO> list = new ArrayList<>();
+//        userTaskList.stream().forEach(u->{
+//            UserTaskNodeDTO taskNode = new UserTaskNodeDTO();
+//            taskNode.setMax(u.getMax());
+//            taskNode.setMin(u.getMin()==null?"0":u.getMin());
+//            u.getAssignList().stream().forEach(assign->{
+//                taskNode.getUserList().add(companyUserDao.getCompanyUserDataById(assign));
+//            });
+//            list.add(taskNode);
+//        });
+//        return list;
+//    }
+
 }

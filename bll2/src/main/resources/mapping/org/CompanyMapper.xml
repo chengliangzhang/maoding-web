@@ -220,10 +220,23 @@
         <result column="sys_role" property="sysRole" jdbcType="VARCHAR" />
     </resultMap>
 
+    <resultMap id="ContractCompanyMap" type="com.maoding.org.dto.CompanyDTO" >
+        <id column="id" property="id" jdbcType="VARCHAR" />
+        <result column="corpname" property="companyName" jdbcType="VARCHAR" />
+        <result column="address" property="companyAddress" jdbcType="VARCHAR" />
+    </resultMap>
 
-        <!-- 查询相关甲方 -->
-    <select id="listCompanyA" resultMap="CompanyMap" parameterType="com.maoding.org.dto.CompanyQueryDTO">
-
+    <!-- 查询相关甲方 -->
+    <select id="listCompanyA" resultMap="ContractCompanyMap" parameterType="com.maoding.org.dto.CompanyQueryDTO">
+        select company_list.*
+        from maoding_web_enterprise company_list
+            inner join maoding_web_project project_list on (
+                project_list.pstatus = '0'
+                and project_list.construct_company = company_list.id
+                <if test="projectId != null">
+                    and (project_list.id = #{projectId})
+                </if>
+            )
     </select>
 
     <!-- 查询相关合作方 -->
@@ -239,11 +252,12 @@
               </if>
               <if test="currentCompanyId != null">
                   <choose>
+                      <!-- 0:查询收款,1:查询付款,其他:同时查询收款和付款 -->
                       <when test="isPay == '0'.toString()">
-                          and (task_relation.from_company_id = #{currentCompanyId})
+                          and (task_relation.to_company_id = #{currentCompanyId})
                       </when>
                       <when test="isPay == '1'.toString()">
-                          and (task_relation.to_company_id = #{currentCompanyId})
+                          and (task_relation.from_company_id = #{currentCompanyId})
                       </when>
                       <otherwise>
                           and ((task_relation.from_company_id = #{currentCompanyId}) or
@@ -252,6 +266,9 @@
                   </choose>
               </if>
             )
-        where company_list.status = '0'
+        where (company_list.status = '0')
+            <if test="currentCompanyId != null">
+                and (company_list.id != #{currentCompanyId})
+            </if>
     </select>
 </mapper>

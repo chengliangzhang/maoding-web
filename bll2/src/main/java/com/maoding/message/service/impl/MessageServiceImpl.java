@@ -1617,6 +1617,6 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
     }
 
     private boolean isDeliverConfirm(MyTaskEntity myTask){
-        return MyTaskEntity.DELIVER_CONFIRM_FINISH == myTask.getTaskType();
+        return SystemParameters.DELIVER_CONFIRM_FINISH == myTask.getTaskType();
     }
 }

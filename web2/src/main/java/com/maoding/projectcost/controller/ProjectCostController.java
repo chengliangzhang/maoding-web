@@ -44,6 +44,7 @@ public class ProjectCostController extends BaseController {
         map.put("companyUserId",this.currentCompanyUserId);
         map.put("accountId",this.currentUserId);
         map.put("currentCompanyId",this.currentCompanyId);
+        map.put("companyId",this.currentCompanyId);
         return projectCostService.getContractInfo(map);
     }
 
@@ -59,6 +60,7 @@ public class ProjectCostController extends BaseController {
     public AjaxMessage getTechicalReviewFeeInfo(@RequestBody Map<String,Object> map)throws Exception{
         map.put("companyUserId",this.currentCompanyUserId);
         map.put("currentCompanyId",this.currentCompanyId);
+        map.put("companyId",this.currentCompanyId);
         map.put("accountId",this.currentUserId);
         return projectCostService.getTechicalReviewFeeInfo(map);
     }
@@ -79,6 +81,23 @@ public class ProjectCostController extends BaseController {
         map.put("accountId",this.currentUserId);
         return projectCostService.getCooperativeDesignFeeInfo(map);
     }
+
+    /**
+     * 方法描述：合作设计费界面数据
+     * 作者：MaoSF
+     * 日期：2017/3/7
+     */
+    @RequestMapping(value ={"/listProjectCost"} , method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage listProjectCost(@RequestBody Map<String,Object> map)throws Exception{
+        map.put("companyId",this.currentCompanyId);
+        map.put("currentCompanyId",this.currentCompanyId);
+        map.put("companyUserId",this.currentCompanyUserId);
+        map.put("accountId",this.currentUserId);
+        return AjaxMessage.succeed(projectCostService.listProjectCost(map)) ;
+    }
+
+
 
     /**
      * 方法描述：其他费用界面数据（project，type=4：其他费用付款，type=5:其他费用收款）

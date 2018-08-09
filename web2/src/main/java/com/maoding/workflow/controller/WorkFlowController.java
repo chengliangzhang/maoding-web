@@ -5,6 +5,7 @@ import com.maoding.activiti.service.WorkflowService;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.util.StringUtils;
+import com.maoding.process.service.ProcessService;
 import com.maoding.user.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,8 @@ public class WorkFlowController extends BaseController {
     @Autowired
     private WorkflowService workflowService;
 
+    @Autowired
+    private ProcessService processService;
     /**
      * 描述       加载流程，准备进行编辑
      * 日期       2018/8/2
@@ -52,7 +55,7 @@ public class WorkFlowController extends BaseController {
     @ResponseBody
     public AjaxMessage prepareProcessDefine(@RequestBody ProcessDetailPrepareDTO prepareRequest) throws Exception {
         updateCurrentUserInfo(prepareRequest);
-        ProcessDefineDetailDTO deployment = workflowService.prepareProcessDefine(prepareRequest);
+        ProcessDefineDetailDTO deployment = processService.prepareProcessDefine(prepareRequest);
         return AjaxMessage.succeed("加载成功").setData(deployment);
     }
 
@@ -71,7 +74,7 @@ public class WorkFlowController extends BaseController {
     public AjaxMessage listProcessDefine(@RequestBody ProcessDefineQueryDTO query) throws Exception {
         updateCurrentUserInfo(query);
         if (StringUtils.isEmpty(query.getKey())) {
-            List<ProcessDefineGroupDTO> result = workflowService.listProcessDefineWithGroup(query);
+            List<ProcessDefineGroupDTO> result = processService.listProcessDefineWithGroup(query);
             return AjaxMessage.succeed("查询成功").setData(result);
         } else {
             List<ProcessDefineDTO> result = workflowService.listProcessDefine(query);
@@ -102,7 +105,7 @@ public class WorkFlowController extends BaseController {
     @ResponseBody
     public AjaxMessage changeProcessDefine(@RequestBody ProcessDefineDetailEditDTO editRequest) throws Exception {
         updateCurrentUserInfo(editRequest);
-        ProcessDefineDetailDTO deployment = workflowService.changeProcessDefine(editRequest);
+        ProcessDefineDetailDTO deployment = processService.changeProcessDefine(editRequest);
         return AjaxMessage.succeed("修改成功").setData(deployment);
     }
 
@@ -118,7 +121,7 @@ public class WorkFlowController extends BaseController {
     @ResponseBody
     public AjaxMessage deleteProcessDefine(@RequestBody ProcessDefineQueryDTO deleteRequest) throws Exception {
         updateCurrentUserInfo(deleteRequest);
-        workflowService.deleteProcessDefine(deleteRequest);
+        processService.deleteProcessDefine(deleteRequest);
         return AjaxMessage.succeed("删除成功");
     }
 
@@ -136,8 +139,8 @@ public class WorkFlowController extends BaseController {
     @ResponseBody
     public AjaxMessage listUser(@RequestBody UserQueryDTO query) throws Exception {
         updateCurrentUserInfo(query);
-        List<UserDTO> result = workflowService.listUser(query);
-        return AjaxMessage.succeed("查询成功").setData(result);
+        //List<UserDTO> result = workflowService.listUser(query);
+        return AjaxMessage.succeed("查询成功").setData(null);
     }
 
     /**

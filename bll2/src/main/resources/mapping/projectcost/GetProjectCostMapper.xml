@@ -27,7 +27,9 @@
     from maoding_web_project_cost
     where status= '0'
     and project_id=#{projectId,jdbcType=VARCHAR}
-    and type = #{type,jdbcType=VARCHAR}
+    <if test="type!=null">
+      and type = #{type,jdbcType=VARCHAR}
+    </if>
     <if test="fromCompanyId != null" >
      and from_company_id = #{fromCompanyId,jdbcType=VARCHAR}
     </if>
@@ -37,6 +39,7 @@
     <if test="flag != null" >
       and flag = #{flag,jdbcType=VARCHAR}
     </if>
+    order by type,create_date
   </select>
 
 </mapper>

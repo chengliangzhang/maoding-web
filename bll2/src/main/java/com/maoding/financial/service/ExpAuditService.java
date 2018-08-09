@@ -1,6 +1,7 @@
 package com.maoding.financial.service;
 
 import com.maoding.core.base.service.BaseService;
+import com.maoding.financial.dto.SaveExpMainDTO;
 import com.maoding.financial.entity.ExpAuditEntity;
 
 /**
@@ -11,4 +12,16 @@ import com.maoding.financial.entity.ExpAuditEntity;
  * 日    期 : 2016/7/26-15:56
  */
 public interface ExpAuditService extends BaseService<ExpAuditEntity>{
+
+    String getAuditPerson(String mainId,String accountId);
+
+    /**
+     * 保存审批记录
+     */
+    ExpAuditEntity saveExpAudit(String mainId,String auditPerson,String submitAuditId,String accountId,String parentId) throws Exception;
+
+
+  //  int completeAudit(SaveExpMainDTO dto) throws Exception;
+
+    String saveAudit(SaveExpMainDTO dto) throws Exception;
 }

@@ -41,6 +41,11 @@ public class BaseDTO implements Serializable {
     private String currentCompanyId;
 
     /**
+     * 当前操作人的组织成员id
+     */
+    private String currentCompanyUserId;
+
+    /**
      * 移动平台（android ,ios）
      */
     private String platform;
@@ -221,4 +226,11 @@ public class BaseDTO implements Serializable {
         this.interfaceVersion = interfaceVersion;
     }
 
+    public String getCurrentCompanyUserId() {
+        return currentCompanyUserId;
+    }
+
+    public void setCurrentCompanyUserId(String currentCompanyUserId) {
+        this.currentCompanyUserId = currentCompanyUserId;
+    }
 }

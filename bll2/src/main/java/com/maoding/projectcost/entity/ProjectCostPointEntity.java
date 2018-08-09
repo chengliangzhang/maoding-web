@@ -30,7 +30,9 @@ public class ProjectCostPointEntity extends BaseEntity {
      */
     private String projectId;
 
-
+    /**
+     * 0：有效，1：无效
+     */
     private String status;
 
     /**
@@ -42,6 +44,7 @@ public class ProjectCostPointEntity extends BaseEntity {
      * 回款比例
      */
     private String feeProportion;
+
     /**
      * 回款金额
      */

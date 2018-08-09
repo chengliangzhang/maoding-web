@@ -178,15 +178,6 @@ public interface CompanyDao extends BaseDao<CompanyEntity> {
     CompanyRelationDTO getOrgType(String orgId);
 
     /**
-     * 描述     查询相关甲方
-     * 日期     2018/8/8
-     * @author  张成亮
-     * @return  符合条件的公司信息列表
-     * @param   query 查询条件
-     **/
-    List<CompanyDTO> listCompanyA(CompanyQueryDTO query);
-
-    /**
      * 描述     查询相关乙方
      * 日期     2018/8/8
      * @author  张成亮

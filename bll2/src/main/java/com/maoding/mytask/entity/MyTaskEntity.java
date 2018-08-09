@@ -7,10 +7,7 @@ import java.util.Date;
 
 public class MyTaskEntity extends BaseEntity{
 
-    /** 确认交付文件上传完毕 */
-    public static final int DELIVER_CONFIRM_FINISH = 26;
-    /** 进行交付文件上传 */
-    public static final int DELIVER_EXECUTE = 27;
+
 
 
     private String taskTitle;
@@ -34,6 +31,7 @@ public class MyTaskEntity extends BaseEntity{
      23.费用申请审核
 //     24.请假出差审核 请假出差没有任务
 //     25.出差审核
+     29.财务填写发票信息的任务
      */
     private Integer taskType;
 

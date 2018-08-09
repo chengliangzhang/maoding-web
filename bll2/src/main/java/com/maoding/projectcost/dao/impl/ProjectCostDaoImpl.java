@@ -23,4 +23,9 @@ public class ProjectCostDaoImpl extends GenericDao<ProjectCostEntity> implements
         return this.sqlSession.selectList("GetProjectCostMapper.selectByParam", map);
     }
 
+    @Override
+    public ProjectCostEntity getProjectCostByPointId(String pointId) {
+        return this.sqlSession.selectOne("ProjectCostEntityMapper.getProjectCostByPointId",pointId);
+    }
+
 }

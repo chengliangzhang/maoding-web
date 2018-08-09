@@ -44,7 +44,7 @@ import java.util.Map;
 
     /**
      * 方法描述：保存我的任务(技术审查费付款确认，合作技术费付款确认（taskType=4 or 6）)
-     * taskType=10，合同回款，财务到款，taskType =20，其他费用，财务付款，taskType= 21，其他费用，财务到款
+     * taskType=10，合同回款，财务到款，taskType =20，其他费用，财务付款，taskType= 21，其他费用，财务到款，taskType = 29：财务对发票信息进行确认和补充
      * 作者：MaoSF
      * 日期：2016/12/21
      */
