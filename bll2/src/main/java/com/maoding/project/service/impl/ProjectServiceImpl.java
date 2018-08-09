@@ -31,6 +31,7 @@ import com.maoding.org.dao.CompanyDao;
 import com.maoding.org.dao.CompanyPropertyDao;
 import com.maoding.org.dao.CompanyUserDao;
 import com.maoding.org.dto.CompanyDTO;
+import com.maoding.org.dto.CompanyQueryDTO;
 import com.maoding.org.dto.CompanyUserTableDTO;
 import com.maoding.org.entity.BusinessPartnerEntity;
 import com.maoding.org.entity.CompanyEntity;
@@ -1492,6 +1493,37 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         if(!CollectionUtils.isEmpty(data)){
             total = projectDao.getProjectListByProcessingCount(query);
         }
+
+        //为每个项目行添加合作组织信息，即本查询组织发布了签发任务给到的组织，不包含自己
+        if (ObjectUtils.isNotEmpty(data)){
+            //把当前公司编号保存到查询的currentCompanyId字段中备用
+            if (StringUtils.isEmpty(query.getCurrentCompanyId())){
+                query.setCurrentCompanyId((String)param.get("relationCompany"));
+            }
+            data.forEach(project->{
+                CompanyQueryDTO cooperatorCompanyQuery = new CompanyQueryDTO();
+                cooperatorCompanyQuery.setProjectId(project.getId());
+                cooperatorCompanyQuery.setCurrentCompanyId(query.getCurrentCompanyId());
+                //只查询外发的组织
+                cooperatorCompanyQuery.setIsPay("1");
+                List<CompanyDTO> cooperatorCompanyList = companyDao.listCompanyCooperate(cooperatorCompanyQuery);
+                if (ObjectUtils.isNotEmpty(cooperatorCompanyList)){
+                    //合并组织名称
+                    StringBuilder sb = new StringBuilder();
+                    cooperatorCompanyList.forEach(company->{
+                        if (sb.length() > 0){
+                            sb.append(",");
+                        }
+                        sb.append(company.getCompanyName());
+                    });
+                    project.setDesignCompanyName(sb.toString());
+                }
+            });
+        }
+
+
+
+
         result.put("data",data);
         result.put("total", total);
         result.put("pageIndex", query.getPageIndex());
