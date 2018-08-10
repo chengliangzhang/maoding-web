@@ -64,7 +64,7 @@
                       </otherwise>
                   </choose>
               )
-          inner join maoding_web_project_cost_point cost_point on (cost_point.cost_id = cost_classic.id)
+          inner join maoding_web_project_cost_point cost_point on (cost_point.cost_id = cost_type.id)
           inner join maoding_web_project_cost_point_detail cost_detail on (cost_detail.point_id = cost_point.id)
           inner join maoding_web_project_cost_payment_detail cost_pay on (cost_pay.point_detail_id = cost_detail.id)
     group by project_list.id
