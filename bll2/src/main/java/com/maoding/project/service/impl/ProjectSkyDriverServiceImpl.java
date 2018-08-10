@@ -1531,16 +1531,16 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         deleteParam.put("accountId",dto.getAccountId());
         projectSkyDriverDao.updateSkyDriveStatus(deleteParam);
         dto.getContactAttachList().stream().forEach(attach->{
-            String id = attach.get("id");
+            String id = attach.getId();
             ProjectSkyDriveEntity file = this.projectSkyDriverDao.selectById(id);
             file.setTargetId(dto.getId());
             file.setProjectId(dto.getProjectId());
             file.setType(NetFileType.PROJECT_FEE_ARCHIVE);
-            if(!(attach.get("isUploadFile")!=null && "1".equals(attach.get("isUploadFile")))){
+            if(!"1".equals(attach.getIsUploadFile())){
                 file.setId(StringUtil.buildUUID());
                 projectSkyDriverDao.insert(file);
             }else {
-                file.setId(attach.get("id"));
+                file.setId(attach.getId());
                 file.setStatus("0");
                 projectSkyDriverDao.updateById(file);
             }

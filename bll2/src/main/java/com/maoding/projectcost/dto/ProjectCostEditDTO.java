@@ -1,12 +1,11 @@
 package com.maoding.projectcost.dto;
 
+import com.maoding.attach.dto.FileEditDTO;
 import com.maoding.core.base.dto.BaseDTO;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 深圳市设计同道技术有限公司
@@ -72,7 +71,7 @@ public class ProjectCostEditDTO extends BaseDTO {
     /**
      * 上传附件的list：map（id：附件id,isUploadFile=1:新上传的）
      */
-    private List<Map<String,String>> contactAttachList = new ArrayList<>();
+    private List<FileEditDTO> contactAttachList = new ArrayList<>();
 
 
     public String getProjectId() {
@@ -155,11 +154,11 @@ public class ProjectCostEditDTO extends BaseDTO {
         this.payType = payType;
     }
 
-    public List<Map<String, String>> getContactAttachList() {
+    public List<FileEditDTO> getContactAttachList() {
         return contactAttachList;
     }
 
-    public void setContactAttachList(List<Map<String, String>> contactAttachList) {
+    public void setContactAttachList(List<FileEditDTO> contactAttachList) {
         this.contactAttachList = contactAttachList;
     }
 }
