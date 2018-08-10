@@ -1,6 +1,7 @@
 package com.maoding.projectcost.controller;
 
 import com.maoding.core.base.controller.BaseController;
+import com.maoding.core.base.dto.CoreQueryDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.projectcost.dto.*;
 import com.maoding.projectcost.service.ProjectCostService;
@@ -260,4 +261,11 @@ public class ProjectCostController extends BaseController {
      *                startDate 起始日期
      *                endDate 终止日期
      **/
+    @RequestMapping(value ={"/listProjectCostSummary"} , method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage saveCostPaymentDetail(@RequestBody CoreQueryDTO query) throws Exception{
+        updateCurrentUserInfo(query);
+        return null;
+    }
+
 }
