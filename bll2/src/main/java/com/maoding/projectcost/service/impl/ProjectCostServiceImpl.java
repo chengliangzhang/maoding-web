@@ -9,10 +9,7 @@ import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.CompanyBillType;
 import com.maoding.core.constant.ProjectCostConst;
 import com.maoding.core.constant.SystemParameters;
-import com.maoding.core.util.BeanUtilsEx;
-import com.maoding.core.util.CommonUtil;
-import com.maoding.core.util.DateUtils;
-import com.maoding.core.util.StringUtil;
+import com.maoding.core.util.*;
 import com.maoding.dynamic.dao.ZInfoDAO;
 import com.maoding.dynamic.service.DynamicService;
 import com.maoding.exception.CustomException;
@@ -33,6 +30,8 @@ import com.maoding.org.service.CompanyService;
 import com.maoding.org.service.CompanyUserService;
 import com.maoding.process.dto.ProcessNodeDTO;
 import com.maoding.project.dao.ProjectDao;
+import com.maoding.project.dto.ProjectSimpleDTO;
+import com.maoding.project.dto.QueryProjectDTO;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.service.ProjectSkyDriverService;
 import com.maoding.projectcost.dao.*;
@@ -2286,6 +2285,41 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
      **/
     @Override
     public List<ProjectCostSummaryDTO> listProjectCostSummary(ProjectCostSummaryQueryDTO query) {
-        return projectCostDao.listProjectCostSummary(query);
+        //建立参与的项目的列表
+        QueryProjectDTO projectQuery = BeanUtils.createFrom(query,QueryProjectDTO.class);
+        List<ProjectSimpleDTO> projectList = projectDao.listProject(projectQuery);
+        List<ProjectCostSummaryDTO> list = BeanUtils.createListFrom(projectList,ProjectCostSummaryDTO.class);
+
+        //添加合同及到款信息
+        query.setCostType(ProjectCostConst.FEE_TYPE_CONTRACT);
+        List<ProjectCostSingleSummaryDTO> contractList = projectCostDao.listProjectCostSummary(query);
+        if (ObjectUtils.isNotEmpty(contractList)){
+            contractList.forEach(contract->{
+                for (ProjectCostSummaryDTO project : list) {
+                    if (StringUtils.isSame(project.getId(),contract.getId())) {
+                        project.setContract(contract.getPlan());
+                        project.setContractReal(contract.getReal());
+                        break;
+                    }
+                }
+            });
+        }
+
+        //添加技术审查费及到款信息
+        query.setCostType(ProjectCostConst.FEE_TYPE_CHECK);
+        List<ProjectCostSingleSummaryDTO> designList = projectCostDao.listProjectCostSummary(query);
+        if (ObjectUtils.isNotEmpty(designList)){
+            contractList.forEach(design->{
+                for (ProjectCostSummaryDTO project : list) {
+                    if (StringUtils.isSame(project.getId(),design.getId())) {
+                        project.setDesign(design.getPlan());
+                        project.setDesignReal(design.getReal());
+                        break;
+                    }
+                }
+            });
+        }
+
+        return list;
     }
 }

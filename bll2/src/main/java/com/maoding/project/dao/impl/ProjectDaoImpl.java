@@ -189,6 +189,17 @@ public class ProjectDaoImpl extends GenericDao<ProjectEntity> implements Project
         return this.sqlSession.selectList("ProjectMapper.listBuildTypeByName", query);
     }
 
+    /**
+     * 描述       查询项目
+     * 日期       2018/8/10
+     *
+     * @param query
+     * @author 张成亮
+     */
+    @Override
+    public List<ProjectSimpleDTO> listProject(QueryProjectDTO query) {
+        return sqlSession.selectList("ProjectMapper.listProject", query);
+    }
 }
 
 

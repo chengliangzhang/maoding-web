@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -264,7 +265,8 @@ public class ProjectCostController extends BaseController {
     @ResponseBody
     public AjaxMessage listProjectCostSummary(@RequestBody ProjectCostSummaryQueryDTO query) throws Exception{
         updateCurrentUserInfo(query);
-        return null;
+        List<ProjectCostSummaryDTO> list = projectCostService.listProjectCostSummary(query);
+        return AjaxMessage.succeed(list);
     }
 
 }

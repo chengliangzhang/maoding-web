@@ -2,7 +2,7 @@ package com.maoding.projectcost.dao;
 
 import com.maoding.core.base.dao.BaseDao;
 import com.maoding.projectcost.dto.ProjectCostDTO;
-import com.maoding.projectcost.dto.ProjectCostSummaryDTO;
+import com.maoding.projectcost.dto.ProjectCostSingleSummaryDTO;
 import com.maoding.projectcost.dto.ProjectCostSummaryQueryDTO;
 import com.maoding.projectcost.entity.ProjectCostEntity;
 
@@ -35,5 +35,5 @@ public interface ProjectCostDao extends BaseDao<ProjectCostEntity> {
      * @return ProjectCostSummaryDTO列表
      * @author 张成亮
      **/
-    List<ProjectCostSummaryDTO> listProjectCostSummary(ProjectCostSummaryQueryDTO query);
+    List<ProjectCostSingleSummaryDTO> listProjectCostSummary(ProjectCostSummaryQueryDTO query);
 }

@@ -21,4 +21,8 @@ public interface ProjectCostConst {
     int FEE_TYPE_COOPERATE = 3;
     int FEE_TYPE_OUT = 4;
     int FEE_TYPE_IN = 5;
+    //合作设计费收款
+    int FEE_TYPE_COOPERATE_IN = 10;
+    //合作设计费付款
+    int FEE_TYPE_COOPERATE_OUT = 11;
 }

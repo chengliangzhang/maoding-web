@@ -3,12 +3,13 @@ package com.maoding.projectcost.dao.impl;
 import com.maoding.core.base.dao.GenericDao;
 import com.maoding.projectcost.dao.ProjectCostDao;
 import com.maoding.projectcost.dto.ProjectCostDTO;
-import com.maoding.projectcost.dto.ProjectCostSummaryDTO;
+import com.maoding.projectcost.dto.ProjectCostSingleSummaryDTO;
 import com.maoding.projectcost.dto.ProjectCostSummaryQueryDTO;
 import com.maoding.projectcost.entity.ProjectCostEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 深圳市设计同道技术有限公司
@@ -40,7 +41,7 @@ public class ProjectCostDaoImpl extends GenericDao<ProjectCostEntity> implements
      * @author 张成亮
      **/
     @Override
-    public List<ProjectCostSummaryDTO> listProjectCostSummary(ProjectCostSummaryQueryDTO query) {
+    public List<ProjectCostSingleSummaryDTO> listProjectCostSummary(ProjectCostSummaryQueryDTO query) {
         return sqlSession.selectList("GetProjectCostMapper.listProjectCostSummary", query);
     }
 }

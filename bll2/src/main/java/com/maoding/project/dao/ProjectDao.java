@@ -131,5 +131,12 @@ public interface ProjectDao extends BaseDao<ProjectEntity> {
      * 根据名字查询类型，无需去重，供项目列表查询
      */
     List<ContentDTO> listBuildTypeByName(QueryProjectDTO query);
+    
+    /**
+     * 描述       查询项目
+     * 日期       2018/8/10
+     * @author   张成亮
+     **/
+    List<ProjectSimpleDTO> listProject(QueryProjectDTO query);
 
 }

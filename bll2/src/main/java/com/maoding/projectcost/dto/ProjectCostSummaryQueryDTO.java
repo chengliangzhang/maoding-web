@@ -13,6 +13,7 @@ import java.util.Date;
  * 描述:
  **/
 public class ProjectCostSummaryQueryDTO extends CoreQueryDTO {
+
     /** 起始日期 */
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date startDate;
@@ -20,6 +21,17 @@ public class ProjectCostSummaryQueryDTO extends CoreQueryDTO {
     /** 终止日期 */
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date endDate;
+
+    /** 款项类型 */
+    private Integer costType;
+
+    public Integer getCostType() {
+        return costType;
+    }
+
+    public void setCostType(Integer costType) {
+        this.costType = costType;
+    }
 
     public Date getStartDate() {
         return startDate;

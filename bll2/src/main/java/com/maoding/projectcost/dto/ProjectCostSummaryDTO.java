@@ -1,5 +1,7 @@
 package com.maoding.projectcost.dto;
 
+import com.maoding.core.base.dto.CoreDTO;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -10,7 +12,9 @@ import java.math.RoundingMode;
  * 作者: 张成亮
  * 描述:
  **/
-public class ProjectCostSummaryDTO {
+public class ProjectCostSummaryDTO extends CoreDTO {
+    /** id: 项目编号 */
+
     /** 项目名称 */
     private String projectName;
 

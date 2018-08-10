@@ -43,7 +43,30 @@
   </select>
 
   <!-- 获取组织内各项目的收付款汇总列表 -->
-  <select id="listProjectCostSummary" resultMap="" parameterType="com.maoding.projectcost.dto.ProjectCostSummaryQueryDTO">
-
+  <select id="listProjectCostSummary" resultType="com.maoding.projectcost.dto.ProjectCostSingleSummaryDTO" parameterType="com.maoding.projectcost.dto.ProjectCostSummaryQueryDTO">
+      select
+          project_list.id,
+          cost_type.fee as plan,
+          sum(if(cost_pay.paid_date is not null,ifnull(cost_pay.fee,0),0)) as `real`
+      from maoding_web_project project_list
+          inner join maoding_web_project_cost cost_type on (cost_type.project_id = project_list.id
+                  <choose>
+                      <when test="costType == 1">
+                          and (cost_type.type = #{costType})
+                          and (cost_type.to_company_id = #{currentCompanyId})
+                      </when>
+                      <when test="costType == 2">
+                          and (cost_type = #{costType})
+                          and (cost_type.to_company_id = #{currentCompanyId})
+                      </when>
+                      <otherwise>
+                          and ((cost_type.from_company_id = #{currentCompanyId}) or (cost_type.to_company_id = #{currentCompanyId}))
+                      </otherwise>
+                  </choose>
+              )
+          inner join maoding_web_project_cost_point cost_point on (cost_point.cost_id = cost_classic.id)
+          inner join maoding_web_project_cost_point_detail cost_detail on (cost_detail.point_id = cost_point.id)
+          inner join maoding_web_project_cost_payment_detail cost_pay on (cost_pay.point_detail_id = cost_detail.id)
+    group by project_list.id
   </select>
 </mapper>

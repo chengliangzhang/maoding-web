@@ -114,4 +114,23 @@
             #{name}
         </foreach>
     </select>
+
+    <select id="listProject" resultType="com.maoding.project.dto.ProjectSimpleDTO" parameterType="com.maoding.project.dto.QueryProjectDTO">
+        select
+            project_list.project_name as name,
+            concat(company_creator.company_name,'/',user_creator.user_name) as creator,
+            project_list.*
+        from maoding_web_project project_list
+            inner join maoding_web_company company_creator on (company_creator.id = project_list.company_id)
+			inner join maoding_web_account user_creator on (user_creator.id = project_list.create_by)
+            left join maoding_web_company company_second on (company_second.id = project_list.company_bid)
+            left join maoding_web_project_task_relation cooperator_list on (cooperator_list.relation_status = '0' and cooperator_list.project_id = project_list.id)
+			left join maoding_web_company company_relation on (company_relation.id = cooperator_list.from_company_id or company_relation.id = cooperator_list.to_company_id)
+        where project_list.pstatus = '0'
+            <if test="currentCompanyId != null">
+                and (company_creator.id = #{currentCompanyId}
+                    or company_second.id = #{currentCompanyId}
+                    or company_relation.id = #{currentCompanyId})
+            </if>
+    </select>
 </mapper>
