@@ -42,4 +42,8 @@
     order by type,create_date
   </select>
 
+  <!-- 获取组织内各项目的收付款汇总列表 -->
+  <select id="listProjectCostSummary" resultMap="" parameterType="com.maoding.projectcost.dto.ProjectCostSummaryQueryDTO">
+
+  </select>
 </mapper>

@@ -9,7 +9,10 @@ import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.CompanyBillType;
 import com.maoding.core.constant.ProjectCostConst;
 import com.maoding.core.constant.SystemParameters;
-import com.maoding.core.util.*;
+import com.maoding.core.util.BeanUtilsEx;
+import com.maoding.core.util.CommonUtil;
+import com.maoding.core.util.DateUtils;
+import com.maoding.core.util.StringUtil;
 import com.maoding.dynamic.dao.ZInfoDAO;
 import com.maoding.dynamic.service.DynamicService;
 import com.maoding.exception.CustomException;
@@ -29,7 +32,6 @@ import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.org.service.CompanyService;
 import com.maoding.org.service.CompanyUserService;
 import com.maoding.process.dto.ProcessNodeDTO;
-import com.maoding.process.entity.ProcessNodeEntity;
 import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.service.ProjectSkyDriverService;
@@ -2271,5 +2273,19 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
 //            costEntity.setFlag("1");
 //            this.projectCostDao.insert(costEntity);
 //        }
+    }
+
+    /**
+     * 描述     获取组织内各项目的收付款汇总列表
+     * 日期     2018/8/10
+     *
+     * @param query 查询条件
+     *              startDate 起始日期
+     * @return ProjectCostSummaryDTO列表
+     * @author 张成亮
+     **/
+    @Override
+    public List<ProjectCostSummaryDTO> listProjectCostSummary(ProjectCostSummaryQueryDTO query) {
+        return projectCostDao.listProjectCostSummary(query);
     }
 }
