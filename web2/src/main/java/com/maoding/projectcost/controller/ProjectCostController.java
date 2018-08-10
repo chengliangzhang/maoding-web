@@ -250,4 +250,14 @@ public class ProjectCostController extends BaseController {
         dto.setCurrentCompanyUserId(this.currentCompanyUserId);
         return this.projectCostService.updateCostPaymentDetail(dto);
     }
+    
+    /**
+     * 描述     获取组织内各项目的收付款汇总列表
+     * 日期     2018/8/10
+     * @author  张成亮
+     * @return  ProjectCostSummaryDTO列表
+     * @param   query 查询条件
+     *                startDate 起始日期
+     *                endDate 终止日期
+     **/
 }
