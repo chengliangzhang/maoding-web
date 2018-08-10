@@ -2193,17 +2193,24 @@ public class CompanyServiceImpl extends GenericService<CompanyEntity> implements
 
         List<CompanyDTO> result = null;
         if (!isPayQuery(query)) {
-            //如果是收款查询，合同回款返回甲方，技术审查费、合作设计费返回合作方
+            //如果是收款查询，合同回款返回甲方，乙方查询技术审查费返回立项方，合作设计费返回发出签发任务合作方
             if (isContract(query.getFeeType()) && isCreator(project,query.getCurrentCompanyId())){
                 //合同回款
                 result = listCompanyA(project);
-            } else if ((isCheck(query.getFeeType()) && !isCreator(project,query.getCurrentCompanyId())) || (isCooperate(query.getFeeType()))) {
-                //技术审查费或合作设计费
+            } else if (isCheck(query.getFeeType()) && !isCreator(project,query.getCurrentCompanyId())) {
+                //技术审查费
+                result = listCompany(project.getCompanyId());
+            } else if (isCooperate(query.getFeeType())) {
+                //合作设计费
                 result = companyDao.listCompanyCooperate(query);
             }
         } else {
-            if ((isCheck(query.getFeeType()) && isCreator(project,query.getCurrentCompanyId())) || (isCooperate(query.getFeeType()))){
-                //技术审查费或合作设计费
+            //否则，如果是付款查询，立项方查询技术审查费返回乙方，合作设计费返回接收签发任务合作方
+            if (isCheck(query.getFeeType()) && isCreator(project,query.getCurrentCompanyId())){
+                //技术审查费
+                result = listCompany(project.getCompanyBid());
+            } else if (isCooperate(query.getFeeType())){
+                //合作设计费
                 result = companyDao.listCompanyCooperate(query);
             }
         }
@@ -2258,6 +2265,17 @@ public class CompanyServiceImpl extends GenericService<CompanyEntity> implements
             result.add(company);
         }
 
+        return result;
+    }
+
+    //获取公司信息,并包装为列表
+    private List<CompanyDTO> listCompany(String companyId){
+        List<CompanyDTO> result = new ArrayList<>();
+        if (StringUtils.isNotEmpty(companyId)) {
+            CompanyEntity companyEntity = companyDao.selectById(companyId);
+            CompanyDTO company = BeanUtils.createFrom(companyEntity,CompanyDTO.class);
+            result.add(company);
+        }
         return result;
     }
 }
