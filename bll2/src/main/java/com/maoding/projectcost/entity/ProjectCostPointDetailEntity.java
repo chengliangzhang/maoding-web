@@ -34,9 +34,9 @@ public class ProjectCostPointDetailEntity extends BaseEntity{
     private String invoice;
 
     /**
-     * 备用字段
+     * 描述
      */
-    private String field1;
+    private String pointDetailDescription;
 
     /**
      * 0：有效，1：无效
@@ -82,12 +82,12 @@ public class ProjectCostPointDetailEntity extends BaseEntity{
         this.fee = fee;
     }
 
-    public String getField1() {
-        return field1;
+    public String getPointDetailDescription() {
+        return pointDetailDescription;
     }
 
-    public void setField1(String field1) {
-        this.field1 = field1 == null ? null : field1.trim();
+    public void setPointDetailDescription(String pointDetailDescription) {
+        this.pointDetailDescription = pointDetailDescription;
     }
 
     public String getStatus() {
