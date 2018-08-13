@@ -550,7 +550,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
             return AjaxMessage.error("数据错误");
         }
         //todo 根据流程状态，是否处理发票信息
-        String invoiceId = invoiceService.saveInvoice(projectCostPointDetailDTO);
+        String invoiceId = this.saveInvoice(projectCostPointDetailDTO);
         ProjectCostPointDetailEntity entity = null;
         projectCostPointDetailDTO.setInvoice(invoiceId);
         //新增(发起收收款)
@@ -578,12 +578,18 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
     }
 
 
+    private String saveInvoice(ProjectCostPointDetailDTO projectCostPointDetailDTO) throws Exception{
+        InvoiceEditDTO invoice = new InvoiceEditDTO();
+        BeanUtils.copyProperties(projectCostPointDetailDTO,invoice);
+        invoice.setId(projectCostPointDetailDTO.getInvoice());
+        String invoiceId = invoiceService.saveInvoice(invoice);
+        return invoiceId;
+
+    }
     private ProjectCostPointDetailEntity saveProjectCostPointDetailEntity(ProjectCostPointDetailDTO projectCostPointDetailDTO,ProjectCostDTO costDTO,boolean isInnerCompany) throws Exception {
         //todo 是否处理发票信息
-        String invoiceId = invoiceService.saveInvoice(projectCostPointDetailDTO);
         ProjectCostPointDetailEntity entity = new ProjectCostPointDetailEntity();
         BaseDTO.copyFields(projectCostPointDetailDTO, entity);
-        entity.setInvoice(invoiceId);
         //新增(发起收收款)
         if (StringUtil.isNullOrEmpty(projectCostPointDetailDTO.getId())) {
             String id = StringUtil.buildUUID();
@@ -602,10 +608,8 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
 
     private ProjectCostPointDetailEntity updateProjectCostPointDetailEntity(ProjectCostPointDetailDTO projectCostPointDetailDTO) throws Exception {
         //todo 根据流程状态，是否处理发票信息
-        String invoiceId = invoiceService.saveInvoice(projectCostPointDetailDTO);
         ProjectCostPointDetailEntity entity = new ProjectCostPointDetailEntity();
         BaseDTO.copyFields(projectCostPointDetailDTO, entity);
-        entity.setInvoice(invoiceId);
         ProjectCostPointDetailEntity origin = projectCostPointDetailDao.selectById(projectCostPointDetailDTO.getId());//保留原有数据
         projectCostPointDetailDao.updateById(entity);
         //添加项目动态

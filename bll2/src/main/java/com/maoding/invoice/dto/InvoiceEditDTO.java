@@ -94,6 +94,8 @@ public class InvoiceEditDTO extends BaseDTO {
      */
     private String email;
 
+    private boolean isAdd;
+
     public String getPointDetailId() {
         return pointDetailId;
     }
@@ -236,5 +238,13 @@ public class InvoiceEditDTO extends BaseDTO {
 
     public void setApplyDate(String applyDate) {
         this.applyDate = applyDate;
+    }
+
+    public boolean isAdd() {
+        return isAdd;
+    }
+
+    public void setAdd(boolean add) {
+        isAdd = add;
     }
 }
