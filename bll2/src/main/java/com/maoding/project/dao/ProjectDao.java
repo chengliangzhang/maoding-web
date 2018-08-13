@@ -139,4 +139,8 @@ public interface ProjectDao extends BaseDao<ProjectEntity> {
      **/
     List<ProjectSimpleDTO> listProject(QueryProjectDTO query);
 
+    /**
+     * 获取记录总数
+     */
+    int getLastQueryCount();
 }

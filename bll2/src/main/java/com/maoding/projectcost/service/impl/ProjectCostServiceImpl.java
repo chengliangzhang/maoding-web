@@ -4,6 +4,7 @@ import com.maoding.companybill.dto.SaveCompanyBillDTO;
 import com.maoding.companybill.service.CompanyBalanceService;
 import com.maoding.companybill.service.CompanyBillService;
 import com.maoding.core.base.dto.BaseDTO;
+import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.CompanyBillType;
@@ -2330,25 +2331,40 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         List<ProjectSimpleDTO> projectList = projectDao.listProject(projectQuery);
         List<ProjectCostSummaryDTO> list = BeanUtils.createListFrom(projectList,ProjectCostSummaryDTO.class);
 
-        //添加合同及到款信息
-        updateProjectCostSummaryList(list,query,ProjectCostConst.FEE_TYPE_CONTRACT);
-
-        //添加技术审查费及到款信息
-        updateProjectCostSummaryList(list,query,ProjectCostConst.FEE_TYPE_TECHNICAL);
-
-        //添加合作设计费收费及到款信息
-        updateProjectCostSummaryList(list,query,ProjectCostConst.FEE_TYPE_COOPERATE_GAIN);
-
-        //添加合作设计费付费及付款信息
-        updateProjectCostSummaryList(list,query,ProjectCostConst.FEE_TYPE_COOPERATE_PAY);
-
-        //添加报销费用信息和费用信息
+        //更新合同及到款信息、技术审查费及到款信息等具体信息，更新累计到账和累计付款信息
         updateProjectCostSummaryList(list,query);
 
-        //计算累计到账和累计付款
-        updateProjectCostSummaryList(list);
-
         return list;
+    }
+
+    /**
+     * 描述     分页获取组织内各项目的收付款汇总列表
+     * 日期     2018/8/10
+     *
+     * @param query 查询条件
+     *              startDate 起始日期
+     * @return ProjectCostSummaryDTO列表
+     * @author 张成亮
+     **/
+    @Override
+    public CorePageDTO<ProjectCostSummaryDTO> listPageProjectCostSummary(ProjectCostSummaryQueryDTO query) {
+
+        //获取项目分页显示信息
+        QueryProjectDTO projectQuery = BeanUtils.createFrom(query,QueryProjectDTO.class);
+        List<ProjectSimpleDTO> projectList = projectDao.listProject(projectQuery);
+        int count = projectDao.getLastQueryCount();
+        List<ProjectCostSummaryDTO> list = BeanUtils.createListFrom(projectList,ProjectCostSummaryDTO.class);
+
+        //更新合同及到款信息、技术审查费及到款信息等具体信息，更新累计到账和累计付款信息
+        updateProjectCostSummaryList(list,query);
+
+        //建立分页返回信息
+        CorePageDTO<ProjectCostSummaryDTO> page = new CorePageDTO<>();
+        page.setCount(count);
+        page.setPageSize(DigitUtils.parseInt(query.getPageSize()));
+        page.setPageIndex(DigitUtils.parseInt(query.getPageIndex()));
+        page.setList(list);
+        return page;
     }
 
     /**
@@ -2376,11 +2392,24 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
     }
 
     /**
-     * 描述       在exp表内查询报销及费用信息，并更新项目费用表
+     * 描述       更新合同及到款信息、技术审查费及到款信息等具体信息，更新累计到账和累计付款信息
      * 日期       2018/8/13
      * @author   张成亮
      **/
     private List<ProjectCostSummaryDTO> updateProjectCostSummaryList(List<ProjectCostSummaryDTO> summaryList,ProjectCostSummaryQueryDTO query){
+        //添加合同及到款信息
+        updateProjectCostSummaryList(summaryList,query,ProjectCostConst.FEE_TYPE_CONTRACT);
+
+        //添加技术审查费及到款信息
+        updateProjectCostSummaryList(summaryList,query,ProjectCostConst.FEE_TYPE_TECHNICAL);
+
+        //添加合作设计费收费及到款信息
+        updateProjectCostSummaryList(summaryList,query,ProjectCostConst.FEE_TYPE_COOPERATE_GAIN);
+
+        //添加合作设计费付费及付款信息
+        updateProjectCostSummaryList(summaryList,query,ProjectCostConst.FEE_TYPE_COOPERATE_PAY);
+
+        //在exp表内查询报销及费用信息，添加报销费用信息和费用信息
         List<ProjectExpSingleSummaryDTO> singleSummaryList = projectCostDao.listProjectExpSummary(query);
         if (ObjectUtils.isNotEmpty(singleSummaryList)){
             for(ProjectExpSingleSummaryDTO singleSummary : singleSummaryList) {
@@ -2393,6 +2422,10 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
                 }
             }
         }
+
+        //计算累计到账和累计付款
+        updateProjectCostSummaryList(summaryList);
+
         return summaryList;
     }
 

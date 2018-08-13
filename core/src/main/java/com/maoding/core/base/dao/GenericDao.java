@@ -2,9 +2,6 @@ package com.maoding.core.base.dao;
 
 
 import com.maoding.core.base.entity.BaseEntity;
-import org.springframework.util.ObjectUtils;
-
-import java.util.List;
 
 /**深圳市设计同道技术有限公司
  * 类    名：GenericDao
@@ -43,7 +40,7 @@ public class GenericDao<T extends BaseEntity> extends AbstractDao<T> implements 
 	 *
 	 * @return 最后select语句所能查找到的记录条数总数
 	 */
-	public Integer getLastQueryCount() {
+	public int getLastQueryCount() {
 		return sqlSession.selectOne("CommonMapper.getLastQueryCount");
 	}
 }

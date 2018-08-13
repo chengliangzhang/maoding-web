@@ -1,5 +1,6 @@
 package com.maoding.projectcost.service;
 
+import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.service.BaseService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.invoice.dto.InvoiceEditDTO;
@@ -192,4 +193,15 @@ public interface ProjectCostService extends BaseService<ProjectCostEntity>{
      *                endDate 终止日期
      **/
     List<ProjectCostSummaryDTO> listProjectCostSummary(ProjectCostSummaryQueryDTO query);
+
+    /**
+     * 描述     分页获取组织内各项目的收付款汇总列表
+     * 日期     2018/8/10
+     * @author  张成亮
+     * @return  ProjectCostSummaryDTO列表
+     * @param   query 查询条件
+     *                startDate 起始日期
+     *                endDate 终止日期
+     **/
+    CorePageDTO<ProjectCostSummaryDTO> listPageProjectCostSummary(ProjectCostSummaryQueryDTO query);
 }

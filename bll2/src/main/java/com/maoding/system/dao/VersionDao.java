@@ -44,5 +44,5 @@ public interface VersionDao extends BaseDao<VersionEntity> {
 	 * 注：由于BaseDao接口在BaseService内被使用，而没有定义其实现类，因此无法在BaseDao接口内定义此方法，
 	 * 只能在BaseDao的实现基类GenericDao内定义实现方法，在各个Dao接口内定义此方法并调用基类实现
 	 */
-	Integer getLastQueryCount();
+	int getLastQueryCount();
 }

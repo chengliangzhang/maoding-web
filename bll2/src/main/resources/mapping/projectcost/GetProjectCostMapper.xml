@@ -47,7 +47,7 @@
 
   <!-- 获取组织内各项目的收付款汇总列表 -->
   <select id="listProjectCostSummary" resultType="com.maoding.projectcost.dto.ProjectCostSingleSummaryDTO" parameterType="com.maoding.projectcost.dto.ProjectCostSummaryQueryDTO">
-      select
+      select <include refid="CommonMapper.countSQL"/>
           cost_type.fee as plan,
           <if test="isDetail == '1'.toString()">
               sum(if(cost_pay.paid_date is not null,ifnull(cost_pay.fee,0),0)) as `real`,
@@ -95,10 +95,11 @@
               and (ifnull(project_list.project_create_date,project_list.create_date) >= #{startDate,jdbcType=TIMESTAMP})
           </if>
       group by project_list.id
+      <include refid="CommonMapper.limitSQL"/>
   </select>
 
   <select id="listProjectExpSummary" resultType="com.maoding.projectcost.dto.ProjectExpSingleSummaryDTO" parameterType="com.maoding.projectcost.dto.ProjectCostSummaryQueryDTO">
-      select
+      select <include refid="CommonMapper.countSQL"/>
           sum(if(exp_main.type=1,ifnull(exp_detail.exp_amount,0),0)) as expense,
           sum(if(exp_main.type=2,ifnull(exp_detail.exp_amount,0),0)) as cost,
           project_list.id
@@ -123,5 +124,6 @@
               and (ifnull(project_list.project_create_date,project_list.create_date) >= #{startDate,jdbcType=TIMESTAMP})
           </if>
       group by project_list.id
+      <include refid="CommonMapper.limitSQL"/>
   </select>
 </mapper>

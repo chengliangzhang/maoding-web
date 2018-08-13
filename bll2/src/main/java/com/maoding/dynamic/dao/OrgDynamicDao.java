@@ -29,7 +29,7 @@ public interface OrgDynamicDao extends BaseDao<OrgDynamicEntity> {
     /**
      * 获取记录总数
      */
-    Integer getLastQueryCount();
+    int getLastQueryCount();
 
     /**
      * 根据参数查询动态

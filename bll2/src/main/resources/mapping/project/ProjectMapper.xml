@@ -116,7 +116,7 @@
     </select>
 
     <select id="listProject" resultType="com.maoding.project.dto.ProjectSimpleDTO" parameterType="com.maoding.project.dto.QueryProjectDTO">
-        select
+        select <include refid="CommonMapper.countSQL"/>
             project_list.project_name as project_name,
             concat(company_creator.company_name,'/',user_creator.user_name) as project_creator,
             project_list.*
@@ -141,5 +141,7 @@
                     or company_relation.id = #{currentCompanyId})
             </if>
         group by project_list.id
+        order by ifnull(project_list.project_create_date,project_list.create_date) desc
+        <include refid="CommonMapper.limitSQL"/>
     </select>
 </mapper>

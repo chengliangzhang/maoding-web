@@ -1,6 +1,7 @@
 package com.maoding.projectcost.controller;
 
 import com.maoding.core.base.controller.BaseController;
+import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.projectcost.dto.*;
 import com.maoding.projectcost.service.ProjectCostService;
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -265,8 +265,8 @@ public class ProjectCostController extends BaseController {
     @ResponseBody
     public AjaxMessage listProjectCostSummary(@RequestBody ProjectCostSummaryQueryDTO query) throws Exception{
         updateCurrentUserInfo(query);
-        List<ProjectCostSummaryDTO> list = projectCostService.listProjectCostSummary(query);
-        return AjaxMessage.succeed(list);
+        CorePageDTO<ProjectCostSummaryDTO> page = projectCostService.listPageProjectCostSummary(query);
+        return AjaxMessage.succeed(page);
     }
 
 }

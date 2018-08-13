@@ -28,14 +28,6 @@ public class OrgDynamicDaoImpl extends GenericDao<OrgDynamicEntity> implements O
     }
 
     /**
-     * 获取记录总数
-     */
-    @Override
-    public Integer getLastQueryCount() {
-        return this.sqlSession.selectOne("OrgDynamicEntityMapper.getLastQueryCount");
-    }
-
-    /**
      * 根据参数查询动态
      *
      * @param param

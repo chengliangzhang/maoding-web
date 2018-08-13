@@ -10,7 +10,7 @@ import java.util.Date;
  * 日期: 2018/8/10
  * 类名: com.maoding.projectcost.dto.ProjectCostSummaryDTO
  * 作者: 张成亮
- * 描述:
+ * 描述: 项目费用汇总信息
  **/
 public class ProjectCostSummaryDTO extends CoreDTO {
     /** id: 项目编号 */
