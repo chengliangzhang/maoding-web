@@ -46,7 +46,7 @@
   <select id="listProjectCostSummary" resultType="com.maoding.projectcost.dto.ProjectCostSingleSummaryDTO" parameterType="com.maoding.projectcost.dto.ProjectCostSummaryQueryDTO">
       select
           cost_type.fee as plan,
-          <if test="isDetail != '1'.toString()">
+          <if test="isDetail == '1'.toString()">
               sum(if(cost_pay.paid_date is not null,ifnull(cost_pay.fee,0),0)) as `real`,
           </if>
           project_list.id
@@ -78,7 +78,7 @@
                       </otherwise>
                   </choose>
               )
-          <if test="isDetail != '1'.toString()">
+          <if test="isDetail == '1'.toString()">
               inner join maoding_web_project_cost_point cost_point on (cost_point.cost_id = cost_type.id)
               inner join maoding_web_project_cost_point_detail cost_detail on (cost_detail.point_id = cost_point.id)
               inner join maoding_web_project_cost_payment_detail cost_pay on (cost_pay.point_detail_id = cost_detail.id)

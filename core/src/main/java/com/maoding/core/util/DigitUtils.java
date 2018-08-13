@@ -196,6 +196,32 @@ public class DigitUtils {
     }
 
     /**
+     * 描述     转换为double型数值，并进行四舍五入
+     * 日期     2018/7/31
+     * @author  张成亮
+     * @return  如果可以转换为double，返回转换后的double型数值，如果不能转换，在日志内记录一条警告后返回(double)0
+     * @param   value 要转换的对象
+     * @param   decimal 要保留的小数位数
+     **/
+    public static double parseDouble(final Object value, int decimal){
+        return round(parseDouble(value),decimal);
+    }
+
+    /**
+     * 描述     进行四舍五入
+     * 日期     2018/7/31
+     * @author  张成亮
+     * @return  四舍五入后的值
+     * @param   value 需要四舍五入的值
+     * @param   decimal 小数位数
+     **/
+    public static double round(double value, int decimal){
+        BigDecimal val = (new BigDecimal(value))
+                .setScale(decimal,RoundingMode.HALF_UP);
+        return val.doubleValue();
+    }
+
+    /**
      * 描述     转换为float型数值
      * 日期     2018/7/31
      * @author  张成亮
@@ -207,6 +233,21 @@ public class DigitUtils {
             return (float)value;
         }
         return (float)parseDouble(value);
+    }
+
+    /**
+     * 描述     转换为float型数值，并进行四舍五入
+     * 日期     2018/7/31
+     * @author  张成亮
+     * @return  如果可以转换为float，返回转换后的float型数值，如果不能转换，在日志内记录一条警告后返回(float)0
+     * @param   value 要转换的对象
+     * @param   decimal 小数位数
+     **/
+    public static float parseFloat(final Object value, int decimal) {
+        if ((value != null) && (value.getClass() == float.class)) {
+            return (float)value;
+        }
+        return (float)parseDouble(value,decimal);
     }
 
     /**

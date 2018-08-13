@@ -2317,19 +2317,20 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
      * @author   张成亮
      **/
     private List<ProjectCostSummaryDTO> updateProjectCostSummaryList(List<ProjectCostSummaryDTO> summaryList){
+        final int roundFor10k = 6;
+
         for(ProjectCostSummaryDTO summary : summaryList) {
-            BigDecimal gain = new BigDecimal(0);
-            gain.add(summary.getContractReal())
-                    .add(summary.getDesignReal())
-                    .add(summary.getCooperateGainReal())
-                    .setScale(6,RoundingMode.HALF_UP);
-            summary.setGainRealSummary(gain);
-            BigDecimal pay = new BigDecimal(0);
-            pay.add(summary.getCooperatePayReal())
-                    .add(summary.getPayExpense())
-                    .add(summary.getPayOther())
-                    .setScale(6,RoundingMode.HALF_UP);
-            summary.setPayRealSummary(pay);
+            double gain = 0;
+            gain += summary.getContractReal();
+            gain += summary.getTechnicalReal();
+            gain += summary.getCooperateGainReal();
+            summary.setGainRealSummary(DigitUtils.round(gain,roundFor10k));
+
+            double pay = 0;
+            pay += summary.getCooperatePayReal();
+            pay += summary.getPayExpense();
+            pay += summary.getPayOther();
+            summary.setPayRealSummary(DigitUtils.round(pay,roundFor10k));
         }
         return summaryList;
     }
@@ -2375,8 +2376,8 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
                             summary.setContract(singleSummary.getPlan());
                             summary.setContractReal(singleSummary.getReal());
                         } else if (feeType == ProjectCostConst.FEE_TYPE_TECHNICAL) {
-                            summary.setDesign(singleSummary.getPlan());
-                            summary.setDesignReal(singleSummary.getReal());
+                            summary.setTechnical(singleSummary.getPlan());
+                            summary.setTechnicalReal(singleSummary.getReal());
                         } else if (feeType == ProjectCostConst.FEE_TYPE_COOPERATE_GAIN) {
                             summary.setCooperateGain(singleSummary.getPlan());
                             summary.setCooperateGainReal(singleSummary.getReal());
@@ -2398,7 +2399,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
                             if (feeType == ProjectCostConst.FEE_TYPE_CONTRACT) {
                                 summary.setContract(singleSummary.getPlan());
                             } else if (feeType == ProjectCostConst.FEE_TYPE_TECHNICAL) {
-                                summary.setDesign(singleSummary.getPlan());
+                                summary.setTechnical(singleSummary.getPlan());
                             } else if (feeType == ProjectCostConst.FEE_TYPE_COOPERATE_GAIN) {
                                 summary.setCooperateGain(singleSummary.getPlan());
                             } else if (feeType == ProjectCostConst.FEE_TYPE_COOPERATE_PAY) {

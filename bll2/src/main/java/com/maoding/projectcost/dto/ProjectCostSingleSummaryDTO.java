@@ -1,10 +1,6 @@
 package com.maoding.projectcost.dto;
 
 import com.maoding.core.base.dto.CoreDTO;
-import com.maoding.core.util.DigitUtils;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -17,24 +13,24 @@ public class ProjectCostSingleSummaryDTO extends CoreDTO {
     /** id: 项目编号 */
 
     /** 计划金额 */
-    private BigDecimal plan;
+    private double plan;
 
     /** 实际发生（到账或付款）金额 */
-    private BigDecimal real;
+    private double real;
 
-    public BigDecimal getPlan() {
-        return (plan != null) ? plan : new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
+    public double getPlan() {
+        return plan;
     }
 
-    public void setPlan(BigDecimal plan) {
-        this.plan = DigitUtils.toBigDecimal(plan,6);
+    public void setPlan(double plan) {
+        this.plan = plan;
     }
 
-    public BigDecimal getReal() {
-        return (real != null) ? real : new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
+    public double getReal() {
+        return real;
     }
 
-    public void setReal(BigDecimal real) {
-        this.real = DigitUtils.toBigDecimal(real,6);
+    public void setReal(double real) {
+        this.real = real;
     }
 }
