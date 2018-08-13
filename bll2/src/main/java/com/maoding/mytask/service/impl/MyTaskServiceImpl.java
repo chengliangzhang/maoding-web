@@ -851,6 +851,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
             case 5:
             case 6:
             case 7:
+            case 29:
                 return taskEntity4(targetId);
             case 8:
             case 9:
