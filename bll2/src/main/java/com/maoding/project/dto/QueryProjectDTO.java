@@ -1,7 +1,10 @@
 package com.maoding.project.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.maoding.core.base.dto.BaseDTO;
+import com.maoding.core.util.DateUtils;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,6 +34,14 @@ public class QueryProjectDTO extends BaseDTO {
     //起始日期和终止日期，所查记录范围为 startTime <= 立项日期 < 终止日期+1
     String startTime;
     String endTime;
+
+    //日期格式的起止日期
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    private Date startDate;
+
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    private Date endDate;
+
     //立项人编号
     String createBy;
     //排序字段名及排序方式
@@ -55,6 +66,30 @@ public class QueryProjectDTO extends BaseDTO {
     List<String> designCompanyNames;
 
     boolean isNeedSearchBuildType;
+
+    public Date getStartDate() {
+        Date d = startDate;
+        if (d == null){
+            d = DateUtils.str2Date(startTime,DateUtils.date_sdf);
+        }
+        return d;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        Date d = endDate;
+        if (d == null){
+            d = DateUtils.str2Date(endTime,DateUtils.date_sdf);
+        }
+        return d;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
 
     public List<String> getDesignCompanyNames() {
         return designCompanyNames;

@@ -83,7 +83,14 @@
               inner join maoding_web_project_cost_point_detail cost_detail on (cost_detail.point_id = cost_point.id)
               inner join maoding_web_project_cost_payment_detail cost_pay on (cost_pay.point_detail_id = cost_detail.id)
           </if>
-      where project_list.pstatus = '0'
+      where (project_list.pstatus = '0')
+          <!-- 项目立项时间过滤条件 -->
+          <if test="endDate != null">
+              and (addDate(#{endDate,jdbcType=TIMESTAMP},1) > ifnull(project_list.project_create_date,project_list.create_date))
+          </if>
+          <if test="startDate != null">
+              and (ifnull(project_list.project_create_date,project_list.create_date) >= #{startDate,jdbcType=TIMESTAMP})
+          </if>
       group by project_list.id
   </select>
 
@@ -104,7 +111,14 @@
               and exp_main.id = exp_detail.main_id
               and exp_main.company_id = #{currentCompanyId}
           )
-      where project_list.pstatus = '0'
+      where (project_list.pstatus = '0')
+          <!-- 项目立项时间过滤条件 -->
+          <if test="endDate != null">
+              and (addDate(#{endDate,jdbcType=TIMESTAMP},1) > ifnull(project_list.project_create_date,project_list.create_date))
+          </if>
+          <if test="startDate != null">
+              and (ifnull(project_list.project_create_date,project_list.create_date) >= #{startDate,jdbcType=TIMESTAMP})
+          </if>
       group by project_list.id
   </select>
 </mapper>

@@ -1,6 +1,9 @@
 package com.maoding.project.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.maoding.core.base.dto.CoreDTO;
+
+import java.util.Date;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -15,6 +18,18 @@ public class ProjectSimpleDTO extends CoreDTO {
 
     /** 项目立项方 */
     private String projectCreator;
+
+    /** 立项时间 */
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    private Date projectCreateDate;
+
+    public Date getProjectCreateDate() {
+        return projectCreateDate;
+    }
+
+    public void setProjectCreateDate(Date projectCreateDate) {
+        this.projectCreateDate = projectCreateDate;
+    }
 
     public String getProjectName() {
         return projectName;

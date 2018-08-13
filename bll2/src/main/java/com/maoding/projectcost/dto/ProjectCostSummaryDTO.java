@@ -1,6 +1,9 @@
 package com.maoding.projectcost.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.maoding.core.base.dto.CoreDTO;
+
+import java.util.Date;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -17,6 +20,11 @@ public class ProjectCostSummaryDTO extends CoreDTO {
 
     /** 立项组织/立项人 */
     private String projectCreator;
+
+    /** 立项时间 */
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    private Date projectCreateDate;
+
 
     /** 合同回款 */
     private double contract;
@@ -53,6 +61,14 @@ public class ProjectCostSummaryDTO extends CoreDTO {
 
     /** 累计付款 */
     private double payRealSummary;
+
+    public Date getProjectCreateDate() {
+        return projectCreateDate;
+    }
+
+    public void setProjectCreateDate(Date projectCreateDate) {
+        this.projectCreateDate = projectCreateDate;
+    }
 
     public String getProjectName() {
         return projectName;
