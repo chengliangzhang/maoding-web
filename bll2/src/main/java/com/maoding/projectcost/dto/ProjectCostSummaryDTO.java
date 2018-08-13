@@ -1,6 +1,7 @@
 package com.maoding.projectcost.dto;
 
 import com.maoding.core.base.dto.CoreDTO;
+import com.maoding.core.util.DigitUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -74,91 +75,91 @@ public class ProjectCostSummaryDTO extends CoreDTO {
     }
 
     public BigDecimal getContract() {
-        return contract;
+        return (contract != null) ? contract : new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
     }
 
     public void setContract(BigDecimal contract) {
-        this.contract = contract.setScale(6, RoundingMode.HALF_UP);
+        this.contract = DigitUtils.toBigDecimal(contract,6);
     }
 
     public BigDecimal getContractReal() {
-        return contractReal;
+        return (contractReal != null) ? contractReal : new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
     }
 
     public void setContractReal(BigDecimal contractReal) {
-        this.contractReal = contractReal.setScale(6, RoundingMode.HALF_UP);
+        this.contractReal = DigitUtils.toBigDecimal(contractReal,6);
     }
 
     public BigDecimal getDesign() {
-        return design;
+        return (design != null) ? design : new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
     }
 
     public void setDesign(BigDecimal design) {
-        this.design = design.setScale(6, RoundingMode.HALF_UP);
+        this.design = this.contract = DigitUtils.toBigDecimal(design,6);
     }
 
     public BigDecimal getDesignReal() {
-        return designReal;
+        return (designReal != null) ? designReal : new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
     }
 
     public void setDesignReal(BigDecimal designReal) {
-        this.designReal = designReal.setScale(6, RoundingMode.HALF_UP);
+        this.designReal = this.contract = DigitUtils.toBigDecimal(designReal,6);
     }
 
     public BigDecimal getCooperateGain() {
-        return cooperateGain;
+        return (cooperateGain != null) ? cooperateGain : new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
     }
 
     public void setCooperateGain(BigDecimal cooperateGain) {
-        this.cooperateGain = cooperateGain.setScale(6, RoundingMode.HALF_UP);
+        this.cooperateGain = DigitUtils.toBigDecimal(cooperateGain,6);
     }
 
     public BigDecimal getCooperateGainReal() {
-        return cooperateGainReal;
+        return (cooperateGainReal != null) ? cooperateGainReal : new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
     }
 
     public void setCooperateGainReal(BigDecimal cooperateGainReal) {
-        this.cooperateGainReal = cooperateGainReal.setScale(6, RoundingMode.HALF_UP);
+        this.cooperateGainReal = DigitUtils.toBigDecimal(cooperateGainReal,6);
     }
 
     public BigDecimal getGainRealSummary() {
-        return gainRealSummary;
+        return (gainRealSummary != null) ? gainRealSummary : new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
     }
 
     public void setGainRealSummary(BigDecimal gainRealSummary) {
-        this.gainRealSummary = gainRealSummary.setScale(6, RoundingMode.HALF_UP);
+        this.gainRealSummary = DigitUtils.toBigDecimal(gainRealSummary,6);
     }
 
     public BigDecimal getCooperatePay() {
-        return cooperatePay;
+        return (cooperatePay != null) ? cooperatePay : new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
     }
 
     public void setCooperatePay(BigDecimal cooperatePay) {
-        this.cooperatePay = cooperatePay.setScale(6, RoundingMode.HALF_UP);
+        this.cooperatePay = DigitUtils.toBigDecimal(cooperatePay,6);
     }
 
     public BigDecimal getCooperatePayReal() {
-        return cooperatePayReal;
+        return (cooperatePayReal != null) ? cooperatePayReal : new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
     }
 
     public void setCooperatePayReal(BigDecimal cooperatePayReal) {
-        this.cooperatePayReal = cooperatePayReal.setScale(6, RoundingMode.HALF_UP);
+        this.cooperatePayReal = DigitUtils.toBigDecimal(cooperatePayReal,6);
     }
 
     public BigDecimal getPayExpense() {
-        return payExpense;
+        return (payExpense != null) ? payExpense : new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
     }
 
     public void setPayExpense(BigDecimal payExpense) {
-        this.payExpense = payExpense.setScale(6, RoundingMode.HALF_UP);
+        this.payExpense = DigitUtils.toBigDecimal(payExpense,6);
     }
 
     public BigDecimal getPayOther() {
-        return payOther;
+        return (payOther != null) ? payOther : new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
     }
 
     public void setPayOther(BigDecimal payOther) {
-        this.payOther = payOther.setScale(6, RoundingMode.HALF_UP);
+        this.payOther = DigitUtils.toBigDecimal(payOther,6);
     }
 
     public BigDecimal getPayRealSummary() {
@@ -166,6 +167,6 @@ public class ProjectCostSummaryDTO extends CoreDTO {
     }
 
     public void setPayRealSummary(BigDecimal payRealSummary) {
-        this.payRealSummary = payRealSummary.setScale(6, RoundingMode.HALF_UP);
+        this.payRealSummary = DigitUtils.toBigDecimal(payRealSummary,6);
     }
 }

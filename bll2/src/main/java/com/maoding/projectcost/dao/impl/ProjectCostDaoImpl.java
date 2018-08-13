@@ -5,6 +5,7 @@ import com.maoding.projectcost.dao.ProjectCostDao;
 import com.maoding.projectcost.dto.ProjectCostDTO;
 import com.maoding.projectcost.dto.ProjectCostSingleSummaryDTO;
 import com.maoding.projectcost.dto.ProjectCostSummaryQueryDTO;
+import com.maoding.projectcost.dto.ProjectExpSingleSummaryDTO;
 import com.maoding.projectcost.entity.ProjectCostEntity;
 import org.springframework.stereotype.Service;
 
@@ -43,5 +44,22 @@ public class ProjectCostDaoImpl extends GenericDao<ProjectCostEntity> implements
     @Override
     public List<ProjectCostSingleSummaryDTO> listProjectCostSummary(ProjectCostSummaryQueryDTO query) {
         return sqlSession.selectList("GetProjectCostMapper.listProjectCostSummary", query);
+    }
+
+    /**
+     * 描述     获取组织内各项目的收付款汇总列表
+     * 日期     2018/8/10
+     *
+     * @param query 查询条件
+     *              projectId 关联项目编号
+     *              currentCompanyId 关联公司编号
+     *              startDate 起始日期
+     *              endDate 终止日期
+     * @return ProjectExpSummaryDTO列表
+     * @author 张成亮
+     **/
+    @Override
+    public List<ProjectExpSingleSummaryDTO> listProjectExpSummary(ProjectCostSummaryQueryDTO query) {
+        return sqlSession.selectList("GetProjectCostMapper.listProjectExpSummary", query);
     }
 }

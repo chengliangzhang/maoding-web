@@ -2296,13 +2296,63 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         //添加技术审查费及到款信息
         updateProjectCostSummaryList(list,query,ProjectCostConst.FEE_TYPE_TECHNICAL);
 
-        //添加合作设计费入款及到款信息
+        //添加合作设计费收费及到款信息
         updateProjectCostSummaryList(list,query,ProjectCostConst.FEE_TYPE_COOPERATE_GAIN);
 
-        //添加合作设计费入款及到款信息
+        //添加合作设计费付费及付款信息
         updateProjectCostSummaryList(list,query,ProjectCostConst.FEE_TYPE_COOPERATE_PAY);
 
+        //添加报销费用信息和费用信息
+        updateProjectCostSummaryList(list,query);
+
+        //计算累计到账和累计付款
+        updateProjectCostSummaryList(list);
+
         return list;
+    }
+
+    /**
+     * 描述       分别累加到账和付款项，并更新项目费用表
+     * 日期       2018/8/13
+     * @author   张成亮
+     **/
+    private List<ProjectCostSummaryDTO> updateProjectCostSummaryList(List<ProjectCostSummaryDTO> summaryList){
+        for(ProjectCostSummaryDTO summary : summaryList) {
+            BigDecimal gain = new BigDecimal(0);
+            gain.add(summary.getContractReal())
+                    .add(summary.getDesignReal())
+                    .add(summary.getCooperateGainReal())
+                    .setScale(6,RoundingMode.HALF_UP);
+            summary.setGainRealSummary(gain);
+            BigDecimal pay = new BigDecimal(0);
+            pay.add(summary.getCooperatePayReal())
+                    .add(summary.getPayExpense())
+                    .add(summary.getPayOther())
+                    .setScale(6,RoundingMode.HALF_UP);
+            summary.setPayRealSummary(pay);
+        }
+        return summaryList;
+    }
+
+    /**
+     * 描述       在exp表内查询报销及费用信息，并更新项目费用表
+     * 日期       2018/8/13
+     * @author   张成亮
+     **/
+    private List<ProjectCostSummaryDTO> updateProjectCostSummaryList(List<ProjectCostSummaryDTO> summaryList,ProjectCostSummaryQueryDTO query){
+        List<ProjectExpSingleSummaryDTO> singleSummaryList = projectCostDao.listProjectExpSummary(query);
+        if (ObjectUtils.isNotEmpty(singleSummaryList)){
+            for(ProjectExpSingleSummaryDTO singleSummary : singleSummaryList) {
+                for (ProjectCostSummaryDTO summary : summaryList) {
+                    if (StringUtils.isSame(summary.getId(), singleSummary.getId())) {
+                        summary.setPayExpense(singleSummary.getExpense());
+                        summary.setPayOther(singleSummary.getCost());
+                        break;
+                    }
+                }
+            }
+        }
+        return summaryList;
     }
 
     /**
@@ -2318,9 +2368,9 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         query.setIsDetail(IS_DETAIL);
         List<ProjectCostSingleSummaryDTO> singleSummaryList = projectCostDao.listProjectCostSummary(query);
         if (ObjectUtils.isNotEmpty(singleSummaryList)){
-            singleSummaryList.forEach(singleSummary->{
+            for(ProjectCostSingleSummaryDTO singleSummary : singleSummaryList) {
                 for (ProjectCostSummaryDTO summary : summaryList) {
-                    if (StringUtils.isSame(summary.getId(),singleSummary.getId())) {
+                    if (StringUtils.isSame(summary.getId(), singleSummary.getId())) {
                         if (feeType == ProjectCostConst.FEE_TYPE_CONTRACT) {
                             summary.setContract(singleSummary.getPlan());
                             summary.setContractReal(singleSummary.getReal());
@@ -2337,12 +2387,12 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
                         break;
                     }
                 }
-            });
+            }
         } else {
             query.setIsDetail(IS_NOT_DETAIL);
             singleSummaryList = projectCostDao.listProjectCostSummary(query);
             if (ObjectUtils.isNotEmpty(singleSummaryList)) {
-                singleSummaryList.forEach(singleSummary -> {
+                for(ProjectCostSingleSummaryDTO singleSummary : singleSummaryList) {
                     for (ProjectCostSummaryDTO summary : summaryList) {
                         if (StringUtils.isSame(summary.getId(), singleSummary.getId())) {
                             if (feeType == ProjectCostConst.FEE_TYPE_CONTRACT) {
@@ -2357,7 +2407,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
                             break;
                         }
                     }
-                });
+                }
             }
         }
         return summaryList;
