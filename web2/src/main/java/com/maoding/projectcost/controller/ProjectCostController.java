@@ -258,8 +258,8 @@ public class ProjectCostController extends BaseController {
      * @author  张成亮
      * @return  ProjectCostSummaryDTO列表
      * @param   query 查询条件
-     *                startDate 起始日期
-     *                endDate 终止日期
+     *                startDate 项目立项起始日期
+     *                endDate 项目立项终止日期
      **/
     @RequestMapping(value ={"/listProjectCostSummary"} , method = RequestMethod.POST)
     @ResponseBody
