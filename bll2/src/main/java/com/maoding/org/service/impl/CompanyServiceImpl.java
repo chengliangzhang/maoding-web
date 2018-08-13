@@ -2224,7 +2224,7 @@ public class CompanyServiceImpl extends GenericService<CompanyEntity> implements
 
     //是否技术审查费
     private boolean isCheck(Integer type){
-        return (ProjectCostConst.FEE_TYPE_CHECK == type);
+        return (ProjectCostConst.FEE_TYPE_TECHNICAL == type);
     }
 
     //是否合作设计费

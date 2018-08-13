@@ -17,12 +17,12 @@ public interface ProjectCostConst {
      * 费用类型：1-合同回款，2-技术审查费，3-合作设计费，4-其他费用（付款），5-其他费用（收款）
      */
     int FEE_TYPE_CONTRACT = 1;
-    int FEE_TYPE_CHECK = 2;
+    int FEE_TYPE_TECHNICAL = 2;
     int FEE_TYPE_COOPERATE = 3;
     int FEE_TYPE_OUT = 4;
     int FEE_TYPE_IN = 5;
     //合作设计费收款
-    int FEE_TYPE_COOPERATE_IN = 10;
+    int FEE_TYPE_COOPERATE_GAIN = 10;
     //合作设计费付款
-    int FEE_TYPE_COOPERATE_OUT = 11;
+    int FEE_TYPE_COOPERATE_PAY = 11;
 }

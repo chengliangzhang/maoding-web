@@ -1,6 +1,6 @@
 package com.maoding.project.dto;
 
-import com.maoding.core.base.dto.CoreShowDTO;
+import com.maoding.core.base.dto.CoreDTO;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -9,15 +9,26 @@ import com.maoding.core.base.dto.CoreShowDTO;
  * 作者: 张成亮
  * 描述:
  **/
-public class ProjectSimpleDTO extends CoreShowDTO {
-    /** 项目立项方 */
-    private String creator;
+public class ProjectSimpleDTO extends CoreDTO {
+    /** 项目名 */
+    private String projectName;
 
-    public String getCreator() {
-        return creator;
+    /** 项目立项方 */
+    private String projectCreator;
+
+    public String getProjectName() {
+        return projectName;
     }
 
-    public void setCreator(String creator) {
-        this.creator = creator;
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public String getProjectCreator() {
+        return projectCreator;
+    }
+
+    public void setProjectCreator(String projectCreator) {
+        this.projectCreator = projectCreator;
     }
 }

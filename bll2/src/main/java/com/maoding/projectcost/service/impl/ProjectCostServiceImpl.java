@@ -2291,35 +2291,75 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         List<ProjectCostSummaryDTO> list = BeanUtils.createListFrom(projectList,ProjectCostSummaryDTO.class);
 
         //添加合同及到款信息
-        query.setCostType(ProjectCostConst.FEE_TYPE_CONTRACT);
-        List<ProjectCostSingleSummaryDTO> contractList = projectCostDao.listProjectCostSummary(query);
-        if (ObjectUtils.isNotEmpty(contractList)){
-            contractList.forEach(contract->{
-                for (ProjectCostSummaryDTO project : list) {
-                    if (StringUtils.isSame(project.getId(),contract.getId())) {
-                        project.setContract(contract.getPlan());
-                        project.setContractReal(contract.getReal());
-                        break;
-                    }
-                }
-            });
-        }
+        updateProjectCostSummaryList(list,query,ProjectCostConst.FEE_TYPE_CONTRACT);
 
         //添加技术审查费及到款信息
-        query.setCostType(ProjectCostConst.FEE_TYPE_CHECK);
-        List<ProjectCostSingleSummaryDTO> designList = projectCostDao.listProjectCostSummary(query);
-        if (ObjectUtils.isNotEmpty(designList)){
-            contractList.forEach(design->{
-                for (ProjectCostSummaryDTO project : list) {
-                    if (StringUtils.isSame(project.getId(),design.getId())) {
-                        project.setDesign(design.getPlan());
-                        project.setDesignReal(design.getReal());
+        updateProjectCostSummaryList(list,query,ProjectCostConst.FEE_TYPE_TECHNICAL);
+
+        //添加合作设计费入款及到款信息
+        updateProjectCostSummaryList(list,query,ProjectCostConst.FEE_TYPE_COOPERATE_GAIN);
+
+        //添加合作设计费入款及到款信息
+        updateProjectCostSummaryList(list,query,ProjectCostConst.FEE_TYPE_COOPERATE_PAY);
+
+        return list;
+    }
+
+    /**
+     * 描述       在Cost类的表内查询费用信息，并更新项目费用表
+     * 日期       2018/8/13
+     * @author   张成亮
+     **/
+    private List<ProjectCostSummaryDTO> updateProjectCostSummaryList(List<ProjectCostSummaryDTO> summaryList,ProjectCostSummaryQueryDTO query,int feeType){
+        final String IS_DETAIL = "1";
+        final String IS_NOT_DETAIL = "0";
+
+        query.setCostType(feeType);
+        query.setIsDetail(IS_DETAIL);
+        List<ProjectCostSingleSummaryDTO> singleSummaryList = projectCostDao.listProjectCostSummary(query);
+        if (ObjectUtils.isNotEmpty(singleSummaryList)){
+            singleSummaryList.forEach(singleSummary->{
+                for (ProjectCostSummaryDTO summary : summaryList) {
+                    if (StringUtils.isSame(summary.getId(),singleSummary.getId())) {
+                        if (feeType == ProjectCostConst.FEE_TYPE_CONTRACT) {
+                            summary.setContract(singleSummary.getPlan());
+                            summary.setContractReal(singleSummary.getReal());
+                        } else if (feeType == ProjectCostConst.FEE_TYPE_TECHNICAL) {
+                            summary.setDesign(singleSummary.getPlan());
+                            summary.setDesignReal(singleSummary.getReal());
+                        } else if (feeType == ProjectCostConst.FEE_TYPE_COOPERATE_GAIN) {
+                            summary.setCooperateGain(singleSummary.getPlan());
+                            summary.setCooperateGainReal(singleSummary.getReal());
+                        } else if (feeType == ProjectCostConst.FEE_TYPE_COOPERATE_PAY) {
+                            summary.setCooperatePay(singleSummary.getPlan());
+                            summary.setCooperatePayReal(singleSummary.getReal());
+                        }
                         break;
                     }
                 }
             });
+        } else {
+            query.setIsDetail(IS_NOT_DETAIL);
+            singleSummaryList = projectCostDao.listProjectCostSummary(query);
+            if (ObjectUtils.isNotEmpty(singleSummaryList)) {
+                singleSummaryList.forEach(singleSummary -> {
+                    for (ProjectCostSummaryDTO summary : summaryList) {
+                        if (StringUtils.isSame(summary.getId(), singleSummary.getId())) {
+                            if (feeType == ProjectCostConst.FEE_TYPE_CONTRACT) {
+                                summary.setContract(singleSummary.getPlan());
+                            } else if (feeType == ProjectCostConst.FEE_TYPE_TECHNICAL) {
+                                summary.setDesign(singleSummary.getPlan());
+                            } else if (feeType == ProjectCostConst.FEE_TYPE_COOPERATE_GAIN) {
+                                summary.setCooperateGain(singleSummary.getPlan());
+                            } else if (feeType == ProjectCostConst.FEE_TYPE_COOPERATE_PAY) {
+                                summary.setCooperatePay(singleSummary.getPlan());
+                            }
+                            break;
+                        }
+                    }
+                });
+            }
         }
-
-        return list;
+        return summaryList;
     }
 }

@@ -25,6 +25,17 @@ public class ProjectCostSummaryQueryDTO extends CoreQueryDTO {
     /** 款项类型 */
     private Integer costType;
 
+    /** 查询明细 */
+    private String isDetail;
+
+    public String getIsDetail() {
+        return isDetail;
+    }
+
+    public void setIsDetail(String isDetail) {
+        this.isDetail = isDetail;
+    }
+
     public Integer getCostType() {
         return costType;
     }

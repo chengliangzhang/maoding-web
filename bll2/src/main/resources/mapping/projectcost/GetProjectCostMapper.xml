@@ -45,28 +45,44 @@
   <!-- 获取组织内各项目的收付款汇总列表 -->
   <select id="listProjectCostSummary" resultType="com.maoding.projectcost.dto.ProjectCostSingleSummaryDTO" parameterType="com.maoding.projectcost.dto.ProjectCostSummaryQueryDTO">
       select
-          project_list.id,
           cost_type.fee as plan,
-          sum(if(cost_pay.paid_date is not null,ifnull(cost_pay.fee,0),0)) as `real`
+          <if test="isDetail != '1'.toString()">
+              sum(if(cost_pay.paid_date is not null,ifnull(cost_pay.fee,0),0)) as `real`,
+          </if>
+          project_list.id
       from maoding_web_project project_list
           inner join maoding_web_project_cost cost_type on (cost_type.project_id = project_list.id
                   <choose>
+                      <!-- 合同回款 -->
                       <when test="costType == 1">
-                          and (cost_type.type = #{costType})
+                          and (cost_type.type = 1)
                           and (cost_type.to_company_id = #{currentCompanyId})
                       </when>
+                      <!-- 技术审查费 -->
                       <when test="costType == 2">
-                          and (cost_type = #{costType})
+                          and (cost_type.type = 2)
                           and (cost_type.to_company_id = #{currentCompanyId})
+                      </when>
+                      <!-- 合作设计费收款 -->
+                      <when test="costType == 10">
+                          and (cost_type.type = 3)
+                          and (cost_type.to_company_id = #{currentCompanyId})
+                      </when>
+                      <!-- 合作设计费付款 -->
+                      <when test="costType == 11">
+                          and (cost_type.type = 3)
+                          and (cost_type.from_company_id = #{currentCompanyId})
                       </when>
                       <otherwise>
                           and ((cost_type.from_company_id = #{currentCompanyId}) or (cost_type.to_company_id = #{currentCompanyId}))
                       </otherwise>
                   </choose>
               )
-          inner join maoding_web_project_cost_point cost_point on (cost_point.cost_id = cost_type.id)
-          inner join maoding_web_project_cost_point_detail cost_detail on (cost_detail.point_id = cost_point.id)
-          inner join maoding_web_project_cost_payment_detail cost_pay on (cost_pay.point_detail_id = cost_detail.id)
+          <if test="isDetail != '1'.toString()">
+              inner join maoding_web_project_cost_point cost_point on (cost_point.cost_id = cost_type.id)
+              inner join maoding_web_project_cost_point_detail cost_detail on (cost_detail.point_id = cost_point.id)
+              inner join maoding_web_project_cost_payment_detail cost_pay on (cost_pay.point_detail_id = cost_detail.id)
+          </if>
     group by project_list.id
   </select>
 </mapper>
