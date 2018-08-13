@@ -249,17 +249,4 @@ public class DigitUtils {
         }
         return (float)parseDouble(value,decimal);
     }
-
-    /**
-     * 描述     转换为BigDecimal
-     * 日期     2018/8/13
-     * @author  张成亮
-     * @return  decimal类型的数字
-     * @param   value 值
-     * @param   scale 小数位数
-     **/
-    public static BigDecimal toBigDecimal(final Object value, int scale){
-        double val = parseDouble(value);
-        return new BigDecimal(val).setScale(scale, RoundingMode.HALF_UP);
-    }
 }
