@@ -17,6 +17,8 @@
     <result column="address" property="address" jdbcType="VARCHAR" />
     <result column="postcode" property="postcode" jdbcType="VARCHAR" />
     <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="account_bank" property="accountBank" jdbcType="VARCHAR" />
+    <result column="tax_id_number" property="taxIdNumber" jdbcType="VARCHAR" />
     <result column="seq" property="seq" jdbcType="INTEGER" />
     <result column="deleted" property="deleted" jdbcType="INTEGER" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
@@ -27,7 +29,7 @@
   <sql id="Base_Column_List" >
     id, company_id, company_name, invoice_title, invoice_no, invoice_amount, invoice_property, 
     invoice_type, invoice_content, invoice_remark, recipients, cellphone, address, postcode, 
-    email, seq, deleted, create_date, create_by, update_date, update_by
+    email, seq, deleted, create_date, create_by, update_date, update_by,account_bank,tax_id_number
   </sql>
   <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -46,7 +48,7 @@
       invoice_remark, recipients, cellphone, 
       address, postcode, email, 
       seq, deleted, create_date, 
-      create_by, update_date, update_by
+      create_by, update_date, update_by,account_bank,tax_id_number
       )
     values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
       #{invoiceTitle,jdbcType=VARCHAR}, #{invoiceNo,jdbcType=VARCHAR}, #{invoiceAmount,jdbcType=DECIMAL}, 
@@ -55,6 +57,7 @@
       #{address,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
       #{seq,jdbcType=INTEGER}, #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
       #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+      ,#{accountBank,jdbcType=VARCHAR},#{taxIdNumber,jdbcType=VARCHAR}
       )
   </insert>
 
@@ -66,6 +69,12 @@
       </if>
       <if test="companyName != null" >
         company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountBank != null" >
+        account_bank = #{accountBank,jdbcType=VARCHAR},
+      </if>
+      <if test="taxIdNumber != null" >
+        tax_id_number = #{taxIdNumber,jdbcType=VARCHAR},
       </if>
       <if test="invoiceTitle != null" >
         invoice_title = #{invoiceTitle,jdbcType=VARCHAR},
@@ -128,6 +137,8 @@
     update maoding_invoice
     set company_id = #{companyId,jdbcType=VARCHAR},
       company_name = #{companyName,jdbcType=VARCHAR},
+      account_bank = #{accountBank,jdbcType=VARCHAR},
+      tax_id_number = #{taxIdNumber,jdbcType=VARCHAR},
       invoice_title = #{invoiceTitle,jdbcType=VARCHAR},
       invoice_no = #{invoiceNo,jdbcType=VARCHAR},
       invoice_amount = #{invoiceAmount,jdbcType=DECIMAL},

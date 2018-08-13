@@ -36,7 +36,7 @@ public interface ProcessTypeConst {
     String PROCESS_TYPE_PROJECT_SET_UP = "projectSetUp";
 
     /**
-     * 项目立项
+     * 项目费用申请
      */
     String PROCESS_TYPE_PROJECT_PAY_APPLY = "projectPayApply";
 

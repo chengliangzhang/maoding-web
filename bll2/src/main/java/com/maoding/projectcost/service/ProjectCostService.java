@@ -2,6 +2,7 @@ package com.maoding.projectcost.service;
 
 import com.maoding.core.base.service.BaseService;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.invoice.dto.InvoiceEditDTO;
 import com.maoding.projectcost.dto.*;
 import com.maoding.projectcost.entity.ProjectCostEntity;
 import com.maoding.task.entity.ProjectTaskEntity;
@@ -157,6 +158,11 @@ public interface ProjectCostService extends BaseService<ProjectCostEntity>{
      * 日期：2017/4/26
      */
     AjaxMessage saveCostPaymentDetail(ProjectCostPaymentDetailDTO dto)throws Exception;
+
+    /**
+     * 财务处理发票信息
+     */
+    AjaxMessage saveCostPointDetailForInvoice(InvoiceEditDTO dto)throws Exception;
 
     /**
      * 方法描述：修改付款或到款明细

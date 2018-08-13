@@ -17,12 +17,13 @@ import java.util.List;
 public class ProjectCostPointDTO extends BaseDTO {
 
     /**
+     * 总金额id
+     */
+    private String costId;
+    /**
      * 项目id
      */
     private String projectId;
-
-
-    private String status;
 
     /**
      * 回款节点描述
@@ -37,7 +38,6 @@ public class ProjectCostPointDTO extends BaseDTO {
      * 回款金额
      */
     private BigDecimal fee;
-
 
 
     /**
@@ -60,15 +60,13 @@ public class ProjectCostPointDTO extends BaseDTO {
      */
     private String pid;
 
-    /**
-     * 总金额id（合作设计费必须传递）
-     */
-    private String costId;
+
 
     private String taskId;
 
     private int deleteFlag;
 
+    private String status;
     /**
      * 节点明细
      */

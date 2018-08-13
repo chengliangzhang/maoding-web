@@ -39,6 +39,9 @@
     <if test="flag != null" >
       and flag = #{flag,jdbcType=VARCHAR}
     </if>
+    <if test="costId != null" >
+      and id = #{costId,jdbcType=VARCHAR}
+    </if>
     order by type,create_date
   </select>
 

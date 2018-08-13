@@ -17,6 +17,7 @@ import com.maoding.deliver.entity.DeliverEntity;
 import com.maoding.dynamic.service.DynamicService;
 import com.maoding.financial.dao.ExpMainDao;
 import com.maoding.financial.dto.ExpMainDTO;
+import com.maoding.invoice.dto.InvoiceEditDTO;
 import com.maoding.message.entity.MessageEntity;
 import com.maoding.message.service.MessageService;
 import com.maoding.mytask.dao.MyTaskDao;
@@ -622,7 +623,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                 this.saveMyTaskFor4Or6(targetId, taskType, companyId, detailEntity.getProjectId(),createBy,currentCompanyId);
             }
 
-            if (taskType == 10 || taskType == 20 || taskType == 21) {
+            if (taskType == 10 || taskType == 20 || taskType == 21 || taskType == 29) {
                 return saveMyTask(targetId, companyId, taskType, null, detailEntity.getProjectId(),createBy,currentCompanyId);
             }
         }
@@ -1137,6 +1138,8 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                     case 18:
                     case 19:
                         return handleType16(myTaskEntity, result, status, currentUserId, dto.getPaidDate());
+                    case 29:
+                        return handleType29(myTaskEntity, dto);
                     case SystemParameters.DELIVER_CONFIRM_FINISH:
                         handleMyTaskDeliverResponse(myTaskEntity,dto);
                         return AjaxMessage.succeed(null);
@@ -1419,6 +1422,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
             case SystemParameters.TECHNICAL_REVIEW_FEE_FOR_PAID:
             case SystemParameters.COOPERATIVE_DESIGN_FEE_FOR_PAID:
             case SystemParameters.OTHER_FEE_FOR_PAID:
+            case SystemParameters.INVOICE_FINN_IN_FOR_PAID:
                 if (!permissionService.isFinancialReceive(myTask.getCompanyId(),accountId)) {
                     return AjaxMessage.failed("你无权限操作");
                 }
@@ -1546,6 +1550,37 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         return AjaxMessage.succeed("操作成功");
     }
 
+    /**
+     * 方法描述：财务到款确认 type=29（财务发票信息确认）
+     * 作者：MaoSF
+     * 日期：2017/1/17
+     */
+    private AjaxMessage handleType29(MyTaskEntity myTask, HandleMyTaskDTO dto) throws Exception {
+        String accountId = dto.getAccountId();
+        //验证身份
+        AjaxMessage ajaxMessage = validateIdentity(myTask,accountId);
+        if(ajaxMessage!=null){
+            return ajaxMessage;
+        }
+        CompanyUserEntity handler = companyUserDao.getCompanyUserByUserIdAndCompanyId(accountId,myTask.getCompanyId());
+        if(handler==null){
+            return AjaxMessage.failed("参数错误");
+        }
+        InvoiceEditDTO invoiceEditDTO = dto.getInvoiceData();
+        invoiceEditDTO.setPointDetailId(myTask.getTargetId());
+        invoiceEditDTO.setCurrentCompanyUserId(handler.getId());
+        invoiceEditDTO.setCurrentCompanyId(myTask.getCompanyId());
+        invoiceEditDTO.setAccountId(accountId);
+        ajaxMessage = this.projectCostService.saveCostPointDetailForInvoice(invoiceEditDTO);
+        if ("1".equals(ajaxMessage.getCode())) {//如果失败，则返回
+            return ajaxMessage;
+        }
+        //2.处理我的任务
+        myTask.setHandlerId(handler.getId());
+        this.finishMyTask(myTask);
+        return AjaxMessage.succeed("操作成功");
+    }
+
 
     /**
      * 方法描述：完成签发任务
@@ -1632,6 +1667,9 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                 messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_31);
                 break;
             case 21:
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_32);
+                break;
+            case 29:
                 messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_32);
                 break;
             case SystemParameters.DELIVER_CONFIRM_FINISH:

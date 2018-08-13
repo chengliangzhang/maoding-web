@@ -12,9 +12,11 @@ import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.*;
 import com.maoding.dynamic.dao.ZInfoDAO;
 import com.maoding.dynamic.service.DynamicService;
+import com.maoding.enterprise.service.EnterpriseService;
 import com.maoding.exception.CustomException;
 import com.maoding.financial.dto.ApplyProjectCostDTO;
 import com.maoding.financial.service.ExpMainService;
+import com.maoding.invoice.dto.InvoiceEditDTO;
 import com.maoding.invoice.service.InvoiceService;
 import com.maoding.message.entity.MessageEntity;
 import com.maoding.message.service.MessageService;
@@ -130,6 +132,9 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
 
     @Autowired
     private ProjectSkyDriverService projectSkyDriverService;
+
+    @Autowired
+    private EnterpriseService enterpriseService;
 
     /**
      * 方法描述：设置合同总金额/技术审查费
@@ -539,8 +544,8 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
             return ajaxMessage;
         }
         //todo 查询是否是内部组织
-        ProjectCostDTO costDTO = this.isInnerCompany(projectCostPointDetailDTO);
-        if(costDTO == null && costDTO.isInnerCompany()){
+        ProjectCostDTO costDTO = this.getProjectCostDTO(projectCostPointDetailDTO);
+        if(costDTO == null){
             return AjaxMessage.error("数据错误");
         }
         //todo 根据流程状态，是否处理发票信息
@@ -549,10 +554,11 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         projectCostPointDetailDTO.setInvoice(invoiceId);
         //新增(发起收收款)
         if (StringUtil.isNullOrEmpty(projectCostPointDetailDTO.getId())) {
-            entity = saveProjectCostPointDetailEntity(projectCostPointDetailDTO,costDTO);
+            boolean isInnerCompany = this.isInnerCompany(costDTO);
+            entity = saveProjectCostPointDetailEntity(projectCostPointDetailDTO,costDTO,isInnerCompany);
             String id = entity.getId();
             projectCostPointDetailDTO.setId(id);
-            if(costDTO.isInnerCompany()){//如果是内部组织，以收款方做为主体方，进行发起收款，同时通知付款方，可以进行付款申请的动作
+            if(isInnerCompany){//如果是内部组织，以收款方做为主体方，进行发起收款，同时通知付款方，可以进行付款申请的动作
                 //推送消息
             }else {
                 if(projectCostPointDetailDTO.getCurrentCompanyId().equals(costDTO.getFromCompanyId())){//如果是付款方新增数据
@@ -571,8 +577,8 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
     }
 
 
-    private ProjectCostPointDetailEntity saveProjectCostPointDetailEntity(ProjectCostPointDetailDTO projectCostPointDetailDTO,ProjectCostDTO costDTO) throws Exception {
-        //todo 根据流程状态，是否处理发票信息
+    private ProjectCostPointDetailEntity saveProjectCostPointDetailEntity(ProjectCostPointDetailDTO projectCostPointDetailDTO,ProjectCostDTO costDTO,boolean isInnerCompany) throws Exception {
+        //todo 是否处理发票信息
         String invoiceId = invoiceService.saveInvoice(projectCostPointDetailDTO);
         ProjectCostPointDetailEntity entity = new ProjectCostPointDetailEntity();
         BaseDTO.copyFields(projectCostPointDetailDTO, entity);
@@ -584,7 +590,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
             entity.setCompanyId(projectCostPointDetailDTO.getCurrentCompanyId());//设置金额发起的主体方公司
             entity.setFeeStatus(ProjectCostConst.FEE_STATUS_START);//发起的状态，还没有进入审批阶段
             //todo 查询是否是内部组织
-            if(costDTO.isInnerCompany()){
+            if(isInnerCompany){
                 entity.setRelationCompanyId(costDTO.getFromCompanyId());//如果是内部组织，则发起方为收款组织，关联组织为付款方
             }
             projectCostPointDetailDao.insert(entity);
@@ -622,7 +628,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
     }
 
 
-    private ProjectCostDTO isInnerCompany(ProjectCostPointDetailDTO projectCostPointDetailDTO) throws Exception{
+    private ProjectCostDTO getProjectCostDTO(ProjectCostPointDetailDTO projectCostPointDetailDTO) throws Exception{
         ProjectCostEntity p = this.projectCostDao.getProjectCostByPointId(projectCostPointDetailDTO.getPointId());
         ProjectCostDTO dto = new ProjectCostDTO();
         BaseDTO.copyFields(p,dto);
@@ -827,12 +833,14 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
             totalDTO.setFeeProportion(p.doubleValue());
         }
 
+        Map<String,String> relationCompany = this.getRelationCompanyName(cost,companyId);
         Map<String, Object> result = new HashMap<>();
         result.put("totalCost", cost.getFee());//总金额
         result.put("costId", cost.getId());
         result.put("type",cost.getType());
         result.put("isSetUpProject", this.getIsSetUpProject(companyId, (String)map.get("projectCompanyId")));
-        result.put("companyName", this.getRelationCompanyName(cost,companyId));
+        result.put("relationCompany",relationCompany);
+        result.put("companyName", relationCompany==null?"":relationCompany.get("companyName"));
         result.put("pointList", projectCostPointDataList);
         result.put("total", totalDTO);
         result.put("currentFeeOrgId",map.get("companyId"));
@@ -864,19 +872,34 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
     /**
      * 获取立项方组织的名称
      */
-    private String getRelationCompanyName(ProjectCostDTO cost,String currentCompanyId){
+    private Map<String,String> getRelationCompanyName(ProjectCostDTO cost,String currentCompanyId){
         CompanyEntity companyEntity = null;
         String relationCompanyId = null;
+        Map<String,String> relationCompany = new HashMap<>();
         if (currentCompanyId.equals(cost.getFromCompanyId())) {
             relationCompanyId = cost.getToCompanyId();
         } else {
             relationCompanyId = cost.getFromCompanyId();
         }
+        if(StringUtil.isNullOrEmpty(relationCompanyId)){
+            return null;
+        }
+        relationCompany.put("companyId",relationCompanyId);
         companyEntity = this.companyDao.selectById(relationCompanyId);
         if (companyEntity != null) {
-            return  companyEntity.getAliasName();
+
+            relationCompany.put("companyName",companyEntity.getAliasName());
+            return  relationCompany;
+        }else {
+            //从enterprise中查询
+            String name = enterpriseService.getEnterpriseName(relationCompanyId);
+            if(name!=null){
+                relationCompany.put("companyName",name);
+                return relationCompany;
+            }
         }
-        return relationCompanyId;
+        relationCompany.put("companyName",relationCompanyId);
+        return relationCompany;
     }
 
     /**
@@ -981,14 +1004,19 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
 
 
     private List<ProjectCostDTO> getProjectCostList(Map<String, Object> map){
-        String currentCompanyId = (String)map.get("currentCompanyId");
+        String costId = (String)map.get("costId");
         Map<String, Object> costParam = new HashMap<>();
         costParam.put("projectId",map.get("projectId"));
-        Integer payType =Integer.parseInt((String)map.get("payType"));
-        if(CompanyBillType.DIRECTION_PAYEE == payType){
-            costParam.put("toCompanyId",currentCompanyId);
+        if(StringUtil.isNullOrEmpty(costId)){
+            String currentCompanyId = (String)map.get("currentCompanyId");
+            Integer payType =Integer.parseInt((String)map.get("payType"));
+            if(CompanyBillType.DIRECTION_PAYEE == payType){
+                costParam.put("toCompanyId",currentCompanyId);
+            }else {
+                costParam.put("fromCompanyId",currentCompanyId);
+            }
         }else {
-            costParam.put("fromCompanyId",currentCompanyId);
+            costParam.put("costId",costId);
         }
         return this.projectCostDao.selectByParam(costParam);
     }
@@ -1929,6 +1957,18 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         }else{
             return AjaxMessage.error("操作失败");
         }
+    }
+
+    @Override
+    public AjaxMessage saveCostPointDetailForInvoice(InvoiceEditDTO dto) throws Exception {
+        ProjectCostPointDetailEntity pointDetail = this.projectCostPointDetailDao.selectById(dto.getPointDetailId());
+        if(pointDetail==null){
+            return AjaxMessage.error("参数错误");
+        }
+        String invoice = pointDetail.getInvoice();
+        dto.setId(invoice);
+        invoiceService.saveInvoice(dto);
+        return AjaxMessage.succeed("操作成功");
     }
 
     private void validateBalance(String companyId,BigDecimal fee,String payDate) throws Exception{

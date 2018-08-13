@@ -1,6 +1,7 @@
 package com.maoding.mytask.dto;
 
 import com.maoding.core.base.dto.BaseDTO;
+import com.maoding.invoice.dto.InvoiceEditDTO;
 
 import java.util.List;
 
@@ -24,6 +25,11 @@ public class HandleMyTaskDTO extends BaseDTO {
 
     /** skyDrive内存储的文件编号 */
     private List<String> fileIdList;
+
+    /**
+     * 发票信息
+     */
+    private InvoiceEditDTO invoiceData;
 
     public List<String> getFileIdList() {
         return fileIdList;
@@ -109,4 +115,11 @@ public class HandleMyTaskDTO extends BaseDTO {
         this.currentCompanyUserId = currentCompanyUserId;
     }
 
+    public InvoiceEditDTO getInvoiceData() {
+        return invoiceData;
+    }
+
+    public void setInvoiceData(InvoiceEditDTO invoiceData) {
+        this.invoiceData = invoiceData;
+    }
 }

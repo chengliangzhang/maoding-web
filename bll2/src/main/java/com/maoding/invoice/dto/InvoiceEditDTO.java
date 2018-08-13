@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 
 public class InvoiceEditDTO extends BaseDTO {
 
+    private String pointDetailId;
+
     /**
      * 组织id
      */
@@ -17,9 +19,19 @@ public class InvoiceEditDTO extends BaseDTO {
     private String companyName;
 
     /**
+     * 申请日期
+     */
+    private String applyDate;
+
+    /**
      * 发票号
      */
     private String invoiceNo;
+
+    /**
+     * 纳税识别号
+     */
+    private String taxIdNumber;
 
     /**
      * 发票总金额
@@ -41,6 +53,10 @@ public class InvoiceEditDTO extends BaseDTO {
      */
     private String invoiceContent;
 
+    /**
+     * 开户行
+     */
+    private String accountBank;
 
     /**
      * 发票备注
@@ -51,6 +67,40 @@ public class InvoiceEditDTO extends BaseDTO {
      * 发票类型：{增值税普通发票=1,增值税专用发票=2}
      */
     private Integer invoiceType;
+
+
+    /**
+     * 收件人
+     */
+    private String recipients;
+
+    /**
+     * 联系电话
+     */
+    private String cellphone;
+
+    /**
+     * 地址
+     */
+    private String address;
+
+    /**
+     * 邮编
+     */
+    private String postcode;
+
+    /**
+     * 邮箱
+     */
+    private String email;
+
+    public String getPointDetailId() {
+        return pointDetailId;
+    }
+
+    public void setPointDetailId(String pointDetailId) {
+        this.pointDetailId = pointDetailId;
+    }
 
     public String getCompanyId() {
         return companyId;
@@ -122,5 +172,69 @@ public class InvoiceEditDTO extends BaseDTO {
 
     public void setInvoiceType(Integer invoiceType) {
         this.invoiceType = invoiceType;
+    }
+
+    public String getRecipients() {
+        return recipients;
+    }
+
+    public void setRecipients(String recipients) {
+        this.recipients = recipients;
+    }
+
+    public String getCellphone() {
+        return cellphone;
+    }
+
+    public void setCellphone(String cellphone) {
+        this.cellphone = cellphone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPostcode() {
+        return postcode;
+    }
+
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAccountBank() {
+        return accountBank;
+    }
+
+    public void setAccountBank(String accountBank) {
+        this.accountBank = accountBank;
+    }
+
+    public String getTaxIdNumber() {
+        return taxIdNumber;
+    }
+
+    public void setTaxIdNumber(String taxIdNumber) {
+        this.taxIdNumber = taxIdNumber;
+    }
+
+    public String getApplyDate() {
+        return applyDate;
+    }
+
+    public void setApplyDate(String applyDate) {
+        this.applyDate = applyDate;
     }
 }

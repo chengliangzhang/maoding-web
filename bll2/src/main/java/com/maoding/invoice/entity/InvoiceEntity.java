@@ -28,6 +28,11 @@ public class InvoiceEntity extends BaseEntity {
     private String invoiceNo;
 
     /**
+     * 纳税识别号
+     */
+    private String taxIdNumber;
+
+    /**
      * 发票总金额
      */
     private BigDecimal invoiceAmount;
@@ -47,6 +52,10 @@ public class InvoiceEntity extends BaseEntity {
      */
     private String invoiceContent;
 
+    /**
+     * 开户行
+     */
+    private String accountBank;
 
     /**
      * 发票备注
@@ -213,5 +222,21 @@ public class InvoiceEntity extends BaseEntity {
 
     public void setSeq(Integer seq) {
         this.seq = seq;
+    }
+
+    public String getAccountBank() {
+        return accountBank;
+    }
+
+    public void setAccountBank(String accountBank) {
+        this.accountBank = accountBank;
+    }
+
+    public String getTaxIdNumber() {
+        return taxIdNumber;
+    }
+
+    public void setTaxIdNumber(String taxIdNumber) {
+        this.taxIdNumber = taxIdNumber;
     }
 }

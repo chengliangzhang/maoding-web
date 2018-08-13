@@ -60,13 +60,6 @@ public class ProjectCostDTO extends BaseDTO {
      */
     private String status;
 
-    /**
-     * 是否是内部组织
-     */
-    private boolean isInnerCompany;
-
-
-
     private String 	createBy;
     private String 	updateBy;
     private Date createDate;
@@ -166,14 +159,6 @@ public class ProjectCostDTO extends BaseDTO {
 
     public void setFlag(String flag) {
         this.flag = flag;
-    }
-
-    public boolean isInnerCompany() {
-        return isInnerCompany;
-    }
-
-    public void setInnerCompany(boolean innerCompany) {
-        isInnerCompany = innerCompany;
     }
 
     public Integer getPayType() {
