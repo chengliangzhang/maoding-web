@@ -476,42 +476,44 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
 
 
     private void sendMyTaskForReturnMoney(String costDetailId, ProjectCostPointDetailDTO dto) throws Exception {
-        ProjectCostPointEntity pointEntity = this.projectCostPointDao.selectById(dto.getPointId());
         String type = "";
         String companyId = "";
         //推送任务 其他费用付款收款:|| "4".equals(pointEntity.getType()) || "5".equals(pointEntity.getType()) 不需要
         if("1".equals(dto.getIsInvoice())){//代表开发票
             //增加财务对开票信息的确认
+            type = "2";
             this.myTaskService.saveMyTask(costDetailId,SystemParameters.INVOICE_FINN_IN_FOR_PAID ,dto.getCurrentCompanyId(),dto.getAccountId(),dto.getCurrentCompanyId());
-            return;
+        }else {
+            ProjectCostPointEntity pointEntity = this.projectCostPointDao.selectById(dto.getPointId());
+            if ("1".equals(pointEntity.getType()))//合同回款，
+            {
+                type = "2";
+                this.myTaskService.saveMyTask(costDetailId,SystemParameters.CONTRACT_FEE_PAYMENT_CONFIRM ,dto.getCurrentCompanyId(),dto.getAccountId(),dto.getCurrentCompanyId());
+            }
+            if ("2".equals(pointEntity.getType())) {//技术审查费
+                type = "1";
+                //给立项组织发起确认信息
+                ProjectEntity projectEntity = this.projectDao.selectById(pointEntity.getProjectId());
+                this.myTaskService.saveMyTask(costDetailId, SystemParameters.TECHNICAL_REVIEW_FEE_OPERATOR_MANAGER, projectEntity.getCompanyId(),dto.getAccountId(),dto.getCurrentCompanyId());
+            }
+            if ("3".equals(pointEntity.getType())) {//合作设计费
+                type = "1";
+                //给发包人发起确认信息
+                ProjectCostEntity costEntity = this.projectCostDao.selectById(pointEntity.getCostId());
+                this.myTaskService.saveMyTask(costDetailId, SystemParameters.COOPERATIVE_DESIGN_FEE_ORG_MANAGER, costEntity.getFromCompanyId(),dto.getAccountId(),dto.getCurrentCompanyId());
+            }
+            if ("4".equals(pointEntity.getType()))//其他费用付款
+            {
+                type = "2";
+                this.myTaskService.saveMyTask(costDetailId, SystemParameters.OTHER_FEE_FOR_PAY, dto.getCurrentCompanyId(),dto.getAccountId(),dto.getCurrentCompanyId());
+            }
+            if ("5".equals(pointEntity.getType()))//其他费用收款
+            {
+                type = "2";
+                this.myTaskService.saveMyTask(costDetailId, SystemParameters.OTHER_FEE_FOR_PAID, dto.getCurrentCompanyId(),dto.getAccountId(),dto.getCurrentCompanyId());
+            }
         }
-        if ("1".equals(pointEntity.getType()))//合同回款，
-        {
-            type = "2";
-            this.myTaskService.saveMyTask(costDetailId,SystemParameters.CONTRACT_FEE_PAYMENT_CONFIRM ,dto.getCurrentCompanyId(),dto.getAccountId(),dto.getCurrentCompanyId());
-        }
-        if ("2".equals(pointEntity.getType())) {//技术审查费
-            type = "1";
-            //给立项组织发起确认信息
-            ProjectEntity projectEntity = this.projectDao.selectById(pointEntity.getProjectId());
-            this.myTaskService.saveMyTask(costDetailId, SystemParameters.TECHNICAL_REVIEW_FEE_OPERATOR_MANAGER, projectEntity.getCompanyId(),dto.getAccountId(),dto.getCurrentCompanyId());
-        }
-        if ("3".equals(pointEntity.getType())) {//合作设计费
-            type = "1";
-            //给发包人发起确认信息
-            ProjectCostEntity costEntity = this.projectCostDao.selectById(pointEntity.getCostId());
-            this.myTaskService.saveMyTask(costDetailId, SystemParameters.COOPERATIVE_DESIGN_FEE_ORG_MANAGER, costEntity.getFromCompanyId(),dto.getAccountId(),dto.getCurrentCompanyId());
-        }
-        if ("4".equals(pointEntity.getType()))//其他费用付款
-        {
-            type = "2";
-            this.myTaskService.saveMyTask(costDetailId, SystemParameters.OTHER_FEE_FOR_PAY, dto.getCurrentCompanyId(),dto.getAccountId(),dto.getCurrentCompanyId());
-        }
-        if ("5".equals(pointEntity.getType()))//其他费用收款
-        {
-            type = "2";
-            this.myTaskService.saveMyTask(costDetailId, SystemParameters.OTHER_FEE_FOR_PAID, dto.getCurrentCompanyId(),dto.getAccountId(),dto.getCurrentCompanyId());
-        }
+
         //保存操作
         CompanyUserEntity userEntity = this.companyUserDao.getCompanyUserByUserIdAndCompanyId(dto.getAccountId(), dto.getCurrentCompanyId());
         ProjectCostOperaterEntity operaterEntity = new ProjectCostOperaterEntity();
@@ -582,9 +584,9 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         InvoiceEditDTO invoice = new InvoiceEditDTO();
         BeanUtils.copyProperties(projectCostPointDetailDTO,invoice);
         invoice.setId(projectCostPointDetailDTO.getInvoice());
+        invoice.setCompanyId(projectCostPointDetailDTO.getCurrentCompanyId());
         String invoiceId = invoiceService.saveInvoice(invoice);
         return invoiceId;
-
     }
     private ProjectCostPointDetailEntity saveProjectCostPointDetailEntity(ProjectCostPointDetailDTO projectCostPointDetailDTO,ProjectCostDTO costDTO,boolean isInnerCompany) throws Exception {
         //todo 是否处理发票信息

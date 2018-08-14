@@ -14,9 +14,14 @@ public class InvoiceEditDTO extends BaseDTO {
     private String companyId;
 
     /**
+     * 收票方组织id
+     */
+    private String relationCompanyId;
+
+    /**
      * 收发票组织的名称（如果组织没在卯丁系统中，则直接存储名字）
      */
-    private String companyName;
+    private String relationCompanyName;
 
     /**
      * 申请日期
@@ -59,6 +64,11 @@ public class InvoiceEditDTO extends BaseDTO {
     private String accountBank;
 
     /**
+     * 银行账户
+     */
+    private String bankNo;
+
+    /**
      * 发票备注
      */
     private String invoiceRemark;
@@ -67,7 +77,6 @@ public class InvoiceEditDTO extends BaseDTO {
      * 发票类型：{增值税普通发票=1,增值税专用发票=2}
      */
     private Integer invoiceType;
-
 
     /**
      * 收件人
@@ -112,12 +121,28 @@ public class InvoiceEditDTO extends BaseDTO {
         this.companyId = companyId;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getRelationCompanyId() {
+        return relationCompanyId;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setRelationCompanyId(String relationCompanyId) {
+        this.relationCompanyId = relationCompanyId;
+    }
+
+    public String getRelationCompanyName() {
+        return relationCompanyName;
+    }
+
+    public void setRelationCompanyName(String relationCompanyName) {
+        this.relationCompanyName = relationCompanyName;
+    }
+
+    public String getBankNo() {
+        return bankNo;
+    }
+
+    public void setBankNo(String bankNo) {
+        this.bankNo = bankNo;
     }
 
     public String getInvoiceNo() {

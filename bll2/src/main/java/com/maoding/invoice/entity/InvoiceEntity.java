@@ -18,9 +18,14 @@ public class InvoiceEntity extends BaseEntity {
     private String companyId;
 
     /**
+     *  收发票组织的id
+     */
+    private String relationCompanyId;
+
+    /**
      * 收发票组织的名称（如果组织没在卯丁系统中，则直接存储名字）
      */
-    private String companyName;
+    private String relationCompanyName;
 
     /**
      * 发票号
@@ -56,6 +61,16 @@ public class InvoiceEntity extends BaseEntity {
      * 开户行
      */
     private String accountBank;
+
+    /**
+     * 银行账户
+     */
+    private String bankNo;
+
+    /**
+     * 申请日期
+     */
+    private String applyDate;
 
     /**
      * 发票备注
@@ -184,12 +199,36 @@ public class InvoiceEntity extends BaseEntity {
         this.email = email;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getRelationCompanyId() {
+        return relationCompanyId;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setRelationCompanyId(String relationCompanyId) {
+        this.relationCompanyId = relationCompanyId;
+    }
+
+    public String getRelationCompanyName() {
+        return relationCompanyName;
+    }
+
+    public void setRelationCompanyName(String relationCompanyName) {
+        this.relationCompanyName = relationCompanyName;
+    }
+
+    public String getBankNo() {
+        return bankNo;
+    }
+
+    public void setBankNo(String bankNo) {
+        this.bankNo = bankNo;
+    }
+
+    public String getApplyDate() {
+        return applyDate;
+    }
+
+    public void setApplyDate(String applyDate) {
+        this.applyDate = applyDate;
     }
 
     public String getInvoiceContent() {

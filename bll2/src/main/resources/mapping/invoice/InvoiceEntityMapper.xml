@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.maoding.invoice.entity.InvoiceEntity" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="company_id" property="companyId" jdbcType="VARCHAR" />
-    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="relation_company_name" property="relationCompanyName" jdbcType="VARCHAR" />
     <result column="invoice_title" property="invoiceTitle" jdbcType="VARCHAR" />
     <result column="invoice_no" property="invoiceNo" jdbcType="VARCHAR" />
     <result column="invoice_amount" property="invoiceAmount" jdbcType="DECIMAL" />
@@ -17,48 +17,57 @@
     <result column="address" property="address" jdbcType="VARCHAR" />
     <result column="postcode" property="postcode" jdbcType="VARCHAR" />
     <result column="email" property="email" jdbcType="VARCHAR" />
-    <result column="account_bank" property="accountBank" jdbcType="VARCHAR" />
-    <result column="tax_id_number" property="taxIdNumber" jdbcType="VARCHAR" />
     <result column="seq" property="seq" jdbcType="INTEGER" />
     <result column="deleted" property="deleted" jdbcType="INTEGER" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="create_by" property="createBy" jdbcType="VARCHAR" />
     <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
     <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="account_bank" property="accountBank" jdbcType="VARCHAR" />
+    <result column="tax_id_number" property="taxIdNumber" jdbcType="VARCHAR" />
+    <result column="relation_company_id" property="relationCompanyId" jdbcType="VARCHAR" />
+    <result column="bank_no" property="bankNo" jdbcType="VARCHAR" />
+    <result column="apply_date" property="applyDate" jdbcType="DATE" />
   </resultMap>
+
   <sql id="Base_Column_List" >
-    id, company_id, company_name, invoice_title, invoice_no, invoice_amount, invoice_property, 
-    invoice_type, invoice_content, invoice_remark, recipients, cellphone, address, postcode, 
-    email, seq, deleted, create_date, create_by, update_date, update_by,account_bank,tax_id_number
+    id, company_id, relation_company_name, invoice_title, invoice_no, invoice_amount, 
+    invoice_property, invoice_type, invoice_content, invoice_remark, recipients, cellphone, 
+    address, postcode, email, seq, deleted, create_date, create_by, update_date, update_by, 
+    account_bank, tax_id_number, relation_company_id, bank_no, apply_date
   </sql>
+
   <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from maoding_invoice
     where id = #{id,jdbcType=VARCHAR}
   </select>
+
   <delete id="deleteById" parameterType="java.lang.String" >
     delete from maoding_invoice
     where id = #{id,jdbcType=VARCHAR}
   </delete>
+
   <insert id="insert" parameterType="com.maoding.invoice.entity.InvoiceEntity" >
-    insert into maoding_invoice (id, company_id, company_name, 
+    insert into maoding_invoice (id, company_id, relation_company_name, 
       invoice_title, invoice_no, invoice_amount, 
       invoice_property, invoice_type, invoice_content, 
       invoice_remark, recipients, cellphone, 
       address, postcode, email, 
       seq, deleted, create_date, 
-      create_by, update_date, update_by,account_bank,tax_id_number
-      )
-    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
+      create_by, update_date, update_by, 
+      account_bank, tax_id_number, relation_company_id, 
+      bank_no, apply_date)
+    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{relationCompanyName,jdbcType=VARCHAR}, 
       #{invoiceTitle,jdbcType=VARCHAR}, #{invoiceNo,jdbcType=VARCHAR}, #{invoiceAmount,jdbcType=DECIMAL}, 
       #{invoiceProperty,jdbcType=INTEGER}, #{invoiceType,jdbcType=INTEGER}, #{invoiceContent,jdbcType=VARCHAR}, 
       #{invoiceRemark,jdbcType=VARCHAR}, #{recipients,jdbcType=VARCHAR}, #{cellphone,jdbcType=VARCHAR}, 
       #{address,jdbcType=VARCHAR}, #{postcode,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
       #{seq,jdbcType=INTEGER}, #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
-      #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
-      ,#{accountBank,jdbcType=VARCHAR},#{taxIdNumber,jdbcType=VARCHAR}
-      )
+      #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
+      #{accountBank,jdbcType=VARCHAR}, #{taxIdNumber,jdbcType=VARCHAR}, #{relationCompanyId,jdbcType=VARCHAR}, 
+      #{bankNo,jdbcType=VARCHAR}, #{applyDate,jdbcType=DATE})
   </insert>
 
   <update id="updateById" parameterType="com.maoding.invoice.entity.InvoiceEntity" >
@@ -67,14 +76,8 @@
       <if test="companyId != null" >
         company_id = #{companyId,jdbcType=VARCHAR},
       </if>
-      <if test="companyName != null" >
-        company_name = #{companyName,jdbcType=VARCHAR},
-      </if>
-      <if test="accountBank != null" >
-        account_bank = #{accountBank,jdbcType=VARCHAR},
-      </if>
-      <if test="taxIdNumber != null" >
-        tax_id_number = #{taxIdNumber,jdbcType=VARCHAR},
+      <if test="relationCompanyName != null" >
+        relation_company_name = #{relationCompanyName,jdbcType=VARCHAR},
       </if>
       <if test="invoiceTitle != null" >
         invoice_title = #{invoiceTitle,jdbcType=VARCHAR},
@@ -130,15 +133,29 @@
       <if test="updateBy != null" >
         update_by = #{updateBy,jdbcType=VARCHAR},
       </if>
+      <if test="accountBank != null" >
+        account_bank = #{accountBank,jdbcType=VARCHAR},
+      </if>
+      <if test="taxIdNumber != null" >
+        tax_id_number = #{taxIdNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="relationCompanyId != null" >
+        relation_company_id = #{relationCompanyId,jdbcType=VARCHAR},
+      </if>
+      <if test="bankNo != null" >
+        bank_no = #{bankNo,jdbcType=VARCHAR},
+      </if>
+      <if test="applyDate != null" >
+        apply_date = #{applyDate,jdbcType=DATE},
+      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
+
   <update id="update" parameterType="com.maoding.invoice.entity.InvoiceEntity" >
     update maoding_invoice
     set company_id = #{companyId,jdbcType=VARCHAR},
-      company_name = #{companyName,jdbcType=VARCHAR},
-      account_bank = #{accountBank,jdbcType=VARCHAR},
-      tax_id_number = #{taxIdNumber,jdbcType=VARCHAR},
+      relation_company_name = #{relationCompanyName,jdbcType=VARCHAR},
       invoice_title = #{invoiceTitle,jdbcType=VARCHAR},
       invoice_no = #{invoiceNo,jdbcType=VARCHAR},
       invoice_amount = #{invoiceAmount,jdbcType=DECIMAL},
@@ -156,7 +173,12 @@
       create_date = #{createDate,jdbcType=TIMESTAMP},
       create_by = #{createBy,jdbcType=VARCHAR},
       update_date = #{updateDate,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=VARCHAR}
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      account_bank = #{accountBank,jdbcType=VARCHAR},
+      tax_id_number = #{taxIdNumber,jdbcType=VARCHAR},
+      relation_company_id = #{relationCompanyId,jdbcType=VARCHAR},
+      bank_no = #{bankNo,jdbcType=VARCHAR},
+      apply_date = #{applyDate,jdbcType=DATE}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>
