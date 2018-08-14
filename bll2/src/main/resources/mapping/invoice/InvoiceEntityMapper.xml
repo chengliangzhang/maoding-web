@@ -181,4 +181,61 @@
       apply_date = #{applyDate,jdbcType=DATE}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+
+  <!-- InvoiceDTO转换映射表 -->
+  <resultMap id="InvoiceMap" type="com.maoding.invoice.dto.InvoiceDTO">
+    <id column="id" property="id" jdbcType="VARCHAR"/>
+    <result column="apply_date" property="applyDate" jdbcType="DATE"/>
+    <result column="company_user_name" property="companyUserName" jdbcType="VARCHAR"/>
+    <result column="fee" property="fee" jdbcType="DECIMAL"/>
+    <result column="cost_type" property="costType" jdbcType="VARCHAR"/>
+    <result column="fee" property="fee" jdbcType="DECIMAL"/>
+    <result column="fee_description" property="feeDescription" jdbcType="VARCHAR"/>
+    <result column="project_id" property="projectId" jdbcType="VARCHAR"/>
+    <result column="invoice_type" property="invoiceType" jdbcType="INTEGER"/>
+    <result column="invoice_no" property="invoiceNo" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <select id="listInvoice" resultMap="InvoiceMap" parameterType="com.maoding.invoice.dto.InvoiceQueryDTO">
+      select <include refid="CommonMapper.countSQL"/>
+          cost_detail.fee,
+          cost_type.type as cost_type,
+          cost_point.fee_description,
+          company_user.user_name as company_user_name,
+          project_list.id as project_id,
+          project_list.project_name,
+          invoice_list.*
+      from maoding_invoice invoice_list
+          <!-- 金额、分类、备注 -->
+          inner join maoding_web_project_cost_point_detail cost_detail on (
+              cost_detail.status = '0'
+              and cost_detail.invoice = invoice_list.id
+          )
+          inner join maoding_web_project_cost_point cost_point on (
+              cost_point.status = '0'
+              and cost_point.id = cost_detail.point_id
+          )
+          inner join maoding_web_project_cost cost_type on (
+              cost_type.status = '0'
+              and cost_type.id = cost_point.cost_id
+          )
+          <!-- 申请人名称 -->
+          inner join maoding_web_project_cost_operater operater_list on (
+              operater_list.type = 1
+              and operater_list.cost_detail_id = cost_detail.id
+          )
+          inner join maoding_web_company_user company_user on (
+              company_user.id = operater_list.company_user_id
+          )
+          <!-- 关联项目名称 -->
+          inner join maoding_web_project project_list on (
+              project_list.pstatus = '0'
+              and project_list.id = cost_detail.project_id
+          )
+      where (invoice_list.deleted = 0)
+          and (invoice_list.company_id = #{currentCompanyId})
+      group by invoice_list.id
+      order by invoice_list.apply_date desc
+      <include refid="CommonMapper.limitSQL"/>
+  </select>
 </mapper>

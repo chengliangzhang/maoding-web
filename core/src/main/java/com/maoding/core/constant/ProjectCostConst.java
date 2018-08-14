@@ -1,5 +1,8 @@
 package com.maoding.core.constant;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public interface ProjectCostConst {
 
     //费用申请开始
@@ -25,4 +28,16 @@ public interface ProjectCostConst {
     int FEE_TYPE_COOPERATE_GAIN = 10;
     //合作设计费付款
     int FEE_TYPE_COOPERATE_PAY = 11;
+
+    Map<Integer,String> COST_TYPE_MAP = new HashMap<Integer,String>(){
+        {
+            put(ProjectCostConst.FEE_TYPE_CONTRACT,"合同回款");
+            put(ProjectCostConst.FEE_TYPE_TECHNICAL,"技术审查费");
+            put(ProjectCostConst.FEE_TYPE_COOPERATE,"合作设计费");
+            put(ProjectCostConst.FEE_TYPE_OUT,"其他费用（付款）");
+            put(ProjectCostConst.FEE_TYPE_IN,"其他费用（收款）");
+
+        }
+    };
+
 }
