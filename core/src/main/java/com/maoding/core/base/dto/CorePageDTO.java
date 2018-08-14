@@ -12,20 +12,20 @@ import java.util.List;
  */
 public class CorePageDTO<T extends CoreDTO> implements Serializable,Cloneable {
     /** 查询出的信息总数 */
-    private int count;
+    private int total;
     /** 当前页编号 */
     private int pageIndex;
     /** 当前页大小 */
     private int pageSize;
     /** 当前页内容（元素列表） */
-    private List<T> list;
+    private List<T> data;
 
-    public int getCount() {
-        return count;
+    public int getTotal() {
+        return total;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setTotal(int total) {
+        this.total = total;
     }
 
     public int getPageIndex() {
@@ -44,11 +44,11 @@ public class CorePageDTO<T extends CoreDTO> implements Serializable,Cloneable {
         this.pageSize = pageSize;
     }
 
-    public List<T> getList() {
-        return list;
+    public List<T> getData() {
+        return data;
     }
 
-    public void setList(List<T> list) {
-        this.list = list;
+    public void setData(List<T> data) {
+        this.data = data;
     }
 }

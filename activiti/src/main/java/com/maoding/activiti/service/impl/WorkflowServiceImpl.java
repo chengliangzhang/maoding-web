@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
-
 /**
  * 深圳市卯丁技术有限公司
  *
@@ -951,8 +949,8 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         CorePageDTO<ProcessDefineDTO> result = new CorePageDTO<>();
         result.setPageIndex(query.getPageIndex());
         result.setPageSize(query.getPageSize());
-        result.setCount((int)pdQuery.count());
-        result.setList(toProcessDefineDTOList(list));
+        result.setTotal((int)pdQuery.count());
+        result.setData(toProcessDefineDTOList(list));
         return result;
     }
 

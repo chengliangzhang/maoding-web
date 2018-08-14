@@ -2364,10 +2364,10 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
 
         //建立分页返回信息
         CorePageDTO<ProjectCostSummaryDTO> page = new CorePageDTO<>();
-        page.setCount(count);
+        page.setTotal(count);
         page.setPageSize(DigitUtils.parseInt(query.getPageSize()));
         page.setPageIndex(DigitUtils.parseInt(query.getPageIndex()));
-        page.setList(list);
+        page.setData(list);
         return page;
     }
 
