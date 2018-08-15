@@ -818,8 +818,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         map.put("costId",cost.getId());
         map.put("fromCompanyId",cost.getFromCompanyId());
         map.put("toCompanyId",cost.getToCompanyId());
-        //查询是否是内部组织
-        //map.put("isInnerCompany",this.isInnerCompany(cost));
+
         //查询收款节点
         Map<String,Object> costPointParam = new HashMap<>();
         costPointParam.put("pidIsNull", "1");//标示，只查父节点
@@ -853,6 +852,8 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         result.put("currentFeeOrgId",map.get("companyId"));
         result.put("startReceiveFlag",this.getStartReceiveFlag(map));
         result.put("startPayFlag",this.getStartPayFlag(map,cost));
+        //查询是否是内部组织
+        result.put("isInnerCompany",this.isInnerCompany(cost));
         //获取附件
         result.put("attachList",projectSkyDriverService.getAttachListByTargetId(cost.getId()));
         return result;
