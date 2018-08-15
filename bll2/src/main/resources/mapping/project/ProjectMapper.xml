@@ -135,10 +135,10 @@
                 and (ifnull(project_list.project_create_date,project_list.create_date) >= #{startDate,jdbcType=TIMESTAMP})
             </if>
             <!-- 项目立项组织过滤条件 -->
-            <if test="currentCompanyId != null">
-                and (company_creator.id = #{currentCompanyId}
-                    or company_second.id = #{currentCompanyId}
-                    or company_relation.id = #{currentCompanyId})
+            <if test="companyId != null">
+                and (company_creator.id = #{companyId}
+                    or company_second.id = #{companyId}
+                    or company_relation.id = #{companyId})
             </if>
         group by project_list.id
         order by ifnull(project_list.project_create_date,project_list.create_date) desc

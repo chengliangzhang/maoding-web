@@ -13,6 +13,8 @@ import java.util.Date;
  * 描述:
  **/
 public class ProjectCostSummaryQueryDTO extends CoreQueryDTO {
+    /** 查找的组织编号 */
+    private String companyId;
 
     /** 起始日期 */
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
@@ -27,6 +29,14 @@ public class ProjectCostSummaryQueryDTO extends CoreQueryDTO {
 
     /** 查询明细 */
     private String isDetail;
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
 
     public String getIsDetail() {
         return isDetail;

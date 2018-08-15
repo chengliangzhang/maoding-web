@@ -3,6 +3,7 @@ package com.maoding.projectcost.controller;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.core.util.StringUtils;
 import com.maoding.projectcost.dto.*;
 import com.maoding.projectcost.service.ProjectCostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -265,6 +266,9 @@ public class ProjectCostController extends BaseController {
     @ResponseBody
     public AjaxMessage listProjectCostSummary(@RequestBody ProjectCostSummaryQueryDTO query) throws Exception{
         updateCurrentUserInfo(query);
+        if (StringUtils.isEmpty(query.getCompanyId())){
+            query.setCompanyId(query.getCurrentCompanyId());
+        }
         CorePageDTO<ProjectCostSummaryDTO> page = projectCostService.listPageProjectCostSummary(query);
         return AjaxMessage.succeed(page);
     }

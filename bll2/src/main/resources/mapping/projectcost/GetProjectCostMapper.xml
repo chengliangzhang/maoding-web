@@ -59,25 +59,35 @@
                       <!-- 合同回款 -->
                       <when test="costType == 1">
                           and (cost_type.type = 1)
-                          and (cost_type.to_company_id = #{currentCompanyId})
+                          <if test="companyId != null">
+                              and (cost_type.to_company_id = #{companyId})
+                          </if>
                       </when>
                       <!-- 技术审查费 -->
                       <when test="costType == 2">
                           and (cost_type.type = 2)
-                          and (cost_type.to_company_id = #{currentCompanyId})
+                          <if test="companyId != null">
+                            and (cost_type.to_company_id = #{companyId})
+                          </if>
                       </when>
                       <!-- 合作设计费收款 -->
                       <when test="costType == 10">
                           and (cost_type.type = 3)
-                          and (cost_type.to_company_id = #{currentCompanyId})
+                          <if test="companyId != null">
+                            and (cost_type.to_company_id = #{companyId})
+                          </if>
                       </when>
                       <!-- 合作设计费付款 -->
                       <when test="costType == 11">
                           and (cost_type.type = 3)
-                          and (cost_type.from_company_id = #{currentCompanyId})
+                          <if test="companyId != null">
+                              and (cost_type.from_company_id = #{companyId})
+                          </if>
                       </when>
                       <otherwise>
-                          and ((cost_type.from_company_id = #{currentCompanyId}) or (cost_type.to_company_id = #{currentCompanyId}))
+                          <if test="companyId != null">
+                              and ((cost_type.from_company_id = #{companyId}) or (cost_type.to_company_id = #{companyId}))
+                          </if>
                       </otherwise>
                   </choose>
               )
@@ -113,7 +123,9 @@
               <!-- 仅统计报销和费用申请 -->
               and exp_main.type in (1,2)
               and exp_main.id = exp_detail.main_id
-              and exp_main.company_id = #{currentCompanyId}
+              <if test="companyId != null">
+                  and exp_main.company_id = #{companyId}
+              </if>
           )
       where (project_list.pstatus = '0')
           <!-- 项目立项时间过滤条件 -->
