@@ -220,11 +220,13 @@
         sum(IF( bill.fee_unit = 1, detail.fee * 10000, detail.fee )) AS profitFee,
         bill.pay_type AS profitType,
         detail.fee_description AS feeName,
---          ifnull(fcompany.company_name,payer_name) as fromCompanyName,
---          IF(bill.fee_type IN (5, 6), '--',ifnull(tocompany.company_name,payee_name))  as toCompanyName,
-        if(fee_type = 1,bill.payer_name, IF( bill.pay_type = 1,fcompany.company_name, IF( bill.fee_type IN (5, 6), '--', tocompany.company_name )))AS fromCompanyName,
+        ifnull(fcompany.company_name,payer_name) as fromCompanyName,
+        if(bill.fee_type IN (5, 6), '--',ifnull(tocompany.company_name,payee_name))  as toCompanyName,
+        if(fee_type = 1,bill.payer_name, IF( bill.pay_type = 1,fcompany.company_name,
+            IF( bill.fee_type IN (5, 6), '--', tocompany.company_name )))AS relationCompanyName,
         bill.project_name AS projectName,
-        detail.exp_type_name as feeTypeName
+        detail.exp_type_name as feeTypeName,
+        detail.exp_type_parent_name as feeTypeParentName
         from maoding_web_company_bill bill
         INNER JOIN maoding_web_company_bill_detail detail on bill.id = detail.bill_id
         INNER JOIN maoding_web_company_bill_relation relation ON bill.id = relation.id

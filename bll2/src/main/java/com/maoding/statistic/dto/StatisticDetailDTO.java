@@ -42,9 +42,13 @@ public class StatisticDetailDTO extends BaseDTO implements Serializable {
      */
     private Integer feeType;
     /**
-     * 费用类型中文名称
+     * 收支分类子项中文名称
      */
     private String feeTypeName;
+    /**
+     * 费收支分类中文名称
+     */
+    private String feeTypeParentName;
     /**
      * 付款公司ID，可能为空
      */
@@ -61,6 +65,10 @@ public class StatisticDetailDTO extends BaseDTO implements Serializable {
      * 收款公司名称，可能为空
      */
     private String toCompanyName;
+    /**
+     * 关联组织名称
+     */
+    private String relationCompanyName;
     /**
      * 费用所属项目ID
      */
@@ -87,6 +95,21 @@ public class StatisticDetailDTO extends BaseDTO implements Serializable {
 
     private Integer status;//报销列表的状态；0正常，1删除
 
+    public String getRelationCompanyName() {
+        return relationCompanyName;
+    }
+
+    public void setRelationCompanyName(String relationCompanyName) {
+        this.relationCompanyName = relationCompanyName;
+    }
+
+    public String getFeeTypeParentName() {
+        return feeTypeParentName;
+    }
+
+    public void setFeeTypeParentName(String feeTypeParentName) {
+        this.feeTypeParentName = feeTypeParentName;
+    }
 
     public String getCreateDate() {
         return createDate;
