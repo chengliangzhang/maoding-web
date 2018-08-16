@@ -1,7 +1,6 @@
 package com.maoding.statistic.service;
 
 import com.maoding.core.bean.AjaxMessage;
-import com.maoding.org.dto.CompanyDataDTO;
 import com.maoding.statistic.dto.*;
 
 import java.math.BigDecimal;
@@ -250,4 +249,12 @@ public interface StatisticService {
      */
     List<List<CostTypeDTO>> getCategoryTypeList(StatisticDetailQueryDTO dto) throws Exception;
 
+    /**
+     * 描述     获取收支明细标题栏过滤条件列表
+     * 日期     2018/8/15
+     * @author  张成亮
+     * @return  标题栏过滤条件
+     * @param   query 收支明细查询条件
+     **/
+    StatisticTitleFilterDTO getTitleFilter(StatisticDetailQueryDTO query);
 }

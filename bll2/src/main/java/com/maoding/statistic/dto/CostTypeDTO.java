@@ -18,6 +18,8 @@ public class CostTypeDTO {
     private Integer selected = 1;
 
     List<CostTypeDTO> childList = new ArrayList<>();//子项
+
+    public CostTypeDTO(){}
     public CostTypeDTO(String expTypeKey,String expTypeValue,Integer level){
         this.expTypeKey = expTypeKey;
         this.expTypeValue = expTypeValue;

@@ -5,7 +5,9 @@ import com.maoding.companybill.service.CompanyBalanceService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.DateUtils;
+import com.maoding.core.util.ObjectUtils;
 import com.maoding.core.util.StringUtil;
+import com.maoding.core.util.StringUtils;
 import com.maoding.exception.CustomException;
 import com.maoding.financial.dto.ExpCategoryDataDTO;
 import com.maoding.financial.dto.QueryExpCategoryDTO;
@@ -17,7 +19,6 @@ import com.maoding.statistic.dao.StatisticDao;
 import com.maoding.statistic.dto.*;
 import com.maoding.statistic.service.StatisticService;
 import com.maoding.system.dao.DataDictionaryDao;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -1195,4 +1196,57 @@ public class StatisticServiceImpl implements StatisticService {
         list.add(table12);
     }
 
+    /**
+     * 描述     获取收支明细标题栏过滤条件列表
+     * 日期     2018/8/15
+     * @author  张成亮
+     * @return  标题栏过滤条件
+     * @param   query 收支明细查询条件
+     **/
+    @Override
+    public StatisticTitleFilterDTO getTitleFilter(StatisticDetailQueryDTO query) {
+        //查找相关的收支分类和收支分类子项过滤条件
+        //保存并清理用于过滤的值
+        String feeType = query.getFeeType();
+        query.setFeeType(null);
+        List<String> feeTypeList = query.getFeeTypeList();
+        query.setFeeTypeList(null);
+        List<String> feeTypeParentList = query.getFeeTypeParentList();
+        query.setFeeTypeParentList(null);
+
+        List<CostTypeDTO> feeTypeAllList = statisticDao.listFeeTypeFilter(query);
+        //转换相关的收支分类和收支分类子项过滤条件到相应过滤条件
+        List<CostTypeDTO> feeTypeParentFilterList = new ArrayList<>();
+        List<CostTypeDTO> feeTypeFilterList = new ArrayList<>();
+        if (ObjectUtils.isNotEmpty(feeTypeAllList)){
+            for (CostTypeDTO type : feeTypeAllList){
+                feeTypeParentFilterList.add(new CostTypeDTO(type.getExpTypeValue(),type.getExpTypeValue(),1));
+                if (ObjectUtils.isNotEmpty(feeTypeParentList)){
+                    boolean found = false;
+                    for (String parentName : feeTypeParentList){
+                        if (StringUtils.isSame(parentName,type.getExpTypeValue())){
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found){
+                        feeTypeFilterList.add(type);
+                    }
+                } else {
+                    feeTypeFilterList.add(type);
+                }
+            }
+        }
+
+        //还原过滤值
+        query.setFeeType(feeType);
+        query.setFeeTypeList(feeTypeList);
+        query.setColFeeTypeList(feeTypeParentList);
+
+        //生成返回值
+        StatisticTitleFilterDTO titleFilter = new StatisticTitleFilterDTO();
+        titleFilter.setFeeTypeParentNameList(feeTypeParentFilterList);
+        titleFilter.setFeeTypeNameList(feeTypeFilterList);
+        return titleFilter;
+    }
 }

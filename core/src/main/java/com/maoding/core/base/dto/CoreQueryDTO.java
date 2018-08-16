@@ -12,7 +12,7 @@ import java.util.List;
  * 作者: 张成亮
  * 描述: 用于查询信息的条件
  **/
-public abstract class CoreQueryDTO extends BaseDTO implements Serializable,Cloneable {
+public class CoreQueryDTO extends BaseDTO implements Serializable,Cloneable {
     //默认页面大小
     private static final int DEFAULT_PAGE_SIZE = 20;
 

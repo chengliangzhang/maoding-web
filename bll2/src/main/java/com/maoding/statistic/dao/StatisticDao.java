@@ -206,4 +206,13 @@ public interface StatisticDao {
      * 按时间分组的柱状图数据
      */
     List<StatisticClassicSummaryDTO> getColumnarDataForTimeGroup(StatisticDetailQueryDTO dto);
+
+    /**
+     * 描述     获取收支明细查询结果中的收支分类和收支分类子项信息
+     * 日期     2018/8/15
+     * @author  张成亮
+     * @return  收支分类和收支分类子项信息
+     * @param   query 收支明细查询条件
+     **/
+    List<CostTypeDTO> listFeeTypeFilter(StatisticDetailQueryDTO query);
 }

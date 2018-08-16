@@ -347,4 +347,17 @@ public class StatisticDaoImpl implements StatisticDao {
     public List<StatisticClassicSummaryDTO> getColumnarDataForTimeGroup(StatisticDetailQueryDTO dto) {
         return this.sqlSession.selectList("StatisticCompanyBillMapper.getColumnarDataForTimeGroup", dto);
     }
+
+    /**
+     * 描述     获取收支明细查询结果中的收支分类和收支分类子项信息
+     * 日期     2018/8/15
+     *
+     * @param query 收支明细查询条件
+     * @return 收支分类和收支分类子项信息
+     * @author 张成亮
+     **/
+    @Override
+    public List<CostTypeDTO> listFeeTypeFilter(StatisticDetailQueryDTO query) {
+        return sqlSession.selectList("StatisticCompanyBillMapper.listFeeTypeFilter", query);
+    }
 }

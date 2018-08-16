@@ -607,12 +607,28 @@ public class StatisticController extends BaseController {
         return AjaxMessage.succeed(list);
     }
 
+    /**
+     * 描述     获取收支明细标题栏过滤条件列表
+     * 日期     2018/8/15
+     * @author  张成亮
+     * @return  标题栏过滤条件
+     * @param   query 收支明细查询条件
+     **/
+    @RequestMapping(value = "/getTitleFilter",method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage getTitleFilter(@RequestBody StatisticDetailQueryDTO query) throws Exception{
+        updateCurrentUserInfo(query);
+        StatisticTitleFilterDTO result = statisticService.getTitleFilter(query);
+        return AjaxMessage.succeed(result);
+    }
+
 
     /**
      * 费用类型（收支明细-台账）
      */
     @RequestMapping(value = "/getCostType",method = RequestMethod.GET)
     @ResponseBody
+    @Deprecated
     public AjaxMessage getData() throws Exception{
         StatisticDetailQueryDTO dto = new StatisticDetailQueryDTO();
         dto.setCombineCompanyId(this.currentCompanyId);

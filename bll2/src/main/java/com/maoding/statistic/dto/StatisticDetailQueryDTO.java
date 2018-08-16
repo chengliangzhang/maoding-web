@@ -33,6 +33,9 @@ public class StatisticDetailQueryDTO extends BaseDTO{
 
     private List<String> colFeeTypeList = new ArrayList<>();
 
+    /** 收支分类 **/
+    private List<String> feeTypeParentList;
+
     private List<String> colMonthList = new ArrayList<>();
 
     /**
@@ -146,6 +149,14 @@ public class StatisticDetailQueryDTO extends BaseDTO{
             feeType = null;
         }
         return feeType;
+    }
+
+    public List<String> getFeeTypeParentList() {
+        return feeTypeParentList;
+    }
+
+    public void setFeeTypeParentList(List<String> feeTypeParentList) {
+        this.feeTypeParentList = feeTypeParentList;
     }
 
     public List<String> getColFeeTypeList() {

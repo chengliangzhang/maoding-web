@@ -86,6 +86,18 @@
             <if test="associatedOrg!=null">
                 AND if(bill.pay_type=1,bill.payer_name,bill.payee_name) = #{associatedOrg}
             </if>
+            <if test="feeTypeList != null and feeTypeList.size() > 0">
+                and detail.exp_type_name in
+                <foreach collection="feeTypeList" open="(" close=")" separator="," item="feeTypeExact">
+                    #{feeTypeExact}
+                </foreach>
+            </if>
+            <if test="feeTypeParentList != null and feeTypeParentList.size() > 0">
+                and detail.exp_type_parent_name in
+                <foreach collection="feeTypeParentList" open="(" close=")" separator="," item="feeTypeParent">
+                    #{feeTypeParent}
+                </foreach>
+            </if>
         </where>
     </sql>
 
@@ -410,5 +422,29 @@
             ,SUBSTR(b.payment_date, 1, 4)
         </if>
         order by SUBSTR(b.payment_date, 1, 7)
+    </select>
+
+    <resultMap id="CostTypeMap" type="com.maoding.statistic.dto.CostTypeDTO">
+        <id column="exp_type_parent_name" property="expTypeValue"/>
+        <result column="selected" property="selected"/>
+        <result column="parent_level" property="level"/>
+        <collection property="childList" ofType="com.maoding.statistic.dto.CostTypeDTO">
+            <id column="exp_type_name" property="expTypeValue"/>
+            <result column="child_level" property="level"/>
+            <result column="selected" property="selected"/>
+        </collection>
+    </resultMap>
+
+    <select id="listFeeTypeFilter" resultMap="CostTypeMap" parameterType="com.maoding.statistic.dto.StatisticDetailQueryDTO">
+        SELECT
+            detail.exp_type_parent_name,
+            detail.exp_type_name
+        from maoding_web_company_bill bill
+            INNER JOIN maoding_web_company_bill_detail detail on bill.id = detail.bill_id
+            INNER JOIN maoding_web_company_bill_relation relation ON bill.id = relation.id
+            LEFT JOIN maoding_web_company fcompany ON relation.from_company_id = fcompany.id
+            LEFT JOIN maoding_web_company tocompany ON relation.to_company_id = tocompany.id
+            <include refid="getStandingBillBookDetailWhere"/>
+        group by detail.exp_type_parent_name,detail.exp_type_name
     </select>
 </mapper>
