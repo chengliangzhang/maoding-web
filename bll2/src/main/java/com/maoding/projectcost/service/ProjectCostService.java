@@ -26,15 +26,12 @@ public interface ProjectCostService extends BaseService<ProjectCostEntity>{
      */
     AjaxMessage saveOrUpdateProjectCost(ProjectCostEditDTO projectCostDto)throws Exception;
 
-
     /**
      * 方法描述：添加修改回款
      * 作者：chenzhujie
      * 日期：2017/3/1
      */
     AjaxMessage saveOrUpdateProjectCostPoint(ProjectCostPointDTO projectCostPointDTO)throws Exception;
-
-
 
     /**
      * 方法描述：添加修改回款
@@ -49,6 +46,11 @@ public interface ProjectCostService extends BaseService<ProjectCostEntity>{
      * 日期：2017/3/1
      */
     AjaxMessage saveOrUpdateReturnMoneyDetail(ProjectCostPointDetailDTO projectCostPointDetailDTO)throws Exception;
+
+    /**
+     * 经营负责人申请费用（用于内部组织）
+     */
+    AjaxMessage applyProjectCostPayFee(ProjectCostPointDetailDTO projectCostPointDetailDTO)throws Exception;
 
     /**
      * 方法描述：发起收款

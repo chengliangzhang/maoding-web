@@ -157,7 +157,6 @@ public class ProjectCostController extends BaseController {
      * 作者：MaoSF
      * 日期：2017/3/7
      * @param:projectId，type
-     * @return:
      */
     @RequestMapping(value ={"/saveOrUpdateReturnMoneyDetail"} , method = RequestMethod.POST)
     @ResponseBody
@@ -168,11 +167,23 @@ public class ProjectCostController extends BaseController {
     }
 
     /**
+     * 方法描述：经营负责人  申请付款（内部组织使用）
+     * 作者：MaoSF
+     * 日期：2017/3/7
+     */
+    @RequestMapping(value ={"/applyProjectCostPayFee"} , method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage applyProjectCostPayFee(@RequestBody ProjectCostPointDetailDTO dto) throws Exception{
+        dto.setCurrentCompanyId(this.currentCompanyId);
+        dto.setAccountId(this.currentUserId);
+        return this.projectCostService.saveOrUpdateReturnMoneyDetail(dto);
+    }
+
+    /**
      * 方法描述：其他费用收款付款确认
      * 作者：MaoSF
      * 日期：2017/3/7
      * @param:projectId，type
-     * @return:
      */
     @RequestMapping(value ={"/saveOtherCostDetail"} , method = RequestMethod.POST)
     @ResponseBody

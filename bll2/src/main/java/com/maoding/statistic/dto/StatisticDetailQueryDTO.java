@@ -27,12 +27,23 @@ public class StatisticDetailQueryDTO extends BaseDTO{
      */
     private String feeType;
 
+    /**
+     * 1:收款，2：付款
+     */
     private Integer payType;
 
+    /**
+     * 前端接收的参数
+     */
     private List<String> feeTypeList = new ArrayList<>();
 
+    /**
+     * 分类统计中，柱状图 类型（参数整理）
+     */
     private List<String> colFeeTypeList = new ArrayList<>();
-
+    /**
+     * 分类统计中，柱状图 月份类型（参数整理）
+     */
     /** 收支分类 **/
     private List<String> feeTypeParentList;
 

@@ -32,6 +32,10 @@ public class ProjectCostPointDetailDTO extends InvoiceEditDTO {
     private String isInvoice;
 
     /**
+     * 费用状态
+     */
+    private Integer feeStatus;
+    /**
      * 1:收款，2：付款
      */
     private Integer payType;
@@ -108,5 +112,13 @@ public class ProjectCostPointDetailDTO extends InvoiceEditDTO {
 
     public void setInvoice(String invoice) {
         this.invoice = invoice;
+    }
+
+    public Integer getFeeStatus() {
+        return feeStatus;
+    }
+
+    public void setFeeStatus(Integer feeStatus) {
+        this.feeStatus = feeStatus;
     }
 }

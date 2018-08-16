@@ -184,6 +184,14 @@ public interface SystemParameters {
     int COOPERATIVE_DESIGN_FEE_FOR_PAY = 18;//合作设计费付款（财务）
     int COOPERATIVE_DESIGN_FEE_FOR_PAID = 19;//合作设计费到账（财务）
 
+    //修改后的
+    int TECHNICAL_REVIEW_FEE_FOR_PAY_2 = 30;//技术审查费付款（财务）
+    int TECHNICAL_REVIEW_FEE_FOR_PAID_2 = 31;//技术审查费到账（财务）
+
+    int COOPERATIVE_DESIGN_FEE_FOR_PAY_2 = 32;//合作设计费付款（财务）
+    int COOPERATIVE_DESIGN_FEE_FOR_PAID_2 = 33;//合作设计费到账（财务）
+    int INVOICE_FINN_IN_FOR_PAID = 29;//（财务填写发票信息）
+
     int OTHER_FEE_FOR_PAY = 20;//其他费付款（财务）
     int OTHER_FEE_FOR_PAID = 21;//其他费到账（财务）
     int TASK_COMPLETE = 22;//生产根任务已完成，给设计负责人推送任务
@@ -195,7 +203,7 @@ public interface SystemParameters {
     int DELIVER_CONFIRM_FINISH = 26;
     /** 进行交付文件上传 */
     int DELIVER_EXECUTE = 27;
-    int INVOICE_FINN_IN_FOR_PAID = 29;//（财务填写发票信息）
+
 
     //任务签发权限
     String PROJECT_TASK_ISSUE = "project_task_issue";

@@ -5,6 +5,7 @@ import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.util.ObjectUtils;
 import com.maoding.invoice.dto.InvoiceDTO;
+import com.maoding.invoice.dto.InvoiceInfoDTO;
 import com.maoding.invoice.dto.InvoiceQueryDTO;
 import com.maoding.invoice.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,4 +43,14 @@ public class InvoiceController extends BaseController {
             return AjaxMessage.succeed(page);
         }
     }
+
+    @RequestMapping(value = {"/getInvoice"}, method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage getInvoice(@RequestBody InvoiceQueryDTO query) throws Exception {
+        updateCurrentUserInfo(query);
+        InvoiceInfoDTO invoice = invoiceService.getInvoice(query.getId());
+        return AjaxMessage.succeed(invoice);
+    }
+
+
 }

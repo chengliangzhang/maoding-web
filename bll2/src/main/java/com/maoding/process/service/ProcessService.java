@@ -15,7 +15,12 @@ public interface ProcessService {
      * @param dto -> businessKey:业务表中的id（比如中报销审批启动流程，businessKey = expMain 表中的id)
      * @param dto -> param:启动流程的时候，携带的参数，可以是空
      */
-    void startProcessInstance(ActivitiDTO dto) throws Exception;
+    String startProcessInstance(ActivitiDTO dto) throws Exception;
+
+    /**
+     * 是否需要启动流程
+     */
+    boolean isNeedStartProcess(ActivitiDTO dto) throws Exception;
 
     /**
      * 描述       加载流程，准备进行编辑

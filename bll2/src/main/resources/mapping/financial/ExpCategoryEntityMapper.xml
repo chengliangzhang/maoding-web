@@ -266,6 +266,7 @@
   </select>
 
 
+  <!-- parentTypeList:是为了补偿 财务设置中取消或许删除的项，但是在收支明细中已经产生的项的内容 -->
   <select id="getExpTypeListForProfitReport" resultMap="BaseResultMap2" parameterType="com.maoding.financial.dto.QueryExpCategoryDTO">
     select * from (
     SELECT a.id as pid,a.code as parentCode,a.show_status as parentShowStatus,a.seq as parentSeq,

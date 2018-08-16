@@ -59,6 +59,8 @@ public class ProjectCostPaymentDetailDTO extends BaseDTO {
 
     private int taskType;//对应的任务类型
 
+    Integer operateFlag;//1：收款，2：付款,3:经营负责人确认付款
+
     public String getProjectId() {
         return projectId;
     }
@@ -137,5 +139,13 @@ public class ProjectCostPaymentDetailDTO extends BaseDTO {
 
     public void setTaskType(int taskType) {
         this.taskType = taskType;
+    }
+
+    public Integer getOperateFlag() {
+        return operateFlag;
+    }
+
+    public void setOperateFlag(Integer operateFlag) {
+        this.operateFlag = operateFlag;
     }
 }

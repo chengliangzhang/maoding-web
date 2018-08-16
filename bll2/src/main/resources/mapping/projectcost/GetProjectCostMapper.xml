@@ -4,20 +4,21 @@
   <resultMap id="BaseResultMapDto" type="com.maoding.projectcost.dto.ProjectCostDTO" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+      <result column="operate_company_id" property="operateCompanyId" jdbcType="VARCHAR" />
     <result column="from_company_id" property="fromCompanyId" jdbcType="VARCHAR" />
     <result column="to_company_id" property="toCompanyId" jdbcType="VARCHAR" />
     <result column="type" property="type" jdbcType="VARCHAR" />
     <result column="fee" property="fee" jdbcType="DECIMAL" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
-    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
-    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
-    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
-    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <!--<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />-->
+    <!--<result column="create_by" property="createBy" jdbcType="VARCHAR" />-->
+    <!--<result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />-->
+    <!--<result column="update_by" property="updateBy" jdbcType="VARCHAR" />-->
     <result column="status" property="status" jdbcType="VARCHAR" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, project_id, from_company_id,to_company_id, type, fee,  remark, status,create_date,
+    id, project_id,operate_company_id, from_company_id,to_company_id, type, fee,  remark, status,create_date,
     create_by, update_date, update_by
   </sql>
 

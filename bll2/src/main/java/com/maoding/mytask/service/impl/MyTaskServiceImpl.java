@@ -6,6 +6,7 @@ import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.dto.BaseShowDTO;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.core.constant.CompanyBillType;
 import com.maoding.core.constant.MyTaskRole;
 import com.maoding.core.constant.ProjectMemberType;
 import com.maoding.core.constant.SystemParameters;
@@ -623,7 +624,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                 this.saveMyTaskFor4Or6(targetId, taskType, companyId, detailEntity.getProjectId(),createBy,currentCompanyId);
             }
 
-            if (taskType == 10 || taskType == 20 || taskType == 21 || taskType == 29) {
+            if (taskType == 10 || taskType == 20 || taskType == 21 || taskType >= 29 && taskType<=33) {
                 return saveMyTask(targetId, companyId, taskType, null, detailEntity.getProjectId(),createBy,currentCompanyId);
             }
         }
@@ -689,7 +690,10 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         List<CompanyUserTableDTO> companyUserList = null;
         if(taskType==SystemParameters.TECHNICAL_REVIEW_FEE_FOR_PAY
                 || taskType==SystemParameters.COOPERATIVE_DESIGN_FEE_FOR_PAY
-                || taskType==SystemParameters.OTHER_FEE_FOR_PAY){
+                || taskType==SystemParameters.OTHER_FEE_FOR_PAY
+                || taskType==SystemParameters.TECHNICAL_REVIEW_FEE_FOR_PAY_2
+                || taskType==SystemParameters.COOPERATIVE_DESIGN_FEE_FOR_PAY_2
+                ){
             companyUserList = this.companyUserService.getFinancialManager(companyId);
             type = MyTaskRole.FINANCE_PAY;
         }
@@ -697,7 +701,10 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                 || taskType == SystemParameters.TECHNICAL_REVIEW_FEE_FOR_PAID
                 || taskType == SystemParameters.COOPERATIVE_DESIGN_FEE_FOR_PAID
                 || taskType == SystemParameters.OTHER_FEE_FOR_PAID
-                || taskType == SystemParameters.INVOICE_FINN_IN_FOR_PAID){
+                || taskType == SystemParameters.INVOICE_FINN_IN_FOR_PAID
+                || taskType==SystemParameters.TECHNICAL_REVIEW_FEE_FOR_PAID_2
+                || taskType==SystemParameters.COOPERATIVE_DESIGN_FEE_FOR_PAID_2
+                ){
             companyUserList = this.companyUserService.getFinancialManagerForReceive(companyId);
             type = MyTaskRole.FINANCE_RECEIVE;
         }
@@ -1133,6 +1140,10 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                     case 10:
                     case 20:
                     case 21:
+                    case 30:
+                    case 31:
+                    case 32:
+                    case 33:
                         return handleType10(myTaskEntity, result, status, currentUserId, dto.getPaidDate());
                     case 16:
                     case 17:
@@ -1319,6 +1330,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         detailDTO.setAccountId(accountId);
         detailDTO.setCurrentCompanyId(myTask.getCompanyId());
         detailDTO.setTaskType(myTask.getTaskType());
+        detailDTO.setOperateFlag(3);//经营负责人操作
         AjaxMessage ajaxMessage = this.projectCostService.saveCostPaymentDetail(detailDTO);
         if ("1".equals(ajaxMessage.getCode())) {//如果失败，则返回
             return ajaxMessage;
@@ -1382,10 +1394,14 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         //新增记录,调用
         ProjectCostPaymentDetailDTO detailDTO = new ProjectCostPaymentDetailDTO();
         detailDTO.setPointDetailId(myTask.getTargetId());
-        if (null != myTask && myTask.getTaskType() == 20) {//其他费用－付款
+        if (null != myTask && (myTask.getTaskType() == SystemParameters.OTHER_FEE_FOR_PAY
+                || myTask.getTaskType()==SystemParameters.TECHNICAL_REVIEW_FEE_FOR_PAY_2
+                || myTask.getTaskType()==SystemParameters.COOPERATIVE_DESIGN_FEE_FOR_PAY_2)) {//其他费用－付款
             detailDTO.setPayDate(paidDate);
+            detailDTO.setOperateFlag(CompanyBillType.DIRECTION_PAYEE);
         } else {
             detailDTO.setPaidDate(paidDate);
+            detailDTO.setOperateFlag(CompanyBillType.DIRECTION_PAYER);
         }
         detailDTO.setCurrentCompanyUserId(handler.getId());
         detailDTO.setFee(new BigDecimal(result));
@@ -1533,9 +1549,11 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         detailDTO.setCurrentCompanyUserId(handler.getId());
         if (myTask.getTaskType() == 16 || myTask.getTaskType() == 18) {
             detailDTO.setPayDate(paidDate);
+            detailDTO.setOperateFlag(CompanyBillType.DIRECTION_PAYEE);
         }
         if (myTask.getTaskType() == 17 || myTask.getTaskType() == 19) {
             detailDTO.setPaidDate(paidDate);
+            detailDTO.setOperateFlag(CompanyBillType.DIRECTION_PAYER);//付款
         }
         detailDTO.setProjectId(myTask.getProjectId());
         detailDTO.setCurrentCompanyId(myTask.getCompanyId());

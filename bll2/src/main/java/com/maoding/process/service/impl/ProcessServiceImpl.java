@@ -6,6 +6,7 @@ import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.constant.ProcessTypeConst;
 import com.maoding.core.util.ObjectUtils;
+import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
 import com.maoding.core.util.TraceUtils;
 import com.maoding.financial.dto.SaveExpMainDTO;
@@ -63,10 +64,14 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
     private static final String auditIdKey = "auditId";
 
     @Override
-    public void startProcessInstance(ActivitiDTO dto) throws Exception {
+    public String startProcessInstance(ActivitiDTO dto) throws Exception {
         String processInstanceId = null;
         //获取流程的key值，确定启动哪个流程
         String processKey = this.getProcessKey(dto.getTargetType(),dto.getCurrentCompanyId());
+        if(ProcessTypeConst.PROCESS_TYPE_FREE.equals(processKey)
+                && (!dto.getParam().containsKey("approveUser") || StringUtil.isNullOrEmpty(dto.getParam().get("approveUser")))){
+            return null;
+        }
         if(processKey != null){
             //启动流程
             WorkActionDTO workAction = new WorkActionDTO();
@@ -81,7 +86,20 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             //保存流程实例与业务表的关系
             ProcessInstanceRelationEntity instanceRelation = new ProcessInstanceRelationEntity(dto.getBusinessKey(),processInstanceId,dto.getTargetType());
             processInstanceRelationDao.insert(instanceRelation);
+            return processInstanceId;
         }
+        return null;
+    }
+
+    @Override
+    public boolean isNeedStartProcess(ActivitiDTO dto) throws Exception {
+        //获取流程的key值，确定启动哪个流程
+        String processKey = this.getProcessKey(dto.getTargetType(),dto.getCurrentCompanyId());
+        if(ProcessTypeConst.PROCESS_TYPE_FREE.equals(processKey)
+                && (!dto.getParam().containsKey("approveUser") || StringUtil.isNullOrEmpty(dto.getParam().get("approveUser")))){
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -318,7 +336,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
     private String getProcessKey(String targetType,String companyId){
         //如果是自由流程，则启动系统中的默认的流程
         ProcessTypeEntity processType = this.processTypeDao.getCurrentProcessType(companyId,targetType);
-        if(processType==null){
+        if(processType==null || ProcessTypeConst.TYPE_FREE == processType.getType()){
             return ProcessTypeConst.PROCESS_TYPE_FREE;
         }
         return "p_"+processType.getCompanyId()+"_"+processType.getTargetType()+"_"+processType.getType();

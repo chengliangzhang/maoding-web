@@ -269,19 +269,17 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
     public AjaxMessage applyProjectCost(ApplyProjectCostDTO dto) throws Exception {
         String userId = dto.getAccountId();
         String companyId = dto.getCurrentCompanyId();
-
         CompanyUserEntity currentCompanyUser = companyUserDao.getCompanyUserByUserIdAndCompanyId(userId,companyId);
         if(currentCompanyUser==null){
             return AjaxMessage.failed("数据错误");
         }
-
         //是增加true还是修改false操作
         //保存报销主表
         ExpMainEntity entity = new ExpMainEntity();
         BaseDTO.copyFields(dto, entity);
         entity.setApproveStatus("0");
         if (StringUtil.isNullOrEmpty(dto.getId())) {//插入
-            saveExpMain(entity,dto,userId,companyId);
+            this.saveExpMain(entity,dto,userId,companyId);
         }  else {//保存
             int result = 0;
             ExpMainEntity exp = expMainDao.selectById(dto.getId());
@@ -293,11 +291,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
                 exp.setExpFlag(1);
                 entity.setExpFlag(2);
                 expMainDao.updateById(exp);
-                //dto.setTargetId(null); //此处为了防止前端 更新的时候传递了targetId过来(前端生成)
-                //新开一个新的报销单
                 saveExpMain(entity,dto,userId,companyId);
-                //复制原来的附件记录
-//                projectSkyDriverService.copyFileToNewObject(entity.getId(),dto.getId(),NetFileType.EXPENSE_ATTACH,dto.getDeleteAttachList());
             }else {
                 entity.set4Base(null, userId, null, new Date());
                 //版本控制
@@ -310,16 +304,8 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         }
         //主表Id
         String id = entity.getId();
-        //处理图片
-//        if(!CollectionUtils.isEmpty(dto.getDeleteAttachList())){
-//            projectSkyDriverService.deleteSysDrive(dto.getDeleteAttachList(),dto.getAccountId(),id);
-//        }
         //保存报销明细表
         this.saveExpDetail(dto ,id);
-        //处理审核记录
-        Integer myTaskType = this.getMyTaskType(entity);
-        //处理抄送
-//        this.saveCopy(dto.getCcCompanyUserList(),currentCompanyUser.getId(),id,id);
         return new AjaxMessage().setCode("0").setInfo("保存成功").setData(dto);
     }
 
@@ -360,6 +346,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         entity.setExpNo(expNo);
         entity.set4Base(userId, userId, new Date(), new Date());
         entity.setCompanyId(companyId);
+        entity.initEntity();
         expMainDao.insert(entity);
 
         String targetType = ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY;
@@ -370,7 +357,6 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
 //        }
         // 启动流程
         ActivitiDTO activitiDTO = new ActivitiDTO(entity.getId(),entity.getCompanyUserId(),companyId,userId,dto.getApplyAmount(),targetType);
-
         activitiDTO.getParam().put("approveUser",dto.getAuditPerson());
         this.processService.startProcessInstance(activitiDTO);
         return entity;

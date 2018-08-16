@@ -138,6 +138,9 @@ public interface StatisticService {
      */
     List<PaymentDetailDTO> getReceivableDetailList(String projectId);
 
+    /**
+     * 台账--》关联组织
+     */
     Map<String,List<Map<String, String>>> getRelationCompany(StatisticDetailQueryDTO param) ;
 
     /**

@@ -14,6 +14,11 @@ import java.math.BigDecimal;
 public class ProjectCostEntity extends BaseEntity {
 
     /**
+     * 创建当前记录的id
+     */
+    private String operateCompanyId; //创建当前记录的id
+
+    /**
      * 项目id
      */
     private String projectId;
@@ -114,5 +119,13 @@ public class ProjectCostEntity extends BaseEntity {
 
     public void setFlag(String flag) {
         this.flag = flag;
+    }
+
+    public String getOperateCompanyId() {
+        return operateCompanyId;
+    }
+
+    public void setOperateCompanyId(String operateCompanyId) {
+        this.operateCompanyId = operateCompanyId;
     }
 }

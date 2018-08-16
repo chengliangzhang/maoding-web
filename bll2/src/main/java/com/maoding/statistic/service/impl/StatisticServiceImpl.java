@@ -1220,17 +1220,29 @@ public class StatisticServiceImpl implements StatisticService {
         List<CostTypeDTO> feeTypeFilterList = new ArrayList<>();
         if (ObjectUtils.isNotEmpty(feeTypeAllList)){
             for (CostTypeDTO type : feeTypeAllList){
-                feeTypeParentFilterList.add(new CostTypeDTO(type.getExpTypeValue(),type.getExpTypeValue(),1));
+                //设置收支分类过滤项
+                CostTypeDTO parent = new CostTypeDTO(null,type.getExpTypeValue(),1);
+                if (inList(parent.getExpTypeValue(),feeTypeParentList)) {
+                    parent.setSelected(1);
+                } else {
+                    parent.setSelected(0);
+                }
+                feeTypeParentFilterList.add(parent);
+
+                //设置收支分类子项过滤项，如果feeTypeParentList不为空，需要联动
                 if (ObjectUtils.isNotEmpty(feeTypeParentList)){
-                    boolean found = false;
-                    for (String parentName : feeTypeParentList){
-                        if (StringUtils.isSame(parentName,type.getExpTypeValue())){
-                            found = true;
-                            break;
+                    if (inList(type.getExpTypeValue(),feeTypeParentList)){
+                        if (inList(type.getExpTypeValue(),feeTypeParentList)) {
+                            type.setSelected(1);
                         }
-                    }
-                    if (found){
                         feeTypeFilterList.add(type);
+                        if (ObjectUtils.isNotEmpty(type.getChildList())){
+                            type.getChildList().forEach(child->{
+                                if (inList(child.getExpTypeValue(),feeTypeList)){
+                                    child.setSelected(1);
+                                }
+                            });
+                        }
                     }
                 } else {
                     feeTypeFilterList.add(type);
@@ -1248,5 +1260,20 @@ public class StatisticServiceImpl implements StatisticService {
         titleFilter.setFeeTypeParentNameList(feeTypeParentFilterList);
         titleFilter.setFeeTypeNameList(feeTypeFilterList);
         return titleFilter;
+    }
+
+    //判断字符串是否在列表里
+    private boolean inList(String str,List<String> list){
+        boolean found = false;
+        if (ObjectUtils.isNotEmpty(list)) {
+            for (String s : list) {
+                if (StringUtils.isSame(str, s)) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        return found;
     }
 }

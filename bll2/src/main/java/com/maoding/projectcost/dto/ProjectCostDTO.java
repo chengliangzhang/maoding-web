@@ -15,6 +15,11 @@ import java.util.Date;
 public class ProjectCostDTO extends BaseDTO {
 
     /**
+     * 当前记录创建的组织id
+     */
+    private String operateCompanyId;
+
+    /**
      * 项目id
      */
     private String projectId;
@@ -59,43 +64,43 @@ public class ProjectCostDTO extends BaseDTO {
      * 状态：0：生效，1：不生效（删除）
      */
     private String status;
+//
+//    private String 	createBy;
+//    private String 	updateBy;
+//    private Date createDate;
+//    private Date 	updateDate;
 
-    private String 	createBy;
-    private String 	updateBy;
-    private Date createDate;
-    private Date 	updateDate;
-
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy;
-    }
-
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
+//    public String getCreateBy() {
+//        return createBy;
+//    }
+//
+//    public void setCreateBy(String createBy) {
+//        this.createBy = createBy;
+//    }
+//
+//    public String getUpdateBy() {
+//        return updateBy;
+//    }
+//
+//    public void setUpdateBy(String updateBy) {
+//        this.updateBy = updateBy;
+//    }
+//
+//    public Date getCreateDate() {
+//        return createDate;
+//    }
+//
+//    public void setCreateDate(Date createDate) {
+//        this.createDate = createDate;
+//    }
+//
+//    public Date getUpdateDate() {
+//        return updateDate;
+//    }
+//
+//    public void setUpdateDate(Date updateDate) {
+//        this.updateDate = updateDate;
+//    }
 
     public String getProjectId() {
         return projectId;
@@ -167,5 +172,13 @@ public class ProjectCostDTO extends BaseDTO {
 
     public void setPayType(Integer payType) {
         this.payType = payType;
+    }
+
+    public String getOperateCompanyId() {
+        return operateCompanyId;
+    }
+
+    public void setOperateCompanyId(String operateCompanyId) {
+        this.operateCompanyId = operateCompanyId;
     }
 }

@@ -438,7 +438,10 @@
     <select id="listFeeTypeFilter" resultMap="CostTypeMap" parameterType="com.maoding.statistic.dto.StatisticDetailQueryDTO">
         SELECT
             detail.exp_type_parent_name,
-            detail.exp_type_name
+            if (detail.id is null, null, 1) as parent_level,
+            detail.exp_type_name,
+            if (detail.id is null, null, 2) as child_level,
+            if (detail.id is null, null, 0) as selected
         from maoding_web_company_bill bill
             INNER JOIN maoding_web_company_bill_detail detail on bill.id = detail.bill_id
             INNER JOIN maoding_web_company_bill_relation relation ON bill.id = relation.id

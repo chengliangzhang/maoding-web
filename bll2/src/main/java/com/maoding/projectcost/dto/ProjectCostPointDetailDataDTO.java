@@ -76,6 +76,11 @@ public class ProjectCostPointDetailDataDTO {
     private int deleteFlag;
 
     /**
+     * 审批人
+     */
+    private String auditPersonName;
+
+    /**
      * 操作人
      */
     private String userName;
@@ -195,10 +200,14 @@ public class ProjectCostPointDetailDataDTO {
 
 
     public BigDecimal getNotPayFee() {
-        if(fee!=null && payFee!=null){
+        if(fee!=null && payFee!=null){ //如果payFee不为null ，则feeStatus一定=1
             notPayFee = fee.subtract(payFee);
         }else {
-            notPayFee = fee;
+            if( "1".equals(feeStatus)){
+                notPayFee = fee;
+            }else {
+                notPayFee = new BigDecimal("0");//否则未付就是为0，因为审批还未审批完，不应该计入应付状态
+            }
         }
         return notPayFee;
     }
@@ -317,5 +326,13 @@ public class ProjectCostPointDetailDataDTO {
 
     public void setFeeStatus(String feeStatus) {
         this.feeStatus = feeStatus;
+    }
+
+    public String getAuditPersonName() {
+        return auditPersonName;
+    }
+
+    public void setAuditPersonName(String auditPersonName) {
+        this.auditPersonName = auditPersonName;
     }
 }
