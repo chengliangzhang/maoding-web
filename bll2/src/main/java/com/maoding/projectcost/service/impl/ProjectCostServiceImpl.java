@@ -153,6 +153,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         ProjectCostEntity entity = new ProjectCostEntity();
         BaseDTO.copyFields(projectCostDto, entity);
         //类型1:合同总金额，2：技术审查费,3合作设计费付款 (字符串)，
+        entity.setOperateCompanyId(projectCostDto.getCurrentCompanyId());
         if(projectCostDto.getPayType()==CompanyBillType.DIRECTION_PAYEE){//如果是收款方
             entity.setToCompanyId(projectCostDto.getCurrentCompanyId());
         }else {
@@ -722,7 +723,11 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         return dto;
     }
 
-
+    private boolean isInnerCompany(ProjectCostEntity p){
+        ProjectCostDTO dto = new ProjectCostDTO();
+        BeanUtils.copyProperties(p,dto);
+        return isInnerCompany(dto);
+    }
     private boolean isInnerCompany(ProjectCostDTO p){
         if(p!=null && ("2".equals(p.getType()) || "3".equals(p.getType()))){
             CompanyRelationDTO fromRootCompany =  companyDao.getOrgType(p.getFromCompanyId());
@@ -1990,16 +1995,22 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         }else{//添加
             //如果是合同回款，其他费用收款
             boolean isReceive = operateFlag==1?true:false;
-            if(isReceive){
-                if(StringUtil.isNullOrEmpty(dto.getPaidDate())){
-                    dto.setPaidDate(DateUtils.date2Str(DateUtils.date_sdf));
-                }
+            boolean isInnerCompany = this.isInnerCompany(cost);
+            if(isInnerCompany){
+                dto.setPaidDate(DateUtils.date2Str(DateUtils.date_sdf));
+                dto.setPayDate(DateUtils.date2Str(DateUtils.date_sdf));
             }else {
-                if(StringUtil.isNullOrEmpty(dto.getPaidDate())){
-                    dto.setPayDate(DateUtils.date2Str(DateUtils.date_sdf));
+                if(isReceive){
+                    if(StringUtil.isNullOrEmpty(dto.getPaidDate())){
+                        dto.setPaidDate(DateUtils.date2Str(DateUtils.date_sdf));
+                    }
+                }else {
+                    if(StringUtil.isNullOrEmpty(dto.getPaidDate())){
+                        dto.setPayDate(DateUtils.date2Str(DateUtils.date_sdf));
+                    }
+                    //判断余额付款方的余额
+                    validateBalance(cost.getFromCompanyId(),dto.getFee(),dto.getPayDate());
                 }
-                //判断余额付款方的余额
-                validateBalance(cost.getFromCompanyId(),dto.getFee(),dto.getPayDate());
             }
             entity.setId(StringUtil.buildUUID());
             entity.setCreateBy(dto.getAccountId());
@@ -2009,9 +2020,20 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
             dynamicService.addDynamic(null,entity,dto.getCurrentCompanyId(),dto.getAccountId());
             //保存操作
             isInsert = this.saveProjectCostOperater(entity.getId(),operateFlag,dto.getCurrentCompanyUserId(),dto.getFee(),dto.getAccountId());
-            if(isInsert && operateFlag<3){
-                this.financialAccount(costPoint,dto,isReceive,entity.getId(),dto.getFee());
+            if(operateFlag<3){
+                if(isInsert){
+                    this.financialAccount(costPoint,dto,isReceive,entity.getId(),dto.getFee());
+                }
             }
+            //如果是内部组织，把对方的财务也保存一份数据
+            if(operateFlag<3 && isInnerCompany){
+                operateFlag = operateFlag==1?2:1;//此处取反
+                isInsert = this.saveProjectCostOperater(entity.getId(),operateFlag,dto.getCurrentCompanyUserId(),dto.getFee(),dto.getAccountId());
+                if(isInsert){
+                    this.financialAccount(costPoint,dto,!isReceive,entity.getId(),dto.getFee());
+                }
+            }
+
         }
         //财务到款，付款给企业负责人和经营负责人推送消息
         this.sendMessage(cost,pointDetail,entity,dto,isSaveAdverseFinancial);
