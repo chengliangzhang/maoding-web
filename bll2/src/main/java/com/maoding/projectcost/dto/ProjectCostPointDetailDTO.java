@@ -21,6 +21,11 @@ public class ProjectCostPointDetailDTO extends InvoiceEditDTO {
 
     private BigDecimal fee;
 
+    /**
+     * 描述
+     */
+    private String pointDetailDescription;
+
     private String field1;
 
     private String field2;
@@ -120,5 +125,13 @@ public class ProjectCostPointDetailDTO extends InvoiceEditDTO {
 
     public void setFeeStatus(Integer feeStatus) {
         this.feeStatus = feeStatus;
+    }
+
+    public String getPointDetailDescription() {
+        return pointDetailDescription;
+    }
+
+    public void setPointDetailDescription(String pointDetailDescription) {
+        this.pointDetailDescription = pointDetailDescription;
     }
 }

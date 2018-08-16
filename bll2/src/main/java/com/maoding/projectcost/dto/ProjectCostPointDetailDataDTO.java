@@ -18,6 +18,11 @@ public class ProjectCostPointDetailDataDTO {
     private String id;
 
     /**
+     * 当前记录所属组织id
+     */
+    private String companyId;
+
+    /**
      * 项目id
      */
     private String projectId;
@@ -334,5 +339,13 @@ public class ProjectCostPointDetailDataDTO {
 
     public void setAuditPersonName(String auditPersonName) {
         this.auditPersonName = auditPersonName;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 }
