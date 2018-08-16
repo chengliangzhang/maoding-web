@@ -15,5 +15,5 @@ public interface InvoiceDao extends BaseDao<InvoiceEntity> {
 
     List<InvoiceDTO> listInvoice(InvoiceQueryDTO query);
 
-//    int getLastQueryCount();
+    int getLastQueryCount();
 }

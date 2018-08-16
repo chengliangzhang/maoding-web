@@ -86,6 +86,11 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
     @Override
     public List<InvoiceDTO> listInvoice(InvoiceQueryDTO query) {
         List<InvoiceDTO> list = invoiceDao.listInvoice(query);
+        return updateInvoiceList(list);
+    }
+
+    //填充公司名称
+    private List<InvoiceDTO> updateInvoiceList(List<InvoiceDTO> list){
         if (ObjectUtils.isNotEmpty(list)){
             list.forEach(invoice->{
                 invoice.setCostTypeName(getCostTypeName(invoice.getCostType()));
@@ -119,15 +124,15 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
      **/
     @Override
     public CorePageDTO<InvoiceDTO> listPageInvoice(InvoiceQueryDTO query) {
-        List<InvoiceDTO> invoiceList = listInvoice(query);
-//        int total = invoiceDao.getLastQueryCount();
+        List<InvoiceDTO> invoiceList = invoiceDao.listInvoice(query);
+        int total = invoiceDao.getLastQueryCount();
 
         //建立分页返回信息
         CorePageDTO<InvoiceDTO> page = new CorePageDTO<>();
-//        page.setTotal(total);
+        page.setTotal(total);
         page.setPageSize(DigitUtils.parseInt(query.getPageSize()));
         page.setPageIndex(DigitUtils.parseInt(query.getPageIndex()));
-        page.setData(invoiceList);
+        page.setData(updateInvoiceList(invoiceList));
         return page;
     }
 }
