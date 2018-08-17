@@ -31,7 +31,18 @@
                 and bill.project_name like concat('%',#{projectName},'%')
             </if>
             <if test="profitType!=null">
-                AND bill.pay_type = #{profitType}
+                <choose>
+                    <when test="profitType == 3">
+                        and detail.project_name is not null
+                    </when>
+                    <when test="profitType == 4">
+                        and detail.project_name is null
+                    </when>
+                    <otherwise>
+                        AND bill.pay_type = #{profitType}
+                    </otherwise>
+                </choose>
+
             </if>
             <if test="feeType!=null and feeType!=''">
                 AND FIND_IN_SET(CONCAT(detail.exp_type_name,'_',bill.pay_type) , #{feeType})
@@ -69,7 +80,17 @@
                 and bill.project_name like concat('%',#{projectName},'%')
             </if>
             <if test="profitType!=null">
-                AND bill.pay_type = #{profitType}
+                <choose>
+                    <when test="profitType == 3">
+                        and detail.project_name is not null
+                    </when>
+                    <when test="profitType == 4">
+                        and detail.project_name is null
+                    </when>
+                    <otherwise>
+                        AND bill.pay_type = #{profitType}
+                    </otherwise>
+                </choose>
             </if>
             <if test="feeType!=null and feeType!=''">
                 AND FIND_IN_SET(CONCAT(detail.exp_type_name,'_',bill.pay_type) , #{feeType})

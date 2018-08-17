@@ -16,4 +16,10 @@ public class CoreShowDTO extends CoreDTO {
     public void setName(String name) {
         this.name = name;
     }
+
+    public CoreShowDTO(){}
+    public CoreShowDTO(String id,String name){
+        setId(id);
+        setName(name);
+    }
 }

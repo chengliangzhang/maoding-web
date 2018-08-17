@@ -105,7 +105,7 @@ public class StatisticDetailQueryDTO extends BaseDTO{
      */
     Integer unitType;
     /**
-     * 收支类型：0为正数，1为负数
+     * 收支类型：0为正数，1为负数，2为项目收支，3为非项目收支
      */
     Integer profitType;
     /**

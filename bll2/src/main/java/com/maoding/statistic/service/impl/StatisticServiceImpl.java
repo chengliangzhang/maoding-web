@@ -2,6 +2,7 @@ package com.maoding.statistic.service.impl;
 
 import com.maoding.companybill.entity.CompanyBalanceEntity;
 import com.maoding.companybill.service.CompanyBalanceService;
+import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.DateUtils;
@@ -1259,7 +1260,18 @@ public class StatisticServiceImpl implements StatisticService {
         StatisticTitleFilterDTO titleFilter = new StatisticTitleFilterDTO();
         titleFilter.setFeeTypeParentNameList(feeTypeParentFilterList);
         titleFilter.setFeeTypeNameList(feeTypeFilterList);
+        titleFilter.setFeeList(getFeeList());
         return titleFilter;
+    }
+
+    //获取金额过滤条件
+    private List<CoreShowDTO> getFeeList(){
+        return new ArrayList<CoreShowDTO>(){
+            {
+                add(new CoreShowDTO("3","项目收支"));
+                add(new CoreShowDTO("4","非项目收支"));
+            }
+        };
     }
 
     //判断字符串是否在列表里

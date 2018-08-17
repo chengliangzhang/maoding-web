@@ -1,5 +1,7 @@
 package com.maoding.statistic.dto;
 
+import com.maoding.core.base.dto.CoreShowDTO;
+
 import java.util.List;
 
 /**
@@ -15,6 +17,17 @@ public class StatisticTitleFilterDTO {
 
     /** 收支类型子项过滤条件 */
     private List<CostTypeDTO> feeTypeNameList;
+
+    /** 金额过滤条件 **/
+    private List<CoreShowDTO> feeList;
+
+    public List<CoreShowDTO> getFeeList() {
+        return feeList;
+    }
+
+    public void setFeeList(List<CoreShowDTO> feeList) {
+        this.feeList = feeList;
+    }
 
     public List<CostTypeDTO> getFeeTypeParentNameList() {
         return feeTypeParentNameList;
