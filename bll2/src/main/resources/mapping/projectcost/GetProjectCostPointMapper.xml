@@ -77,7 +77,7 @@
   </select>
 
   <select id="getCostFeeCompanyByTaskId"  resultType="java.lang.String" parameterType="java.lang.String">
-     select if(e.task_type =10 or e.task_type =17 or e.task_type =19 or e.task_type =21,a.to_company_id,a.from_company_id)
+     select if(e.task_type =10 or e.task_type =17 or e.task_type =19 or e.task_type =21 or  e.task_type =29 or e.task_type =31 or e.task_type =33 , a.to_company_id,a.from_company_id)
     from maoding_web_project_cost a
     INNER JOIN maoding_web_project_cost_point b on a.id = b.cost_id
     INNER JOIN maoding_web_project_cost_point_detail c on b.id = c.point_id

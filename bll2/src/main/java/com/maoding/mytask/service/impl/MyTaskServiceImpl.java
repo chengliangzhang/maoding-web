@@ -1960,6 +1960,16 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                 return "其他费用 - 付款确认";
             case 21:
                 return "其他费用 - 到账确认";
+            case 29:
+                return "发票确认";
+            case 30:
+                return "技术审查费 - 确认付款日期";
+            case 31:
+                return "技术审查费 - 确认到账日期";
+            case 32:
+                return "合作设计费 - 确认付款日期";
+            case 33:
+                return "合作设计费 - 确认到账日期";
             case 22://所有设计任务已完成，给组织的设计负责人推送任务
                 return "审批任务 - "+taskName;
             case SystemParameters.DELIVER_CONFIRM_FINISH:
@@ -2047,6 +2057,11 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
             case 19:
             case 20:
             case 21:
+            case 29:
+            case 30:
+            case 31:
+            case 32:
+            case 33:
                 return "财务人员";
             case 15:
             case 22:

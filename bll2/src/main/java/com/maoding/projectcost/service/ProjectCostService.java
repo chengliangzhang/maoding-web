@@ -83,19 +83,17 @@ public interface ProjectCostService extends BaseService<ProjectCostEntity>{
     AjaxMessage getCooperativeDesignFeeInfo(Map<String,Object> map)throws Exception;
 
     /**
-     * 方法描述：合作设计费（projectId，companyId:当前公司id,payType:1=收款，2=付款 ）
+     * 方法描述：收付款计划列表（projectId，companyId:当前公司id,payType:1=收款，2=付款 ）
      * 作者：MaoSF
      * 日期：2018/8/8
      */
-    List<Map<String, Object>> listProjectCost(Map<String,Object> map)throws Exception;
+    Map<String, Object> listProjectCost(Map<String,Object> map)throws Exception;
 
 
     /**
      * 方法描述：删除费用（目前界面上没有删除操作。用于删除签发的任务时候，如果不存在签发的记录，则合作设计费删除）
      * 作者：MaoSF
      * 日期：2017/3/2
-     * @param:
-     * @return:
      */
     AjaxMessage deleteProjectCost(String id,String accountId) throws Exception;
 
@@ -103,8 +101,6 @@ public interface ProjectCostService extends BaseService<ProjectCostEntity>{
      * 方法描述：删除费用节点
      * 作者：MaoSF
      * 日期：2017/3/2
-     * @param:
-     * @return:
      */
     AjaxMessage deleteProjectCostPoint(String id,String accountId) throws Exception;
 
@@ -112,8 +108,6 @@ public interface ProjectCostService extends BaseService<ProjectCostEntity>{
      * 方法描述：删除发起收款明细节点
      * 作者：MaoSF
      * 日期：2017/3/2
-     * @param:
-     * @return:
      */
     AjaxMessage deleteProjectCostPointDetail(String id,String companyUserId) throws Exception;
     AjaxMessage deleteProjectCostPointDetail(String id,String companyUserId,Boolean isAddDynamic) throws Exception;
@@ -122,8 +116,6 @@ public interface ProjectCostService extends BaseService<ProjectCostEntity>{
      * 方法描述：删除收款明细节点
      * 作者：MaoSF
      * 日期：2017/4/27
-     * @param:
-     * @return:
      */
     AjaxMessage deleteProjectCostPaymentDetail(String id,String accountId) throws Exception;
 
@@ -133,7 +125,6 @@ public interface ProjectCostService extends BaseService<ProjectCostEntity>{
      * 作者：MaoSF
      * 日期：2017/3/2
      * @param:flag(1:重新添加，2.全部删除，3.先删除后添加）
-     * @return:
      */
     AjaxMessage handPartBChange(String id,String accountId,int flag) throws Exception;
 
@@ -150,8 +141,6 @@ public interface ProjectCostService extends BaseService<ProjectCostEntity>{
      * 方法描述：验证合作设计费
      * 作者：MaoSF
      * 日期：2017/3/12
-     * @param:
-     * @return:
      */
     AjaxMessage validateTechnicalFee(ProjectCostPointDTO projectCostPointDTO)throws Exception;
 
