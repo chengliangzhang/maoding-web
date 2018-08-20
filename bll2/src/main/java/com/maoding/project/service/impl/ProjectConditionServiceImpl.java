@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,18 +28,14 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
     @Autowired
     private ProjectConditionDao projectConditionDao;
 
-    private String notReturnString = "busPersonInCharge,busPersonInChargeAssistant,designPersonInCharge,designPersonInChargeAssistant";
+    private String notReturnString = "";
     @Override
     public List<ProjectConditionDTO> selProjectConditionList(Map<String, Object> param) {
         List<ProjectConditionDTO> list = projectConditionDao.selProjectConditionList(param);
         for(ProjectConditionDTO c:list){
             List<String> list1 = new ArrayList<>();
             String[] codes = c.getCode().split(",");
-            for(String code:codes){
-                if(!notReturnString.contains(code)){
-                    list1.add(code);
-                }
-            }
+            list1.addAll(Arrays.asList(codes));
             if (!CollectionUtils.isEmpty(list1)){
                 c.setCode(org.apache.commons.lang3.StringUtils.join(list1,","));
             }else {
@@ -86,46 +83,57 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
             {
                 add(new OptionalTitleGroupDTO("项目基本信息",new ArrayList<OptionalTitleDTO>(){
                     {
-                        add(new OptionalTitleDTO("","立项时间"));
-                        add(new OptionalTitleDTO("","项目名称"));
-                        add(new OptionalTitleDTO("","项目状态"));
-                        add(new OptionalTitleDTO("","项目编号"));
-                        add(new OptionalTitleDTO("","甲方"));
-                        add(new OptionalTitleDTO("","乙方"));
-                        add(new OptionalTitleDTO("","合同签订"));
-                        add(new OptionalTitleDTO("","项目类型"));
-                        add(new OptionalTitleDTO("","立项组织"));
-                        add(new OptionalTitleDTO("","功能分类"));
-                        add(new OptionalTitleDTO("","项目地点"));
-                        add(new OptionalTitleDTO("","合作组织"));
+                        add(new OptionalTitleDTO("projectCreateDate","立项时间"));
+                        add(new OptionalTitleDTO("projectName","项目名称"));
+                        add(new OptionalTitleDTO("status","项目状态"));
+                        add(new OptionalTitleDTO("projectNo","项目编号"));
+                        add(new OptionalTitleDTO("partyA","甲方"));
+                        add(new OptionalTitleDTO("partyB","乙方"));
+                        add(new OptionalTitleDTO("signDate","合同签订"));
+                        add(new OptionalTitleDTO("projectType","项目类型"));
+                        add(new OptionalTitleDTO("createCompany","立项组织"));
+                        add(new OptionalTitleDTO("buildName","功能分类"));
+                        add(new OptionalTitleDTO("address","项目地点"));
+                        add(new OptionalTitleDTO("relationCompany","合作组织"));
                     }
                 }));
                 add(new OptionalTitleGroupDTO("项目成员信息",new ArrayList<OptionalTitleDTO>(){
                     {
-                        add(new OptionalTitleDTO("","经营负责人"));
-                        add(new OptionalTitleDTO("","经营助理"));
-                        add(new OptionalTitleDTO("","设计负责人"));
-                        add(new OptionalTitleDTO("","设计助理"));
-                        add(new OptionalTitleDTO("","任务负责人"));
-                        add(new OptionalTitleDTO("","设计人员"));
-                        add(new OptionalTitleDTO("","校对人员"));
-                        add(new OptionalTitleDTO("","审核人员"));
+                        add(new OptionalTitleDTO("busPersonInCharge","经营负责人"));
+                        add(new OptionalTitleDTO("busPersonInChargeAssistant","经营助理"));
+                        add(new OptionalTitleDTO("designPersonInCharge","设计负责人"));
+                        add(new OptionalTitleDTO("designPersonInChargeAssistant","设计助理"));
+                        add(new OptionalTitleDTO("taskLeader","任务负责人"));
+                        add(new OptionalTitleDTO("designer","设计人员"));
+                        add(new OptionalTitleDTO("checker","校对人员"));
+                        add(new OptionalTitleDTO("auditor","审核人员"));
                     }
                 }));
                 add(new OptionalTitleGroupDTO("项目收入情况",new ArrayList<OptionalTitleDTO>(){
                     {
-                        add(new OptionalTitleDTO("","合同计划收款"));
-                        add(new OptionalTitleDTO("","合同到账信息"));
-                        add(new OptionalTitleDTO("","技术审查费计划收款"));
-                        add(new OptionalTitleDTO("","技术审查费到账金额"));
-                        add(new OptionalTitleDTO("","合作设计费计划收款"));
-                        add(new OptionalTitleDTO("","合作设计费到账"));
-                        add(new OptionalTitleDTO("","校对人员"));
-                        add(new OptionalTitleDTO("","审核人员"));
+                        add(new OptionalTitleDTO("contractPlan","合同计划收款"));
+                        add(new OptionalTitleDTO("contractReal","合同到账信息"));
+                        add(new OptionalTitleDTO("technicalGainPlan","技术审查费计划收款"));
+                        add(new OptionalTitleDTO("technicalGainReal","技术审查费到账金额"));
+                        add(new OptionalTitleDTO("cooperateGainPlan","合作设计费计划收款"));
+                        add(new OptionalTitleDTO("cooperateGainReal","合作设计费到账金额"));
+                        add(new OptionalTitleDTO("otherGainPlan","其他收入计划收款"));
+                        add(new OptionalTitleDTO("otherGainPlan","其他收入到账金额"));
+                    }
+                }));
+                add(new OptionalTitleGroupDTO("项目支出情况",new ArrayList<OptionalTitleDTO>(){
+                    {
+                        add(new OptionalTitleDTO("technicalPayPlan","技术审查费计划付款"));
+                        add(new OptionalTitleDTO("technicalPayReal","技术审查费付款金额"));
+                        add(new OptionalTitleDTO("cooperatePayPlan","合作设计费计划付款"));
+                        add(new OptionalTitleDTO("cooperatePayReal","合作设计费付款金额"));
+                        add(new OptionalTitleDTO("otherPayPlan","其他支出计划付款"));
+                        add(new OptionalTitleDTO("otherPayPlan","其他支出付款金额"));
                     }
                 }));
             }
         };
-        return null;
+
+        return optionalTitleList;
     }
 }
