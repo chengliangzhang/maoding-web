@@ -1539,6 +1539,20 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             });
         }
 
+        //汇总项目id，用于查询相关人员、费用
+        List<String> projectIdList = new ArrayList<>();
+        if (ObjectUtils.isNotEmpty(data)){
+            data.forEach(project->projectIdList.add(project.getId()));
+        }
+
+        if (ObjectUtils.isNotEmpty(projectIdList)) {
+            //添加任务负责人、设计人员、校对人员、审核人员
+
+
+            //添加费用信息
+        }
+
+        //添加项目是否可编辑信息
         Map<String, Object> para = setProjectUserPermissionParam((String)param.get("companyId"),(String)param.get("companyUserId"));
         List<PermissionDTO> permissionDTOS = permissionService.getProjectUserPermission(para);
         if (0 < permissionDTOS.size()) {
@@ -1546,10 +1560,6 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         } else {
             result.put("flag", 0);
         }
-
-
-
-
 
         result.put("data",data);
         result.put("total", total);

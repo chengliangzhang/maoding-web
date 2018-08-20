@@ -147,7 +147,7 @@ public class ProjectMemberDaoImpl extends GenericDao<ProjectMemberEntity> implem
      * @description 通用查找项目成员
      **/
     @Override
-    public List<ProjectMemberEntity> listEntityByQuery(MemberQueryDTO query) {
+    public List<ProjectMemberDTO> listEntityByQuery(MemberQueryDTO query) {
         return sqlSession.selectList("ProjectMemberEntityMapper.listEntityByQuery",query);
     }
 }

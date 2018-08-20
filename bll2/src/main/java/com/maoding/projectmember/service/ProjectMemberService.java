@@ -289,5 +289,5 @@ public interface ProjectMemberService {
      * @param   query 查询条件
      * @return  项目成员列表
      **/
-    List<ProjectMemberEntity> listByQuery(MemberQueryDTO query);
+    List<ProjectMemberDTO> listByQuery(MemberQueryDTO query);
 }

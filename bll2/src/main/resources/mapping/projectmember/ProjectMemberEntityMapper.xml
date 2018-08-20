@@ -248,7 +248,7 @@
   </sql>
   
   
-  <select id="listEntityByQuery" parameterType="com.maoding.projectmember.dto.MemberQueryDTO" resultMap="BaseResultMap">
+  <select id="listEntityByQuery" parameterType="com.maoding.projectmember.dto.MemberQueryDTO" resultMap="listEntityByQuery">
       select member_list.*
       from
           maoding_web_project_member member_list

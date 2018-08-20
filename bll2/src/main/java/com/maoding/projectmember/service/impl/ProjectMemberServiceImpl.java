@@ -1106,7 +1106,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
      * @description 查询项目成员
      **/
     @Override
-    public List<ProjectMemberEntity> listByQuery(MemberQueryDTO query) {
+    public List<ProjectMemberDTO> listByQuery(MemberQueryDTO query) {
         return projectMemberDao.listEntityByQuery(query);
     }
 }

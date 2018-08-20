@@ -3,7 +3,6 @@ package com.maoding.project.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.projectmember.dto.ProjectMemberDTO;
-import com.maoding.projectmember.entity.ProjectMemberEntity;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
@@ -156,6 +155,193 @@ public class ProjectTableDTO extends BaseDTO {
     private boolean childId;
 
     private String constructCompany;
+
+    /** 任务负责人 **/
+    private String taskLeaders;
+
+    /** 设计人员 **/
+    private String designers;
+
+    /** 校对人员 **/
+    private String checkers;
+    
+    /** 审核人员 **/
+    private String auditors;
+
+    /** 合同计划收款 **/
+    private double contract;
+
+    /** 合同到账信息 **/
+    private double contractReal;
+
+    /** 技术审查费计划收款 **/
+    private double technicalGain;
+
+    /** 技术审查费到账金额 **/
+    private double technicalGainReal;
+
+    /** 合作设计费计划收款 **/
+    private double cooperateGain;
+    
+    /** 其他收入计划收款 **/
+    private double otherGain;
+    
+    /** 其他收入到账金额 **/
+    private double otherGainReal;
+    
+    /** 技术审查费计划付款 **/
+    private double technicalPay;
+    
+    /** 技术审查费付款金额 **/
+    private double technicalPayReal;
+
+    /** 合作设计费计划付款 **/
+    private double cooperatePay;
+    
+    /** 合作设计费付款金额 **/
+    private double cooperatePayReal;
+    
+    /** 其他支出计划付款 **/
+    private double otherPay;
+    
+    /** 其他支出付款金额 **/
+    private double otherPayReal;
+
+    public String getTaskLeaders() {
+        return taskLeaders;
+    }
+
+    public void setTaskLeaders(String taskLeaders) {
+        this.taskLeaders = taskLeaders;
+    }
+
+    public String getDesigners() {
+        return designers;
+    }
+
+    public void setDesigners(String designers) {
+        this.designers = designers;
+    }
+
+    public String getCheckers() {
+        return checkers;
+    }
+
+    public void setCheckers(String checkers) {
+        this.checkers = checkers;
+    }
+
+    public String getAuditors() {
+        return auditors;
+    }
+
+    public void setAuditors(String auditors) {
+        this.auditors = auditors;
+    }
+
+    public double getContract() {
+        return contract;
+    }
+
+    public void setContract(double contract) {
+        this.contract = contract;
+    }
+
+    public double getContractReal() {
+        return contractReal;
+    }
+
+    public void setContractReal(double contractReal) {
+        this.contractReal = contractReal;
+    }
+
+    public double getTechnicalGain() {
+        return technicalGain;
+    }
+
+    public void setTechnicalGain(double technicalGain) {
+        this.technicalGain = technicalGain;
+    }
+
+    public double getTechnicalGainReal() {
+        return technicalGainReal;
+    }
+
+    public void setTechnicalGainReal(double technicalGainReal) {
+        this.technicalGainReal = technicalGainReal;
+    }
+
+    public double getCooperateGain() {
+        return cooperateGain;
+    }
+
+    public void setCooperateGain(double cooperateGain) {
+        this.cooperateGain = cooperateGain;
+    }
+
+    public double getOtherGain() {
+        return otherGain;
+    }
+
+    public void setOtherGain(double otherGain) {
+        this.otherGain = otherGain;
+    }
+
+    public double getOtherGainReal() {
+        return otherGainReal;
+    }
+
+    public void setOtherGainReal(double otherGainReal) {
+        this.otherGainReal = otherGainReal;
+    }
+
+    public double getTechnicalPay() {
+        return technicalPay;
+    }
+
+    public void setTechnicalPay(double technicalPay) {
+        this.technicalPay = technicalPay;
+    }
+
+    public double getTechnicalPayReal() {
+        return technicalPayReal;
+    }
+
+    public void setTechnicalPayReal(double technicalPayReal) {
+        this.technicalPayReal = technicalPayReal;
+    }
+
+    public double getCooperatePay() {
+        return cooperatePay;
+    }
+
+    public void setCooperatePay(double cooperatePay) {
+        this.cooperatePay = cooperatePay;
+    }
+
+    public double getCooperatePayReal() {
+        return cooperatePayReal;
+    }
+
+    public void setCooperatePayReal(double cooperatePayReal) {
+        this.cooperatePayReal = cooperatePayReal;
+    }
+
+    public double getOtherPay() {
+        return otherPay;
+    }
+
+    public void setOtherPay(double otherPay) {
+        this.otherPay = otherPay;
+    }
+
+    public double getOtherPayReal() {
+        return otherPayReal;
+    }
+
+    public void setOtherPayReal(double otherPayReal) {
+        this.otherPayReal = otherPayReal;
+    }
 
     public String getProjectName() {
         return projectName;
