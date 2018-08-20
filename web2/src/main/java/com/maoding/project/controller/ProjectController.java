@@ -10,6 +10,7 @@ import com.maoding.core.constant.RoleConst;
 import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.ObjectUtils;
 import com.maoding.core.util.StringUtil;
+import com.maoding.core.util.StringUtils;
 import com.maoding.mytask.entity.MyTaskEntity;
 import com.maoding.mytask.service.MyTaskService;
 import com.maoding.org.dao.CompanyDao;
@@ -549,30 +550,18 @@ public class ProjectController extends BaseController {
     @ResponseBody
     public AjaxMessage getProjectList(@RequestBody Map<String, Object> param) throws Exception {
         String companyId = this.currentCompanyId;
+        String userId = this.currentUserId;
         String companyUserId = (String) param.get("companyUserId");
         Map<String, Object> condition = new HashMap<>();
         //查询条件
         if (null == companyId || "".equals(companyId)) {
             return this.ajaxResponseSuccess();
         }
+        //补充缺失参数
         setMapConditions(param, companyId, companyUserId, condition);
         //数据
         Map<String, Object> result = projectService.getProcessingProjectsByPage(param);
-        //显示列查询
-        Map<String, Object> para = setProjectUserPermissionParam();
-        List<PermissionDTO> permissionDTOS = permissionService.getProjectUserPermission(para);
-        if (0 < permissionDTOS.size()) {
-            result.put("flag", 1);
-        } else {
-            result.put("flag", 0);
-        }
-        String columnCodes = "";
-        Map<String, Object> proCondition = getProConditionMap(param, companyId);
-        List<ProjectConditionDTO> conditionDTOS = projectConditionService.selProjectConditionList(proCondition);
-        if (0 < conditionDTOS.size()) {
-            columnCodes = conditionDTOS.get(0).getCode();
-        }
-        result.put("columnCodes", columnCodes);
+
         return this.ajaxResponseSuccess().setData(result);
     }
 
@@ -667,6 +656,11 @@ public class ProjectController extends BaseController {
         condition.put("type", type);
         param.put("companyMainId",companyId);
         condition.put("companyMainId", companyId);
+
+        //如果没有传递操作者用户编号，添加默认操作者用户编号
+        if (StringUtils.isEmpty((String)param.get("accountId"))){
+            param.put("accountId",this.currentUserId);
+        }
     }
 
     private void setSelConditions(List<ProjectTableDTO>  dataList,
@@ -718,19 +712,6 @@ public class ProjectController extends BaseController {
         }
     }
 
-    private Map<String, Object> getProConditionMap(@RequestBody Map<String, Object> param, String companyId) {
-        Map<String, Object> proCondition = new HashMap<>();
-        proCondition.put("companyId", companyId);
-        proCondition.put("userId", this.currentUserId);
-        if ("1".equals(param.get("type"))) {
-            proCondition.put("type", 0);
-        } else {
-            proCondition.put("type", 1);
-        }
-        proCondition.put("status", 0);
-        return proCondition;
-    }
-
     private Map<String, Object> setProjectUserPermissionParam() {
         Map<String, Object> para = new HashMap<>();
         para.put("companyUserId", this.currentCompanyUserId);
@@ -747,7 +728,6 @@ public class ProjectController extends BaseController {
         para.put("codes", codes);
         return para;
     }
-
 
     /**
      * 方法描述：新增（项目立项）、修改项目

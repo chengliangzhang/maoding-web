@@ -42,6 +42,7 @@ import com.maoding.project.constDefine.EnterpriseServer;
 import com.maoding.project.dao.*;
 import com.maoding.project.dto.*;
 import com.maoding.project.entity.*;
+import com.maoding.project.service.ProjectConditionService;
 import com.maoding.project.service.ProjectDesignContentService;
 import com.maoding.project.service.ProjectService;
 import com.maoding.project.service.ProjectSkyDriverService;
@@ -49,6 +50,8 @@ import com.maoding.projectcost.service.ProjectCostService;
 import com.maoding.projectmember.dto.ProjectMemberDTO;
 import com.maoding.projectmember.entity.ProjectMemberEntity;
 import com.maoding.projectmember.service.ProjectMemberService;
+import com.maoding.role.dto.PermissionDTO;
+import com.maoding.role.dto.ProjectUserPermissionEnum;
 import com.maoding.role.service.PermissionService;
 import com.maoding.system.dto.DataDictionaryDTO;
 import com.maoding.system.service.DataDictionaryService;
@@ -69,6 +72,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -189,6 +193,9 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
 
     @Autowired
     private ConstService constService;
+
+    @Autowired
+    private ProjectConditionService projectConditionService;
 
     /**
      * 方法描述：保存项目（数据验证）
@@ -1486,6 +1493,16 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
     public Map<String, Object> getProcessingProjectsByPage(Map<String, Object> param) throws Exception {
         Map<String, Object> result = new HashMap<>();
         QueryProjectDTO query = this.getProjectParam(param);
+
+        //查询被选中的显示列
+        String columnCodes = "";
+        Map<String, Object> proCondition = getProConditionMap(param, query.getCompanyId(), query.getAccountId());
+        List<ProjectConditionDTO> conditionDTOS = projectConditionService.selProjectConditionList(proCondition);
+        if (0 < conditionDTOS.size()) {
+            columnCodes = conditionDTOS.get(0).getCode();
+        }
+        result.put("columnCodes", columnCodes);
+
         int total = 0;
         query.setNeedSearchBuildType(true);
         List<ProjectTableDTO> data = this.getProjectsByPage(query);
@@ -1521,6 +1538,15 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                 }
             });
         }
+
+        Map<String, Object> para = setProjectUserPermissionParam((String)param.get("companyId"),(String)param.get("companyUserId"));
+        List<PermissionDTO> permissionDTOS = permissionService.getProjectUserPermission(para);
+        if (0 < permissionDTOS.size()) {
+            result.put("flag", 1);
+        } else {
+            result.put("flag", 0);
+        }
+
 
 
 
@@ -1613,6 +1639,36 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             }
         }
         return dto;
+    }
+
+    private Map<String, Object> setProjectUserPermissionParam(String companyId, String companyUserId) {
+        Map<String, Object> para = new HashMap<>();
+        para.put("companyUserId", companyUserId);
+        para.put("companyId", companyId);
+        List<String> codes = new ArrayList<>();
+        codes.add(ProjectUserPermissionEnum.ORG_MANAGER.getName());
+        codes.add(ProjectUserPermissionEnum.PROJECT_MANAGER.getName());
+        codes.add(ProjectUserPermissionEnum.DESIGN_MANAGER.getName());
+        codes.add(ProjectUserPermissionEnum.SUPER_PROJECT_EDIT.getName());
+        codes.add(ProjectUserPermissionEnum.PROJECT_CHARGE_MANAGER.getName());
+        codes.add(ProjectUserPermissionEnum.FINANCE_BACK_FEE.getName());
+        codes.add(ProjectUserPermissionEnum.PROJECT_EDIT.getName());
+        codes.add(ProjectUserPermissionEnum.PROJECT_OVERVIEW.getName());
+        para.put("codes", codes);
+        return para;
+    }
+
+    private Map<String, Object> getProConditionMap(@RequestBody Map<String, Object> param, String companyId,String userId) {
+        Map<String, Object> proCondition = new HashMap<>();
+        proCondition.put("companyId", companyId);
+        proCondition.put("userId", userId);
+        if ("1".equals(param.get("type"))) {
+            proCondition.put("type", 0);
+        } else {
+            proCondition.put("type", 1);
+        }
+        proCondition.put("status", 0);
+        return proCondition;
     }
 
     public List<ProjectTableDTO> getProjectsByPage(QueryProjectDTO queryProjectDTO) throws Exception {
