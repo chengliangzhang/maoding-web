@@ -71,6 +71,11 @@ public class ProjectCostPointDetailDataDTO {
     private BigDecimal notPayFee;
 
     /**
+     * 应付未付（没有添加付款金额的项。用于兼容老数据）
+     */
+    private BigDecimal notPayFee2;
+
+    /**
      * 对应的收款总额
      */
     private BigDecimal paymentFee;
@@ -205,7 +210,7 @@ public class ProjectCostPointDetailDataDTO {
 
 
     public BigDecimal getNotPayFee() {
-        if(fee!=null && payFee!=null){ //如果payFee不为null ，则feeStatus一定=1
+        if(fee!=null && payFee!=null && payFee.doubleValue()>0){ //如果payFee不为null ，则feeStatus一定=1
             notPayFee = fee.subtract(payFee);
         }else {
             if( "1".equals(feeStatus)){
@@ -347,5 +352,18 @@ public class ProjectCostPointDetailDataDTO {
 
     public void setCompanyId(String companyId) {
         this.companyId = companyId;
+    }
+
+    public BigDecimal getNotPayFee2() {
+        if(fee!=null && payFee!=null){
+            notPayFee2 = fee.subtract(payFee);
+        }else {
+            notPayFee2 = fee;
+        }
+        return notPayFee2;
+    }
+
+    public void setNotPayFee2(BigDecimal notPayFee2) {
+        this.notPayFee2 = notPayFee2;
     }
 }

@@ -18,6 +18,7 @@ public class ProjectCostTotalDTO {
         this.fee=new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
         this.unpaid = new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
         this.backMoney=new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
+        this.approveBackMoneyApprove=new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
         this.toTheMoney=new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
         this.receivedUncollected=new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
         this.payTheMoney=new BigDecimal(0).setScale(6, RoundingMode.HALF_UP);
@@ -28,7 +29,7 @@ public class ProjectCostTotalDTO {
     }
 
     /**
-     *
+     * 为收
      */
     private BigDecimal unpaid;
     /**
@@ -41,6 +42,10 @@ public class ProjectCostTotalDTO {
      */
     private BigDecimal backMoney;
 
+    /**
+     * 回款金额（已经审批通过的）
+     */
+    private BigDecimal approveBackMoneyApprove;
 
     /**
      * 已收
@@ -133,10 +138,10 @@ public class ProjectCostTotalDTO {
     }
 
     public BigDecimal getPayUncollected() {
-        if(this.backMoney!=null && this.payTheMoney!=null){
-            payUncollected =backMoney.subtract(payTheMoney);
+        if(this.approveBackMoneyApprove!=null && this.payTheMoney!=null){
+            payUncollected =approveBackMoneyApprove.subtract(payTheMoney);
         } else {
-            payUncollected = backMoney;
+            payUncollected = approveBackMoneyApprove;
         }
         return payUncollected;
     }
@@ -159,5 +164,13 @@ public class ProjectCostTotalDTO {
 
     public void setPaymentFee(BigDecimal paymentFee) {
         this.paymentFee = paymentFee;
+    }
+
+    public BigDecimal getApproveBackMoneyApprove() {
+        return approveBackMoneyApprove;
+    }
+
+    public void setApproveBackMoneyApprove(BigDecimal approveBackMoneyApprove) {
+        this.approveBackMoneyApprove = approveBackMoneyApprove;
     }
 }
