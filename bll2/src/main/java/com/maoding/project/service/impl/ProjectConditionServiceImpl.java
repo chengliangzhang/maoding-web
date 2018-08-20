@@ -2,19 +2,21 @@ package com.maoding.project.service.impl;
 
 import com.maoding.core.base.dto.CoreQueryDTO;
 import com.maoding.core.base.service.GenericService;
+import com.maoding.core.util.ObjectUtils;
 import com.maoding.core.util.StringUtil;
+import com.maoding.core.util.StringUtils;
 import com.maoding.project.dao.ProjectConditionDao;
 import com.maoding.project.dto.OptionalTitleDTO;
 import com.maoding.project.dto.OptionalTitleGroupDTO;
+import com.maoding.project.dto.OptionalTitleSelectedDTO;
 import com.maoding.project.dto.ProjectConditionDTO;
 import com.maoding.project.entity.ProjectConditionEntity;
 import com.maoding.project.service.ProjectConditionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,20 +30,26 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
     @Autowired
     private ProjectConditionDao projectConditionDao;
 
-    private String notReturnString = "";
+    private String notReturnString = "busPersonInCharge,busPersonInChargeAssistant,designPersonInCharge,designPersonInChargeAssistant";
     @Override
     public List<ProjectConditionDTO> selProjectConditionList(Map<String, Object> param) {
         List<ProjectConditionDTO> list = projectConditionDao.selProjectConditionList(param);
-        for(ProjectConditionDTO c:list){
-            List<String> list1 = new ArrayList<>();
-            String[] codes = c.getCode().split(",");
-            list1.addAll(Arrays.asList(codes));
-            if (!CollectionUtils.isEmpty(list1)){
-                c.setCode(org.apache.commons.lang3.StringUtils.join(list1,","));
-            }else {
-                c.setCode("");
-            }
-        }
+
+        //排除notReturnString
+//        for(ProjectConditionDTO c:list){
+//            List<String> list1 = new ArrayList<>();
+//            String[] codes = c.getCode().split(",");
+//            for(String code:codes){
+//                if(!notReturnString.contains(code)){
+//                    list1.add(code);
+//                }
+//            }
+//            if (!CollectionUtils.isEmpty(list1)){
+//                c.setCode(org.apache.commons.lang3.StringUtils.join(list1,","));
+//            }else {
+//                c.setCode("");
+//            }
+//        }
         return list;
     }
 
@@ -78,8 +86,8 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
      * @author 张成亮
      **/
     @Override
-    public List<OptionalTitleGroupDTO> listOptionalTitle(CoreQueryDTO query) {
-        final List<OptionalTitleGroupDTO> optionalTitleList = new ArrayList<OptionalTitleGroupDTO>(){
+    public OptionalTitleSelectedDTO listOptionalTitle(CoreQueryDTO query) {
+        List<OptionalTitleGroupDTO> optionalTitleGroupList = new ArrayList<OptionalTitleGroupDTO>(){
             {
                 add(new OptionalTitleGroupDTO("项目基本信息",new ArrayList<OptionalTitleDTO>(){
                     {
@@ -134,6 +142,49 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
             }
         };
 
-        return optionalTitleList;
+        //设置所有的被选中状态为"0"
+        optionalTitleGroupList.forEach(group-> group.getOptionalTitleList().forEach(title->title.setIsSelected("0")));
+
+        //查询当前的标题选项状态
+        Map<String,Object> conditionQuery = new HashMap<>();
+        //过滤出当前组织
+        conditionQuery.put("companyId",query.getCurrentCompanyId());
+        //过滤出当前用户
+        conditionQuery.put("userId",query.getAccountId());
+        //过滤出有效的
+        conditionQuery.put("status","0");
+
+        List<ProjectConditionDTO> list = selProjectConditionList(conditionQuery);
+
+        //更新被选中状态，并生成已选择列表
+        List<OptionalTitleDTO> selectedTitleList = new ArrayList<>();
+        if (ObjectUtils.isNotEmpty(list)){
+            //设置查找出的项的被选中状态为"1"
+            for (ProjectConditionDTO condition : list){
+                String[] codeArray = condition.getCode().split(",");
+                for (String code : codeArray) {
+                    for (OptionalTitleGroupDTO optionalTitleGroup : optionalTitleGroupList) {
+                        boolean found = false;
+                        for (OptionalTitleDTO optionalTitle : optionalTitleGroup.getOptionalTitleList()) {
+                            if (StringUtils.contains(code, optionalTitle.getCode())) {
+                                optionalTitle.setIsSelected("1");
+                                selectedTitleList.add(optionalTitle);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        //设置返回值
+        OptionalTitleSelectedDTO result = new OptionalTitleSelectedDTO();
+        result.setOptionalTitleGroupList(optionalTitleGroupList);
+        result.setSelectedTitleList(selectedTitleList);
+        return result;
     }
 }

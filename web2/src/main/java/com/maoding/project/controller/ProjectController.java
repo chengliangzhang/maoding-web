@@ -1262,7 +1262,7 @@ public class ProjectController extends BaseController {
     @ResponseBody
     public AjaxMessage listOptionalTitle(@RequestBody CoreQueryDTO query) throws Exception {
         updateCurrentUserInfo(query);
-        List<OptionalTitleGroupDTO> result = projectConditionService.listOptionalTitle(query);
+        OptionalTitleSelectedDTO result = projectConditionService.listOptionalTitle(query);
         return AjaxMessage.succeed(result);
     }
 }
