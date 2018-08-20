@@ -4,6 +4,7 @@ import com.maoding.commonModule.dto.ContentDTO;
 import com.maoding.commonModule.dto.TemplateQueryDTO;
 import com.maoding.commonModule.service.ConstService;
 import com.maoding.core.base.controller.BaseController;
+import com.maoding.core.base.dto.CoreQueryDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.core.constant.SystemParameters;
@@ -1246,6 +1247,23 @@ public class ProjectController extends BaseController {
     @ResponseBody
     public AjaxMessage changeCustomBuiltType(@RequestBody ContentDTO dto, @PathVariable("projectId") String projectId) throws Exception {
         return null;
+    }
+
+    /**
+     * 描述     获取可选择标题栏列表
+     * 日期     2018/8/20
+     * @author  张成亮
+     * @return  可选择标题栏列表，两层列表
+     * @param   query 查询条件
+     *                accountId 查询用户编号，默认为当前用户编号
+     *                currentCompanyId 查询用户所在公司编号，默认为当前选择公司编号
+     **/
+    @RequestMapping(value ={"/listOptionalTitle"} , method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage listOptionalTitle(@RequestBody CoreQueryDTO query) throws Exception {
+        updateCurrentUserInfo(query);
+        List<OptionalTitleGroupDTO> result = projectConditionService.listOptionalTitle(query);
+        return AjaxMessage.succeed(result);
     }
 }
 
