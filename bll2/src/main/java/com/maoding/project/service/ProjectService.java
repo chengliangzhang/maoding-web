@@ -140,6 +140,15 @@ public interface ProjectService extends BaseService<ProjectEntity> {
      */
     Map<String, Object> getProcessingProjectsByPage(Map<String, Object> param) throws Exception;
 
+    /**
+     * 描述     获取标题栏过滤列表
+     * 日期     2018/8/21
+     * @author  张成亮
+     * @return  各个标题栏过滤列表
+     * @param   param 查询条件
+     **/
+    Map<String, Object> getTitleFilter(Map<String, Object> param,Map<String, Object> condition) throws Exception;
+
     List<ProjectTableDTO> getProjectsByPage(QueryProjectDTO queryProjectDTO) throws Exception;
 
     /** 设置条件（暂时使用） */

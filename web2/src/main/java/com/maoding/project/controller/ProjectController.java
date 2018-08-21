@@ -8,13 +8,15 @@ import com.maoding.core.base.dto.CoreQueryDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.core.constant.SystemParameters;
-import com.maoding.core.util.ObjectUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
 import com.maoding.mytask.entity.MyTaskEntity;
 import com.maoding.mytask.service.MyTaskService;
 import com.maoding.org.dao.CompanyDao;
-import com.maoding.org.dto.*;
+import com.maoding.org.dto.CompanyDTO;
+import com.maoding.org.dto.CompanyUserTableDTO;
+import com.maoding.org.dto.DepartDTO;
+import com.maoding.org.dto.DepartRoleDTO;
 import com.maoding.org.entity.CompanyEntity;
 import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.org.service.CompanyService;
@@ -29,7 +31,6 @@ import com.maoding.project.service.ProjectDesignContentService;
 import com.maoding.project.service.ProjectService;
 import com.maoding.projectmember.dto.ProjectMemberDTO;
 import com.maoding.projectmember.service.ProjectMemberService;
-import com.maoding.role.dto.PermissionDTO;
 import com.maoding.role.dto.ProjectUserPermissionEnum;
 import com.maoding.role.service.PermissionService;
 import com.maoding.system.dto.DataDictionaryDTO;
@@ -580,57 +581,11 @@ public class ProjectController extends BaseController {
         if (null == companyId || "".equals(companyId)) {
             return this.ajaxResponseSuccess();
         }
+        //补充缺失参数
         setMapConditions(param, companyId, companyUserId, condition);
 
-        param.remove("pageIndex");
-        param.remove("pageSize");//此处不分页处理，查询所有项目信息
-        List<ProjectTableDTO> dataList = projectService.getProjectsByPage(projectService.getProjectParam(condition));
-        // 遍历查询条件
-        Map<String, String> companyNames = new HashMap<>();
-        Map<String, String> partyANames = new HashMap<>();
-        Map<String, String> partyBNames = new HashMap<>();
-        Map<String, String> busPersonInChargeMap = new HashMap<>();//经营负责人
-        Map<String, String> designPersonInChargeMap = new HashMap<>();//设计负责人
-        Map<String, String> busPersonInChargeAssistantMap = new HashMap<>();//经营负责人助理
-        Map<String, String> designPersonInChargeAssistantMap = new HashMap<>();//设计负责人助理
-        LinkedHashMap<String, String> buildTypeNames = new LinkedHashMap<>();
-        StringBuffer buildTypeIds = new StringBuffer();
-        setSelConditions(dataList, companyNames, partyANames, partyBNames, buildTypeNames, buildTypeIds,
-                busPersonInChargeMap, designPersonInChargeMap, busPersonInChargeAssistantMap, designPersonInChargeAssistantMap);
-        Map<String, Object> para = setProjectUserPermissionParam();
-        List<PermissionDTO> permissionDTOS = permissionService.getProjectUserPermission(para);
-        if (0 < permissionDTOS.size()) {
-            param.put("flag", 1);
-        } else {
-            param.put("flag", 0);
-        }
-
-        //为项目列表添加合作组织信息过滤选择列表，即当前组织发布了签发任务给到的组织，不包含自己
-        //这里需要查询所有项目的合作组织
-        CompanyQueryDTO cooperatorCompanyQuery = new CompanyQueryDTO();
-        cooperatorCompanyQuery.setCurrentCompanyId(companyId);
-        //只查询外发的组织
-        cooperatorCompanyQuery.setIsPay("1");
-        List<CompanyDTO> cooperatorCompanyList = companyDao.listCompanyCooperate(cooperatorCompanyQuery);
-        //生成查询组织列表
-        Map<String, String> designCompanyNames = new HashMap<>();
-        if (ObjectUtils.isNotEmpty(cooperatorCompanyList)){
-            cooperatorCompanyList.forEach(company->
-                    designCompanyNames.put(company.getId(),company.getCompanyName())
-            );
-        }
-
-
-        param.put("designCompanyNames",designCompanyNames);
-        param.put("companyNames", companyNames);
-        param.put("partyANames", partyANames);
-        param.put("partyBNames", partyBNames);
-        param.put("buildTypeNames", buildTypeNames);
-        param.put("busPersonInChargeMap", busPersonInChargeMap);
-        param.put("designPersonInChargeMap", designPersonInChargeMap);
-        param.put("busPersonInChargeAssistantMap", busPersonInChargeAssistantMap);
-        param.put("designPersonInChargeAssistantMap", designPersonInChargeAssistantMap);
-        return this.ajaxResponseSuccess().setData(param);
+        Map<String,Object> result = projectService.getTitleFilter(param,condition);
+        return this.ajaxResponseSuccess().setData(result);
     }
 
     private void setMapConditions(@RequestBody Map<String, Object> param, String companyId, String companyUserId, Map<String, Object> condition) {
@@ -662,54 +617,6 @@ public class ProjectController extends BaseController {
         }
     }
 
-    private void setSelConditions(List<ProjectTableDTO>  dataList,
-                                  Map<String, String> companyNames, Map<String, String> partyANames,
-                                  Map<String, String> partyBNames, LinkedHashMap<String, String> buildTypeNames,
-                                  StringBuffer buildTypeIds, Map<String, String> busPersonInChargeMap, Map<String, String> designPersonInCharge,
-                                  Map<String, String> busPersonInChargeAssistantMap, Map<String, String> designPersonInChargeAssistantMap) {
-
-        List<String> projectIdList = new ArrayList<>();
-        for (int i = 0; i < dataList.size(); i++) {
-            ProjectTableDTO dto = dataList.get(i);
-            projectIdList.add(dto.getId());
-            if (null != dto && null != dto.getCompanyId() && null != dto.getCompanyName()) {
-                companyNames.put(dto.getCompanyId(), dto.getCompanyName());
-            }
-            if (null != dto && null != dto.getConstructCompany() && null != dto.getPartyA()) {
-                partyANames.put(dto.getConstructCompany(), dto.getPartyA());
-            }
-            if (null != dto && null != dto.getCompanyBid() && null != dto.getPartyB()) {
-                partyBNames.put(dto.getCompanyBid(), dto.getPartyB());
-            }
-            if (null != dto && null != dto.getBuildType()) {
-                buildTypeIds.append(dto.getBuildType());
-            }
-            if (null != dto && null != dto.getBusPersonInChargeUserId() && null != dto.getBusPersonInCharge()) {
-                busPersonInChargeMap.put(dto.getBusPersonInChargeUserId(), dto.getBusPersonInCharge());
-            }
-            if (null != dto && null != dto.getBusPersonInChargeAssistantUserId() && null != dto.getBusPersonInChargeAssistant()) {
-                busPersonInChargeAssistantMap.put(dto.getBusPersonInChargeAssistantUserId(), dto.getBusPersonInChargeAssistant());
-            }
-            if (null != dto && null != dto.getDesignPersonInChargeUserId() && null != dto.getDesignPersonInCharge()) {
-                designPersonInCharge.put(dto.getDesignPersonInChargeUserId(), dto.getDesignPersonInCharge());
-            }
-            if (null != dto && null != dto.getDesignPersonInChargeAssistantUserId() && null != dto.getDesignPersonInChargeAssistant()) {
-                designPersonInChargeAssistantMap.put(dto.getDesignPersonInChargeAssistantUserId(), dto.getDesignPersonInChargeAssistant());
-            }
-        }
-
-//        List<String> idList = Arrays.asList(buildTypeIds.toString().split(","));
-//        Map<String, Object> para1 = new HashMap<>();
-//        para1.put("idList", idList);
-//        List<DataDictionaryEntity> entities = dataDictionaryService.getDataByParemeter(para1);
-
-        if(!CollectionUtils.isEmpty(projectIdList)){
-            List<ContentDTO> buildTypeList = projectService.getProjectBuildType(projectIdList);
-            buildTypeList.stream().forEach(b->{
-                buildTypeNames.put(b.getName(), b.getName());//后台用name查找
-            });
-        }
-    }
 
     private Map<String, Object> setProjectUserPermissionParam() {
         Map<String, Object> para = new HashMap<>();
