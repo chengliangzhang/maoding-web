@@ -1,0 +1,51 @@
+<!-- 报销汇总 STRAT-->
+<div class="ibox ibox_min_height">
+    <div class="ibox-title secondary-menu-outbox">
+        <div class="row">
+            <div class="col-md-6">
+                <!--面包屑-->
+                <div class="no-margin p-h-sm breadcrumb-box" >
+                    <ol class="breadcrumb">
+                        <li>
+                            审批管理
+                        </li>
+                        <li class="active fa fa-angle-right">
+                            <strong>
+                                {{if type==4}}
+                                出差汇总
+                                {{else}}
+                                请假汇总
+                                {{/if}}
+                            </strong>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-6 text-right p-w-sm">
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="ibox-content no-padding">
+        <div class="" id="summary">
+
+            <input type="hidden" name="startDate" value=""/>
+            <input type="hidden" name="endDate" value=""/>
+            <input type="hidden" name="applyName" value=""/>
+            <input type="hidden" name="leaveType" value=""/>
+            <input type="hidden" name="auditPerson" value=""/>
+
+            <!--报销汇总列表 START-->
+            <section class="mySummaryListBox">
+                <div class="row">
+                    <div class="col-md-12" id="mySummaryListData"></div>
+                    <div class="col-md-12 padding-right-25">
+                        <div id="mySummary-pagination-container" class="m-pagination pull-right"></div>
+                    </div>
+                </div>
+            </section>
+            <!--报销汇总列表 END-->
+        </div>
+    </div>
+</div>
+<!-- 报销汇总 END-->

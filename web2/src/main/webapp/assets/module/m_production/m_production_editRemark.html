@@ -1,0 +1,19 @@
+<form class="form">
+    <div class="view-remark-box" style="display: none;">
+        <div class="col-md-12 ">
+            {{remark}}
+            <a class="" href="javascript:void(0);" data-action="editRemark">
+                <i class="fa fa-pencil-square-o"></i>
+            </a>
+        </div>
+    </div>
+    <div class="edit-remark-box">
+        <div class="col-md-12 " style="border-bottom: solid 1px #ccc;margin-bottom: 10px;">
+            <textarea style="width: 100%;min-height: 110px;margin: 10px 0;">{{remark}}</textarea>
+        </div>
+        <div class="col-md-12">
+            <button type="button" class="btn btn-default btn-sm pull-right m-b-sm" data-action="cancel">取消</button>
+            <button type="button" class="btn btn-primary btn-sm pull-right m-b-sm m-r-xs" data-action="submit">确认</button>
+        </div>
+    </div>
+</form>

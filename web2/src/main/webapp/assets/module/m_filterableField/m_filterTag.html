@@ -1,0 +1,17 @@
+{{if filters&&filters.length>0}}
+<span class="f-s-13 fw-600 fc-dark-blue">过滤条件：</span>
+{{each filters as f}}
+<div class="filter-tag" data-field="{{f.field}}" data-filterJson="{{_jsonStringify(f)}}">
+    <a href="javascript:void(0)" class="filter-tag-remove"><i class="fa fa-times"></i></a>
+    {{if f.filterType === 'contain'}}
+       {{f.fieldDisplayName}}：{{f.filterValue}}
+    {{else if f.filterType === 'custom'}}
+       {{f.fieldDisplayName}}：{{f.filterValueDisplayName}}
+    {{else if f.filterType === 'select_local_data'}}
+       {{f.fieldDisplayName}}：{{f.filterValueDisplayName}}
+    {{else if f.filterType === 'dateRange'}}
+       {{f.fieldDisplayName}}：{{_filterDateRangeToString(f.filterValue)}}
+    {{/if}}
+</div>
+{{/each}}
+{{/if}}

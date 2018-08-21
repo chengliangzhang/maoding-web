@@ -1,0 +1,16 @@
+.m_enterpriseCertification .i-checks label.fw-normal{margin-bottom: 0;vertical-align: middle;cursor: pointer;}
+.m_enterpriseCertification h4.m-t-md{margin-top: 20px;}
+.m_enterpriseCertification a.file-upload{
+    padding: 0;
+    margin: 0;
+    background: #fff;
+    border: 0;
+    height:28px;
+}
+.m_enterpriseCertification .webuploader-pick{background: #4765a0;padding: 5px 10px;}
+.m_enterpriseCertification .tip-icon{width: 26px;}
+.m_enterpriseCertification .tip-icon .fa{font-size:28px;}
+.m_enterpriseCertification form a.failure{
+    background: #4765a0;
+    padding: 4px 10px;
+}

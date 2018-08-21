@@ -1,0 +1,24 @@
+<table class="table table-bordered table-responsive m-b-none">
+    {{if categoryTypeList!=null && categoryTypeList.length>0}}
+        {{each categoryTypeList as c ci}}
+        <tr class="{{ci==0?'gray-bg':''}}">
+            {{each c as t ti}}
+            <td colspan="{{t.level}}" class="text-center">
+                {{if t.expTypeValue!=null && t.expTypeValue!=''}}
+                <div class="check-box">
+                    <label class="i-checks">
+                        {{if t.selected==1}}
+                        <input name="itemCk" type="checkbox"  data-pid="{{t.pid}}" data-id="{{t.id}}" data-value="{{t.expTypeValue}}" checked/>
+                        {{else}}
+                        <input name="itemCk" type="checkbox"  data-pid="{{t.pid}}" data-id="{{t.id}}" data-value="{{t.expTypeValue}}"/>
+                        {{/if}}
+                        <span class="i-checks-span">{{t.expTypeValue}}</span>
+                    </label>
+                </div>
+                {{/if}}
+            </td>
+            {{/each}}
+        </tr>
+        {{/each}}
+    {{/if}}
+</table>

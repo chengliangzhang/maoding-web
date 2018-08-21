@@ -1,0 +1,13 @@
+{{if partyAList!=null && partyAList.length>0}}
+    <ul class="dropdown-menu" style="display: block;position: relative;border: 0;box-shadow: none;width: 100%;top: 0px;left:-20px;">
+        {{each partyAList as p pi}}
+            <li>
+                <a href="javascript:void(0);" data-action="selectPartyA" data-id="{{p.companyid}}">
+                    {{p.corpname}}
+                </a>
+            </li>
+        {{/each}}
+    </ul>
+{{else}}
+    <span class="fc-ccc m-t-xs ">未找到相关单位，试试输入更详细关键字查询</span>
+{{/if}}

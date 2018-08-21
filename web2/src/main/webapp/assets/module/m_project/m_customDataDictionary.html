@@ -1,0 +1,60 @@
+<style>
+    .form-group.data-dictionary label.checkbox input{position: absolute;}
+    .form-group.data-dictionary input[type="text"].form-control{    width: 100%;}
+    .form-group.data-dictionary form{margin: 0;}
+</style>
+<div class="form-group data-dictionary p-n m-b-xs ">
+    <form class="sky-form rounded-bottom" >
+        <fieldset class="no-padding">
+            <div class="row">
+                {{each dataDictionaryList as d}}
+                <div class="col-md-4">
+                    <label class="i-checks fw-normal">
+                        {{if d.selected==true}}
+                        <input name="dataDictionary" type="checkbox" checked value="{{d.name}}" data-id="{{d.id}}"/>
+                        {{else}}
+                            <input name="dataDictionary" type="checkbox"  value="{{d.name}}" data-id="{{d.id}}"/>
+                        {{/if}}
+                        {{d.name }}
+                    </label>
+                </div>
+                {{/each}}
+            </div>
+            <div class="row custom-data-dictionary">
+                {{each customDataList as d}}
+                <div class="col-md-4 liBox">
+                    <div class="col-md-2 no-padding" >
+                        <label class=" i-checks fw-normal" title="{{d.name}}">
+                            <input name="customDataDictionary" class="checkbox" type="checkbox" checked  data-id="{{d.id}}"/>
+                        </label>
+                    </div>
+                    <div class="col-md-10 no-pd-left no-pd-right">
+                        <label class="input">
+                            <input id="{{d.id}}" class="form-control input-sm" type="text" name="iptCustomDataDictionary" placeholder="请输入名称" value="{{d.name}}"/>
+                        </label>
+                    </div>
+                </div>
+                {{/each}}
+                <div class="col-md-4">
+                    <label class="label hao curp no-bg" data-action="addCustomDataDictionary" style="padding: 3px 8px 3px 0">
+                        <i class="fa fa-plus-square f-s-20" style="color: #1ab394"></i>
+                        <span class="color-dark-blue f-s-15">&nbsp;自定义</span>
+                    </label>
+                </div>
+            </div>
+            <div class="row error-box">
+                <div class="col-md-12"></div>
+            </div>
+            <div class="row m-b-xs no-pd-right">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-default btn-sm m-popover-close  pull-right ">
+                        <i class="glyphicon glyphicon-remove"></i>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm m-popover-submit pull-right m-r-xs">
+                        <i class="fa fa-check"></i>
+                    </button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+</div>

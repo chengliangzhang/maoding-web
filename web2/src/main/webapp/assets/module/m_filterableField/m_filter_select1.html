@@ -1,0 +1,27 @@
+<div class="data-list-filter">
+    <ul class="dropdown-menu">
+        {{each selectList as s}}
+        <li>
+            <a class="no-margins p-r-5" data-state-no="{{s.fieldValue}}">
+                {{if isMultiple}}
+                    <label class="i-checks fw-normal">
+                        {{if s.isSelected}}
+                        <input name="itemCk" type="checkbox" checked value="{{s.fieldValue}}"/>
+                        {{else}}
+                        <input name="itemCk" type="checkbox" value="{{s.fieldValue}}" />
+                        {{/if}}
+                        <span class="i-checks-span">{{s.fieldName }}</span>
+                    </label>
+                {{else}}
+                    <span class="check">
+                        {{if s.isSelected}}
+                            <i class="fa fa-check"></i>
+                        {{/if}}
+                    </span>
+                    {{s.fieldName}}
+                {{/if}}
+            </a>
+        </li>
+        {{/each}}
+    </ul>
+</div>

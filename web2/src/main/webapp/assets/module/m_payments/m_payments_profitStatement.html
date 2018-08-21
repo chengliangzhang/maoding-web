@@ -1,0 +1,51 @@
+<div class="ibox m_payments_profitStatement">
+    <div class="ibox-title secondary-menu-outbox">
+        <div class="row">
+            <div class="col-md-6">
+                <!--面包屑-->
+                <div class="no-margin p-h-sm breadcrumb-box" >
+                    <ol class="breadcrumb">
+                        <li>
+                            财务管理
+                        </li>
+                        <li class="active fa fa-angle-right">
+                            <strong>利润报表</strong>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-6 text-right p-w-sm">
+
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="ibox-content no-padding">
+
+        <form role="form" class="form-inline m-md">
+            <div class="form-group z-index-1">
+                <label>当前组织：</label>
+                <div class="btn-group" id="selectOrg">
+
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="m-t-xs">时间：</label>
+                <div class="btn-group pull-right">
+                    <a class="btn btn-default btn-sm m-r-none" href="javascript:void(0)" data-action="setTime" data-type="0">今年</a>
+                    <a class="btn btn-default btn-sm m-r-none" href="javascript:void(0)" data-action="setTime" data-type="-1">去年</a>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group dp-inline-block">
+                    <input type="text" class="form-control input-sm " id="ipt_date" name="date" placeholder="年份" readonly=""  value="{{currentYear}}年" style="width: 110px;">
+                    <span class="input-group-addon no-padding"> <i class="icon-sm icon-append fa fa-calendar"></i> </span>
+                </div>
+            </div>
+            <button class="btn btn-white btn-sm" data-action="refreshBtn">刷新数据</button>
+        </form>
+        <div class="p-w-m" id="profitBox">
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+<style>
+    .m_schedule_list {
+        height: 200px;overflow: auto;
+    }
+    .m_schedule_list .timeline-v2>li{
+        height: 42px;
+    }
+    .m_schedule_list .timeline-v2>li .cbp_tmlabel:after{
+        border-right-color:#fff
+    }
+    .m_schedule_list .timeline-v2>li .cbp_tmlabel{
+        background: #fff;
+        color: #666;
+        margin: 0 0 40px 45px;
+        font-size: 13px;
+    }
+    .m_schedule_list .timeline-v2:before{
+        left: 40px;
+    }
+    .m_schedule_list .timeline-v2>li .cbp_tmicon{
+        left:40px;
+        top:15px;
+    }
+</style>
+<div class="m_schedule_list">
+    <ul class="timeline-v2 timeline-me">
+        {{each taskScheduleChangesList as t ti}}
+        <li >
+            <time class="cbp_tmtime" datetime="">
+            </time>
+            <i class="cbp_tmicon rounded-x hidden-xs" style=" "></i>
+            <div class="cbp_tmlabel">
+                <p>{{t.historyText}}</p>
+            </div>
+        </li>
+        {{/each}}
+
+    </ul>
+</div>

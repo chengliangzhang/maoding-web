@@ -1,0 +1,66 @@
+<style>
+    .add-issue-box{width:410px; }
+    .add-issue-box .form-group .form-control{width: 100%;}
+    .add-issue-box .select2.select2-container{width: 293px !important;}
+    .add-issue-box .select2.select2-container span.select2-selection{border-radius: 0;height: 34px;}
+    .add-issue-box .select2-container--default .select2-selection--single .select2-selection__arrow b{border-width: 6px 3px 0px 3px;margin-left: -2px;margin-top: 1px;}
+</style>
+<form class="add-issue-form">
+    <div class="add-issue-box">
+        <div class="form-group m-b-xs clearfix">
+            <label class="col-sm-3 control-label no-pd-left m-t-xs" >设计任务<span class="color-red">*</span></label>
+            <div class="col-sm-9 no-pd-right">
+                <input placeholder="设计任务" class="form-control" type="text" name="taskName" maxlength="100">
+            </div>
+        </div>
+        <div class="form-group operator-div m-b-xs clearfix">
+            <label class="col-sm-3 control-label no-pd-right no-pd-left m-t-xs">任务负责人<span class="color-red">*</span></label>
+            <div class="col-sm-9 no-pd-right">
+                <select class="js-example-disabled-results form-control" name="designerId" style="width:278px;">
+                    {{if personInCharge!=null && personInCharge!='' && personInChargeId!=null && personInChargeId!=''}}
+                    <option value="{{personInChargeId}}">{{personInCharge}}</option>
+                    {{/if}}
+                </select>
+            </div>
+        </div>
+        <div class="form-group time-box m-b-xs clearfix">
+            <label class="col-sm-3 control-label no-pd-left no-pd-right m-t-xs">计划开始时间<span class="color-red">*</span></label>
+            <div class="col-sm-9 no-pd-right">
+                <div class="input-group">
+                    <input type="text" class="form-control timeInput startTime input-sm" id="ipt_startTime" name="startTime" data-appointmentStartTime = "{{appointmentStartTime}}"
+                           placeholder="开始日期" readonly onFocus="startTimeFun(this,m_inputProcessTime_onpicked)" value="{{appointmentStartTime}}">
+                    <span class="input-group-addon no-padding">
+                        <i class="icon-sm icon-append fa fa-calendar" style="height: 28px;line-height: 28px;"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group time-box m-b-xs clearfix">
+            <label class="col-sm-3 control-label no-pd-left no-pd-right m-t-xs">计划结束时间<span class="color-red">*</span></label>
+            <div class="col-sm-9 no-pd-right">
+                <div class="input-group">
+                    <input type="text" class="form-control timeInput endTime input-sm" id="ipt_endTime" name="endTime" data-appointmentEndTime = "{{appointmentEndTime}}"
+                           placeholder="结束日期" readonly onFocus="endTimeFun(this,m_inputProcessTime_onpicked)" value="{{appointmentEndTime}}">
+                    <span class="input-group-addon no-padding">
+                        <i class="icon-sm icon-append fa fa-calendar" style="height: 28px;line-height: 28px;"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group m-b-xs clearfix">
+            <label class="col-sm-3 control-label no-pd-left m-t-xs" >任务描述</label>
+            <div class="col-sm-9 no-pd-right">
+                <textarea class="form-control" name="taskRemark" style="height: 80px;max-width: 100%;"></textarea>
+            </div>
+        </div>
+        <div class="col-md-12 m-b-sm no-pd-right clearfix">
+            <button type="button" class="btn btn-default btn-sm m-popover-close  pull-right ">
+                <i class="glyphicon glyphicon-remove"></i>
+            </button>
+            <button type="button" class="btn btn-primary btn-sm m-popover-submit pull-right m-r-xs">
+                <i class="fa fa-check"></i>
+            </button>
+        </div>
+    </div>
+</form>
+

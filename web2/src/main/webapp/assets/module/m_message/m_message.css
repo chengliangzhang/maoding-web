@@ -1,0 +1,59 @@
+.m-message-group a,
+.m-message-group a:link,
+.m-message-group a:visited {
+    cursor: pointer;
+    color: #676a6c;
+    text-decoration: none;
+}
+
+.m-message-group a:hover,
+.m-message-group a:active,
+.m-message-group a:focus {
+    cursor: pointer;
+    color: #4765a0;
+    text-decoration: none;
+}
+
+.m-message-group li {
+    background-color: #fff !important;
+    border-bottom: 1px solid #e7f9e9;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 10px 8px 10px 12px !important;
+}
+
+.m-message-group li:hover,
+.m-message-group li:active,
+.m-message-group li:focus {
+    background-color: #e7f4f9 !important;
+}
+.m-message-group .bg-data{
+    color: #4765a1;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 12px 10px;
+    margin:10px auto 0;
+}
+.m-message-group .media-body {
+    font-size: 14px;
+    color: #666;
+}
+.m-message-group .span-company{
+    color: #aaa;
+    line-height: 35px;
+}
+.m-message-group .feed-element {
+    padding-bottom: 9px;
+}
+.m-message-group .feed-element .msg-content-box{
+    display: table;
+    height: 50px;
+}
+.m-message-group .feed-element .msg-content{
+    display: table-cell;
+    vertical-align: middle;
+}
+.m-message-group .msg-content a{
+    color: #4d6aa4;
+}

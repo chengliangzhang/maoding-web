@@ -1,0 +1,28 @@
+
+.editUserOBox .table > tbody + tbody {
+    border-top: none;
+}
+
+.editUserOBox .table > tbody td {
+    border-top: none;
+}
+.editUserOBox .table > tbody td.no-pd-left {
+    padding-left: 0px;
+}
+.editUserOBox .table > tbody td.p-l-md {
+    padding-left: 20px;
+}
+
+.editUserOBox .table {
+    margin-bottom: 0
+}
+
+.editUserOBox .ibox {
+    margin-bottom: 0
+}
+
+@media (min-width: 992px) {
+    .col-24-md-11.pd-ctrl{
+        padding:0;
+    }
+}

@@ -1,0 +1,47 @@
+<form class="form-horizontal rounded-bottom taskProgressOBox noborder" style="max-height: 200px;overflow: auto;">
+    <div class="ibox">
+        <div class="ibox-content">
+            <div class="userListBox">
+                <table class="table table-striped table-hover table-responsive m-b-none" >
+                    <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>手机号</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{each orgUserList as p}}
+                    <tr>
+                        <td>{{p.userName}}</td>
+                        <td>{{p.cellphone}}</td>
+                        <td>
+                            {{if selectedUserList!=null && selectedUserList.length>0}}
+                                {{each selectedUserList as s}}
+                                    {{if s.id == p.id}}
+                                    <a href="javascript:void(0)" data-companyUserId="{{p.id}}" data-userId="{{p.userId}}"
+                                       class="btn-u btn-u-default btn-u-xs rounded no-hover">选择</a>
+                                    {{else}}
+                                    <a href="javascript:void(0)" data-action="choseUser" data-companyUserId="{{p.id}}" data-userId="{{p.userId}}"
+                                       class="btn-u btn-u-primany btn-u-xs rounded">选择</a>
+                                    {{/if}}
+                                {{/each}}
+                            {{/if}}
+
+
+                        </td>
+                    </tr>
+                    {{/each}}
+                    {{if orgUserList==null || orgUserList.length==0}}
+                    <tr>
+                        <td colspan="3" align="center">暂无数据</td>
+                    </tr>
+                    {{/if}}
+                    </tbody>
+                    <tfoot><tr><td colspan="3" id="userList"></td></tr></tfoot>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</form>

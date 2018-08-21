@@ -1,0 +1,77 @@
+<style>
+    .ui-popup.ui-popup-modal{z-index: 9999999!important;}
+    #createOrgBox{
+        width: 620px;
+        margin:0 auto;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row  margin-top-30 animated fadeInRight ">
+        <div id="createOrgBox">
+            <div class="ibox">
+                <!--<div class="ibox-title">
+                   <h2>创建组织</h2>
+                </div>-->
+                <div class="ibox-content">
+                    <form class="createOrgBox">
+                        <fieldset>
+                            <section>
+                                <div class="headline">
+                                    <h2>创建组织</h2>
+                                </div>
+                            </section>
+                            <section>
+                                <div class="row">
+                                    <div class="form-group col-md-12">
+                                        <label for="companyName">组织名称<span class="color-red">*</span></label>
+                                        <input type="text" id="companyName" class="form-control" name="companyName">
+                                    </div>
+                                    <!--<div class="form-group col-md-12">
+                                        <label for="companyShortName">组织简称<span class="color-red">*</span></label>
+                                        <input type="text" id="companyShortName" class="form-control" name="companyShortName">
+                                    </div>-->
+                                    <div class="form-group col-md-12" id="citysBox">
+                                        <label for="selectRegion">所在地区</label>
+                                        <div class="input-group" id="selectRegion" name="selectRegion">
+                                            <div class="dp-inline-block">
+                                                <select class="prov form-control" name="province"></select>
+                                            </div>
+                                            <div class="dp-inline-block m-l-xs">
+                                                <select class="city form-control" name="city" disabled="disabled" style="display: none"></select>
+                                            </div>
+                                            <div  class="dp-inline-block m-l-xs">
+                                                <select class="dist form-control" name="county" disabled="disabled" style="display: none"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-12 serviceTypeEdit">
+                                        <label>服务类型</label>
+                                        <div class="input-group dp-block">
+                                            {{each serverTypeList}}
+                                            <div class="serviceType col-24-md-8 col-24-lg-4 col-24-xs-24 no-pd-left">
+                                                <div class="i-checks checkbox-inline">
+                                                    <input name="serverType" id="serverType-{{$value.id}}" value="{{$value.id}}" type="checkbox">
+                                                    <span for="serverType-{{$value.id}}">{{$value.name }}</span>
+                                                </div>
+                                            </div>
+                                            {{/each}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </fieldset>
+                        <div class="footTools">
+                            <a type="button" class="btn-u pull-right getClickFun rounded" data-action="saveOrg" href="javascript:void(0)">立即创建</a>
+                        </div>
+                    </form>
+                </div>
+                <script type="text/javascript">
+                    $('.i-checks').iCheck({
+                        checkboxClass: 'icheckbox_minimal-green',
+                        radioClass: 'iradio_minimal-green'
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,109 @@
+<form class="sky-form editUserOBox rounded-bottom">
+    <div class="ibox" style="max-height: 700px;overflow: auto;">
+
+        <div class="ibox-content border-none">
+            <h4>基本信息</h4>
+            <fieldset>
+                <section>
+                    <div class="row">
+                        <div class="col-24-md-11 form-group">
+                            <label>姓名<span class="color-red">*</span></label>
+                            <input type="text" class="form-control" id="userName" name="userName" value="{{memberObj.userName}}">
+                        </div>
+                        <div class="col-24-md-11 form-group ">
+                            <label>手机号码<span class="color-red">*</span></label>
+                            {{if memberObj.cellphone!='' && memberObj.cellphone!=null}}
+                                <input type="text" class="form-control" id="cellphone" disabled="disabled" style="cursor: not-allowed;" name="cellphone" value="{{memberObj.cellphone}}" maxlength="11">
+                            {{/if}}
+                            {{if memberObj.cellphone=='' || memberObj.cellphone==null}}
+                                <input type="text" class="form-control" id="cellphone" name="cellphone" value="{{memberObj.cellphone}}" maxlength="11">
+                            {{/if}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-24-md-11 form-group">
+                            <label>入职时间</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control"  id="entryTime" name="entryTime" onfocus="WdatePicker();" readonly value="{{memberObj.entryTime}}">
+                                <span class="input-group-addon"><i class="icon-append fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-24-md-11 form-group ">
+                            <label>办公电话</label>
+                            <input type="text" class="form-control" id="phone" name="phone" value="{{memberObj.phone}}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-24-md-11 form-group">
+                            <label>邮箱</label>
+                            <input type="text" class="form-control" id="email" name="email" value="{{memberObj.email}}">
+                        </div>
+                    </div>
+                </section>
+            </fieldset>
+            <!--所属部门与职位-->
+            <!--<header>所属部门 </header>-->
+            <fieldset>
+                <section>
+                    <table class="table table-responsive" >
+                        <thead>
+                        {{if memberObj.departList && memberObj.departList.length>0}}
+                        <tr>
+                            <th width="45%" style="padding-left:0;">所属部门</th>
+                            <th width="47%" style="padding-left:20px;">职位</th>
+                            <th width="8%"></th>
+                        </tr>
+                        {{/if}}
+                        </thead>
+                        {{each memberObj.departList as org}}
+                        <tbody class="departListTbody">
+                        <tr class="departList">
+                            <td class="no-pd-left">
+                                <select class="form-control" name="departIdSel" data-depart-id="{{org.id}}">
+                                    <option value="">请选择</option>
+                                    {{each orgList as d}}
+                                        {{if org.departId==d.id}}
+                                            <option value="{{d.id}}" selected> {{d.departName}}</option>
+                                        {{/if}}
+                                        {{if org.departId!=d.id}}
+                                            <option value="{{d.id}}"> {{d.departName}}</option>
+                                        {{/if}}
+                                    {{/each}}
+                                </select>
+                            </td>
+                            <td class="p-l-md">
+                                <input type="text" class="form-control" name="serverStation" placeholder="职位" value="{{org.serverStation}}"/>
+                            </td>
+                            <td class="delDepartServerStationTd">
+                                <a class="btn btn-danger rounded" data-action="delDepartServerStation">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                        {{/each}}
+                        <tbody class="addDepartListTbody">
+                        <tr>
+                            <td colspan="5" class="text-center no-pd-right no-pd-left" style="border-top: none;">
+                                <div class="call-action-v1 rounded call-action-v1-boxed tag-box-v4 curp">
+                                    <div class="call-action-v1-box margin-bottom-10 margin-top-10">
+                                        <div class="call-action-v1-in text-center">
+                                            <a href="javascript:void(0);" data-action="addDepartServerStation">
+                                                <i class="fa fa-plus fa-2x color-dark-blue"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--<div class="note text-left">-->
+                                    <!--<p>如需要添加到多个部门,请点击 + 进行多个部门添加。</p>-->
+                                <!--</div>-->
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </fieldset>
+            <!--所属部门与职位 结束-->
+        </div>
+    </div>
+</form>

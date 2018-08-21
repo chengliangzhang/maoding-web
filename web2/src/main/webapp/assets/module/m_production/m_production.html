@@ -1,0 +1,71 @@
+<div class="ibox">
+    <div class="ibox-title secondary-menu-outbox">
+        <div class="row">
+            <div class="col-md-4">
+                <!--面包屑-->
+                <div class="no-margin p-h-sm breadcrumb-box" >
+                    <ol class="breadcrumb">
+                        <li>
+                            我的项目
+                        </li>
+                        <li class=" fa fa-angle-right">
+                            {{projectName}}
+                        </li>
+                        <li class="active fa fa-angle-right">
+                            <strong>生产安排</strong>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-8 text-right" style="padding: 9px 15px;">
+                {{if orgList!=null && orgList.length>0}}
+                <strong>当前视图：</strong>
+                <select name="viewByOrg" class="wid-200">
+                    {{each orgList as o}}
+                    {{if dataCompanyId == o.id}}
+                    <option value="{{o.id}}" selected>{{o.companyName}}</option>
+                    {{else}}
+                    <option value="{{o.id}}">{{o.companyName}}</option>
+                    {{/if}}
+                    {{/each}}
+                </select>
+                <span class="icon-separation-line"></span>
+                {{/if}}
+                <span class="">设计负责人：</span>
+                <span class="m-r-sm">
+                    {{currentManagerObj.projectManager?currentManagerObj.projectManager.companyUserName:''}}
+                    {{if currentManagerObj.projectManager.isUpdateOperator==1 && currentCompanyId==dataCompanyId}}
+                        <a href="javascript:void(0)" data-action="changeOperatorPerson" data-i="0" data-id="{{currentManagerObj.projectManager.companyUserId}}"
+                           data-company-id="{{currentManagerObj.projectManager.companyId}}" data-user-name="{{currentManagerObj.projectManager.companyUserName}}" class="showTooltip" data-placement="top"
+                           data-toggle="tooltip" data-original-title="更换设计负责人">
+                            <i class="fa fa-retweet"></i>
+                        </a>
+                    {{/if}}
+                </span>
+                <span>设计助理：</span>
+                <span class="m-r-sm">
+                    {{currentManagerObj.assistant==null || currentManagerObj.assistant.companyUserName==null?'未设置':currentManagerObj.assistant.companyUserName}}
+                    {{if currentManagerObj.projectManager.companyUserId==currentCompanyUserId && currentCompanyId==dataCompanyId}}
+                        {{if currentManagerObj.assistant!=null}}
+                            <a href="javascript:void(0)" data-action="changeManagerPerson" data-i="0" data-id="{{currentManagerObj.assistant.companyUserId}}"
+                               data-user-name="{{currentManagerObj.assistant.companyUserName}}" data-company-id="{{currentManagerObj.assistant.companyId}}"
+                               class="showTooltip" data-placement="top" data-toggle="tooltip" data-original-title="更换设计助理">
+                                    <i class="fa fa-retweet"></i>
+                            </a>
+                        {{else}}
+                            <a href="javascript:void(0)" data-action="changeManagerPerson" data-i="0" data-id="" data-user-name="" data-company-id="" class="showTooltip" data-placement="top" data-toggle="tooltip" data-original-title="更换助理">
+                                <i class="fa fa-retweet"></i>
+                            </a>
+                        {{/if}}
+                    {{/if}}
+                </span>
+
+            </div>
+            <div class="clearfix"></div>
+
+        </div>
+    </div>
+    <div class="ibox-content no-padding" id="tabContent">
+
+    </div>
+</div>

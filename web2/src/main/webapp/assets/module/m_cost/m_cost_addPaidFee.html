@@ -1,0 +1,30 @@
+<form class="form feeForm wid-270">
+        <div class="form-group m-b-xs">
+            <label class="col-24-md-8 control-label no-pd-left m-t-xs">{{doType==2?'付款':'到账'}}金额</label>
+            <div class="col-24-md-16 no-padding">
+                <div class="input-group">
+                    <input placeholder="金额" class="form-control pay-input" type="text" name="fee" >
+                    <span class="input-group-addon">万元</span>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="form-group m-b-xs">
+            <label class="col-24-md-8 control-label no-pd-left m-t-xs">{{doType==2?'付款':'到账'}}日期</label>
+            <div class="col-24-md-16 inpt-group no-pd-left">
+                <div class="input-group">
+                    <input class="form-control pay-input" type="text" name="paidDate" onFocus="WdatePicker({maxDate:new Date().toLocaleDateString()})" readonly />
+                    <span class="input-group-addon"><i class="icon-append fa fa-calendar"></i></span>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="form-group m-b-xs no-pd-right col-md-12">
+            <button type="button" class="btn btn-default btn-sm m-popover-close  pull-right  m-b-sm">
+                <i class="glyphicon glyphicon-remove"></i>
+            </button>
+            <button type="button" class="btn btn-primary btn-sm m-popover-submit pull-right m-b-sm m-r-xs">
+                <i class="fa fa-check"></i>
+            </button>
+        </div>
+</form>

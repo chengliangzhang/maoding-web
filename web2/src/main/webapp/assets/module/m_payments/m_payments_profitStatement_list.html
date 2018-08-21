@@ -1,0 +1,71 @@
+<table class="table table-bordered table-responsive">
+    <thead>
+    <tr>
+        <th colspan="2">月份</th>
+        <th class="text-right">1月</th>
+        <th class="text-right">2月</th>
+        <th class="text-right">3月</th>
+        <th class="text-right">4月</th>
+        <th class="text-right">5月</th>
+        <th class="text-right">6月</th>
+        <th class="text-right">7月</th>
+        <th class="text-right">8月</th>
+        <th class="text-right">9月</th>
+        <th class="text-right">10月</th>
+        <th class="text-right">11月</th>
+        <th class="text-right">12月</th>
+        <th class="text-right">合计（元）</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{each profitData as p i}}
+        <tr data-type="{{p.arrowsFlag==1?'':p.code}}" style="{{p.flag==1?'':'display: none;'}}">
+            <td width="11.5%" class="{{p.flag==1?'bg-title':''}} v-middle" rowspan="{{p.list.length}}" >
+                {{if p.arrowsFlag==1}}
+                <a href="javascript:void(0);" class="icon-angle" data-action="expand" data-type="{{p.code}}"><i class="fa fa-angle-right"></i></a>
+                {{/if}}
+                <span class="{{p.arrowsFlag==1?'':'m-l'}}">{{p.key}}</span>
+            </td>
+            {{if p.list.length>0}}
+            <td width="10.5%" class="{{p.flag==1?'bg-value':''}}">{{p.list[0].expTypeName}}：</td>
+            <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(p.list[0].januaryData)}}</td>
+            <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(p.list[0].februaryData)}}</td>
+            <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(p.list[0].marchData)}}</td>
+            <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(p.list[0].aprilData)}}</td>
+            <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(p.list[0].mayData)}}</td>
+            <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(p.list[0].juneData)}}</td>
+            <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(p.list[0].julyData)}}</td>
+            <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(p.list[0].augustData)}}</td>
+            <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(p.list[0].septemberData)}}</td>
+            <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(p.list[0].octoberData)}}</td>
+            <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(p.list[0].novemberData)}}</td>
+            <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(p.list[0].decemberData)}}</td>
+            <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(p.list[0].totalData)}}</td>
+            {{/if}}
+        </tr>
+        {{if  p.list.length>1}}
+            {{each p.list as s si}}
+            {{if si>0}}
+            <tr data-type="{{p.code}}" style="{{p.flag==1?'':'display: none;'}}">
+                <td width="10.5%" class="{{p.flag==1?'bg-value':''}}">{{s.expTypeName}}：</td>
+                <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(s.januaryData)}}</td>
+                <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(s.februaryData)}}</td>
+                <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(s.marchData)}}</td>
+                <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(s.aprilData)}}</td>
+                <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(s.mayData)}}</td>
+                <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(s.juneData)}}</td>
+                <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(s.julyData)}}</td>
+                <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(s.augustData)}}</td>
+                <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(s.septemberData)}}</td>
+                <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(s.octoberData)}}</td>
+                <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(s.novemberData)}}</td>
+                <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(s.decemberData)}}</td>
+                <td width="6%" class="{{p.flag==1?'bg-value':''}} text-right">{{_expNumberFilter(s.totalData)}}</td>
+            </tr>
+            {{/if}}
+            {{/each}}
+        {{/if}}
+    {{/each}}
+
+    </tbody>
+</table>

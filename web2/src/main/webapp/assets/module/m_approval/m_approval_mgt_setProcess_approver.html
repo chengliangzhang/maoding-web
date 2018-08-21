@@ -1,0 +1,21 @@
+{{if isAppendArrow==1}}
+<div class="arrow-icon p-h-m">
+    <i class="fa fa-long-arrow-right"></i>
+</div>
+{{/if}}
+{{each approverList as p i}}
+    <div class="approver-outbox">
+        <div class="approver-box text-center">
+            <div class="img-circle">
+                <img alt="image" class="img-circle" src="{{_url('/assets/img/head_default.png')}}" width="50" height="50">
+            </div>
+            <div class="m-t-xs">{{p.userName}}</div>
+            <a href="javascript:void(0);" class="approver-remove" data-action="removeApprover" style="display: none;"><i class="glyphicon glyphicon-remove"></i></a>
+        </div>
+    </div>
+    {{if (i+1) < approverList.length }}
+    <div class="arrow-icon p-h-m">
+        <i class="fa fa-long-arrow-right"></i>
+    </div>
+    {{/if}}
+{{/each}}

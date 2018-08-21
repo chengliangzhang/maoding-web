@@ -1,0 +1,30 @@
+<form class="form">
+    <div class="form-group m-b-none" >
+        <div class="col-24-sm-14 no-pd">
+            <div class="input-group">
+                <input type="text" class="form-control" name="projectType" style="height: 30px;padding-right: 24px;" value="{{projectType}}">
+                <span class="editable-clear-x" style="right: 40px;display: none;"></span>
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="height: 30px;padding: 3px 12px;">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" style="right: 0;left: inherit;">
+                        {{each projectTypeList as p }}
+                        <li><a href="javascript:void(0);">{{p.name}}</a></li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-24-sm-8 no-pd" >
+            <button type="button" class="btn btn-primary btn-sm m-popover-submit m-l-xs" >
+                <i class="fa fa-check"></i>
+            </button>
+            <button type="button" class="btn btn-default btn-sm m-popover-close m-n">
+                <i class="fa fa-remove"></i>
+            </button>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+</form>

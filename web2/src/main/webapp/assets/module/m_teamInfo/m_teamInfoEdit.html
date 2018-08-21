@@ -1,0 +1,79 @@
+<form class="form-horizontal" style="">
+    <div class="form-group">
+        <label class="col-sm-2 control-label">组织名称<span class="color-red">*</span></label>
+        <div class="col-sm-10">
+            <input class="form-control" id="companyName" name="companyName" value="{{teamInfo.companyName}}" type="text" placeholder="组织名称用于外部显示">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">所在地区<span class="color-red">*</span></label>
+        <div class="col-sm-10 choseProvinceCity" id="city_1">
+            <label class="select dp-inline-block no-padding"  style="width: 32.5%;">
+                <select class="prov form-control" name="province"></select>
+                <i></i>
+            </label>
+            <label class="select dp-inline-block no-padding" style="width: 32.5%;">
+                <select class="city form-control" name="city" disabled="disabled" style="display: none;"></select>
+                <i style="display: none;"></i>
+            </label>
+            <label class="select dp-inline-block no-padding" style="width: 32.5%;">
+                <select class="dist form-control" name="county" disabled="disabled" style="display: none;"></select>
+                <i style="display: none;"></i>
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">详细地址</label>
+        <label class="col-sm-10">
+            <input class="form-control" id="companyAddress" name="companyAddress" value="{{teamInfo.companyAddress}}" maxlength="255">
+        </label>
+    </div>
+
+    <div class="form-group serviceTypeEdit">
+        <label class="col-sm-2 control-label">服务类型<span class="color-red">*</span></label>
+        <div class="col-sm-10">
+            {{each serverTypeList as server a}}
+            <div class="col-md-4 serviceType" >
+                <div class="checkbox checkbox-inline" >
+                    <input type="checkbox" id="serverType{{a}}" name="serverType" value="{{server.id}}">
+                    <label for="serverType{{a}}"> {{server.name }}</label>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        <span name="severType"></span>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">联系电话</label>
+        <div class="col-sm-10 input-group">
+            <input class="form-control" id="companyPhone" name="companyPhone" value="{{teamInfo.companyPhone}}" maxlength="30">
+            <span class="input-group-addon"><i class="icon-append fa fa-phone"></i></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">传真号码</label>
+        <div class="col-sm-10 input-group">
+            <input class="form-control" id="companyFax" name="companyFax" value="{{teamInfo.companyFax}}" maxlength="20" type="text">
+            <span class="input-group-addon"><i class="icon-append fa fa-phone"></i></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">电子邮箱</label>
+        <div class="col-sm-10 input-group">
+            <input class="form-control" type="text" id="companyEmail" name="companyEmail" value="{{teamInfo.companyEmail}}" value="abc" maxlength="50">
+            <span class="input-group-addon"><i class="icon-append fa fa-envelope"></i></span>
+        </div>
+    </div>
+    <div class="form-group" >
+        <label class="col-sm-2 control-label">组织简介</label>
+        <div class="col-sm-10">
+            <textarea class="form-control"  rows="5" id="companyComment" name="companyComment" maxlength="255">{{teamInfo.companyComment}}</textarea>
+        </div>
+    </div>
+
+    <footer>
+        <!--<button type="submit" class="btn-u btn-u-default">取消</button>-->
+        <button type="button" class="pull-right btn-u btn-u-dark-blue rounded" data-action="saveTeamInfo">保存</button>
+    </footer>
+</form>

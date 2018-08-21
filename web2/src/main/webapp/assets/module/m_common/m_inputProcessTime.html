@@ -1,0 +1,51 @@
+<style>
+    .form-horizontal .m-r-xs{margin:5px -5px;}
+    /*label.error{position: absolute;top:30px;left: -5px;}*/
+</style>
+<form class="form-horizontal rounded-bottom inputTimeOBox p-m">
+    <div class="col-md-4">
+        <div class="form-group m-r-xs">
+            <label>开始时间</label>
+            <div class="input-group">
+                <input type="text" class="form-control timeInput startTime input-sm" id="ipt_startTime" name="startTime" data-appointmentStartTime = "{{appointmentStartTime}}"
+                       placeholder="开始日期" readonly onFocus="startTimeFun(this,m_inputProcessTime_onpicked)" value="{{$timeInfo.startTime}}" style="width: 110px">
+                <span class="input-group-addon no-padding">
+                    <i class="icon-sm icon-append fa fa-calendar" style="height: 28px;line-height: 28px;"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group m-r-xs">
+            <label>结束时间</label>
+            <div class="input-group">
+                <input type="text" class="form-control timeInput endTime input-sm" id="ipt_endTime" name="endTime" data-appointmentEndTime = "{{appointmentEndTime}}"
+                       placeholder="结束日期" readonly onFocus="endTimeFun(this,m_inputProcessTime_onpicked)" value="{{$timeInfo.endTime}}" style="width: 110px">
+                <span class="input-group-addon no-padding">
+                    <i class="icon-sm icon-append fa fa-calendar" style="height: 28px;line-height: 28px;"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group m-r-xs">
+            <label>总天数</label>
+            <div class="input-group spinner dayCountSpinner" data-trigger="spinner">
+                <input type="text" class="form-control text-center input-sm dayCount" value="0" data-rule="quantity">
+                <div class="input-group-addon">
+                    <a href="javascript:;" class="spin-up" style="height: 8px;width: 8px;" data-spin="up"><i class="fa fa-caret-up"></i></a>
+                    <a href="javascript:;" class="spin-down" style="height: 8px;width: 8px;" data-spin="down"><i class="fa fa-caret-down"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{if $isHaveMemo}}
+    <div class="col-md-12">
+        <div class="form-group m-r-xs">
+            <label>变更原因</label>
+            <textarea name="memo" class="form-control">{{$timeInfo.memo}}</textarea>
+        </div>
+    </div>
+    {{/if}}
+    <div class="clearfix"></div>
+</form>

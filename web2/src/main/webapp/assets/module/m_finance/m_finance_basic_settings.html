@@ -1,0 +1,49 @@
+<div class="m_finance_basic_settings p-m" >
+    <div class="fc-000 font-bold">
+        <p>说明：</p>
+        <P>1、余额初始值：设置日期：年、月由用户确定，日期由系统默认为用户确定月份的最后一天。</P>
+        <p>2、余额初始日期：对应于设定日期各团队的账面资金。设置日期之后相应的各项财务数据将在此基础上产生，避免由于录入历史财务数据的不完整带来的各项财务数据的不准确。</p>
+        <p>3、最低余额：确保各团队正常运作的最低余额（账面可流动资金），根据企业的实际需求可设置可不设置。</p>
+    </div>
+    <table class="table table-bordered table-responsive">
+        <thead>
+        <tr>
+            <th width="20%">组织名称</th>
+            <th width="17%" class="text-right">录入余额初始值（元）</th>
+            <th width="16%" class="text-right">录入余额初始日期</th>
+            <th width="17%" class="text-right">设置最低余额（元）</th>
+            <th width="10%" class="text-right">当前余额（元）</th>
+            <!--<th width="10%" class="text-right">当前总收入（元）</th>-->
+            <th width="10%" class="text-right">上月费用录入（元）</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{each companyDataList as c i}}
+        <tr data-i="{{i}}" data-company-id="{{c.companyId}}">
+            <td class="fc-000 font-bold">
+                {{c.companyName}}
+            </td>
+            <td class="text-right">
+                <a href="javascript:void(0);" data-action="xEditable" data-action-type="initialBalance" data-value="{{c.initialBalance}}">
+                    {{c.initialBalance==null||c.initialBalance==''?'未设置':_expNumberDecimalFilter(c.initialBalance)}}
+                </a>
+            </td>
+            <td class="text-right">
+                <a href="javascript:void(0);" data-action="editDate" data-action-type="{{i}}" class="editable editable-click" >
+                    {{c.setBalanceDate==null||c.setBalanceDate==''?'未设置':c.setBalanceDate}}
+                </a>
+            </td>
+            <td class="text-right">
+                <a href="javascript:void(0);" data-action="xEditable" data-action-type="lowBalance" data-value="{{c.lowBalance}}">
+                    {{c.lowBalance==null||c.lowBalance==''?'未设置':_expNumberDecimalFilter(c.lowBalance)}}
+                </a>
+            </td>
+            <td class="text-right">{{_expNumberDecimalFilter(c.currentBalance)}}</td>
+            <!--<td class="text-right">{{_expNumberDecimalFilter(c.currentIncome)}}</td>-->
+            <td class="text-right">{{_expNumberDecimalFilter(c.lastMonthFixFee)}}</td>
+        </tr>
+        {{/each}}
+        </tbody>
+    </table>
+
+</div>

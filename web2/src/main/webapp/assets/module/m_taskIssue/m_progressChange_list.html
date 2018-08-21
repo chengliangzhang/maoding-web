@@ -1,0 +1,73 @@
+<form class="form-horizontal rounded-bottom taskProgressOBox noborder" style="max-height: 200px;overflow: auto;">
+    <div class="ibox">
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-md-3 no-pd-right">
+                    <label style="text-align: right">
+                        <b>计划进度:</b>
+                    </label>
+                </div>
+                {{if taskScheduleChangesList && taskScheduleChangesList.length>0}}
+                <div class="col-md-9">
+                      {{_momentFormat(taskScheduleChangesList[0].startTime,'YYYY/MM/DD')}}
+                    {{if (taskScheduleChangesList[0].startTime!=null && taskScheduleChangesList[0].startTime!='')
+                    || (taskScheduleChangesList[0].endTime!=null && taskScheduleChangesList[0].endTime!='')}}
+
+                    <span>~</span>
+                    {{/if}}
+                      {{_momentFormat(taskScheduleChangesList[0].endTime,'YYYY/MM/DD')}}
+                    {{if (taskScheduleChangesList[0].startTime!=null && taskScheduleChangesList[0].startTime!='')
+                    && (taskScheduleChangesList[0].endTime!=null && taskScheduleChangesList[0].endTime!='')}}
+                    {{if taskScheduleChangesList[0].allDay!=null}}
+                    <span>&nbsp;( <span class="diffDaysTxt">{{taskScheduleChangesList[0].allDay}}</span>天 )</span>
+                    {{/if}}
+                    {{/if}}
+
+                </div>
+
+                {{/if}}
+                <div class="clearfix"></div>
+            </div>
+
+                {{each taskScheduleChangesList as v }}
+                {{if $index>0 && $index==1}}
+                    <div class="row">
+                        <div class="col-md-3 no-pd-right">
+                            <label class="" style="text-align: right">
+                                <b>第{{$index}}次变更:</b>
+                            </label>
+                        </div>
+                        <div class="col-md-9">
+                            {{_momentFormat(v.startTime,'YYYY/MM/DD')}}
+                            {{if (v.startTime!=null && v.startTime!='') || (v.endTime!=null && v.endTime!='')}}
+                                <span>~</span>
+                            {{/if}}
+                            {{_momentFormat(v.endTime,'YYYY/MM/DD')}}
+                            {{if (v.startTime!=null && v.startTime!='') && (v.endTime!=null && v.endTime!='')}}
+                            {{if v.timeDiffStr!=null}}
+                                <span>&nbsp;( <span class="diffDaysTxt">{{v.timeDiffStr}}</span>天 )</span>
+                            {{/if}}
+                            {{/if}}
+                        </div>
+                    </div>
+
+                        <div class="col-md-7 col-md-offset-3 ">
+                            <label class="" style="position: relative;top: -2px;word-break: break-all">
+                                {{if (v.startTime==null || v.startTime=='') || (v.endTime==null || v.endTime=='')}}
+                                <b>变更原因：</b> <span class="memo-span">{{v.memo}}</span>
+                                {{else}}
+                                <b>变更原因：</b> <span class="memo-span">{{v.memo}}</span>
+                                {{/if}}
+                            </label>
+                            <div class="clearfix"></div>
+                        </div>
+
+                        <div class="clearfix"></div>
+                    </div>
+                {{/if}}
+                {{/each}}
+                <div class="clearfix"></div>
+
+        </div>
+    </div>
+</form>

@@ -1,0 +1,255 @@
+<div class="panel-body popover-box no-borders no-padding">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th colspan="10">
+                <div class="row">
+                    <div class="col-md-3">{{pageText.title}}</div>
+                    <div class="col-md-3">
+                        <span>计划付款金额：</span>
+                        <span class="text-navy ">
+                            {{if isManager==1 && operateCompanyId==currentCompanyId}}
+                                <a href="javascript:void(0);" class="totalContract {{totalCost!=null && totalCost-0>0?'':'withoutSet'}}" data-value="{{totalCost}}">
+                                    {{totalCost!=null && totalCost-0>0?_expNumberFilter(totalCost):'未设置'}}</a>
+                            {{else}}
+                                {{totalCost==null||totalCost-0==0?'0':_expNumberFilter(totalCost)}}
+                            {{/if}}
+                            &nbsp;{{_isNullOrBlank(totalCost==null)?'':'万元'}}
+                        </span>
+                    </div>
+                    <div class="col-md-3">
+                        合同附件：
+                        {{if attachList!=null && attachList.length>0}}
+                            {{each attachList as a}}
+                                <a href="{{a.fileFullPath}}" target="_blank">{{a.fileName}}</a>
+                            {{/each}}
+                        {{else}}
+                            <span>无</span>
+                        {{/if}}
+                    </div>
+                    <div class="col-md-3">
+                        收款单位：{{companyName}}
+                    </div>
+                </div>
+            </th>
+        </tr>
+        <tr>
+            <th colspan="3" class="text-center v-middle">付款节点</th>
+            <th colspan="3" class="text-center v-middle">付款通知</th>
+            <th colspan="3" class="text-center v-middle">付款明细</th>
+        </tr>
+        <tr>
+            <th width="18%"  class="text-center v-middle">付款节点</th>
+            <th width="7%"  class="text-center v-middle">比例</th>
+            <th width="9%"  class="text-center v-middle">金额（万元）</th>
+            <th width="9%"  class="text-center">发起人</th>
+            <th width="9%"  class="text-center">金额（万元）</th>
+            <th width="14%"  class="text-center">审批人</th>
+
+            <th width="13%"  class="text-center">付款金额（万元）</th>
+            <th width="9%"  class="text-center">付款日期</th>
+            <th width="12%" class="text-center">应付（万元）</th>
+        </tr>
+        </thead>
+        <tbody class="border-no-t">
+        {{each pointList as p i}}
+        <tr data-i="{{i}}" data-id="{{p.id}}" data-fee="{{p.fee}}" data-backFee="{{p.backFee}}">
+            <!--以下是节点描述-->
+            <td class="feeDescription" rowspan="{{p.pointDetailList.length==0?1:p.pointDetailList.length}}">
+                {{if  isManager==1 && operateCompanyId==currentCompanyId}}
+                    <span class="feeDescription pt-relative l-h-22" data-string="{{p.feeDescription}}">
+                        <a href="javascript:void(0)" data-action="editContract" data-edit-type="1" data-id="{{p.id}}">{{p.feeDescription}}</a>
+                    </span>
+                {{else}}
+                    <span class="feeDescription pt-relative" data-string="{{p.feeDescription}}">
+                        {{p.feeDescription}}
+                    </span>
+                {{/if}}
+                {{if isManager==1 && p.backFee-0!=p.fee && (p.fee!=null && p.fee-0>0) && startPayFlag==1}}
+                    <a href="javascript:void(0)" class="btn btn-primary btn-xs pull-right" data-action="paymentRequest2"  >付款申请</a>
+                {{/if}}
+                {{if isManager==1 && p.id!=null && operateCompanyId==currentCompanyId}}
+                    <a href="javascript:void(0)" class="btn btn-danger btn-xs pull-right m-r-xs" data-action="delCostPoint" data-id="{{p.id}}" >删除</a>
+                {{/if}}
+            </td>
+            <!--以下是比例-->
+            <td rowspan="{{p.pointDetailList.length==0?1:p.pointDetailList.length}}" class="text-center feeProportion {{p.pid==null?'f-w-bold':''}}" data-value="{{p.feeProportion}}">
+                {{if isManager==1 && totalCost!=null && totalCost-0>0 && operateCompanyId==currentCompanyId}}
+                    <a href="javascript:void(0)" class="border-b-dashed {{p.feeProportion!=null && p.feeProportion-0>0?'':'withoutSet'}}" data-action="editContract" data-edit-type="2"
+                       data-id="{{p.id}}">{{!(p.feeProportion!=null && p.feeProportion-0>0)?'未设置':p.feeProportion+'%'}}</a>
+                {{else}}
+                    {{p.feeProportion==null || p.feeProportion-0==0?'0':p.feeProportion+'%'}}
+                {{/if}}
+            </td>
+            <!--以下是金额-->
+            <td rowspan="{{p.pointDetailList.length==0?1:p.pointDetailList.length}}" class="text-center fee {{p.pid==null?'f-w-bold':''}}"
+                data-value="{{p.fee}}">
+                {{if isManager==1 && totalCost!=null && totalCost-0>0 && operateCompanyId==currentCompanyId}}
+                    <a href="javascript:void(0)" class="border-b-dashed {{p.fee!=null && p.fee-0>0?'':'withoutSet'}}" data-action="editContract" data-edit-type="3" data-id="{{p.id}}" >
+                        {{p.fee!=null && p.fee-0>0?_expNumberFilter(p.fee):'未设置'}}
+                    </a>
+                {{else}}
+                    {{p.fee!=null && p.fee-0>0?_expNumberFilter(p.fee):'0'}}
+                {{/if}}
+            </td>
+            <!--以下是发起人-->
+            <td class="text-center">
+
+                {{if p.pointDetailList!=null && p.pointDetailList.length>0 &&  startPayFlagForInner==1 && p.pointDetailList[0].feeStatus==0}}
+                    <a href="javascript:void(0)" class="btn btn-primary btn-xs" data-action="paymentRequest" data-id="{{p.pointDetailList[0].id}}" >付款申请</a>
+
+                {{else if p.pointDetailList!=null && p.pointDetailList.length>0}}
+                    <span data-toggle="tooltip" data-placement="top" title="{{p.pointDetailList[0].createDate}}">
+                        {{p.pointDetailList[0].userName}}
+                    </span>
+                {{/if}}
+
+            </td>
+            <!--以下是金额-->
+            <td class=" totalPaidFee text-center" data-value="{{p.pointDetailList.length>0?p.pointDetailList[0].fee:''}}">
+                <div>
+                    {{if p.pointDetailList!=null && p.pointDetailList.length>0}}
+                        {{if isManager==1 && (p.pointDetailList[0].paymentList==null || p.pointDetailList[0].paymentList.length==0) && p.pointDetailList[0].companyId==currentCompanyId}}
+                            <a href="javascript:void(0)" data-action="editContract" data-edit-type="4" data-id="{{p.pointDetailList[0].id}}" data-point-id="{{p.id}}">
+                                {{_expNumberFilter(p.pointDetailList[0].fee)}}
+                            </a>
+                        {{else}}
+                            {{_expNumberFilter(p.pointDetailList[0].fee)}}
+                        {{/if}}
+                        {{if p.pointDetailList[0]!=null && p.pointDetailList[0].id!=null && isManager==1 && p.pointDetailList[0].companyId==currentCompanyId}}
+                            <a href="javascript:void(0)" class="btn btn-danger btn-xs pull-right" data-action="delCostPointDetail" data-id="{{p.pointDetailList[0].id}}">删除</a>
+                        {{/if}}
+                    {{/if}}
+                </div>
+            </td>
+
+            <!--以下是审批人-->
+            <td class="text-center">
+                {{if p.pointDetailList!=null && p.pointDetailList.length>0}}
+                    {{p.pointDetailList[0].auditPersonName}}
+                {{/if}}
+            </td>
+
+            <!--以下是付款节点-->
+            <td class="text-center no-padding" colspan="2">
+
+                {{if p.pointDetailList!=null  && p.pointDetailList.length>0 && p.pointDetailList[0].paymentList.length>0}}
+                    {{each p.pointDetailList[0].paymentList as v vi}}
+                        <div class="{{ p.pointDetailList[0].paymentList.length==vi+1 && !(p.pointDetailList[0].roleMap!=null && p.pointDetailList[0].roleMap.financialForFee!=null)?'l-h-38':'paid-detail-box'}}">
+                            <div class="bPaidFee">
+                                <span>{{_expNumberFilter(v.fee)}}</span>
+                                {{if isFinancial=="1" && p.pointDetailList[0].companyId==currentCompanyId}}
+                                    <a href="javascript:void(0)" class="btn btn-danger btn-xs pull-right m-r-xs" data-action="delPaidFee" data-id="{{v.id}}">删除</a>
+                                {{/if}}
+                            </div>
+                            <div class="paid-date">{{_momentFormat(v.payDate,'YYYY/MM/DD')}}</div>
+                            <div class="clearfix"></div>
+                        </div>
+                    {{/each}}
+                {{/if}}
+                {{if p.pointDetailList.length>0 && p.pointDetailList[0].roleMap!=null && p.pointDetailList[0].roleMap.financialForFee!=null}}
+                    <span data-toggle="tooltip" data-placement="top" title="添加付款金额" class="l-h-38">
+                        <a class="btn btn-outline full-width no-padding" href="javascript:void(0)" data-id="{{p.pointDetailList[0].roleMap.financialForFee}}"
+                           data-limit="{{p.pointDetailList.length>0?p.pointDetailList[0].notPayFee2:''}}" data-action="costConfirm" type="button" >
+                            <i class="fa fa-plus color-dark-blue f-s-20" ></i>
+                        </a>
+                    </span>
+                {{/if}}
+            </td>
+            <td class="text-center">
+                {{if p.pointDetailList!=null && p.pointDetailList.length>0}}
+                    {{_expNumberFilter(p.pointDetailList[0].notPayFee)}}
+                {{/if}}
+            </td>
+        </tr>
+        {{if p.pointDetailList!=null && p.pointDetailList.length>1}}
+        {{each p.pointDetailList as c ci}}
+        {{if ci>0}}
+        <tr data-i="{{i}}" data-id="{{p.id}}" data-fee="{{p.fee}}" data-backFee="{{p.backFee}}">
+            <!--以下是发起人-->
+            <td class="text-center">
+                {{if startPayFlagForInner==1 && c.feeStatus==0}}
+                    <a href="javascript:void(0)" class="btn btn-primary btn-xs" data-action="paymentRequest" data-id="{{c.id}}" >付款申请</a>
+                {{else}}
+                    <span data-toggle="tooltip" data-placement="top" title="{{c.createDate}}">
+                        {{c.userName}}
+                    </span>
+                {{/if}}
+            </td>
+            <!--以下是金额-->
+            <td class=" totalPaidFee text-center"  data-value="{{c.fee}}">
+                <div>
+                    {{if isManager==1 && (c.paymentList==null || c.paymentList.length==0) && c.companyId==currentCompanyId}}
+                        <a href="javascript:void(0)" data-action="editContract" data-edit-type="4" data-id="{{c.id}}" data-point-id="{{p.id}}">
+                            {{_expNumberFilter(c.fee)}}
+                        </a>
+                    {{else}}
+                        {{_expNumberFilter(c.fee)}}
+                    {{/if}}
+                    {{if c.id!=null && isManager==1 && c.companyId==currentCompanyId}}
+                        <a href="javascript:void(0)" class="btn btn-danger btn-xs pull-right" data-action="delCostPointDetail" data-id="{{c.id}}">删除</a>
+                    {{/if}}
+                </div>
+            </td>
+            <!--以下是审批人-->
+            <td class="text-center">
+                {{c.auditPersonName}}
+            </td>
+            <!--以下是付款节点-->
+            <td class="text-center no-padding" colspan="2">
+                {{if c.paymentList.length>0}}
+                    {{each c.paymentList as v vi}}
+                        <div class="{{ c.paymentList.length==vi+1 && !(c.roleMap!=null && c.roleMap.financialForFee!=null)?'l-h-38':'paid-detail-box'}}" >
+                            <div class="bPaidFee">
+                                <span>{{_expNumberFilter(v.fee)}}</span>
+                                {{if isFinancial=="1" && c.companyId==currentCompanyId}}
+                                    <a href="javascript:void(0)" class="btn btn-danger btn-xs pull-right m-r-xs" data-action="delPaidFee" data-id="{{v.id}}">删除</a>
+                                {{/if}}
+                            </div>
+                            <div class="paid-date">{{_momentFormat(v.payDate,'YYYY/MM/DD')}}</div>
+                            <div class="clearfix"></div>
+                        </div>
+                    {{/each}}
+                {{/if}}
+                {{if c.roleMap!=null && c.roleMap.financialForFee!=null }}
+                    <span data-toggle="tooltip" data-placement="top" title="添加付款金额" class="l-h-38">
+                        <a class="btn btn-outline full-width no-padding" data-id="{{c.roleMap.financialForFee}}" data-limit="{{c.notPayFee2}}" href="javascript:void(0)" data-action="costConfirm" type="button" >
+                            <i class="fa fa-plus color-dark-blue f-s-20" ></i>
+                        </a>
+                    </span>
+                {{/if}}
+            </td>
+            <td class="text-center">{{_expNumberFilter(c.notPayFee)}}</td>
+        </tr>
+        {{/if}}
+        {{/each}}
+        {{/if}}
+        {{/each}}
+
+        {{if isManager==1 && totalCost!=null && totalCost-0>0 && operateCompanyId==currentCompanyId}}
+        <tr>
+            <td colspan="10" align="center">
+                <span data-toggle="tooltip" data-placement="top" title="添加付款节点">
+                    <a class="btn btn-outline full-width border-dashed" href="javascript:void(0)" data-action="addContract" type="button" >
+                        <i class="fa fa-plus color-dark-blue f-s-20" ></i>
+                    </a>
+                </span>
+            </td>
+        </tr>
+        {{/if}}
+
+        <tr class="gray-bg">
+            <td class="text-center">合计</td>
+            <td class="text-center f-w-bold">{{total.feeProportion==null || total.feeProportion-0==0?'0':total.feeProportion+'%'}}</td>
+            <td class="text-center f-w-bold">{{total.fee==null || total.fee-0==0?0:_expNumberFilter(total.fee)}}</td>
+            <td></td>
+            <td class="text-center">{{total.backMoney==null || total.backMoney-0==0?0:_expNumberFilter(total.backMoney)}}</td>
+            <td ></td>
+            <td class="text-center">{{total.payTheMoney==null || total.payTheMoney-0==0?0:_expNumberFilter(total.payTheMoney)}}</td>
+            <td></td>
+            <td class="text-center">{{total.payUncollected==null || total.payUncollected-0==0?0:_expNumberFilter(total.payUncollected)}}</td>
+        </tr>
+        </tbody>
+
+    </table>
+</div>

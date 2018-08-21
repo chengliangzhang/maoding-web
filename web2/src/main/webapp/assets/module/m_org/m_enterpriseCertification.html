@@ -1,0 +1,239 @@
+<div class="ibox m_enterpriseCertification">
+    <div class="ibox-content border-no-t">
+
+        {{if authentication && authentication.authenticationStatus==1}}
+        <div class="alert alert-warning alert-dismissable">
+            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+            <div class="pull-left tip-icon"><i class="fa fa-check-circle-o text-warning"></i></div>
+            <div class="col-md-11">
+                <p>认证资料提交成功，请耐心等待3个工作日</p>
+                <p>认证过程中，修改资料重新提交将会进行重新审核，如审核过程中有任何问题，请拨打免费客服热线 400-900-6299。</p>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        {{/if}}
+        {{if authentication && authentication.authenticationStatus==3}}
+        <div class="alert alert-warning alert-dismissable">
+            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+            <div class="pull-left tip-icon"><i class="fa fa-times-circle-o text-danger"></i></div>
+            <div class="col-md-11">
+                <p>认证失败，请重新提交认证资料</p>
+                <p>失败原因：{{authentication.rejectReason}}</p>
+                <p>如有问题，请联系审核人员或者拨打免费客服热线 400-900-6299。</p>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        {{/if}}
+        <form class="form-horizontal">
+            <div id="vertical-timeline" class="vertical-container light-timeline no-margins">
+                <div class="vertical-timeline-block">
+                    <div class="vertical-timeline-icon navy-bg p-xxs">1</div>
+                    <div class="vertical-timeline-content p-h-xs">
+                        <h4>填写企业认证信息</h4>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">证件类型：</label>
+                            <div class="col-sm-10">
+                                <div class="radio ">
+                                    {{if authentication && authentication.businessLicenseType==1}}
+                                    <input id="t1" value="1" name="businessLicenseType" type="radio" checked>
+                                    {{else}}
+                                    <input id="t1" value="1" name="businessLicenseType" type="radio">
+                                    {{/if}}
+                                    <label for="t1"> 多证合一营业执照（原“注册号”字样，调整为18位的“统一社会信用代码”）</label>
+                                </div>
+                                <div class="radio ">
+                                    {{if authentication && (authentication.businessLicenseType==0 || authentication.businessLicenseType==null)}}
+                                    <input id="t0" value="0" name="businessLicenseType" type="radio" checked>
+                                    {{else}}
+                                    <input id="t0" value="0" name="businessLicenseType" type="radio">
+                                    {{/if}}
+                                    <label for="t0"> 普通营业执照（仍然标识为15位的“注册号”）</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">营业执照：</label>
+                            <div class="col-sm-10">
+                                <div class="pull-left" style="width:120px;">
+                                    {{if authentication && authentication.businessLicensePhoto!=null}}
+                                    <img class="curp" src="{{authentication.businessLicensePhoto}}" id="businessLicensePhoto" data-action="preview" style="max-width: 100px;max-height: 100px;"/>
+                                    {{else}}
+                                    {{if authentication && authentication.businessLicenseType==1}}
+                                    <img class="curp" src="{{_url('/assets/img/org/businessLicenseTemp2.jpg')}}" id="businessLicensePhoto" style="max-width: 100px;max-height: 100px;" data-action="preview"/>
+                                    {{else}}
+                                    <img class="curp" src="{{_url('/assets/img/org/businessLicenseTemp1.jpg')}}" id="businessLicensePhoto" style="max-width: 100px;max-height: 100px;" data-action="preview"/>
+                                    {{/if}}
+                                    {{/if}}
+                                    <a class="block" href="javascript:void(0);" data-action="viewBusinessLicensePhotoTemp">点击查看模板</a>
+                                </div>
+                                <div class="pull-left">
+                                    <p class="m-b-xs">上传：营业执照图片；</p>
+                                    <p class="m-b-xs">照片所有信息需清晰可见，内容真实有效，不得做任何修改。</p>
+                                    <p class="m-b-xs">照片支持.jpg、.jpeg、.bmp、.gif、.png格式，大小不超过8M。</p>
+                                    <p><a class="btn btn-primary btn-sm file-upload pull-left" id="businessLicensePhotoUpload">选择文件</a></p>
+                                    <p><label id="businessLicensePhoto-error" class="error" ></label></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{if authentication && authentication.businessLicenseType==1}}
+                            <label class="col-sm-2 control-label number-label-0 hide">注册号：</label>
+                            <label class="col-sm-2 control-label number-label-1 ">统一社会信用代码：</label>
+                            {{else}}
+                            <label class="col-sm-2 control-label number-label-0">注册号：</label>
+                            <label class="col-sm-2 control-label number-label-1 hide">统一社会信用代码：</label>
+                            {{/if}}
+                            <div class="col-sm-4">
+                                {{if authentication && authentication.businessLicenseType==1}}
+                                    <input class="form-control" name="businessLicenseNumber" type="text" value="{{authentication.businessLicenseNumber}}" placeholder="请输入18位统一社会信用代码">
+                                    <!--<span class="help-block m-b-none number-label-0 text-muted hide">请输入15位工商注册号</span>
+                                    <span class="help-block m-b-none number-label-1 text-muted ">请输入18位统一社会信用代码</span>-->
+                                {{else}}
+                                    <input class="form-control" name="businessLicenseNumber" type="text" value="{{authentication.businessLicenseNumber}}" placeholder="请输入15位工商注册号">
+                                {{/if}}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">企业名称：</label>
+                            <div class="col-sm-4">
+                                <input class="form-control" name="orgName" type="text" value="{{authentication.orgName}}" placeholder="请填写营业执照上的名称">
+                                <!--<span class="help-block text-muted m-b-none">请填写营业执照上的名称</span>-->
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">法人：</label>
+                            <div class="col-sm-4">
+                                <input class="form-control" name="legalRepresentative" type="text" value="{{authentication.legalRepresentative}}" placeholder="请输入法人姓名">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vertical-timeline-block">
+                    <div class="vertical-timeline-icon navy-bg p-xxs">2</div>
+                    <div class="vertical-timeline-content p-h-xs">
+                        <h4>法人身份证信息</h4>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="col-sm-10">
+                                <div class="pull-left" style="width:175px;">
+                                    <p>正面：</p>
+                                    {{if authentication && authentication.legalRepresentativePhoto!=null}}
+                                    <img class="curp" src="{{authentication.legalRepresentativePhoto}}" id="legalRepresentativePhoto" data-action="preview" style="max-width: 155px;max-height: 155px;"/>
+                                    {{else}}
+                                    <img class="curp" src="{{_url('/assets/img/org/IDCardTemp.jpg')}}" id="legalRepresentativePhoto" data-action="preview" style="max-width: 155px;max-height: 155px;"/>
+                                    {{/if}}
+                                </div>
+                                <div class="pull-left m-t-25">
+                                    <p class="m-b-xs">上传：身份证照片；</p>
+                                    <p class="m-b-xs">请本人手持身份证，照片所有信息需清晰可见，内容真实有效，不得做任何修改。</p>
+                                    <p class="m-b-xs">正面头像清晰，背面国徽，签发机关清晰可见。</p>
+                                    <p><a class="btn btn-primary btn-sm file-upload pull-left" id="legalRepresentativePhotoUpload">选择文件</a></p>
+                                    <p><label id="legalRepresentativePhoto-error" class="error" ></label></p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="vertical-timeline-block">
+                    <div class="vertical-timeline-icon navy-bg p-xxs">3</div>
+                    <div class="vertical-timeline-content p-h-xs">
+                        <h4>经办人身份证信息</h4>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="col-sm-10">
+                                <div class="pull-left" style="width:175px;">
+                                    <p>正面：</p>
+                                    {{if authentication && authentication.operatorPhoto}}
+                                    <img class="curp" src="{{authentication.operatorPhoto}}" id="operatorPhoto" data-action="preview" style="max-width: 155px;max-height: 155px;"/>
+                                    {{else}}
+                                    <img class="curp" src="{{_url('/assets/img/org/IDCardTemp.jpg')}}" id="operatorPhoto" data-action="preview" style="max-width: 155px;max-height: 155px;"/>
+                                    {{/if}}
+                                </div>
+                                <div class="pull-left m-t-25">
+                                    <p class="m-b-xs">上传：身份证照片；</p>
+                                    <p class="m-b-xs">请本人手持身份，照片所有信息需清晰可见，内容真实有效，不得做任何修改。</p>
+                                    <p class="m-b-xs">正面头像清晰，背面国徽，签发机关清晰可见。</p>
+                                    <p><a class="btn btn-primary btn-sm file-upload pull-left" id="operatorPhotoUpload">选择文件</a></p>
+                                    <p><label id="operatorPhoto-error" class="error" ></label></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">经办人：</label>
+                            <div class="col-sm-4">
+                                <input class="form-control" name="operatorName" type="text" value="{{authentication.operatorName}}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vertical-timeline-block">
+                    <div class="vertical-timeline-icon navy-bg p-xxs">4</div>
+                    <div class="vertical-timeline-content p-h-xs">
+                        <h4>认证授权书</h4>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="col-sm-10">
+                                <div class="pull-left" style="width:175px;">
+                                    {{if authentication && authentication.sealPhoto}}
+                                    <img class="curp" src="{{authentication.sealPhoto}}" id="sealPhoto" data-action="preview" style="max-width: 155px;max-height: 155px;"/>
+                                    {{else}}
+                                    <img class="curp" src="{{_url('/assets/img/org/powerOfAttorney.jpg')}}" id="sealPhoto" data-action="preview" style="max-width: 155px;max-height: 155px;"/>
+                                    {{/if}}
+                                </div>
+                                <div class="pull-left">
+                                    <p class="m-b-xs">请下载《认证授权书》<a href="javascript:void(0)" data-action="sealPhotoDownLoad">点击下载</a></p>
+                                    <p class="m-b-xs">按要求填写，并手写仅用于卯丁认证字样，并加盖企业公章。</p>
+                                    <p class="m-b-xs">照片所有信息需清晰可见，内容真实有效。</p>
+                                    <p class="m-b-xs">照片支持.jpg、.jpeg、.bmp、.gif、.png格式，大小不超过8M。</p>
+                                    <p><a class="btn btn-primary btn-sm file-upload pull-left" id="sealPhotoUpload">选择文件</a></p>
+                                    <p><label id="sealPhoto-error" class="error" ></label></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vertical-timeline-block">
+                    <div class="vertical-timeline-icon navy-bg p-xxs">5</div>
+                    <div class="vertical-timeline-content p-h-xs">
+                        <h4>提交审核信息</h4>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="col-sm-10">
+                                <div class="check-div">
+                                    <div class="i-checks " >
+                                        <input type="checkbox" id="ck1" name="convention" />
+                                        <label for="ck1" class="fw-normal">已阅读并同意<a href="javascript:void(0)" data-action="maodingConvention">《卯丁公约》</a></label>
+                                    </div>
+                                </div>
+                                <div class="check-div">
+                                    <div class="i-checks " >
+                                        <input type="checkbox" id="ck2" name="specification" />
+                                        <label for="ck2" class="fw-normal">已阅读并同意<a href="javascript:void(0)" data-action="maodingCertificationSpecification">《卯丁认证规范》</a></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="col-sm-10">
+                                <a class="btn btn-primary pull-left" data-action="submitReview">提交审核</a>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $('.i-checks').iCheck({
+        checkboxClass: 'icheckbox_minimal-green',
+        radioClass: 'iradio_minimal-green'
+    });
+</script>

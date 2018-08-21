@@ -1,0 +1,110 @@
+<div class="m_feeEntry_settings" >
+    <table class="table table-bordered table-responsive">
+        <thead>
+            <tr>
+                <th width="20%">收支分类</th>
+                <th width="40%">收支分类子项</th>
+                <th width="30%">数据来源</th>
+            </tr>
+        </thead>
+        <tbody>
+        {{each feeEntryFieldList as f i}}
+            <tr>
+                <td rowspan="{{f.childList!=null && f.childList.length>0 ?f.childList.length+1:''}}" class="gray-bg v-middle">
+
+                    <div class="check-box">
+                        <label class="i-checks pull-left">
+                            <input name="itemCk" type="checkbox" data-code="{{f.code}}"  data-pid="{{f.pid}}" data-id="{{f.id}}"/>
+                            <span class="i-checks-span">{{f.name}}</span>
+                        </label>
+                    </div>
+                </td>
+                <td>
+                    {{if f.childList!=null && f.childList.length>0}}
+                    <div class="check-box">
+                        <label class="i-checks pull-left">
+                            {{if f.childList[0].showStatus == 1}}
+                                {{if f.childList[0].disabled==true}}
+                                    <input name="itemCk" type="checkbox" data-code="{{f.childList[0].code}}"  data-pid="{{f.childList[0].pid}}" data-id="{{f.childList[0].id}}" checked disabled/>
+                                {{else}}
+                                    <input name="itemCk" type="checkbox" data-code="{{f.childList[0].code}}"  data-pid="{{f.childList[0].pid}}" data-id="{{f.childList[0].id}}" checked/>
+                                {{/if}}
+                            {{else}}
+                                {{if f.childList[0].disabled==true}}
+                                    <input name="itemCk" type="checkbox" data-code="{{f.childList[0].code}}"  data-pid="{{f.childList[0].pid}}" data-id="{{f.childList[0].id}}" disabled/>
+                                {{else}}
+                                    <input name="itemCk" type="checkbox" data-code="{{f.childList[0].code}}"  data-pid="{{f.childList[0].pid}}" data-id="{{f.childList[0].id}}"/>
+                                {{/if}}
+                            {{/if}}
+                            <span class="i-checks-span">{{f.childList[0].name}}</span>
+                        </label>
+                    </div>
+                    {{if f.childList[0].isDefaulted !=1}}
+                    <a href="javascript:void(0);" data-action="editName" data-id="{{f.childList[0].id}}" data-pid="{{f.id}}" data-name="{{f.childList[0].name}}" data-category-type="{{f.childList[0].categoryType}}"  style="display: none;">
+                        <i class="ic-edit"></i>
+                    </a>
+                    <a href="javascript:void(0);" data-action="delFeeField" data-id="{{f.childList[0].id}}"  style="display: none;">
+                        <i class="glyphicon glyphicon-remove text-danger"></i>
+                    </a>
+                    {{/if}}
+                    {{else}}
+                        <a class="btn btn-link btn-add" data-action="addFeeField" title="添加设计任务" data-id="{{f.id}}"><i class="fa fa-plus"></i></a>
+                    {{/if}}
+                </td>
+                <td>
+                    {{if f.childList!=null && f.childList.length>0}}
+                        {{f.childList[0].dataSource}}
+                    {{/if}}
+                </td>
+            </tr>
+            {{if f.childList!=null && f.childList.length>0}}
+                {{each f.childList as c ci}}
+                    {{if ci>0}}
+                    <tr class="">
+                        <td>
+                            <div class="check-box">
+                                <label class="i-checks pull-left">
+                                    {{if c.showStatus==1}}
+                                        {{if c.disabled==true}}
+                                            <input name="itemCk" type="checkbox" data-code="{{c.code}}"  data-pid="{{c.pid}}" data-id="{{c.id}}" checked disabled/>
+                                        {{else}}
+                                            <input name="itemCk" type="checkbox" data-code="{{c.code}}"  data-pid="{{c.pid}}" data-id="{{c.id}}" checked/>
+                                        {{/if}}
+                                    {{else}}
+                                        {{if c.disabled==true}}
+                                            <input name="itemCk" type="checkbox" data-code="{{c.code}}"  data-pid="{{c.pid}}" data-id="{{c.id}}" disabled/>
+                                        {{else}}
+                                            <input name="itemCk" type="checkbox" data-code="{{c.code}}"  data-pid="{{c.pid}}" data-id="{{c.id}}"/>
+                                        {{/if}}
+
+                                    {{/if}}
+                                    <span class="i-checks-span">{{c.name}}</span>
+                                </label>
+                            </div>
+                            {{if c.isDefaulted !=1}}
+                            <a href="javascript:void(0);" data-action="editName" data-id="{{c.id}}" data-pid="{{f.id}}" data-name="{{c.name}}" data-category-type="{{c.categoryType}}" style="display: none;">
+                                <i class="ic-edit"></i>
+                            </a>
+                            <a href="javascript:void(0);" data-action="delFeeField" data-id="{{c.id}}" style="display: none;">
+                                <i class="glyphicon glyphicon-remove text-danger"></i>
+                            </a>
+                            {{/if}}
+                        </td>
+                        <td>
+                            {{c.dataSource}}
+                        </td>
+                    </tr>
+                    {{/if}}
+                {{/each}}
+                <tr>
+                    <td>
+                        <a class="btn btn-link btn-add" data-action="addFeeField" title="添加设计任务" data-id="{{f.id}}"><i class="fa fa-plus"></i></a>
+                    </td>
+                    <td></td>
+                </tr>
+            {{/if}}
+        {{/each}}
+        </tbody>
+    </table>
+
+</div>

@@ -1,0 +1,29 @@
+<table class="table table-responsive toAuditOrgUserListBox">
+    <thead>
+    <tr>
+        <th>序号</th>
+        <th>姓名</th>
+        <th>手机号码</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{each userAuditList as u}}
+    <tr>
+        <td>{{$index+1}}</td>
+        <td>{{u.userName}}</td>
+        <td>{{u.cellphone}}</td>
+        <td>
+            <a href="javascript:void(0)" class="btn-u btn-u btn-u-xs rounded" data-i="{{$index}}" data-action="agreedToJoin">同意</a>
+            <a href="javascript:void(0)" class="btn-u btn-u-red btn-u-xs rounded" data-i="{{$index}}" data-action="refusedToJoin">拒绝</a>
+        </td>
+    </tr>
+    {{/each}}
+    {{if !userAuditList||!userAuditList.length}}
+    <tr>
+        <td colspan="4" align="center">暂无数据</td>
+    </tr>
+    {{/if}}
+    </tbody>
+</table>
+

@@ -1,0 +1,42 @@
+<form class="form-inline">
+    <div class="form-group filter-control">
+        <select class="form-control input-sm" name="filter_select" style="width: 150px;min-width: 150px;"></select>
+    </div>
+    <button type="button" class="btn btn-default btn-sm filter-clear">
+        <i class="fa fa-eraser"></i>
+    </button>
+    <button type="button" class="btn btn-primary btn-sm filter-submit">
+        <i class="fa fa-check"></i>
+    </button>
+</form>
+<script type="text/javascript">
+    $('select[name="filter_select"]').select2({
+        clear:true,
+        language: "zh-CN",
+        ajax: {
+            contentType: "application/json",
+            url: restApi.url_getUserByKeyWord,
+            dataType: 'json',
+            type: 'POST',
+            delay: 500,
+            data: function (params) {
+                var ret = {
+                    keyword: params.term
+                    /*,companyId: window.currentCompanyId*/
+                };
+                return JSON.stringify(ret);
+            },
+            processResults: function (data, params) {
+                return {
+                    results: $.map(data.data, function (o, i) {
+                        return {
+                            id: o.id,
+                            text: o.user_name
+                        }
+                    })
+                };
+            },
+            cache: true
+        }
+    });
+</script>

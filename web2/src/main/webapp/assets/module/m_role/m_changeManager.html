@@ -1,0 +1,27 @@
+<div class="ibox">
+    <div class="ibox-content">
+        <form class="sky-form ensureChangeAdministraterOBox rounded-4x">
+            <input type="password" class="dp-none">
+            <div class="space-md-hor">
+                <!--<div class="col-md-12 no-pd-left">
+                    <div class="form-group col-md-6 "style="margin-bottom: 0">
+                        <label>新的管理员： <b>{{adminInfo.userName}}</b></label>
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <input type="password" class="form-control password" name="adminPassword" data-action="adminPassword" placeholder="请输入当前账户密码">
+                </div>-->
+                {{if type==1}}
+                <span>移交系统管理员给<span class="text-navy font-bold">“{{adminInfo.userName}}”</span>后，你将不在拥有系统管理员权限，是否选择移交</span>
+                {{else if type==2}}
+                <span>指定<span class="text-navy font-bold">“{{adminInfo.userName}}”</span>为系统管理员后，系统管理员将拥有系统管理员所有权限，是否进行指定。</span>
+                {{else if type==3}}
+                <span>移交企业负责人给<span class="text-navy font-bold">“{{adminInfo.userName}}”</span>后，你将不在拥有企业负责人权限，是否选择移交</span>
+                {{else if type==4}}
+                <span>指定<span class="text-navy font-bold">“{{adminInfo.userName}}”</span>为企业负责人后，企业负责人将拥有企业负责人所有权限，是否进行指定。</span>
+                {{/if}}
+                <div class="clearfix"></div>
+            </div>
+        </form>
+    </div>
+</div>

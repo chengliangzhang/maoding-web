@@ -1,0 +1,35 @@
+<div class="ibox m-b-none">
+    <div class="ibox-content m-b-none">
+        <table class="table  table-bordered">
+            {{each rolePermissions as role i}}
+            <tbody p-code="{{role.code}}" class="border-none">
+            <tr role-code="{{role.code}}">
+                <td rowspan="{{role.permissionList.length}}" id="{{role.id}}" class="text-center vmiddle v_a_middle pTarget">
+                    <span class="dp-block pt-relative">
+                        {{role.name}}
+                    </span>
+                </td>
+                <td class="vmiddle" p-code="{{role.permissionList[0].code}}" id="{{role.permissionList[0].id}}">
+                    <span class="dp-block pt-relative">
+                        {{role.permissionList[0].name}}
+                    </span>
+                </td>
+            </tr>
+            {{each role.permissionList as mem a}}
+            {{if a>0}}
+            <tr >
+                <td class="vmiddle" p-code="{{mem.code}}" id="{{mem.id}}">
+                    <span class="dp-block pt-relative">
+                        {{mem.name}}
+                    </span>
+                </td>
+            </tr>
+            {{/if}}
+            {{/each}}
+
+            </tbody>
+            {{/each}}
+        </table>
+    </div>
+</div>
+

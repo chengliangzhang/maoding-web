@@ -1,0 +1,105 @@
+<div class="ibox">
+    <div class="ibox-title secondary-menu-outbox">
+        <div class="row">
+            <div class="col-md-6">
+                <!--面包屑-->
+                <div class="no-margin p-h-sm breadcrumb-box" >
+                    <ol class="breadcrumb">
+                        <li>
+                            个人报销
+                        </li>
+                        <li class="active fa fa-angle-right">
+                            <strong>我要报销</strong>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-6 text-right p-sm">
+
+            </div>
+            <div class="clearfix"></div>
+
+        </div>
+    </div>
+    <div class="ibox-content" id="toExpApplication">
+        <form class="tessExpenseBox" style="overflow-x:hidden;">
+            <fieldset>
+                <section>
+                    <div class="headline">
+                        <h2>基础内容</h2>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label for="receiptType">单据类型<span class="color-red">*</span></label>
+                            <select id="receiptType" name="" class="form-control curp p-r-24">
+                                <option value="1">报销申请</option>
+                                <option value="2">费用申请</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="auditPerson">审批人<span class="color-red">*</span></label>
+                            <input id='auditPerson' type="text" class="getClickFun form-control" value="{{reimburseObj.auditPersonName}}"
+                                   data-action="auditPerson" userid="{{reimburseObj.auditPerson}}" id="auditPerson"
+                                   readonly="readonly" placeholder="选择审批人" style="background-color: #fff;">
+                        </div>
+                        <div class="form-group col-md-12 margin-bottom-20">
+                            <label for="remark">备注</label>
+                            <input type="text" id="remark" class="form-control" value="{{reimburseObj.remark}}" maxlength="1000">
+                        </div>
+                        <div class="col-md-12 margin-bottom-10">
+                            <span id="showFileLoading">
+                            </span>
+                            <button class="getClickFun btn-u btn-u-sm btn-u-dark-blue rounded" id="fileUpload"
+                                    data-action="fileUpload" type="button"><i class="fa fa-upload"></i>&nbsp;上传附件
+                            </button>
+                        </div>
+                        <div class="col-md-12 margin-bottom-10">
+                            <span class="uploadmgrContainer">
+
+                            </span>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <div class="headline">
+                        <h2>报销条目</h2>
+                    </div>
+                    <table class="table table-responsive m-b-none" id="reimburseTable">
+                        <thead>
+                        <tr>
+                            <th width="18%">报销金额<span class="color-red">*</span>（元）</th>
+                            <th width="24%">报销类别<span class="color-red">*</span></th>
+                            <th width="30%">用途说明<span class="color-red">*</span></th>
+                            <th width="20%">关联项目</th>
+                            <th width="8%">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td colspan="5" class="text-center border-no-t">
+                                <div class="call-action-v1 rounded call-action-v1-boxed tag-box-v4 curp getClickFun"
+                                     data-action="addExpItem">
+                                    <div class="call-action-v1-box margin-bottom-10 margin-top-10">
+                                        <div class="call-action-v1-in text-center">
+                                            <a href="javascript:void(0);"><i
+                                                    class="fa fa-plus fa-2x color-dark-blue"></i> </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">
+                                <div class="text-right">
+                                    <p>合计：<i class="fa fa-jpy"></i> <span id="expAmount"></span>元</p>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </fieldset>
+            <div class="footTools"></div>
+        </form>
+    </div>
+</div>

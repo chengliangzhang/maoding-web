@@ -1,0 +1,69 @@
+<div class="ibox ibox_min_height">
+    <!--<div class="ibox-title secondary-menu-outbox">
+        <div class="row">
+            <div class="col-md-6">
+                &lt;!&ndash;面包屑&ndash;&gt;
+                <div class="no-margin p-h-sm breadcrumb-box" >
+                    <ol class="breadcrumb">
+                        <li>
+                            财务管理
+                        </li>
+                        <li class="active fa fa-angle-right">
+                            <strong>类别设置</strong>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-6 text-right p-w-sm">
+            </div>
+            <div class="clearfix"></div>
+
+        </div>
+    </div>-->
+    <div class="ibox-content no-padding">
+        <form id="expTypeSetting">
+            <fieldset id="expTypeMainContent">
+                <section class="categoryListOBox">
+                    {{each expTypeList as mainE i}}
+                    <div class="col-md-12" style="padding:10px 0 10px;">
+                        <div class="row">
+                            <div class="col-24-md-offset-1 col-24-md-22">
+                                <div class="headline"><h2>{{mainE.parent.name}}</h2></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-24-md-offset-4 col-24-md-16 ">
+                                <div class="row">
+                                    {{each mainE.child as ch j}}
+                                    <div class="col-md-12 ">
+                                        <div class="row margin-bottom-10">
+                                            <div class="col-md-2">
+                                                <strong>{{ch.name}}</strong>
+                                            </div>
+                                            <div class="col-md-10">
+                                                {{ch.expTypeMemo}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{/each}}
+                                    <div class="col-md-12 ">
+                                        <div class="row">
+                                            <div class="col-md-3" style="padding: 8px 13px;">
+                                                <a href="javascript:void(0)" class="editExpButton roleControl" roleCode="sys_finance_type" flag="2"
+                                                   parent_name="{{mainE.parent.name}}" data-action="editButton{{i}}"
+                                                   style="color:#4765a0">修改{{mainE.parent.name}}>></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </section>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+

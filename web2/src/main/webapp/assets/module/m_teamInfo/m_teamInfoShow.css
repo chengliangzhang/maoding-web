@@ -1,0 +1,46 @@
+.m_teamInfoShow .editable-empty, .editable-empty:hover, .editable-empty:focus {
+    color: #ccc;
+    font-style: normal;
+}
+.m_teamInfoShow .popover .popover-content .control-group.form-group {
+    margin-left: 0;
+    margin-right: 0;
+}
+.m_teamInfoShow .form-group label.control-label {
+    margin-top: 5px;
+}
+.m_teamInfoShow .form-group div.form-control-static {
+    height: 44px;
+}
+.m_teamInfoShow #city_1 a {
+    padding-top: 5px;
+    display: inline-block
+}
+.m_teamInfoShow a[data-action] {
+    text-decoration: none;
+    border-bottom: none;
+}
+.m_teamInfoShow a[data-action]:hover {
+    text-decoration: none;
+    border-bottom: dashed 1px #08c;
+    font-style: normal;
+}
+form.form-horizontal.m_teamInfoShow .notRole {
+    text-decoration: none;
+    border-bottom: none;
+    color: #333;
+    display: block;
+    cursor: text;
+    padding-top: 5px;
+}
+.m_teamInfoShow .editableform .form-control.textarea-long{
+    width: 350px;
+}
+.m_teamInfoShow .companyComment .popover .popover-content .editable-buttons{
+    display: block;
+    text-align: right;
+    margin-top: 5px;
+}
+.m_teamInfoShow .form-group{
+    margin-bottom: 15px;
+}

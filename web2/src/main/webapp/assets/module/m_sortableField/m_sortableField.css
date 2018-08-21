@@ -1,0 +1,31 @@
+/* table sort -------------------------------------------------------------*/
+.table > thead > tr > th.field-sortable:hover {
+    cursor: pointer;
+}
+
+.table > thead > tr > th.field-sorted-asc > span.field-sort-indicator:before {
+    content: "\f0de";
+    color: #4765a0;
+}
+
+.table > thead > tr > th.field-sorted-desc > span.field-sort-indicator:before {
+    content: "\f0dd";
+    color: #4765a0;
+}
+
+.table > thead > tr > th > span.field-sort-indicator {
+    display: inline-block;
+    speak: none;
+    font-family: 'FontAwesome';
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    padding-left: 5px;
+}
+
+.table > thead > tr > th > span.field-sort-indicator:before {
+    content: "\f0dc";
+    color: #4765a0;
+}

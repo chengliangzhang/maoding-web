@@ -1,0 +1,20 @@
+.m_choseUserBox .chose-user-tree{
+    position: absolute;
+    background-color: #fff;
+    padding: 5px;
+    top: 26px;
+    left: 65px;
+    box-shadow: 1px 1px 6px 0 #9a9a9a;
+    border-radius: 5px;
+    z-index: 9;
+}
+.m_choseUserBox #userListBox table tr th,
+.m_choseUserBox #userListBox table tr td{
+    padding: 6px;
+}
+.m_choseUserBox .btn-filter{
+    margin-bottom: 2px;
+}
+.m_choseUserBox hr.line-class{
+    margin-top: 5px;border-top: solid 1px #ddd;
+}

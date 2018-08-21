@@ -1,0 +1,34 @@
+.headContent .popover .arrow{border-top-color: rgba(231, 234, 236, 0) !important;}
+.headContent a.roleControl{padding-left: 15px;padding-right: 15px;min-height: 28px;line-height: 28px}
+.headContent a[disabled="disabled"]{color:#999;cursor: not-allowed;}
+.headContent span.divice{padding: 0 15px;}
+.headContent .count-info{position: relative;}
+.headContent a>span.badge-danger{position: absolute;left: 77px;top: -7px;}
+.headContent i.iconfont{font-size: 20px;}
+.headContent a.dropdown-toggle{padding-left: 5px;padding-right: 31px;}
+.headContent i.fa-caret-down{position: absolute;top:7px;font-size: 20px}
+.headContent ul.dropdown-menu.dropdown-menu-v1{position: absolute;left: 92px;top: 34px;}
+.ibox .ibox-content .treeSwitch{display: flex;float: right;padding-right:15px;min-height: 30px;align-items: center;justify-content: center;}
+
+.orgUserOBox.table{
+    border-bottom: 1px solid #e7eaec;
+}
+.orgUserOBox.table > tbody + tbody {
+    border-top: none;
+}
+.orgUserOBox.table > tbody > tr > td {
+    height: 39px;
+}
+.orgUserOBox.table > thead > tr > th{
+    background-color: #f1f1f1;
+}
+.orgUserOBox.table > tbody > tr > td{
+    background-color: #fff;
+}
+.orgUserOBox .table-hover > tbody > tr:hover .iconfont {
+    display: inline-block;
+}
+.orgUserOBox .userInfoTr td,
+.orgUserOBox .userInfoTr th{
+    background-color: #f8f8f8;
+}

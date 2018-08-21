@@ -1,0 +1,15 @@
+.m_historyData .webuploader-pick {
+    position: relative;
+    display: inline;
+    cursor: pointer;
+    background: inherit;
+    padding: 0;
+    color: inherit;
+    text-align: center;
+    border-radius: 0;
+    overflow: hidden;
+}
+
+.m_historyData .webuploader-pick-hover {
+    background: none;
+}

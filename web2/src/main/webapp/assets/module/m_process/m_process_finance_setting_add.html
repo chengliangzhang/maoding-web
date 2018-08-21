@@ -1,0 +1,47 @@
+<div class="ibox">
+    <div class="ibox-content no-borders">
+        <form class="form-horizontal m_finance_setting_process_add">
+                <div class="form-group ">
+                    <label class="col-24-md-5  text-right m-t-sm">{{typeName}}类型：<span class="color-red">*</span>：</label>
+                    <div class="col-24-md-19">
+                        <select class="form-control" name="receiptType" >
+                            <option value="">请选择</option>
+                            {{if type==0}}
+                            <!--收款 -->
+                            <option value="2">合同回款</option>
+                            <option value="3">技术审查费</option>
+                            <option value="5">合作设计费</option>
+                            {{else}}
+                            <!--付款 -->
+                            <option value="4">技术审查费</option>
+                            <option value="6">合作设计费</option>
+                            {{/if}}
+
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <label class="col-24-md-5 text-right m-t-sm">适用团队：<span class="color-red">*</span>：</label>
+                    <div class="col-24-md-19">
+                        <div class="btn-group" id="applicableTeam">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <label class="col-24-md-5 text-right m-t-sm">关联团队：<span class="color-red">*</span>：</label>
+                    <div class="col-24-md-19">
+                        <div class="btn-group" id="associatedTeam">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <label class="col-24-md-5 text-right m-t-sm">说明：</label>
+                    <div class="col-24-md-19">
+                        <textarea class="form-control b-r-sm" name="description" placeholder="请输入内容">{{processInfo!=null?processInfo.description:''}}</textarea>
+                    </div>
+                </div>
+        </form>
+    </div>
+</div>

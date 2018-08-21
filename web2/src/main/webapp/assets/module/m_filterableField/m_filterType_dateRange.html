@@ -1,0 +1,28 @@
+<style>
+    form.form-inline div.input-group{width:30px;}
+</style>
+<form class="form-inline" style="width: 305px;">
+    <div class="form-group filter-control">
+        <div class="input-group">
+            <input type="text" id="filter_startDate" name="filter_startDate"
+                   onFocus="WdatePicker({maxDate:'#F{$dp.$D(\'filter_endDate\')||\'2099-12-30\'}'})" placeholder="开始时间"
+                   class="form-control input-sm curp wth-100 min-wth-100 bg-none" readonly="readonly">
+            <span class="input-group-addon"><i class="icon-append fa fa-calendar"></i></span>
+        </div>
+        <div class="text-align-center dp-inline-block"style="width: 20px;">~</div>
+        <div class="input-group">
+            <input type="text" id="filter_endDate" name="filter_endDate"
+               onFocus="WdatePicker({minDate:'#F{$dp.$D(\'filter_startDate\')}',maxDate:'2099-12-30'})"
+               placeholder="结束时间" class="form-control input-sm  curp wth-100 min-wth-100 bg-none" readonly="readonly">
+            <span class="input-group-addon"><i class="icon-append fa fa-calendar"></i></span>
+        </div>
+    </div>
+    <div class="text-right m-t-xs m-b-xs">
+        <button type="button" class="btn btn-default btn-sm filter-clear">
+            <i class="fa fa-eraser"></i>
+        </button>
+        <button type="button" class="btn btn-primary btn-sm filter-submit">
+            <i class="fa fa-check"></i>
+        </button>
+    </div>
+</form>

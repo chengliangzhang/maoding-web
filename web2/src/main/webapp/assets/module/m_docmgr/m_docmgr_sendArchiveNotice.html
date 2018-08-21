@@ -1,0 +1,36 @@
+<div class="ibox">
+    <div class="ibox-content">
+        <form class="sendArchiveNotice">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="col-24-md-5  text-right m-t-sm">归档任务<span class="color-red">*</span>：</label>
+                    <div class="col-24-md-19">
+                        <input type="text" class="form-control" name="taskName" maxlength="50"  value="{{selectedNodeObj.text}}">
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <label class="col-24-md-5 text-right m-t-sm">通知人员<span class="color-red">*</span>：</label>
+                    <div class="col-24-md-19">
+                        <select class="js-example-disabled-results form-control" name="users" disabled>
+
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <label class="col-24-md-5 text-right m-t-sm">归档截止时间<span class="color-red">*</span>：</label>
+                    <div class="col-24-md-19">
+                        <input type="text" class="form-control" name="deadline" onFocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" readonly value="{{nowDate}}">
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <label class="col-24-md-5 text-right m-t-sm">备注：</label>
+                    <div class="col-24-md-19">
+                        <textarea class="form-control" name="remarks">
+
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

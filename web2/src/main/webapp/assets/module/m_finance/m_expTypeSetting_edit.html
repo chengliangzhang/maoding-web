@@ -1,0 +1,67 @@
+<section class="categorySettingOBox">
+    <div class="col-md-12 margin-bottom-10" style="padding:10px 0 10px;">
+        <div class="row">
+            <div class="col-24-md-offset-1 col-24-md-22">
+                <div class="headline"><h2>{{expTypeData.parent.name}}</h2></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-24-md-offset-1 col-24-md-22">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th width="20%">类别名称</th>
+                        <th width="70%">类别描述</th>
+                        <th width="10%">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{each expTypeData.child as value i}}
+                    <tr class="categoryInput out-box" id="{{value.id}}">
+                        <td>
+                            <input class="form-control" type="text" id="categoryName" name="categoryName" value="{{value.name}}"/>
+                        </td>
+                        <td>
+                            <input class="form-control" type="text" id="categoryMemo" name="categoryMemo" value="{{value.expTypeMemo}}" />
+                        </td>
+                        <td>
+                            <div class="btn_del" style="padding-top: 5px;">
+                                {{if !(expTypeData.parent.name=='其他费用' && i==0)}}
+                                <a class="btn-u btn-u-sm btn-u-red rounded" data-action="categoryDelete" href="javascript:void(0);"><i class="fa fa-close"></i>
+                                </a>
+                                {{/if}}
+                            </div>
+                        </td>
+                    </tr>
+                    {{/each}}
+                    <tr class="addList">
+                        <td align="center" colspan="3">
+                            <div class="call-action-v1 call-action-v1-boxed rounded tag-box-v4 curp" data-action="addList" >
+                                <div class="call-action-v1-box margin-bottom-10 margin-top-10">
+                                    <div class="call-action-v1-in text-center color-dark-blue">
+                                        <a href="javascript:void(0);" style="cursor: pointer;"><i class="fa fa-plus fa-2x"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--<div class="row">-->
+            <!--<div class="col-24-md-offset-1 col-24-md-22">-->
+                <!--<div class="text-right">-->
+                    <!--<a class="btn-u btn-u-default rounded" data-action="cancelEditType">取消</a>-->
+                    <!--<a class="btn-u rounded" data-action="saveEditType">保存</a>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    </div>
+</section>
+<div class="footTools">
+    <div class="col-24-md-offset-1 col-24-md-22 text-right">
+        <a class="btn btn-default rounded" data-action="cancelEditType">返回</a>
+        <a class="btn btn-primary rounded" data-action="saveEditType">保存</a>
+    </div>
+</div>

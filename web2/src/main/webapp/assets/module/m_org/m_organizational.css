@@ -1,0 +1,24 @@
+.headContent .popover .arrow{border-top-color: rgba(231, 234, 236, 0) !important;}
+.headContent a.roleControl{padding-left: 15px;padding-right: 15px;min-height: 28px;line-height: 28px;display:inline-block;position: relative;}
+.headContent a[disabled="disabled"]{color:#999;cursor: not-allowed;}
+.headContent span.divice{padding: 0 15px;}
+.headContent .count-info{position: relative;}
+.headContent a>span.badge-danger{position: absolute;left: 77px;top: -7px;}
+.headContent i.iconfont{font-size: 20px;}
+.headContent a.dropdown-toggle{padding-left: 5px;padding-right: 31px;}
+.headContent i.fa-caret-down{position: absolute;top:12px;font-size: 20px;left:0;}
+.headContent ul.dropdown-menu.dropdown-menu-v1{position: absolute;left: 92px;top: 34px;}
+.ibox .ibox-content .treeSwitch{display: flex;float: right;padding-right:15px;min-height: 30px;align-items: center;justify-content: center;}
+.m_organizational .org-btn-box{
+    background: #f5f5f5;
+    border-bottom: solid 1px #b7b7b7;
+    padding: 0px 15px 5px 5px;
+}
+.m_organizational .headContent a{
+    color: #666;
+}
+
+.m_bulkImport #filePicker .webuploader-pick{position: relative;display: block;cursor: pointer;overflow: inherit;width: 100%;height: 100%;color: #fff;}
+.m_bulkImport #filePicker .webuploader-pick {background: none !important;padding: 6px 12px !important;border-radius: 0 !important; }
+.m_bulkImport #filePicker.btn-brd.btn-brd-hover:hover .webuploader-pick,#filePicker.btn-brd.btn-brd-hover:hover .webuploader-pick-hover{background: none !important; color: #fff;width: 100%;height: 100%;}
+.m_bulkImport #filePicker .webuploader-pick-hover{background: none !important; color: #fff;width: 100%;height: 100%;}

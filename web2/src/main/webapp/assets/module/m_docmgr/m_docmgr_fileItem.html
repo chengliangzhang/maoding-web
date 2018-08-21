@@ -1,0 +1,28 @@
+<tr class="file-list-row">
+    <td>
+        <div class="file-icon {{item.type===0?'file-icon-dir-small':'file-icon-file-small'}}"></div>
+        <div class="file-name">
+            <div class="text">
+                <a id={{item.id}} data-pid="{{item.pid}}" data-fileType="{{item.type}}"
+                   data-download="{{item.fileGroup}}/{{item.filePath}}" data-fileName="{{item.fileName}}"
+                   href="javascript:void(0);" title="{{item.fileName}}">{{item.fileName}}</a>
+            </div>
+        </div>
+    </td>
+    <td class="file-operate">
+        <div class="file-operate-list">
+            {{if item.type===1}}
+            <a class="file-operate-download f-s-16" href="javascript:void(0);"  title="下载"><i
+                    class="glyphicon glyphicon-save text-success"></i></a>
+            {{/if}}
+            {{if item.isCustomize!==1&&item.editFlag===1}}
+            <a class="file-operate-delete f-s-16" href="javascript:void(0);"  ><i
+                    class="glyphicon glyphicon-trash  color-red"></i></a>
+            {{/if}}
+        </div>
+    </td>
+    <td class="file-size">{{item.fileSize}}
+    </td>
+    <td class="file-user"><span data-toggle="tooltip" data-placement="top" title="{{item.companyName}}">{{item.createBy}}</span></td>
+    <td class="file-date">{{_momentFormat(item.createDate,'YYYY/MM/DD')}}</td>
+</tr>

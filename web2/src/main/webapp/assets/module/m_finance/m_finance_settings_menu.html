@@ -1,0 +1,41 @@
+<div class="ibox no-margin">
+    <div class="ibox-title secondary-menu-outbox">
+        <div class="row">
+            <div class="col-md-6">
+                <!--面包屑-->
+                <div class="no-margin p-h-sm breadcrumb-box" >
+                    <ol class="breadcrumb">
+                        <li>
+                            财务设置
+                        </li>
+                        <li class="active fa fa-angle-right">
+                            <strong>收支类别设置</strong>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-6 text-right p-w-sm">
+                <ul class="secondary-menu-ul pull-right">
+                    <!--<li class="active" id="financeSettings"><a>报销、费用类别设置</a></li>-->
+                    {{if role.expCategorySet==1}}
+                        <li id="feeEntrySettings" class="active" ><a>收支类别设置</a></li>
+                    {{/if}}
+                    {{if role.baseFinanceDataSet==1}}
+                    <li id="financeBasicSettings" ><a>基础财务数据设置</a></li>
+                    {{/if}}
+                    <!--{{if role.shareCostSet==1}}
+                    <li id="costSharingSettings" ><a>费用分摊项设置</a></li>
+                    {{/if}}-->
+                </ul>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="ibox-content no-padding">
+        <div class="row">
+            <div class="col-md-12" id="content-box">
+
+            </div>
+        </div>
+    </div>
+</div>

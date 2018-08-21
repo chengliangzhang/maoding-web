@@ -1,0 +1,12 @@
+/**
+ *
+ web/src/main/webapp/assets/lib/jquery-2x/jquery.js
+ web/src/main/webapp/assets/lib/underscore/underscore.js
+ web/src/main/webapp/assets/lib/underscore/underscore.string.js
+ web/src/main/webapp/assets/lib/moment/moment.js
+ web/src/main/webapp/assets/lib/js-cookie/js.cookie.js
+ web/src/main/webapp/assets/lib/json-js/json2.js
+ *
+   vendor.js由以上文件组合而成
+ *
+ */

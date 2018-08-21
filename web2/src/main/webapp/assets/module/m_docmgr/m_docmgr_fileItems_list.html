@@ -1,0 +1,145 @@
+<table class="table file-list">
+    <thead>
+    <tr class="file-list-row">
+        <!--<th width="5%">
+            <div class="list-check-box">
+                <label class="i-checks fw-normal m-b-none">
+                    <input name="itemAllCk" type="checkbox"  />
+                    <span class="i-checks-span"></span>
+                </label>
+            </div>
+        </th>-->
+        <th width="5%">
+            <!--<div class="list-action-box">
+                <div class="btn-group batchOperation" style="display: none;">
+                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="fa fa-angle-double-down"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="javascript:void(0);" data-action="batchDownloadFile" class="">下载文件</a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" class="" data-action="batchDelFile" data-canbedelete="">删除文件</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>-->
+        </th>
+        <th width="45%">文件名</th>
+        <th width="15%">大小</th>
+        <th width="15%">创建人</th>
+        <th width="15%">创建时间</th>
+    </tr>
+    </thead>
+    <tbody class="file-list-items" >
+    {{if (fileItems===void 0 || fileItems===null || fileItems.length===0) }}
+    <tr class="file-list-row no-data">
+        <td colspan="5" class="file-not-found text-center">
+            <div>
+                <img src="{{rootPath}}/assets/img/default/without_file.png">
+            </div>
+            <span class="fc-dark-blue">当前目录不存在任何文件</span>
+        </td>
+    </tr>
+    {{else}}
+    {{each fileItems as item index}}
+    <tr class="file-list-row" data-i="{{index}}" data-id="{{item.id}}" data-type="{{item.type}}" id="box{{item.id}}"  unselectable="on" onselectstart="return false;"
+        style="-moz-user-select:none;-webkit-user-select:none; cursor: default;">
+        <!--<td>
+            <div class="list-check-box">
+                <label class="i-checks fw-normal">
+                    <input name="itemCk" type="checkbox"  />
+                    <span class="i-checks-span"></span>
+                </label>
+            </div>
+        </td>-->
+        <td>
+            <div class="list-action-box">
+                {{if item.type==2 || item.type==1 || (item.type==0 || item.type==1) ||  item.type==50 || (item.sendResults==1 && item.type==30)}}
+                <div class="btn-group singleOperation" style="display: none;">
+                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="fa fa-angle-down"></span>
+                    </button>
+                    <ul class="dropdown-menu" id="menu{{item.id}}">
+                        {{if item.type==2}}
+                        <li>
+                            <a href="javascript:void(0);" data-action="editFileName">修改名称</a>
+                        </li>
+                        {{/if}}
+                        {{if item.type==1}}
+                        <li>
+                            <a href="javascript:void(0);" data-action="downloadFile">下载文件</a>
+                        </li>
+                        {{/if}}
+                        <!--<li>
+                            <a href="javascript:void(0);" data-action="copyFile">复制文件</a>
+                        </li>-->
+                        {{if item.type==0 || item.type==1}}
+                        <li>
+                            <a href="javascript:void(0);" data-action="delFile">删除文件</a>
+                        </li>
+                        {{/if}}
+                        {{ if item.type==50}}
+                        <li>
+                            <a href="javascript:void(0);" data-action="submitDocResults">提交成果</a>
+                        </li>
+                        {{/if}}
+                        {{ if item.sendResults==1 && item.type==30}}
+                        <li>
+                            <a href="javascript:void(0);" data-action="sendDocResults">发送成果</a>
+                        </li>
+                        {{/if}}
+                    </ul>
+                </div>
+                {{/if}}
+            </div>
+        </td>
+        <td style="max-width: 200px;">
+            <a href="javascript:void(0);" id={{item.id}} data-pid="{{item.pid}}" data-fileType="{{item.type}}" data-download="{{item.fileGroup}}/{{item.filePath}}"
+               data-fileName="{{item.fileName}}" title="{{item.fileName}}" data-action="intoSubDirectory">
+
+                {{if item.type===0 || item.type===40 || item.type===30 || item.type===2 || item.type === 41}}
+                    <div class="file-icon file-icon-dir-small"></div>
+                {{else if item.type===50}}
+                    <div class="fa fa-steam-square"></div>
+                {{else}}
+                    <div class="file-icon file-icon-file-small"></div>
+                {{/if}}
+
+                <div class="file-name">
+                    <div class="text">
+                        {{if item.type==1}}
+                        <a href="{{_fastdfsUrl(item.fileGroup+'/'+item.filePath)}}" target="_blank">
+                            {{item.fileName}}
+                        </a>
+                        {{else}}
+                            {{item.fileName}}
+                        {{/if}}
+                    </div>
+                </div>
+            </a>
+        </td>
+        <!--<td class="file-operate">
+            <div class="file-operate-list">
+                {{if item.type===1}}
+                <a class="file-operate-download f-s-16" href="javascript:void(0);"  title="下载"><i
+                        class="glyphicon glyphicon-save text-warning"></i></a>
+                {{/if}}
+                {{if item.isCustomize!==1&&item.editFlag===1}}
+                <a class="file-operate-rename f-s-16" href="javascript:void(0);"  title="重命名"><i
+                        class="glyphicon glyphicon-edit text-success" ></i></a>
+                <a class="file-operate-delete f-s-16" href="javascript:void(0);"><i
+                        class="glyphicon glyphicon-trash color-red" ></i></a>
+                {{/if}}
+            </div>
+        </td>-->
+        <td class="file-size">{{item.fileSize}} </td>
+        <td class="file-user"><span data-toggle="tooltip" data-placement="top" title="{{item.companyName}}">{{item.createBy}}</span></td>
+        <td class="file-date">{{_momentFormat(item.createDate,'YYYY/MM/DD')}}</td>
+    </tr>
+    {{/each }}
+    {{/if}}
+    </tbody>
+</table>
+<iframe class="iframeDown dp-none"></iframe>

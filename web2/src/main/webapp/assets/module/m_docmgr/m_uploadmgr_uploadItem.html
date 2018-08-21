@@ -1,0 +1,22 @@
+<div class="uploadItem uploadItem_{{file.id}}" data-fileId="{{file.id}}" data-pid="{{pid}}">
+    <!--<button type="button" class="close removefile">×</button>-->
+    <h3 class="heading-xs">
+        <span class="file-name">{{file.name}}</span>
+        <span style="padding-left:5px;" class="span_progress"></span>
+        <a class="pull-right btn-link " data-action="removeFile">
+            <i class="glyphicon glyphicon-remove"></i>
+        </a>
+        <a class="pull-right btn-link m-r-xs" data-action="pauseUpload" style="display: none;">
+            <i class="glyphicon glyphicon-pause"></i>
+        </a>
+        <a class="pull-right btn-link m-r-xs" data-action="continueUpload" style="display: none;">
+            <i class="glyphicon glyphicon-play"></i>
+        </a>
+        <span class="span_status pull-right m-r-sm"></span>
+        <div class="clearfix"></div>
+    </h3>
+    <div class="progress progress-u progress-xs">
+        <div class="progress-bar progress-bar-u" role="progressbar" name="div_progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%" >
+        </div>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+.filter-tag {
+    background-color: #919191;
+    color: #fff;
+    font-size: 10px;
+    padding: 4px 4px 4px 10px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.filter-tag i {
+    float: right;
+    color: #ddd;
+    margin: -2px 0 0 8px;
+}

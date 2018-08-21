@@ -1,0 +1,95 @@
+<table class="table table-responsive table-striped table-bordered orgUserOBox">
+    <thead>
+    <tr>
+        <th width="13%">姓名</th>
+        <!--<th width="15%">职位</th>-->
+        <th width="15%">手机号码</th>
+        <th width="20%">办公电话</th>
+        <th width="20%">邮箱</th>
+        {{if isClick}}
+        <th width="10%"></th>
+        <th width="7%"></th>
+        {{/if}}
+    </tr>
+    </thead>
+    {{if orgUserList==null || orgUserList.length==0}}
+    <tbody>
+    <tr>
+        <td colspan="{{isClick==true?6:4}}" align="center">暂无数据</td>
+    </tr>
+    </tbody>
+    {{/if}}
+    <tbody>
+    {{each orgUserList as u}}
+    <tr class="userListTr curp" data-id="{{u.userId}}">
+        <td class="word-break td-first">
+            <i class="fa fa-plus-square"></i>&nbsp;{{u.userName}}
+
+        </td>
+        <!--<td class="word-break">{{u.orgServerStation}}</td>-->
+        <td class="word-break">{{u.cellphone}}</td>
+        <td class="word-break">{{u.phone}}</td>
+        <td class="word-break">{{u.email}}</td>
+        {{if isClick}}
+        <td>
+            <div class="btn-group btnReturnFalse">
+                <a type="button" class="btn btn-default btn-xs dropdown-toggle btnReturnFalse roleControl"
+                   roleCode="hr_org_set" flag="2" data-toggle="dropdown" aria-expanded="true">
+                    操作
+                    <i class="fa fa-angle-down btnReturnFalse"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-v1" role="menu">
+                    <li>
+                        <a href="javascript:void(0)" data-i="{{$index}}" data-action="editOrgUser">编辑</a>
+                    </li>
+                    {{if u.adminFlag==null||u.adminFlag==''}}
+                    <li>
+                        <a href="javascript:void(0)" data-id="{{u.id}}" data-action="delOrgUser">删除</a>
+                    </li>
+                    {{/if}}
+                </ul>
+            </div>
+        </td>
+        <td class="lastTd">
+            {{if $index>0}}
+            <a class="btnReturnFalse curp roleControl" roleCode="hr_org_set" flag="2" title="向上排序"
+               style="text-decoration: none" data-i="{{$index}}" data-action="upSorting">
+                <i class="iconfont icon-xiangshang"></i>
+            </a>
+            {{/if}}
+            {{if $index < orgUserList.length-1}}
+            <a class="btnReturnFalse curp roleControl" roleCode="hr_org_set" flag="2" title="向下排序"
+               style="text-decoration: none" data-i="{{$index}}" data-action="downSorting">
+                <i class="iconfont icon-xiangxia"></i>
+            </a>
+            {{/if}}
+        </td>
+        {{/if}}
+
+    </tr>
+    <tr class="userInfoTr" style="display: none;">
+        <td colspan="7" class="no-padding">
+            <div>
+                <table class="table table-hover m-b-none ">
+                    <thead>
+                    <tr>
+                        <th>所属部门</th>
+                        <th>职位</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{each u.departList as d}}
+                    <tr>
+                        <td class="word-break">{{d.departName}}</td>
+                        <td class="word-break">{{d.serverStation}}</td>
+                    </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </td>
+    </tr>
+    {{/each}}
+    </tbody>
+</table>
+<div id="pagination-container" class="m-pagination pull-right"></div>

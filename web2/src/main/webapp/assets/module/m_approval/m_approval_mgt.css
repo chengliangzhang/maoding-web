@@ -1,0 +1,39 @@
+.m_approval_mgt_setProcess .panel.panel-default{
+    width: 80%;
+}
+.m_approval_mgt_setProcess .btn.btn-circle{
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    padding: 15px;
+}
+.m_approval_mgt_setProcess .approver-outbox{
+    width: auto;
+    height: 80px;
+    float: left;
+}
+.m_approval_mgt_setProcess .approver-box{
+    overflow: hidden;
+    width: 120px;
+    height: 80px;
+    float: left;
+    position: relative;
+}
+.m_approval_mgt_setProcess .approver-remove{
+    position: absolute;
+    right: 15px;
+    top: 0;
+}
+.m_approval_mgt_setProcess .arrow-icon{
+    width: 50px;
+    text-align: center;
+    overflow: hidden;
+    height: 80px;
+    float: left;
+}
+.m_approval_mgt_setProcessCondition span.label{
+    width: 160px;
+    height: 36px;
+    display: block;
+    line-height: 30px;
+}

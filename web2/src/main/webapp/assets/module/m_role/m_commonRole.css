@@ -1,0 +1,60 @@
+.m-roleList.ibox {
+    margin-bottom: 0;
+}
+
+.m-roleList.ibox .ibox-content {
+    border: none;
+}
+
+.m-roleList.ibox .ibox-content .table {
+    margin-bottom: 0;
+}
+
+.m-roleList .table > tbody + tbody {
+    border-top: 1px solid #ddd;
+}
+
+.m-roleList .table .v_a_middle {
+    vertical-align: middle;
+}
+
+.m-roleList .table td {
+    height: 39px;
+    vertical-align: middle;
+}
+
+.m-roleList .table .checkbox {
+    padding-left: 29px;
+}
+
+.m-roleList .table tr td:nth-child(2) {
+    vertical-align: middle
+}
+
+div.ibox.m-roleList .p-4 {
+    padding: 4px;
+}
+
+.m-roleAuthorization .table > tbody + tbody {
+    border-top: 1px solid #ddd;
+}
+
+.m-roleAuthorization .table .v_a_middle {
+    vertical-align: middle;
+}
+
+.m-roleAuthorization .table td {
+    height: 36px;
+}
+
+.m-roleAuthorization .table .checkbox {
+    padding-left: 29px;
+}
+
+.m-roleAuthorization .table tr td:nth-child(2) {
+    vertical-align: middle
+}
+
+.m-roleAuthorization .table tr a.btn-link {
+    color: #337ab7;
+}

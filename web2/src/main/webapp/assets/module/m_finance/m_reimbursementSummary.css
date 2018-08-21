@@ -1,0 +1,13 @@
+
+.m_reimbursementSummary .table>thead>tr>th,
+.m_costSummary .table>thead>tr>th{
+    position: relative;
+}
+
+.m_reimbursementSummary .dropdown-menu li button.btn-default {
+    border: none;
+}
+.m_reimbursementSummary .dropdown-menu li button.btn-default:hover {
+    border: none;
+}
+

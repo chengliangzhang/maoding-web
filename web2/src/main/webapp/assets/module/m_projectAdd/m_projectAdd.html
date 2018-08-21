@@ -1,0 +1,118 @@
+<div class="ibox m_projectAdd">
+    <div class="ibox-title ibox-title-shadow secondary-menu-outbox">
+        <div class="row">
+            <div class="col-md-12" id="secondary-menu">
+                <div class="pull-left m-r-xl">
+                    <h3 class="" >项目立项</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ibox-content ibox-content-shadow addProjectOBox">
+
+        <form role="form " class="projectAddForm m-t-md">
+            <div class="row form-group">
+                <label class="col-24-md-3 text-right m-t-sm" for="detailAddress">项目类型<span class="color-red">*</span>：</label>
+                <div class="col-24-md-8">
+                    <div class="input-group project-type">
+                        <input type="text" class="form-control" name="projectType" value="">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" >
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" style="right: 0;left: inherit;">
+                                {{each projectTypeList as p }}
+                                <li><a href="javascript:void(0);">{{p.name}}</a></li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <label class="col-24-md-3  text-right m-t-sm">项目名称<span class="color-red">*</span>：</label>
+                <div class="col-24-md-8">
+                    <input type="text" class="form-control" name="projectName" id="projectName" maxlength="50" placeholder="请输入项目名称">
+                </div>
+            </div>
+            <div class="row form-group">
+                <label class="col-24-md-3 text-right m-t-sm">甲方<span class="color-red">*</span>：</label>
+                <div class="col-24-md-8">
+                    <input type="text" class="form-control constructCompanyName" name="constructCompanyName" id="constructCompanyName"
+                           placeholder="请输入甲方名称" autocomplete="off" data-id="">
+
+                    <!--<select class="js-example-disabled-results form-control" name="constructCompanyName" >
+
+                    </select>-->
+                    <div class="partyA-select-box" style="position: absolute; top: 100%; left: 14px; z-index: 100; right: auto;background: #fff;border: solid 1px #ccc;border-radius: 5px;box-shadow: 1px 1px 6px 0 #9a9a9a;min-width: 80%; display: none;">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <label class="col-24-md-3 text-right m-t-sm" for="selectRegion">项目所在地<span class="color-red">*</span>：</label></label>
+                <div class="col-24-md-8">
+                    <div class="input-group cityBox" id="selectRegion" name="selectRegion">
+                        <div class="dp-inline-block">
+                            <select class="prov form-control" name="province"></select>
+                        </div>
+                        <div class="dp-inline-block m-l-xs">
+                            <select class="city form-control" name="city" disabled="disabled" style="display: none;"></select>
+                        </div>
+                        <div  class="dp-inline-block m-l-xs">
+                            <select class="dist form-control" name="county" disabled="disabled" style="display: none;"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row form-group">
+                <label class="col-24-md-3 text-right m-t-sm" for="detailAddress">详细地址：</label>
+                <div class="col-24-md-8">
+                    <input type="text" class="form-control" style="width: 100%;" name="detailAddress" id="detailAddress" maxlength="255" value="{{$detailAddress?$detailAddress:''}}">
+                </div>
+            </div>
+
+            <!--<div class="row form-group designContentBox">
+                <label class="col-24-md-3 text-right m-t-sm">设计任务<span class="color-red">*</span>：</label>
+                <div class="col-24-md-20">
+                    <div class="input-group">
+                    <ul class="todo-list small-list bg-white">
+                        <li class="designContentLi" style="padding-top: 0px;">
+                            {{if contentList && contentList.length>0}}
+                            {{each contentList as c ci}}
+                            <span class="design_item designContentDiv" data-i="">
+                                        <label class="i-checks dp-inline-block m-b-none">
+                                            <input name="designContent" class="checkbox dinline" type="checkbox" value="" data-name="{{c.name}}" data-id="{{c.id}}"/>
+                                        </label>
+                                        <div class="pull-left">
+                                            <span class="content-name" data-toggle="tooltip" data-original-title="{{c.name}}">
+                                            {{c.name}}
+                                            </span>
+                                            <a href="javascript:void(0)" class="editable editable-click editable-empty dp-block"
+                                               data-action="edit_setDesignContentTime" data-startTime="" data-endTime="">设置合同进度
+                                            </a>
+                                        </div>
+                                    </span>
+                            {{/each}}
+                            {{/if}}
+                        </li>
+                        <li class="addDesignContentLi">
+                            <span class="design_item addDesignContentDiv v-middle text-center no-padding">
+                                <a class="btn btn-outline btn-default" href="javascript:void(0)" data-action="addDesignContent" type="button">
+                                    <i class="fa fa-plus-square " style="color: #1ab394"></i>&nbsp;添加设计任务
+                                </a>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+                </div>
+            </div>-->
+            <div class="row">
+                <div class="col-md-11 col-md-offset-1 no-padding">
+                    <a type="button" class="btn btn-primary btn-submit  ">保存</a>
+                    <a type="button" class="btn btn-default btn-cancel m-l-xs">取消</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

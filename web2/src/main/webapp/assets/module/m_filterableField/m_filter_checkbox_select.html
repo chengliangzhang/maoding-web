@@ -1,0 +1,23 @@
+<div class="data-list-filter " style="{{boxStyle}}">
+    <div class="m-b-sm check-box-title" >
+        <label class="i-checks fw-normal">
+            <input name="itemCk" type="checkbox" value=""/>
+            <span class="i-checks-span">全选</span>
+        </label>
+    </div>
+    <div class="p-w-sm">
+        {{each selectList as s}}
+        <div class="{{colClass?colClass:'col-md-4'}} no-pd-right no-pd-left">
+            <label class="i-checks fw-normal">
+                {{if s.isSelected}}
+                <input name="itemCk" type="checkbox" checked value="{{s.fieldValue}}"/>
+                {{else}}
+                <input name="itemCk" type="checkbox" value="{{s.fieldValue }}" />
+                {{/if}}
+                <span class="i-checks-span">{{s.fieldName }}</span>
+            </label>
+        </div>
+        {{/each}}
+        <div class="clearfix"></div>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+<div class="tabs-container">
+    <ul class="nav nav-tabs">
+        {{if tabList!=null && tabList.length>0}}
+        {{each tabList as t i}}
+        <li class="{{i==currTabI?'active':''}}">
+            <a data-toggle="tab" href="#tab-{{i}}" data-action="getProductionById" data-i="{{i}}" data-id="{{t.id}}" aria-expanded="false">{{t.name}}</a>
+        </li>
+        {{/each}}
+        {{/if}}
+    </ul>
+    <div class="tab-content">
+        {{if tabList!=null && tabList.length>0}}
+        {{each tabList as t i}}
+        <div id="tab-{{i}}" class="tab-pane {{i==currTabI?'active':''}}">
+            <div class="panel-body">
+
+                <div id="taskIssueList{{i}}">
+
+                </div>
+
+                <div id="productionList{{i}}" class="list-box">
+
+
+                </div>
+            </div>
+        </div>
+        {{/each}}
+        {{/if}}
+    </div>
+</div>

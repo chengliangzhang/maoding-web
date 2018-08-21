@@ -1,0 +1,114 @@
+<style>
+    a.svg {
+        display: inline-block;
+        position: relative;
+    }
+    a.svg:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+    .navbar-brand{
+        height: 60px;
+        padding: 12px 38px;
+    }
+</style>
+<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0px;">
+    <!--卯丁logo-->
+    <div class="navbar-header">
+
+        <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse"
+                class="navbar-toggle collapsed" type="button">
+            <i class="fa fa-reorder"></i>
+        </button>
+        <a href="{{rootPath}}" class="navbar-brand svg" target="_blank">
+            <object class="maoding_logo pt-relative" data="{{rootPath}}/assets/img/logo_white.png"></object>
+        </a>
+
+    </div>
+    <!--卯丁logo end-->
+
+    <div id="navbar" class="navbar-collapse collapse">
+        {{if companyInfo&&!_isNullOrBlank(companyInfo.filePath)}}
+        <ul class="nav navbar-top-links navbar-left" style="padding: 0 25px 0 5px;">
+            {{else}}
+            <ul class="nav navbar-top-links navbar-left" style="padding: 0 10px 0 20px;">
+                {{/if}}
+                <li class="pull-left">
+                    {{if companyInfo!=null && companyInfo.companyName!=null && companyInfo.companyName!=''}}
+                    <div class="dropdown l-h-60 no-pd">
+                        <a class="orgInfo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="javascript:void(0)">
+                            {{companyInfo.companyName}}
+                            {{if isAuth && isAuth==2}}
+                            <object data="{{rootPath}}/assets/img/org/verifiedIcon.svg" type="image/svg+xml" style="height: 16px;margin-bottom: 4px; vertical-align: middle;"></object>
+                            <span style="color: #F8AC5B;">已认证</span>
+                            {{/if}}
+                            <span class="caret"></span>
+                        </a>
+                        <ul id='m_top_orgList' class="dropdown-menu dropdown-menu-left dropdown-menu-new" style="min-width: 250px;margin-left:-7px;">
+                            {{if orgList&&orgList.length>1}}
+                            <li style="margin: 2px 0 0 0;">
+                                <a class="title pt-relative" href="javascript:void(0)"><span class="lineLeft"></span>切换组织<span
+                                        class="lineRight"></span></a>
+                            </li>
+                            {{each orgList as o i}}
+                            {{if o.id!== companyInfo.id }}
+                            <li>
+                                <a href="javascript:void(0);" data-action="switchOrg" org-id="{{o.id}}">
+                                    <div>
+                                        {{o.companyName}}
+                                    </div>
+                                </a>
+                            </li>
+                            {{/if}}
+                            {{/each}}
+                            {{/if}}
+                        </ul>
+                    </div>
+                    {{/if}}
+                </li>
+                {{if (roleCodes!=null && ( roleCodes.indexOf('sys_enterprise_logout')>-1 || roleCodes.indexOf('com_enterprise_edit')>-1 || roleCodes.indexOf('hr_org_set')>-1 || roleCodes.indexOf('hr_employee')>-1
+                || roleCodes.indexOf('org_data_import')>-1 || roleCodes.indexOf('data_import')>-1 || roleCodes.indexOf('org_partner')>-1 || roleCodes.indexOf('sys_role_permission')>-1
+                || roleCodes.indexOf('sys_role_auth')>-1 ) ) || adminFlag=='1'}}
+
+                <li class="pull-left">
+                    <a data-action="backstageMgt" title="后台管理"  style="padding: 22px 20px 14px 10px;">
+                        <i class="fa fa-cog" style="margin-right: 9px;margin-left: 2px;"></i>
+                    </a>
+                </li>
+                {{/if}}
+            </ul>
+            <!--对应每个入口的位置及链接地址 end -->
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="pull-left">
+                    <div class="dropdown l-h-60 no-pd">
+                        <img alt="image" class="img-circle m-t-n-xs" src="{{userInfo.imgUrl}}" style="width: 40px;height: 40px;margin-right:5px;">
+                        <a class="userInfo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-type="textUserName" href="javascript:void(0)">
+                            {{userInfo.userName}}<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-left dropdown-menu-new" style="z-index: 99999">
+                            <li><a href="javascript:void(0)" data-action="personalSettings">个人设置</a></li>
+                            <li><a href="javascript:void(0)" data-action="createOrg">创建组织</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{{rootPath}}/iWork/sys/logout">退出登录</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="pull-left">
+                    <a class="messageInfo" href="javascript:void(0);" data-action="announcement">
+                        <i class="fa fa-bell"></i><span id="unReadNoticeCount" class="label label-warning">{{unReadNotice}}</span>
+                    </a>
+                </li>
+                <li class="pull-left">
+                    <a class="messageInfo" href="javascript:void(0);" data-action="messageCenter">
+                        <i class="fa fa-envelope"></i> <span id="unReadMessageCount" class="label label-warning">{{unReadMessage}}</span>
+                    </a>
+                </li>
+            </ul>
+
+    </div>
+
+</nav>
