@@ -1,10 +1,10 @@
 target/
 logs/
 node_modules/
-webapp/
 .idea/
 .svn/
 .depend
+*.min.*
 *.iml
 *.7z*
 *.rar*
