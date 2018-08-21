@@ -1,5 +1,6 @@
 package com.maoding.statistic.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -64,10 +65,12 @@ public class StatisticDetailQueryDTO extends BaseDTO{
     /**
      * 起始日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date startDate;
     /**
      * 终止日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date endDate;
 
     /**
@@ -195,7 +198,9 @@ public class StatisticDetailQueryDTO extends BaseDTO{
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = DateUtils.addDays(startDate, -1);
+        if(startDate!=null){
+            this.startDate = DateUtils.addDays(startDate, -1);
+        }
     }
 
     public Date getEndDate() {

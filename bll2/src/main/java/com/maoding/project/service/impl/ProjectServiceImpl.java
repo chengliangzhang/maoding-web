@@ -1557,20 +1557,32 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         //添加任务负责人、设计、校对、审核的过滤列表
         //任务负责人
         if (columnCodes.contains(ProjectConst.TITLE_PROJECT_MEMBER_TASK_LEADER)){
-            param.put(ProjectConst.TITLE_PROJECT_MEMBER_TASK_LEADER,listProjectMember(companyId, null, ProjectConst.MEMBER_TYPE_TASK_LEADER));
+            param.put(ProjectConst.TITLE_PROJECT_MEMBER_TASK_LEADER + "List",toCoreShowList(listProjectMember(companyId, null, ProjectConst.MEMBER_TYPE_TASK_LEADER)));
         }
         //设计人员
         if (columnCodes.contains(ProjectConst.TITLE_PROJECT_MEMBER_TASK_DESIGNER)){
-            param.put(ProjectConst.TITLE_PROJECT_MEMBER_TASK_DESIGNER,listProjectMember(companyId, null, ProjectConst.MEMBER_TYPE_TASK_DESIGN));
+            param.put(ProjectConst.TITLE_PROJECT_MEMBER_TASK_DESIGNER + "List",toCoreShowList(listProjectMember(companyId, null, ProjectConst.MEMBER_TYPE_TASK_DESIGN)));
         }
         //校对人员
         if (columnCodes.contains(ProjectConst.TITLE_PROJECT_MEMBER_TASK_CHECKER)){
-            param.put(ProjectConst.TITLE_PROJECT_MEMBER_TASK_CHECKER,listProjectMember(companyId, null, ProjectConst.MEMBER_TYPE_TASK_CHECK));
+            param.put(ProjectConst.TITLE_PROJECT_MEMBER_TASK_CHECKER + "List",toCoreShowList(listProjectMember(companyId, null, ProjectConst.MEMBER_TYPE_TASK_CHECK)));
         }
         //审核人员
         if (columnCodes.contains(ProjectConst.TITLE_PROJECT_MEMBER_TASK_AUDITOR)){
-            param.put(ProjectConst.TITLE_PROJECT_MEMBER_TASK_AUDITOR,listProjectMember(companyId, null, ProjectConst.MEMBER_TYPE_TASK_AUDIT));
+            param.put(ProjectConst.TITLE_PROJECT_MEMBER_TASK_AUDITOR + "List",toCoreShowList(listProjectMember(companyId, null, ProjectConst.MEMBER_TYPE_TASK_AUDIT)));
         }
+
+        //传递其他过滤列表
+        param.put("designCompanyNameList",toCoreShowList(designCompanyNames));
+        param.put("companyNameList", toCoreShowList(companyNames));
+        param.put("partyANameList", toCoreShowList(partyANames));
+        param.put("partyBNameList", toCoreShowList(partyBNames));
+        param.put("buildTypeNameList", toCoreShowList(buildTypeNames));
+        param.put("busPersonInChargeList", toCoreShowList(busPersonInChargeMap));
+        param.put("designPersonInChargeList", toCoreShowList(designPersonInChargeMap));
+        param.put("busPersonInChargeAssistantList", toCoreShowList(busPersonInChargeAssistantMap));
+        param.put("designPersonInChargeAssistantList", toCoreShowList(designPersonInChargeAssistantMap));
+
 
         param.put("designCompanyNames",designCompanyNames);
         param.put("companyNames", companyNames);
@@ -1910,6 +1922,16 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         List<CoreShowDTO> list = new ArrayList<>();
         for (ProjectMemberDTO member : memberList) {
             list.add(new CoreShowDTO(member.getId(),member.getCompanyUserName()));
+        }
+        return list;
+    }
+
+    private List<CoreShowDTO> toCoreShowList(Map<String,String> stringMap){
+        List<CoreShowDTO> list = new ArrayList<>();
+        if (ObjectUtils.isNotEmpty(stringMap)) {
+            for (Map.Entry<String, String> entry : stringMap.entrySet()) {
+                list.add(new CoreShowDTO(entry.getKey(), entry.getValue()));
+            }
         }
         return list;
     }
