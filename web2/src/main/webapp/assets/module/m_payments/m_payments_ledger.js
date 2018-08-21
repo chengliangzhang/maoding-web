@@ -154,6 +154,7 @@
             var that  = this;
             var option = {};
             var newList = [];
+
             if(that._feeTypeParentNameList!=null && that._feeTypeParentNameList.length>0){
                 $.each(that._feeTypeParentNameList,function (i,item) {
                     newList.push({id:item.expTypeValue,name:item.expTypeValue});
@@ -182,12 +183,13 @@
 
             if(that._feeTypeNameList!=null && that._feeTypeNameList.length>0){
                 $.each(that._feeTypeNameList,function (i,item) {
+                    var childList = [];
                     if(item.childList!=null && item.childList.length>0){
                         $.each(item.childList,function (subI,subItem) {
-                            newList.push({id:subItem.expTypeValue,name:subItem.expTypeValue});
+                            childList.push({id:item.expTypeValue+'_'+subItem.expTypeValue,name:subItem.expTypeValue});
                         });
                     }
-
+                    newList.push({id:item.expTypeValue,name:item.expTypeValue,childList:childList});
                 })
             }
             option.selectArr = newList;
@@ -208,19 +210,21 @@
             var that  = this;
             var option = {};
             var newList = [
-                {fieldName:'项目收支',fieldValue:'3'},
-                {fieldName:'非项目收支',fieldValue:'4'}
+                {name:'项目收支',id:'3'},
+                {name:'非项目收支',id:'4'}
             ];
             option.selectArr = newList;
             option.selectedArr = [];
-            if(isNullOrBlank(that._filterData.profitType))
+            if(!isNullOrBlank(that._filterData.profitType))
                 option.selectedArr.push(that._filterData.profitType);
 
             option.eleId = 'filterProfitType';
             option.selectedCallBack = function (data) {
-                if(data && data.length>0)
+                if(data && data.length>0){
                     that._filterData.profitType = data[0];
-
+                }else{
+                    that._filterData.profitType = null;
+                }
                 that.renderLedgerList();
             };
             $(that.element).find('#filterProfitType').m_filter_select(option, true);

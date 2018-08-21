@@ -12,6 +12,7 @@
             colClass:null,//列class
             boxStyle:null,//样式
             dialogWidth:null,//弹窗宽度
+            isParentCheck:false,//是否父级可以check
             selectArr:null,//筛选的数据(list对象,selectArr:[{id: "XX1", name: "XX2"}]
             selectedArr:null,//当前选中项（checkbox时多个,[id1,id2]）
             selectedCallBack:null//选择回调
@@ -47,7 +48,17 @@
                     if(that._selectedStr.indexOf(item.id)>-1){
                         isSelected = true;
                     }
-                    selectList.push({fieldValue: item.id, fieldName: item.name,isSelected:isSelected});
+                    var childList = [];
+                    if(item.childList!=null && item.childList.length>0){
+                        $.each(item.childList,function (subI,subItem) {
+                            var subSelected = false;
+                            if(that._selectedStr.indexOf(subItem.id)>-1){
+                                subSelected = true;
+                            }
+                            childList.push({id:subItem.id,name:subItem.name,isSelected:subSelected});
+                        });
+                    }
+                    selectList.push({id: item.id, name: item.name,isSelected:isSelected,childList:childList});
                 });
             }
             if(that.settings.selectedArr!=null && that.settings.selectedArr.length>0){
@@ -57,7 +68,8 @@
             var iHtml = template('m_filterableField/m_filter_checkbox_select',{
                 selectList:selectList,
                 colClass:that.settings.colClass,
-                boxStyle:that.settings.boxStyle
+                boxStyle:that.settings.boxStyle,
+                isParentCheck:that.settings.isParentCheck
             });
             var iTextObj = iHtml.getTextWH();
             var iWHObj = setDialogWH(iTextObj.width,iTextObj.height);

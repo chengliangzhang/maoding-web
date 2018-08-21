@@ -4509,31 +4509,6 @@ $out+=$escape(myExpDetails.totalExpAmount);
 $out+=' </p>元 </h5> </div> </td> </tr> </tbody> </table> </div> </div> </fieldset> </div> </div>';
 return new String($out);
 });/*v:1*/
-template('m_home/m_metismenu',function($data,$filename
-/**/) {
-'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,_url=$helpers._url,$out='';$out+='<nav class="navbar-default navbar-static-side m_metismenu " role="navigation" style="z-index: 900;"> <div class="sidebar-collapse"> <ul class="nav metismenu" id="side-menu" style="display: block;"> <li class="navbar-minimalize" style=""> <a href="javascript:void(0);" class="svg"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/workbench.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">工作台</span> <div class="clearfix"></div>  </a> </li> <li> <a id="addProject" class="svg" href="#/addProject"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/addProject.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目立项</span> <div class="clearfix"></div> </a> </li> <li class="project-menu-box" id="project-menu-box"> <a id="projectList" class="svg" href="#/"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/myProjects.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">我的项目</span> <div class="clearfix"></div> </a> </li> <li> <a id="myTask" class="svg" href="#/myTask"> <object class="pull-left" class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/myTask.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">我的任务</span> <div class="clearfix"></div> </a> </li> <!--<li> <a id="projectOverview" class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/projectOverview.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目总览</span> <div class="clearfix"></div> </a> </li>--> <!--<li class="roleControl" roleCode="project_charge_manage" flag="2"> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/incomeExpenditure.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">收支总览</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li><a href="#/paymentsDetail" id="paymentsDetail"><span class="nav-label ">收支明细</span></a></li> <li><a href="#/paymentsStatistics" id="paymentsStatistics"><span class="nav-label ">分类统计</span></a></li> <li><a href="#/profitStatement" id="profitStatement"><span class="nav-label ">利润报表</span></a></li> </ul> </li>--> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/financialManagement.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">财务管理</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" >  <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/paymentsDetail" id="paymentsDetail"><span class="nav-label ">收支明细</span></a></li> <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/paymentsStatistics" id="paymentsStatistics"><span class="nav-label ">分类统计</span></a></li> <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/profitStatement" id="profitStatement"><span class="nav-label ">利润报表</span></a></li> <li class="roleControl" roleCode="sys_finance_type" flag="2"><a href="#/financeSettings" id="financeSettings"><span class="nav-label ">财务设置</span></a></li> <li class="roleControl" roleCode="finance_fixed_edit" flag="2"><a href="#/feeEntry" id="feeEntry"><span class="nav-label ">费用录入</span></a></li> <li class="roleControl" ><a href="#/projectCost" id="projectCost"><span class="nav-label ">项目收支</span></a></li> <li class="roleControl" ><a href="#/invoiceSummary" id="invoiceSummary"><span class="nav-label ">发票汇总</span></a></li> </ul> </li> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/financeInformation.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">审批管理</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li class="roleControl" roleCode="report_exp_static" flag="2"><a href="#/reimbursementSummary" id="reimbursementSummary"><span class="nav-label ">报销统计</span></a></li> <li class="roleControl" roleCode="report_exp_static" flag="2"><a href="#/costSummary" id="costSummary"><span class="nav-label ">费用统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/leaveSummary" id="leaveSummary"><span class="nav-label ">请假统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/businessSummary" id="businessSummary"><span class="nav-label ">出差统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/workingHoursSummary" id="workingHoursSummary"><span class="nav-label ">工时统计</span></a></li> </ul> </li> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/addressBook.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">通讯录</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li><a href="#/orgInfomationShow" id="orgInfomationShow"><span class="nav-label ">组织信息</span></a></li> <li><a href="#/addressBook" id="addressBook"><span class="nav-label ">通讯录</span></a></li> </ul> </li> <li class="roleControl" roleCode="project_edit" flag="2"> <a id="projectArchiving" class="svg" href="#/projectArchiving" > <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/projectDocmgr.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目文档</span> <div class="clearfix"></div> </a> </li> </ul> </div> </nav> <div class="clearfix"></div>';
-return new String($out);
-});/*v:1*/
 template('m_historyData/m_historyData',function($data,$filename
 /**/) {
 'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,_url=$helpers._url,$out='';$out+='<div class="ibox ibox-shadow m_historyData"> <div class="ibox-title border-no-t"> <div class="ibox-tools"> <div class="mt-element-step-new" style="margin-bottom: 30px;"> <div class="row step-line"> <div class="mt-step-desc"> </div> <div class="col-md-4 mt-step-col first active" data-step="1"> <div class="mt-step-number bg-white">1</div> <div class="mt-step-title uppercase font-grey-cascade">文件上传</div> <div class="mt-step-content font-grey-cascade">根据模板填充数据并上传</div> </div> <div class="col-md-4 mt-step-col" data-step="2"> <div class="mt-step-number bg-white">2</div> <div class="mt-step-title uppercase font-grey-cascade">数据预览</div> <div class="mt-step-content font-grey-cascade">预览并校验要导入的数据</div> </div> <div class="col-md-4 mt-step-col last" data-step="3"> <div class="mt-step-number bg-white">3</div> <div class="mt-step-title uppercase font-grey-cascade">导入完成</div> <div class="mt-step-content font-grey-cascade">提交最终处理后的数据</div> </div> </div> </div> </div> </div> <div class="ibox-content"> <div class="row step-container" style="margin-bottom: 150px;"> <div class="col-md-12 text-center" style="margin-bottom: 20px;"> <img src="';
@@ -4625,6 +4600,31 @@ template('m_historyData/m_historyData_step3',function($data,$filename
 'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,_url=$helpers._url,$out='';$out+='<div class="col-md-12 text-center" style="margin-bottom: 20px;"> <img src="';
 $out+=$escape(_url('/assets/img/default/invite_success.png'));
 $out+='"> <p style="font-size:24px;">恭喜你，导入成功！</p> </div>';
+return new String($out);
+});/*v:1*/
+template('m_home/m_metismenu',function($data,$filename
+/**/) {
+'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,_url=$helpers._url,$out='';$out+='<nav class="navbar-default navbar-static-side m_metismenu " role="navigation" style="z-index: 900;"> <div class="sidebar-collapse"> <ul class="nav metismenu" id="side-menu" style="display: block;"> <li class="navbar-minimalize" style=""> <a href="javascript:void(0);" class="svg"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/workbench.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">工作台</span> <div class="clearfix"></div>  </a> </li> <li> <a id="addProject" class="svg" href="#/addProject"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/addProject.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目立项</span> <div class="clearfix"></div> </a> </li> <li class="project-menu-box" id="project-menu-box"> <a id="projectList" class="svg" href="#/"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/myProjects.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">我的项目</span> <div class="clearfix"></div> </a> </li> <li> <a id="myTask" class="svg" href="#/myTask"> <object class="pull-left" class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/myTask.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">我的任务</span> <div class="clearfix"></div> </a> </li> <!--<li> <a id="projectOverview" class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/projectOverview.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目总览</span> <div class="clearfix"></div> </a> </li>--> <!--<li class="roleControl" roleCode="project_charge_manage" flag="2"> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/incomeExpenditure.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">收支总览</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li><a href="#/paymentsDetail" id="paymentsDetail"><span class="nav-label ">收支明细</span></a></li> <li><a href="#/paymentsStatistics" id="paymentsStatistics"><span class="nav-label ">分类统计</span></a></li> <li><a href="#/profitStatement" id="profitStatement"><span class="nav-label ">利润报表</span></a></li> </ul> </li>--> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/financialManagement.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">财务管理</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" >  <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/paymentsDetail" id="paymentsDetail"><span class="nav-label ">收支明细</span></a></li> <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/paymentsStatistics" id="paymentsStatistics"><span class="nav-label ">分类统计</span></a></li> <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/profitStatement" id="profitStatement"><span class="nav-label ">利润报表</span></a></li> <li class="roleControl" roleCode="sys_finance_type" flag="2"><a href="#/financeSettings" id="financeSettings"><span class="nav-label ">财务设置</span></a></li> <li class="roleControl" roleCode="finance_fixed_edit" flag="2"><a href="#/feeEntry" id="feeEntry"><span class="nav-label ">费用录入</span></a></li> <li class="roleControl" ><a href="#/projectCost" id="projectCost"><span class="nav-label ">项目收支</span></a></li> <li class="roleControl" ><a href="#/invoiceSummary" id="invoiceSummary"><span class="nav-label ">发票汇总</span></a></li> </ul> </li> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/financeInformation.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">审批管理</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li class="roleControl" roleCode="report_exp_static" flag="2"><a href="#/reimbursementSummary" id="reimbursementSummary"><span class="nav-label ">报销统计</span></a></li> <li class="roleControl" roleCode="report_exp_static" flag="2"><a href="#/costSummary" id="costSummary"><span class="nav-label ">费用统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/leaveSummary" id="leaveSummary"><span class="nav-label ">请假统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/businessSummary" id="businessSummary"><span class="nav-label ">出差统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/workingHoursSummary" id="workingHoursSummary"><span class="nav-label ">工时统计</span></a></li> </ul> </li> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/addressBook.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">通讯录</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li><a href="#/orgInfomationShow" id="orgInfomationShow"><span class="nav-label ">组织信息</span></a></li> <li><a href="#/addressBook" id="addressBook"><span class="nav-label ">通讯录</span></a></li> </ul> </li> <li class="roleControl" roleCode="project_edit" flag="2"> <a id="projectArchiving" class="svg" href="#/projectArchiving" > <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/projectDocmgr.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目文档</span> <div class="clearfix"></div> </a> </li> </ul> </div> </nav> <div class="clearfix"></div>';
 return new String($out);
 });/*v:1*/
 template('m_imgCropper/m_imgCropper','<div class="m_imgCropper" style="overflow: auto;max-height: 500px;"> <form class="form-horizontal rounded-4x noborder"> <div class="ibox m-b-xs"> <div class="ibox-content"> <div class="title row"> <div class="col-md-12"> <div class="margin-bottom-20"> <span>请先上传一张图片,支持jpg、jpeg、png格式。</span> <div class="btnFilePicker" class="dp-inline-block"></div> </div> </div> </div> <div class="setArea row m-b-xs hide"> <div class="col-md-9"> <div class="thumbnail thumbnail-style"> <img class="img-container img-responsive" src=""> </div> </div> <div class="col-md-3"> <div class="thumbnail thumbnail-style" style="width: 110px;height: 110px;"> <div class="clearfix"> <div class="img-preview preview-md"></div> </div> </div> </div> </div> </div> </div> </form> </div>');/*v:1*/
@@ -11922,6 +11922,97 @@ return new String($out);
 
 }()
 /**
+ * Created by Wuwq on 2017/1/5.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_browser_tips",
+        defaults = {};
+
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = options;
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that._render();
+        }
+        , _render: function () {
+            var that = this;
+
+            var html = template('m_browser_tips/m_browser_tips', {});
+
+            var layerIndex;
+            //检测少于IE10
+            if (Cookies.get('m_browser_never_tips') !== '1'&&bowser && bowser.msie && bowser.version < 10) {
+                layerIndex=layer.open({
+                    type: 1,
+                    title: false,
+                    closeBtn:false,
+                    area: ['800px', '500px'],
+                    shade: 0.7,
+                    content: html
+                });
+            }
+
+            $('a[data-action="continue"]').click(function(){
+                var neverTips=$('#m-browser-never-tips').prop('checked');
+                if(neverTips===true){
+                    Cookies.set('m_browser_never_tips', '1');
+                }
+                layer.close(layerIndex);
+            });
+        }
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+/**
  * 审批管理
  * Created by wrb on 2018/8/2.
  */
@@ -12594,53 +12685,566 @@ return new String($out);
 })(jQuery, window, document);
 
 /**
- * Created by Wuwq on 2017/1/5.
+ * Created by wrb on 2016/12/21.
  */
 ;(function ($, window, document, undefined) {
 
     "use strict";
-    var pluginName = "m_browser_tips",
-        defaults = {};
+    var pluginName = "m_inputProcessTime",
+        defaults = {
+            $title: null,
+            $isDialog: true,
+            $isHaveMemo: true,
+            $timeInfo: null,
+            $okCallBack: null,
+            $isOkSave: false,//默认false
+            $okText: null,//按钮文字
+            $saveDataUrl: null,//直接保存url
+            $minHeight: null,//弹窗的最小高度
+            $saveData: null,//保存格外的参数
+            $currentAppointmentDate: null,//当前任务的合同进度时间
+            $saveTimeKeyVal: null,//保存到库所对应的时间字段 key 值
+            $validate:null//验证{默认第一套验证}
+        };
 
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.initHtmlData(function () {
+                that.initSpinner();
+                if(that.settings.$validate!=null && that.settings.$validate==1){
+                    that.addInputTime_validate1();
+                }else if(that.settings.$validate!=null && that.settings.$validate==2){
+
+                }else{
+                    that.addInputTime_validate();
+                }
+
+            });
+        },
+
+        //初始化数据
+        initHtmlData: function (callBack) {
+            var that = this;
+            if (that.settings.$isDialog) {//以弹窗编辑
+                var options = {};
+                options.title = that.settings.$title || '设计依据';
+                options.contentEle = 'dialogOBox';
+                options.lock = 3;
+                options.width = '510';
+                options.minHeight = that.settings.$minHeight || '100';
+                options.tPadding = '0px';
+                options.url = rootPath + '/assets/module/m_common/m_dialog.html';
+                options.cancel = function () {
+                };
+                if (that.settings.$isOkSave) {//直接保存
+                    options.okText = '保存';
+                    options.ok = function () {
+                        if ($('form.inputTimeOBox').valid()) {
+                            var $data = $("form.inputTimeOBox").serializeObject();
+                            var timeObj = {};
+                            if (that.settings.$saveTimeKeyVal != null) {//处理保存到库所对应的时间字段 key 值,此处传入的key是有序的
+                                for (var key in $data) {
+                                    if (key == 'startTime') {
+                                        timeObj[that.settings.$saveTimeKeyVal[0]] = $data[key];
+                                        continue;
+                                    }
+                                    if (key == 'endTime') {
+                                        timeObj[that.settings.$saveTimeKeyVal[1]] = $data[key];
+                                        continue;
+                                    }
+                                    if (key == 'memo') {
+                                        timeObj[that.settings.$saveTimeKeyVal[2]] = $data[key];
+                                        timeObj[that.settings.$saveTimeKeyVal[2]] = $.trim(timeObj[that.settings.$saveTimeKeyVal[2]]);
+                                        continue;
+                                    }
+                                }
+                            }
+                            $.extend(timeObj, that.settings.$saveData);
+                            var option = {};
+                            if($('#page-wrapper #content-right').length>0){
+                                option.classId = '#page-wrapper #content-right';
+                            }
+                            option.url = that.settings.$saveDataUrl;
+                            option.postData = timeObj;
+                            m_ajax.postJson(option, function (response) {
+                                if (response.code == '0') {
+                                    S_toastr.success("保存成功!");
+                                    if (that.settings.$okCallBack != null) {
+                                        return that.settings.$okCallBack(response.data);
+                                    }
+                                } else {
+                                    S_dialog.error(response.info);
+                                }
+                            })
+                        } else {
+                            return false;
+                        }
+                    }
+                } else {//返回上级
+                    options.okText = '确定';
+                    options.ok = function () {
+                        if ($('form.inputTimeOBox').valid()) {
+                            var $data = $("form.inputTimeOBox").serializeObject();
+                            if (that.settings.$okCallBack != null) {
+                                return that.settings.$okCallBack($data);
+                            }
+                        } else {
+                            return false;
+                        }
+                    };
+                }
+                if (that.settings.$okText != null) {
+                    options.okText = that.settings.$okText;
+                }
+
+
+                S_dialog.dialog(options, function (d) {//加载html后触发
+
+                    var $data = {};
+                    $data.$isHaveMemo = that.settings.$isHaveMemo;
+                    $data.$timeInfo = {};
+                    if (that.settings.$timeInfo != null) {
+                        $data.$timeInfo = that.settings.$timeInfo;
+                    }
+                    var classIdObj = $('div[id="content:' + d.id + '"] .dialogOBox');
+                    that.initHtmlTemplate(callBack, $data, classIdObj)
+                });
+            } else {//不以弹窗编辑
+                var $data = {};
+                $data.$isHaveMemo = that.settings.$isHaveMemo;
+                $data.$timeInfo = {};
+                if (that.settings.$timeInfo != null) {
+                    $data.$timeInfo = that.settings.$timeInfo;
+                }
+                var classIdObj = $(that.element);
+                that.initHtmlTemplate(callBack, $data, classIdObj)
+            }
+        }
+        //计算时间差的方法
+        , countTimeDiff: function (startTime, endTime) {
+            return moment(endTime).diff(moment(startTime), 'days') + 1;
+        }
+        //生成html
+        , initHtmlTemplate: function (callBack, data, classIdObj) {
+            var that = this;
+            if (that.settings.$currentAppointmentDate != null) {
+                data.appointmentStartTime = that.settings.$currentAppointmentDate.startTime;
+                data.appointmentEndTime = that.settings.$currentAppointmentDate.endTime;
+            }
+            var html = template('m_common/m_inputProcessTime', data);
+            classIdObj.html(html);
+
+            m_inputProcessTime_onpicked();
+
+            $(that.element).find('.fa-calendar').click(function () {
+                $(this).closest('.input-group').find('input:first').focus();
+            });
+
+            if (callBack != null) {
+                callBack();
+            }
+        }
+        //初始化Spinner
+        , initSpinner: function () {
+            $('form.inputTimeOBox').find('.dayCountSpinner:eq(0)')
+                .spinner({
+                    delay: 200,
+                    changed: function (e, newVal, oldVal) {
+                        var startTime = $('form.inputTimeOBox').find('.startTime:eq(0)').val();
+                        if (startTime === null || _.isBlank(startTime))
+                            return;
+
+                        if (newVal == 0) {
+                            $('form.inputTimeOBox').find('.endTime:eq(0)').val('');
+                            return;
+                        }
+
+                        var endTime = moment(startTime).add(newVal - 1, 'days').format('YYYY-MM-DD');
+                        $('form.inputTimeOBox').find('.endTime:eq(0)').val(endTime);
+                    }
+                });
+        }
+        //step1的表单验证
+        , addInputTime_validate: function () {
+            var that = this;
+            $('form.inputTimeOBox').validate({
+                rules: {
+                    startTime: {
+                        required: true
+                    }
+                    , endTime: {
+                        required: true
+                    }
+                    , memo: {
+                        required: true,
+                        maxlength: 250,
+                        isBlank:true
+                    }
+                },
+                messages: {
+                    startTime: {
+                        required: '请设置开始日期！'
+                    }
+                    , endTime: {
+                        required: '请设置结束日期！'
+                    }
+                    , memo: {
+                        required: '请输入进度变更原因！',
+                        maxlength: '输入不能超过250个字符！',
+                        isBlank:'请输入进度变更原因!'
+                    }
+                },
+                errorElement: "label",  //用来创建错误提示信息标签
+                errorPlacement: function (error, element) {  //重新编辑error信息的显示位置
+                    error.appendTo(element.closest('.form-group'));
+                }
+            });
+            $.validator.addMethod('isBlank', function(value, element) {
+                value = $.trim(value);
+                var isOk = true;
+                if( value!=null && $.trim(value)==''){
+                    isOk = false;
+                }
+                return  isOk;
+            }, '请输入进度变更原因!');
+
+        }
+        , addInputTime_validate1: function () {
+            var that = this;
+            $('form.inputTimeOBox').validate({
+                rules: {
+                    startTime: {
+                        ckTime: true
+                    }
+                },
+                messages: {
+                    startTime: {
+                        ckTime: '请输入日期!'
+                    }
+                },
+                errorElement: "label",  //用来创建错误提示信息标签
+                errorPlacement: function (error, element) {  //重新编辑error信息的显示位置
+                    error.appendTo(element.closest('.form-group'));
+                }
+            });
+            $.validator.addMethod('ckTime', function(value, element) {
+                var isOk = true;
+                var startTime = $('.inputTimeOBox input[name="startTime"]').val();
+                var endTime = $('.inputTimeOBox input[name="endTime"]').val();
+                if(startTime=='' && endTime==''){
+                    isOk = false;
+                }
+                return  isOk;
+            }, '请输入日期!');
+
+            $('form.inputTimeOBox').find('input,textarea').on('click',function () {
+                $('form.inputTimeOBox label.error').hide();
+            });
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_popover",
+        defaults = {
+            clearOnInit: true,//初始化是否清掉其他的Popover
+            titleHtml: null,
+            hideArrow: false,
+            popoverStyle: '',//父容器popover的追加样式，如弹窗宽度
+            contentStyle: 'padding: 10px 14px 10px;',//popover-content的追加样式
+            content: null,//自定义内容，可以用模板
+            placement: null,//浮窗是在哪个位置展开：‘left’,‘right’,‘top’,‘bottom’,空值则默认为top
+            onShown: null,//浮窗显示后的事件，可以用来重新绑定值
+            onSave: null,//提交事件
+            onClear: null,//清除事件
+            onClose: null,//关闭事件
+            template: 'm_common/m_popover',//主框架,
+            type:null,//默认浮窗,inline=内置
+            hideElement:false,//隐藏该标签
+            closeOnDocumentClicked: null//自定义样式类处理关闭editable
+        };
+
+    // The actual plugin constructor
     function Plugin(element, options) {
         this.element = element;
 
         this.settings = options;
         this._defaults = defaults;
         this._name = pluginName;
+        this._popoverTop = null;//初始化页面时，保存浮窗的top值
+        this._popoverHeight = null;//初始化页面时，保存浮窗的height值
         this.init();
     }
 
+    // Avoid Plugin.prototype conflicts
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that._render();
-        }
-        , _render: function () {
-            var that = this;
 
-            var html = template('m_browser_tips/m_browser_tips', {});
-
-            var layerIndex;
-            //检测少于IE10
-            if (Cookies.get('m_browser_never_tips') !== '1'&&bowser && bowser.msie && bowser.version < 10) {
-                layerIndex=layer.open({
-                    type: 1,
-                    title: false,
-                    closeBtn:false,
-                    area: ['800px', '500px'],
-                    shade: 0.7,
-                    content: html
+            if (that.settings.clearOnInit === true) {
+                //清掉其他的Popover
+                $(document).find('.m-popover').each(function (i, o) {
+                    $(o).remove();
                 });
+
+                $(document).off('click.m-popover');
             }
 
-            $('a[data-action="continue"]').click(function(){
-                var neverTips=$('#m-browser-never-tips').prop('checked');
-                if(neverTips===true){
-                    Cookies.set('m_browser_never_tips', '1');
-                }
-                layer.close(layerIndex);
+            var html = template(that.settings.template, {
+                titleHtml: that.settings.titleHtml,
+                popoverStyle: that.settings.popoverStyle,
+                contentStyle: that.settings.contentStyle,
+                content: that.settings.content
             });
+
+            $(html).insertAfter($(that.element));
+            var $popover = $(that.element).next('.m-popover');
+
+            if (that.settings.hideArrow === true)
+                $popover.find('.arrow').eq(0).hide();
+
+            if (that.settings.onShown && that.settings.onShown !== null)
+                that.settings.onShown($popover);
+
+            if(that.settings.hideElement === true){
+                $(that.element).hide();
+            }
+
+            //防止冒泡
+            $popover.off('click.m-popover').on('click.m-popover', function (e) {
+                stopPropagation(e);
+                return false;
+            });
+
+            setTimeout(function () {
+                if(that.settings.type==null || that.settings.type!='inline'){
+                    that.setPosition();
+                }
+                that.bindBtnClick();
+                that.bindPopoverClickedOut();
+            }, 50);
+
+            //绑定回车事件
+            $popover.find('input[type="text"]').keydown(function () {
+                if (event.keyCode == '13') {//keyCode=13是回车键
+                    var $btnSubmit = $popover.find('.m-popover-submit');
+                    if ($btnSubmit && $btnSubmit.length > 0)
+                        $btnSubmit.click();
+                }
+            });
+
+        },
+        //当鼠标点击的焦点不在浮窗内时，关闭浮窗
+        bindPopoverClickedOut: function () {
+            var that = this;
+            $(document).on('click.m-popover', function (e) {
+                //console.log('document.clicked');
+                var flag = $(e.target).parents('.select2-container').length > 0 || $(e.target).is('.select2-container');
+                //防止select2搜索框点击触发关闭
+                if ($(e.target).closest('.select2-search__field').length > 0 || flag)
+                    return false;
+
+                if (typeof that.settings.closeOnDocumentClicked === 'function') {
+                    if (that.settings.closeOnDocumentClicked(e) === false)
+                        return false;
+                }
+
+                if (that.settings.onClose && that.settings.onClose !== null) {
+                    //返回false则不关闭
+                    if (that.settings.onClose($(e.target)) !== false)
+                        that.closeFilter();
+                }
+                else {
+                    that.closeFilter();
+                }
+            });
+        },
+        setPosition: function () {
+            var that = this;
+            var $popover = $(that.element).next('.m-popover');
+            if ($popover.length > 0) {
+                var p_p = that.settings.placement ? that.settings.placement : 'top';//浮窗的展示位置
+                var a_ptop = $(that.element).position().top;//a标签的top值
+                var a_width = $(that.element).outerWidth();//a标签的width值
+                var a_height = $(that.element).outerHeight();//a标签的height值
+                var a_pleft = $(that.element).position().left;//a标签的left值
+                var p_width = $popover.width();//浮窗的宽度
+                var p_height = $popover.outerHeight();//浮窗的高度
+                var p_top = 0;//浮窗的top值
+                var p_left = 0;//浮窗的left值
+                switch (p_p) {
+                    case 'top':
+                        p_top = (a_ptop - p_height);
+                        p_left = a_pleft + a_width / 2 - p_width / 2;
+                        break;
+                    case 'bottom':
+                        p_top = (a_ptop + a_height);
+                        p_left = a_pleft + a_width / 2 - p_width / 2;
+                        break;
+                    case 'left':
+                        p_top = (a_ptop - p_height / 2 + 5);
+                        p_left = a_pleft - p_width - 10;
+                        break;
+                    case 'right':
+                        p_top = (a_ptop - p_height / 2 + 7);
+                        p_left = a_pleft + a_width;
+                        break;
+
+
+                };
+                that._popoverTop = p_top;
+                that._popoverHeight = p_height;
+                $popover.removeClass('top').addClass(p_p);
+                if (p_p.indexOf('left') > -1 || p_p.indexOf('right') > -1) {
+                    $popover.find('.arrow').css({'top': '50%', 'left': ''});
+                }
+
+                $popover.css({
+                    display: 'inline-block',
+                    position: 'absolute',
+                    top: p_top,
+                    left: p_left
+                });
+            }
+        },
+        bindBtnClick: function () {
+            var that = this;
+            var $popover = $(that.element).next('.m-popover');
+            if ($popover.length > 0) {
+
+                //查找【提交按钮】并绑定事件
+                var $btnSubmit = $popover.find('.m-popover-submit');
+                if ($btnSubmit.length > 0) {
+                    $btnSubmit.click(function (e) {
+
+                        if (that.settings.onSave && that.settings.onSave !== null) {
+                            if (that.settings.onSave($popover) !== false)
+                                that.closeFilter();
+                        }
+                        else
+                            that.closeFilter();
+
+                        stopPropagation(e);
+                        return false;
+                    });
+                }
+
+                //查找【清除按钮】并绑定事件
+                var $btnClear = $popover.find('.m-popover-clear');
+                if ($btnClear.length > 0) {
+                    $btnClear.click(function (e) {
+
+                        //如果没有自定义清除函数，则使用默认
+                        if (that.settings.onClear && that.settings.onClear !== null)
+                            that.settings.onClear($popover);
+                        else {
+                            //查找第一个input清空
+                            var $input = $(this).closest('form').find('input:first');
+                            if ($input.length > 0)
+                                $input.val('');
+                        }
+
+                        stopPropagation(e);
+                        return false;
+                    });
+                }
+
+                //查找【关闭按钮】并绑定事件
+                var $btnClose = $popover.find('.m-popover-close');
+                if ($btnClose.length > 0) {
+                    $btnClose.click(function (e) {
+
+                        if (that.settings.onClose && that.settings.onClose !== null) {
+                            //返回false则不关闭
+                            if (that.settings.onClose($popover) !== false)
+                                that.closeFilter();
+                        }
+                        else {
+                            that.closeFilter();
+                        }
+
+                        stopPropagation(e);
+                        return false;
+                    });
+                }
+                /*var $btnSubmit = $popover.find('.m-popover-submit');
+                 //点击submit按钮或浮窗其他地方，出现验证信息时，相应改变popover的top值
+                 $popover.find('.popover-content,button,input').off('click.changePosition').on('click.changePosition',function(e){
+                 setTimeout(function(){
+                 that.changePosition($popover);
+                 },20);
+                 });
+                 //点击input表单，出现验证信息时，相应改变popover的top值
+                 $popover.find('input[type="text"]').off('keyup.changePosition').on('keyup.changePosition',function(e){
+                 setTimeout(function(){
+                 console.log(2222)
+                 that.changePosition($popover);
+                 },20);
+                 });*/
+                $popover.resize(function () {
+                    setTimeout(function () {
+                        that.changePosition($popover);
+                    }, 20);
+                });
+            }
+        },
+        //通过改变弹窗的top值来改变弹窗的位置
+        changePosition: function ($popover) {
+            var that = this;
+            var errTag = $popover.find('label.error').length;
+            var errTagH = errTag * ($popover.find('label.error').outerHeight() - 0);
+            var popH = $popover.height();
+            var popT = $popover.position().top;
+            var h1 = popH - that._popoverHeight;
+
+            if (that.settings.placement != null && that.settings.placement == 'top') {//当为top，popoverTop需要设置
+                if (h1 == -4) {
+                    $popover.css('top', that._popoverTop + 'px');
+                } else {
+                    var newTop = that._popoverTop - h1 - 4;
+                    $popover.css('top', newTop);
+                }
+
+            } else if (that.settings.placement != null && (that.settings.placement == 'left' || that.settings.placement == 'right')) {
+
+                $popover.find('.arrow').css('top', (that._popoverHeight) / 2 + 'px');
+            }
+        },
+        closeFilter: function () {
+            var that = this;
+            $(that.element).siblings('.m-popover').each(function (i, o) {
+                $(o).remove();
+            });
+            $(document).off('click.m-popover');
+            if(that.settings.hideElement === true){
+                $(that.element).show();
+            }
         }
     });
 
@@ -12684,6 +13288,302 @@ return new String($out);
     };
 
 })(jQuery, window, document);
+
+
+
+/**
+ * 快速选择时间，以在位编辑的方式打开
+ * Created by veata on 2016/12/21.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_quickDatePicker",
+        defaults = {
+            $title:null,
+            $placement:true,//浮窗展开的位置，共四个值‘top’,‘bottom’,‘left’,‘right’,
+            $okCallBack:null,
+            $isClear:true,//展示清空按钮
+            $eleId:null//当前元素浮动窗ID
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.initHtmlData(function (data) {
+                WdatePicker({eCont:'quickDatePicker',onpicked:function(dp){that.saveDate(dp)}});
+                $('#quickDatePicker iframe').css('height','232px');//firefox有时不出来修改
+            });
+        },
+        //初始化数据
+        initHtmlData:function (callBack) {
+            var that = this;
+            var title = '变更合同签订日期';
+            if(that.settings.$title!=null){
+                title = that.settings.$title;
+            }
+            $(that.settings.$eleId).m_popover({
+                placement: that.settings.$placement==null?'top':that.settings.$placement,
+                titleHtml : '<div i="header" class="ui-dialog-header"><button i="close" class="ui-dialog-close">&#215;</button><div i="title" class="ui-dialog-title">'+title+'</div></div>',
+                content: template('m_common/m_quickDatePicker', {isClear:that.settings.$isClear}),
+                contentStyle: 'height:257px;',
+                onShown: function ($popover) {
+                    if(callBack!=null){
+                        callBack();
+                    }
+                    if($popover.prev().text()=='未签订'){
+                        $popover.find('.ui-dialog-header').remove();
+                    }
+                    $popover.find('.ui-dialog-close').on('click',function () {
+                        $(that.settings.$eleId).next().remove();
+                    });
+                    that.bindClearDate($popover);
+                },
+                onSave: function ($popover) {
+                    return that.saveDate();
+                }
+            }, true);
+        }
+        //保存编辑
+        ,saveDate:function (dp) {
+            var that = this;
+            var $data = dp.cal.getDateStr();
+
+            if(that.settings.$okCallBack!=null){
+                return that.settings.$okCallBack($data);
+            }
+        }
+        ,bindClearDate:function ($popover) {
+            var that = this;
+            $popover.find('button.m-popover-clear').on('click',function () {
+                if(that.settings.$okCallBack!=null){
+                    return that.settings.$okCallBack(null);
+                }
+            });
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+
+
+/**
+ * Created by veata on 2017/02/14.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_top",
+        defaults = {
+            data: null
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            this.initHtml();
+        },
+        initHtml: function () {
+            var that = this;
+
+            //请求基础数据
+            var option = {};
+            option.url = restApi.url_getCurrUserOfWork;
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+                    var $data = {};
+                    $data.rootPath = window.rootPath;
+                    if (response.data != null) {
+                        $data.companyFilePath = response.data.companyInfo != null ? response.data.companyInfo.filePath : '';
+                        $data.userInfo = response.data.userInfo != null ? response.data.userInfo : {};
+                        $data.orgList = response.data.orgList;
+                        $data.companyInfo = response.data.companyInfo != null ? response.data.companyInfo : {};
+                        $data.companyUserInfo = response.data.companyUser != null ? response.data.companyUser : {};
+                        $data.fastdfsUrl = response.data.fastdfsUrl;
+                        $data.roleCodes = response.data.roleCodes;
+                        $data.fileCenterUrl = response.data.fileCenterUrl;
+                        $data.enterpriseUrl = response.data.enterpriseUrl;
+                        $data.adminFlag = response.data.adminFlag;
+                        $data.isAuth = response.data.isAuth;
+                        window.adminFlag = $data.adminFlag;
+                        var globalData = {
+                            currentCompanyId : $data.companyInfo.id,
+                            currentUserId : $data.userInfo.id,
+                            currentCompanyUserId : $data.companyUserInfo.id,
+                            currentRoleCodes : $data.roleCodes==null?'':$data.roleCodes
+                        };
+                        that.globalVariables(globalData);
+
+                        if (isNullOrBlank(response.data.unReadMessage) || response.data.unReadMessage === 0)
+                            $data.unReadMessage = '';
+                        else
+                            $data.unReadMessage = response.data.unReadMessage;
+
+                        if (isNullOrBlank(response.data.unReadNotice) || response.data.unReadNotice === 0)
+                            $data.unReadNotice = '';
+                        else
+                            $data.unReadNotice = response.data.unReadNotice;
+
+                        if (isNullOrBlank($data.userInfo.imgUrl))
+                            $data.userInfo.imgUrl = window.rootPath + '/assets/img/head_default.png';
+                        else
+                            $data.userInfo.imgUrl = $data.userInfo.imgUrl;
+
+
+                        var data = {};
+                        data.rootPath = window.rootPath;
+                        $.extend(data, $data);
+                        var html = template('m_common/m_top', data);
+                        $('#m_top').html(html);
+
+                        rolesControl();
+                        that.bindActionClick();
+                        $.each($('#top-nav li'), function (i, o) {
+                            var $el = $(o);
+                            if ($el.data('nav') === currentNav)
+                                $el.addClass('active');
+                        });
+
+                        var oLi=$('#m_top_orgList');
+                        if(oLi.find('li').length==0){
+                            oLi.prev().find('.caret').remove();
+                            oLi.remove()
+                        }
+                    }
+
+                    that.renderToolTip();
+
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+
+
+        }
+        //渲染ToolTip
+        , renderToolTip: function () {
+            $('.tooltip-demo').tooltip({
+                selector: '[data-toggle=tooltip]',
+                container: 'body',
+                trigger: 'hover'
+            });
+        },
+        //更改组织全局变量
+        globalVariables:function (data) {
+            window.currentCompanyId = data.currentCompanyId;
+            window.currentUserId = data.currentUserId;
+            window.currentCompanyUserId = data.currentCompanyUserId;
+            window.currentRoleCodes = data.currentRoleCodes;
+        }
+        , switchOrg: function (orgId) {
+            var option = {};
+            option.url = restApi.url_switchCompany + '/' + orgId;
+            m_ajax.getJson(option, function (response) {
+                if (response.code == '0') {
+                    window.location.href = window.rootPath + '/iWork/home/workbench';
+                } else {
+                    S_dialog.error(response.info);
+                }
+            })
+        }
+        //事件绑定
+        , bindActionClick: function () {
+            var that = this;
+            $(that.element).find('a[data-action]').on('click', function (e) {
+                var $this = $(this);
+                var dataAction = $this.attr('data-action');
+                switch (dataAction) {
+                    case 'switchOrg'://切换组织
+                        var companyInfoId = window.currentCompanyId;
+                        var orgId = $(this).attr('org-id');
+                        if (orgId != companyInfoId) {
+                            that.switchOrg(orgId);
+                        }
+                        return false;
+                        break;
+                    case 'messageCenter'://消息界面
+                        location.hash = '/messageCenter';
+                        $('#unReadMessageCount').html('');
+                        break;
+                    case 'backstageMgt'://后台管理
+
+                        if(window.currentRoleCodes.indexOf('com_enterprise_edit')>-1 || window.currentRoleCodes.indexOf('sys_enterprise_logout')>-1){//具有组织编辑权限
+                            location.hash = '/backstageMgt/orgInfo';
+                        }else if(window.currentRoleCodes.indexOf('hr_org_set')>-1 || window.currentRoleCodes.indexOf('hr_employee')>-1 || window.currentRoleCodes.indexOf('org_data_import')>-1 || window.currentRoleCodes.indexOf('org_partner')>-1){//具有组织架构权限
+                            location.hash = '/backstageMgt/organizational';
+                        }else if(window.currentRoleCodes.indexOf('sys_role_permission')>-1 || window.adminFlag==1){//具有权限配置权限
+                            location.hash = '/backstageMgt/organizational';
+                        }else if(window.currentRoleCodes.indexOf('sys_role_auth')>-1){//具有企业认证权限
+                            location.hash = '/backstageMgt/enterpriseCertification';
+                        }else if(window.currentRoleCodes.indexOf('data_import')>-1){//具有历史导入
+                            location.hash = '/backstageMgt/historicalDataImport';
+                        }
+                        break;
+                    case 'personalSettings'://个人设置
+                        location.hash = '/personalSettings';
+                        break;
+                    case 'announcement'://公告
+                        location.hash = '/announcement';
+                        $('#unReadNoticeCount').html('');
+                        break;
+                    case 'createOrg'://创建组织
+                        location.hash = '/createOrg';
+                        break;
+                    /*case 'financeSettings'://财务设置
+                        var option = {};
+                        option.$isFirstEnter = true;
+                        $('#content-right').m_financeSettings_menu(option);
+                        that.dealMenuShowOrHide(0);
+                        break;*/
+                }
+            })
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
 /**
  * 项目信息－收款计划-添加节点
  * Created by wrb on 2018/8/10.
@@ -15897,2148 +16797,6 @@ return new String($out);
 
 })(jQuery, window, document);
 
-/**
- * Created by wrb on 2016/12/21.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_inputProcessTime",
-        defaults = {
-            $title: null,
-            $isDialog: true,
-            $isHaveMemo: true,
-            $timeInfo: null,
-            $okCallBack: null,
-            $isOkSave: false,//默认false
-            $okText: null,//按钮文字
-            $saveDataUrl: null,//直接保存url
-            $minHeight: null,//弹窗的最小高度
-            $saveData: null,//保存格外的参数
-            $currentAppointmentDate: null,//当前任务的合同进度时间
-            $saveTimeKeyVal: null,//保存到库所对应的时间字段 key 值
-            $validate:null//验证{默认第一套验证}
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.initHtmlData(function () {
-                that.initSpinner();
-                if(that.settings.$validate!=null && that.settings.$validate==1){
-                    that.addInputTime_validate1();
-                }else if(that.settings.$validate!=null && that.settings.$validate==2){
-
-                }else{
-                    that.addInputTime_validate();
-                }
-
-            });
-        },
-
-        //初始化数据
-        initHtmlData: function (callBack) {
-            var that = this;
-            if (that.settings.$isDialog) {//以弹窗编辑
-                var options = {};
-                options.title = that.settings.$title || '设计依据';
-                options.contentEle = 'dialogOBox';
-                options.lock = 3;
-                options.width = '510';
-                options.minHeight = that.settings.$minHeight || '100';
-                options.tPadding = '0px';
-                options.url = rootPath + '/assets/module/m_common/m_dialog.html';
-                options.cancel = function () {
-                };
-                if (that.settings.$isOkSave) {//直接保存
-                    options.okText = '保存';
-                    options.ok = function () {
-                        if ($('form.inputTimeOBox').valid()) {
-                            var $data = $("form.inputTimeOBox").serializeObject();
-                            var timeObj = {};
-                            if (that.settings.$saveTimeKeyVal != null) {//处理保存到库所对应的时间字段 key 值,此处传入的key是有序的
-                                for (var key in $data) {
-                                    if (key == 'startTime') {
-                                        timeObj[that.settings.$saveTimeKeyVal[0]] = $data[key];
-                                        continue;
-                                    }
-                                    if (key == 'endTime') {
-                                        timeObj[that.settings.$saveTimeKeyVal[1]] = $data[key];
-                                        continue;
-                                    }
-                                    if (key == 'memo') {
-                                        timeObj[that.settings.$saveTimeKeyVal[2]] = $data[key];
-                                        timeObj[that.settings.$saveTimeKeyVal[2]] = $.trim(timeObj[that.settings.$saveTimeKeyVal[2]]);
-                                        continue;
-                                    }
-                                }
-                            }
-                            $.extend(timeObj, that.settings.$saveData);
-                            var option = {};
-                            if($('#page-wrapper #content-right').length>0){
-                                option.classId = '#page-wrapper #content-right';
-                            }
-                            option.url = that.settings.$saveDataUrl;
-                            option.postData = timeObj;
-                            m_ajax.postJson(option, function (response) {
-                                if (response.code == '0') {
-                                    S_toastr.success("保存成功!");
-                                    if (that.settings.$okCallBack != null) {
-                                        return that.settings.$okCallBack(response.data);
-                                    }
-                                } else {
-                                    S_dialog.error(response.info);
-                                }
-                            })
-                        } else {
-                            return false;
-                        }
-                    }
-                } else {//返回上级
-                    options.okText = '确定';
-                    options.ok = function () {
-                        if ($('form.inputTimeOBox').valid()) {
-                            var $data = $("form.inputTimeOBox").serializeObject();
-                            if (that.settings.$okCallBack != null) {
-                                return that.settings.$okCallBack($data);
-                            }
-                        } else {
-                            return false;
-                        }
-                    };
-                }
-                if (that.settings.$okText != null) {
-                    options.okText = that.settings.$okText;
-                }
-
-
-                S_dialog.dialog(options, function (d) {//加载html后触发
-
-                    var $data = {};
-                    $data.$isHaveMemo = that.settings.$isHaveMemo;
-                    $data.$timeInfo = {};
-                    if (that.settings.$timeInfo != null) {
-                        $data.$timeInfo = that.settings.$timeInfo;
-                    }
-                    var classIdObj = $('div[id="content:' + d.id + '"] .dialogOBox');
-                    that.initHtmlTemplate(callBack, $data, classIdObj)
-                });
-            } else {//不以弹窗编辑
-                var $data = {};
-                $data.$isHaveMemo = that.settings.$isHaveMemo;
-                $data.$timeInfo = {};
-                if (that.settings.$timeInfo != null) {
-                    $data.$timeInfo = that.settings.$timeInfo;
-                }
-                var classIdObj = $(that.element);
-                that.initHtmlTemplate(callBack, $data, classIdObj)
-            }
-        }
-        //计算时间差的方法
-        , countTimeDiff: function (startTime, endTime) {
-            return moment(endTime).diff(moment(startTime), 'days') + 1;
-        }
-        //生成html
-        , initHtmlTemplate: function (callBack, data, classIdObj) {
-            var that = this;
-            if (that.settings.$currentAppointmentDate != null) {
-                data.appointmentStartTime = that.settings.$currentAppointmentDate.startTime;
-                data.appointmentEndTime = that.settings.$currentAppointmentDate.endTime;
-            }
-            var html = template('m_common/m_inputProcessTime', data);
-            classIdObj.html(html);
-
-            m_inputProcessTime_onpicked();
-
-            $(that.element).find('.fa-calendar').click(function () {
-                $(this).closest('.input-group').find('input:first').focus();
-            });
-
-            if (callBack != null) {
-                callBack();
-            }
-        }
-        //初始化Spinner
-        , initSpinner: function () {
-            $('form.inputTimeOBox').find('.dayCountSpinner:eq(0)')
-                .spinner({
-                    delay: 200,
-                    changed: function (e, newVal, oldVal) {
-                        var startTime = $('form.inputTimeOBox').find('.startTime:eq(0)').val();
-                        if (startTime === null || _.isBlank(startTime))
-                            return;
-
-                        if (newVal == 0) {
-                            $('form.inputTimeOBox').find('.endTime:eq(0)').val('');
-                            return;
-                        }
-
-                        var endTime = moment(startTime).add(newVal - 1, 'days').format('YYYY-MM-DD');
-                        $('form.inputTimeOBox').find('.endTime:eq(0)').val(endTime);
-                    }
-                });
-        }
-        //step1的表单验证
-        , addInputTime_validate: function () {
-            var that = this;
-            $('form.inputTimeOBox').validate({
-                rules: {
-                    startTime: {
-                        required: true
-                    }
-                    , endTime: {
-                        required: true
-                    }
-                    , memo: {
-                        required: true,
-                        maxlength: 250,
-                        isBlank:true
-                    }
-                },
-                messages: {
-                    startTime: {
-                        required: '请设置开始日期！'
-                    }
-                    , endTime: {
-                        required: '请设置结束日期！'
-                    }
-                    , memo: {
-                        required: '请输入进度变更原因！',
-                        maxlength: '输入不能超过250个字符！',
-                        isBlank:'请输入进度变更原因!'
-                    }
-                },
-                errorElement: "label",  //用来创建错误提示信息标签
-                errorPlacement: function (error, element) {  //重新编辑error信息的显示位置
-                    error.appendTo(element.closest('.form-group'));
-                }
-            });
-            $.validator.addMethod('isBlank', function(value, element) {
-                value = $.trim(value);
-                var isOk = true;
-                if( value!=null && $.trim(value)==''){
-                    isOk = false;
-                }
-                return  isOk;
-            }, '请输入进度变更原因!');
-
-        }
-        , addInputTime_validate1: function () {
-            var that = this;
-            $('form.inputTimeOBox').validate({
-                rules: {
-                    startTime: {
-                        ckTime: true
-                    }
-                },
-                messages: {
-                    startTime: {
-                        ckTime: '请输入日期!'
-                    }
-                },
-                errorElement: "label",  //用来创建错误提示信息标签
-                errorPlacement: function (error, element) {  //重新编辑error信息的显示位置
-                    error.appendTo(element.closest('.form-group'));
-                }
-            });
-            $.validator.addMethod('ckTime', function(value, element) {
-                var isOk = true;
-                var startTime = $('.inputTimeOBox input[name="startTime"]').val();
-                var endTime = $('.inputTimeOBox input[name="endTime"]').val();
-                if(startTime=='' && endTime==''){
-                    isOk = false;
-                }
-                return  isOk;
-            }, '请输入日期!');
-
-            $('form.inputTimeOBox').find('input,textarea').on('click',function () {
-                $('form.inputTimeOBox label.error').hide();
-            });
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_popover",
-        defaults = {
-            clearOnInit: true,//初始化是否清掉其他的Popover
-            titleHtml: null,
-            hideArrow: false,
-            popoverStyle: '',//父容器popover的追加样式，如弹窗宽度
-            contentStyle: 'padding: 10px 14px 10px;',//popover-content的追加样式
-            content: null,//自定义内容，可以用模板
-            placement: null,//浮窗是在哪个位置展开：‘left’,‘right’,‘top’,‘bottom’,空值则默认为top
-            onShown: null,//浮窗显示后的事件，可以用来重新绑定值
-            onSave: null,//提交事件
-            onClear: null,//清除事件
-            onClose: null,//关闭事件
-            template: 'm_common/m_popover',//主框架,
-            type:null,//默认浮窗,inline=内置
-            hideElement:false,//隐藏该标签
-            closeOnDocumentClicked: null//自定义样式类处理关闭editable
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = options;
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._popoverTop = null;//初始化页面时，保存浮窗的top值
-        this._popoverHeight = null;//初始化页面时，保存浮窗的height值
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-
-            if (that.settings.clearOnInit === true) {
-                //清掉其他的Popover
-                $(document).find('.m-popover').each(function (i, o) {
-                    $(o).remove();
-                });
-
-                $(document).off('click.m-popover');
-            }
-
-            var html = template(that.settings.template, {
-                titleHtml: that.settings.titleHtml,
-                popoverStyle: that.settings.popoverStyle,
-                contentStyle: that.settings.contentStyle,
-                content: that.settings.content
-            });
-
-            $(html).insertAfter($(that.element));
-            var $popover = $(that.element).next('.m-popover');
-
-            if (that.settings.hideArrow === true)
-                $popover.find('.arrow').eq(0).hide();
-
-            if (that.settings.onShown && that.settings.onShown !== null)
-                that.settings.onShown($popover);
-
-            if(that.settings.hideElement === true){
-                $(that.element).hide();
-            }
-
-            //防止冒泡
-            $popover.off('click.m-popover').on('click.m-popover', function (e) {
-                stopPropagation(e);
-                return false;
-            });
-
-            setTimeout(function () {
-                if(that.settings.type==null || that.settings.type!='inline'){
-                    that.setPosition();
-                }
-                that.bindBtnClick();
-                that.bindPopoverClickedOut();
-            }, 50);
-
-            //绑定回车事件
-            $popover.find('input[type="text"]').keydown(function () {
-                if (event.keyCode == '13') {//keyCode=13是回车键
-                    var $btnSubmit = $popover.find('.m-popover-submit');
-                    if ($btnSubmit && $btnSubmit.length > 0)
-                        $btnSubmit.click();
-                }
-            });
-
-        },
-        //当鼠标点击的焦点不在浮窗内时，关闭浮窗
-        bindPopoverClickedOut: function () {
-            var that = this;
-            $(document).on('click.m-popover', function (e) {
-                //console.log('document.clicked');
-                var flag = $(e.target).parents('.select2-container').length > 0 || $(e.target).is('.select2-container');
-                //防止select2搜索框点击触发关闭
-                if ($(e.target).closest('.select2-search__field').length > 0 || flag)
-                    return false;
-
-                if (typeof that.settings.closeOnDocumentClicked === 'function') {
-                    if (that.settings.closeOnDocumentClicked(e) === false)
-                        return false;
-                }
-
-                if (that.settings.onClose && that.settings.onClose !== null) {
-                    //返回false则不关闭
-                    if (that.settings.onClose($(e.target)) !== false)
-                        that.closeFilter();
-                }
-                else {
-                    that.closeFilter();
-                }
-            });
-        },
-        setPosition: function () {
-            var that = this;
-            var $popover = $(that.element).next('.m-popover');
-            if ($popover.length > 0) {
-                var p_p = that.settings.placement ? that.settings.placement : 'top';//浮窗的展示位置
-                var a_ptop = $(that.element).position().top;//a标签的top值
-                var a_width = $(that.element).outerWidth();//a标签的width值
-                var a_height = $(that.element).outerHeight();//a标签的height值
-                var a_pleft = $(that.element).position().left;//a标签的left值
-                var p_width = $popover.width();//浮窗的宽度
-                var p_height = $popover.outerHeight();//浮窗的高度
-                var p_top = 0;//浮窗的top值
-                var p_left = 0;//浮窗的left值
-                switch (p_p) {
-                    case 'top':
-                        p_top = (a_ptop - p_height);
-                        p_left = a_pleft + a_width / 2 - p_width / 2;
-                        break;
-                    case 'bottom':
-                        p_top = (a_ptop + a_height);
-                        p_left = a_pleft + a_width / 2 - p_width / 2;
-                        break;
-                    case 'left':
-                        p_top = (a_ptop - p_height / 2 + 5);
-                        p_left = a_pleft - p_width - 10;
-                        break;
-                    case 'right':
-                        p_top = (a_ptop - p_height / 2 + 7);
-                        p_left = a_pleft + a_width;
-                        break;
-
-
-                };
-                that._popoverTop = p_top;
-                that._popoverHeight = p_height;
-                $popover.removeClass('top').addClass(p_p);
-                if (p_p.indexOf('left') > -1 || p_p.indexOf('right') > -1) {
-                    $popover.find('.arrow').css({'top': '50%', 'left': ''});
-                }
-
-                $popover.css({
-                    display: 'inline-block',
-                    position: 'absolute',
-                    top: p_top,
-                    left: p_left
-                });
-            }
-        },
-        bindBtnClick: function () {
-            var that = this;
-            var $popover = $(that.element).next('.m-popover');
-            if ($popover.length > 0) {
-
-                //查找【提交按钮】并绑定事件
-                var $btnSubmit = $popover.find('.m-popover-submit');
-                if ($btnSubmit.length > 0) {
-                    $btnSubmit.click(function (e) {
-
-                        if (that.settings.onSave && that.settings.onSave !== null) {
-                            if (that.settings.onSave($popover) !== false)
-                                that.closeFilter();
-                        }
-                        else
-                            that.closeFilter();
-
-                        stopPropagation(e);
-                        return false;
-                    });
-                }
-
-                //查找【清除按钮】并绑定事件
-                var $btnClear = $popover.find('.m-popover-clear');
-                if ($btnClear.length > 0) {
-                    $btnClear.click(function (e) {
-
-                        //如果没有自定义清除函数，则使用默认
-                        if (that.settings.onClear && that.settings.onClear !== null)
-                            that.settings.onClear($popover);
-                        else {
-                            //查找第一个input清空
-                            var $input = $(this).closest('form').find('input:first');
-                            if ($input.length > 0)
-                                $input.val('');
-                        }
-
-                        stopPropagation(e);
-                        return false;
-                    });
-                }
-
-                //查找【关闭按钮】并绑定事件
-                var $btnClose = $popover.find('.m-popover-close');
-                if ($btnClose.length > 0) {
-                    $btnClose.click(function (e) {
-
-                        if (that.settings.onClose && that.settings.onClose !== null) {
-                            //返回false则不关闭
-                            if (that.settings.onClose($popover) !== false)
-                                that.closeFilter();
-                        }
-                        else {
-                            that.closeFilter();
-                        }
-
-                        stopPropagation(e);
-                        return false;
-                    });
-                }
-                /*var $btnSubmit = $popover.find('.m-popover-submit');
-                 //点击submit按钮或浮窗其他地方，出现验证信息时，相应改变popover的top值
-                 $popover.find('.popover-content,button,input').off('click.changePosition').on('click.changePosition',function(e){
-                 setTimeout(function(){
-                 that.changePosition($popover);
-                 },20);
-                 });
-                 //点击input表单，出现验证信息时，相应改变popover的top值
-                 $popover.find('input[type="text"]').off('keyup.changePosition').on('keyup.changePosition',function(e){
-                 setTimeout(function(){
-                 console.log(2222)
-                 that.changePosition($popover);
-                 },20);
-                 });*/
-                $popover.resize(function () {
-                    setTimeout(function () {
-                        that.changePosition($popover);
-                    }, 20);
-                });
-            }
-        },
-        //通过改变弹窗的top值来改变弹窗的位置
-        changePosition: function ($popover) {
-            var that = this;
-            var errTag = $popover.find('label.error').length;
-            var errTagH = errTag * ($popover.find('label.error').outerHeight() - 0);
-            var popH = $popover.height();
-            var popT = $popover.position().top;
-            var h1 = popH - that._popoverHeight;
-
-            if (that.settings.placement != null && that.settings.placement == 'top') {//当为top，popoverTop需要设置
-                if (h1 == -4) {
-                    $popover.css('top', that._popoverTop + 'px');
-                } else {
-                    var newTop = that._popoverTop - h1 - 4;
-                    $popover.css('top', newTop);
-                }
-
-            } else if (that.settings.placement != null && (that.settings.placement == 'left' || that.settings.placement == 'right')) {
-
-                $popover.find('.arrow').css('top', (that._popoverHeight) / 2 + 'px');
-            }
-        },
-        closeFilter: function () {
-            var that = this;
-            $(that.element).siblings('.m-popover').each(function (i, o) {
-                $(o).remove();
-            });
-            $(document).off('click.m-popover');
-            if(that.settings.hideElement === true){
-                $(that.element).show();
-            }
-        }
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-
-
-
-/**
- * 快速选择时间，以在位编辑的方式打开
- * Created by veata on 2016/12/21.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_quickDatePicker",
-        defaults = {
-            $title:null,
-            $placement:true,//浮窗展开的位置，共四个值‘top’,‘bottom’,‘left’,‘right’,
-            $okCallBack:null,
-            $isClear:true,//展示清空按钮
-            $eleId:null//当前元素浮动窗ID
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.initHtmlData(function (data) {
-                WdatePicker({eCont:'quickDatePicker',onpicked:function(dp){that.saveDate(dp)}});
-                $('#quickDatePicker iframe').css('height','232px');//firefox有时不出来修改
-            });
-        },
-        //初始化数据
-        initHtmlData:function (callBack) {
-            var that = this;
-            var title = '变更合同签订日期';
-            if(that.settings.$title!=null){
-                title = that.settings.$title;
-            }
-            $(that.settings.$eleId).m_popover({
-                placement: that.settings.$placement==null?'top':that.settings.$placement,
-                titleHtml : '<div i="header" class="ui-dialog-header"><button i="close" class="ui-dialog-close">&#215;</button><div i="title" class="ui-dialog-title">'+title+'</div></div>',
-                content: template('m_common/m_quickDatePicker', {isClear:that.settings.$isClear}),
-                contentStyle: 'height:257px;',
-                onShown: function ($popover) {
-                    if(callBack!=null){
-                        callBack();
-                    }
-                    if($popover.prev().text()=='未签订'){
-                        $popover.find('.ui-dialog-header').remove();
-                    }
-                    $popover.find('.ui-dialog-close').on('click',function () {
-                        $(that.settings.$eleId).next().remove();
-                    });
-                    that.bindClearDate($popover);
-                },
-                onSave: function ($popover) {
-                    return that.saveDate();
-                }
-            }, true);
-        }
-        //保存编辑
-        ,saveDate:function (dp) {
-            var that = this;
-            var $data = dp.cal.getDateStr();
-
-            if(that.settings.$okCallBack!=null){
-                return that.settings.$okCallBack($data);
-            }
-        }
-        ,bindClearDate:function ($popover) {
-            var that = this;
-            $popover.find('button.m-popover-clear').on('click',function () {
-                if(that.settings.$okCallBack!=null){
-                    return that.settings.$okCallBack(null);
-                }
-            });
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-
-
-/**
- * Created by veata on 2017/02/14.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_top",
-        defaults = {
-            data: null
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            this.initHtml();
-        },
-        initHtml: function () {
-            var that = this;
-
-            //请求基础数据
-            var option = {};
-            option.url = restApi.url_getCurrUserOfWork;
-            m_ajax.postJson(option, function (response) {
-                if (response.code == '0') {
-                    var $data = {};
-                    $data.rootPath = window.rootPath;
-                    if (response.data != null) {
-                        $data.companyFilePath = response.data.companyInfo != null ? response.data.companyInfo.filePath : '';
-                        $data.userInfo = response.data.userInfo != null ? response.data.userInfo : {};
-                        $data.orgList = response.data.orgList;
-                        $data.companyInfo = response.data.companyInfo != null ? response.data.companyInfo : {};
-                        $data.companyUserInfo = response.data.companyUser != null ? response.data.companyUser : {};
-                        $data.fastdfsUrl = response.data.fastdfsUrl;
-                        $data.roleCodes = response.data.roleCodes;
-                        $data.fileCenterUrl = response.data.fileCenterUrl;
-                        $data.enterpriseUrl = response.data.enterpriseUrl;
-                        $data.adminFlag = response.data.adminFlag;
-                        $data.isAuth = response.data.isAuth;
-                        window.adminFlag = $data.adminFlag;
-                        var globalData = {
-                            currentCompanyId : $data.companyInfo.id,
-                            currentUserId : $data.userInfo.id,
-                            currentCompanyUserId : $data.companyUserInfo.id,
-                            currentRoleCodes : $data.roleCodes==null?'':$data.roleCodes
-                        };
-                        that.globalVariables(globalData);
-
-                        if (isNullOrBlank(response.data.unReadMessage) || response.data.unReadMessage === 0)
-                            $data.unReadMessage = '';
-                        else
-                            $data.unReadMessage = response.data.unReadMessage;
-
-                        if (isNullOrBlank(response.data.unReadNotice) || response.data.unReadNotice === 0)
-                            $data.unReadNotice = '';
-                        else
-                            $data.unReadNotice = response.data.unReadNotice;
-
-                        if (isNullOrBlank($data.userInfo.imgUrl))
-                            $data.userInfo.imgUrl = window.rootPath + '/assets/img/head_default.png';
-                        else
-                            $data.userInfo.imgUrl = $data.userInfo.imgUrl;
-
-
-                        var data = {};
-                        data.rootPath = window.rootPath;
-                        $.extend(data, $data);
-                        var html = template('m_common/m_top', data);
-                        $('#m_top').html(html);
-
-                        rolesControl();
-                        that.bindActionClick();
-                        $.each($('#top-nav li'), function (i, o) {
-                            var $el = $(o);
-                            if ($el.data('nav') === currentNav)
-                                $el.addClass('active');
-                        });
-
-                        var oLi=$('#m_top_orgList');
-                        if(oLi.find('li').length==0){
-                            oLi.prev().find('.caret').remove();
-                            oLi.remove()
-                        }
-                    }
-
-                    that.renderToolTip();
-
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-
-
-        }
-        //渲染ToolTip
-        , renderToolTip: function () {
-            $('.tooltip-demo').tooltip({
-                selector: '[data-toggle=tooltip]',
-                container: 'body',
-                trigger: 'hover'
-            });
-        },
-        //更改组织全局变量
-        globalVariables:function (data) {
-            window.currentCompanyId = data.currentCompanyId;
-            window.currentUserId = data.currentUserId;
-            window.currentCompanyUserId = data.currentCompanyUserId;
-            window.currentRoleCodes = data.currentRoleCodes;
-        }
-        , switchOrg: function (orgId) {
-            var option = {};
-            option.url = restApi.url_switchCompany + '/' + orgId;
-            m_ajax.getJson(option, function (response) {
-                if (response.code == '0') {
-                    window.location.href = window.rootPath + '/iWork/home/workbench';
-                } else {
-                    S_dialog.error(response.info);
-                }
-            })
-        }
-        //事件绑定
-        , bindActionClick: function () {
-            var that = this;
-            $(that.element).find('a[data-action]').on('click', function (e) {
-                var $this = $(this);
-                var dataAction = $this.attr('data-action');
-                switch (dataAction) {
-                    case 'switchOrg'://切换组织
-                        var companyInfoId = window.currentCompanyId;
-                        var orgId = $(this).attr('org-id');
-                        if (orgId != companyInfoId) {
-                            that.switchOrg(orgId);
-                        }
-                        return false;
-                        break;
-                    case 'messageCenter'://消息界面
-                        location.hash = '/messageCenter';
-                        $('#unReadMessageCount').html('');
-                        break;
-                    case 'backstageMgt'://后台管理
-
-                        if(window.currentRoleCodes.indexOf('com_enterprise_edit')>-1 || window.currentRoleCodes.indexOf('sys_enterprise_logout')>-1){//具有组织编辑权限
-                            location.hash = '/backstageMgt/orgInfo';
-                        }else if(window.currentRoleCodes.indexOf('hr_org_set')>-1 || window.currentRoleCodes.indexOf('hr_employee')>-1 || window.currentRoleCodes.indexOf('org_data_import')>-1 || window.currentRoleCodes.indexOf('org_partner')>-1){//具有组织架构权限
-                            location.hash = '/backstageMgt/organizational';
-                        }else if(window.currentRoleCodes.indexOf('sys_role_permission')>-1 || window.adminFlag==1){//具有权限配置权限
-                            location.hash = '/backstageMgt/organizational';
-                        }else if(window.currentRoleCodes.indexOf('sys_role_auth')>-1){//具有企业认证权限
-                            location.hash = '/backstageMgt/enterpriseCertification';
-                        }else if(window.currentRoleCodes.indexOf('data_import')>-1){//具有历史导入
-                            location.hash = '/backstageMgt/historicalDataImport';
-                        }
-                        break;
-                    case 'personalSettings'://个人设置
-                        location.hash = '/personalSettings';
-                        break;
-                    case 'announcement'://公告
-                        location.hash = '/announcement';
-                        $('#unReadNoticeCount').html('');
-                        break;
-                    case 'createOrg'://创建组织
-                        location.hash = '/createOrg';
-                        break;
-                    /*case 'financeSettings'://财务设置
-                        var option = {};
-                        option.$isFirstEnter = true;
-                        $('#content-right').m_financeSettings_menu(option);
-                        that.dealMenuShowOrHide(0);
-                        break;*/
-                }
-            })
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-/**
- * Created by Wuwq on 2017/3/6.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_filterableField",
-        defaults = {
-            filterTagContainer: null, /*存储过滤标签的元素*/
-            field: null,
-            fieldDisplayName: null,
-            filterType: null,
-            customProcess: function (popoverOptions, m_filterableField) {
-            },
-            selectLocalData:null,
-            onChanged: null
-        };
-
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = options;
-        this._defaults = defaults;
-        this._name = pluginName;
-
-        this.init();
-    }
-
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that._render();
-            that._bindClick();
-        }
-        , _render: function () {
-            var that = this;
-            var $el = $(that.element);
-            $el.addClass('field-filterable');
-            $el.append('<span class="field-filter-indicator"></span>');
-        }
-        , _bindClick: function () {
-            var that = this;
-            var $el = $(that.element);
-
-            $el.find('.field-filter-indicator').click(function (e) {
-                var popoverOptions = {};
-                switch (that.settings.filterType) {
-                    case 'custom':
-                        that.settings.customProcess(popoverOptions, that);
-                        break;
-                    case 'contain':
-                        popoverOptions.placement = 'left';
-                        popoverOptions.content = template('m_filterableField/m_filterType_contain');
-                        popoverOptions.onShown = function ($popover) {
-                            //恢复浮动窗口里的值
-                            var filter = $(that.settings.filterTagContainer).m_filterTag('getFilter', that.settings.field);
-                            if (filter && filter !== null) {
-                                $popover.find('input:first').val(filter.filterValue)
-                            }
-                        };
-                        popoverOptions.onSave = function ($popover) {
-                            var filter = {
-                                field: that.settings.field,
-                                fieldDisplayName: that.settings.fieldDisplayName,
-                                filterType: that.settings.filterType,
-                                filterValue: $popover.find('input:first').val()
-                            };
-                            $(that.settings.filterTagContainer).m_filterTag('saveFilter', filter);
-
-                            if (that.settings.onChanged && that.settings.onChanged !== null)
-                                that.settings.onChanged(filter);
-                        };
-                        break;
-                    case 'select_local_data':
-                        var selectLocalData = that.settings.selectLocalData;
-                        popoverOptions.popoverStyle = 'width:296px;min-width:296px';
-                        popoverOptions.placement = 'left';
-                        popoverOptions.content = template('m_filterableField/m_filterType_select_local_data');
-                        popoverOptions.onShown = function ($popover) {
-                            var $select = $popover.find('select[name="filter_select"]:first').select2({
-                                allowClear: false,
-                                language: "zh-CN",
-                                minimumResultsForSearch: Infinity,
-                                data: selectLocalData
-                            });
-
-                            //恢复浮动窗口里的值
-                            var filter = $(that.settings.filterTagContainer).m_filterTag('getFilter', that.settings.field);
-                            if (filter && filter !== null) {
-                                $popover.find('select[name="filter_select"]:first').val(filter.filterValue);
-                                $select.trigger('change');
-                            }
-                        };
-                        popoverOptions.onSave = function ($popover) {
-                            var filterValue = $popover.find('select[name="filter_select"]:first').find('option:selected').val();
-                            var filterValueDisplayName = _.find(selectLocalData, function (o) {
-                                return o.id == filterValue
-                            }).text;
-                            var filter = {
-                                field: that.settings.field,
-                                fieldDisplayName: that.settings.fieldDisplayName,
-                                filterType: that.settings.filterType,
-                                filterValue: filterValue,
-                                filterValueDisplayName: filterValueDisplayName
-                            };
-                            $(that.settings.filterTagContainer).m_filterTag('saveFilter', filter);
-
-                            if (that.settings.onChanged && that.settings.onChanged !== null)
-                                that.settings.onChanged(filter);
-                        };
-                        break;
-                    case 'select':
-                        popoverOptions.placement = 'left';
-                        popoverOptions.content = template('m_filterableField/m_filterType_select');
-                        popoverOptions.onShown = function ($popover) {
-                            //恢复浮动窗口里的值
-                            var filter = $(that.settings.filterTagContainer).m_filterTag('getFilter', that.settings.field);
-                            if (filter && filter !== null) {
-
-                            }
-                        };
-                        popoverOptions.onSave = function ($popover) {
-                            var filter = {
-                                field: that.settings.field,
-                                fieldDisplayName: that.settings.fieldDisplayName,
-                                filterType: that.settings.filterType,
-                                filterValue: null
-                            };
-                            $(that.settings.filterTagContainer).m_filterTag('saveFilter', filter);
-
-                            if (that.settings.onChanged && that.settings.onChanged !== null)
-                                that.settings.onChanged(filter);
-                        };
-                        break;
-                    case 'dateRange':
-                        popoverOptions.popoverStyle = 'width:335px;min-width:335px';
-                        popoverOptions.placement = 'left';
-                        popoverOptions.content = template('m_filterableField/m_filterType_dateRange');
-                        popoverOptions.onClear = function ($popover) {
-                            var $input = $popover.find('form input');
-                            if ($input.length > 0)
-                                $input.val('');
-                        };
-                        popoverOptions.onShown = function ($popover) {
-                            //恢复浮动窗口里的值
-                            var filter = $(that.settings.filterTagContainer).m_filterTag('getFilter', that.settings.field);
-
-                            $popover.find('.input-group-addon').on('click',function(e){
-                                $(this).prev('input').focus();
-                                stopPropagation(e);
-                            });
-                            if (filter && filter !== null) {
-                                var split = filter.filterValue.split(',');
-                                $popover.find('input[name="filter_startDate"]').val(split[0]);
-                                $popover.find('input[name="filter_endDate"]').val(split[1]);
-                            }else{ return false};
-                        };
-                        popoverOptions.onSave = function ($popover) {
-                            var startDate = $popover.find('input[name="filter_startDate"]').val();
-                            var endDate = $popover.find('input[name="filter_endDate"]').val();
-                            var filterValue = startDate + ',' + endDate;
-                            if ($.trim(filterValue) == ',') {
-                                filterValue = '';
-                            }
-                            var filter = {
-                                field: that.settings.field,
-                                fieldDisplayName: that.settings.fieldDisplayName,
-                                filterType: that.settings.filterType,
-                                filterValue: filterValue
-                            };
-                            $(that.settings.filterTagContainer).m_filterTag('saveFilter', filter);
-
-                            if (that.settings.onChanged && that.settings.onChanged !== null){
-                                that.settings.onChanged(filter);
-                            }else{
-                                return false
-                            }
-
-                        };
-                        break;
-                }
-
-                $(this).m_popover_filter(popoverOptions, true);
-
-                stopPropagation(e);
-                return false;
-            });
-        }
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-
-/**
- * Created by Wuwq on 2017/1/5.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_filterTag",
-        defaults = {
-            filters: [],
-            onRemoved: null
-        };
-
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = options;
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that._render();
-        }
-        , _render: function () {
-            var that = this;
-            var html = template('m_filterableField/m_filterTag', {filters: that.settings.filters});
-            $(that.element).html(html);
-            that._bindBtnRemove();
-        }
-        , _bindBtnRemove: function () {
-            var that = this;
-            $(that.element).find('.filter-tag-remove').each(function (i, o) {
-                $(o).click(function () {
-                    var field = $(this).closest('.filter-tag').attr('data-field');
-                    var filters = _.reject(that.settings.filters, function (o) {
-                        return field === o.field;
-                    });
-                    that.settings.filters = filters;
-                    if (that.settings.onRemoved)
-                        that.settings.onRemoved();
-                    that._render();
-                });
-            });
-        }
-        , saveFilter: function (f) {
-
-            var that = this;
-
-            //判断过滤值是否为空，如果为空值则去掉过滤
-            if (f.filterValue !== null && !_.isBlank(f.filterValue)) {
-                var m = _.find(that.settings.filters, function (o) {
-                    return f.field === o.field;
-                });
-                //判断是否已存在过滤标签
-                if (m && m !== null) {
-                    m.filterValue = f.filterValue;
-                    m.filterValueDisplayName = f.filterValueDisplayName;
-                } else {
-                    that.settings.filters.push(f);
-                }
-            } else {
-                var filters = _.reject(that.settings.filters, function (o) {
-                    return f.field === o.field;
-                });
-                that.settings.filters = filters;
-            }
-
-            that._render();
-        }
-        , getFilters: function () {
-            var that = this;
-            return that.settings.filters;
-        }
-        , getFilter: function (field) {
-            var that = this;
-            var filter = _.find(that.settings.filters, function (f) {
-                return f.field === field;
-            });
-            return filter || null;
-        }
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-/**
- * select下拉筛选-双重循环选择
- * Created by wrb on 2018/8/15.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_filter_checkbox_select",
-        defaults = {
-            eleId:null,//元素ID
-            align:null,//浮窗位置
-            colClass:null,//列class
-            boxStyle:null,//样式
-            dialogWidth:null,//弹窗宽度
-            selectArr:null,//筛选的数据(list对象,selectArr:[{id: "XX1", name: "XX2"}]
-            selectedArr:null,//当前选中项（checkbox时多个,[id1,id2]）
-            selectedCallBack:null//选择回调
-        };
-
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = options;
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._selectedArr = this.settings.selectedArr;
-        this._selectedStr = '';
-
-        if(this._selectedArr!=null && this._selectedArr.length>0)
-            this._selectedStr = this._selectedArr.join(',');　　//转为字符串
-
-        this.init();
-    }
-
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.render();
-        }
-        , render: function () {
-            var that = this;
-            var selectList = [];
-
-            if(that.settings.selectArr!=null && that.settings.selectArr.length>0){
-                $.each(that.settings.selectArr, function (i, item) {
-                    var isSelected = false;
-                    if(that._selectedStr.indexOf(item.id)>-1){
-                        isSelected = true;
-                    }
-                    selectList.push({fieldValue: item.id, fieldName: item.name,isSelected:isSelected});
-                });
-            }
-            if(that.settings.selectedArr!=null && that.settings.selectedArr.length>0){
-                $(that.element).find('i').addClass('fc-v1-blue');
-            }
-
-            var iHtml = template('m_filterableField/m_filter_checkbox_select',{
-                selectList:selectList,
-                colClass:that.settings.colClass,
-                boxStyle:that.settings.boxStyle
-            });
-            var iTextObj = iHtml.getTextWH();
-            var iWHObj = setDialogWH(iTextObj.width,iTextObj.height);
-
-            $(that.element).off('click').on('click',function (e) {
-                S_dialog.dialog({
-                    contentEle: 'dialogOBox',
-                    ele:that.settings.eleId,
-                    lock: 2,
-                    align: that.settings.align||'bottom right',
-                    quickClose:true,
-                    noTriangle:true,
-                    width: that.settings.dialogWidth || iWHObj.width+20,
-                    height:iWHObj.height+10,
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html'
-
-                },function(d){//加载html后触发
-
-                    var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    $(dialogEle).html(iHtml);
-                    $(dialogEle).css('overflow-x','hidden');
-
-                    that.initICheck($(dialogEle));
-                    //滚动事件
-                    $(dialogEle).scroll(function() {
-                        if($(this).scrollTop()>50){
-                            $(dialogEle).find('.check-box-title').addClass('check-box-title-fixed');
-                        }else{
-                            $(dialogEle).find('.check-box-title').removeClass('check-box-title-fixed');
-                        }
-                    });
-                });
-                e.stopPropagation();
-                return false;
-            });
-        }
-        //初始化iCheck
-        ,initICheck:function ($ele) {
-            var that = this;
-            var ifChecked = function (e) {
-                var id = $(this).val();
-                if(id==''){//选择的是全部-全选
-                    $ele.find('input[name="itemCk"]').prop('checked',true);
-                    $ele.find('input[name="itemCk"]').iCheck('update');
-                }
-                that.dealAllCheck($ele);
-                that.getSelectedData($ele);
-            };
-            var ifUnchecked = function (e) {
-                var id = $(this).val();
-                if(id==''){//选择的是全部-全选
-                    $ele.find('input[name="itemCk"]').prop('checked',false);
-                    $ele.find('input[name="itemCk"]').iCheck('update');
-                }
-                that.dealAllCheck($ele);
-                that.getSelectedData($ele);
-            };
-            $ele.find('input[name="itemCk"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
-            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
-        }
-        //判断是否全选
-        ,dealAllCheck:function ($ele) {
-            var that = this;
-            var allLen = $ele.find('input[name="itemCk"][value!=""]').length;
-            var allCkLen = $ele.find('input[name="itemCk"][value!=""]:checked').length;
-
-            if(allCkLen==allLen){
-                $ele.find('input[name="itemCk"][value=""]').prop('checked',true);
-                $ele.find('input[name="itemCk"][value=""]').iCheck('update');
-            }else{
-                $ele.find('input[name="itemCk"][value=""]').prop('checked',false);
-                $ele.find('input[name="itemCk"][value=""]').iCheck('update');
-            }
-        }
-        //获取选中的数据
-        ,getSelectedData :function ($ele) {
-            var that = this;
-            var selectedArr = [];
-            $ele.find('input[name="itemCk"][value!=""]:checked').each(function () {
-                selectedArr.push($(this).val());
-            });
-            if(that.settings.selectedCallBack)
-                that.settings.selectedCallBack(selectedArr);
-        }
-
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-
-/**
- * select下拉筛选
- * Created by wrb on 2018/8/15.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_filter_select",
-        defaults = {
-            eleId:null,//元素ID
-            align:null,//浮窗位置
-            isMultiple:false,//是否多选，是，开放checkbox
-            selectArr:null,//筛选的数据(list对象,selectArr:[{id: "XX1", name: "XX2"}]
-            selectedArr:null,//当前选中项（checkbox时多个,[id1,id2]）
-            selectedCallBack:null//选择回调
-        };
-
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = options;
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._selectedArr = this.settings.selectedArr;
-        this._selectedStr = '';
-
-        if(this._selectedArr!=null && this._selectedArr.length>0)
-            this._selectedStr = this._selectedArr.join(',');　　//转为字符串
-
-        this.init();
-    }
-
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.render();
-        }
-        , render: function () {
-            var that = this;
-            var selectList = [];
-            selectList.push({fieldName:'全部',fieldValue:''});
-            /*if(that.settings.selectArr!=null && Object.getOwnPropertyNames(that.settings.selectArr).length>0){
-                $.each(that.settings.selectArr, function (key, value) {
-                    var isSelected = false;
-                    if(that._selectedStr.indexOf(key)>-1){
-                        isSelected = true;
-                    }
-                    selectList.push({fieldValue: key, fieldName: value,isSelected:isSelected});
-                });
-            }*/
-            if(that.settings.selectArr!=null && that.settings.selectArr.length>0){
-                $.each(that.settings.selectArr, function (i, item) {
-                    var isSelected = false;
-                    if(that._selectedStr.indexOf(item.id)>-1){
-                        isSelected = true;
-                    }
-                    selectList.push({fieldValue: item.id, fieldName: item.name,isSelected:isSelected});
-                });
-            }
-            if(that.settings.selectedArr!=null && that.settings.selectedArr.length>0){
-                $(that.element).find('i').addClass('fc-v1-blue');
-            }
-
-            var iHtml = template('m_filterableField/m_filter_select1',{
-                selectList:selectList,
-                isMultiple:that.settings.isMultiple
-            });
-            var iTextObj = iHtml.getTextWH();
-            var iWHObj = setDialogWH(iTextObj.width,iTextObj.height);
-
-            $(that.element).on('click',function (e) {
-                S_dialog.dialog({
-                    contentEle: 'dialogOBox',
-                    ele:that.settings.eleId,
-                    lock: 2,
-                    align: that.settings.align||'bottom right',
-                    quickClose:true,
-                    noTriangle:true,
-                    width: iWHObj.width+20,
-                    height:iWHObj.height,
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html'
-
-                },function(d){//加载html后触发
-
-                    var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    $(dialogEle).html(iHtml);
-                    $(dialogEle).css('overflow-x','hidden');
-
-                    if(that.settings.isMultiple)
-                        that.initICheck($(dialogEle));
-
-                    $(dialogEle).find('.dropdown-menu a').on('click',function () {
-
-                        var val = $(this).attr('data-state-no');
-                        var selectedArr = [];
-                        if(val!='')
-                            selectedArr.push(val);
-
-                        if(that.settings.selectedCallBack)
-                            that.settings.selectedCallBack(selectedArr);
-
-                        S_dialog.close($(dialogEle));
-                    });
-
-                });
-                e.stopPropagation();
-                return false;
-            });
-        }
-        //初始化iCheck
-        ,initICheck:function ($ele) {
-            var that = this;
-            var ifChecked = function (e) {
-                var id = $(this).val();
-                if(id==''){//选择的是全部-全选
-                    $ele.find('input[name="itemCk"]').prop('checked',true);
-                    $ele.find('input[name="itemCk"]').iCheck('update');
-                }
-                that.dealAllCheck($ele);
-                that.getSelectedData($ele);
-            };
-            var ifUnchecked = function (e) {
-                var id = $(this).val();
-                if(id==''){//选择的是全部-全选
-                    $ele.find('input[name="itemCk"]').prop('checked',false);
-                    $ele.find('input[name="itemCk"]').iCheck('update');
-                }
-                that.dealAllCheck($ele);
-                that.getSelectedData($ele);
-            };
-            $ele.find('input[name="itemCk"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
-            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
-        }
-        //判断是否全选
-        ,dealAllCheck:function ($ele) {
-            var that = this;
-            var allLen = $ele.find('input[name="itemCk"][value!=""]').length;
-            var allCkLen = $ele.find('input[name="itemCk"][value!=""]:checked').length;
-
-            if(allCkLen==allLen){
-                $ele.find('input[name="itemCk"][value=""]').prop('checked',true);
-                $ele.find('input[name="itemCk"][value=""]').iCheck('update');
-            }else{
-                $ele.find('input[name="itemCk"][value=""]').prop('checked',false);
-                $ele.find('input[name="itemCk"][value=""]').iCheck('update');
-            }
-        }
-        //获取选中的数据
-        ,getSelectedData :function ($ele) {
-            var that = this;
-            var selectedArr = [];
-            $ele.find('input[name="itemCk"][value!=""]:checked').each(function () {
-                selectedArr.push($(this).val());
-            });
-            if(that.settings.selectedCallBack)
-                that.settings.selectedCallBack(selectedArr);
-
-        }
-
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-
-/**
- * 时间组合筛选
- * Created by wrb on 2018/8/14.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_filter_timeCombination",
-        defaults = {
-            selectTimeCallBack:null//时间选择回调
-        };
-
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = options;
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._timeData = {
-            startTime:'',
-            endTime:''
-        };//选择的时间
-        this.init();
-    }
-
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.render();
-        }
-        ,render:function () {
-            var that = this;
-            var html = template('m_filterableField/m_filter_timeCombination',{});
-            $(that.element).html(html);
-            that.bindSetTime();
-            that.bindChoseTime();
-        }
-        //快捷时间
-        , bindSetTime: function () {
-            var that = this;
-            $(that.element).find('a[data-action="setTime"]').click(function () {
-                var days = $(this).attr('data-days');
-                var endTime = getNowDate();
-                var startTime = '';//moment(endTime).subtract(days, 'days').format('YYYY-MM-DD');
-
-                if (endTime != null && endTime.indexOf('-') > -1) {
-
-                    var month = endTime.substring(5, 7) - 0;//当前月份
-
-                    if (days == 30) {//一个月
-
-                        startTime = endTime.substring(0, 8) + '01';
-
-                    } else if (days == 90) {//一季度
-
-                        if (month >= 1 && month <= 3) {//第一季度
-                            startTime = endTime.substring(0, 5) + '01-01';
-                        } else if (month >= 4 && month <= 6) {//第二季度
-                            startTime = endTime.substring(0, 5) + '04-01';
-                        } else if (month >= 7 && month <= 9) {//第三季度
-                            startTime = endTime.substring(0, 5) + '07-01';
-                        } else if (month >= 10 && month <= 12) {//第四季度
-                            startTime = endTime.substring(0, 5) + '10-01';
-                        }
-
-                    } else if (days == 180) {//半年
-
-                        if (month >= 1 && month <= 6) {//前半年
-                            startTime = endTime.substring(0, 5) + '01-01';
-                        } else if (month >= 7 && month <= 12) {//后半年
-                            startTime = endTime.substring(0, 5) + '07-01';
-                        }
-
-                    } else if (days == 360) {//一年
-
-                        startTime = endTime.substring(0, 5) + '01-01';
-                    }
-                }
-                that.getDateTime(startTime,endTime);
-
-                $(this).blur();
-            });
-
-        }
-        //时间绑定事件
-        , bindChoseTime:function () {
-            var that = this;
-            var currDate = getNowDate();
-            $(that.element).find('input[name="startTime"]').off('click').on('click',function () {
-
-                var endTime = $(that.element).find('input[name="endTime"]').val();
-                var onpicked =function(dp){
-
-                    that._timeData.startTime = dp.cal.getNewDateStr();
-                    that._timeData.endTime = endTime;
-                    if(that.settings.selectTimeCallBack)
-                        that.settings.selectTimeCallBack(that._timeData);
-
-                };
-                WdatePicker({el:this,maxDate:endTime,onpicked:onpicked});
-            });
-            $(that.element).find('input[name="endTime"]').off('click').on('click',function () {
-
-                var startTime = $(that.element).find('input[name="startTime"]').val();
-                var onpicked =function(dp){
-
-                    that._timeData.startTime = startTime;
-                    that._timeData.endTime = dp.cal.getNewDateStr();
-                    if(that.settings.selectTimeCallBack)
-                        that.settings.selectTimeCallBack(that._timeData);
-
-                };
-                WdatePicker({el:this,minDate:startTime,onpicked:onpicked});
-            });
-            $(that.element).find('i.fa-calendar').off('click').on('click',function () {
-                $(this).closest('.input-group').find('input').click();
-            });
-
-            $(that.element).find('input[name="ipt_year"]').click(function () {
-
-                var onpicked =function(dp){
-
-                    var year = dp.cal.getNewDateStr();
-                    year  = year.substring(0,4);
-
-                    var endTime = year+'-12-31';
-                    var startTime = year+'-01-01';
-
-                    var currYear = new Date().getFullYear();
-                    if(year==currYear){//今年
-                        endTime  = getNowDate();
-                    }
-
-                    that.initMonthSelect();
-
-                    that.getDateTime(startTime,endTime);
-                };
-                WdatePicker({el:this,dateFmt:'yyyy年',maxDate:currDate,onpicked:onpicked});
-            });
-
-        }
-        //渲染收票方
-        ,initMonthSelect:function () {
-            var that = this;
-            var currYear = new Date().getFullYear();
-            var year = $(that.element).find('input[name="ipt_year"]').val();
-            year  = year.substring(0,4);
-            var month = new Date().getMonth();
-            var monthLen = 12;
-            if(year==currYear){//今年
-                monthLen = month+1;
-            }
-            var staffArr = [{id:'',text:'请选择月份'}];
-            for(var i=0;i<monthLen;i++){
-
-                var m = i+1;
-                if(m.length<2){
-                    m = '0' + m;
-                }
-
-                staffArr.push({id:m,text:(i+1)+'月'});
-            }
-            $(that.element).find('select[name="ipt_month"]').select2({
-                tags:false,
-                allowClear: false,
-                placeholder: "请选择月份",
-                containerCssClass:'select-sm',
-                minimumResultsForSearch: -1,
-                language: "zh-CN",
-                data: staffArr
-            });
-            $(that.element).find('select[name="ipt_month"]').on("change", function (e) {
-
-                var currYear = new Date().getFullYear();
-                var year = $(that.element).find('input[name="ipt_year"]').val();
-                year  = year.substring(0,4);
-                var month = $(that.element).find('select[name="ipt_month"]').val();
-                var lastDay = (new Date((new Date(year,month,1)).getTime()-1000*60*60*24)).getDate();
-                var endTime = year+'-'+month+'-'+lastDay;
-                var startTime = year+'-'+month+'-01';
-                if(month==''){
-                    endTime  =  year+'-12-31';
-                    startTime = year+'-01-01';
-                }
-                if(year==currYear && month==new Date().getMonth()+1){//今年
-                    endTime  = getNowDate();
-                }
-                that.getDateTime(startTime,endTime);
-            })
-        }
-
-        ,getDateTime:function (startTime,endTime) {
-            var that = this;
-
-            $(that.element).find('#ipt_startTime').val(startTime);
-            $(that.element).find('#ipt_endTime').val(endTime);
-
-            that._timeData.startTime = startTime;
-            that._timeData.endTime = endTime;
-
-            if(that.settings.selectTimeCallBack)
-                that.settings.selectTimeCallBack(that._timeData);
-        }
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_popover_filter",
-        defaults = {
-            titleHtml: null,
-            popoverStyle: '',
-            content: null,
-            placement: null,//浮窗是在哪个位置展开：‘left’,‘right’,‘top’,‘bottom’,空值则默认为top
-            onShown: null,
-            onSave: null,
-            onClear: null,
-            template: 'm_filterableField/m_popover_filter'
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = options;
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-
-            //清掉其他列的Popover
-            var $table = $(that.element).closest('.table');
-            if ($table.length > 0) {
-                $table.find('.popover-filter').each(function (i, o) {
-                    $(o).remove();
-                });
-            }
-
-            var html = template(that.settings.template, {
-                titleHtml: that.settings.titleHtml,
-                popoverStyle: that.settings.popoverStyle
-            });
-            $(html).insertAfter(that.element);
-            var $popover = $(that.element).next('.popover-filter');
-            $popover.find('.popover-content').html(that.settings.content);
-
-            //回车键
-            $popover.find('.popover-content input').keydown(function (e) {
-                if (event.keyCode == 13) {
-                    stopPropagation(e);
-                    preventDefault(e);
-                    return false;
-                }
-            });
-
-            //防止冒泡
-            $popover.off('click.popover-filter').on('click.popover-filter', function (e) {
-                stopPropagation(e);
-                return false;
-            });
-
-            if (that.settings.onShown && that.settings.onShown !== null)
-                that.settings.onShown($popover);
-
-            setTimeout(function () {
-                that.setPosition();
-                that.bindBtnClick();
-                that.bindPopoverClickedOut();
-            }, 50);
-        },
-        //当鼠标点击的焦点不在浮窗内时，关闭浮窗
-        bindPopoverClickedOut: function () {
-            var that = this;
-            $(document).on('click.popover-filter', function (e) {
-                //console.log('document.clicked');
-                var flag = $(e.target).parents('.select2-container').length > 0 || $(e.target).is('.select2-container');
-                //防止select2搜索框点击触发关闭
-                if ($(e.target).closest('.select2-search__field').length > 0 || flag)
-                    return false;
-
-                that.closeFilter();
-            });
-        },
-        setPosition: function () {
-            var that = this;
-            var $popover = $(that.element).next('.popover-filter');
-            if ($popover.length > 0) {
-                var p_p = that.settings.placement ? that.settings.placement : 'top';//浮窗的展示位置
-                var a_ptop = $(that.element).position().top;//a标签的top值
-                var a_width = $(that.element).width();//a标签的width值
-                var a_height = $(that.element).height();//a标签的height值
-                var a_pleft = $(that.element).position().left;//a标签的left值
-                var p_width = $popover.width();//浮窗的宽度
-                var p_height = $popover.height();//浮窗的高度
-                var p_top = 0;//浮窗的top值
-                var p_left = 0;//浮窗的left值
-                switch (p_p) {
-                    case 'top':
-                        p_top = (a_ptop - p_height);
-                        p_left = a_pleft + a_width / 2 - p_width / 2;
-                        break;
-                    case 'bottom':
-                        p_top = (a_ptop + a_height);
-                        p_left = a_pleft + a_width / 2 - p_width / 2;
-                        break;
-                    case 'left':
-                        p_top = (a_ptop - p_height / 2 + 5);
-                        p_left = a_pleft - p_width - 10;
-                        break;
-                    case 'right':
-                        p_top = (a_ptop - p_height / 2 + 7);
-                        p_left = a_pleft + a_width;
-                        break;
-                }
-
-                $popover.removeClass('top').addClass(p_p);
-                if (p_p.indexOf('left') > -1 || p_p.indexOf('right') > -1) {
-                    $popover.find('.arrow').css({'top': '50%', 'left': ''});
-                }
-
-                $popover.css({
-                    display: 'inline-block',
-                    position: 'absolute',
-                    top: p_top,
-                    left: p_left
-                });
-
-
-                //自动调整左右超出浏览器窗口的情况
-                var left = $popover.offset().left;
-                var winWidth = $(window).width();
-                var pWidth = $popover.width();
-                if (left < 0) {
-                    $popover.offset({left: 0});
-                }
-                else if (left + pWidth > winWidth) {
-                    var left = winWidth - pWidth;
-                    if (left > 0)
-                        $popover.offset({left: left});
-                }
-            }
-        },
-        bindBtnClick: function () {
-            var that = this;
-            var $popover = $(that.element).next('.popover-filter');
-            if ($popover.length > 0) {
-
-                var $btnSubmit = $popover.find('.filter-submit');
-                if ($btnSubmit.length > 0) {
-                    $btnSubmit.click(function (e) {
-
-                        if (that.settings.onSave && that.settings.onSave !== null)
-                            that.settings.onSave($popover);
-
-                        that.closeFilter();
-
-                        stopPropagation(e);
-                        return false;
-                    });
-                }
-
-                var $btnClear = $popover.find('.filter-clear');
-                if ($btnClear.length > 0) {
-                    $btnClear.click(function (e) {
-
-                        //如果没有自定义清除函数，则使用默认
-                        if (that.settings.onClear && that.settings.onClear !== null)
-                            that.settings.onClear($popover);
-                        else {
-                            //查找第一个input清空
-                            var $input = $(this).closest('form').find('input:first');
-                            if ($input.length > 0)
-                                $input.val('');
-                        }
-
-                        stopPropagation(e);
-                        return false;
-                    });
-                }
-
-                var $btnClose = $popover.find('.filter-close');
-                if ($btnClose.length > 0) {
-                    $btnClose.click(function (e) {
-
-                        that.closeFilter();
-
-                        stopPropagation(e);
-                        return false;
-                    });
-                }
-            }
-        },
-        closeFilter: function () {
-            var that = this;
-            $(that.element).siblings('.popover-filter').each(function (i, o) {
-                $(o).remove();
-            });
-            $(document).off('click.popover-filter');
-        }
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-
-
-
 ;(function ($, window, document, undefined) {
 
     "use strict";
@@ -21223,6 +19981,1248 @@ return new String($out);
     };
 
 })(jQuery, window, document);
+
+/**
+ * Created by Wuwq on 2017/3/6.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_filterableField",
+        defaults = {
+            filterTagContainer: null, /*存储过滤标签的元素*/
+            field: null,
+            fieldDisplayName: null,
+            filterType: null,
+            customProcess: function (popoverOptions, m_filterableField) {
+            },
+            selectLocalData:null,
+            onChanged: null
+        };
+
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = options;
+        this._defaults = defaults;
+        this._name = pluginName;
+
+        this.init();
+    }
+
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that._render();
+            that._bindClick();
+        }
+        , _render: function () {
+            var that = this;
+            var $el = $(that.element);
+            $el.addClass('field-filterable');
+            $el.append('<span class="field-filter-indicator"></span>');
+        }
+        , _bindClick: function () {
+            var that = this;
+            var $el = $(that.element);
+
+            $el.find('.field-filter-indicator').click(function (e) {
+                var popoverOptions = {};
+                switch (that.settings.filterType) {
+                    case 'custom':
+                        that.settings.customProcess(popoverOptions, that);
+                        break;
+                    case 'contain':
+                        popoverOptions.placement = 'left';
+                        popoverOptions.content = template('m_filterableField/m_filterType_contain');
+                        popoverOptions.onShown = function ($popover) {
+                            //恢复浮动窗口里的值
+                            var filter = $(that.settings.filterTagContainer).m_filterTag('getFilter', that.settings.field);
+                            if (filter && filter !== null) {
+                                $popover.find('input:first').val(filter.filterValue)
+                            }
+                        };
+                        popoverOptions.onSave = function ($popover) {
+                            var filter = {
+                                field: that.settings.field,
+                                fieldDisplayName: that.settings.fieldDisplayName,
+                                filterType: that.settings.filterType,
+                                filterValue: $popover.find('input:first').val()
+                            };
+                            $(that.settings.filterTagContainer).m_filterTag('saveFilter', filter);
+
+                            if (that.settings.onChanged && that.settings.onChanged !== null)
+                                that.settings.onChanged(filter);
+                        };
+                        break;
+                    case 'select_local_data':
+                        var selectLocalData = that.settings.selectLocalData;
+                        popoverOptions.popoverStyle = 'width:296px;min-width:296px';
+                        popoverOptions.placement = 'left';
+                        popoverOptions.content = template('m_filterableField/m_filterType_select_local_data');
+                        popoverOptions.onShown = function ($popover) {
+                            var $select = $popover.find('select[name="filter_select"]:first').select2({
+                                allowClear: false,
+                                language: "zh-CN",
+                                minimumResultsForSearch: Infinity,
+                                data: selectLocalData
+                            });
+
+                            //恢复浮动窗口里的值
+                            var filter = $(that.settings.filterTagContainer).m_filterTag('getFilter', that.settings.field);
+                            if (filter && filter !== null) {
+                                $popover.find('select[name="filter_select"]:first').val(filter.filterValue);
+                                $select.trigger('change');
+                            }
+                        };
+                        popoverOptions.onSave = function ($popover) {
+                            var filterValue = $popover.find('select[name="filter_select"]:first').find('option:selected').val();
+                            var filterValueDisplayName = _.find(selectLocalData, function (o) {
+                                return o.id == filterValue
+                            }).text;
+                            var filter = {
+                                field: that.settings.field,
+                                fieldDisplayName: that.settings.fieldDisplayName,
+                                filterType: that.settings.filterType,
+                                filterValue: filterValue,
+                                filterValueDisplayName: filterValueDisplayName
+                            };
+                            $(that.settings.filterTagContainer).m_filterTag('saveFilter', filter);
+
+                            if (that.settings.onChanged && that.settings.onChanged !== null)
+                                that.settings.onChanged(filter);
+                        };
+                        break;
+                    case 'select':
+                        popoverOptions.placement = 'left';
+                        popoverOptions.content = template('m_filterableField/m_filterType_select');
+                        popoverOptions.onShown = function ($popover) {
+                            //恢复浮动窗口里的值
+                            var filter = $(that.settings.filterTagContainer).m_filterTag('getFilter', that.settings.field);
+                            if (filter && filter !== null) {
+
+                            }
+                        };
+                        popoverOptions.onSave = function ($popover) {
+                            var filter = {
+                                field: that.settings.field,
+                                fieldDisplayName: that.settings.fieldDisplayName,
+                                filterType: that.settings.filterType,
+                                filterValue: null
+                            };
+                            $(that.settings.filterTagContainer).m_filterTag('saveFilter', filter);
+
+                            if (that.settings.onChanged && that.settings.onChanged !== null)
+                                that.settings.onChanged(filter);
+                        };
+                        break;
+                    case 'dateRange':
+                        popoverOptions.popoverStyle = 'width:335px;min-width:335px';
+                        popoverOptions.placement = 'left';
+                        popoverOptions.content = template('m_filterableField/m_filterType_dateRange');
+                        popoverOptions.onClear = function ($popover) {
+                            var $input = $popover.find('form input');
+                            if ($input.length > 0)
+                                $input.val('');
+                        };
+                        popoverOptions.onShown = function ($popover) {
+                            //恢复浮动窗口里的值
+                            var filter = $(that.settings.filterTagContainer).m_filterTag('getFilter', that.settings.field);
+
+                            $popover.find('.input-group-addon').on('click',function(e){
+                                $(this).prev('input').focus();
+                                stopPropagation(e);
+                            });
+                            if (filter && filter !== null) {
+                                var split = filter.filterValue.split(',');
+                                $popover.find('input[name="filter_startDate"]').val(split[0]);
+                                $popover.find('input[name="filter_endDate"]').val(split[1]);
+                            }else{ return false};
+                        };
+                        popoverOptions.onSave = function ($popover) {
+                            var startDate = $popover.find('input[name="filter_startDate"]').val();
+                            var endDate = $popover.find('input[name="filter_endDate"]').val();
+                            var filterValue = startDate + ',' + endDate;
+                            if ($.trim(filterValue) == ',') {
+                                filterValue = '';
+                            }
+                            var filter = {
+                                field: that.settings.field,
+                                fieldDisplayName: that.settings.fieldDisplayName,
+                                filterType: that.settings.filterType,
+                                filterValue: filterValue
+                            };
+                            $(that.settings.filterTagContainer).m_filterTag('saveFilter', filter);
+
+                            if (that.settings.onChanged && that.settings.onChanged !== null){
+                                that.settings.onChanged(filter);
+                            }else{
+                                return false
+                            }
+
+                        };
+                        break;
+                }
+
+                $(this).m_popover_filter(popoverOptions, true);
+
+                stopPropagation(e);
+                return false;
+            });
+        }
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+
+/**
+ * Created by Wuwq on 2017/1/5.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_filterTag",
+        defaults = {
+            filters: [],
+            onRemoved: null
+        };
+
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = options;
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that._render();
+        }
+        , _render: function () {
+            var that = this;
+            var html = template('m_filterableField/m_filterTag', {filters: that.settings.filters});
+            $(that.element).html(html);
+            that._bindBtnRemove();
+        }
+        , _bindBtnRemove: function () {
+            var that = this;
+            $(that.element).find('.filter-tag-remove').each(function (i, o) {
+                $(o).click(function () {
+                    var field = $(this).closest('.filter-tag').attr('data-field');
+                    var filters = _.reject(that.settings.filters, function (o) {
+                        return field === o.field;
+                    });
+                    that.settings.filters = filters;
+                    if (that.settings.onRemoved)
+                        that.settings.onRemoved();
+                    that._render();
+                });
+            });
+        }
+        , saveFilter: function (f) {
+
+            var that = this;
+
+            //判断过滤值是否为空，如果为空值则去掉过滤
+            if (f.filterValue !== null && !_.isBlank(f.filterValue)) {
+                var m = _.find(that.settings.filters, function (o) {
+                    return f.field === o.field;
+                });
+                //判断是否已存在过滤标签
+                if (m && m !== null) {
+                    m.filterValue = f.filterValue;
+                    m.filterValueDisplayName = f.filterValueDisplayName;
+                } else {
+                    that.settings.filters.push(f);
+                }
+            } else {
+                var filters = _.reject(that.settings.filters, function (o) {
+                    return f.field === o.field;
+                });
+                that.settings.filters = filters;
+            }
+
+            that._render();
+        }
+        , getFilters: function () {
+            var that = this;
+            return that.settings.filters;
+        }
+        , getFilter: function (field) {
+            var that = this;
+            var filter = _.find(that.settings.filters, function (f) {
+                return f.field === field;
+            });
+            return filter || null;
+        }
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+/**
+ * select下拉筛选-双重循环选择
+ * Created by wrb on 2018/8/15.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_filter_checkbox_select",
+        defaults = {
+            eleId:null,//元素ID
+            align:null,//浮窗位置
+            colClass:null,//列class
+            boxStyle:null,//样式
+            dialogWidth:null,//弹窗宽度
+            selectArr:null,//筛选的数据(list对象,selectArr:[{id: "XX1", name: "XX2"}]
+            selectedArr:null,//当前选中项（checkbox时多个,[id1,id2]）
+            selectedCallBack:null//选择回调
+        };
+
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = options;
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._selectedArr = this.settings.selectedArr;
+        this._selectedStr = '';
+
+        if(this._selectedArr!=null && this._selectedArr.length>0)
+            this._selectedStr = this._selectedArr.join(',');　　//转为字符串
+
+        this.init();
+    }
+
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.render();
+        }
+        , render: function () {
+            var that = this;
+            var selectList = [];
+
+            if(that.settings.selectArr!=null && that.settings.selectArr.length>0){
+                $.each(that.settings.selectArr, function (i, item) {
+                    var isSelected = false;
+                    if(that._selectedStr.indexOf(item.id)>-1){
+                        isSelected = true;
+                    }
+                    selectList.push({fieldValue: item.id, fieldName: item.name,isSelected:isSelected});
+                });
+            }
+            if(that.settings.selectedArr!=null && that.settings.selectedArr.length>0){
+                $(that.element).find('i').addClass('fc-v1-blue');
+            }
+
+            var iHtml = template('m_filterableField/m_filter_checkbox_select',{
+                selectList:selectList,
+                colClass:that.settings.colClass,
+                boxStyle:that.settings.boxStyle
+            });
+            var iTextObj = iHtml.getTextWH();
+            var iWHObj = setDialogWH(iTextObj.width,iTextObj.height);
+
+            $(that.element).off('click').on('click',function (e) {
+                S_dialog.dialog({
+                    contentEle: 'dialogOBox',
+                    ele:that.settings.eleId,
+                    lock: 2,
+                    align: that.settings.align||'bottom right',
+                    quickClose:true,
+                    noTriangle:true,
+                    width: that.settings.dialogWidth || iWHObj.width+20,
+                    height:iWHObj.height+10,
+                    tPadding: '0px',
+                    url: rootPath+'/assets/module/m_common/m_dialog.html'
+
+                },function(d){//加载html后触发
+
+                    var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
+                    $(dialogEle).html(iHtml);
+                    $(dialogEle).css('overflow-x','hidden');
+
+                    that.initICheck($(dialogEle));
+                    //滚动事件
+                    $(dialogEle).scroll(function() {
+                        if($(this).scrollTop()>50){
+                            $(dialogEle).find('.check-box-title').addClass('check-box-title-fixed');
+                        }else{
+                            $(dialogEle).find('.check-box-title').removeClass('check-box-title-fixed');
+                        }
+                    });
+                });
+                e.stopPropagation();
+                return false;
+            });
+        }
+        //初始化iCheck
+        ,initICheck:function ($ele) {
+            var that = this;
+            var ifChecked = function (e) {
+                var id = $(this).val();
+                if(id==''){//选择的是全部-全选
+                    $ele.find('input[name="itemCk"]').prop('checked',true);
+                    $ele.find('input[name="itemCk"]').iCheck('update');
+                }
+                that.dealAllCheck($ele);
+                that.getSelectedData($ele);
+            };
+            var ifUnchecked = function (e) {
+                var id = $(this).val();
+                if(id==''){//选择的是全部-全选
+                    $ele.find('input[name="itemCk"]').prop('checked',false);
+                    $ele.find('input[name="itemCk"]').iCheck('update');
+                }
+                that.dealAllCheck($ele);
+                that.getSelectedData($ele);
+            };
+            $ele.find('input[name="itemCk"]').iCheck({
+                checkboxClass: 'icheckbox_minimal-green',
+                radioClass: 'iradio_minimal-green'
+            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
+        }
+        //判断是否全选
+        ,dealAllCheck:function ($ele) {
+            var that = this;
+            var allLen = $ele.find('input[name="itemCk"][value!=""]').length;
+            var allCkLen = $ele.find('input[name="itemCk"][value!=""]:checked').length;
+
+            if(allCkLen==allLen){
+                $ele.find('input[name="itemCk"][value=""]').prop('checked',true);
+                $ele.find('input[name="itemCk"][value=""]').iCheck('update');
+            }else{
+                $ele.find('input[name="itemCk"][value=""]').prop('checked',false);
+                $ele.find('input[name="itemCk"][value=""]').iCheck('update');
+            }
+        }
+        //获取选中的数据
+        ,getSelectedData :function ($ele) {
+            var that = this;
+            var selectedArr = [];
+            $ele.find('input[name="itemCk"][value!=""]:checked').each(function () {
+                selectedArr.push($(this).val());
+            });
+            if(that.settings.selectedCallBack)
+                that.settings.selectedCallBack(selectedArr);
+        }
+
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+
+/**
+ * select下拉筛选
+ * Created by wrb on 2018/8/15.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_filter_select",
+        defaults = {
+            eleId:null,//元素ID
+            align:null,//浮窗位置
+            isMultiple:false,//是否多选，是，开放checkbox
+            selectArr:null,//筛选的数据(list对象,selectArr:[{id: "XX1", name: "XX2"}]
+            selectedArr:null,//当前选中项（checkbox时多个,[id1,id2]）
+            selectedCallBack:null//选择回调
+        };
+
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = options;
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._selectedArr = this.settings.selectedArr;
+        this._selectedStr = '';
+
+        if(this._selectedArr!=null && this._selectedArr.length>0)
+            this._selectedStr = this._selectedArr.join(',');　　//转为字符串
+
+        this.init();
+    }
+
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.render();
+        }
+        , render: function () {
+            var that = this;
+            var selectList = [];
+            selectList.push({fieldName:'全部',fieldValue:''});
+            /*if(that.settings.selectArr!=null && Object.getOwnPropertyNames(that.settings.selectArr).length>0){
+                $.each(that.settings.selectArr, function (key, value) {
+                    var isSelected = false;
+                    if(that._selectedStr.indexOf(key)>-1){
+                        isSelected = true;
+                    }
+                    selectList.push({fieldValue: key, fieldName: value,isSelected:isSelected});
+                });
+            }*/
+            if(that.settings.selectArr!=null && that.settings.selectArr.length>0){
+                $.each(that.settings.selectArr, function (i, item) {
+                    var isSelected = false;
+                    if(that._selectedStr.indexOf(item.id)>-1){
+                        isSelected = true;
+                    }
+                    selectList.push({fieldValue: item.id, fieldName: item.name,isSelected:isSelected});
+                });
+            }
+            if(that.settings.selectedArr!=null && that.settings.selectedArr.length>0){
+                $(that.element).find('i').addClass('fc-v1-blue');
+            }
+
+            var iHtml = template('m_filterableField/m_filter_select1',{
+                selectList:selectList,
+                isMultiple:that.settings.isMultiple
+            });
+            var iTextObj = iHtml.getTextWH();
+            var iWHObj = setDialogWH(iTextObj.width,iTextObj.height);
+
+            $(that.element).on('click',function (e) {
+                S_dialog.dialog({
+                    contentEle: 'dialogOBox',
+                    ele:that.settings.eleId,
+                    lock: 2,
+                    align: that.settings.align||'bottom right',
+                    quickClose:true,
+                    noTriangle:true,
+                    width: iWHObj.width+20,
+                    height:iWHObj.height,
+                    tPadding: '0px',
+                    url: rootPath+'/assets/module/m_common/m_dialog.html'
+
+                },function(d){//加载html后触发
+
+                    var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
+                    $(dialogEle).html(iHtml);
+                    $(dialogEle).css('overflow-x','hidden');
+
+                    if(that.settings.isMultiple)
+                        that.initICheck($(dialogEle));
+
+                    $(dialogEle).find('.dropdown-menu a').on('click',function () {
+
+                        var val = $(this).attr('data-state-no');
+                        var selectedArr = [];
+                        if(val!='')
+                            selectedArr.push(val);
+
+                        if(that.settings.selectedCallBack)
+                            that.settings.selectedCallBack(selectedArr);
+
+                        S_dialog.close($(dialogEle));
+                    });
+
+                });
+                e.stopPropagation();
+                return false;
+            });
+        }
+        //初始化iCheck
+        ,initICheck:function ($ele) {
+            var that = this;
+            var ifChecked = function (e) {
+                var id = $(this).val();
+                if(id==''){//选择的是全部-全选
+                    $ele.find('input[name="itemCk"]').prop('checked',true);
+                    $ele.find('input[name="itemCk"]').iCheck('update');
+                }
+                that.dealAllCheck($ele);
+                that.getSelectedData($ele);
+            };
+            var ifUnchecked = function (e) {
+                var id = $(this).val();
+                if(id==''){//选择的是全部-全选
+                    $ele.find('input[name="itemCk"]').prop('checked',false);
+                    $ele.find('input[name="itemCk"]').iCheck('update');
+                }
+                that.dealAllCheck($ele);
+                that.getSelectedData($ele);
+            };
+            $ele.find('input[name="itemCk"]').iCheck({
+                checkboxClass: 'icheckbox_minimal-green',
+                radioClass: 'iradio_minimal-green'
+            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
+        }
+        //判断是否全选
+        ,dealAllCheck:function ($ele) {
+            var that = this;
+            var allLen = $ele.find('input[name="itemCk"][value!=""]').length;
+            var allCkLen = $ele.find('input[name="itemCk"][value!=""]:checked').length;
+
+            if(allCkLen==allLen){
+                $ele.find('input[name="itemCk"][value=""]').prop('checked',true);
+                $ele.find('input[name="itemCk"][value=""]').iCheck('update');
+            }else{
+                $ele.find('input[name="itemCk"][value=""]').prop('checked',false);
+                $ele.find('input[name="itemCk"][value=""]').iCheck('update');
+            }
+        }
+        //获取选中的数据
+        ,getSelectedData :function ($ele) {
+            var that = this;
+            var selectedArr = [];
+            $ele.find('input[name="itemCk"][value!=""]:checked').each(function () {
+                selectedArr.push($(this).val());
+            });
+            if(that.settings.selectedCallBack)
+                that.settings.selectedCallBack(selectedArr);
+
+        }
+
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+
+/**
+ * 时间组合筛选
+ * Created by wrb on 2018/8/14.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_filter_timeCombination",
+        defaults = {
+            selectTimeCallBack:null//时间选择回调
+        };
+
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = options;
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._timeData = {
+            startTime:'',
+            endTime:''
+        };//选择的时间
+        this.init();
+    }
+
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.render();
+        }
+        ,render:function () {
+            var that = this;
+            var html = template('m_filterableField/m_filter_timeCombination',{});
+            $(that.element).html(html);
+            that.bindSetTime();
+            that.bindChoseTime();
+        }
+        //快捷时间
+        , bindSetTime: function () {
+            var that = this;
+            $(that.element).find('a[data-action="setTime"]').click(function () {
+                var days = $(this).attr('data-days');
+                var endTime = getNowDate();
+                var startTime = '';//moment(endTime).subtract(days, 'days').format('YYYY-MM-DD');
+
+                if (endTime != null && endTime.indexOf('-') > -1) {
+
+                    var month = endTime.substring(5, 7) - 0;//当前月份
+
+                    if (days == 30) {//一个月
+
+                        startTime = endTime.substring(0, 8) + '01';
+
+                    } else if (days == 90) {//一季度
+
+                        if (month >= 1 && month <= 3) {//第一季度
+                            startTime = endTime.substring(0, 5) + '01-01';
+                        } else if (month >= 4 && month <= 6) {//第二季度
+                            startTime = endTime.substring(0, 5) + '04-01';
+                        } else if (month >= 7 && month <= 9) {//第三季度
+                            startTime = endTime.substring(0, 5) + '07-01';
+                        } else if (month >= 10 && month <= 12) {//第四季度
+                            startTime = endTime.substring(0, 5) + '10-01';
+                        }
+
+                    } else if (days == 180) {//半年
+
+                        if (month >= 1 && month <= 6) {//前半年
+                            startTime = endTime.substring(0, 5) + '01-01';
+                        } else if (month >= 7 && month <= 12) {//后半年
+                            startTime = endTime.substring(0, 5) + '07-01';
+                        }
+
+                    } else if (days == 360) {//一年
+
+                        startTime = endTime.substring(0, 5) + '01-01';
+                    }
+                }
+                that.getDateTime(startTime,endTime);
+
+                $(this).blur();
+            });
+
+        }
+        //时间绑定事件
+        , bindChoseTime:function () {
+            var that = this;
+            var currDate = getNowDate();
+            $(that.element).find('input[name="startTime"]').off('click').on('click',function () {
+
+                var endTime = $(that.element).find('input[name="endTime"]').val();
+                var onpicked =function(dp){
+
+                    that._timeData.startTime = dp.cal.getNewDateStr();
+                    that._timeData.endTime = endTime;
+                    if(that.settings.selectTimeCallBack)
+                        that.settings.selectTimeCallBack(that._timeData);
+
+                };
+                WdatePicker({el:this,maxDate:endTime,onpicked:onpicked});
+            });
+            $(that.element).find('input[name="endTime"]').off('click').on('click',function () {
+
+                var startTime = $(that.element).find('input[name="startTime"]').val();
+                var onpicked =function(dp){
+
+                    that._timeData.startTime = startTime;
+                    that._timeData.endTime = dp.cal.getNewDateStr();
+                    if(that.settings.selectTimeCallBack)
+                        that.settings.selectTimeCallBack(that._timeData);
+
+                };
+                WdatePicker({el:this,minDate:startTime,onpicked:onpicked});
+            });
+            $(that.element).find('i.fa-calendar').off('click').on('click',function () {
+                $(this).closest('.input-group').find('input').click();
+            });
+
+            $(that.element).find('input[name="ipt_year"]').click(function () {
+
+                var onpicked =function(dp){
+
+                    var year = dp.cal.getNewDateStr();
+                    year  = year.substring(0,4);
+
+                    var endTime = year+'-12-31';
+                    var startTime = year+'-01-01';
+
+                    var currYear = new Date().getFullYear();
+                    if(year==currYear){//今年
+                        endTime  = getNowDate();
+                    }
+
+                    that.initMonthSelect();
+
+                    that.getDateTime(startTime,endTime);
+                };
+                WdatePicker({el:this,dateFmt:'yyyy年',maxDate:currDate,onpicked:onpicked});
+            });
+
+        }
+        //渲染收票方
+        ,initMonthSelect:function () {
+            var that = this;
+            var currYear = new Date().getFullYear();
+            var year = $(that.element).find('input[name="ipt_year"]').val();
+            year  = year.substring(0,4);
+            var month = new Date().getMonth();
+            var monthLen = 12;
+            if(year==currYear){//今年
+                monthLen = month+1;
+            }
+            var staffArr = [{id:'',text:'请选择月份'}];
+            for(var i=0;i<monthLen;i++){
+
+                var m = i+1;
+                if(m.length<2){
+                    m = '0' + m;
+                }
+
+                staffArr.push({id:m,text:(i+1)+'月'});
+            }
+            $(that.element).find('select[name="ipt_month"]').select2({
+                tags:false,
+                allowClear: false,
+                placeholder: "请选择月份",
+                containerCssClass:'select-sm',
+                minimumResultsForSearch: -1,
+                language: "zh-CN",
+                data: staffArr
+            });
+            $(that.element).find('select[name="ipt_month"]').on("change", function (e) {
+
+                var currYear = new Date().getFullYear();
+                var year = $(that.element).find('input[name="ipt_year"]').val();
+                year  = year.substring(0,4);
+                var month = $(that.element).find('select[name="ipt_month"]').val();
+                var lastDay = (new Date((new Date(year,month,1)).getTime()-1000*60*60*24)).getDate();
+                var endTime = year+'-'+month+'-'+lastDay;
+                var startTime = year+'-'+month+'-01';
+                if(month==''){
+                    endTime  =  year+'-12-31';
+                    startTime = year+'-01-01';
+                }
+                if(year==currYear && month==new Date().getMonth()+1){//今年
+                    endTime  = getNowDate();
+                }
+                that.getDateTime(startTime,endTime);
+            })
+        }
+
+        ,getDateTime:function (startTime,endTime) {
+            var that = this;
+
+            $(that.element).find('#ipt_startTime').val(startTime);
+            $(that.element).find('#ipt_endTime').val(endTime);
+
+            that._timeData.startTime = startTime;
+            that._timeData.endTime = endTime;
+
+            if(that.settings.selectTimeCallBack)
+                that.settings.selectTimeCallBack(that._timeData);
+        }
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_popover_filter",
+        defaults = {
+            titleHtml: null,
+            popoverStyle: '',
+            content: null,
+            placement: null,//浮窗是在哪个位置展开：‘left’,‘right’,‘top’,‘bottom’,空值则默认为top
+            onShown: null,
+            onSave: null,
+            onClear: null,
+            template: 'm_filterableField/m_popover_filter'
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = options;
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+
+            //清掉其他列的Popover
+            var $table = $(that.element).closest('.table');
+            if ($table.length > 0) {
+                $table.find('.popover-filter').each(function (i, o) {
+                    $(o).remove();
+                });
+            }
+
+            var html = template(that.settings.template, {
+                titleHtml: that.settings.titleHtml,
+                popoverStyle: that.settings.popoverStyle
+            });
+            $(html).insertAfter(that.element);
+            var $popover = $(that.element).next('.popover-filter');
+            $popover.find('.popover-content').html(that.settings.content);
+
+            //回车键
+            $popover.find('.popover-content input').keydown(function (e) {
+                if (event.keyCode == 13) {
+                    stopPropagation(e);
+                    preventDefault(e);
+                    return false;
+                }
+            });
+
+            //防止冒泡
+            $popover.off('click.popover-filter').on('click.popover-filter', function (e) {
+                stopPropagation(e);
+                return false;
+            });
+
+            if (that.settings.onShown && that.settings.onShown !== null)
+                that.settings.onShown($popover);
+
+            setTimeout(function () {
+                that.setPosition();
+                that.bindBtnClick();
+                that.bindPopoverClickedOut();
+            }, 50);
+        },
+        //当鼠标点击的焦点不在浮窗内时，关闭浮窗
+        bindPopoverClickedOut: function () {
+            var that = this;
+            $(document).on('click.popover-filter', function (e) {
+                //console.log('document.clicked');
+                var flag = $(e.target).parents('.select2-container').length > 0 || $(e.target).is('.select2-container');
+                //防止select2搜索框点击触发关闭
+                if ($(e.target).closest('.select2-search__field').length > 0 || flag)
+                    return false;
+
+                that.closeFilter();
+            });
+        },
+        setPosition: function () {
+            var that = this;
+            var $popover = $(that.element).next('.popover-filter');
+            if ($popover.length > 0) {
+                var p_p = that.settings.placement ? that.settings.placement : 'top';//浮窗的展示位置
+                var a_ptop = $(that.element).position().top;//a标签的top值
+                var a_width = $(that.element).width();//a标签的width值
+                var a_height = $(that.element).height();//a标签的height值
+                var a_pleft = $(that.element).position().left;//a标签的left值
+                var p_width = $popover.width();//浮窗的宽度
+                var p_height = $popover.height();//浮窗的高度
+                var p_top = 0;//浮窗的top值
+                var p_left = 0;//浮窗的left值
+                switch (p_p) {
+                    case 'top':
+                        p_top = (a_ptop - p_height);
+                        p_left = a_pleft + a_width / 2 - p_width / 2;
+                        break;
+                    case 'bottom':
+                        p_top = (a_ptop + a_height);
+                        p_left = a_pleft + a_width / 2 - p_width / 2;
+                        break;
+                    case 'left':
+                        p_top = (a_ptop - p_height / 2 + 5);
+                        p_left = a_pleft - p_width - 10;
+                        break;
+                    case 'right':
+                        p_top = (a_ptop - p_height / 2 + 7);
+                        p_left = a_pleft + a_width;
+                        break;
+                }
+
+                $popover.removeClass('top').addClass(p_p);
+                if (p_p.indexOf('left') > -1 || p_p.indexOf('right') > -1) {
+                    $popover.find('.arrow').css({'top': '50%', 'left': ''});
+                }
+
+                $popover.css({
+                    display: 'inline-block',
+                    position: 'absolute',
+                    top: p_top,
+                    left: p_left
+                });
+
+
+                //自动调整左右超出浏览器窗口的情况
+                var left = $popover.offset().left;
+                var winWidth = $(window).width();
+                var pWidth = $popover.width();
+                if (left < 0) {
+                    $popover.offset({left: 0});
+                }
+                else if (left + pWidth > winWidth) {
+                    var left = winWidth - pWidth;
+                    if (left > 0)
+                        $popover.offset({left: left});
+                }
+            }
+        },
+        bindBtnClick: function () {
+            var that = this;
+            var $popover = $(that.element).next('.popover-filter');
+            if ($popover.length > 0) {
+
+                var $btnSubmit = $popover.find('.filter-submit');
+                if ($btnSubmit.length > 0) {
+                    $btnSubmit.click(function (e) {
+
+                        if (that.settings.onSave && that.settings.onSave !== null)
+                            that.settings.onSave($popover);
+
+                        that.closeFilter();
+
+                        stopPropagation(e);
+                        return false;
+                    });
+                }
+
+                var $btnClear = $popover.find('.filter-clear');
+                if ($btnClear.length > 0) {
+                    $btnClear.click(function (e) {
+
+                        //如果没有自定义清除函数，则使用默认
+                        if (that.settings.onClear && that.settings.onClear !== null)
+                            that.settings.onClear($popover);
+                        else {
+                            //查找第一个input清空
+                            var $input = $(this).closest('form').find('input:first');
+                            if ($input.length > 0)
+                                $input.val('');
+                        }
+
+                        stopPropagation(e);
+                        return false;
+                    });
+                }
+
+                var $btnClose = $popover.find('.filter-close');
+                if ($btnClose.length > 0) {
+                    $btnClose.click(function (e) {
+
+                        that.closeFilter();
+
+                        stopPropagation(e);
+                        return false;
+                    });
+                }
+            }
+        },
+        closeFilter: function () {
+            var that = this;
+            $(that.element).siblings('.popover-filter').each(function (i, o) {
+                $(o).remove();
+            });
+            $(document).off('click.popover-filter');
+        }
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+
+
 
 /**
  * 报销条目
@@ -24771,6 +24771,237 @@ return new String($out);
 
 })(jQuery, window, document);
 /**
+ * 图片裁剪
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_imgCropper",
+        defaults = {
+            title: "设置头像",
+            showDialog: true,
+            croppedCallback: null,
+            zoomWidth: 0,//剪切后的缩放宽度
+            zoomHeight: 0,//剪切后的缩放高度
+            originalFileGroup: null,//
+            originalFilePath: null,//
+            originalFileName: null,//
+            cut_deletePath:null,//剪切后的要删除的（一般指上一个头像之类）
+            cropper:{
+                options:{
+                    aspectRatio: 1 / 1,
+                    preview: '.img-preview',
+                    zoomable: false,
+                    minCropBoxWidth: 50,
+                    minCropBoxHeight: 50
+                }
+            }
+        };
+
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+
+        this._x = 0;
+        this._y = 0;
+        this._width = 0;
+        this._height = 0;
+
+        this._originalFileGroup = '';
+        this._originalFilePath = '';
+        this._originalFileName = '';
+
+        this.init();
+    }
+
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.renderHtml();
+        },
+        //渲染界面
+        renderHtml: function () {
+            var that = this;
+            if (that.settings.showDialog) {//以弹窗编辑
+                S_dialog.dialog({
+                    title: that.settings.title,
+                    contentEle: 'dialogOBox',
+                    lock: 3,
+                    width: '600',
+                    minHeight: '300',
+                    tPadding: '0px',
+                    url: window.rootPath + '/assets/module/m_common/m_dialog.html',
+                    cancel: function () {
+
+                    },
+                    okText: '保存',
+                    ok: function () {
+                        var imgSrc = $('.setArea .thumbnail img.img-responsive').attr('src');
+                        if(imgSrc && imgSrc!=null && imgSrc!=''){
+                            that._saveCroppedImage();
+                        }else{
+                            S_toastr.warning('上传图片不能为空！');
+                            return false;
+                        }
+
+                    }
+                }, function (d) {//加载html后触发
+                    that.element = 'div[id="content:' + d.id+'"] .dialogOBox';
+                    that._renderTemplate();
+                    that.renderPic();
+                });
+            } else {//不以弹窗编辑
+                that._renderTemplate();
+                that.renderPic();
+            }
+        },
+        _renderTemplate: function () {
+            var that = this;
+            var html = template('m_imgCropper/m_imgCropper', {});
+            $(that.element).html(html);
+            // that._bindUploadOrinalImage();
+        }
+        //渲染图片
+        ,renderPic:function(){
+            var that = this;
+            var originalFileGroup = that.settings.originalFileGroup;
+            var originalFilePath = that.settings.originalFilePath;
+            $('.m_imgCropper .img-container').attr('src', window.fastdfsUrl + originalFileGroup + '/' + originalFilePath);
+
+            $(that.element).find('.title:eq(0)').addClass('hide');
+            $(that.element).find('.setArea:eq(0)').removeClass('hide');
+
+            setTimeout(function () {
+                that._setImage();
+            }, 500);
+        }
+        //上传原图
+        , _bindUploadOrinalImage: function () {
+            var that = this;
+            $('.m_imgCropper .btnFilePicker').m_imgUploader({
+                server: window.fileCenterUrl + "/fastUploadImage",
+                formData: {
+                    cut_deleteGroup:that.settings.cut_deleteGroup,
+                    cut_deletePath:that.settings.cut_deletePath
+                },
+                innerHTML: '<i class="fa fa-upload fa-fixed"></i>',
+                uploadSuccessCallback: function (file, response) {
+                    that._originalFileGroup = response.data.fastdfsGroup;
+                    that._originalFilePath = response.data.fastdfsPath;
+                    that._originalFileName = response.data.fileName;
+
+                    //渲染图片
+                    $('.m_imgCropper .img-container').attr('src', window.fastdfsUrl + that._originalFileGroup + '/' + that._originalFilePath);
+
+                    $(that.element).find('.title:eq(0)').addClass('hide');
+                    $(that.element).find('.setArea:eq(0)').removeClass('hide');
+
+                    setTimeout(function () {
+                        that._setImage();
+                    }, 500);
+
+                    S_toastr.success(response.info);
+                }
+            },true);
+        }
+        //保存裁切过的图片并替换Fastdfs上原图
+        , _saveCroppedImage: function () {
+            var that = this;
+            var cutPostData = {
+                x: that._x,
+                y: that._y,
+                width: that._width,
+                height: that._height,
+                zoomWidth: that.settings.zoomWidth,
+                zoomHeight: that.settings.zoomHeight,
+                group: that.settings.originalFileGroup,
+                path: that.settings.originalFilePath,
+                fileName: that.settings.originalFileName
+            };
+            var option = {};
+            option.url = window.fileCenterUrl + "/fastCutImage";
+            option.postData = cutPostData;
+            m_ajax.postJson(option, function (response) {
+                if (response.code === '0') {
+                    if (that.settings.croppedCallback !== null) {
+                        return that.settings.croppedCallback(response.data);
+                    }
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+        //初始化cropping插件
+        , _setImage: function () {
+            var that = this;
+            var $image = $('.m_imgCropper .img-container');
+            /*var options = {
+                aspectRatio: 1 / 1,
+                preview: '.img-preview',
+                zoomable: false,
+                minCropBoxWidth: 50,
+                minCropBoxHeight: 50,
+                crop: function (e) {
+                    that._x = e.x;
+                    that._y = e.y;
+                    that._width = e.width;
+                    that._height = e.height;
+                }
+            };*/
+
+            that.settings.cropper.options.crop=function(e){
+                that._x = e.x;
+                that._y = e.y;
+                that._width = e.width;
+                that._height = e.height;
+            };
+
+            $image.on({
+                'build.cropper': function (e) {
+
+                },
+                'built.cropper': function (e) {
+
+                },
+                'cropstart.cropper': function (e) {
+
+                },
+                'cropmove.cropper': function (e) {
+
+                },
+                'cropend.cropper': function (e) {
+
+                },
+                'crop.cropper': function (e) {
+                    that._x = e.x;
+                    that._y = e.y;
+                    that._width = e.width;
+                    that._height = e.height;
+                },
+                'zoom.cropper': function (e) {
+
+                }
+            }).cropper(that.settings.cropper.options);
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            //$.data(this, "plugin_" +
+                //pluginName, new Plugin(this, options));
+            //}
+            new Plugin(this, options);
+        });
+    };
+
+})(jQuery, window, document);
+
+/**
  * 工作台菜单
  * Created by wrb on 2017/10/11.
  */
@@ -25315,552 +25546,6 @@ return new String($out);
 
 })(jQuery, window, document);
 
-/**
- * 图片裁剪
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_imgCropper",
-        defaults = {
-            title: "设置头像",
-            showDialog: true,
-            croppedCallback: null,
-            zoomWidth: 0,//剪切后的缩放宽度
-            zoomHeight: 0,//剪切后的缩放高度
-            originalFileGroup: null,//
-            originalFilePath: null,//
-            originalFileName: null,//
-            cut_deletePath:null,//剪切后的要删除的（一般指上一个头像之类）
-            cropper:{
-                options:{
-                    aspectRatio: 1 / 1,
-                    preview: '.img-preview',
-                    zoomable: false,
-                    minCropBoxWidth: 50,
-                    minCropBoxHeight: 50
-                }
-            }
-        };
-
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-
-        this._x = 0;
-        this._y = 0;
-        this._width = 0;
-        this._height = 0;
-
-        this._originalFileGroup = '';
-        this._originalFilePath = '';
-        this._originalFileName = '';
-
-        this.init();
-    }
-
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.renderHtml();
-        },
-        //渲染界面
-        renderHtml: function () {
-            var that = this;
-            if (that.settings.showDialog) {//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.title,
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '600',
-                    minHeight: '300',
-                    tPadding: '0px',
-                    url: window.rootPath + '/assets/module/m_common/m_dialog.html',
-                    cancel: function () {
-
-                    },
-                    okText: '保存',
-                    ok: function () {
-                        var imgSrc = $('.setArea .thumbnail img.img-responsive').attr('src');
-                        if(imgSrc && imgSrc!=null && imgSrc!=''){
-                            that._saveCroppedImage();
-                        }else{
-                            S_toastr.warning('上传图片不能为空！');
-                            return false;
-                        }
-
-                    }
-                }, function (d) {//加载html后触发
-                    that.element = 'div[id="content:' + d.id+'"] .dialogOBox';
-                    that._renderTemplate();
-                    that.renderPic();
-                });
-            } else {//不以弹窗编辑
-                that._renderTemplate();
-                that.renderPic();
-            }
-        },
-        _renderTemplate: function () {
-            var that = this;
-            var html = template('m_imgCropper/m_imgCropper', {});
-            $(that.element).html(html);
-            // that._bindUploadOrinalImage();
-        }
-        //渲染图片
-        ,renderPic:function(){
-            var that = this;
-            var originalFileGroup = that.settings.originalFileGroup;
-            var originalFilePath = that.settings.originalFilePath;
-            $('.m_imgCropper .img-container').attr('src', window.fastdfsUrl + originalFileGroup + '/' + originalFilePath);
-
-            $(that.element).find('.title:eq(0)').addClass('hide');
-            $(that.element).find('.setArea:eq(0)').removeClass('hide');
-
-            setTimeout(function () {
-                that._setImage();
-            }, 500);
-        }
-        //上传原图
-        , _bindUploadOrinalImage: function () {
-            var that = this;
-            $('.m_imgCropper .btnFilePicker').m_imgUploader({
-                server: window.fileCenterUrl + "/fastUploadImage",
-                formData: {
-                    cut_deleteGroup:that.settings.cut_deleteGroup,
-                    cut_deletePath:that.settings.cut_deletePath
-                },
-                innerHTML: '<i class="fa fa-upload fa-fixed"></i>',
-                uploadSuccessCallback: function (file, response) {
-                    that._originalFileGroup = response.data.fastdfsGroup;
-                    that._originalFilePath = response.data.fastdfsPath;
-                    that._originalFileName = response.data.fileName;
-
-                    //渲染图片
-                    $('.m_imgCropper .img-container').attr('src', window.fastdfsUrl + that._originalFileGroup + '/' + that._originalFilePath);
-
-                    $(that.element).find('.title:eq(0)').addClass('hide');
-                    $(that.element).find('.setArea:eq(0)').removeClass('hide');
-
-                    setTimeout(function () {
-                        that._setImage();
-                    }, 500);
-
-                    S_toastr.success(response.info);
-                }
-            },true);
-        }
-        //保存裁切过的图片并替换Fastdfs上原图
-        , _saveCroppedImage: function () {
-            var that = this;
-            var cutPostData = {
-                x: that._x,
-                y: that._y,
-                width: that._width,
-                height: that._height,
-                zoomWidth: that.settings.zoomWidth,
-                zoomHeight: that.settings.zoomHeight,
-                group: that.settings.originalFileGroup,
-                path: that.settings.originalFilePath,
-                fileName: that.settings.originalFileName
-            };
-            var option = {};
-            option.url = window.fileCenterUrl + "/fastCutImage";
-            option.postData = cutPostData;
-            m_ajax.postJson(option, function (response) {
-                if (response.code === '0') {
-                    if (that.settings.croppedCallback !== null) {
-                        return that.settings.croppedCallback(response.data);
-                    }
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-        //初始化cropping插件
-        , _setImage: function () {
-            var that = this;
-            var $image = $('.m_imgCropper .img-container');
-            /*var options = {
-                aspectRatio: 1 / 1,
-                preview: '.img-preview',
-                zoomable: false,
-                minCropBoxWidth: 50,
-                minCropBoxHeight: 50,
-                crop: function (e) {
-                    that._x = e.x;
-                    that._y = e.y;
-                    that._width = e.width;
-                    that._height = e.height;
-                }
-            };*/
-
-            that.settings.cropper.options.crop=function(e){
-                that._x = e.x;
-                that._y = e.y;
-                that._width = e.width;
-                that._height = e.height;
-            };
-
-            $image.on({
-                'build.cropper': function (e) {
-
-                },
-                'built.cropper': function (e) {
-
-                },
-                'cropstart.cropper': function (e) {
-
-                },
-                'cropmove.cropper': function (e) {
-
-                },
-                'cropend.cropper': function (e) {
-
-                },
-                'crop.cropper': function (e) {
-                    that._x = e.x;
-                    that._y = e.y;
-                    that._width = e.width;
-                    that._height = e.height;
-                },
-                'zoom.cropper': function (e) {
-
-                }
-            }).cropper(that.settings.cropper.options);
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            //$.data(this, "plugin_" +
-                //pluginName, new Plugin(this, options));
-            //}
-            new Plugin(this, options);
-        });
-    };
-
-})(jQuery, window, document);
-
-/**
- * Created by Wuwq on 2017/1/5.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_inviteBranch",
-        defaults = {
-            a_companyName: null,
-            a_systemManager: null,
-            cellphone: null,
-            userId: null
-        };
-
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = options;
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that._render();
-        }
-        //渲染首屏
-        , _render: function () {
-            var that = this;
-
-            var option = {};
-            option.url = restApi.url_getCompanyByInviteUrl + '/' + $('#invitedId').val();
-            option.classId = '.div-invite-bPaner';
-            option.postData = {};
-            m_ajax.postJson(option, function (response) {
-                if (response.code == '0') {
-
-                    that.settings.a_companyName = response.data.companyName;
-                    that.settings.a_systemManager = response.data.systemManager;
-
-                    var data = {};
-                    data.companyName = response.data.companyName;
-                    data.systemManager = response.data.systemManager;
-                    data.cellphone = response.data.cellphone;
-                    data.filePath = response.data.filePath;
-                    var html = template('m_inviteBranch/m_inviteBranch', data);
-                    $(that.element).html(html);
-                    that._bindKeyDownEnter();
-                    that._bindAction();
-                } else {
-                    S_dialog.tips(response.info);
-                }
-            });
-        }
-        //回车键
-        , _bindKeyDownEnter: function () {
-            var that = this;
-            $('#cellphone').keydown(function (e) {
-                if (event.keyCode == 13) {
-                    that._verify();
-                    stopPropagation(e);
-                    preventDefault(e);
-                    return false;
-                }
-            });
-        }
-        , _bindAction: function () {
-            var that = this;
-            $(that.element).find('.btn-ok:eq(0)').click(function () {
-                that._verify();
-            });
-        }
-        //验证手机号
-        , _verify: function () {
-            var that = this;
-            var invitedId = $('#invitedId').val();
-            that.settings.cellphone = $('#cellphone').val();
-
-            var option = {};
-            option.url = restApi.url_verifyIdentityForBPartner;
-            option.classId = '.div-invite-bPaner';
-            option.postData = {id: invitedId, cellphone: that.settings.cellphone};
-            m_ajax.postJson(option, function (response) {
-                if (response.code === '0') {
-                    that._renderOrg();
-                } else {
-                    S_dialog.tips(response.info);
-                }
-            });
-        }
-        //渲染团队选择页面
-        , _renderOrg: function () {
-            var that = this;
-
-            var invitedId = $('#invitedId').val();
-
-            var option = {};
-            option.url = restApi.url_getCompanyPrincipal;
-            option.classId = '.div-invite-bPaner';
-            option.postData = {id: invitedId, cellphone: that.settings.cellphone};
-            m_ajax.postJson(option, function (response) {
-                if (response.code === '0') {
-                    if (response.data.companyList) {
-                        if (response.data.companyList.length > 0) {
-                            var html = template('m_inviteBranch/m_inviteBranch_org', {companyList: response.data.companyList,a_companyName:that.settings.a_companyName});
-                            $(that.element).html(html);
-                            that._bindCreateOrg(response.data);
-                            that._bindSelectOrg();
-                        } else {
-                            var html = template('m_inviteBranch/m_inviteBranch_org_hasNo', {});
-                            $(that.element).html(html);
-                            that._bindCreateOrg(response.data);
-                        }
-                    }
-                } else {
-                    S_dialog.tips(response.info);
-                }
-            });
-        }
-        //创建团队
-        , _bindCreateOrg: function (data) {
-            var that = this;
-            $(that.element).find('a[data-action="createOrg"]').click(function (e) {
-                if (data.userId === void 0 || data.userId === null) {
-                    var html = template('m_inviteBranch/m_inviteBranch_create_hasNo', {a_companyName:that.settings.a_companyName});
-                    $(that.element).html(html);
-                    that._bindCreateOrgAndAccountSubmit();
-                } else {
-                    that.settings.userId = data.userId;
-                    var html = template('m_inviteBranch/m_inviteBranch_create_has', {a_companyName:that.settings.a_companyName});
-                    $(that.element).html(html);
-                    that._bindCreateOrgSubmit();
-                }
-                that.createOrgOBox_validate();
-            });
-        }
-        , _bindCreateOrgSubmit: function () {
-            var that = this;
-            var invitedId = $('#invitedId').val();
-            $(that.element).find('a[data-action="createOrgSubmit"]').click(function (e) {
-                var companyName = $(that.element).find('input[name="companyName"]:eq(0)').val();
-                var option = {};
-                if($(that.element).find("form.createOrgOBox").valid()) {
-                    option.url = restApi.url_createBusinessPartner;
-                    option.classId = 'body';
-                    option.postData = {
-                        userId: that.settings.userId,
-                        inviteId: invitedId,
-                        cellphone: that.settings.cellphone,
-                        companyName: companyName
-                    };
-                    m_ajax.postJson(option, function (response) {
-                        if (response.code === '0') {
-                            var html = template('m_inviteBranch/m_inviteBranch_success', {
-                                companyName: companyName,
-                                a_companyName: that.settings.a_companyName
-                            });
-                            $(that.element).html(html);
-                        } else {
-                            S_dialog.tips(response.info);
-                        }
-                    });
-                }
-            });
-        }
-        , _bindCreateOrgAndAccountSubmit: function () {
-            var that = this;
-            var invitedId = $('#invitedId').val();
-            $(that.element).find('a[data-action="createOrgAndAccountSubmit"]').click(function (e) {
-
-                var userName = $(that.element).find('input[name="userName"]:eq(0)').val();
-                var adminPassword = $(that.element).find('input[name="adminPassword"]:eq(0)').val();
-                var companyName = $(that.element).find('input[name="companyName"]:eq(0)').val();
-
-                var option = {};
-                if($(that.element).find("form.createOrgOBox").valid()){
-                    option.url = restApi.url_createBusinessPartner;
-                    option.classId = 'body';
-                    option.postData = {
-                        inviteId: invitedId,
-                        companyName: companyName,
-                        cellphone: that.settings.cellphone,
-                        userName: userName,
-                        adminPassword: adminPassword
-                    };
-                    m_ajax.postJson(option, function (response) {
-                        if (response.code === '0') {
-                            S_dialog.tips("操作成功");
-                            var html = template('m_inviteBranch/m_inviteBranch_success', {
-                                companyName: companyName,
-                                a_companyName: that.settings.a_companyName
-                            });
-                            $(that.element).html(html);
-                        } else {
-                            S_dialog.tips(response.info);
-                        }
-                    });
-                }
-            });
-        }
-
-        ,createOrgOBox_validate: function () {//注册的表单验证
-            var that = this;
-            $(that.element).find("form.createOrgOBox").validate({
-                rules: {
-                    userName: "required",
-                    adminPassword: {
-                        required: true,
-                        rangelength: [6, 12],
-                        checkSpace: true
-                    },
-                    companyName:"required"
-
-                },
-                messages: {
-                    userName: "请输入姓名！",
-                    adminPassword: {
-                        required: '请输入密码！',
-                        rangelength: "密码为6-12位！",
-                        checkSpace: "密码不应含有空格!"
-                    },
-                    companyName:"请输入组织名称！"
-
-                },
-                errorElement: 'label'
-            });
-            //密码验证
-            $.validator.addMethod("checkSpace", function (value, element) {
-                var pattern = /^\S+$/gi;
-                return this.optional(element) || pattern.test(value);
-            }, "密码不应含有空格!");
-        }
-        , _bindSelectOrg: function () {
-            var that = this;
-            var invitedId = $('#invitedId').val();
-
-            $(that.element).find('li[data-action="selectOrg"]').click(function (e) {
-                S_dialog.tips('选择无效，该组织'+$(this).attr('data-memo'));
-            });
-
-            $(that.element).find('li[data-action="selectOrgApply"]').click(function (e) {
-                var companyId = $(this).attr('data-company-id');
-                var companyName=$(this).attr('data-company-name');
-                $(this).m_popover({
-                    placement: 'top',
-                    content: template('m_common/m_popover_confirm', {confirmMsg: '确定选择该组织来建立分支机构关系吗?'}),
-                    onSave: function ($popover) {
-                        var option = {};
-                        option.url = restApi.url_applayBusinessPartner;
-                        option.classId = 'body';
-                        option.postData = {
-                            inviteId: invitedId,
-                            cellphone: that.settings.cellphone,
-                            companyId: companyId
-                        };
-                        m_ajax.postJson(option, function (response) {
-                            if (response.code === '0') {
-                                S_dialog.tips("操作成功");
-                                var html = template('m_inviteBranch/m_inviteBranch_success', {
-                                    companyName: companyName,
-                                    a_companyName: that.settings.a_companyName
-                                });
-                                $(that.element).html(html);
-                            } else {
-                                S_dialog.tips(response.info);
-                            }
-                        });
-                    }
-                }, true);
-            });
-        }
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
 /**
  * Created by Wuwq on 2017/1/5.
  */
@@ -26857,6 +26542,321 @@ return new String($out);
 
 })(jQuery, window, document);
 
+/**
+ * Created by Wuwq on 2017/1/5.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_inviteBranch",
+        defaults = {
+            a_companyName: null,
+            a_systemManager: null,
+            cellphone: null,
+            userId: null
+        };
+
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = options;
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that._render();
+        }
+        //渲染首屏
+        , _render: function () {
+            var that = this;
+
+            var option = {};
+            option.url = restApi.url_getCompanyByInviteUrl + '/' + $('#invitedId').val();
+            option.classId = '.div-invite-bPaner';
+            option.postData = {};
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+
+                    that.settings.a_companyName = response.data.companyName;
+                    that.settings.a_systemManager = response.data.systemManager;
+
+                    var data = {};
+                    data.companyName = response.data.companyName;
+                    data.systemManager = response.data.systemManager;
+                    data.cellphone = response.data.cellphone;
+                    data.filePath = response.data.filePath;
+                    var html = template('m_inviteBranch/m_inviteBranch', data);
+                    $(that.element).html(html);
+                    that._bindKeyDownEnter();
+                    that._bindAction();
+                } else {
+                    S_dialog.tips(response.info);
+                }
+            });
+        }
+        //回车键
+        , _bindKeyDownEnter: function () {
+            var that = this;
+            $('#cellphone').keydown(function (e) {
+                if (event.keyCode == 13) {
+                    that._verify();
+                    stopPropagation(e);
+                    preventDefault(e);
+                    return false;
+                }
+            });
+        }
+        , _bindAction: function () {
+            var that = this;
+            $(that.element).find('.btn-ok:eq(0)').click(function () {
+                that._verify();
+            });
+        }
+        //验证手机号
+        , _verify: function () {
+            var that = this;
+            var invitedId = $('#invitedId').val();
+            that.settings.cellphone = $('#cellphone').val();
+
+            var option = {};
+            option.url = restApi.url_verifyIdentityForBPartner;
+            option.classId = '.div-invite-bPaner';
+            option.postData = {id: invitedId, cellphone: that.settings.cellphone};
+            m_ajax.postJson(option, function (response) {
+                if (response.code === '0') {
+                    that._renderOrg();
+                } else {
+                    S_dialog.tips(response.info);
+                }
+            });
+        }
+        //渲染团队选择页面
+        , _renderOrg: function () {
+            var that = this;
+
+            var invitedId = $('#invitedId').val();
+
+            var option = {};
+            option.url = restApi.url_getCompanyPrincipal;
+            option.classId = '.div-invite-bPaner';
+            option.postData = {id: invitedId, cellphone: that.settings.cellphone};
+            m_ajax.postJson(option, function (response) {
+                if (response.code === '0') {
+                    if (response.data.companyList) {
+                        if (response.data.companyList.length > 0) {
+                            var html = template('m_inviteBranch/m_inviteBranch_org', {companyList: response.data.companyList,a_companyName:that.settings.a_companyName});
+                            $(that.element).html(html);
+                            that._bindCreateOrg(response.data);
+                            that._bindSelectOrg();
+                        } else {
+                            var html = template('m_inviteBranch/m_inviteBranch_org_hasNo', {});
+                            $(that.element).html(html);
+                            that._bindCreateOrg(response.data);
+                        }
+                    }
+                } else {
+                    S_dialog.tips(response.info);
+                }
+            });
+        }
+        //创建团队
+        , _bindCreateOrg: function (data) {
+            var that = this;
+            $(that.element).find('a[data-action="createOrg"]').click(function (e) {
+                if (data.userId === void 0 || data.userId === null) {
+                    var html = template('m_inviteBranch/m_inviteBranch_create_hasNo', {a_companyName:that.settings.a_companyName});
+                    $(that.element).html(html);
+                    that._bindCreateOrgAndAccountSubmit();
+                } else {
+                    that.settings.userId = data.userId;
+                    var html = template('m_inviteBranch/m_inviteBranch_create_has', {a_companyName:that.settings.a_companyName});
+                    $(that.element).html(html);
+                    that._bindCreateOrgSubmit();
+                }
+                that.createOrgOBox_validate();
+            });
+        }
+        , _bindCreateOrgSubmit: function () {
+            var that = this;
+            var invitedId = $('#invitedId').val();
+            $(that.element).find('a[data-action="createOrgSubmit"]').click(function (e) {
+                var companyName = $(that.element).find('input[name="companyName"]:eq(0)').val();
+                var option = {};
+                if($(that.element).find("form.createOrgOBox").valid()) {
+                    option.url = restApi.url_createBusinessPartner;
+                    option.classId = 'body';
+                    option.postData = {
+                        userId: that.settings.userId,
+                        inviteId: invitedId,
+                        cellphone: that.settings.cellphone,
+                        companyName: companyName
+                    };
+                    m_ajax.postJson(option, function (response) {
+                        if (response.code === '0') {
+                            var html = template('m_inviteBranch/m_inviteBranch_success', {
+                                companyName: companyName,
+                                a_companyName: that.settings.a_companyName
+                            });
+                            $(that.element).html(html);
+                        } else {
+                            S_dialog.tips(response.info);
+                        }
+                    });
+                }
+            });
+        }
+        , _bindCreateOrgAndAccountSubmit: function () {
+            var that = this;
+            var invitedId = $('#invitedId').val();
+            $(that.element).find('a[data-action="createOrgAndAccountSubmit"]').click(function (e) {
+
+                var userName = $(that.element).find('input[name="userName"]:eq(0)').val();
+                var adminPassword = $(that.element).find('input[name="adminPassword"]:eq(0)').val();
+                var companyName = $(that.element).find('input[name="companyName"]:eq(0)').val();
+
+                var option = {};
+                if($(that.element).find("form.createOrgOBox").valid()){
+                    option.url = restApi.url_createBusinessPartner;
+                    option.classId = 'body';
+                    option.postData = {
+                        inviteId: invitedId,
+                        companyName: companyName,
+                        cellphone: that.settings.cellphone,
+                        userName: userName,
+                        adminPassword: adminPassword
+                    };
+                    m_ajax.postJson(option, function (response) {
+                        if (response.code === '0') {
+                            S_dialog.tips("操作成功");
+                            var html = template('m_inviteBranch/m_inviteBranch_success', {
+                                companyName: companyName,
+                                a_companyName: that.settings.a_companyName
+                            });
+                            $(that.element).html(html);
+                        } else {
+                            S_dialog.tips(response.info);
+                        }
+                    });
+                }
+            });
+        }
+
+        ,createOrgOBox_validate: function () {//注册的表单验证
+            var that = this;
+            $(that.element).find("form.createOrgOBox").validate({
+                rules: {
+                    userName: "required",
+                    adminPassword: {
+                        required: true,
+                        rangelength: [6, 12],
+                        checkSpace: true
+                    },
+                    companyName:"required"
+
+                },
+                messages: {
+                    userName: "请输入姓名！",
+                    adminPassword: {
+                        required: '请输入密码！',
+                        rangelength: "密码为6-12位！",
+                        checkSpace: "密码不应含有空格!"
+                    },
+                    companyName:"请输入组织名称！"
+
+                },
+                errorElement: 'label'
+            });
+            //密码验证
+            $.validator.addMethod("checkSpace", function (value, element) {
+                var pattern = /^\S+$/gi;
+                return this.optional(element) || pattern.test(value);
+            }, "密码不应含有空格!");
+        }
+        , _bindSelectOrg: function () {
+            var that = this;
+            var invitedId = $('#invitedId').val();
+
+            $(that.element).find('li[data-action="selectOrg"]').click(function (e) {
+                S_dialog.tips('选择无效，该组织'+$(this).attr('data-memo'));
+            });
+
+            $(that.element).find('li[data-action="selectOrgApply"]').click(function (e) {
+                var companyId = $(this).attr('data-company-id');
+                var companyName=$(this).attr('data-company-name');
+                $(this).m_popover({
+                    placement: 'top',
+                    content: template('m_common/m_popover_confirm', {confirmMsg: '确定选择该组织来建立分支机构关系吗?'}),
+                    onSave: function ($popover) {
+                        var option = {};
+                        option.url = restApi.url_applayBusinessPartner;
+                        option.classId = 'body';
+                        option.postData = {
+                            inviteId: invitedId,
+                            cellphone: that.settings.cellphone,
+                            companyId: companyId
+                        };
+                        m_ajax.postJson(option, function (response) {
+                            if (response.code === '0') {
+                                S_dialog.tips("操作成功");
+                                var html = template('m_inviteBranch/m_inviteBranch_success', {
+                                    companyName: companyName,
+                                    a_companyName: that.settings.a_companyName
+                                });
+                                $(that.element).html(html);
+                            } else {
+                                S_dialog.tips(response.info);
+                            }
+                        });
+                    }
+                }, true);
+            });
+        }
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
 /**
  * Created by Wuwq on 2017/3/4.
  */
@@ -34358,6 +34358,1042 @@ return new String($out);
 })(jQuery, window, document);
 
 /**
+ * Created by Wuwq on 2017/1/19.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_page",
+        defaults = {
+            loadingId: null,
+            pageIndex: 0,
+            pageSize: 10,
+            total: 0,
+            pageBtnCount: 5,
+            showFirstLastBtn: false,
+            firstBtnText: null,
+            lastBtnText: null,
+            /*prevBtnText: "&laquo;",
+             nextBtnText: "&raquo;",*/
+            prevBtnText: '上一页',
+            nextBtnText: '下一页',
+            loadFirstPage: true,
+            remote: {
+                url: null,
+                params: null,
+                pageParams: null,
+                success: null,
+                beforeSend: null,
+                complete: null,
+                pageIndexName: 'pageIndex',
+                pageSizeName: 'pageSize',
+                totalName: 'data.total',
+                traditional: false,
+                remoteWrongFormat: null
+            },
+            pageElementSort: ['$page', '$size', '$jump', '$info'],
+            showInfo: false,
+            infoFormat: '{start} ~ {end} of {total} entires',
+            noInfoText: '0 entires',
+            showJump: false,
+            jumpBtnText: 'Go',
+            showPageSizes: false,
+            pageSizeItems: [5, 10, 15, 20],
+            debug: false
+        };
+
+    function Plugin(element, options) {
+        this.element = element;
+        var remote = $.extend({}, defaults.remote, options.remote);
+        this.settings = $.extend({}, defaults, options);
+        this.settings.remote = remote;
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            if (that.settings.loadingId !== null && that.settings.remote.beforeSend === null) {
+                that.settings.remote.beforeSend = function () {
+                    $_loading.show(that.settings.loadingId, '正在加载中...');
+                }
+            }
+            if (that.settings.loadingId !== null && that.settings.remote.complete === null) {
+                that.settings.remote.complete = function () {
+                    $_loading.close(that.settings.loadingId);
+                }
+            }
+
+            if (that.settings.remote.remoteWrongFormat === null) {
+                that.settings.remote.remoteWrongFormat = function (res) {
+                    if (res && res.code === '500')
+                        S_dialog.error('很抱歉，请求发生异常');
+                }
+            }
+
+            if ($(that.element).pagination())
+                $(that.element).pagination('destroy');
+            $(that.element).pagination(that.settings);
+        }
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+            /*if ( !$.data( this, "plugin_" + pluginName ) ) {
+             $.data( this, "plugin_" +
+             pluginName, new Plugin( this, options ) );
+             }*/
+            new Plugin(this, options);
+        });
+    };
+
+})(jQuery, window, document);
+/**
+ * Created by wrb on 2016/12/15.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_bindEmail",
+        defaults = {
+            sendEmailCallBack:null
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var html = template('m_personal/m_bindEmail',{});
+            $(this.element).html(html);
+            this.sendValidationEemail_validate();
+            this.bindActionClick();
+        }
+        //发送邮箱
+        ,sendValidationEemail:function () {
+
+            var that = this;
+
+            if ($('form.bindEmailBox').valid()) {
+                var option  = {};
+                option.url = restApi.url_sendBindMail;
+                option.postData = {toMail:$('form.bindEmailBox input[name="bindEmailDtoEmail"]').val()};
+                m_ajax.postJson(option,function (response) {
+                    if(response.code=='0'){
+                        S_toastr.success('发送成功！');
+                        if(that.settings.sendEmailCallBack!=null){
+                            that.settings.sendEmailCallBack();
+                        }
+                    }else {
+                        S_dialog.error(response.info);
+                    }
+
+                })
+            }
+        }
+        //按钮事件绑定
+        ,bindActionClick:function () {
+            var that = this;
+            $('form.bindEmailBox button[data-action]').on('click',function () {
+                var dataAction = $(this).attr('data-action');
+                if(dataAction=="sendValidationEemail"){//发送邮件
+                    that.sendValidationEemail();
+                }
+            });
+        }
+        //发送邮箱表单验证
+        ,sendValidationEemail_validate:function(){
+            $('form.bindEmailBox').validate({
+                rules: {
+                    bindEmailDtoEmail: {
+                        required: true,
+                        email: true
+                    }
+                },
+                messages: {
+                    bindEmailDtoEmail: {
+                        required: '请输入邮箱!',
+                        email: "请输入有效的电子邮件地址",
+                    }
+                },
+                errorPlacement: function (error, element) { //指定错误信息位置
+                    if ($(element).attr('name')=='bindEmailDtoEmail') {
+                        error.appendTo(element.closest('.col-md-12'));
+                    } else {
+                        error.insertAfter(element);
+                    }
+                }
+            });
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+/**
+ * Created by wrb on 2016/12/15.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_bindPhone",
+        defaults = {
+            saveBindPhoneCallBack: null
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.initHtml();
+        }
+        //初始化页面
+        ,initHtml:function(){
+            var that = this;
+            S_dialog.dialog({
+                title: '绑定手机',
+                //contentEle: 'bindPhoneBox',
+                lock: 3,
+                width: '500',
+                tPadding: '0px',
+                url: rootPath+'/assets/module/m_common/m_dialog.html',
+                ok:function(){
+                    var flag = $('form.bindPhoneBox').valid();
+                    if(!flag){
+                        return false;
+                    }else{
+                        that.saveBindPhone();
+                    }
+                },
+                okText:'保存',
+                cancel:function(){},
+                cancelText:'取消'
+            },function(d){//加载html后触发
+                var html = template('m_personal/m_bindPhone', {});
+                $('div[id="content:'+d.id+'"]').html(html);
+                //this.receiveCode_validate();
+                that.saveBindPhone_validate();
+                that.bindActionClick();
+                that.closeDialog();
+            });
+        }
+        //发送验证
+        , receiveCode: function () {
+
+            var that = this;
+                that.getCode();
+                var option = {};
+                option.url = restApi.url_securityCode;
+                option.postData = {cellphone: $('form.bindPhoneBox input[name="bindCellPhoneDtoCellphone"]').val()};
+                m_ajax.postJson(option, function (response) {
+                    if (response.code == '0') {
+                        //S_dialog.tips('发送成功！');
+                    } else {
+                        if ("undefined" != typeof that.timer) {
+                            window.clearInterval(that.timer);
+                        }
+                        S_dialog.error(response.info);
+                    }
+                })
+        }
+        //给关闭弹窗按钮绑定事件
+        ,closeDialog:function(){
+            var that = this;
+            $(that.element).closest('.ui-dialog').find('td[i="header"] button.ui-dialog-close,.panel-footer button.btn-u-default')
+                .on('click.clearInterval',function(event){
+                    window.clearInterval(that.timer);
+                    stopPropagation(event);
+                });
+        }
+        //保存绑定手机号
+        , saveBindPhone: function () {
+            var that = this;
+            var option = {};
+            option.url = restApi.url_changeCellphone;
+            option.postData = {
+                cellphone: $('form.bindPhoneBox input[name="bindCellPhoneDtoCellphone"]').val(),
+                code: $('form.bindPhoneBox input[name="bindCellPhoneDtoCode"]').val()
+            };
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+                    /*S_toastr.success('发送成功！');
+                    var url = '/iWork/sys/logout';
+                    if (data != null && data != '')
+                        url = data;
+                    window.location.href = window.rootPath + url;*/
+                    S_swal.sure({
+                        title:'已更改',
+                        text:'更改手机号成功。',
+                        callBack:function () {
+                            window.location.href = window.rootPath + '/iWork/sys/logout';
+                        }
+                    });
+                } else {
+                    S_dialog.error(response.info);
+                    return false;
+                }
+            });
+        }
+        , getCode: function () {//生成时间倒计时
+            var clock = 60;
+            var that = this;
+            var updateClock = function () {
+                if (clock > 0) {
+                    clock = clock - 1;
+                    $('form.bindPhoneBox a[data-action="receiveCode"]').html(clock + 's');
+                    // $('form.bindPhoneBox a[data-action="receiveCode"]').css('opacity','0.5');
+                    $('form.bindPhoneBox a[data-action="receiveCode"]').attr('disabled', 'disabled');
+                }
+            };
+            updateClock();
+            that.timer = setInterval(function () {
+                updateClock();
+                if (clock <= 0) {
+                    $('form.bindPhoneBox a[data-action="receiveCode"]').html('获取验证码');
+                    // $('form.bindPhoneBox a[data-action="receiveCode"]').css('opacity','1');
+                    $('form.bindPhoneBox a[data-action="receiveCode"]').removeAttr('disabled');
+                    if ("undefined" != typeof that.timer) {
+                        window.clearInterval(that.timer);
+                    }
+                }
+            }, 1000);
+        }
+        //按钮事件绑定
+        , bindActionClick: function () {
+            var that = this;
+            $('form.bindPhoneBox a[data-action]').on('click', function (event) {
+                var dataAction = $(this).attr('data-action');
+                if (dataAction == "receiveCode") {//发送验证码
+                    if ($(this).html() == '获取验证码') {
+                        if (that.receiveCode_validate()) {
+                            that.receiveCode();
+                        }
+                    } else {
+                        return false;
+                    }
+                } else if (dataAction == 'saveBindPhone') {//保存绑定
+                    that.saveBindPhone();
+                }
+                stopPropagation(event);
+                return false;
+            });
+        }
+
+        //发送验证码表单验证
+        , receiveCode_validate: function () {//step1的表单验证
+            var error = [];
+            var cellphone = $('#cellphone').val();
+            var mobile = /^(13[0-9]{9})|(18[0-9]{9})|(14[0-9]{9})|(17[0-9]{9})|(15[0-9]{9})$/;
+            if (cellphone == '' || cellphone == null) {
+                error.push('请输入手机号码');
+            } else if (!mobile.test(cellphone)) {
+                error.push('请正确填写您的手机号码');
+            }
+            if (error.length > 0) {
+                var html = '<label id="cellphone-error" class="error" for="cellphone">';
+                html += error[0];
+                html += '</label>';
+                if ($('#cellphone').closest('.form-group').find('#cellphone-error').length < 1) {
+                    $('#cellphone').closest('.form-group').append(html);
+                }
+                return false;
+            } else {
+                return true;
+            }
+        }
+        /*function(){
+         $('form.bindPhoneBox').validate({
+         rules: {
+         bindCellPhoneDtoCellphone: {
+         required: true,
+         minlength: 11,
+         isMobile: true
+         },
+         },
+         messages: {
+         bindCellPhoneDtoCellphone: {
+         required: "请输入手机号码",
+         minlength: "确认手机不能小于11个字符",
+         isMobile: "请正确填写您的手机号码"
+         }
+         },
+         errorPlacement: function (error, element) { //指定错误信息位置
+         if ($(element).attr('name')=='bindCellPhoneDtoCellphone') {
+         error.appendTo(element.closest('.col-md-12 .form-group'));
+         } else {
+         error.insertAfter(element);
+         }
+         }
+         });
+         }*/
+        , saveBindPhone_validate: function () {
+            var that = this;
+            $(that.element).find('form.bindPhoneBox').validate({
+                rules: {
+                    bindCellPhoneDtoCellphone: {
+                        required: true,
+                        minlength: 11
+                    },
+                    bindCellPhoneDtoCode: {
+                        required: true
+                    }
+                },
+                messages: {
+                    bindCellPhoneDtoCellphone: {
+                        required: "请输入手机号码",
+                        minlength: "确认手机不能小于11个字符"
+                    },
+                    bindCellPhoneDtoCode: {
+                        required: '请输入验证码!'
+                    }
+                },
+                errorPlacement: function (error, element) { //指定错误信息位置
+                    if ($(element).attr('name') == 'bindCellPhoneDtoCellphone') {
+                        error.appendTo(element.closest('.col-md-12 .form-group'));
+                        error.addClass('input_error');
+                    } else {
+                        error.insertAfter(element);
+                    }
+                }
+            });
+            // 手机号码验证
+            jQuery.validator.addMethod("isMobile", function (value, element) {
+                var length = value.length;
+                var mobile = /^(13[0-9]{9})|(18[0-9]{9})|(14[0-9]{9})|(17[0-9]{9})|(15[0-9]{9})$/;
+                return this.optional(element) || (length == 11 && mobile.test(value));
+            }, "请正确填写您的手机号码");
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+/**
+ * 个人中心－安全设置
+ * Created by wrb on 2017/03/01.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_safety",
+        defaults = {
+            userDto: null//用户信息数据(当从外传入，则不需要重新请求)
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            this._getUserInfo();
+            this._bindActionClick();
+        },
+        //渲染页面
+        _renderHtml: function (data) {
+            var that = this;
+
+            var html = template('m_personal/m_safety', {userDto:data});
+
+            $(that.element).html(html);
+        },
+        //获取用户信息
+        _getUserInfo: function () {
+            var that = this;
+            var userDto = that.settings.userDto;
+            if (userDto === void 0 || userDto === null) {
+                var option = {};
+                option.url = restApi.url_userInfo;
+                m_ajax.get(option, function (response) {
+                    if (response.code === '0') {
+                        that.settings.userDto=response.data;
+                        that._renderHtml(response.data)
+                    } else {
+                        S_dialog.error(response.info);
+                    }
+                });
+            } else {
+                that._renderHtml(userDto)
+            }
+        }
+        //打开绑定邮箱弹窗
+        ,_openBindEmailDialog:function () {
+            S_dialog.dialog({
+                title: '绑定邮箱',
+                //contentEle: 'bindEmailBox',
+                lock: 3,
+                width: '500',
+                tPadding: '0px',
+                url: rootPath+'/assets/module/m_common/m_dialog.html',
+                cancelText:'关闭',
+                cancel:function () {
+
+                }
+            },function(d){//加载html后触发
+                var options = {};
+                options.sendEmailCallBack = function () {
+                    S_dialog.close($('.bindEmailBox'))
+                };
+                $('div[id="content:'+d.id+'"]').m_bindEmail(options);
+            });
+        }
+        //事件绑定
+        ,_bindActionClick:function () {
+
+            var that = this;
+
+            $(that.element).find('a[data-action]').on('click',function () {
+
+                var dataAction = $(this).attr('data-action');
+
+                if(dataAction=='bindEmail'){//绑定邮箱
+
+                    that._openBindEmailDialog();
+
+                }else if(dataAction=='bindPhone'){//绑定手机
+
+                    $('body').m_bindPhone();
+
+                }else if(dataAction=='changePwd'){//修改密码
+
+                    $('body').m_uptPassword();//打开修改密码弹窗
+                }
+                return false;
+            });
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+            new Plugin(this, options);
+        });
+    };
+
+})(jQuery, window, document);
+
+/**
+ * Created by wrb on 2016/12/15.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_uptPassword",
+        defaults = {
+            savePasswordCallBack:null
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.initHtml();
+
+        }
+        ,initHtml:function(){
+            var that = this;
+            S_dialog.dialog({
+                title: '修改密码',
+                //contentEle: 'changePassWordOBox',
+                lock: 3,
+                width: '500',
+                tPadding: '0px',
+                url: rootPath+'/assets/module/m_common/m_dialog.html',
+                ok:function(){
+                    var flag = $('form.changePassWordOBox').valid();
+                    if(!flag){
+                        return false;
+                    }else{
+                        that.savePassword();
+                    }
+                },
+                okText:'保存',
+                cancel:function(){},
+                cancelText:'取消',
+            },function(d){//加载html后触发
+                var html = template('m_personal/m_uptPassword',{});
+                $('div[id="content:'+d.id+'"]').html(html);
+                that.savePassword_validate();
+            });
+        }
+        //保存密码
+        ,savePassword:function () {
+            var that = this;
+            var option  = {};
+            option.url = restApi.url_changePassword;
+            var $data = $('form.changePassWordOBox').serializeObject();
+            option.postData = $data;
+            m_ajax.postJson(option,function (response) {
+                if(response.code=='0'){
+                    S_dialog.success('修改成功，请重新登录!','提示',function(){
+                        window.location.href = rootPath+'/iWork/sys/logout';
+                    })
+                }else {
+                    S_dialog.error(response.info);
+                    return false;
+                }
+            });
+        }
+        ,savePassword_validate:function(){
+            $('form.changePassWordOBox').validate({
+                rules: {
+                    oldPassword: {
+                        required: true
+                    },
+                    password:{
+                        required:true,
+                        minlength: 6,
+                        maxlength:12
+                    },
+                    rePassword:{
+                        required:true,
+                        minlength: 6,
+                        maxlength:12,
+                        equalTo: "#password"
+                    }
+                },
+                messages: {
+                    oldPassword: {
+                        required: '请输入旧密码！'
+                    },
+                    password:{
+                        required:'请输入新密码！',
+                        minlength:'密码为6-12位！',
+                        maxlength:'密码为6-12位！'
+                    },
+                    rePassword:{
+                        required:'请确认新密码！',
+                        minlength:'密码为6-12位！',
+                        maxlength:'密码为6-12位！',
+                        equalTo: '两次密码输入不一致'
+                    }
+                }
+            });
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+/**
+ * Created by wrb on 2016/12/14.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_userInfo",
+        defaults = {
+            doType: 'view',//操作类型{view=查看,edit=编辑}
+            userDto: null//用户信息数据(当从外传入，则不需要重新请求)
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+
+        this._originalFileGroup = '';
+        this._originalFilePath = '';
+        this._originalFileName = '';
+
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            this.getUserInfo();
+        },
+        //渲染页面
+        renderUserInfo: function () {
+            var that = this;
+
+            that.getCompanyDepartAndPermission(function (data) {
+                var userDto = that.settings.userDto;
+
+                userDto.orgpermissionList = data;
+                if (userDto.headImg !== void 0 && userDto.headImg != null)
+                    userDto.headImgUrl = window.fastdfsUrl + userDto.headImg;
+                else
+                    userDto.headImgUrl=window.rootPath+'/assets/img/default/default_headPic.png';
+                if (that.settings.doType == 'edit')
+                    var html = template('m_personal/m_userInfo_edit', {userDto: userDto});
+                else
+                    var html = template('m_personal/m_userInfo', {userDto: userDto});
+
+                $(that.element).html(html);
+                that.editableBind();
+                that._bindUploadOrinalImage();
+                that.bindActionClick();
+                that.editableBind();
+            });
+
+        },
+        //获取用户信息
+        getUserInfo: function () {
+            var that = this;
+            var userDto = that.settings.userDto;
+            if (userDto === void 0 || userDto === null) {
+                var option = {};
+                option.url = restApi.url_userInfo;
+                m_ajax.get(option, function (response) {
+                    if (response.code === '0') {
+                        that.settings.userDto=response.data;
+                        that.renderUserInfo();
+
+                    } else {
+                        S_dialog.error(response.info);
+                    }
+                });
+            } else {
+                that.renderUserInfo();
+
+            }
+        }
+
+        //获取数据字典专业列表
+        ,getMajor:function (callBack) {
+            var option = {};
+            option.url = restApi.url_getMajor;
+            m_ajax.post(option, function (response) {
+                if (response.code === '0') {
+                   if(callBack!=null){
+                       return callBack(response.data);
+                   }
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+        //获取人员组织权限信息
+        ,getCompanyDepartAndPermission:function (callBack) {
+            var option = {};
+            option.url = restApi.url_getCompanyDepartAndPermission;
+            option.postData = {};
+            option.postData.accountId = window.currentUserId;
+            option.postData.orgId = window.currentCompanyId;
+            m_ajax.postJson(option, function (response) {
+                if (response.code === '0') {
+                    if(callBack!=null){
+                        return callBack(response.data);
+                    }
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+        //在位编辑事件绑定
+        ,editableBind:function(){
+            var that = this;
+            $(that.element).find('.editableInfo a[data-action="text_userName"]').editable({
+                type : 'text'
+                ,title : '编辑'
+                ,placeholder : '请输入姓名'
+                ,placement:'right'
+                ,value:$.trim($(that.element).find('.editableInfo a[data-action="text_userName"]').text())
+                ,mode: "popup"
+                ,success:function(response,newValue){
+                    that.saveUserInfo(newValue,function(){
+                        $(this).text(newValue).css({'color':'#4765a0','font-weight':'normal'});
+                        $('nav>div[id="navbar"]>ul>li>div').find('a[data-type="textUserName"]').text(newValue);
+                    });
+                }
+                ,validate: function (value) {
+                if ($.trim(value) == '') {
+                    return "姓名不能为空！";
+                }
+            }
+            });
+
+            that.dealEmptyText();
+        }
+        //当在为编辑的文本显示为empty时，改为“请设置”
+        ,dealEmptyText:function(){
+            var that = this;
+            $(that.element).find('.editableInfo a[data-action]').each(function(){
+                var text = $(this).text();
+                if(text=='Empty'){
+                    $(this).text(text=='Empty'?'未设置':text).css({'color':'#ccc','font-style':'normal'});
+                }
+            });
+        }
+        //保存用户信息
+        , saveUserInfo: function (value,callback) {
+            var that = this;
+            var option = {};
+            option.url = restApi.url_userInfo;
+            // var $data = $("form.userInfoForm").serializeObject();
+            option.postData = {};
+            option.postData.id = that.settings.userDto.id;
+            option.postData.userName = value;
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+                    S_toastr.success('保存成功！');
+                    // $(that.element).m_userInfo(option.postData);
+                    if(callback) return callback();
+                } else {
+                    S_dialog.error(response.info);
+                }
+            })
+        }
+        //按钮事件绑定
+        , bindActionClick: function () {
+            var that = this;
+            $('.headImg a[data-action]').off('click');
+            // $('.headImg a[data-action="changeHeadPic"]').on('click', function () {
+            //         that._bindUploadOrinalImage();
+            //     return false;
+            // });
+
+            $(that.element).find('a[data-action]').on('click',function () {
+
+                var $this = this,dataAction = $(this).attr('data-action');
+
+                if(dataAction=='bindPhone'){//绑定手机
+
+                    $('body').m_bindPhone();
+
+                }else if(dataAction=='changePwd'){//修改密码
+
+                    $('body').m_uptPassword();//打开修改密码弹窗
+                }else if(dataAction=='edit_designRange'){//修改专业
+
+                    that.getMajor(function (data) {
+                        $($this).m_popover({
+                            placement: 'right',
+                            content: template('m_personal/m_userInfo_major_edit', {majorList:data,majorId:that.settings.userDto.major}),
+                            titleHtml: '<h3 class="popover-title">编辑</h3>',
+                            onShown: function ($popover) {
+
+                                $popover.find('.userInfo_profession_edit input[name="major"]').on('click',function (e) {
+
+                                    stopPropagation(e);
+                                })
+                                $popover.find('.userInfo_profession_edit input[name="major"]').next().on('click',function (e) {
+                                    $(this).prev().click();
+                                })
+                                that._saveUserMajor_validate();
+                            },
+                            onSave: function ($popover) {
+
+                                if($(that.element).find('form.userInfo_profession_edit').valid()){
+                                    var option = {};
+                                    option.url = restApi.url_userInfo;
+                                    option.postData = {};
+                                    option.postData.id = that.settings.userDto.id;
+                                    option.postData.major = $popover.find('.userInfo_profession_edit input[name="major"]:checked').val();
+                                    m_ajax.postJson(option, function (response) {
+                                        if (response.code == '0') {
+                                            S_toastr.success('保存成功！');
+                                            that.refresh();
+                                        } else {
+                                            S_dialog.error(response.info);
+                                        }
+                                    })
+                                }else{
+                                    return false;
+                                }
+
+
+                            }
+                        }, true);
+                        return false;
+                    });
+
+                }
+                return false;
+            });
+        }
+        //上传原图
+        , _bindUploadOrinalImage: function () {
+            var that = this;
+            var userDto = that.settings.userDto;
+            var headImg=null;
+            var text=$('.imgContent .btnFilePicker').html();
+            if (userDto.headImg !== void 0 && userDto.headImg != null)
+                headImg=userDto.headImg;
+            $('.imgContent .btnFilePicker').m_imgUploader({
+
+                server: window.fileCenterUrl + "/fastUploadImage",
+                formData: {
+                    cut_deleteGroup:that.settings.cut_deleteGroup,
+                    cut_deletePath:headImg
+                },
+                innerHTML: text,
+                loadingId: 'body',
+                uploadSuccessCallback: function (file, response) {
+                    that._originalFileGroup = response.data.fastdfsGroup;
+                    that._originalFilePath = response.data.fastdfsPath;
+                    that._originalFileName = response.data.fileName;
+
+                    that.toCutDialog();
+                    //渲染图片
+                    $('.m_imgCropper .img-container').attr('src', window.fastdfsUrl + that._originalFileGroup + '/' + that._originalFilePath);
+
+
+
+                    $(that.element).find('.title:eq(0)').addClass('hide');
+                    $(that.element).find('.setArea:eq(0)').removeClass('hide');
+
+
+
+                    //S_toastr.success(response.info);
+                }
+            },true);
+        }
+        //调到裁剪窗口
+        ,toCutDialog:function(){
+            var that = this;
+            var userDto = that.settings.userDto;
+            var headImg=null;
+            if (userDto.headImg !== void 0 && userDto.headImg != null)
+                headImg=userDto.headImg;
+            $('body').m_imgCropper({
+                showDialog: true,
+                zoomWidth: 180,
+                zoomHeight: 180,
+                originalFileGroup: that._originalFileGroup,
+                originalFilePath: that._originalFilePath,
+                originalFileName: that._originalFileName,
+                cut_deletePath:headImg,
+                croppedCallback: function (data) {
+                    var ajaxOption={};
+                    ajaxOption.url=restApi.url_saveOrUpdateUserAttach;
+                    ajaxOption.postData={
+                        fileGroup:data.fastdfsGroup,
+                        filePath:data.fastdfsPath,
+                        fileName:data.fileName,
+                        userId:window.currentUserId
+                    };
+                    m_ajax.postJson(ajaxOption,function(response){
+                        if(response.code==='0'){
+                            var path = window.fastdfsUrl + data.fastdfsGroup + '/' + data.fastdfsPath;
+                            $(that.element).find('#headImage').attr('src', path);
+                            //右上角个人头像
+                            $('#navbar ul.navbar-right li .img-circle').attr('src', path);
+                            S_toastr.success("保存成功");
+                        } else {
+                            S_dialog.error(response.info);
+                        }
+                    });
+                }
+            });
+        }
+        //刷新当前组件
+        ,refresh:function () {
+            var that = this;
+            var option = {};
+            option.url = restApi.url_userInfo;
+            m_ajax.get(option, function (response) {
+                if (response.code == '0') {
+                    that.userDto = response.data;
+                    $('#box_detail').m_userInfo({userDto: that.userDto});
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+        //金额比例验证
+        ,_saveUserMajor_validate:function(){
+            var that = this;
+            $(that.element).find('form.userInfo_profession_edit').validate({
+                rules: {
+                    major:{
+                        required:true
+                    }
+                },
+                messages: {
+                    major:{
+                        required:'请选择专业!'
+                    }
+                },
+                errorPlacement: function (error, element) { //指定错误信息位置
+                    error.appendTo(element.closest('.row').find('.col-md-12'));
+                }
+            });
+        }
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+            new Plugin(this, options);
+        });
+    };
+
+})(jQuery, window, document);
+
+/**
  * 收支总览-收支明细-菜单
  * Created by wrb on 2017/11/30.
  */
@@ -36963,1042 +37999,6 @@ return new String($out);
 })(jQuery, window, document);
 
 /**
- * Created by Wuwq on 2017/1/19.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_page",
-        defaults = {
-            loadingId: null,
-            pageIndex: 0,
-            pageSize: 10,
-            total: 0,
-            pageBtnCount: 5,
-            showFirstLastBtn: false,
-            firstBtnText: null,
-            lastBtnText: null,
-            /*prevBtnText: "&laquo;",
-             nextBtnText: "&raquo;",*/
-            prevBtnText: '上一页',
-            nextBtnText: '下一页',
-            loadFirstPage: true,
-            remote: {
-                url: null,
-                params: null,
-                pageParams: null,
-                success: null,
-                beforeSend: null,
-                complete: null,
-                pageIndexName: 'pageIndex',
-                pageSizeName: 'pageSize',
-                totalName: 'data.total',
-                traditional: false,
-                remoteWrongFormat: null
-            },
-            pageElementSort: ['$page', '$size', '$jump', '$info'],
-            showInfo: false,
-            infoFormat: '{start} ~ {end} of {total} entires',
-            noInfoText: '0 entires',
-            showJump: false,
-            jumpBtnText: 'Go',
-            showPageSizes: false,
-            pageSizeItems: [5, 10, 15, 20],
-            debug: false
-        };
-
-    function Plugin(element, options) {
-        this.element = element;
-        var remote = $.extend({}, defaults.remote, options.remote);
-        this.settings = $.extend({}, defaults, options);
-        this.settings.remote = remote;
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            if (that.settings.loadingId !== null && that.settings.remote.beforeSend === null) {
-                that.settings.remote.beforeSend = function () {
-                    $_loading.show(that.settings.loadingId, '正在加载中...');
-                }
-            }
-            if (that.settings.loadingId !== null && that.settings.remote.complete === null) {
-                that.settings.remote.complete = function () {
-                    $_loading.close(that.settings.loadingId);
-                }
-            }
-
-            if (that.settings.remote.remoteWrongFormat === null) {
-                that.settings.remote.remoteWrongFormat = function (res) {
-                    if (res && res.code === '500')
-                        S_dialog.error('很抱歉，请求发生异常');
-                }
-            }
-
-            if ($(that.element).pagination())
-                $(that.element).pagination('destroy');
-            $(that.element).pagination(that.settings);
-        }
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-            /*if ( !$.data( this, "plugin_" + pluginName ) ) {
-             $.data( this, "plugin_" +
-             pluginName, new Plugin( this, options ) );
-             }*/
-            new Plugin(this, options);
-        });
-    };
-
-})(jQuery, window, document);
-/**
- * Created by wrb on 2016/12/15.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_bindEmail",
-        defaults = {
-            sendEmailCallBack:null
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var html = template('m_personal/m_bindEmail',{});
-            $(this.element).html(html);
-            this.sendValidationEemail_validate();
-            this.bindActionClick();
-        }
-        //发送邮箱
-        ,sendValidationEemail:function () {
-
-            var that = this;
-
-            if ($('form.bindEmailBox').valid()) {
-                var option  = {};
-                option.url = restApi.url_sendBindMail;
-                option.postData = {toMail:$('form.bindEmailBox input[name="bindEmailDtoEmail"]').val()};
-                m_ajax.postJson(option,function (response) {
-                    if(response.code=='0'){
-                        S_toastr.success('发送成功！');
-                        if(that.settings.sendEmailCallBack!=null){
-                            that.settings.sendEmailCallBack();
-                        }
-                    }else {
-                        S_dialog.error(response.info);
-                    }
-
-                })
-            }
-        }
-        //按钮事件绑定
-        ,bindActionClick:function () {
-            var that = this;
-            $('form.bindEmailBox button[data-action]').on('click',function () {
-                var dataAction = $(this).attr('data-action');
-                if(dataAction=="sendValidationEemail"){//发送邮件
-                    that.sendValidationEemail();
-                }
-            });
-        }
-        //发送邮箱表单验证
-        ,sendValidationEemail_validate:function(){
-            $('form.bindEmailBox').validate({
-                rules: {
-                    bindEmailDtoEmail: {
-                        required: true,
-                        email: true
-                    }
-                },
-                messages: {
-                    bindEmailDtoEmail: {
-                        required: '请输入邮箱!',
-                        email: "请输入有效的电子邮件地址",
-                    }
-                },
-                errorPlacement: function (error, element) { //指定错误信息位置
-                    if ($(element).attr('name')=='bindEmailDtoEmail') {
-                        error.appendTo(element.closest('.col-md-12'));
-                    } else {
-                        error.insertAfter(element);
-                    }
-                }
-            });
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-/**
- * Created by wrb on 2016/12/15.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_bindPhone",
-        defaults = {
-            saveBindPhoneCallBack: null
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.initHtml();
-        }
-        //初始化页面
-        ,initHtml:function(){
-            var that = this;
-            S_dialog.dialog({
-                title: '绑定手机',
-                //contentEle: 'bindPhoneBox',
-                lock: 3,
-                width: '500',
-                tPadding: '0px',
-                url: rootPath+'/assets/module/m_common/m_dialog.html',
-                ok:function(){
-                    var flag = $('form.bindPhoneBox').valid();
-                    if(!flag){
-                        return false;
-                    }else{
-                        that.saveBindPhone();
-                    }
-                },
-                okText:'保存',
-                cancel:function(){},
-                cancelText:'取消'
-            },function(d){//加载html后触发
-                var html = template('m_personal/m_bindPhone', {});
-                $('div[id="content:'+d.id+'"]').html(html);
-                //this.receiveCode_validate();
-                that.saveBindPhone_validate();
-                that.bindActionClick();
-                that.closeDialog();
-            });
-        }
-        //发送验证
-        , receiveCode: function () {
-
-            var that = this;
-                that.getCode();
-                var option = {};
-                option.url = restApi.url_securityCode;
-                option.postData = {cellphone: $('form.bindPhoneBox input[name="bindCellPhoneDtoCellphone"]').val()};
-                m_ajax.postJson(option, function (response) {
-                    if (response.code == '0') {
-                        //S_dialog.tips('发送成功！');
-                    } else {
-                        if ("undefined" != typeof that.timer) {
-                            window.clearInterval(that.timer);
-                        }
-                        S_dialog.error(response.info);
-                    }
-                })
-        }
-        //给关闭弹窗按钮绑定事件
-        ,closeDialog:function(){
-            var that = this;
-            $(that.element).closest('.ui-dialog').find('td[i="header"] button.ui-dialog-close,.panel-footer button.btn-u-default')
-                .on('click.clearInterval',function(event){
-                    window.clearInterval(that.timer);
-                    stopPropagation(event);
-                });
-        }
-        //保存绑定手机号
-        , saveBindPhone: function () {
-            var that = this;
-            var option = {};
-            option.url = restApi.url_changeCellphone;
-            option.postData = {
-                cellphone: $('form.bindPhoneBox input[name="bindCellPhoneDtoCellphone"]').val(),
-                code: $('form.bindPhoneBox input[name="bindCellPhoneDtoCode"]').val()
-            };
-            m_ajax.postJson(option, function (response) {
-                if (response.code == '0') {
-                    /*S_toastr.success('发送成功！');
-                    var url = '/iWork/sys/logout';
-                    if (data != null && data != '')
-                        url = data;
-                    window.location.href = window.rootPath + url;*/
-                    S_swal.sure({
-                        title:'已更改',
-                        text:'更改手机号成功。',
-                        callBack:function () {
-                            window.location.href = window.rootPath + '/iWork/sys/logout';
-                        }
-                    });
-                } else {
-                    S_dialog.error(response.info);
-                    return false;
-                }
-            });
-        }
-        , getCode: function () {//生成时间倒计时
-            var clock = 60;
-            var that = this;
-            var updateClock = function () {
-                if (clock > 0) {
-                    clock = clock - 1;
-                    $('form.bindPhoneBox a[data-action="receiveCode"]').html(clock + 's');
-                    // $('form.bindPhoneBox a[data-action="receiveCode"]').css('opacity','0.5');
-                    $('form.bindPhoneBox a[data-action="receiveCode"]').attr('disabled', 'disabled');
-                }
-            };
-            updateClock();
-            that.timer = setInterval(function () {
-                updateClock();
-                if (clock <= 0) {
-                    $('form.bindPhoneBox a[data-action="receiveCode"]').html('获取验证码');
-                    // $('form.bindPhoneBox a[data-action="receiveCode"]').css('opacity','1');
-                    $('form.bindPhoneBox a[data-action="receiveCode"]').removeAttr('disabled');
-                    if ("undefined" != typeof that.timer) {
-                        window.clearInterval(that.timer);
-                    }
-                }
-            }, 1000);
-        }
-        //按钮事件绑定
-        , bindActionClick: function () {
-            var that = this;
-            $('form.bindPhoneBox a[data-action]').on('click', function (event) {
-                var dataAction = $(this).attr('data-action');
-                if (dataAction == "receiveCode") {//发送验证码
-                    if ($(this).html() == '获取验证码') {
-                        if (that.receiveCode_validate()) {
-                            that.receiveCode();
-                        }
-                    } else {
-                        return false;
-                    }
-                } else if (dataAction == 'saveBindPhone') {//保存绑定
-                    that.saveBindPhone();
-                }
-                stopPropagation(event);
-                return false;
-            });
-        }
-
-        //发送验证码表单验证
-        , receiveCode_validate: function () {//step1的表单验证
-            var error = [];
-            var cellphone = $('#cellphone').val();
-            var mobile = /^(13[0-9]{9})|(18[0-9]{9})|(14[0-9]{9})|(17[0-9]{9})|(15[0-9]{9})$/;
-            if (cellphone == '' || cellphone == null) {
-                error.push('请输入手机号码');
-            } else if (!mobile.test(cellphone)) {
-                error.push('请正确填写您的手机号码');
-            }
-            if (error.length > 0) {
-                var html = '<label id="cellphone-error" class="error" for="cellphone">';
-                html += error[0];
-                html += '</label>';
-                if ($('#cellphone').closest('.form-group').find('#cellphone-error').length < 1) {
-                    $('#cellphone').closest('.form-group').append(html);
-                }
-                return false;
-            } else {
-                return true;
-            }
-        }
-        /*function(){
-         $('form.bindPhoneBox').validate({
-         rules: {
-         bindCellPhoneDtoCellphone: {
-         required: true,
-         minlength: 11,
-         isMobile: true
-         },
-         },
-         messages: {
-         bindCellPhoneDtoCellphone: {
-         required: "请输入手机号码",
-         minlength: "确认手机不能小于11个字符",
-         isMobile: "请正确填写您的手机号码"
-         }
-         },
-         errorPlacement: function (error, element) { //指定错误信息位置
-         if ($(element).attr('name')=='bindCellPhoneDtoCellphone') {
-         error.appendTo(element.closest('.col-md-12 .form-group'));
-         } else {
-         error.insertAfter(element);
-         }
-         }
-         });
-         }*/
-        , saveBindPhone_validate: function () {
-            var that = this;
-            $(that.element).find('form.bindPhoneBox').validate({
-                rules: {
-                    bindCellPhoneDtoCellphone: {
-                        required: true,
-                        minlength: 11
-                    },
-                    bindCellPhoneDtoCode: {
-                        required: true
-                    }
-                },
-                messages: {
-                    bindCellPhoneDtoCellphone: {
-                        required: "请输入手机号码",
-                        minlength: "确认手机不能小于11个字符"
-                    },
-                    bindCellPhoneDtoCode: {
-                        required: '请输入验证码!'
-                    }
-                },
-                errorPlacement: function (error, element) { //指定错误信息位置
-                    if ($(element).attr('name') == 'bindCellPhoneDtoCellphone') {
-                        error.appendTo(element.closest('.col-md-12 .form-group'));
-                        error.addClass('input_error');
-                    } else {
-                        error.insertAfter(element);
-                    }
-                }
-            });
-            // 手机号码验证
-            jQuery.validator.addMethod("isMobile", function (value, element) {
-                var length = value.length;
-                var mobile = /^(13[0-9]{9})|(18[0-9]{9})|(14[0-9]{9})|(17[0-9]{9})|(15[0-9]{9})$/;
-                return this.optional(element) || (length == 11 && mobile.test(value));
-            }, "请正确填写您的手机号码");
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-/**
- * 个人中心－安全设置
- * Created by wrb on 2017/03/01.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_safety",
-        defaults = {
-            userDto: null//用户信息数据(当从外传入，则不需要重新请求)
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            this._getUserInfo();
-            this._bindActionClick();
-        },
-        //渲染页面
-        _renderHtml: function (data) {
-            var that = this;
-
-            var html = template('m_personal/m_safety', {userDto:data});
-
-            $(that.element).html(html);
-        },
-        //获取用户信息
-        _getUserInfo: function () {
-            var that = this;
-            var userDto = that.settings.userDto;
-            if (userDto === void 0 || userDto === null) {
-                var option = {};
-                option.url = restApi.url_userInfo;
-                m_ajax.get(option, function (response) {
-                    if (response.code === '0') {
-                        that.settings.userDto=response.data;
-                        that._renderHtml(response.data)
-                    } else {
-                        S_dialog.error(response.info);
-                    }
-                });
-            } else {
-                that._renderHtml(userDto)
-            }
-        }
-        //打开绑定邮箱弹窗
-        ,_openBindEmailDialog:function () {
-            S_dialog.dialog({
-                title: '绑定邮箱',
-                //contentEle: 'bindEmailBox',
-                lock: 3,
-                width: '500',
-                tPadding: '0px',
-                url: rootPath+'/assets/module/m_common/m_dialog.html',
-                cancelText:'关闭',
-                cancel:function () {
-
-                }
-            },function(d){//加载html后触发
-                var options = {};
-                options.sendEmailCallBack = function () {
-                    S_dialog.close($('.bindEmailBox'))
-                };
-                $('div[id="content:'+d.id+'"]').m_bindEmail(options);
-            });
-        }
-        //事件绑定
-        ,_bindActionClick:function () {
-
-            var that = this;
-
-            $(that.element).find('a[data-action]').on('click',function () {
-
-                var dataAction = $(this).attr('data-action');
-
-                if(dataAction=='bindEmail'){//绑定邮箱
-
-                    that._openBindEmailDialog();
-
-                }else if(dataAction=='bindPhone'){//绑定手机
-
-                    $('body').m_bindPhone();
-
-                }else if(dataAction=='changePwd'){//修改密码
-
-                    $('body').m_uptPassword();//打开修改密码弹窗
-                }
-                return false;
-            });
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-            new Plugin(this, options);
-        });
-    };
-
-})(jQuery, window, document);
-
-/**
- * Created by wrb on 2016/12/15.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_uptPassword",
-        defaults = {
-            savePasswordCallBack:null
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.initHtml();
-
-        }
-        ,initHtml:function(){
-            var that = this;
-            S_dialog.dialog({
-                title: '修改密码',
-                //contentEle: 'changePassWordOBox',
-                lock: 3,
-                width: '500',
-                tPadding: '0px',
-                url: rootPath+'/assets/module/m_common/m_dialog.html',
-                ok:function(){
-                    var flag = $('form.changePassWordOBox').valid();
-                    if(!flag){
-                        return false;
-                    }else{
-                        that.savePassword();
-                    }
-                },
-                okText:'保存',
-                cancel:function(){},
-                cancelText:'取消',
-            },function(d){//加载html后触发
-                var html = template('m_personal/m_uptPassword',{});
-                $('div[id="content:'+d.id+'"]').html(html);
-                that.savePassword_validate();
-            });
-        }
-        //保存密码
-        ,savePassword:function () {
-            var that = this;
-            var option  = {};
-            option.url = restApi.url_changePassword;
-            var $data = $('form.changePassWordOBox').serializeObject();
-            option.postData = $data;
-            m_ajax.postJson(option,function (response) {
-                if(response.code=='0'){
-                    S_dialog.success('修改成功，请重新登录!','提示',function(){
-                        window.location.href = rootPath+'/iWork/sys/logout';
-                    })
-                }else {
-                    S_dialog.error(response.info);
-                    return false;
-                }
-            });
-        }
-        ,savePassword_validate:function(){
-            $('form.changePassWordOBox').validate({
-                rules: {
-                    oldPassword: {
-                        required: true
-                    },
-                    password:{
-                        required:true,
-                        minlength: 6,
-                        maxlength:12
-                    },
-                    rePassword:{
-                        required:true,
-                        minlength: 6,
-                        maxlength:12,
-                        equalTo: "#password"
-                    }
-                },
-                messages: {
-                    oldPassword: {
-                        required: '请输入旧密码！'
-                    },
-                    password:{
-                        required:'请输入新密码！',
-                        minlength:'密码为6-12位！',
-                        maxlength:'密码为6-12位！'
-                    },
-                    rePassword:{
-                        required:'请确认新密码！',
-                        minlength:'密码为6-12位！',
-                        maxlength:'密码为6-12位！',
-                        equalTo: '两次密码输入不一致'
-                    }
-                }
-            });
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-/**
- * Created by wrb on 2016/12/14.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_userInfo",
-        defaults = {
-            doType: 'view',//操作类型{view=查看,edit=编辑}
-            userDto: null//用户信息数据(当从外传入，则不需要重新请求)
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-
-        this._originalFileGroup = '';
-        this._originalFilePath = '';
-        this._originalFileName = '';
-
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            this.getUserInfo();
-        },
-        //渲染页面
-        renderUserInfo: function () {
-            var that = this;
-
-            that.getCompanyDepartAndPermission(function (data) {
-                var userDto = that.settings.userDto;
-
-                userDto.orgpermissionList = data;
-                if (userDto.headImg !== void 0 && userDto.headImg != null)
-                    userDto.headImgUrl = window.fastdfsUrl + userDto.headImg;
-                else
-                    userDto.headImgUrl=window.rootPath+'/assets/img/default/default_headPic.png';
-                if (that.settings.doType == 'edit')
-                    var html = template('m_personal/m_userInfo_edit', {userDto: userDto});
-                else
-                    var html = template('m_personal/m_userInfo', {userDto: userDto});
-
-                $(that.element).html(html);
-                that.editableBind();
-                that._bindUploadOrinalImage();
-                that.bindActionClick();
-                that.editableBind();
-            });
-
-        },
-        //获取用户信息
-        getUserInfo: function () {
-            var that = this;
-            var userDto = that.settings.userDto;
-            if (userDto === void 0 || userDto === null) {
-                var option = {};
-                option.url = restApi.url_userInfo;
-                m_ajax.get(option, function (response) {
-                    if (response.code === '0') {
-                        that.settings.userDto=response.data;
-                        that.renderUserInfo();
-
-                    } else {
-                        S_dialog.error(response.info);
-                    }
-                });
-            } else {
-                that.renderUserInfo();
-
-            }
-        }
-
-        //获取数据字典专业列表
-        ,getMajor:function (callBack) {
-            var option = {};
-            option.url = restApi.url_getMajor;
-            m_ajax.post(option, function (response) {
-                if (response.code === '0') {
-                   if(callBack!=null){
-                       return callBack(response.data);
-                   }
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-        //获取人员组织权限信息
-        ,getCompanyDepartAndPermission:function (callBack) {
-            var option = {};
-            option.url = restApi.url_getCompanyDepartAndPermission;
-            option.postData = {};
-            option.postData.accountId = window.currentUserId;
-            option.postData.orgId = window.currentCompanyId;
-            m_ajax.postJson(option, function (response) {
-                if (response.code === '0') {
-                    if(callBack!=null){
-                        return callBack(response.data);
-                    }
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-        //在位编辑事件绑定
-        ,editableBind:function(){
-            var that = this;
-            $(that.element).find('.editableInfo a[data-action="text_userName"]').editable({
-                type : 'text'
-                ,title : '编辑'
-                ,placeholder : '请输入姓名'
-                ,placement:'right'
-                ,value:$.trim($(that.element).find('.editableInfo a[data-action="text_userName"]').text())
-                ,mode: "popup"
-                ,success:function(response,newValue){
-                    that.saveUserInfo(newValue,function(){
-                        $(this).text(newValue).css({'color':'#4765a0','font-weight':'normal'});
-                        $('nav>div[id="navbar"]>ul>li>div').find('a[data-type="textUserName"]').text(newValue);
-                    });
-                }
-                ,validate: function (value) {
-                if ($.trim(value) == '') {
-                    return "姓名不能为空！";
-                }
-            }
-            });
-
-            that.dealEmptyText();
-        }
-        //当在为编辑的文本显示为empty时，改为“请设置”
-        ,dealEmptyText:function(){
-            var that = this;
-            $(that.element).find('.editableInfo a[data-action]').each(function(){
-                var text = $(this).text();
-                if(text=='Empty'){
-                    $(this).text(text=='Empty'?'未设置':text).css({'color':'#ccc','font-style':'normal'});
-                }
-            });
-        }
-        //保存用户信息
-        , saveUserInfo: function (value,callback) {
-            var that = this;
-            var option = {};
-            option.url = restApi.url_userInfo;
-            // var $data = $("form.userInfoForm").serializeObject();
-            option.postData = {};
-            option.postData.id = that.settings.userDto.id;
-            option.postData.userName = value;
-            m_ajax.postJson(option, function (response) {
-                if (response.code == '0') {
-                    S_toastr.success('保存成功！');
-                    // $(that.element).m_userInfo(option.postData);
-                    if(callback) return callback();
-                } else {
-                    S_dialog.error(response.info);
-                }
-            })
-        }
-        //按钮事件绑定
-        , bindActionClick: function () {
-            var that = this;
-            $('.headImg a[data-action]').off('click');
-            // $('.headImg a[data-action="changeHeadPic"]').on('click', function () {
-            //         that._bindUploadOrinalImage();
-            //     return false;
-            // });
-
-            $(that.element).find('a[data-action]').on('click',function () {
-
-                var $this = this,dataAction = $(this).attr('data-action');
-
-                if(dataAction=='bindPhone'){//绑定手机
-
-                    $('body').m_bindPhone();
-
-                }else if(dataAction=='changePwd'){//修改密码
-
-                    $('body').m_uptPassword();//打开修改密码弹窗
-                }else if(dataAction=='edit_designRange'){//修改专业
-
-                    that.getMajor(function (data) {
-                        $($this).m_popover({
-                            placement: 'right',
-                            content: template('m_personal/m_userInfo_major_edit', {majorList:data,majorId:that.settings.userDto.major}),
-                            titleHtml: '<h3 class="popover-title">编辑</h3>',
-                            onShown: function ($popover) {
-
-                                $popover.find('.userInfo_profession_edit input[name="major"]').on('click',function (e) {
-
-                                    stopPropagation(e);
-                                })
-                                $popover.find('.userInfo_profession_edit input[name="major"]').next().on('click',function (e) {
-                                    $(this).prev().click();
-                                })
-                                that._saveUserMajor_validate();
-                            },
-                            onSave: function ($popover) {
-
-                                if($(that.element).find('form.userInfo_profession_edit').valid()){
-                                    var option = {};
-                                    option.url = restApi.url_userInfo;
-                                    option.postData = {};
-                                    option.postData.id = that.settings.userDto.id;
-                                    option.postData.major = $popover.find('.userInfo_profession_edit input[name="major"]:checked').val();
-                                    m_ajax.postJson(option, function (response) {
-                                        if (response.code == '0') {
-                                            S_toastr.success('保存成功！');
-                                            that.refresh();
-                                        } else {
-                                            S_dialog.error(response.info);
-                                        }
-                                    })
-                                }else{
-                                    return false;
-                                }
-
-
-                            }
-                        }, true);
-                        return false;
-                    });
-
-                }
-                return false;
-            });
-        }
-        //上传原图
-        , _bindUploadOrinalImage: function () {
-            var that = this;
-            var userDto = that.settings.userDto;
-            var headImg=null;
-            var text=$('.imgContent .btnFilePicker').html();
-            if (userDto.headImg !== void 0 && userDto.headImg != null)
-                headImg=userDto.headImg;
-            $('.imgContent .btnFilePicker').m_imgUploader({
-
-                server: window.fileCenterUrl + "/fastUploadImage",
-                formData: {
-                    cut_deleteGroup:that.settings.cut_deleteGroup,
-                    cut_deletePath:headImg
-                },
-                innerHTML: text,
-                loadingId: 'body',
-                uploadSuccessCallback: function (file, response) {
-                    that._originalFileGroup = response.data.fastdfsGroup;
-                    that._originalFilePath = response.data.fastdfsPath;
-                    that._originalFileName = response.data.fileName;
-
-                    that.toCutDialog();
-                    //渲染图片
-                    $('.m_imgCropper .img-container').attr('src', window.fastdfsUrl + that._originalFileGroup + '/' + that._originalFilePath);
-
-
-
-                    $(that.element).find('.title:eq(0)').addClass('hide');
-                    $(that.element).find('.setArea:eq(0)').removeClass('hide');
-
-
-
-                    //S_toastr.success(response.info);
-                }
-            },true);
-        }
-        //调到裁剪窗口
-        ,toCutDialog:function(){
-            var that = this;
-            var userDto = that.settings.userDto;
-            var headImg=null;
-            if (userDto.headImg !== void 0 && userDto.headImg != null)
-                headImg=userDto.headImg;
-            $('body').m_imgCropper({
-                showDialog: true,
-                zoomWidth: 180,
-                zoomHeight: 180,
-                originalFileGroup: that._originalFileGroup,
-                originalFilePath: that._originalFilePath,
-                originalFileName: that._originalFileName,
-                cut_deletePath:headImg,
-                croppedCallback: function (data) {
-                    var ajaxOption={};
-                    ajaxOption.url=restApi.url_saveOrUpdateUserAttach;
-                    ajaxOption.postData={
-                        fileGroup:data.fastdfsGroup,
-                        filePath:data.fastdfsPath,
-                        fileName:data.fileName,
-                        userId:window.currentUserId
-                    };
-                    m_ajax.postJson(ajaxOption,function(response){
-                        if(response.code==='0'){
-                            var path = window.fastdfsUrl + data.fastdfsGroup + '/' + data.fastdfsPath;
-                            $(that.element).find('#headImage').attr('src', path);
-                            //右上角个人头像
-                            $('#navbar ul.navbar-right li .img-circle').attr('src', path);
-                            S_toastr.success("保存成功");
-                        } else {
-                            S_dialog.error(response.info);
-                        }
-                    });
-                }
-            });
-        }
-        //刷新当前组件
-        ,refresh:function () {
-            var that = this;
-            var option = {};
-            option.url = restApi.url_userInfo;
-            m_ajax.get(option, function (response) {
-                if (response.code == '0') {
-                    that.userDto = response.data;
-                    $('#box_detail').m_userInfo({userDto: that.userDto});
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-        //金额比例验证
-        ,_saveUserMajor_validate:function(){
-            var that = this;
-            $(that.element).find('form.userInfo_profession_edit').validate({
-                rules: {
-                    major:{
-                        required:true
-                    }
-                },
-                messages: {
-                    major:{
-                        required:'请选择专业!'
-                    }
-                },
-                errorPlacement: function (error, element) { //指定错误信息位置
-                    error.appendTo(element.closest('.row').find('.col-md-12'));
-                }
-            });
-        }
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-            new Plugin(this, options);
-        });
-    };
-
-})(jQuery, window, document);
-
-/**
  * Created by Wuwq on 2017/1/5.
  */
 ;(function ($, window, document, undefined) {
@@ -38103,6 +38103,4987 @@ return new String($out);
     };
 
 })(jQuery, window, document);
+
+/**
+ * 项目收支流程设置
+ * 合同回款=2；技术审查费收款=3；技术审查费付款=4；合作设计费收款=5,；合作设计费付款=6
+ * Created by wrb on 2018/7/17.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_process_finance_setting",
+        defaults = {
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._selectedOrg = null;//当前选中组织
+        this._processList = [];//请求返回的数据缓存
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            var html = template('m_process/m_process_finance_setting',{});
+            $(that.element).html(html);
+
+
+            var option = {};
+            option.$renderType = 1;
+            option.$selectedCallBack = function (data) {
+                that._selectedOrg = data;
+                that.renderContent();
+            };
+            option.$renderCallBack = function (data) {
+
+            };
+            $(that.element).find('#left-box').m_org_chose_byTree(option);
+
+        }
+
+        //渲染右边（项目收支流程设置列表）
+        ,renderContent:function () {
+            var that = this;
+            var option  = {};
+            option.classId = '#content-right';
+            option.url = restApi.url_getProcessByCompany;
+            option.postData = {
+                companyId:that._selectedOrg.id
+            };
+            m_ajax.postJson(option,function (response) {
+                if(response.code=='0'){
+                    that._processList = response.data;
+                    var html = template('m_process/m_process_finance_setting_content',{
+                        receiveProcessList:response.data.receiveProcessList,
+                        payProcessList:response.data.payProcessList
+                    });
+                    $(that.element).find('#right-box').html(html);
+                    that.initICheck();
+                    that.bindActionClick();
+
+                }else {
+                    S_dialog.error(response.info);
+                }
+            });
+
+        }
+        ,initICheck:function () {
+            var that = this;
+            var ifChecked = function (e) {
+            };
+            var ifUnchecked = function (e) {
+            };
+            var ifClicked = function (e) {
+                var param = {};
+                if ($(this).is(':checked')) {
+                    $(this).iCheck('uncheck');
+                    param.status = 0;
+                }else{
+                    $(this).iCheck('check');
+                    param.status = 1;
+                }
+                param.id = $(this).closest('tr').attr('data-id');
+                that.saveChangeSelectionStatus(param);
+            };
+            $(that.element).find('input[name^="iCheck"]').iCheck({
+                checkboxClass: 'icheckbox_square-pink',
+                radioClass: 'iradio_square-blue'
+            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked).on('ifClicked',ifClicked);
+        }
+        //更改选择状态
+        ,saveChangeSelectionStatus:function (param) {
+            var that = this;
+            var option = {};
+            option.classId = '#content-right';
+            option.url = restApi.url_selectedProcessForProjectPay;
+            option.postData = param;
+            m_ajax.postJson(option, function (response) {
+                if(response.code=='0'){
+                    S_toastr.success('操作成功！');
+                }else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+
+        //事件绑定
+        , bindActionClick:function () {
+            var that = this;
+            $(that.element).find('a[data-action],button[data-action]').off('click').on('click',function (e) {
+                var $this = $(this),dataAction = $this.attr('data-action'),
+                    $i = $this.closest('tr').attr('data-i');
+                var dataId = $this.closest('tr').attr('data-id'),
+                    dataProcessType = $this.closest('tr').attr('data-process-type'),
+                    dataProcessId = $this.closest('tr').attr('data-process-id');
+
+                switch (dataAction){
+                    case 'add'://添加流程设置
+
+                        var option = {};
+                        option.$type = $this.attr('data-action-type');//0=收款，1=付款
+                        option.$saveCallBack = function () {
+                            that.renderContent();
+                        };
+                        $('body').m_process_finance_setting_add(option);
+
+                        return false;
+                        break;
+                    case 'edit'://编辑流程设置
+
+                        var option = {};
+                        option.$type = $this.attr('data-action-type');//0=收款，1=付款
+                        if(that._processList!=null && that._processList.receiveProcessList!=null && option.$type==0){
+                            option.$processInfo = that._processList.receiveProcessList[$i];
+                        }else if(that._processList!=null && that._processList.payProcessList!=null && option.$type==1){
+                            option.$processInfo = that._processList.payProcessList[$i];
+                        }else{
+                            option.$processInfo = null;
+                        }
+                        option.$saveCallBack = function () {
+                            that.renderContent();
+                        };
+                        $('body').m_process_finance_setting_add(option);
+                        return false;
+                        break;
+
+                    case 'del'://删除流程
+
+                        S_swal.confirm({
+                            title:'确定删除该流程?',
+                            text:'删除后将不能恢复，确定吗？',
+                            callBack:function () {
+                                var option = {};
+                                option.classId = '#content-right';
+                                option.url = restApi.url_deleteProcessForProjectPay;
+                                option.postData = {};
+                                option.postData.id = dataId;
+                                m_ajax.postJson(option, function (response) {
+                                    if (response.code == '0') {
+                                        S_swal.sure({
+                                            title:'已删除',
+                                            text:'该流程删除成功。',
+                                            callBack:function () {
+                                                that.renderContent();
+                                            }
+                                        });
+                                    } else {
+                                        S_dialog.error(response.info);
+                                    }
+                                });
+                            }
+                        });
+
+                        break;
+
+                    case 'itemEdit'://编辑列表项
+
+                        window.location.hash = '/backstageMgt/financeSettingProcess?processType='+dataProcessType+'&processId='+dataProcessId;
+                        break;
+
+                }
+
+            });
+        }
+
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+
+/**
+ * 项目收支流程设置-添加/编辑
+ * Created by wrb on 2018/7/17.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_process_finance_setting_add",
+        defaults = {
+            $title:null,
+            $isDialog:true,
+            $type:0,//0=收款，1=付款
+            $processInfo:null,//流程信息，不为空即编辑
+            $saveCallBack:null//保存后事件
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._applicableTeam = null;//适用团队选择
+        this._associatedTeam = null;//关联团队选择
+
+
+        this._typeName= this.settings.$type==0?'收款':'付款';
+        this._editTypeName= this.settings.$processInfo==null?'新增':'编辑';
+
+
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.initHtmlData(function () {
+                that.save_validate();
+
+                //适用团队选择框
+                var option = {};
+                option.$buttonStyle = 'width: 516px;border-radius: 4px;';
+                option.$spanStyle = 'width: 487px;display: inline-block;text-align: left;color: #444;font-size: 13px;';
+                if(that.settings.$processInfo!=null && that.settings.$processInfo.companyId!=null & that.settings.$processInfo.companyId!=''){
+                    option.$selectedId = that.settings.$processInfo.companyId;
+                }
+                option.$selectedCallBack = function (data) {
+                    that._applicableTeam = data;
+                };
+                option.$renderCallBack = function () {
+                };
+                $(that.element).find('#applicableTeam').m_org_chose_byTree(option);
+
+                //关联团队选择框
+                var option1 = {};
+                option1.$buttonStyle = 'width: 516px;border-radius: 4px;';
+                option1.$spanStyle = 'width: 487px;display: inline-block;text-align: left;color: #444;font-size: 13px;';
+                if(that.settings.$processInfo!=null && that.settings.$processInfo.companyId!=null & that.settings.$processInfo.companyId!=''){
+                    option1.$selectedId = that.settings.$processInfo.relationCompanyId;
+                }
+                option1.$selectedCallBack = function (data) {
+                    that._associatedTeam = data;
+                };
+                option1.$renderCallBack = function () {
+                };
+                $(that.element).find('#associatedTeam').m_org_chose_byTree(option1);
+
+
+                $(that.element).find('select[name="receiptType"]').select2({
+                    allowClear: false,
+                    language: "zh-CN",
+                    minimumResultsForSearch: -1
+                });
+                //编辑状态 展示信息处理
+                if(that.settings.$processInfo!=null){
+                    $(that.element).find('select[name="receiptType"]').val(that.settings.$processInfo.processType).trigger('change');
+                    $(that.element).find('select[name="receiptType"]').prop("disabled", true);
+                }
+            });
+        }
+        //初始化数据并加载模板
+        ,initHtmlData:function (callBack) {
+            var that = this;
+            if(that.settings.$isDialog){//以弹窗编辑
+                S_dialog.dialog({
+                    title: that.settings.$title||that._editTypeName+that._typeName+'计划流程',
+                    contentEle: 'dialogOBox',
+                    lock: 3,
+                    width: '700',
+                    tPadding: '0px',
+                    overFlow:'unset',
+                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    okText:'保存',
+                    ok:function () {
+                        if($(that.element).find('form.form-horizontal').valid()){
+                            that.save();
+                        }else{
+                            return false;
+                        }
+                    },
+                    cancel:function () {
+
+                    }
+                },function(d){//加载html后触发
+
+                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
+                    that.renderPage();
+
+                    if(callBack!=null){
+                        callBack();
+                    }
+
+                });
+            }else{//不以弹窗编辑
+
+                that.renderPage();
+                if(callBack!=null){
+                    callBack();
+                }
+            }
+        }
+        //渲染界面
+        ,renderPage:function () {
+            var that = this;
+            var html = template('m_process/m_process_finance_setting_add',{
+                type:that.settings.$type,
+                typeName:that._typeName,
+                processInfo:that.settings.$processInfo
+            });
+            $(that.element).html(html);
+        }
+
+        //发送
+        ,save:function () {
+            var that = this;
+            var option  = {};
+            option.classId = that.element;
+            option.url = restApi.url_saveProcess;
+            option.postData = {
+                processType:$(that.element).find('select[name="receiptType"]').val(),
+                companyId:that._applicableTeam.id,
+                relationCompanyId:that._associatedTeam.id,
+                description:$(that.element).find('textarea[name="description"]').val()
+
+            };
+            if(that.settings.$processInfo!=null && that.settings.$processInfo.id!=null){
+                option.postData.id = that.settings.$processInfo.id;
+                option.postData.processId = that.settings.$processInfo.processId;
+            }
+            m_ajax.postJson(option,function (response) {
+                if(response.code=='0'){
+                    S_toastr.success('操作成功！');
+                    if(that.settings.$saveCallBack!=null){
+                        that.settings.$saveCallBack();
+                    }
+                }else {
+                    S_dialog.error(response.info);
+                }
+            })
+
+        }
+        //保存验证
+        ,save_validate:function(){
+            var that = this;
+            $(that.element).find('form.form-horizontal').validate({
+                rules: {
+                    receiptType:{
+                        required:true
+                    }
+                },
+                messages: {
+                    receiptType:{
+                        required:'请选择'+that._typeName+'类型!'
+                    }
+                },
+                errorPlacement:function(error,element){
+                    error.appendTo(element.parent());
+                }
+            });
+
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+/**
+ * 项目收支流程-合同回款设置
+ * Created by wrb on 2018/7/18.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_process_finance_setting_contractPayment",
+        defaults = {
+            $processType:null,//流程类型
+            $processId:null//流程ID
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._selectedOrg = null;//当前选中组织
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+
+            var option  = {};
+            option.classId= '#content-box';
+            option.url = restApi.url_listProcessNode;
+            option.postData = {
+                processId:that.settings.$processId
+            };
+            m_ajax.postJson(option,function (response) {
+                if(response.code=='0'){
+
+                    var html = template('m_process/m_process_finance_setting_contractPayment',{listProcessNode:response.data});
+                    $(that.element).html(html);
+                    that.bindActionClick();
+                    that.initICheck();
+
+                }else {
+                    S_dialog.error(response.info);
+                }
+            });
+
+
+        }
+        //初始化iCheck
+        ,initICheck:function () {
+            var that = this;
+            var ifChecked = function (e) {
+                var param = {};
+                param.status = 1;
+                param.nodeId = $(this).closest('tr').attr('data-id');
+                param.processId = $(this).closest('tr').attr('data-process-id');
+                param.statusType = $(this).attr('data-type');
+                that.saveChangeSelectionStatus(param);
+            };
+            var ifUnchecked = function (e) {
+                var param = {};
+                param.status = 0;
+                param.nodeId = $(this).closest('tr').attr('data-id');
+                param.processId = $(this).closest('tr').attr('data-process-id');
+                param.statusType = $(this).attr('data-type');
+                that.saveChangeSelectionStatus(param);
+            };
+            $(that.element).find('input[name="iCheck"]').iCheck({
+                checkboxClass: 'icheckbox_minimal-green',
+                radioClass: 'iradio_square-blue'
+            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
+        }
+        //更改选择状态
+        ,saveChangeSelectionStatus:function (param) {
+            var that = this;
+            var option = {};
+            option.classId = '#content-right';
+            option.url = restApi.url_selectedProcessNodeStatus;
+            option.postData = param;
+            m_ajax.postJson(option, function (response) {
+                if(response.code=='0'){
+                    S_toastr.success('操作成功！');
+                }else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+        //事件绑定
+        , bindActionClick:function () {
+            var that = this;
+            $(that.element).find('a[data-action],button[data-action]').off('click').on('click',function (e) {
+                var $this = $(this),dataAction = $this.attr('data-action');
+                var dataActionType = $this.attr('data-action-type');
+                var dataId = $this.attr('data-id');
+                switch (dataAction){
+                    case 'viewTemplate':
+
+                        $(that.element).find('a[data-action="viewTemplate"]').removeClass('active');
+                        $this.addClass('active');
+                        $(that.element).find('.panel#template'+dataActionType).show().siblings('.panel').hide();
+                        break;
+
+                    case 'back'://返回项目收支流程
+
+                        window.history.go(-1);
+                        break;
+
+                }
+
+            });
+        }
+
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+
+/**
+ * 项目收支流程-技术审查费设置
+ * Created by wrb on 2018/7/20.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_process_finance_setting_technicalReviewFee",
+        defaults = {
+            $processType:null,//流程类型
+            $processId:null//流程ID
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._selectedOrg = null;//当前选中组织
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+
+            var option  = {};
+            option.classId= '#content-box';
+            option.url = restApi.url_listProcessNode;
+            option.postData = {
+                processId:that.settings.$processId
+            };
+            m_ajax.postJson(option,function (response) {
+                if(response.code=='0'){
+
+                    var html = template('m_process/m_process_finance_setting_technicalReviewFee',{listProcessNode:response.data});
+                    $(that.element).html(html);
+                    that.bindActionClick();
+                    that.initICheck();
+
+                }else {
+                    S_dialog.error(response.info);
+                }
+            });
+
+
+        }
+        //初始化iCheck
+        ,initICheck:function () {
+            var that = this;
+            var ifChecked = function (e) {
+                var param = {};
+                param.status = 1;
+                param.nodeId = $(this).closest('tr').attr('data-id');
+                param.processId = $(this).closest('tr').attr('data-process-id');
+                param.statusType = $(this).attr('data-type');
+                that.saveChangeSelectionStatus(param);
+            };
+            var ifUnchecked = function (e) {
+                var param = {};
+                param.status = 0;
+                param.nodeId = $(this).closest('tr').attr('data-id');
+                param.processId = $(this).closest('tr').attr('data-process-id');
+                param.statusType = $(this).attr('data-type');
+                that.saveChangeSelectionStatus(param);
+            };
+            $(that.element).find('input[name="iCheck"]').iCheck({
+                checkboxClass: 'icheckbox_minimal-green',
+                radioClass: 'iradio_square-blue'
+            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
+        }
+        //更改选择状态
+        ,saveChangeSelectionStatus:function (param) {
+            var that = this;
+            var option = {};
+            option.classId = '#content-right';
+            option.url = restApi.url_selectedProcessNodeStatus;
+            option.postData = param;
+            m_ajax.postJson(option, function (response) {
+                if(response.code=='0'){
+                    S_toastr.success('操作成功！');
+                }else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+        //事件绑定
+        , bindActionClick:function () {
+            var that = this;
+            $(that.element).find('a[data-action],button[data-action]').off('click').on('click',function (e) {
+                var $this = $(this),dataAction = $this.attr('data-action');
+                var dataActionType = $this.attr('data-action-type');
+                var dataId = $this.attr('data-id');
+                switch (dataAction){
+                    case 'back'://返回项目收支流程
+
+                        window.history.go(-1);
+                        break;
+                }
+
+            });
+        }
+
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+
+/**
+ * 设计范围
+ * Created by wrb on 2016/12/20.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_addProjectDesignRange",
+        defaults = {
+            $title:null,
+            $isDialog:true,
+            $projectId:'',
+            $projectDesignRange:null,
+            $placement:null,
+            $okCallBack:null
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._designRangeList = null;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.getRangeData(function(data){
+                that.initHtmlData(data);
+            });
+        },
+        //初始化数据
+        initHtmlData:function (data) {
+            var that = this;
+            var $data = that.dealDesignRange();
+            var $top = 'top',left = $(that.element).position().left;
+            if(parseInt(left)>600){
+                $top = 'left';
+            }
+            $(that.element).m_popover({
+
+                placement: $top,
+                content: template('m_project/m_addProjectDesignRange', $data),
+                titleHtml: '<h3 class="popover-title">'+(that.settings.$title?that.settings.$title:'设计范围')+'</h3>',
+                onShown: function ($popover) {
+
+                    that.bindActionClick();
+                    that.editOtherRangeValid();
+                    $('.i-checks').iCheck({
+                        checkboxClass: 'icheckbox_minimal-green',
+                        radioClass: 'iradio_minimal-green'
+                    });
+                },
+                onSave: function ($popover) {
+
+                    if ($('.designRangeBox form').valid()) {
+                        that.saveEditDesignRange();
+                    }else{
+                        return false;
+                    }
+
+                }
+            }, true);
+
+        },
+        //保存设计范围编辑
+        saveEditDesignRange:function (text) {
+            var that = this;
+            var text = '';
+            var otherRangeList = $('.otherRangeRow input[type="text"]');
+            otherRangeList.each(function(){
+                if($(this).val()==''||$(this).val()==null){
+                    return text = '设计范围不能为空！';
+
+                };
+                if($(this).val().length>50){return text = '设计范围名称过长，请控制在50个字符内'};
+            });
+            // var check = $(".designRangeBox form").valid();
+
+            if(text && text!=''){
+                    return text;
+                }
+            else{
+                if($('.popover .editable-error-block').length>0){
+                    $('.popover .editable-error-block').html('');
+                }
+                var projectDesignRangeList = [];
+                $('.designRangeBox input[type="checkbox"][name="range"]:checked').each(function () {
+                    projectDesignRangeList.push({designRange:$(this).val(),id:$(this).attr('data-id')});
+                });
+
+                 $('.designRangeBox input[type="checkbox"][name="otherRange"]:checked').each(function () {
+                         projectDesignRangeList.push({designRange:$(this).closest('.liBox').find('input[name="designRange"]').val()});
+                 });
+
+                 if(that.settings.$okCallBack!=null){
+                     that.settings.$okCallBack(projectDesignRangeList);
+                    }
+                 }
+                return text;
+
+         }
+        //生成html
+        ,initHtmlTemplate:function (callBack,data,classIdObj) {
+            var that = this;
+            var html = template('m_project/m_addProjectDesignRange',data);
+            classIdObj.find('div.editable-input').html(html);
+            if(callBack!=null){
+                callBack();
+            }
+            //给所有已有的自定义范围的checkbox添加事件
+            $.each(data.otherRange,function(i,item){
+                var obj = $('input#'+item.id).parents('.liBox');
+                that.bindOtherRangeCk(obj);
+            });
+        }
+        //把设计范围解析(哪些是来自基础数据，来自自定义)
+        ,dealDesignRange:function () {
+            var that = this;
+            var rangeListClone = that.settings.$projectDesignRange;//已选中的设计范围
+            var designRangeList = that._designRangeList;//数据字典的设计范围
+            var rangeList=[];
+            var otherRange=[];
+            if(rangeListClone!=null && rangeListClone.length>0){
+                for (var i = 0; i < rangeListClone.length; i++) {
+                    var isCon = false;
+                    for (var j = 0; j < designRangeList.length; j++) {
+                        if (rangeListClone[i].designRange == designRangeList[j].name) {
+                            isCon = true;
+                            designRangeList[j].isChecked = 1;//初始化选中
+                            rangeList.push(rangeListClone[i]);
+                            continue;
+                        }
+                    }
+                    if (!isCon) {
+                        rangeListClone[i].isChecked = 1;//初始化选中
+                        otherRange.push(rangeListClone[i]);
+                    }
+                }
+            }
+            var $data = {};
+            $data.rangeList = rangeList;
+            $data.otherRange = otherRange;
+            $data.designRangeList = designRangeList;
+            return $data;
+        }
+        //获取设计范围基础数据
+        ,getRangeData:function (callBack) {
+            var that = this;
+            var option  = {};
+            var rangeList = [];
+            option.classId = that.element;
+            option.url = restApi.url_getDesignRangeList;
+            m_ajax.get(option,function (response) {
+                if(response.code=='0'){
+                    rangeList = response.data;
+                    that._designRangeList = rangeList;
+                    return callBack();
+                }else {
+                    S_dialog.error(response.info);
+                }
+
+            })
+        }
+        //添加自定义设计范围事件
+        ,bindAddRange:function (obj) {
+            var that = this;
+
+            var iHtml = '';
+            iHtml+='<div class="col-md-4 liBox">';
+            iHtml+='    <div class="col-md-2 no-padding" >';
+            iHtml+='        <label class="i-checks" title="">';
+            iHtml+='            <input name="otherRange" class="checkbox" checked type="checkbox"/>';
+            iHtml+='            <i></i>';
+            iHtml+='        </label>';
+            iHtml+='    </div>';
+            iHtml+='    <div class="col-md-10 out-box" style="padding-left: 0;padding-right: 0;">';
+            iHtml+='        <label class="input">';
+            iHtml+='            <input id="designRange" class="designRange form-control input-sm" type="text" maxlength="50" name="designRange" placeholder="请输入名称" />';
+            iHtml+='        </label>';
+            iHtml+='    </div>';
+            iHtml+='</div>';
+
+            obj.parent().before(iHtml);
+            that.bindOtherRangeCk(obj.parent().prev());
+            that.bindIcheckbox(obj.parent().prev());
+            that.editOtherRangeValid();
+        }
+        //绑定checkbox显示
+        ,bindIcheckbox:function($el){
+            var that = this;
+            $el.find('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_minimal-green',
+                radioClass: 'iradio_minimal-green'
+            });
+        }
+        //绑定选择自定义设计范围事件
+        ,bindOtherRangeCk:function (obj) {
+            obj.find('input[name="otherRange"]').on('ifUnchecked.s',function () {
+                $(this).parents('.liBox').find('label.error').hide();
+                $(this).parents('.liBox').remove();
+                if($('.otherRangeRow div.liBox').length<1){
+                    $('.popover .editable-error-block').html('');
+                }
+                return false;
+            });
+            obj.find('input[name="designRange"]').keyup(function () {
+                $(this).parents('.liBox').find('label.error').hide();
+                return false;
+            });
+        }
+        //按钮事件绑定
+        ,bindActionClick:function () {
+            var that = this;
+            $('.designRangeBox').find('label[data-action]').on('click',function () {
+                var dataAction = $(this).attr('data-action');
+                if(dataAction=='addOtherRange'){
+                    that.bindAddRange($(this));
+                    return false;
+                }
+            });
+        }
+        //自定义范围时的验证
+        ,editOtherRangeValid:function(){
+            $(".designRangeBox form").validate({
+                rules: {
+                    otherRange:{
+                        ckDesignRange:true
+                    },
+                    designRange:{
+                        ckDesignRange:true,
+                        maxlengthCK:50
+                    }
+                },
+                messages: {
+                    otherRange:{
+                        ckDesignRange:'请输入设计范围名称!'
+                    },
+                    designRange:{
+                        ckDesignRange:'请输入设计范围名称!',
+                        maxlengthCK:"设计范围名称不能超过50个字！"
+                    }
+                },
+                errorPlacement: function (error, element) { //指定错误信息位置
+                    /*if (element.is(':radio') || element.is(':checkbox')) {
+                        error.appendTo(element.closest('.liBox'));
+                    } else {
+                        error.insertAfter(element);
+                    }*/
+                    $('.designRangeBox form').find('.error-box .col-md-12').html(error);
+                }
+            });
+            $.validator.addMethod('ckDesignRange', function(value, element) {
+                var isTrue = true;
+                $('.designRangeBox form').find(' input[name="otherRange"]:checked').each(function () {
+                    var val = $(this).closest('.liBox').find('input[name="designRange"]').val();
+                    if($.trim(val).length===0){
+                        isTrue = false;
+                        return false;
+                    }
+                });
+                if(isTrue){
+                    $('.designRangeBox form').find('.error-box .col-md-12').html('');
+                }
+                return  isTrue;
+            }, '请输入设计范围名称!');
+            $.validator.addMethod('maxlengthCK', function(value, element) {
+                var isTrue = true;
+                $('.designRangeBox form').find(' input[name="otherRange"]:checked').each(function () {
+                    var val = $(this).closest('.liBox').find('input[name="designRange"]').val();
+                    if($.trim(val).length>50){
+                        isTrue = false;
+                        return false;
+                    }
+                });
+                if(isTrue){
+                    $('.designRangeBox form').find('.error-box .col-md-12').html('');
+                }
+                return  isTrue;
+            }, '设计范围名称不能超过50个字');
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+/**
+ * 添加一条变更记录
+ * Created by wrb on 2016/12/21.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_addTimeChangeRecord",
+        defaults = {
+            $data : null
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.initHtmlTemplate(that.settings.$data);
+        }
+        //生成html
+        ,initHtmlTemplate:function (data) {
+            var that = this;
+            var html = template('m_project/m_addTimeChangeRecord',data);
+            $(that.element).append(html);
+        }
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+                $.data(this, "plugin_" +
+                    pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+/**
+ * 选择甲方（建设单位）
+ * Created by wrb on 2016/12/21.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_choseConstructCompany",
+        defaults = {
+            $title:null,
+            $isDialog:true,
+            $okCallBack:null
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.initHtmlData(function () {
+                that.bindActionClick();
+
+            });
+        },
+        //初始化数据
+        initHtmlData:function (callBack) {
+            var that = this;
+            if(that.settings.$isDialog){//以弹窗编辑
+                S_dialog.dialog({
+                    title: that.settings.$title||'甲方单位',
+                    contentEle: 'dialogOBox',
+                    lock: 3,
+                    width: '850',
+                    minHeight:'200',
+                    tPadding: '0px',
+                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    cancelText:'关闭',
+                    cancel:function () {
+
+                    },
+                    okText:'清除',
+                    ok:function () {
+                        if(that.settings.$okCallBack!=null){
+                            return that.settings.$okCallBack(null);
+                        }
+                    }
+                },function(d){//加载html后触发
+
+                    var classIdObj = $('div[id="content:'+d.id+'"] .dialogOBox');
+                    that.initHtmlTemplate(classIdObj)
+                    that.getConstructListData(1);
+                    if(callBack!=null){
+                        callBack();
+                    }
+                });
+            }else{//不以弹窗编辑
+                var classIdObj = $(that.element);
+                that.initHtmlTemplate(classIdObj);
+                if(callBack!=null){
+                    callBack();
+                }
+            }
+        }
+        //生成html
+        ,initHtmlTemplate:function (classIdObj) {
+            var that = this;
+            var html = template('m_project/m_choseConstructCompany',{});
+            classIdObj.html(html);
+        }
+        //获取甲方单位数据{type=1=常用甲方,type=2=查询甲方}
+        ,getConstructListData:function (type) {
+            var that = this;
+            var option={};
+            if(type==1){
+                option.url=restApi.url_getUsedPartA;
+            }else{
+                option.url=restApi.url_getLikedPartA;
+                option.postData={keyword:$('.choiseConstructOBox input[name="keyword"]').val()}
+            }
+
+            m_ajax.postJson(option,function (response) {
+                if(response.code=='0'){
+                    that.toGenerateConstructListHtml(response.data);
+                }else {
+                    S_dialog.error(response.info);
+                }
+
+            })
+        }
+        //生成甲方单位列表html
+        ,toGenerateConstructListHtml:function (data) {
+            var that = this
+            var iHtml = '';
+            if(data!=null && data.length>0){
+                for(var i=0;i<data.length;i++){
+                    iHtml+='<tr class="curp" data-id="'+data[i].id+'" data-name="'+data[i].companyName+'"><td>'+(i+1)+'</td>' +
+                        '<td style="word-break: break-all;">'+data[i].companyName+'</td></tr>';
+                }
+                $('.choiseConstructOBox table.constructList tbody').html(iHtml);
+                $('.choiseConstructOBox table.constructList tbody').find('tr').on('click',function () {
+                    var $data={};
+                    $data.id=$(this).attr('data-id');
+                    $data.companyName=$(this).attr('data-name');
+                    S_dialog.close($('.choiseConstructOBox'));
+                    if(that.settings.$okCallBack!=null){
+                        return that.settings.$okCallBack($data);
+                    }
+                });
+            }
+            return false;
+        }
+        //按钮事件绑定
+        ,bindActionClick:function () {
+            var that = this;
+            $('.choiseConstructOBox').find('input[name="choiseConstruct"],button[data-action]').on('click',function () {
+                var dataAction = $(this).attr('data-action');
+                if(dataAction=='choiseCommonAConstruct'){//常用甲方
+                    that.getConstructListData(1);
+                    $('.choiseConstructOBox .searchBox').addClass('hide');
+                }else if(dataAction=='searchAConstruct' || dataAction=='toSearchAConstruct'){//查询甲方
+                    that.getConstructListData(2);
+                    $('.choiseConstructOBox .searchBox').removeClass('hide');
+                }
+            });
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+
+
+/**
+ * 选择乙方（组织）
+ * Created by wrb on 2016/12/22.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_choseOrg",
+        defaults = {
+            $title:null,
+            $isDialog:true,
+            $okCallBack:null
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.initHtmlData(function () {
+                that.bindActionClick();
+
+            });
+        },
+        //初始化数据
+        initHtmlData:function (callBack) {
+            var that = this;
+            if(that.settings.$isDialog){//以弹窗编辑
+                S_dialog.dialog({
+                    title: that.settings.$title||'乙方',
+                    contentEle: 'dialogOBox',
+                    lock: 3,
+                    width: '850',
+                    minHeight:'200',
+                    tPadding: '0px',
+                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    cancelText:'关闭',
+                    cancel:function () {
+
+                    },
+                    okText:'清除',
+                    ok:function () {
+                        if(that.settings.$okCallBack!=null){
+                            return that.settings.$okCallBack(null);
+                        }
+                    }
+                },function(d){//加载html后触发
+
+                    var classIdObj = $('div[id="content:'+d.id+'"] .dialogOBox');
+                    that.initHtmlTemplate(classIdObj)
+                    that.getOrgListData(1);
+                    if(callBack!=null){
+                        callBack();
+                    }
+                });
+            }else{//不以弹窗编辑
+                var classIdObj = $(that.element);
+                that.initHtmlTemplate(classIdObj);
+                if(callBack!=null){
+                    callBack();
+                }
+            }
+        }
+        //生成html
+        ,initHtmlTemplate:function (classIdObj) {
+            var that = this;
+            var html = template('m_project/m_choseOrg',{});
+            classIdObj.html(html);
+        }
+        //获取乙方单位数据{type=1=常用乙方,type=2=查询乙方}
+        ,getOrgListData:function (type) {
+            var that = this;
+            var option={};
+            if(type==1){
+                option.url=restApi.url_getUsedPartB;
+            }else{
+                option.url=restApi.url_getLikedPartB;
+                option.postData={keyword:$('.choseOrgBox input[name="keyword"]').val()}
+            }
+
+            m_ajax.postJson(option,function (response) {
+                if(response.code=='0'){
+                    that.toGenerateOrgListHtml(response.data);
+                }else {
+                    S_dialog.error(response.info);
+                }
+
+            })
+        }
+        //生成乙方单位列表html
+        ,toGenerateOrgListHtml:function (data) {
+            var that = this
+            var iHtml = '';
+            if(data!=null && data.length>0){
+                for(var i=0;i<data.length;i++){
+                    iHtml+='<tr class="curp" data-id="'+data[i].id+'" data-name="'+data[i].companyName+'"><td>'+(i+1)+'</td>' +
+                        '<td style="word-break: break-all;">'+data[i].companyName+'</td></tr>';
+                }
+                $('.choseOrgBox table.orgList tbody').html(iHtml);
+                $('.choseOrgBox table.orgList tbody').find('tr').on('click',function () {
+                    var $data={};
+                    $data.id=$(this).attr('data-id');
+                    $data.companyName=$(this).attr('data-name');
+                    S_dialog.close($('.choseOrgBox'));
+                    if(that.settings.$okCallBack!=null){
+                        return that.settings.$okCallBack($data);
+                    }
+                });
+            }
+            return false;
+        }
+        //按钮事件绑定
+        ,bindActionClick:function () {
+            var that = this;
+            $('.choseOrgBox').find('input[name="choiseOrg"],button[data-action]').on('click',function (event) {
+                var dataAction = $(this).attr('data-action');
+                if(dataAction=='choiseCommonAOrg'){//常用org
+                    that.getOrgListData(1);
+                    $('.choseOrgBox .searchBox').addClass('hide');
+                }else if(dataAction=='searchAOrg' || dataAction=='toSearchAOrg'){//查询org
+                    that.getOrgListData(2);
+                    $('.choseOrgBox .searchBox').removeClass('hide');
+                }
+                event.stopPropagation();
+            });
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+
+
+/**
+ * 数据字典选择(针对功能分类、设计范围这类编辑、自定义等)
+ * Created by wrb on 2018/6/26.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_customDataDictionary",
+        defaults = {
+            $title:null,
+            $isDialog:true,
+            $dataDictionaryList:null,//数据字典
+            $dataList:null,//数据列表（包括数据字典）
+            $placement:null,
+            $okCallBack:null
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._designRangeList = null;
+        this._name = pluginName;
+        this._strName = this.settings.$title?this.settings.$title:'';
+        this._selectedData = [];//数据字典
+        this._selectedCustomData = [];//非数据字典
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.initHtmlData();
+        },
+        //初始化数据
+        initHtmlData:function () {
+            var that = this;
+            var $data = that.dealDataList();
+            var $top = 'top',left = $(that.element).position().left;
+            if(parseInt(left)>600){
+                $top = 'left';
+            }
+            $(that.element).m_popover({
+
+                placement: $top,
+                content: template('m_project/m_customDataDictionary', $data),
+                titleHtml: '<h3 class="popover-title">'+(that.settings.$title?that.settings.$title:'编辑')+'</h3>',
+                onShown: function ($popover) {
+
+                    that.bindActionClick();
+                    that.editValid();
+                    that.bindIcheckbox($('.data-dictionary'));
+                },
+                onSave: function ($popover) {
+
+                    if ($('.data-dictionary form').valid()) {
+                        that.saveData();
+                    }else{
+                        return false;
+                    }
+
+                }
+            }, true);
+
+        }
+        //把数据解析(哪些是来自基础数据，来自自定义)
+        ,dealDataList:function () {
+            var that = this;
+            var dataListClone = that.settings.$dataList;//已选中的数据
+            var dataDictionaryList = that.settings.$dataDictionaryList;//数据字典
+            var dataDictionarySelectedList=[];
+            var customDataList=[];
+            if(dataListClone!=null && dataListClone.length>0){
+                for (var i = 0; i < dataListClone.length; i++) {
+                    var isCon = false;
+                    for (var j = 0; j < dataDictionaryList.length; j++) {
+                        if (dataListClone[i].name == dataDictionaryList[j].name) {
+                            isCon = true;
+                            dataDictionaryList[j].selected = true;//初始化选中
+                            dataDictionarySelectedList.push({
+                                name:dataListClone[i].name,
+                                id:dataListClone[i].id,
+                                selected:true,
+                                default:true
+                            });
+                            continue;
+                        }
+                    }
+                    if (!isCon) {
+                        dataListClone[i].selected = true;//初始化选中
+                        customDataList.push({
+                            name:dataListClone[i].name,
+                            id:dataListClone[i].id,
+                            selected:true,
+                            default:false
+                        });
+                    }
+                }
+            }
+            var $data = {};
+            $data.dataDictionarySelectedList = dataDictionarySelectedList;
+            $data.customDataList = customDataList;
+            $data.dataDictionaryList = dataDictionaryList;
+            that._selectedData = dataDictionarySelectedList;
+            that._selectedCustomData = customDataList;
+            return $data;
+        }
+        //保存功能分类编辑
+        ,saveData:function (text) {
+            var that = this;
+
+            if($('.popover .editable-error-block').length>0){
+                $('.popover .editable-error-block').html('');
+            }
+            var dataDictionaryList = [];
+            $('.data-dictionary input[type="checkbox"][name="dataDictionary"]:checked').each(function () {
+
+                dataDictionaryList.push({
+                    name:$(this).val(),
+                    id:$(this).attr('data-id'),
+                    selected:true,
+                    default:true
+                });
+            });
+            $('.data-dictionary input[type="checkbox"][name="customDataDictionary"]:checked').each(function () {
+
+                dataDictionaryList.push({
+                    name:$(this).closest('.liBox').find('input[name="iptCustomDataDictionary"]').val(),
+                    id:$(this).attr('data-id')==''?null:$(this).attr('data-id'),
+                    selected:true,
+                    default:false
+                });
+            });
+
+            var newDataDictionaryList = dataDictionaryList.concat();
+            var oldDataList = that._selectedData.concat(that._selectedCustomData);
+            if(oldDataList!=null && oldDataList.length>0){
+                $.each(oldDataList, function (i, item) {
+
+                    var isRepeat = false;//不存在，则表明是删除，添加到数组，返回到后台
+                    $.each(dataDictionaryList, function (i0, item0) {
+                        if(item0.id!=null && item0.id!='' && item0.id==item.id){
+                            isRepeat = true;
+                            return false;
+                        }
+                    });
+                    if(!isRepeat){
+                        item.selected = false;
+                        newDataDictionaryList.push(item);
+                    }
+                });
+            }
+            if(that.settings.$okCallBack!=null){
+                 that.settings.$okCallBack(newDataDictionaryList);
+            }
+            return text;
+
+         }
+        //添加自定义功能分类事件
+        ,bindAddDataDictionary:function (obj) {
+            var that = this;
+
+            var iHtml = '';
+            iHtml+='<div class="col-md-4 liBox">';
+            iHtml+='    <div class="col-md-2 no-padding" >';
+            iHtml+='        <label class="i-checks" title="">';
+            iHtml+='            <input name="customDataDictionary" class="checkbox" checked type="checkbox"/>';
+            iHtml+='            <i></i>';
+            iHtml+='        </label>';
+            iHtml+='    </div>';
+            iHtml+='    <div class="col-md-10 out-box" style="padding-left: 0;padding-right: 0;">';
+            iHtml+='        <label class="input">';
+            iHtml+='            <input class="form-control input-sm" type="text" maxlength="50" name="iptCustomDataDictionary" placeholder="请输入名称" />';
+            iHtml+='        </label>';
+            iHtml+='    </div>';
+            iHtml+='</div>';
+
+            obj.parent().before(iHtml);
+            that.bindCustomDataDictionaryCk(obj.parent().prev());
+            that.bindIcheckbox(obj.parent().prev());
+            that.editValid();
+        }
+        //绑定checkbox显示
+        ,bindIcheckbox:function($el){
+            var that = this;
+            var ifChecked = function (e) {
+            };
+            var ifUnchecked = function (e) {
+            };
+            $el.find('input[name="dataDictionary"]').iCheck({
+                checkboxClass: 'icheckbox_minimal-green',
+                radioClass: 'iradio_minimal-green'
+            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
+
+            var ifCheckedByCustom = function (e) {
+                console.log(11)
+            };
+            var ifUncheckedByCustom = function (e) {
+
+            };
+            $el.find('input[name="customDataDictionary"]').iCheck({
+                checkboxClass: 'icheckbox_minimal-green',
+                radioClass: 'iradio_minimal-green'
+            }).on('ifUncheckedByCustom.s', ifUnchecked).on('ifCheckedByCustom.s', ifChecked);
+
+        }
+        //绑定选择自定义功能分类事件
+        ,bindCustomDataDictionaryCk:function (obj) {
+            obj.find('input[name="customDataDictionary"]').on('ifUnchecked.s',function () {
+                $(this).parents('.liBox').find('label.error').hide();
+                $(this).parents('.liBox').remove();
+                if($('.custom-data-dictionary div.liBox').length<1){
+                    $('.popover .editable-error-block').html('');
+                }
+                return false;
+            });
+            obj.find('input[name="iptCustomDataDictionary"]').keyup(function () {
+                $(this).parents('.liBox').find('label.error').hide();
+                return false;
+            });
+        }
+        //按钮事件绑定
+        ,bindActionClick:function () {
+            var that = this;
+            $('.data-dictionary').find('label[data-action]').on('click',function () {
+                var dataAction = $(this).attr('data-action');
+                if(dataAction=='addCustomDataDictionary'){
+                    that.bindAddDataDictionary($(this));
+                    return false;
+                }
+            });
+        }
+        //自定义功能分类时的验证
+        ,editValid:function(){
+            var that = this;
+            $(".data-dictionary form").validate({
+                rules: {
+                    customDataDictionary:{
+                        ckCustomDataDictionary:true
+                    },
+                    iptCustomDataDictionary:{
+                        ckCustomDataDictionary:true,
+                        ckIsRepeat:true,
+                        maxlengthCK:50
+                    }
+                },
+                messages: {
+                    customDataDictionary:{
+                        ckCustomDataDictionary:'请输入'+that._strName+'名称!'
+                    },
+                    iptCustomDataDictionary:{
+                        ckCustomDataDictionary:'请输入'+that._strName+'名称!',
+                        ckIsRepeat:'名称重复或已存在！',
+                        maxlengthCK:that._strName+'名称不能超过50个字！'
+                    }
+                },
+                errorPlacement: function (error, element) { //指定错误信息位置
+
+                    $('.data-dictionary form').find('.error-box .col-md-12').html(error);
+                }
+            });
+            $.validator.addMethod('ckCustomDataDictionary', function(value, element) {
+                var isTrue = true;
+                $('.data-dictionary form').find(' input[name="customDataDictionary"]:checked').each(function () {
+                    var val = $(this).closest('.liBox').find('input[name="iptCustomDataDictionary"]').val();
+                    if($.trim(val).length===0){
+                        isTrue = false;
+                        return false;
+                    }
+                });
+                if(isTrue){
+                    $('.data-dictionary form').find('.error-box .col-md-12').html('');
+                }
+                return  isTrue;
+            }, '请输入'+that._strName+'名称!');
+            $.validator.addMethod('ckIsRepeat', function(value, element) {
+                var isTrue = true;
+                var customDataList = [];
+                $('.data-dictionary input[type="checkbox"][name="customDataDictionary"]:checked').each(function(){
+
+                    var name = $(this).closest('.liBox').find('input[name="iptCustomDataDictionary"]').val();
+                    customDataList.push(name);
+                });
+
+                if(customDataList.length>0){
+
+                    var newCustomDataList = customDataList.sort();
+                    for(var i=0;i<customDataList.length;i++){
+
+                        if (newCustomDataList[i]==newCustomDataList[i+1]){
+
+                            isTrue = false;
+                        }
+                    }
+                    $.each(customDataList,function (i,item) {
+                        $.each(that.settings.$dataDictionaryList, function (i0, item0) {
+                            if(item==item0.name){
+                                isTrue = false;
+                            }
+                        });
+                    })
+                }
+                if(isTrue){
+                    $('.data-dictionary form').find('.error-box .col-md-12').html('');
+                }
+                return  isTrue;
+            }, '名称重复或已存在！');
+            $.validator.addMethod('maxlengthCK', function(value, element) {
+                var isTrue = true;
+                $('.data-dictionary form').find(' input[name="customDataDictionary"]:checked').each(function () {
+                    var val = $(this).closest('.liBox').find('input[name="iptCustomDataDictionary"]').val();
+                    if($.trim(val).length>50){
+                        isTrue = false;
+                        return false;
+                    }
+                });
+                if(isTrue){
+                    $('.data-dictionary form').find('.error-box .col-md-12').html('');
+                }
+                return  isTrue;
+            }, that._strName+'名称不能超过50个字');
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+/**
+ * 编辑在位编辑type为popup时里面内容的自定义
+ * Created by veata on 2016/12/21.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_defineEditableContent",
+        defaults = {
+            top:null,
+            html:null,
+            showAllButton:true,
+            showCloseButton:false,
+            title:null,
+            p_width:null,
+            p_height:null,
+            placement:null,//浮窗是在哪个位置展开：‘left’,‘right’,‘top’,‘bottom’,空值则默认为top
+            onShown: null,//浮窗显示后的事件，可以用来重新绑定值
+            saveCallback:null,//点击确定触发的事件
+            afterCallback:null,//页面加载后触发的事件
+            cancelCallback:null,//点击取消触发的事件
+            ifDelay:null,//是否延迟加载afterCallback
+            errorTipsMarginLeft:null,//错误提示margin-left
+            template:'m_project/m_defineEditableContent'
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._popoverTop = null;//初始化页面时，保存浮窗的top值
+        this._popoverHeight = null;//初始化页面时，保存浮窗的height值
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            // that.closePopover();
+            $('body').find('.popover').remove();
+            if(!$(that.element).parent().find('.popover').length){
+                that.getHtml(function(){
+                    that.getPosition();
+                    that.bindButtonClick();
+                    that.closePopover();
+                });
+            }
+
+        },
+        //当鼠标点击的焦点不在浮窗内时，关闭浮窗
+        closePopover:function(){
+            var that = this;
+            $('body').on('click',function(event){
+                // console.log('body.click');
+                // console.log(event.target);
+                // console.log($(event.target).closest('.select2-search__field').length)
+                if($(that.element).next('.popover').length>0){
+                    if($(event.target).parents('.popover.editable-container').length<1
+                        && event.target!=that.element && $(event.target).closest('.select2-search__field').length<1){
+                        that.closeEditable();
+                    }
+                }
+
+            })
+        },
+        getPosition:function(){
+            var that = this;
+            var p_p = that.settings.placement?that.settings.placement:'top';//浮窗的展示位置
+            var a_ptop = $(that.element).position().top;//a标签的top值
+            var a_width = $(that.element).outerWidth();//a标签的width值
+            var a_height = $(that.element).outerHeight();//a标签的height值
+            var a_pleft = $(that.element).position().left;//a标签的left值
+            var p_width = that.settings.p_width || $(that.element).next('.popover').width();//浮窗的宽度
+            var p_height = that.settings.p_height || $(that.element).next('.popover').height();//浮窗的高度
+            var p_top = 0;//浮窗的top值
+            var p_left = 0;//浮窗的left值
+            switch(p_p){
+                case 'top':
+                    p_top = (a_ptop-p_height);
+                    p_left = a_pleft+a_width/2-p_width/2;
+                    break;
+                case 'bottom':
+                    p_top = (a_ptop+a_height);
+                    p_left = a_pleft+a_width/2-p_width/2;
+                    break;
+                case 'left':
+                    p_top = (a_ptop-p_height/2+5);
+                    p_left = a_pleft-p_width-10;
+                    break;
+                case 'right':
+                    p_top = (a_ptop-p_height/2+7);
+                    p_left = a_pleft+a_width;
+                    break;
+
+
+            };
+            that._popoverTop = p_top;
+            that._popoverHeight = p_height;
+            $(that.element).next('.popover').removeClass('top').addClass(p_p);
+            if(p_p.indexOf('left')>-1||p_p.indexOf('right')>-1){
+                $(that.element).next('.popover').find('.arrow').css({'top':'50%','left':''});
+            }
+            $(that.element).next('.popover').css({display:'inline-block',position:'absolute',top:p_top,left:p_left});
+
+
+        },
+        getHtml:function(callback){
+            var that=this;
+            var data={};
+            data.showAllButton = that.settings.showAllButton;
+            data.showCloseButton = that.settings.showCloseButton;
+            data.title = that.settings.title;
+            var html = template(that.settings.template,data);
+            $(html).insertAfter(that.element);
+            $(that.element).next('.popover').find('.editable-input').html(that.settings.html);
+            var $popover = $(that.element).next('.popover.editable-container');
+
+            if (that.settings.onShown && that.settings.onShown !== null)
+                that.settings.onShown($popover);
+
+            if(that.settings.afterCallback){
+                that.settings.afterCallback($popover);
+            }
+            //绑定回车事件
+            $popover.find('input[type="text"],input[type="password"]').keydown(function() {
+                if (event.keyCode == '13') {//keyCode=13是回车键
+                    $popover.find('.editable-submit').click();
+                    preventDefault(event);
+                }
+            });
+            if(callback){
+                return callback($popover);
+            }
+
+        },
+        bindButtonClick:function(){
+            var that = this;
+            var $popover = $(that.element).next('.popover');
+            $popover.find('button').on('click',function(){
+                if($(this).is('.editable-submit')){
+                    var error = '';
+                    if(that.settings.saveCallback){
+                        error = that.settings.saveCallback();
+                    }
+                    if(error!=false){
+                        that.closeEditable(error);
+                    }
+                }else{
+                    if(that.settings.cancelCallback){
+                        return that.settings.cancelCallback;
+                    }
+                    that.closeEditable();
+                }
+            });
+            //点击submit按钮或浮窗其他地方，出现验证信息时，相应改变popover的top值
+            $popover.find('.popover-content,button').off('click.changePosition').on('click.changePosition',function(e){
+                setTimeout(function(){
+                    that.changePosition($popover);
+                },20);
+            });
+            //点击input表单，出现验证信息时，相应改变popover的top值
+            $popover.find('input[type="text"]').off('keyup.changePosition').on('keyup.changePosition',function(e){
+                setTimeout(function(){
+                    that.changePosition($popover);
+                },20);
+            });
+        },
+
+        //通过改变弹窗的top值来改变弹窗的位置
+        changePosition:function($popover){
+            var that = this;
+            var errTag = $popover.find('label.error,div.editable-error-block').length;
+            var popH = $popover.outerHeight();
+            var h1 = popH-that._popoverHeight;
+            if(errTag>0){
+                var newTop = that._popoverTop-h1;
+                $popover.css('top',newTop);
+            }
+        },
+        closeEditable:function(data){
+            var that = this;
+            if(data && data!=''){
+                var cssObj = {display:'block',color:'#a94442'};
+                if(that.settings.errorTipsMarginLeft!=null){
+                    cssObj.marginLeft = that.settings.errorTipsMarginLeft+'px';
+                }
+                return $(that.element).next('.popover').find('.editable-error-block').css(cssObj).text(data);
+            }
+            $(that.element).next('.popover').remove();
+            $('body').off("click");
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+
+
+/**
+ * 基本信息－自定义属性模板
+ * Created by wrb on 2017/08/15.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_editCustomPropertyTemp",
+        defaults = {
+            $title:null,
+            $isDialog:true,
+            $projectId:null,
+            $okCallBack:null
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._currentCompanyId = window.currentCompanyId;
+        this._currentUserId = window.currentUserId;
+        this._projectPropertyData = null;//加载的数据
+        this._projectPropertyEditData = null;//改动后的数据
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.initHtmlData();
+        },
+        //初始化数据
+        initHtmlData:function () {
+            var that = this;
+            if(that.settings.$isDialog){//以弹窗编辑
+                S_dialog.dialog({
+                    title: that.settings.$title||'编辑项信息',
+                    contentEle: 'dialogOBox',
+                    lock: 3,
+                    tPadding: '0px',
+                    width: '1000',
+                    minHeight:'550',
+                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    cancel:function () {
+
+                        /*S_dialog.confirm('当前数据未保存',function () {
+
+                        },function () {
+                            
+                        })*/
+                    },
+                    okText:'保存',
+                    ok:function () {
+                        that.saveProjectCustomFields();
+
+                    }
+                },function(d){//加载html后触发
+
+                    that.element = $('div[id="content:'+d.id+'"] .dialogOBox');
+                    that.initHtmlTemplate()
+                });
+            }else{//不以弹窗编辑
+                that.initHtmlTemplate();
+            }
+        }
+        //生成html
+        ,initHtmlTemplate:function () {
+            var that = this;
+            that.getCustomProjectPropertyData(function (data) {
+                var html = template('m_project/m_editCustomPropertyTemp',{projectPropertyData:data});
+                $(that.element).html(html);
+                that.renderSelectProperty(data.selectedPropertyList);
+                that.renderAddCusProperty(data.customPropertyList,0);
+                that.addCustomLibrary();
+                that.bindChoseLibrary();
+                that.initICheck();
+                that.addProperty_validate();
+            });
+        }
+        //获取自定义属性数据
+        ,getCustomProjectPropertyData:function (callback) {
+            var that = this;
+            var options = {};
+            options.url = restApi.url_loadProjectCustomFields;
+            options.postData = {};
+            options.postData.companyId = that._currentCompanyId;
+            options.postData.projectId = that.settings.$projectId;
+            m_ajax.postJson(options, function (response) {
+                if (response.code == '0') {
+                    that._projectPropertyData = response.data;
+                    that._projectPropertyEditData = jQuery.extend(true, {}, that._projectPropertyData);
+                    if(callback){
+                        return callback(response.data);
+                    }
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+        //添加自定义库
+        ,addCustomLibrary:function () {
+            var that = this;
+            $(that.element).find('button[data-action="addPropertyBtn"]').on('click',function () {
+
+                if($('form.addPropertyForm').valid()){
+                    var fieldName = $(this).parents('.row').find('input[name="fieldName"]').val();
+                    var unitName = $(this).parents('.row').find('input[name="unitName"]').val();
+
+                    //追加到customPropertyList
+                    if(that._projectPropertyEditData.customPropertyList==null){
+                        that._projectPropertyEditData.customPropertyList = [];
+                    }
+                    that._projectPropertyEditData.customPropertyList.push({
+                        changeStatus:1,
+                        fieldName:fieldName,
+                        fieldValue:null,
+                        id:null,
+                        sequencing:null,
+                        unitName:unitName
+                    });
+                    that.renderAddCusProperty(that._projectPropertyEditData.customPropertyList,1);
+                    //追加到selectedPropertyList
+                    if(that._projectPropertyEditData.selectedPropertyList==null){
+                        that._projectPropertyEditData.selectedPropertyList = [];
+                    }
+                    var newObj = {};
+                    that.dealSelectedPropertyList(fieldName,unitName);
+                    newObj.changeStatus = 1;
+                    newObj.fieldName = fieldName;
+                    newObj.unitName = unitName;
+                    that._projectPropertyEditData.selectedPropertyList.push(newObj);
+                    that.renderSelectProperty(that._projectPropertyEditData.selectedPropertyList);//重新渲染右边模板
+                    //清空
+                    $(this).parents('.row').find('input[name="fieldName"]').val('');
+                    $(this).parents('.row').find('input[name="unitName"]').val('');
+                }
+            });
+        }
+        //绑定选择模板库
+        ,bindChoseLibrary:function () {
+            var that = this;
+            $(that.element).find('.addPropertyForm ul.dropdown-menu>li>a').off('click').on('click',function () {
+                var value = $(this).text();
+                $(that.element).find('input[name="unitName"]').val(value);
+            });
+        }
+        //选中项删掉某项
+        ,dealSelectedPropertyList:function (fieldName,unitName) {
+            var that = this;
+            if(that._projectPropertyEditData.selectedPropertyList!=null && that._projectPropertyEditData.selectedPropertyList.length>0){
+                $.each(that._projectPropertyEditData.selectedPropertyList,function(index,item){
+                    if(item.fieldName+''+that.conversionUnitFormat(item.unitName)==fieldName+''+that.conversionUnitFormat(unitName)){//已存在已选项中
+                        that._projectPropertyEditData.selectedPropertyList.splice(index,1);
+                        return false;//跳出循环
+                    }
+                });
+            }
+        }
+        //自定义项删掉某项
+        ,dealCustomPropertyList:function (i) {
+            var that = this;
+            $.each(that._projectPropertyEditData.customPropertyList,function(index,item){
+                if(index==i){
+                    that._projectPropertyEditData.customPropertyList.splice(index,1);
+                }
+            });
+        }
+        //渲染添加的属性{isLastCheck:1=最后选中，即添加时需要}
+        ,renderAddCusProperty:function (cusList,isLastCheck) {
+            var that = this;
+            $(that.element).find('#customPropertyBox').html(template('m_project/m_editCustomPropertyTempAdd',{customPropertyList:cusList}));
+
+            var ifUnchecked = function (e) {
+
+                var fieldName = $(this).attr('data-field-name');
+                var unitName = $(this).attr('data-unit-name');
+                that.dealSelectedPropertyList(fieldName,unitName);
+                that.renderSelectProperty(that._projectPropertyEditData.selectedPropertyList);//重新渲染右边模板
+            };
+            var ifChecked = function (e) {
+                //追加到selectedPropertyList
+                if(that._projectPropertyEditData.selectedPropertyList==null){
+                    that._projectPropertyEditData.selectedPropertyList = [];
+                }
+                var fieldName = $(this).attr('data-field-name');
+                var unitName = $(this).attr('data-unit-name');
+
+                that.dealSelectedPropertyList(fieldName,unitName);
+                var newObj = {};
+                newObj.changeStatus = 1;
+                newObj.fieldName = fieldName;
+                newObj.unitName = unitName;
+                that._projectPropertyEditData.selectedPropertyList.push(newObj);
+                that.renderSelectProperty(that._projectPropertyEditData.selectedPropertyList);//重新渲染右边模板
+            };
+            $(that.element).find('#customPropertyBox .i-checks input[name="cusProjectFieldCk"]').iCheck({
+                checkboxClass: 'icheckbox_minimal-green',
+                radioClass: 'iradio_minimal-green'
+            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
+
+            if(isLastCheck==1){
+                $(that.element).find('#customPropertyBox .i-checks input[name="cusProjectFieldCk"]:last').iCheck('check');
+            }
+
+            $(that.element).find('#customPropertyBox').find('span.field-name').each(function () {
+                singleLimitString($(this).parents('.col-md-6'),$(this),200,20,'top');
+            });
+
+            $(that.element).find('#customPropertyBox a[data-action="delCusProperty"]').off().on('click',function (e) {
+
+                var i = $(this).attr('data-index');
+                var fieldName = $(this).attr('data-field-name');
+                var unitName = $(this).attr('data-unit-name');
+                that.dealCustomPropertyList(i);
+                that.renderAddCusProperty(that._projectPropertyEditData.customPropertyList,0);//重新渲染左边自定义模板
+                that.dealSelectedPropertyList(fieldName,unitName);
+                that.renderSelectProperty(that._projectPropertyEditData.selectedPropertyList);//重新渲染右边模板
+                e.stopPropagation();
+            });
+            $(that.element).find('input[name="cusProjectFieldCk"]').each(function () {
+                var $this = $(this);
+                var fieldName = $this.attr('data-field-name');
+                var unitName = $this.attr('data-unit-name');
+                if(that._projectPropertyEditData.selectedPropertyList!=null && that._projectPropertyEditData.selectedPropertyList.length>0){
+                    $.each(that._projectPropertyEditData.selectedPropertyList,function(index,item){
+                        if(item.fieldName+''+that.conversionUnitFormat(item.unitName)==fieldName+''+that.conversionUnitFormat(unitName)){//已存在已选项中
+                            $this.prop('checked',true);
+                            $this.iCheck('update');
+                            return false;
+                        }
+                    });
+                }
+            });
+        }
+        //渲染已选中的属性
+        ,renderSelectProperty:function (selectList) {
+            var that = this;
+            $(that.element).find('#selectPropertyBox').html(template('m_project/m_editCustomPropertyTempSelect',{selectedPropertyList:selectList}));
+            $(that.element).find('#selectPropertyBox').find('span.field-name').each(function () {
+                singleLimitString($(this).parents('.col-md-6'),$(this),200,20,'bottom');
+            });
+            $(that.element).find('#selectPropertyBox').find('a[data-action="delSelectedProperty"]').off().on('click',function (e) {
+
+                var fieldName = $(this).attr('data-field-name');
+                var unitName = $(this).attr('data-unit-name');
+                that.dealSelectedPropertyList(fieldName,unitName);
+                that.renderSelectProperty(that._projectPropertyEditData.selectedPropertyList);//重新渲染右边模板
+
+                if($(that.element).find('input[name="projectFieldCk"][data-field-name="'+fieldName+'"][data-unit-name="'+unitName+'"]').length>0){//存在基本模板，uncheck
+                    $(that.element).find('input[name="projectFieldCk"][data-field-name="'+fieldName+'"][data-unit-name="'+unitName+'"]').iCheck('uncheck');
+                }
+                if($(that.element).find('input[name="cusProjectFieldCk"][data-field-name="'+fieldName+'"][data-unit-name="'+unitName+'"]').length>0){//若存在自定义模板,uncheck
+                    $(that.element).find('input[name="cusProjectFieldCk"][data-field-name="'+fieldName+'"][data-unit-name="'+unitName+'"]').iCheck('uncheck');
+                }
+                e.stopPropagation();
+            });
+            that.bindSortable();
+        }
+        //初始化icheck
+        ,initICheck:function () {
+            var that = this;
+            var ifAllChecked = function (e) {
+                $(that.element).find('input[name="projectFieldCk"]').iCheck('check');
+
+                var baseList = that._projectPropertyEditData.basicPropertyList;
+                var selectList = that._projectPropertyEditData.selectedPropertyList;
+
+                if(selectList==null){
+                    selectList = [];
+                }
+                for(var i = 0; i < baseList.length; i++){
+                    var isResult = true;
+                    if(selectList.length>0){
+                        for(var j=0;j<selectList.length;j++){
+                            if(selectList[j].fieldName+''+that.conversionUnitFormat(selectList[j].unitName)==baseList[i].fieldName+''+that.conversionUnitFormat(baseList[i].unitName)){
+                                isResult = false;
+                                break;
+                            }
+                        }
+                    }
+                    if(isResult){
+                        baseList[i].id = null;
+                        selectList.push(baseList[i]);
+                    }
+                }
+                that._projectPropertyEditData.selectedPropertyList = selectList;
+                that.renderSelectProperty(selectList);
+
+            };
+            var ifAllUnchecked = function (e) {
+                $(that.element).find('input[name="projectFieldCk"]').iCheck('uncheck');
+            };
+            $(that.element).find('input[name="allProjectFieldCK"]').iCheck({
+                checkboxClass: 'icheckbox_minimal-green',
+                radioClass: 'iradio_minimal-green'
+            }).on('ifUnchecked.s', ifAllUnchecked).on('ifChecked.s', ifAllChecked);
+            var ifChecked = function (e) {
+                that.dealAllCheck();
+
+                //追加到selectedPropertyList
+                if(that._projectPropertyEditData.selectedPropertyList==null){
+                    that._projectPropertyEditData.selectedPropertyList = [];
+                }
+                var fieldName = $(this).attr('data-field-name');
+                var unitName = $(this).attr('data-unit-name');
+
+                that.dealSelectedPropertyList(fieldName,unitName);
+                var newObj = {};
+                newObj.changeStatus = 1;
+                newObj.fieldName = fieldName;
+                newObj.unitName = unitName;
+                that._projectPropertyEditData.selectedPropertyList.push(newObj);
+                console.log(that._projectPropertyEditData.selectedPropertyList);
+                that.renderSelectProperty(that._projectPropertyEditData.selectedPropertyList);//重新渲染右边模板
+
+            };
+            var ifUnchecked = function (e) {
+                that.dealAllCheck();
+                var fieldName = $(this).attr('data-field-name');
+                var unitName = $(this).attr('data-unit-name');
+                that.dealSelectedPropertyList(fieldName,unitName);
+                that.renderSelectProperty(that._projectPropertyEditData.selectedPropertyList);//重新渲染右边模板
+            };
+            $(that.element).find('input[name="projectFieldCk"]').iCheck({
+                checkboxClass: 'icheckbox_minimal-green',
+                radioClass: 'iradio_minimal-green'
+            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
+
+            $(that.element).find('input[name="projectFieldCk"]').each(function () {
+                var $this = $(this);
+                var fieldName = $this.attr('data-field-name'),unitName = $this.attr('data-unit-name');
+                if(that._projectPropertyEditData.selectedPropertyList!=null && that._projectPropertyEditData.selectedPropertyList.length>0){
+                    $.each(that._projectPropertyEditData.selectedPropertyList,function(index,item){
+                        if(item.fieldName+''+that.conversionUnitFormat(item.unitName)==fieldName+''+that.conversionUnitFormat(unitName)){//已存在已选项中
+                            $this.prop('checked',true);
+                            $this.iCheck('update');
+                        }
+                    });
+                    that.dealAllCheck();
+                }
+            });
+
+        }
+        //当选择标签库时，判断全选checkbox是否该选中
+        ,dealAllCheck:function() {
+            var that = this;
+            var checkedLen = $(that.element).find('input[name="projectFieldCk"]:checked').length;
+            var allLen = $(that.element).find('input[name="projectFieldCk"]').length;
+            if(checkedLen==allLen){
+                $('input[name="allProjectFieldCK"]').prop('checked',true);
+            }else{
+                $('input[name="allProjectFieldCK"]').prop('checked',false);
+            }
+            $('input[name="allProjectFieldCK"]').iCheck('update');
+        }
+        //已选自定义属性排序拖拽
+        , bindSortable: function () {
+            var that = this;
+            var sortable = Sortable.create(document.getElementById('selectPropertyBox'), {
+                animation: 200,
+                handle: '.property-span',
+                sort: true,
+                dataIdAttr: 'data-sortId',
+                ghostClass: 'my-sortable-ghost',
+                chosenClass: 'my-sortable-chosen',
+                dragClass: 'my-sortable-drag',
+                onAdd: function (evt){ //拖拽时候添加有新的节点的时候发生该事件
+                    //console.log('onAdd.foo:', [evt.item, evt.from]);
+                },
+                onUpdate: function (evt){ //拖拽更新节点位置发生该事件
+                    //console.log('onUpdate.foo:', [evt.item, evt.from]);
+                },
+                onRemove: function (evt){ //删除拖拽节点的时候促发该事件
+                    //console.log('onRemove.foo:', [evt.item, evt.from]);
+                },
+                onStart:function(evt){ //开始拖拽出发该函数
+                    //console.log('onStart.foo:', [evt.item, evt.from]);
+                },
+                onSort:function(evt){ //发生排序发生该事件
+                    //console.log('onSort.foo:', [evt.item, evt.from]);
+                },
+                onEnd: function(evt){ //拖拽完毕之后发生该事件
+                    //console.log('onEnd.foo:', [evt.item, evt.from]);
+                    //console.log(evt)
+                    that.sortSelectProperty(evt.oldIndex,evt.newIndex);
+                }
+            });
+        }
+        //选中的属性定段进行排行，重新生成新的下标值
+        ,sortSelectProperty:function (oldIndex,newIndex) {
+            var that = this;
+            var list = that._projectPropertyEditData.selectedPropertyList;
+            var newList = [];
+            for(var i=0;i<list.length;i++){
+                if(newIndex>oldIndex){//向后拖拽
+
+                    if(i<oldIndex){
+                        newList.push(list[i]);
+                    }else if(i>=oldIndex && i<newIndex){
+                        newList.push(list[i+1]);
+                    }else if(i==newIndex){
+                        newList.push(list[oldIndex]);
+                    }else{
+                        newList.push(list[i]);
+                    }
+                }else{
+                    if(i<newIndex){
+                        newList.push(list[i]);
+                    }else if(i==newIndex){
+                        newList.push(list[oldIndex]);
+                    }else if(i>newIndex && i<=oldIndex){
+                        newList.push(list[i-1]);
+                    }else{
+                        newList.push(list[i]);
+                    }
+                }
+            }
+            console.log(newList);
+            that._projectPropertyEditData.selectedPropertyList = newList;
+
+        }
+        //根据fieldName移除某项
+        ,delFieldList:function (list,name) {
+            if(list!=null){
+                $.each(list,function (index,item) {
+                    if(item!=undefined && item!=null){
+                        if(item.fieldName == name){
+                            list.splice(index,1);//存在则删除
+                        }
+                    }
+                })
+            }
+            return list;
+        }
+        //保存自定义模板
+        ,saveProjectCustomFields:function () {
+
+            var that = this,option  = {};
+            option.classId = that.element;
+            option.url = restApi.url_saveProjectCustomFields;
+            option.postData = {};
+            option.postData.projectId = that.settings.$projectId;
+            option.postData.companyId = that._currentCompanyId;
+            option.postData.operatorId = that._currentUserId;
+
+            var selectedPropertyList =  that._projectPropertyEditData.selectedPropertyList;
+            var oldSelectedPropertyList = that._projectPropertyData.selectedPropertyList;
+            var delSelectedPropertyList = that._projectPropertyData.selectedPropertyList;
+
+            if(selectedPropertyList==null)
+                selectedPropertyList = [];
+            if(oldSelectedPropertyList==null)
+                oldSelectedPropertyList = [];
+            if(delSelectedPropertyList==null)
+                delSelectedPropertyList = [];
+
+            if(oldSelectedPropertyList.length>0 && selectedPropertyList.length>0){//对比数据
+
+                for(var i=0;i<selectedPropertyList.length;i++){
+
+                    selectedPropertyList[i].sequencing = i;//排序值
+                    var newItem = jQuery.extend(true, {}, selectedPropertyList[i]);
+                    for(var j=0;j<oldSelectedPropertyList.length;j++){
+                        if(newItem.fieldName+''+that.conversionUnitFormat(newItem.unitName) == oldSelectedPropertyList[j].fieldName+''+ that.conversionUnitFormat(oldSelectedPropertyList[j].unitName)){//相同，copy旧对象，替换sequencing，fieldName,unitName
+                            selectedPropertyList[i] = jQuery.extend(true, {}, oldSelectedPropertyList[j]);
+                            selectedPropertyList[i].changeStatus = 2;//当存在库里则update
+                            selectedPropertyList[i].sequencing = i;
+                            selectedPropertyList[i].fieldName = newItem.fieldName;
+                            selectedPropertyList[i].unitName = newItem.unitName;
+                            delSelectedPropertyList = that.delFieldList(delSelectedPropertyList,newItem.fieldName);//存在则删除
+                            break;
+                        }
+                    }
+                }
+            }
+            if(delSelectedPropertyList.length>0){
+                $.each(delSelectedPropertyList,function(index,item){
+                    item.changeStatus=-1;//状态设为删除,追加到selectedPropertyList上
+                    selectedPropertyList.push(item);
+                });
+            }
+            var customPropertyList = that._projectPropertyEditData.customPropertyList;
+            var oldCustomPropertyList = that._projectPropertyData.customPropertyList;
+            var delCustomPropertyList = that._projectPropertyData.customPropertyList;
+            if(customPropertyList==null)
+                customPropertyList = [];
+            if(oldCustomPropertyList==null)
+                oldCustomPropertyList = [];
+            if(delCustomPropertyList==null)
+                delCustomPropertyList = [];
+
+            if(oldCustomPropertyList.length>0 && customPropertyList.length>0){//对比数据
+
+                for(var m=0;m<customPropertyList.length;m++){
+
+                    customPropertyList[m].sequencing = m;//排序值
+                    var newItem = jQuery.extend(true, {}, customPropertyList[m]);
+                    for(var n=0;n<oldCustomPropertyList.length;n++){
+                        if(newItem.fieldName+''+that.conversionUnitFormat(newItem.unitName) == oldCustomPropertyList[n].fieldName+''+ that.conversionUnitFormat(oldCustomPropertyList[n].unitName)){//相同，copy旧对象，替换sequencing，fieldName,unitName
+                            customPropertyList[m] = jQuery.extend(true, {}, oldCustomPropertyList[n]);
+                            customPropertyList[m].changeStatus = 2;//当存在库里则update
+                            customPropertyList[m].sequencing = m;
+                            customPropertyList[m].fieldName = newItem.fieldName;
+                            customPropertyList[m].unitName = newItem.unitName;
+                            delCustomPropertyList = that.delFieldList(delCustomPropertyList,newItem.fieldName);//存在则删除
+                            break;
+                        }
+                    }
+                }
+            }
+            if(delCustomPropertyList.length>0){
+                $.each(delCustomPropertyList,function(index,item){
+                    item.changeStatus=-1;//状态设为删除,追加到selectedPropertyList上
+                    customPropertyList.push(item);
+                });
+            }
+            option.postData.basicPropertyList = that._projectPropertyEditData.basicPropertyList;
+            option.postData.customPropertyList = customPropertyList;
+            option.postData.selectedPropertyList = selectedPropertyList;
+            m_ajax.postJson(option,function (response) {
+                if(response.code=='0'){
+                    S_toastr.success('保存成功！');
+                    if(that.settings.$okCallBack!=null){
+                        return that.settings.$okCallBack(null);
+                    }
+                }else {
+                    S_dialog.error(response.info);
+                }
+            })
+        }
+        //转换单位格式
+        , conversionUnitFormat:function (unitName) {
+
+            var that = this,_unitName = '';
+            switch(unitName){
+                case 'm&sup2;':
+                    _unitName = 'm²';
+                    break;
+                case 'm&sup3;':
+                    _unitName = 'm³';
+                    break;
+                default:
+                    _unitName = unitName;
+                    break;
+            }
+            return _unitName;
+        }
+        //添加自定义属性验证
+        , addProperty_validate: function () {
+            var that = this;
+            $('form.addPropertyForm').validate({
+                rules: {
+                    fieldName: {
+                        required: true,
+                        isReName: true
+                    }
+                },
+                messages: {
+                    fieldName: {
+                        required: '标签名称不可为空！',
+                        isReName: "该标签库已存在，请勿重复添加"
+
+                    }
+                },
+                errorPlacement: function (error, element) { //指定错误信息位置
+                    element.closest('.row').find('.col-md-12').html(error);
+                }
+            });
+            // 重名验证
+            jQuery.validator.addMethod("isReName", function (value, element) {
+
+                value = $.trim(value);
+                var unitName = $(element).parents('.addPropertyForm').find('input[name="unitName"]').val();
+                var isOk = true;
+                if(that._projectPropertyData!=null && that._projectPropertyData.basicPropertyList!=null && that._projectPropertyData.basicPropertyList.length>0){
+                    var baseList = that._projectPropertyData.basicPropertyList;
+                    for(var i=0;i<baseList.length;i++){
+                        if(value+'' + unitName == baseList[i].fieldName+''+ that.conversionUnitFormat(baseList[i].unitName)){
+                            isOk = false;
+                            break;
+                        }
+                    }
+                }
+                if(isOk && that._projectPropertyEditData!=null && that._projectPropertyEditData.customPropertyList!=null && that._projectPropertyEditData.customPropertyList.length>0){
+                    var customList = that._projectPropertyEditData.customPropertyList;
+                    for(var i=0;i<customList.length;i++){
+                        if(value+'' + unitName ==customList[i].fieldName+''+ that.conversionUnitFormat(customList[i].unitName)){
+                            isOk = false;
+                            break;
+                        }
+                    }
+                }
+                return  isOk;
+
+            }, "该标签库已存在，请勿重复添加");
+
+        }
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+
+
+/**
+ * 设计阶段
+ * Created by wrb on 2016/12/20.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_editDesignContent",
+        defaults = {
+            $title: null,
+            $isDialog: true,
+            $projectId: '',
+            $projectDesignContent: null,
+            $okCallBack: null,
+            $cancelCallBack: null,
+            $designContentList: null//此字段跟$projectDesignContent一样，这里不代表所有
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._designContentListClone = null;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.initHtmlData(function () {
+                that.bindActionClick();
+                that.bindDesignContentCk();
+            });
+        },
+        //初始化数据
+        initHtmlData: function (callBack) {
+            var that = this;
+            if (that.settings.$isDialog) {//以弹窗编辑
+                S_dialog.dialog({
+                    title: that.settings.$title || '进度变更',
+                    contentEle: 'dialogOBox',
+                    lock: 3,
+                    width: '800',
+                    minHeight: '350',
+                    tPadding: '0px',
+                    url: rootPath + '/assets/module/m_common/m_dialog.html',
+                    cancel: function () {
+                        /*that.settings.$designContentList = that._designContentListClone;
+                        if (that.settings.$cancelCallBack != null) {
+                            return that.settings.$cancelCallBack(that._designContentListClone);
+                        }*/
+                    },
+                    cancelText:'关闭'
+
+
+                }, function (d) {//加载html后触发
+                    that.element = 'div[id="content:' + d.id + '"] .dialogOBox';
+                    if (that.settings.$designContentList != null) {
+                        that._designContentListClone = jQuery.extend(true, {}, that.settings.$designContentList);
+                        var $data = {};
+                        $data.designContentList = that.settings.$designContentList;
+                        $data.designContentList[0].projectProcessTimeEntityList = that.getChangeTimeDiff($data.designContentList[0].projectProcessTimeEntityList);
+                        that.initHtmlTemplate(callBack, $data)
+                    }
+
+
+                });
+            } else {//不以弹窗编辑
+                var $data = that.dealDesignContent();
+                that.initHtmlTemplate(callBack, $data, classIdObj)
+            }
+        }
+        //生成html
+        , initHtmlTemplate: function (callBack, data, classIdObj) {
+            var that = this;
+            var html = template('m_project/m_editDesignContent', data);
+            $(that.element).html(html);
+            if (callBack != null) {
+                callBack();
+            }
+        }
+        //计算变更容器的时间差（天）
+        , getChangeTimeDiff: function (list) {
+            var that = this;
+            $.each(list, function (i, item) {
+                list[i].timeDiffStr = that.countTimeDiff(item.startTime, item.endTime);
+            });
+            return list;
+        }
+        //计算时间差的方法
+        , countTimeDiff:function (startTime, endTime) {
+            var diffStr = moment(endTime).diff(moment(startTime), 'days')+1;
+            if(isNaN(diffStr) || diffStr==undefined){
+                diffStr = '';
+            }
+            return diffStr;
+        }
+        //获取设计阶段基础数据
+        , getContentData: function (callBack) {
+            var that = this;
+            var option = {};
+            option.classId = that.element;
+            option.url = restApi.url_getDesignContentList;
+            m_ajax.get(option, function (response) {
+                if (response.code == '0') {
+                    that.settings.$designContentList = response.data;
+                    return callBack(response.data);
+                } else {
+                    S_dialog.error(response.info);
+                }
+
+            })
+        }
+
+        //变更按钮事件绑定
+        , bindTimeChangeRecord: function (obj) {
+            var that = this;
+            var contentIndex = obj.closest('.designContentDiv').attr('data-i');
+            var contentObj = that.settings.$designContentList[contentIndex];
+            var options = {};
+            options.$title = '添加变更';
+            options.$okText = '保存';
+            options.$minHeight = '180';
+            options.$validate = 1;
+            options.$timeInfo={
+                startTime:obj.closest('.time-row').find('span[data-type="startTime"]').text(),
+                endTime:obj.closest('.time-row').find('span[data-type="endTime"]').text()
+            }
+            options.$okCallBack = function (data) {
+                data.timeDiffStr = that.countTimeDiff(data.startTime, data.endTime);
+                if (data != null) {
+                    if (that.settings.$okCallBack != null) {
+                        that.settings.$okCallBack(data);
+                    }
+                    if (contentObj.projectProcessTimeEntityList != null) {
+                        contentObj.projectProcessTimeEntityList.push({
+                            startTime: data.startTime,
+                            endTime: data.endTime,
+                            timeDiffStr: data.timeDiffStr,
+                            memo: data.memo
+                        });
+                    }
+                    var $option = {};
+                    $option.$data = data;
+                    $option.$data.$index = contentObj.projectProcessTimeEntityList.length - 2;
+                    $(that.element).find('div.designContentDiv[data-i="' + contentIndex + '"]').m_addTimeChangeRecord($option);
+                    $(that.element).find('.detailListDiv:last').siblings().find('a[data-action="addTimeChangeRecord"]').addClass('hide');
+                    $(that.element).find('.detailListDiv:last').siblings().find('a[data-action="delTimeChangeRecord"]').addClass('hide');
+                    $(that.element).find('.detailListDiv:last').find('a[data-action="addTimeChangeRecord"]').on('click', function () {
+                        that.bindTimeChangeRecord($(this));
+                    });
+                }
+
+            };
+            $('body').m_inputProcessTime(options);
+        }
+        //删除变更列表
+        , delTimeChangeRecord: function (obj) {
+            var that = this;
+            var contentIndex = $(obj).closest('.designContentDiv').attr('data-i');
+            var contentObj = that.settings.$designContentList[contentIndex];
+            if (contentObj.projectProcessTimeEntityList && contentObj.projectProcessTimeEntityList.length > 1) {//删除变更列表
+                if (contentObj.projectProcessTimeEntityList.length == 2) {
+                    $(obj).closest('.detailListDiv').prev().find('a').removeClass('hide');
+                } else {
+                    $(obj).closest('.detailListDiv').prev().find('a').removeClass('hide');
+                }
+                $(obj).closest('.detailListDiv').remove();
+                contentObj.projectProcessTimeEntityList.splice(contentObj.projectProcessTimeEntityList.length - 1, 1);
+                that.settings.$designContentList[contentIndex] = contentObj;
+            } else {//第一条合同进度时间
+                $(obj).closest('.liBox').find('input[name="startTime"]').val('');
+                $(obj).closest('.liBox').find('input[name="endTime"]').val('');
+                $(obj).closest('.liBox').find('input').removeAttr('disabled');
+                $(obj).closest('.liBox').find('.btnBox a').addClass('hide');
+                contentObj.projectProcessTimeEntityList.splice(contentObj.projectProcessTimeEntityList.length - 1, 1);
+                that.settings.$designContentList[contentIndex] = contentObj;
+
+                S_dialog.close($(that.element));
+                var options = {};
+                options.$isHaveMemo = false;
+                options.$timeInfo = {};
+                options.$title = '设计阶段';
+                options.$okCallBack = function (data) {
+                    if (that.settings.$okCallBack != null) {
+                        return that.settings.$okCallBack(data, 1);
+                    }
+                };
+                $('body').m_inputProcessTime(options);
+            }
+        }
+        , bindDesignContentCk: function () {
+            $(this.element).find('input[type="checkbox"][name="designContent"]').on('click', function () {
+                if ($(this).is(':checked')) {
+                    $(this).closest('.designContentDiv').find('.start-time').removeClass('hide');
+                    $(this).closest('.designContentDiv').find('.end-time').removeClass('hide');
+                } else {
+                    $(this).closest('.designContentDiv').find('.start-time').addClass('hide');
+                    $(this).closest('.designContentDiv').find('.end-time').addClass('hide');
+                }
+            });
+        }
+        //按钮事件绑定
+        , bindActionClick: function () {
+            var that = this;
+            $(that.element).find('a[data-action]').on('click', function () {
+                var dataAction = $(this).attr('data-action');
+                if (dataAction == 'addOtherContent') {
+                    that.bindAddContent($(this));
+                    return false;
+                } else if (dataAction == 'addTimeChangeRecord') {//点击变更
+                    that.bindTimeChangeRecord($(this));
+                    return false;
+                }
+                /*else if(dataAction=='delTimeChangeRecord'){
+                 var $that = this;
+                 S_dialog.confirm('您确定要删除吗？',function(){
+                 that.delTimeChangeRecord($that);
+                 },function(){})
+                 return false;
+                 }*/
+            });
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+
+
+/**
+ * 设计范围
+ * Created by wrb on 2016/12/20.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_editDesignRange",
+        defaults = {
+            $title:null,
+            $isDialog:true,
+            $projectId:'',
+            $projectDesignRange:null,
+            $okCallBack:null
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.initHtmlData(function () {
+                that.bindActionClick();
+            });
+        },
+        //初始化数据
+        initHtmlData:function (callBack) {
+            var that = this;
+            if(that.settings.$isDialog){//以弹窗编辑
+                S_dialog.dialog({
+                    title: that.settings.$title||'设计范围',
+                    contentEle: 'dialogOBox',
+                    lock: 3,
+                    width: '800',
+                    minHeight:'250',
+                    tPadding: '0px',
+                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    cancel:function () {
+                        
+                    },
+                    ok:function () {
+                        var check = $(".addRangeOBox form").valid();
+                        if(!check){
+                            return false;
+                        }else{
+                            var projectDesignRangeList = [];
+                            $('.addRangeOBox input[type="checkbox"][name="range"]:checked').each(function () {
+                                projectDesignRangeList.push({designRange:$(this).val()});
+                            });
+                            $('.addRangeOBox input[type="checkbox"][name="otherRange"]:checked').each(function () {
+                                projectDesignRangeList.push({designRange:$(this).closest('.liBox').find('input[name="designRange"]').val()});
+                            });
+                            if(that.settings.$okCallBack!=null){
+                                return that.settings.$okCallBack(projectDesignRangeList);
+                            }
+                        }
+
+
+                    }
+                    
+                },function(d){//加载html后触发
+                    that.element = '#content:'+d.id;
+                    that.getRangeData(function (data) {
+
+                        var $data = that.dealDesignRange();
+                        var classIdObj = $('div[id="content:'+d.id+'"] .dialogOBox');
+                        that.initHtmlTemplate(callBack,$data,classIdObj)
+                    });
+
+
+                });
+            }else{//不以弹窗编辑
+                var $data = that.dealDesignRange();
+                var classIdObj = $(that.element);
+                that.initHtmlTemplate(callBack,$data,classIdObj)
+            }
+        }
+        //生成html
+        ,initHtmlTemplate:function (callBack,data,classIdObj) {
+            var that = this;
+            var html = template('m_project/m_editDesignRange',data);
+            classIdObj.html(html);
+            if(callBack!=null){
+                callBack();
+            }
+            //给所有已有的自定义范围的checkbox添加事件
+            $.each(data.otherRange,function(i,item){
+                var obj = $('input#'+item.id).parents('.liBox');
+                that.bindOtherRangeCk(obj);
+            });
+        }
+        //把设计范围解析(哪些是来自基础数据，来自自定义)
+        ,dealDesignRange:function () {
+            var that = this;
+            var rangeListClone = that.settings.$projectDesignRange;//已选中的设计范围
+            var designRangeList = that.settings.$designRangeList;//数据字典的设计范围
+            var rangeList=[];
+            var otherRange=[];
+            if(rangeListClone!=null && rangeListClone.length>0){
+                for (var i = 0; i < rangeListClone.length; i++) {
+                    var isCon = false;
+                    for (var j = 0; j < designRangeList.length; j++) {
+                        if (rangeListClone[i].designRange == designRangeList[j].name) {
+                            isCon = true;
+                            designRangeList[j].isChecked = 1;//初始化选中
+                            rangeList.push(rangeListClone[i]);
+                            continue;
+                        }
+                    }
+                    if (!isCon) {
+                        rangeListClone[i].isChecked = 1;//初始化选中
+                        otherRange.push(rangeListClone[i]);
+                    }
+                }
+            }
+            var $data = {};
+            $data.rangeList = rangeList;
+            $data.otherRange = otherRange;
+            $data.designRangeList = designRangeList;
+            return $data;
+        }
+        //获取设计范围基础数据
+        ,getRangeData:function (callBack) {
+            var that = this;
+            var option  = {};
+            option.classId = that.element;
+            option.url = restApi.url_getDesignRangeList;
+            m_ajax.get(option,function (response) {
+                if(response.code=='0'){
+                    that.settings.$designRangeList = response.data;
+                    return callBack(response.data);
+                }else {
+                    S_dialog.error(response.info);
+                }
+
+            })
+        }
+        //添加自定义设计范围事件
+        ,bindAddRange:function (obj) {
+            var that = this;
+
+            var iHtml = '';
+            iHtml+='<div class="col-md-3 liBox">';
+            iHtml+='    <div class="col-md-2 no-padding" >';
+            iHtml+='        <label class="checkbox" title="">';
+            iHtml+='            <input name="otherRange" class="checkbox" checked type="checkbox"/>';
+            iHtml+='            <i></i>';
+            iHtml+='        </label>';
+            iHtml+='    </div>';
+            iHtml+='    <div class="col-md-10 out-box" style="padding-left: 0;padding-right: 0;">';
+            iHtml+='        <label class="input">';
+            iHtml+='            <input id="designRange" class="designRange form-control input-sm" type="text" name="designRange" placeholder="请输入名称" />';
+            iHtml+='        </label>';
+            iHtml+='    </div>';
+            iHtml+='</div>';
+
+            obj.parent().before(iHtml);
+            that.bindOtherRangeCk(obj.parent().prev());
+            that.editOtherRangeValid();
+        }
+        //绑定选择自定义设计范围事件
+        ,bindOtherRangeCk:function (obj) {
+            obj.find('input[name="otherRange"]').on('click',function () {
+                $(this).parents('.liBox').find('label.error').hide();
+                $(this).parents('.liBox').remove();
+            });
+            obj.find('input[name="designRange"]').keyup(function () {
+                $(this).parents('.liBox').find('label.error').hide();
+            });
+        }
+        //按钮事件绑定
+        ,bindActionClick:function () {
+            var that = this;
+            $('.addRangeOBox').find('label[data-action]').on('click',function () {
+                var dataAction = $(this).attr('data-action');
+                if(dataAction=='addOtherRange'){
+                    that.bindAddRange($(this));
+                    return false;
+                }
+            });
+        }
+        //自定义范围时的验证
+        ,editOtherRangeValid:function(){
+            var that = this;
+            $(".addRangeOBox form").validate({
+                onfocusout:false,
+                rules: {
+                    otherRange:{
+                        ckDesignRange:true
+                     }
+                },
+                messages: {
+                    otherRange:{
+                        ckDesignRange:'请输入设计范围名称!'
+                     }
+                },
+                errorPlacement: function (error, element) { //指定错误信息位置
+                    if (element.is(':radio') || element.is(':checkbox')) {
+                        error.appendTo(element.closest('.liBox'));
+                    } else {
+                        error.insertAfter(element);
+                    }
+                }
+            });
+            $.validator.addMethod('ckDesignRange', function(value, element) {
+                var that = this;
+                var isTrue = true;
+                $(that.element).find(' input[name="otherRange"]:checked').each(function () {
+                    var val = $(this).closest('.liBox').find('input[name="designRange"]').val();
+                    if($.trim(val).length===0){
+                        isTrue = false;
+                    }
+                });
+                return  isTrue;
+            }, '请输入设计范围名称!');
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+/**
+ * 录入地址
+ * Created by wrb on 2016/12/21.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_entryAddress",
+        defaults = {
+            $title:null,
+            $isDialog:true,
+            $placement:'null',
+            $province:null,//选中的省份
+            $city:null,//选中的城市
+            $county:null,//选中的县或区或镇
+            $detailAddress:'',
+            $okCallBack:null
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.initHtmlData(function (data) {
+                $("#selectRegion").citySelect({
+                    prov:that.settings.$province,
+                    city:that.settings.$city,
+                    dist:that.settings.$county,
+                    nodata:"none",
+                    required:false
+                });
+                that.bindActionClick();
+            });
+        },
+        //初始化数据
+        initHtmlData:function (callBack) {
+            var that = this;
+            var options = {};
+            options.titleHtml ='<h3 class="popover-title">'+(that.settings.$title?that.settings.$title:'编辑地址')+'</h3>';
+            options.placement =that.settings.$placement?that.settings.$placement:'top';
+            options.content =that.initHtmlTemplate();
+            options.onShown = function ($popover) {
+                if(callBack!=null){
+                    callBack();
+                }
+            };
+            options.onSave = function ($popover) {
+                return that.saveAddress();
+            };
+
+            $(that.element).m_popover(options,true);
+        }
+        //保存地址详情编辑
+        ,saveAddress:function () {
+            var that = this;
+
+            var p = $(that.element).next('.popover').find('select.prov').val();
+            var c = $(that.element).next('.popover').find('select.city').val();
+            var d = $(that.element).next('.popover').find('select.dist').val();
+            if(p==null|| p==undefined)
+                p='';
+            if(c==null|| c==undefined)
+                c='';
+            if(d==null|| d==undefined)
+                d='';
+            var $data = {};
+            $data.province = p;
+            $data.city = c;
+            $data.county = d;
+            $data.detailAddress = $('.selectRegionOBox input[name="detailAddress"]').val();
+
+            if(that.settings.$okCallBack!=null){
+                return that.settings.$okCallBack($data);
+            }
+
+        }
+        //生成html
+        ,initHtmlTemplate:function () {
+            var that = this;
+            var data = {};
+            data.$detailAddress = that.settings.$detailAddress;
+            var html = template('m_project/m_entryAddress',data);
+            return html;
+            // $(that.element).next('.popover').find('editable-input').html(html);
+        }
+        //事件绑定
+        ,bindActionClick:function () {
+            var that = this;
+            $(that.element).find('.cityBox select').change(function () {
+                var w = 508;
+                var p = $(that.element).find('select.prov').val();
+                var c = $(that.element).find('select.city').val();
+                var d = $(that.element).find('select.dist').val();
+                if(p==null|| p==undefined)
+                    p='';
+                if(c==null|| c==undefined)
+                    c='';
+                if(d==null|| d==undefined)
+                    d='';
+                var txt = p+c+d;
+                $(that.element).find('.cityText').html(txt);
+                $(that.element).find('.detailAddressLabel').css('width',(w-(txt.length*14)-5)+'px');
+            });
+        }
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+
+
+/**
+ * Created by wrb on 2016/12/19.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_projectBasicInfo",
+        defaults = {
+            $isDialog:false,//是否弹窗
+            $isView:false,//是否信息浏览,是则屏蔽操作,屏蔽面包屑
+            $projectId: null,
+            $editFlag:null,
+            $deleteFlag:null,
+            $renderCallBack: null
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._projectInfo = null;//项目信息
+        this._currentUserId = null;//当前用户id
+        this._currentCompanyId = window.currentCompanyId;
+        this._currentCompanyUserId = window.currentCompanyUserId;
+        this._designContentAncestors = null;//项目设计阶段数据
+        this._constructionCateList = null;//功能分类数据字典的list
+        this._designContentList = null;//设计阶段数据字典的list
+        this._projectTypeList = null;//项目类型
+        this._name = pluginName;
+
+        this._currentUserId = window.currentUserId;
+        this._currentCompanyUserId = window.currentCompanyUserId;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            if(that.settings.$isDialog){
+                S_dialog.dialog({
+                    title: that.settings.$title||'项目基本信息',
+                    contentEle: 'dialogOBox',
+                    lock: 3,
+                    tPadding: '0px',
+                    width: '1000',
+                    minHeight:'700',
+                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    cancel:function () {
+                    },
+                    cancelText:'关闭'
+
+                },function(d){//加载html后触发
+
+                    that.element = $('div[id="content:'+d.id+'"] .dialogOBox');
+                    that.renderPage();
+                });
+            }else{
+                that.renderPage();
+            }
+        }
+        //渲染界面
+        ,renderPage:function () {
+            var that = this;
+            that.getProjectData(function (data) {
+                that.initHtmlData(data);
+                //that.bindAttentionActionClick();
+                rolesControl();
+
+                if(that.settings.$isView==false){
+                    if (that.settings.$editFlag!=null && that.settings.$editFlag==1) {//具有编辑权限操作
+                        that.bindEditItem();
+                        that.uploadRecordFile();
+                        that.bindEditable();
+                        that.bindBtnAddDesignContent();
+                        that.bindCustomInfoTemp();
+                        that.bindFileEditFun();
+                    }
+                    that.bindDeleteProject();
+                }
+            });
+        }
+        ,getProjectData: function (callback) {
+            var that = this;
+            var option = {};
+            option.url = restApi.url_loadProjectDetails + '/' + that.settings.$projectId;
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+                    that._projectInfo = response.data;
+                    that._designContentAncestors = response.data.projectDesignContentList;
+                    that._constructionCateList = response.data.constructionCateList;
+                    that.getContentData(function () {
+
+                        if (callback)
+                            callback.call(that, that._projectInfo);
+                    });
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+        },
+        //获取设计阶段基础数据
+        getContentData: function (callback) {
+            var that = this;
+            var option = {};
+            option.classId = that.element;
+            option.url = restApi.url_getDesignContentList;
+            m_ajax.get(option, function (response) {
+                if (response.code == '0') {
+                    that._designContentList = response.data;
+                    if (callback) {
+                        return callback();
+                    }
+                } else {
+                    S_dialog.error(response.info);
+                }
+            })
+        },
+        initHtmlData: function (data) {
+            var that = this;
+            var flag =  that.settings.$editFlag!=null && that.settings.$editFlag==1 ? true : false;//编辑标识
+            var html = template('m_project/m_projectBasicInfo', {
+                project: data,
+                isCreate: that._currentUserId == data.createBy && that._currentCompanyId == data.companyId,
+                isOperator: that._currentCompanyUserId == data.operatorPerson,
+                editFlag:flag,
+                deleteFlag:that.settings.$deleteFlag,
+                currentCompanyId : that._currentCompanyId,
+                roles: window.currentRoleCodes,
+                fastdfsUrl: window.fastdfsUrl + '/',
+                isView:that.settings.$isView
+            });
+            $(that.element).html(html);
+            if (that.settings.$renderCallBack != null) {
+                that.settings.$renderCallBack();
+            }
+
+            $(that.element).find('span[data-toggle="tooltip"]').tooltip();
+
+            if (!flag) {
+                $(that.element).find('a[data-action][data-action!="deleteProject"]').addClass('normalAElem');//删除的权限单独控制，跟编辑权限不一样,删除的权限在渲染此组件时作了处理
+            }
+            rolesControl();
+            that.bindDesignContentCheckbox();//给设计阶段的checkbox绑定事件
+        },
+        //处理文件上传的删除事件，hover事件
+        bindFileEditFun:function () {
+            var that = this;
+            $(that.element).find('.file-span').hover(function () {
+                $(this).find('a[data-action="delFile"]').show();
+            },function () {
+                $(this).find('a[data-action="delFile"]').hide();
+            });
+            $(that.element).find('.file-span a[data-action="delFile"]').on('click',function () {
+
+                var dataId = $(this).attr('data-id');
+                S_swal.confirm({
+                    title:'您确定要删除该文件吗？',
+                    text:'该文件删除后将不能恢复，确定吗？',
+                    callBack:function () {
+                        var option = {};
+                        option.url = restApi.url_netFile_delete;
+                        option.postData = {
+                            id: dataId,
+                            accountId: window.currentUserId
+                        };
+                        m_ajax.postJson(option, function (response) {
+                            if (response.code == '0') {
+                                S_swal.sure({
+                                    title:'已删除',
+                                    text:'该文件已删除。',
+                                    callBack:function () {
+                                        that._refresh();
+                                    }
+                                });
+                            } else {
+                                S_dialog.error(response.info);
+                            }
+                        });
+                    }
+                });
+            });
+        },
+        //绑定点击关注或取消关注按钮
+        bindAttentionActionClick: function () {
+            var that = this;
+            $(that.element).find('a.attention').click(function () {
+                if ($(this).hasClass('shoucang')) {//点击关注
+                    that.addAttention(this);
+                } else if ($(this).hasClass('shoucangshixin')) {//点击取消关注
+                    that.delAttention(this);
+                }
+                return false;
+            });
+        },
+        //添加项目关注
+        addAttention: function (obj) {
+            var option = {}, that = this;
+            option.url = restApi.url_attention;
+            option.postData = {};
+            option.postData.targetId = $(obj).attr('data-id');
+            option.postData.type = '1';
+            option.postData.companyUserId = window.currentCompanyUserId;
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+                    S_toastr.success('关注成功！');
+                    $(obj).removeClass('shoucang').addClass('shoucangshixin');
+                    $(obj).find('i').addClass('fc-v1-yellow');
+                    $(obj).find('.text').text('取消关注');
+                    $(obj).attr('data-attention-id', response.data);
+                    $(obj).attr('title', '取消关注该项目');
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+        },
+        //取消项目关注
+        delAttention: function (obj) {
+            var option = {}, that = this;
+            option.url = restApi.url_attention + '/' + $(obj).attr('data-attention-id');
+            m_ajax.get(option, function (response) {
+                if (response.code == '0') {
+                    S_toastr.success('取消关注成功！');
+                    $(obj).removeClass('shoucangshixin').addClass('shoucang');
+                    $(obj).find('i').removeClass('fc-v1-yellow');
+                    $(obj).find('.text').text('关注');
+                    $(obj).attr('data-attention-id', '');
+                    $(obj).attr('title', '关注该项目');
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+        },
+        //点击删除项目
+        bindDeleteProject: function () {
+            var that = this;
+            $(that.element).find('a[data-action="deleteProject"]').on('click',function(){
+                var $this = this;
+
+                S_swal.confirm({
+                    title:'您确定要删除该项目吗？',
+                    text:'该项目删除后将不能恢复，确定吗？',
+                    callBack:function () {
+                        var option = {};
+                        var id = $($this).attr('data-id');
+                        option.url = restApi.url_deleteProject + '/' + id;
+                        m_ajax.get(option, function (response) {
+                            if (response.code == '0') {
+                                S_swal.sure({
+                                    title:'已删除',
+                                    text:'该项目已删除。',
+                                    callBack:function () {
+                                        //window.location.href = window.rootPath + '/iWork/home/workbench'
+                                        //$('.m_metismenu a[id="projectList"]').click();
+                                        location.hash = '/';
+                                    }
+                                });
+                            } else {
+                                S_dialog.error(response.info);
+                            }
+                        });
+                    }
+                });
+            });
+        },
+        //当在位编辑的文本显示为empty时，改为“请设置”
+        dealEmptyText: function () {
+            var that = this;
+            $('.m_projectBasicInfo .editable-empty,.m_projectBasicInfo a.editable').each(function () {
+
+                var text = $(this).text();
+                if( text == 'Empty' || $.trim(text) == ''){
+                    text = '未设置'
+                }
+                $(this).text(text);
+
+                if (that.settings.$editFlag!=null && that.settings.$editFlag==1) {
+                    $(this).css('color', (($.trim(text).indexOf('未设置') > -1 || $.trim(text) == '未签订')) ? '#ccc' : '#4765a0');
+                } else {
+                    $(this).css('color', '#676a6c');
+                }
+            });
+        },
+        //上传附件
+        uploadRecordFile: function () {
+            var that = this;
+            $('#filePicker').m_fileUploader({
+                server: restApi.url_attachment_uploadProjectContract,
+                fileExts: 'pdf',
+                fileSingleSizeLimit:20*1024*1024,
+                formData: {},
+                multiple:true,
+                //duplicate:false,
+                loadingId: '.ibox-content',
+                innerHTML: '<i class="fa fa-upload fa-fixed"></i>',
+                uploadBeforeSend: function (object, data, headers) {
+                    data.companyId = window.currentCompanyId;
+                    data.accountId = window.currentUserId;
+                    data.projectId = that.settings.$projectId;
+                },
+                uploadSuccessCallback: function (file, response) {
+                    $(that.element).m_projectBasicInfo({
+                        $projectId: that.settings.$projectId,
+                        $editFlag:that.settings.$editFlag,
+                        $deleteFlag:that.settings.$deleteFlag
+                    });
+
+                    S_toastr.success('保存成功！');
+                }
+            },true);
+        }
+
+        //验证当前选的组织是否已选过，选过的话，经营负责人不能另选
+        , _validateIssueTaskCompany: function (toCompanyId, callBack) {
+
+            var options = {}, that = this;
+
+            options.url = restApi.url_validateIssueTaskCompany;
+            options.postData = {};
+            options.postData.toCompanyId = toCompanyId;
+            options.postData.projectId = that.settings.$projectId;
+            m_ajax.postJson(options, function (response) {
+
+                if (response.code == '0') {
+                    return callBack(response.data);
+                } else {
+                    S_dialog.error(response.info);
+                }
+            })
+        }
+        //获取甲方列表
+        , getConstructCompanyList: function (keyword, callback) {
+            var that = this;
+            var option = {};
+            option.url = restApi.url_constructList;
+            option.postData = {};
+            if (keyword != null) {
+                option.postData.keyword = keyword;
+            }
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+                    that._constructCompanyList = that.dealConstructCompanyLIst(response.data);
+                    if (callback != null) {
+                        return callback(that._constructCompanyList);
+                    }
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+        //处理甲方列表
+        , dealConstructCompanyLIst: function (data) {
+            var that = this;
+            var list = [];
+            $.each(data, function (i, item) {//constructCompany: constructCompanyName:
+                list.push({id: item.companyId, value: item.companyName});
+            });
+            return list;
+        }
+        //乙方
+        , chosePartyBOrg: function ($btn) {
+            var that = this;
+            var options = {};
+            options.titleHtml = '<h3 class="popover-title">编辑</h3>';
+            options.popoverStyle = 'width:360px;min-width:360px';
+            options.contentStyle = 'padding:15px 15px 0';
+            options.content = template('m_project/m_popover_partyB', {});
+            options.onShown = function ($popover) {
+
+                var $select_partB = $popover.find('select[name="partB"]:first').select2({
+                    placeholder: {
+                        id: '',
+                        text: ''
+                    },
+                    allowClear: true,
+                    language: "zh-CN",
+                    minimumResultsForSearch: Infinity,
+                    ajax: {
+                        contentType: "application/json",
+                        url: restApi.url_getUsedPartB,
+                        dataType: 'json',
+                        type: 'POST',
+                        delay: 500,
+                        data: function (params) {
+                            var ret = {
+                                keyword: params.term
+                                /*,companyId: window.currentCompanyId*/
+                            };
+                            return JSON.stringify(ret);
+                        },
+                        processResults: function (data, params) {
+
+                            return {
+                                results: $.map(data.data, function (o, i) {
+                                    return {
+                                        id: o.id,
+                                        text: o.companyName
+                                    }
+                                })
+                            };
+                        },
+                        cache: false
+                    }
+                });
+
+                var companyBid = $btn.attr('data-companyBid');
+                var companyBidName = $btn.attr('data-companyBidName');
+                if (!isNullOrBlank(companyBid)) {//不为空，初始化select值
+                    var $companyB = $('<option selected>' + companyBidName + '</option>').val(companyBid);
+                    $select_partB.append($companyB).trigger('change');
+                }
+                that._savePartyB_validate($popover);
+            };
+            options.onSave = function ($popover) {
+                var data = {};
+                data.companyBid = $popover.find('select[name="partB"]').val();
+                /*data.partBManagerId = $popover.find('select[name="operator"]').val();*/
+                /*data.partBDesignerId = $popover.find('select[name="projectLeader"]').val();*/
+
+                var flag = $popover.find('form').valid();
+                if (!flag) {
+                    return false;
+                } else {
+
+                    if (that._projectInfo.companyBid != null && that._projectInfo.companyBid != '' && data.companyBid != that._projectInfo.companyBid) {
+                        var $btn = $popover.find('button.m-popover-submit');
+                        if($btn.closest('div').find('.m-popover').length>0){
+                            return false;
+                        }
+
+                        S_swal.confirm({
+                            title:'删除（更换）乙方后，相关费用信息将被删除，你确定保存吗？',
+                            text:'此操作不可恢复，确定吗？',
+                            callBack:function () {
+                                that.saveProjectData(null, data, 'partyB', function () {
+                                    S_swal.sure({
+                                        title:'已更换',
+                                        text:'该乙方已更换成功。',
+                                        callBack:function () {
+                                            that._refreshMenu();
+                                        }
+                                    });
+
+                                });
+                            }
+                        });
+
+                    } else {
+                        that.saveProjectData(null, data, 'partyB', function () {
+                            //window.location.href = window.location.href;
+                            that._refreshMenu();
+                        });
+                    }
+                }
+                return false;
+            };
+            $btn.m_popover(options, true);
+            return false;
+        }
+        //甲方
+        , chosePartyAOrg: function ($btn) {
+            var that = this;
+            var options = {};
+            options.titleHtml = '<h3 class="popover-title">编辑</h3>';
+            options.popoverStyle = 'width:400px;min-width:400px';
+            options.contentStyle = 'padding:15px 0';
+
+            var companyName = that._projectInfo.partyACompany==null?'':that._projectInfo.partyACompany.companyName;
+            var companyId = that._projectInfo.partyACompany==null?'':that._projectInfo.partyACompany.id;
+
+            options.content = template('m_project/m_popover_partyA', {
+                constructCompanyName:companyName,
+                enterpriseId:companyId
+            });
+            options.onShown = function ($popover) {
+
+                /*var $select_partA = $popover.find('select[name="partA"]:first').select2({
+                    placeholder: {
+                        id: '',
+                        text: ''
+                    },
+                    //allowClear: true,
+                    language: "zh-CN",
+                    minimumResultsForSearch: Infinity,
+                    ajax: {
+                        contentType: "application/json",
+                        url: restApi.url_enterpriseSearch,
+                        dataType: 'json',
+                        type:'POST',
+                        delay: 500,
+                        data: function (params) {
+                            var ret={
+                                name: params.term // search term
+                            };
+                            return JSON.stringify(ret);
+                        },
+                        processResults: function (data, params) {
+                            return {
+                                results: $.map(data.data.details,function(o,i){
+                                    return {
+                                        id:o.companyid,
+                                        text:o.corpname
+                                    }
+                                })
+                            };
+                        },
+                        cache: true
+                    }
+                });
+                if (!isNullOrBlank(that._projectInfo.partyACompany)) {//不为空，初始化select值
+                    var $companyA = $('<option selected >' + that._projectInfo.partyACompany.companyName + '</option>').val(that._projectInfo.partyACompany.id);
+                    $select_partA.append($companyA).trigger('change');
+                }*/
+
+                $popover.find('input#constructCompanyName').bind("input propertychange change focus",function(event){
+                    var $this = $(this);
+                    var txt = $this.val();
+                    var mPartyALen = $('.m_partyA').length;
+                    if ($.trim(txt) != '' && mPartyALen==0) {
+                        var option = {};
+                        option.$eleId = 'constructCompanyName';
+                        $popover.find('.partyA-select-box').m_partyA(option);
+                        $popover.find('.partyA-select-box').show();
+                        that.documentBindFun();
+                    }else if($.trim(txt)!=''){
+                        $popover.find('.partyA-select-box').show();
+                    }
+                });
+
+            };
+            options.onSave = function ($popover) {
+                var data = {};
+                var enterpriseId = $popover.find('input[name="constructCompanyName"]').attr('data-id');
+                var constructCompanyName = $popover.find('input[name="constructCompanyName"]').val();
+                //if(!(that._projectInfo.partyACompany!=null && that._projectInfo.partyACompany.id==enterpriseId)){
+                    that.saveProjectData(null, constructCompanyName, 'constructCompanyName');
+                    return false;
+                //}
+            };
+            $btn.m_popover(options, true);
+            return false;
+        }
+        //window document事件绑定
+        ,documentBindFun:function () {
+            var that = this;
+            $(document).bind('click',function(e){
+                console.log('document event');
+                if(!($(e.target).closest('.partyA-select-box').length>0 || $(e.target).hasClass('partyA-select-box') || $(e.target).hasClass('constructCompanyName'))){
+                    $(that.element).find('.partyA-select-box').hide();
+                }
+            });
+        }
+        //给设计范围、设计阶段、地址绑定点击事件
+        , bindEditItem: function () {
+            var that = this;
+            $(that.element).find('a[data-action],div[data-action]').on('click', function (event) {
+                var action = $(this).attr('data-action');
+                var data = {};
+                var $this = $(this);
+                switch (action){
+                    case 'edit_designRange':
+                        var options = {};
+                        options.$projectId = that._projectInfo.id;
+                        options.$projectDesignRange = that._projectInfo.projectRangeList;
+                        options.$okCallBack = function (data) {
+                            var obj = {};
+                            obj.projectDesignRangeList = data;
+                            if (!data || data.length < 1) {
+                                obj.projectDesign = '1';//原有设计范围，后删空
+                            } else {
+                                obj.projectDesign = '0';//增改涉及范围
+                            }
+                            that.saveProjectData(null, obj, 'projectDesignRangeList');
+                        };
+                        $this.m_addProjectDesignRange(options);
+                        break;
+
+                    case 'edit_setDesignContentTime'://项目阶段12按钮绑定
+                        that.bindTimeChangeRecord(this);
+                        break;
+
+                    case 'edit_signDate'://合同签订按钮绑定
+                        var options = {};
+                        options.$placement = 'right';
+                        options.$eleId = 'a[data-action="edit_signDate"]';
+                        options.$okCallBack = function ($data) {
+                            that.saveProjectData(null, $data, 'signDate');
+                        };
+                        $this.m_quickDatePicker(options);
+                        break;
+
+                    case 'edit_projectCreateDate'://编辑立项时间
+                        var options = {};
+                        options.$title = '编辑立项时间';
+                        options.$placement = 'right';
+                        options.$eleId = 'a[data-action="edit_projectCreateDate"]';
+                        options.$okCallBack = function ($data) {
+                            that.saveProjectData(null, $data, 'projectCreateDate');
+                        };
+                        $this.m_quickDatePicker(options);
+                        break;
+
+                    case 'edit_address'://编辑地址按钮绑定
+
+                        var options = {};
+                        options.$title = '编辑';
+                        if(that._projectInfo.projectLocation!=null){
+                            options.$province = that._projectInfo.projectLocation.province;
+                            options.$city = that._projectInfo.projectLocation.city;
+                            options.$county = that._projectInfo.projectLocation.county;
+                            options.$detailAddress = that._projectInfo.projectLocation.detailAddress;
+                        }
+                        options.$placement = 'top';
+                        options.$okCallBack = function (data) {
+                            if (data.province== '' && data.city== '' && data.detailAddress== '') {
+                                S_toastr.warning('项目地点不能为空')
+                            }else{
+                                that.saveProjectData(null, data, 'address')
+                            }
+                        };
+                        $(this).m_entryAddress(options);
+                        break;
+
+                    case 'edit_companyBidName'://编辑乙方
+                        that.chosePartyBOrg($this);
+                        break;
+
+                    case 'edit_constructCompanyName'://编辑甲方
+                        that.chosePartyAOrg($this);
+                        break;
+
+                    case 'edit_builtType'://功能分类
+                        var option = {};
+                        option.$title = '功能分类';
+                        option.$dataDictionaryList = that._constructionCateList;
+                        option.$dataList = that._projectInfo.buildTypeList;
+                        option.$okCallBack = function (data) {
+                            that.saveProjectData(null, data, 'changedBuiltTypeList');
+                        };
+                        $this.m_customDataDictionary(option);
+
+                        break;
+
+                    case 'edit_projectType'://项目类型
+
+                        if(that._projectTypeList==null){
+                            that.getProjectType(function (data) {
+                                that.editProjectType(data,$this);
+                            })
+                        }else{
+                            that.editProjectType(that._projectTypeList,$this);
+                        }
+                        return false;
+                        break;
+                }
+                return false;
+            })
+        }
+
+        , editProjectType : function (projectTypeList,$this) {
+            var that = this;
+            var projectType = that._projectInfo==null||that._projectInfo.projectType==null ||that._projectInfo.projectType.content==null?'':that._projectInfo.projectType.content;
+            var options = {};
+            options.popoverStyle = 'border: 0;border-radius: 0;box-shadow: none;position: relative;display: block;';
+            options.contentStyle = 'padding:0;';
+            options.type = 'inline';
+            options.hideArrow = true;
+            options.hideElement = true;
+            options.content = template('m_project/m_popover_projectType', {projectTypeList:projectTypeList,projectType:projectType});
+            options.onShown = function ($popover) {
+
+                $popover.find('input[name="projectType"]').off('focus keyup').on('focus keyup',function () {
+                    if($.trim($(this).val())!=''){
+                        $popover.find('span.editable-clear-x').show();
+                    }else{
+                        $popover.find('span.editable-clear-x').hide();
+                    }
+                });
+                $popover.find('input[name="projectType"]').focus();
+                $popover.find('span.editable-clear-x').off('click').on('click',function () {
+                    $popover.find('input[name="projectType"]').val('');
+                    $popover.find('span.editable-clear-x').hide();
+                });
+                $popover.find('button[data-toggle]').off('click').on('click',function () {
+                    $popover.find('ul.dropdown-menu').toggle();
+                });
+                $popover.find('ul>li>a').off('click').on('click',function () {
+                    var name = $(this).text();
+                    $popover.find('input[name="projectType"]').val(name);
+                    $popover.find('ul.dropdown-menu').toggle();
+                });
+
+            };
+            options.onSave = function ($popover) {
+                var projectType = $popover.find('input[name="projectType"]').val();
+                if($.trim(projectType)==''){
+                    $popover.find('form').append('<div class="editable-error-block help-block" style="display: block;">项目类型不能为空！</div>');
+                    return false;
+                }else{
+                    that.saveProjectData(null, projectType, 'projectType');
+                }
+
+            };
+            $this.m_popover(options, true);
+        }
+        //获取项目类型
+        ,getProjectType:function (callBack) {
+            var that = this;
+            var option  = {};
+            option.url = restApi.url_projectType;
+            option.postData = {};
+            m_ajax.postJson(option,function (response) {
+                if(response.code=='0'){
+                    that._projectTypeList = response.data;
+                    if(callBack!=null){
+                        return callBack(response.data);
+                    }
+                }else {
+                    S_dialog.error(response.info);
+                }
+            })
+        }
+
+
+        //'设置进度'/'进度变更'按钮事件绑定
+        , bindTimeChangeRecord: function (obj) {
+            var that = this;
+            var contentIndex = $(obj).closest('.designContentDiv').attr('data-i');
+            var contentObj = that._designContentAncestors[contentIndex];
+            var timeList = contentObj.projectProcessTimeEntityList;
+            if (timeList == null) {
+                contentObj.projectProcessTimeEntityList = [];
+            }
+            var options = {};
+            if ($.trim($(obj).html()) == '未设置合同进度') {
+                options.$isHaveMemo = false;
+                options.$timeInfo = {};
+                options.$timeInfo.startTime = (timeList && timeList.length > 0) ? timeList[0].startTime : '';
+                options.$timeInfo.endTime = (timeList && timeList.length > 0) ? timeList[0].endTime : '';
+                options.$title = '设置进度';
+                options.$okText = '保存';
+                options.$validate = 1;
+                options.$okCallBack = function (data) {
+                    if (data != null) {
+                        var obj = data;
+                        obj.targetId = contentObj.id;
+                        obj.type = 1;
+                        that.saveProjectProcessTime(obj);
+                    }
+                };
+                $('body').m_inputProcessTime(options);
+            } else {
+                options.$isHaveMemo = false;
+                var designContentArr = [];
+                var contentObjClone = jQuery.extend(true, {}, contentObj);
+                designContentArr.push(contentObjClone);
+                options.$designContentList = designContentArr;
+                options.$okCallBack = function (data, returnType) {
+                    if (data != null) {
+                        var obj = data;
+                        obj.targetId = contentObj.id;
+                        obj.type = 1;
+                        that.saveProjectProcessTime(obj);
+                    }
+                };
+                $('body').m_editDesignContent(options);
+            }
+        }
+        //绑定设计阶段Checkbox的触发事件
+        , bindDesignContentCheckbox: function () {
+            var that = this;
+            var resetCheck = function ($el, checked) {
+                $el.prop('checked', checked);
+                var $icheck = $el.iCheck({
+                    checkboxClass: 'icheckbox_minimal-green',
+                    radioClass: 'iradio_minimal-green'
+                });
+                $icheck.off('ifUnchecked.s').on('ifUnchecked.s', ifUnchecked);
+                $icheck.off('ifChecked.s').on('ifChecked.s', ifChecked);
+            };
+            var ifChecked = function (e) {
+                var $this = $(this);
+                var i = $(this).closest('.designContentDiv').attr('data-i');
+                that._designContentList[i].isChecked = 1;
+                var designContentList = that.dealChoseDesignContent(that._designContentList);
+                that.saveProjectData(null, designContentList, 'projectDesignContentList');
+            };
+
+            var ifUnchecked = function (e) {
+                var $this = $(this);
+                var i = $(this).closest('.designContentDiv').attr('data-i');
+                var isHas = $this.attr('data-isHas');
+                var isAllUnchecked = $this.closest('div.projectDesignContent').find('input.checkbox[name="designContent"]:checked').length < 1 ? true : false;
+                if (!isNullOrBlank(isHas) && isHas === '0') {
+                    S_toastr.success('该设计内容存在签发分解任务，不能删除！');
+                    resetCheck($this, true);
+                }
+                /*else if (isAllUnchecked) {
+                    S_toastr.warning('请至少选择一个设计内容！');
+                    resetCheck($this, true);
+                } */
+                else {
+                    resetCheck($this, true);
+                    S_swal.confirm({
+                        title:'确定取消该设计内容？',
+                        text:'该设计内容取消后将不能恢复，确定吗？',
+                        callBack:function () {
+                            var id = $this.closest('.designContentDiv').attr('data-id');
+                            that.deleteProjectTask(id,function(){
+                                $this.closest('.designContentDiv').remove();
+                                S_swal.sure({
+                                    title:'已取消',
+                                    text:'该设计内容已取消。'
+                                });
+                            });
+                            resetCheck($this, false);
+                        }
+                    });
+                }
+            };
+
+            $('.i-checks input[name="designContent"]').iCheck({
+                checkboxClass: 'icheckbox_minimal-green',
+                radioClass: 'iradio_minimal-green'
+            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
+        }
+        //处理已选上的设计内容
+        , dealChoseDesignContent: function (list) {
+            var that = this;
+            var designContentList = [];
+            var idString = '';//原有的设计内容的id集合，用于判断保存时是否传递该内容
+            $.each(that._designContentAncestors, function (j, obj) {
+                idString += obj.id + ',';
+            });
+            $.each(list, function (i, item) {
+                if (item.isChecked == 1) {
+                    if (idString.indexOf(item.designContentId) < 0) {
+                        item.contentId = item.contentId ? item.contentId : item.id;
+                        item.id = null;
+                    }
+                    item.contentName = item.contentName ? item.contentName : item.name;
+                    item.insertStatus = '0';
+                    designContentList.push(item);
+                } else if (idString.indexOf(item.designContentId) > -1) {
+                    item.insertStatus = '1';//删除某一设计内容时
+                    designContentList.push(item);
+                }
+            });
+            return designContentList;
+        }
+        //更新设计内容时间html
+        , designContentTimeHtml: function (obj, contentIndex) {
+            var that = this;
+            var contentObj = that._designContentList[contentIndex];
+            var iHtml = '';
+            var startTime = '', endTime = '';
+            if (contentObj.projectProcessTimeEntityList && contentObj.projectProcessTimeEntityList.length > 0) {
+                var len = contentObj.projectProcessTimeEntityList.length;
+                startTime = contentObj.projectProcessTimeEntityList[len - 1].startTime;
+                endTime = contentObj.projectProcessTimeEntityList[len - 1].endTime;
+            }
+            if (startTime != null && startTime != '') {
+                iHtml += startTime;
+            }
+            if (endTime != null && endTime != '') {
+                iHtml += '~' + endTime;
+            }
+            if (startTime != null && startTime != '' && endTime != null && endTime != '') {
+                iHtml += (' 共' + (diffDays(startTime, endTime) - 0 + 1) + '天');
+            }
+            // $(obj).closest('.designContentDiv').find('.timeSpan').html(iHtml);
+            $(obj).text(iHtml);
+            that._designContentList[contentIndex] = contentObj;
+        }
+        //在位编辑内容初始化
+        , bindEditable: function () {
+            var that = this;
+            var elements = $(that.element).find('td a[data-action]:not([data-action="addDesignContent"],[data-action="customInfoTemp"],[data-action="delFile"])');
+
+
+            elements.each(function () {
+                var $this = $(this),
+                    obj = null,
+                    action = $this.attr('data-action') ? $this.attr('data-action') : $this.closest('td').attr('data-action'),
+                    type = action.indexOf("_") > -1 ? action.split("_")[0] : 'text',
+                    name = action.indexOf("_") > -1 ? action.split("_")[1] : 'text',
+                    isNumber = $this.attr('data-isNum') == 'number' ? true : false,//判断输入内容是否是数字
+                    isProjectName = name == 'projectName' ? true : false,//判断输入内容是否是项目名称
+                    noPoint = $this.attr('data-isNoPoint') == 'noPoint' ? true : false,//判断输入内容是否是数字
+                    source = '',//当为下拉框类型时
+                    content = $this.text(),//输入的内容
+                    title = $this.closest('td').prev('td').text();//输入的内容
+                if (type != 'edit') {//主要是除设计范围跟设计内容以外的信息
+                    switch (name) {//当需要多个输入框时，需设置各个value值
+                        case 'status':
+                            obj = {
+                                type: type
+                                , name: name
+                                , value: $('a[data-action="select_status"]').attr('data-status')
+                                , mode: 'inline'
+                                , source: [
+                                    {value: 0, text: '进行中'},
+                                    {value: 2, text: '已完成-未结清'},
+                                    {value: 4, text: '已完成-已结清'},
+                                    {value: 1, text: '已暂停-未结清'},
+                                    {value: 5, text: '已暂停-已结清'},
+                                    {value: 3, text: '已终止-未结清'},
+                                    {value: 6, text: '已终止-已结清'}
+                                ]
+                                , success: function (response, newValue) {
+                                    if (newValue === void 0 || newValue === null)
+                                        return false;
+                                    that.saveProjectData(response, newValue, name);
+                                }
+                            };
+                            break;
+                        /*case 'constructCompanyName':
+                            obj = {
+                                name: name
+                                , type: type
+                                , value: $.trim($('a[data-action="typeaheadjs_constructCompanyName"]').text())
+                                , mode: 'inline'
+                                , clear: true
+                                , typeahead: {
+                                    name: name,
+                                    local: []//that._constructCompanyList
+                                }
+                                , success: function (response, newValue) {
+                                    var text = $this.next().find('input.tt-query').next().text();
+                                    newValue = text;
+                                    that.saveProjectData(response, newValue, name);
+                                },validate:function(value){
+
+                                    if ($.trim(value) == ''){
+                                        var text = $this.text();
+                                        if(text =='未设置' ){
+                                            return "请输入甲方名称！";
+                                        };
+                                        return "甲方名称不能为空！";
+                                    }
+                                }
+                                , display: function (newValue) {
+                                    if (newValue == '') {
+                                        $this.next('未设置');
+                                    }
+                                }
+                            };
+
+                            break;*/
+                    }
+                    if (!obj) {
+                        $this.editable({
+                            type: type
+                            , name: name
+                            , mode: 'inline'
+                            , placeholder: '请输入' + title
+                            , source: source
+                            , value: content
+                            , emptytext: ''
+                            , success: function (response, newValue) {
+
+                                if(name && name=='designContentName') {
+
+                                    //var id = $this.attr('data-id');
+                                    //that._saveDesignContent(newValue,id);
+
+                                }else if(name && name.indexOf('propertyField')>-1){//当为field时，自定义属性值保存
+
+                                    var fieldId = $this.attr('data-field-id');
+                                    if(name.indexOf('propertyFieldDown')>-1){
+                                        var upStoreys = $(that.element).find('a[data-action^="text_propertyFieldUp"]').attr('data-field-value');
+                                        newValue = newValue+';'+upStoreys;
+                                    }else if(name.indexOf('propertyFieldUp')>-1){
+                                        var downStoreys = $(that.element).find('a[data-action^="text_propertyFieldDown"]').attr('data-field-value');
+                                        newValue = downStoreys+';'+newValue;
+                                    }
+                                    that.saveProjectPropertyFieldValue(response,newValue,fieldId,name);
+
+                                }else{
+                                    that.saveProjectData(response, newValue, name);
+                                }
+                            }
+                            , validate: (isNumber && function (value) {
+                                if ($.trim(value) != '') {
+                                    var reg = /^[0-9]+(\.[0-9]{1,2})?$/;
+                                    if (!reg.test(value)) return "请输入数字，小数位保留2位！";
+                                }
+                            }) || (noPoint && function (value) {
+                                if ($.trim(value) != '') {
+                                    var reg = /^[0-9]*[1-9][0-9]*$/;
+                                    if (!reg.test(value)) return "请输入整数！";
+                                }
+                            }) || (isProjectName && function (value) {//
+                                if ($.trim(value) == '') {
+                                    return "项目名称不能为空！";
+                                }
+                            }) || (name == 'designContentName' && function(value){
+                                if ($.trim(value) == '') {
+                                    S_toastr.warning("设计内容不能为空！");
+                                    return ' ';
+                                }
+                            })
+                        });
+                    } else {
+                        if(obj.name==='constructCompanyName'){
+                            $this.editable(obj).on('shown',function(e,editable){
+                                //editable.input.$input.val(editable.value);
+
+                            });
+                        }else{
+                            $this.editable(obj);
+                        }
+                    }
+                }
+                elements.off('click.clearEditable').on('click.clearEditable', function (event) {
+                    var action = $(this).attr('data-action');
+                    $(that.element).find('.editable-container,.popover.m-popover').each(function () {
+                        if ($(this).parent().find('a').attr('data-action') != action) {
+                            if($(this).find('button.editable-cancel').length>0){
+                                $(this).find('button.editable-cancel').click();
+                            }else{
+                                $(this).find('button.m-popover-close').click();
+                            }
+
+                        }
+                    });
+                    if (action && action.indexOf('designContentName')>-1) {
+                        $(this).closest('label.i-checks').iCheck('disable');
+                    }
+
+
+                    return false;
+                });
+                //显示x-editable事件shown
+                $this.on('shown', function(e, editable) {
+                    var unitName = $(this).attr('data-field-unit');
+                    if(unitName!=undefined){
+                        $this.parent().find('.unit-span').hide();
+                        $this.next().find('.editable-input input').css('padding-right','36px');
+                        $this.next().find('.editable-input').append('<span class="unit-span-in">'+unitName+'</span>');
+                    }
+                });
+                //点击x-editable cancel事件
+                $this.on('hidden', function(e, reason) {
+                    if(reason === 'cancel') {
+                        var unitName = $(this).attr('data-field-unit');
+                        if(unitName!=undefined){
+                            $this.parent().find('.unit-span').show();
+                        }
+                    }
+                });
+                if (action && action.indexOf('designContentName')>-1) {
+                    elements.on('hidden', function (e, reason) {
+                        $(this).closest('label.i-checks').iCheck('enable');
+                    });
+                }
+
+                that.dealEmptyText();//当在为编辑的文本显示为empty时，改为“请设置”
+            });
+
+        }
+
+        //绑定添加自定义阶段事件
+        , bindBtnAddDesignContent:function () {
+            var that=this,contentList = that._designContentList;
+            $(that.element).find('a[data-action="addDesignContent"]').on('click',function(e){
+                var options = {};
+                var $that = $(this);
+                options.$title = '添加设计任务';
+                options.designContentNameList = [];
+                $(that.element).find('.designContentDiv').each(function(){
+                    var text = $.trim($(this).find('div>span').text());
+                    options.designContentNameList.push(text);
+
+                });
+                options.onShown = function(data){
+
+                    setTimeout(function(){
+                    var p_left = $that.next('.popover.m-popover').css('left').replace('px','')-0;
+                    if(p_left>1000){
+                            $that.next('.popover.m-popover').css('left','1070px');
+                    }
+                    },50);
+                };
+                options.callBack = function(data){
+                    that._saveDesignContent(data);
+
+                };
+                $(this).m_projectDesignContent_add(options);
+                //stopPropagation(e);
+            });
+            $(that.element).find('a[data-action="addDesignContent"]').on('click.bindClear', function (e) {
+
+                var $this = $(this);
+                var $$this = $this.closest('LI').find('.editable-container input.form-control');
+                $$this.unbind();
+                that.dealDesignContent($this,$$this,contentList);
+                $this.closest('LI').find('.editable-container input.form-control').on('click',function () {
+                    that.dealDesignContent($this,$$this,contentList);
+                });
+                stopPropagation(e);
+            });
+        }
+        //提交保存设计阶段
+        ,_saveDesignContent: function(data) {
+            var that = this;
+            var options = {};
+            options.url = restApi.url_saveOrUpdateProjectDesign;
+            data.projectId = that.settings.$projectId;
+            data.companyId = that._currentCompanyId;
+            options.postData = data;
+            m_ajax.postJson(options, function (response) {
+                if (response.code == '0') {
+                    S_toastr.success('保存成功！');
+                    if(that.settings.$okBackCall!=null){
+                        that.settings.$okBackCall();
+                    }
+                    that._refresh();
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+        //阶段预选展示处理
+        , dealDesignContent : function($this,$$this,contentList){
+
+            if (contentList != null && contentList.length > 0 && $this.closest('LI').find('.tt-dropdown-menu,.tt-dataset-designContent').css('display')=='none') {
+
+                var iHtml = '<div class="tt-dataset-designConten"><div class="tt-suggestions">';
+
+                for (var i = 0; i < contentList.length; i++) {
+                    iHtml += '<div class="tt-suggestion" style="white-space: nowrap; cursor: pointer;">' +
+                        '<p style="white-space: normal;">' + contentList[i].name + '</p></div>';
+                }
+                iHtml += '</div></div>';
+
+                $this.closest('LI').find('.tt-dropdown-menu').html(iHtml).show();
+                $this.next('.editable-container').find('.editable-input .twitter-typeahead input.form-control').attr('placeholder','输入或选择要添加的设计内容');
+                $this.closest('LI').find('.tt-dropdown-menu .tt-suggestions').find('.tt-suggestion').on('click', function () {
+                    var t = $(this).find('p').text();
+                    $$this.val(t);
+                    $$this.next().text(t);
+                    $this.closest('LI').find('.tt-dropdown-menu,.tt-dataset-designContent,.tt-suggestions').hide();
+                });
+            }else{
+                return false;
+            }
+        }
+
+        //保存进度时间到后台
+        , saveProjectProcessTime: function (obj) {
+            var that = this;
+            var options = {};
+            options.url = restApi.url_saveOrUpdateProjectProcessTime;
+            options.postData = obj;
+            options.postData.projectId = that._projectInfo.id;
+            m_ajax.postJson(options, function (response) {
+                if (response.code == '0') {
+
+                    S_toastr.success('保存成功！');
+                    that._refresh();
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+        //保存基本信息时访问到后台
+        , saveProjectData: function (res, value, name, callback) {
+            var that = this;
+            var options = {};
+            options.url = restApi.url_project;
+            options.classId = '#project_detail';
+            options.postData = {};
+            if (typeof value == "object" && !value && !name) {
+                options.postData = value;
+            }
+            else if (name && name == 'partyB') {
+                options.postData.companyBid = value.companyBid;
+                options.postData.flag = 3;
+            }
+            else if (name && name == 'projectDesignRangeList') {
+
+                options.postData.projectDesignRangeList = value.projectDesignRangeList;
+                options.postData.projectDesign = value.projectDesign;
+            }
+            else if (name && name == 'investmentEstimation') {
+                options.postData.flag = 1;
+                options.postData[name] = value;
+            }
+            else if (name && name == 'constructCompanyName') {
+                options.postData.flag = 2;
+                options.postData.constructCompanyName = value;
+            }
+            else if(name && name == 'address'){
+                options.postData.province = value.province;
+                options.postData.city = value.city;
+                options.postData.county = value.county;
+                options.postData.detailAddress = value.detailAddress;
+            }
+            else if(name && name == 'signDate'){
+                options.postData.flag = 4;
+                options.postData[name] = value;
+            }
+            else {
+                options.postData[name] = value;
+            }
+            options.postData.id = that._projectInfo.id;
+
+            m_ajax.postJson(options, function (response) {
+                if (response.code == '0') {
+                    $(that.element).m_projectBasicInfo({
+                        $projectId: that.settings.$projectId,
+                        $editFlag:that.settings.$editFlag,
+                        $deleteFlag:that.settings.$deleteFlag
+                    });
+                    if(!(name && name == 'partyB')){//乙方已有swal弹窗提示
+                        S_toastr.success('保存成功！');
+                    }
+
+                    if (callback) {
+                        return callback();
+                    }
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+
+        //保存自定义属性值
+        ,saveProjectPropertyFieldValue:function (res,newValue,fieldId,name) {
+            var that = this;
+            var options = {};
+            options.url = restApi.url_saveProjectField;
+            options.postData = {};
+            options.postData.projectId = that._projectInfo.id;
+            options.postData.operatorId = that._currentUserId;
+            options.postData.id = fieldId;
+            options.postData.fieldValue = newValue;
+            m_ajax.postJson(options, function (response) {
+                if (response.code == '0') {
+                    S_toastr.success('保存成功！');
+                    that._refresh();
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+
+        //删除项目阶段
+        , deleteProjectTask: function (id,callback) {
+            var that = this;
+            var options = {};
+            options.url = restApi.url_deleteProjectDesign;
+            options.postData = {};
+            options.postData.id = id;
+            m_ajax.postJson(options, function (response) {
+                if (response.code == '0') {
+                    //S_toastr.success('保存成功！');
+                    if(callback){
+                        return callback();
+                    }
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+
+        //保存乙方验证
+        , _savePartyB_validate: function (ele) {
+            var that = this, $ele = $(ele);
+            $ele.find('form').validate({
+                rules: {
+                    operator: {
+                        operatorCk: true
+                    }
+                },
+                messages: {
+                    operator: {
+                        operatorCk: '请选择经营负责人！'
+                    }
+                },
+                errorPlacement: function (error, element) { //指定错误信息位置
+                    error.appendTo(element.closest('.form-group'));
+                    error.css({'margin-left':'0px'});
+                }
+            });
+            $.validator.addMethod('operatorCk', function (value, element) {
+                var isTrue = false;
+                var partB = $ele.find('select[name="partB"]');
+                if (partB.val() == null || partB.val() == '' || (partB.val() != null && partB.val() != '' && value != null && value != '')) {
+                    isTrue = true;
+                }
+                return isTrue;
+            }, '请选择经营负责人！');
+        }
+        //绑定自定义编辑信息模板事件
+        ,bindCustomInfoTemp:function () {
+
+            var that = this;
+            $(that.element).find('a[data-action="customInfoTemp"]').on('click',function () {
+                var option = {};
+                option.$projectId = that._projectInfo.id;
+                option.$okCallBack = function () {
+                    that._refresh();
+                };
+                $('body').m_editCustomPropertyTemp(option);
+            });
+        }
+        //刷新当前菜单
+        , _refreshMenu: function () {
+            var that=this;
+            /*var option = {};
+            option.$projectId = that.settings.$projectId;
+            $('#project_menu').m_projectMenu(option);*/
+            that._refresh();
+        }
+        //刷新当前界面
+        , _refresh: function () {
+            var option = {}, that = this;
+            option.$projectId = that.settings.$projectId;
+            option.$editFlag = that.settings.$editFlag;
+            option.$deleteFlag = that.settings.$deleteFlag;
+            option.$renderCallBack = function () {
+                if(that.settings.$deleteFlag!=1){//不存在删除项目的权限，删除此按钮
+                    $('#project_detail a[data-action="deleteProject"]').remove();
+                }
+            };
+            $('#content-right').m_projectBasicInfo(option,true);
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+/**
+ * 任务签发－添加设计内容
+ * Created by wrb on 2017/5/15.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_projectDesignContent_add",
+        defaults = {
+            $title:'添加设计任务',
+            designContentNameList:null,
+            onShown:null,
+            callback:null
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._currentCompanyId = window.currentCompanyId;//当前组织ID
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that._initHtml();
+        }
+        //初始化数据,生成html
+        ,_initHtml:function () {
+            var that = this;
+            var options = {};
+
+            /*var left = $(that.element).position().left;
+            console.log(left)
+            if(parseInt(left)>600){
+                //options.placement = 'right';
+            }*/
+            options.placement = 'top';
+            options.content = template('m_project/m_projectDesignContent_add');
+            options.titleHtml = '<h3 class="popover-title">'+that.settings.$title+'</h3>';
+            options.onShown = function ($popover) {
+
+
+                var option = {};
+                option.$isDialog = false;
+                option.$isHaveMemo = false;
+                $popover.find('#time-box').m_inputProcessTime(option);
+                that._saveDesignContentName_validate($popover);
+                //that._saveDesignContentTime_validate($popover);
+
+
+            };
+            options.onSave = function ($popover) {
+
+                var flag1 = $($popover).find('form.designContentNameOBox').valid();
+                //var flag2 = $($popover).find('form.inputTimeOBox').valid();
+                if (!flag1) {
+                    return false;
+                }else {
+                    var data = {};
+                    data.contentName = $popover.find('input[name="designContentName"]').val();
+                    var startTime = $popover.find('input[name="startTime"]').val();
+                    var endTime = $popover.find('input[name="endTime"]').val();
+                    if(startTime!=undefined && startTime!=''){
+                        data.startTime = startTime;
+                    }
+                    if(endTime!=undefined && endTime!=''){
+                        data.endTime = endTime;
+                    }
+                    if(that.settings.callBack){
+                        return that.settings.callBack(data);
+                    }
+                }
+            };
+
+            $(that.element).m_popover(options,true);
+            if(that.settings.onShown){
+                return that.settings.onShown();
+            }
+
+        }
+        //验证
+        ,_saveDesignContentName_validate:function($popover){
+            var that = this;
+            $popover.find('form.designContentNameOBox').validate({
+                rules: {
+                    designContentName:{
+                        required:true,
+                        notConflict:true
+                    }
+                },
+                messages: {
+                    designContentName:{
+                        required:'设计内容不能为空!',
+                        notConflict:'设计内容不能重复!'
+                    }
+                }
+            });
+            $.validator.addMethod('notConflict', function(value, element) {
+                var list = that.settings.designContentNameList;
+                var error = true;
+                if(list&&list.length>0){
+                    for(var i=0;i<list.length;i++){
+                        if(list[i]==value){
+                            error = false;
+                            break;
+                        }
+                    }
+                }
+                return error;
+            }, '阶段名称不能重复!');
+        }
+        ,_saveDesignContentTime_validate:function($popover){
+            var that = this;
+            $popover.find('form.inputTimeOBox').validate({
+                rules: {
+                    startTime:{
+                        required:true
+                    },
+                    endTime:{
+                        required:true
+                    }
+
+                },
+                messages: {
+                    startTime:{
+                        required:'请设置开始日期!'
+                    },
+                    endTime:{
+                        required:'请设置结束日期!'
+                    }
+                }
+                ,errorPlacement: function (error, element) { //指定错误信息位置
+                    if (element.hasClass('timeInput')) {
+                        error.appendTo(element.closest('.form-group'));
+                    } else {
+                        error.insertAfter(element);
+                    }
+                }
+            });
+
+        }
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+})(jQuery, window, document);
+
+/**
+ * 项目左边菜单导航
+ * Created by wrb on 2016/12/22.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_projectMenu",
+        defaults = {
+            $projectId:null,//项目ID
+            $projectName:null,//项目名称
+            $isFirstEnter:null,//是否是第一次进来
+            $dataAction:null,
+            $type:null//标签页标识
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+
+        this._contractPaymentFlag = null;
+        this._technicalReviewFlag = null;
+        this._cooperativeDesignFlag = null;
+        this._otherFeeFlag = null;
+        this._projectDeleteFlag = null;
+        this._projectEditFlag = null;
+        this._managerFlag = null;
+
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+
+            that.getRoleFun(function () {
+
+                var html = template('m_project/m_projectMenu',{
+                    id:that.settings.$projectId,
+                    projectName:encodeURI(that.settings.$projectName),
+                    contractPaymentFlag:that._contractPaymentFlag,
+                    technicalReviewFlag:that._technicalReviewFlag,
+                    cooperativeDesignFlag:that._cooperativeDesignFlag,
+                    otherFeeFlag:that._otherFeeFlag
+                });
+                //rolesControl();
+                $(that.element).find('ul.nav-second-level').remove();
+                $(that.element).append(html);
+                $(that.element).addClass('chosed');//添加选中标识
+
+                if(that.settings.$dataAction!=null){
+                    that.switchPage(that.settings.$dataAction);
+                    var currentEle = $('.m_metismenu li a[id="'+that.settings.$dataAction+'"]');
+                    if(currentEle.length>0){
+                        $('.m_metismenu li').removeClass('active');
+                        currentEle.parent().addClass('active');
+                    }
+                }else{
+                    $(that.element).find('.m_metismenu li:first a').click();
+                }
+                that.menuClickFun();
+
+            })
+        }
+        ,getRoleFun:function (callBack) {
+            var that = this;
+            var option={};
+            option.url=restApi.url_getProjectNavigationRole+'/'+that.settings.$projectId;
+            m_ajax.get(option,function (response) {
+                if(response.code=='0'){
+                    that._contractPaymentFlag = response.data.flag1;
+                    that._technicalReviewFlag = response.data.flag2;
+                    that._cooperativeDesignFlag = response.data.flag3;
+                    that._otherFeeFlag = response.data.flag4;
+                    that._projectDeleteFlag = response.data.deleteFlag;
+                    that._projectEditFlag = response.data.editFlag;
+                    that._managerFlag = response.data.managerFlag;
+                    if(response.data.projectName!=null && response.data.projectName!=''){
+                        that.settings.$projectName = response.data.projectName;
+                    }
+                    if(callBack!=null){
+                        callBack();
+                    }
+
+                }else {
+                    S_dialog.error(response.info);
+                }
+            })
+        }
+
+        //菜单点击事件
+        , menuClickFun:function () {
+            var that = this;
+            $(that.element).find('.nav-second-level li a').off('click').on('click',function (e) {
+                var id = $(this).attr('id');
+                $('.m_metismenu li').removeClass('active');
+                $(this).parent().addClass('active');
+                stopPropagation(e);
+            });
+        }
+        //切换页面
+        , switchPage: function (dataAction) {
+            var that = this;
+            switch (dataAction) {
+                case 'basicInfo':
+                    that.projectBasicInfo();
+                    break;
+                case 'taskIssue':
+                    that.taskIssue();
+                    break;
+                case 'productionArrangement':
+                    that.productionArrangement();
+                    break;
+                case 'contractPayment':
+                    that.contractPayment();
+                    break;
+                case 'technicalReviewFee':
+                    that.technicalReviewFee();
+                    break;
+                case 'cooperativeDesignFee':
+                    that.cooperativeDesignFee();
+                    break;
+                case 'otherFee':
+                    that.otherFee();
+                    break;
+                case 'projectDocumentLib':
+                    that.projectDocumentLib();
+                    break;
+                case 'projectMember':
+                    that.projectMember();
+                    break;
+                case 'projectDynamic':
+                    that.projectDynamic();
+                    break;
+                case 'externalCooperation':
+                    that.externalCooperation();
+                    break;
+                case 'taskIssueOverview':
+                    that.taskIssueOverview();
+                    break;
+                case 'productionArrangementOverview':
+                    that.productionArrangementOverview();
+                    break;
+                case 'incomeExpenditure':
+                    that.incomeExpenditure();
+                    break;
+                case 'cost':
+                    that.cost();
+                    break;
+                default:
+                    dataAction = 'basicInfo';
+                    that.projectBasicInfo();
+                    break;
+            }
+        }
+        //项目基本信息
+        , projectBasicInfo: function () {
+            var option = {}, that = this;
+            option.$projectId = that.settings.$projectId;
+            option.$projectName = that.settings.$projectName;
+            option.$editFlag = that._projectEditFlag;
+            option.$deleteFlag = that._projectDeleteFlag;
+            option.$renderCallBack = function () {
+                if(that._projectDeleteFlag!=1){//不存在删除项目的权限，删除此按钮
+                    $('#content-right a[data-action="deleteProject"]').remove();
+                }
+            };
+            $('#content-right').m_projectBasicInfo(option,true);
+        }
+        //任务签发
+        , taskIssue: function () {
+            var option = {}, that = this;
+            option.$projectId = that.settings.$projectId;
+            option.$projectName = that.settings.$projectName;
+            $('#content-right').m_taskIssue(option,true);
+        }
+        //生产安排
+        , productionArrangement: function () {
+            var option = {}, that = this;
+            option.$projectId = that.settings.$projectId;
+            option.$projectName = that.settings.$projectName;
+            $('#content-right').m_production(option,true);
+        }
+        //合同回款
+        , contractPayment: function () {
+            var option = {}, that = this;
+            option.$projectId = that.settings.$projectId;
+            option.$projectName = that.settings.$projectName;
+            $('#content-right').m_contractPayment(option,true);
+        }
+        //技术审查费
+        , technicalReviewFee: function () {
+            var option = {}, that = this;
+            option.$projectId = that.settings.$projectId;
+            option.$projectName = that.settings.$projectName;
+            $('#content-right').m_technicalReviewFee(option,true);
+        }
+        //合作设计费
+        , cooperativeDesignFee: function () {
+            var option = {}, that = this;
+            option.$projectId = that.settings.$projectId;
+            option.$projectName = that.settings.$projectName;
+            $('#content-right').m_cooperativeDesignFee(option,true);
+        }
+        //其他费用
+        , otherFee: function () {
+            var option = {}, that = this;
+            option.$projectId = that.settings.$projectId;
+            option.$projectName = that.settings.$projectName;
+            $('#content-right').m_otherFee(option,true);
+        }
+        //项目文档
+        , projectDocumentLib: function () {
+            var option = {}, that = this;
+            option.$projectId = that.settings.$projectId;
+            option.$projectName = that.settings.$projectName;
+            $('#content-right').m_docmgr(option,true);
+        }
+        //项目成员
+        , projectMember: function () {
+            var option = {}, that = this;
+            option.$projectId = that.settings.$projectId;
+            option.$projectName = that.settings.$projectName;
+            $('#content-right').m_projectMember(option,true);
+        }
+        //项目动态
+        , projectDynamic: function () {
+            var option = {}, that = this;
+            option.$projectId = that.settings.$projectId;
+            option.$projectName = that.settings.$projectName;
+            $('#content-right').m_projectDynamic(option,true);
+        }
+        //外部合作
+        , externalCooperation:function () {
+            var option = {}, that = this;
+            option.$projectId = that.settings.$projectId;
+            option.$projectName = that.settings.$projectName;
+            option.$isManager = that._managerFlag;
+            $('#content-right').m_projectExternalCooperation(option,true);
+        }
+        //签发总览
+        , taskIssueOverview:function () {
+            var option = {}, that = this;
+            option.$projectId = that.settings.$projectId;
+            option.$projectName = that.settings.$projectName;
+            $('#content-right').m_taskIssue_overview(option,true);
+        }
+        //生产安排总览
+        , productionArrangementOverview:function () {
+            var option = {}, that = this;
+            option.$projectId = that.settings.$projectId;
+            option.$projectName = that.settings.$projectName;
+            $('#content-right').m_production_overview(option,true);
+        }
+        //收支管理
+        , incomeExpenditure:function () {
+
+            var option = {}, that = this;
+            that.getRoleFun(function () {
+
+                option.$projectId = that.settings.$projectId;
+                option.$projectName = that.settings.$projectName;
+                option.$roleFlag = {
+                    contractPaymentFlag : that._contractPaymentFlag,
+                    technicalReviewFlag : that._technicalReviewFlag,
+                    cooperativeDesignFlag : that._cooperativeDesignFlag,
+                    otherFeeFlag : that._otherFeeFlag
+                };
+                option.$type = that.settings.$type;
+                $('#content-right').m_incomeExpenditure(option);
+            });
+
+            return false;
+        }
+        //收支管理
+        ,cost:function () {
+            var option = {}, that = this;
+            option.projectId = that.settings.$projectId;
+            option.projectName = that.settings.$projectName;
+            option.dataAction = that.settings.$type;
+            $('#content-right').m_cost_menu(option,true);
+        }
+
+
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+
 
 /**
  * 选择人员
@@ -43281,4987 +48262,6 @@ return new String($out);
             });
 
         }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-
-
-/**
- * 项目收支流程设置
- * 合同回款=2；技术审查费收款=3；技术审查费付款=4；合作设计费收款=5,；合作设计费付款=6
- * Created by wrb on 2018/7/17.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_process_finance_setting",
-        defaults = {
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._selectedOrg = null;//当前选中组织
-        this._processList = [];//请求返回的数据缓存
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            var html = template('m_process/m_process_finance_setting',{});
-            $(that.element).html(html);
-
-
-            var option = {};
-            option.$renderType = 1;
-            option.$selectedCallBack = function (data) {
-                that._selectedOrg = data;
-                that.renderContent();
-            };
-            option.$renderCallBack = function (data) {
-
-            };
-            $(that.element).find('#left-box').m_org_chose_byTree(option);
-
-        }
-
-        //渲染右边（项目收支流程设置列表）
-        ,renderContent:function () {
-            var that = this;
-            var option  = {};
-            option.classId = '#content-right';
-            option.url = restApi.url_getProcessByCompany;
-            option.postData = {
-                companyId:that._selectedOrg.id
-            };
-            m_ajax.postJson(option,function (response) {
-                if(response.code=='0'){
-                    that._processList = response.data;
-                    var html = template('m_process/m_process_finance_setting_content',{
-                        receiveProcessList:response.data.receiveProcessList,
-                        payProcessList:response.data.payProcessList
-                    });
-                    $(that.element).find('#right-box').html(html);
-                    that.initICheck();
-                    that.bindActionClick();
-
-                }else {
-                    S_dialog.error(response.info);
-                }
-            });
-
-        }
-        ,initICheck:function () {
-            var that = this;
-            var ifChecked = function (e) {
-            };
-            var ifUnchecked = function (e) {
-            };
-            var ifClicked = function (e) {
-                var param = {};
-                if ($(this).is(':checked')) {
-                    $(this).iCheck('uncheck');
-                    param.status = 0;
-                }else{
-                    $(this).iCheck('check');
-                    param.status = 1;
-                }
-                param.id = $(this).closest('tr').attr('data-id');
-                that.saveChangeSelectionStatus(param);
-            };
-            $(that.element).find('input[name^="iCheck"]').iCheck({
-                checkboxClass: 'icheckbox_square-pink',
-                radioClass: 'iradio_square-blue'
-            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked).on('ifClicked',ifClicked);
-        }
-        //更改选择状态
-        ,saveChangeSelectionStatus:function (param) {
-            var that = this;
-            var option = {};
-            option.classId = '#content-right';
-            option.url = restApi.url_selectedProcessForProjectPay;
-            option.postData = param;
-            m_ajax.postJson(option, function (response) {
-                if(response.code=='0'){
-                    S_toastr.success('操作成功！');
-                }else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-
-        //事件绑定
-        , bindActionClick:function () {
-            var that = this;
-            $(that.element).find('a[data-action],button[data-action]').off('click').on('click',function (e) {
-                var $this = $(this),dataAction = $this.attr('data-action'),
-                    $i = $this.closest('tr').attr('data-i');
-                var dataId = $this.closest('tr').attr('data-id'),
-                    dataProcessType = $this.closest('tr').attr('data-process-type'),
-                    dataProcessId = $this.closest('tr').attr('data-process-id');
-
-                switch (dataAction){
-                    case 'add'://添加流程设置
-
-                        var option = {};
-                        option.$type = $this.attr('data-action-type');//0=收款，1=付款
-                        option.$saveCallBack = function () {
-                            that.renderContent();
-                        };
-                        $('body').m_process_finance_setting_add(option);
-
-                        return false;
-                        break;
-                    case 'edit'://编辑流程设置
-
-                        var option = {};
-                        option.$type = $this.attr('data-action-type');//0=收款，1=付款
-                        if(that._processList!=null && that._processList.receiveProcessList!=null && option.$type==0){
-                            option.$processInfo = that._processList.receiveProcessList[$i];
-                        }else if(that._processList!=null && that._processList.payProcessList!=null && option.$type==1){
-                            option.$processInfo = that._processList.payProcessList[$i];
-                        }else{
-                            option.$processInfo = null;
-                        }
-                        option.$saveCallBack = function () {
-                            that.renderContent();
-                        };
-                        $('body').m_process_finance_setting_add(option);
-                        return false;
-                        break;
-
-                    case 'del'://删除流程
-
-                        S_swal.confirm({
-                            title:'确定删除该流程?',
-                            text:'删除后将不能恢复，确定吗？',
-                            callBack:function () {
-                                var option = {};
-                                option.classId = '#content-right';
-                                option.url = restApi.url_deleteProcessForProjectPay;
-                                option.postData = {};
-                                option.postData.id = dataId;
-                                m_ajax.postJson(option, function (response) {
-                                    if (response.code == '0') {
-                                        S_swal.sure({
-                                            title:'已删除',
-                                            text:'该流程删除成功。',
-                                            callBack:function () {
-                                                that.renderContent();
-                                            }
-                                        });
-                                    } else {
-                                        S_dialog.error(response.info);
-                                    }
-                                });
-                            }
-                        });
-
-                        break;
-
-                    case 'itemEdit'://编辑列表项
-
-                        window.location.hash = '/backstageMgt/financeSettingProcess?processType='+dataProcessType+'&processId='+dataProcessId;
-                        break;
-
-                }
-
-            });
-        }
-
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-
-/**
- * 项目收支流程设置-添加/编辑
- * Created by wrb on 2018/7/17.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_process_finance_setting_add",
-        defaults = {
-            $title:null,
-            $isDialog:true,
-            $type:0,//0=收款，1=付款
-            $processInfo:null,//流程信息，不为空即编辑
-            $saveCallBack:null//保存后事件
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._applicableTeam = null;//适用团队选择
-        this._associatedTeam = null;//关联团队选择
-
-
-        this._typeName= this.settings.$type==0?'收款':'付款';
-        this._editTypeName= this.settings.$processInfo==null?'新增':'编辑';
-
-
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.initHtmlData(function () {
-                that.save_validate();
-
-                //适用团队选择框
-                var option = {};
-                option.$buttonStyle = 'width: 516px;border-radius: 4px;';
-                option.$spanStyle = 'width: 487px;display: inline-block;text-align: left;color: #444;font-size: 13px;';
-                if(that.settings.$processInfo!=null && that.settings.$processInfo.companyId!=null & that.settings.$processInfo.companyId!=''){
-                    option.$selectedId = that.settings.$processInfo.companyId;
-                }
-                option.$selectedCallBack = function (data) {
-                    that._applicableTeam = data;
-                };
-                option.$renderCallBack = function () {
-                };
-                $(that.element).find('#applicableTeam').m_org_chose_byTree(option);
-
-                //关联团队选择框
-                var option1 = {};
-                option1.$buttonStyle = 'width: 516px;border-radius: 4px;';
-                option1.$spanStyle = 'width: 487px;display: inline-block;text-align: left;color: #444;font-size: 13px;';
-                if(that.settings.$processInfo!=null && that.settings.$processInfo.companyId!=null & that.settings.$processInfo.companyId!=''){
-                    option1.$selectedId = that.settings.$processInfo.relationCompanyId;
-                }
-                option1.$selectedCallBack = function (data) {
-                    that._associatedTeam = data;
-                };
-                option1.$renderCallBack = function () {
-                };
-                $(that.element).find('#associatedTeam').m_org_chose_byTree(option1);
-
-
-                $(that.element).find('select[name="receiptType"]').select2({
-                    allowClear: false,
-                    language: "zh-CN",
-                    minimumResultsForSearch: -1
-                });
-                //编辑状态 展示信息处理
-                if(that.settings.$processInfo!=null){
-                    $(that.element).find('select[name="receiptType"]').val(that.settings.$processInfo.processType).trigger('change');
-                    $(that.element).find('select[name="receiptType"]').prop("disabled", true);
-                }
-            });
-        }
-        //初始化数据并加载模板
-        ,initHtmlData:function (callBack) {
-            var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.$title||that._editTypeName+that._typeName+'计划流程',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '700',
-                    tPadding: '0px',
-                    overFlow:'unset',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    okText:'保存',
-                    ok:function () {
-                        if($(that.element).find('form.form-horizontal').valid()){
-                            that.save();
-                        }else{
-                            return false;
-                        }
-                    },
-                    cancel:function () {
-
-                    }
-                },function(d){//加载html后触发
-
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    that.renderPage();
-
-                    if(callBack!=null){
-                        callBack();
-                    }
-
-                });
-            }else{//不以弹窗编辑
-
-                that.renderPage();
-                if(callBack!=null){
-                    callBack();
-                }
-            }
-        }
-        //渲染界面
-        ,renderPage:function () {
-            var that = this;
-            var html = template('m_process/m_process_finance_setting_add',{
-                type:that.settings.$type,
-                typeName:that._typeName,
-                processInfo:that.settings.$processInfo
-            });
-            $(that.element).html(html);
-        }
-
-        //发送
-        ,save:function () {
-            var that = this;
-            var option  = {};
-            option.classId = that.element;
-            option.url = restApi.url_saveProcess;
-            option.postData = {
-                processType:$(that.element).find('select[name="receiptType"]').val(),
-                companyId:that._applicableTeam.id,
-                relationCompanyId:that._associatedTeam.id,
-                description:$(that.element).find('textarea[name="description"]').val()
-
-            };
-            if(that.settings.$processInfo!=null && that.settings.$processInfo.id!=null){
-                option.postData.id = that.settings.$processInfo.id;
-                option.postData.processId = that.settings.$processInfo.processId;
-            }
-            m_ajax.postJson(option,function (response) {
-                if(response.code=='0'){
-                    S_toastr.success('操作成功！');
-                    if(that.settings.$saveCallBack!=null){
-                        that.settings.$saveCallBack();
-                    }
-                }else {
-                    S_dialog.error(response.info);
-                }
-            })
-
-        }
-        //保存验证
-        ,save_validate:function(){
-            var that = this;
-            $(that.element).find('form.form-horizontal').validate({
-                rules: {
-                    receiptType:{
-                        required:true
-                    }
-                },
-                messages: {
-                    receiptType:{
-                        required:'请选择'+that._typeName+'类型!'
-                    }
-                },
-                errorPlacement:function(error,element){
-                    error.appendTo(element.parent());
-                }
-            });
-
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-/**
- * 项目收支流程-合同回款设置
- * Created by wrb on 2018/7/18.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_process_finance_setting_contractPayment",
-        defaults = {
-            $processType:null,//流程类型
-            $processId:null//流程ID
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._selectedOrg = null;//当前选中组织
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-
-            var option  = {};
-            option.classId= '#content-box';
-            option.url = restApi.url_listProcessNode;
-            option.postData = {
-                processId:that.settings.$processId
-            };
-            m_ajax.postJson(option,function (response) {
-                if(response.code=='0'){
-
-                    var html = template('m_process/m_process_finance_setting_contractPayment',{listProcessNode:response.data});
-                    $(that.element).html(html);
-                    that.bindActionClick();
-                    that.initICheck();
-
-                }else {
-                    S_dialog.error(response.info);
-                }
-            });
-
-
-        }
-        //初始化iCheck
-        ,initICheck:function () {
-            var that = this;
-            var ifChecked = function (e) {
-                var param = {};
-                param.status = 1;
-                param.nodeId = $(this).closest('tr').attr('data-id');
-                param.processId = $(this).closest('tr').attr('data-process-id');
-                param.statusType = $(this).attr('data-type');
-                that.saveChangeSelectionStatus(param);
-            };
-            var ifUnchecked = function (e) {
-                var param = {};
-                param.status = 0;
-                param.nodeId = $(this).closest('tr').attr('data-id');
-                param.processId = $(this).closest('tr').attr('data-process-id');
-                param.statusType = $(this).attr('data-type');
-                that.saveChangeSelectionStatus(param);
-            };
-            $(that.element).find('input[name="iCheck"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_square-blue'
-            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
-        }
-        //更改选择状态
-        ,saveChangeSelectionStatus:function (param) {
-            var that = this;
-            var option = {};
-            option.classId = '#content-right';
-            option.url = restApi.url_selectedProcessNodeStatus;
-            option.postData = param;
-            m_ajax.postJson(option, function (response) {
-                if(response.code=='0'){
-                    S_toastr.success('操作成功！');
-                }else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-        //事件绑定
-        , bindActionClick:function () {
-            var that = this;
-            $(that.element).find('a[data-action],button[data-action]').off('click').on('click',function (e) {
-                var $this = $(this),dataAction = $this.attr('data-action');
-                var dataActionType = $this.attr('data-action-type');
-                var dataId = $this.attr('data-id');
-                switch (dataAction){
-                    case 'viewTemplate':
-
-                        $(that.element).find('a[data-action="viewTemplate"]').removeClass('active');
-                        $this.addClass('active');
-                        $(that.element).find('.panel#template'+dataActionType).show().siblings('.panel').hide();
-                        break;
-
-                    case 'back'://返回项目收支流程
-
-                        window.history.go(-1);
-                        break;
-
-                }
-
-            });
-        }
-
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-
-/**
- * 项目收支流程-技术审查费设置
- * Created by wrb on 2018/7/20.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_process_finance_setting_technicalReviewFee",
-        defaults = {
-            $processType:null,//流程类型
-            $processId:null//流程ID
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._selectedOrg = null;//当前选中组织
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-
-            var option  = {};
-            option.classId= '#content-box';
-            option.url = restApi.url_listProcessNode;
-            option.postData = {
-                processId:that.settings.$processId
-            };
-            m_ajax.postJson(option,function (response) {
-                if(response.code=='0'){
-
-                    var html = template('m_process/m_process_finance_setting_technicalReviewFee',{listProcessNode:response.data});
-                    $(that.element).html(html);
-                    that.bindActionClick();
-                    that.initICheck();
-
-                }else {
-                    S_dialog.error(response.info);
-                }
-            });
-
-
-        }
-        //初始化iCheck
-        ,initICheck:function () {
-            var that = this;
-            var ifChecked = function (e) {
-                var param = {};
-                param.status = 1;
-                param.nodeId = $(this).closest('tr').attr('data-id');
-                param.processId = $(this).closest('tr').attr('data-process-id');
-                param.statusType = $(this).attr('data-type');
-                that.saveChangeSelectionStatus(param);
-            };
-            var ifUnchecked = function (e) {
-                var param = {};
-                param.status = 0;
-                param.nodeId = $(this).closest('tr').attr('data-id');
-                param.processId = $(this).closest('tr').attr('data-process-id');
-                param.statusType = $(this).attr('data-type');
-                that.saveChangeSelectionStatus(param);
-            };
-            $(that.element).find('input[name="iCheck"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_square-blue'
-            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
-        }
-        //更改选择状态
-        ,saveChangeSelectionStatus:function (param) {
-            var that = this;
-            var option = {};
-            option.classId = '#content-right';
-            option.url = restApi.url_selectedProcessNodeStatus;
-            option.postData = param;
-            m_ajax.postJson(option, function (response) {
-                if(response.code=='0'){
-                    S_toastr.success('操作成功！');
-                }else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-        //事件绑定
-        , bindActionClick:function () {
-            var that = this;
-            $(that.element).find('a[data-action],button[data-action]').off('click').on('click',function (e) {
-                var $this = $(this),dataAction = $this.attr('data-action');
-                var dataActionType = $this.attr('data-action-type');
-                var dataId = $this.attr('data-id');
-                switch (dataAction){
-                    case 'back'://返回项目收支流程
-
-                        window.history.go(-1);
-                        break;
-                }
-
-            });
-        }
-
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-
-/**
- * 设计范围
- * Created by wrb on 2016/12/20.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_addProjectDesignRange",
-        defaults = {
-            $title:null,
-            $isDialog:true,
-            $projectId:'',
-            $projectDesignRange:null,
-            $placement:null,
-            $okCallBack:null
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._designRangeList = null;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.getRangeData(function(data){
-                that.initHtmlData(data);
-            });
-        },
-        //初始化数据
-        initHtmlData:function (data) {
-            var that = this;
-            var $data = that.dealDesignRange();
-            var $top = 'top',left = $(that.element).position().left;
-            if(parseInt(left)>600){
-                $top = 'left';
-            }
-            $(that.element).m_popover({
-
-                placement: $top,
-                content: template('m_project/m_addProjectDesignRange', $data),
-                titleHtml: '<h3 class="popover-title">'+(that.settings.$title?that.settings.$title:'设计范围')+'</h3>',
-                onShown: function ($popover) {
-
-                    that.bindActionClick();
-                    that.editOtherRangeValid();
-                    $('.i-checks').iCheck({
-                        checkboxClass: 'icheckbox_minimal-green',
-                        radioClass: 'iradio_minimal-green'
-                    });
-                },
-                onSave: function ($popover) {
-
-                    if ($('.designRangeBox form').valid()) {
-                        that.saveEditDesignRange();
-                    }else{
-                        return false;
-                    }
-
-                }
-            }, true);
-
-        },
-        //保存设计范围编辑
-        saveEditDesignRange:function (text) {
-            var that = this;
-            var text = '';
-            var otherRangeList = $('.otherRangeRow input[type="text"]');
-            otherRangeList.each(function(){
-                if($(this).val()==''||$(this).val()==null){
-                    return text = '设计范围不能为空！';
-
-                };
-                if($(this).val().length>50){return text = '设计范围名称过长，请控制在50个字符内'};
-            });
-            // var check = $(".designRangeBox form").valid();
-
-            if(text && text!=''){
-                    return text;
-                }
-            else{
-                if($('.popover .editable-error-block').length>0){
-                    $('.popover .editable-error-block').html('');
-                }
-                var projectDesignRangeList = [];
-                $('.designRangeBox input[type="checkbox"][name="range"]:checked').each(function () {
-                    projectDesignRangeList.push({designRange:$(this).val(),id:$(this).attr('data-id')});
-                });
-
-                 $('.designRangeBox input[type="checkbox"][name="otherRange"]:checked').each(function () {
-                         projectDesignRangeList.push({designRange:$(this).closest('.liBox').find('input[name="designRange"]').val()});
-                 });
-
-                 if(that.settings.$okCallBack!=null){
-                     that.settings.$okCallBack(projectDesignRangeList);
-                    }
-                 }
-                return text;
-
-         }
-        //生成html
-        ,initHtmlTemplate:function (callBack,data,classIdObj) {
-            var that = this;
-            var html = template('m_project/m_addProjectDesignRange',data);
-            classIdObj.find('div.editable-input').html(html);
-            if(callBack!=null){
-                callBack();
-            }
-            //给所有已有的自定义范围的checkbox添加事件
-            $.each(data.otherRange,function(i,item){
-                var obj = $('input#'+item.id).parents('.liBox');
-                that.bindOtherRangeCk(obj);
-            });
-        }
-        //把设计范围解析(哪些是来自基础数据，来自自定义)
-        ,dealDesignRange:function () {
-            var that = this;
-            var rangeListClone = that.settings.$projectDesignRange;//已选中的设计范围
-            var designRangeList = that._designRangeList;//数据字典的设计范围
-            var rangeList=[];
-            var otherRange=[];
-            if(rangeListClone!=null && rangeListClone.length>0){
-                for (var i = 0; i < rangeListClone.length; i++) {
-                    var isCon = false;
-                    for (var j = 0; j < designRangeList.length; j++) {
-                        if (rangeListClone[i].designRange == designRangeList[j].name) {
-                            isCon = true;
-                            designRangeList[j].isChecked = 1;//初始化选中
-                            rangeList.push(rangeListClone[i]);
-                            continue;
-                        }
-                    }
-                    if (!isCon) {
-                        rangeListClone[i].isChecked = 1;//初始化选中
-                        otherRange.push(rangeListClone[i]);
-                    }
-                }
-            }
-            var $data = {};
-            $data.rangeList = rangeList;
-            $data.otherRange = otherRange;
-            $data.designRangeList = designRangeList;
-            return $data;
-        }
-        //获取设计范围基础数据
-        ,getRangeData:function (callBack) {
-            var that = this;
-            var option  = {};
-            var rangeList = [];
-            option.classId = that.element;
-            option.url = restApi.url_getDesignRangeList;
-            m_ajax.get(option,function (response) {
-                if(response.code=='0'){
-                    rangeList = response.data;
-                    that._designRangeList = rangeList;
-                    return callBack();
-                }else {
-                    S_dialog.error(response.info);
-                }
-
-            })
-        }
-        //添加自定义设计范围事件
-        ,bindAddRange:function (obj) {
-            var that = this;
-
-            var iHtml = '';
-            iHtml+='<div class="col-md-4 liBox">';
-            iHtml+='    <div class="col-md-2 no-padding" >';
-            iHtml+='        <label class="i-checks" title="">';
-            iHtml+='            <input name="otherRange" class="checkbox" checked type="checkbox"/>';
-            iHtml+='            <i></i>';
-            iHtml+='        </label>';
-            iHtml+='    </div>';
-            iHtml+='    <div class="col-md-10 out-box" style="padding-left: 0;padding-right: 0;">';
-            iHtml+='        <label class="input">';
-            iHtml+='            <input id="designRange" class="designRange form-control input-sm" type="text" maxlength="50" name="designRange" placeholder="请输入名称" />';
-            iHtml+='        </label>';
-            iHtml+='    </div>';
-            iHtml+='</div>';
-
-            obj.parent().before(iHtml);
-            that.bindOtherRangeCk(obj.parent().prev());
-            that.bindIcheckbox(obj.parent().prev());
-            that.editOtherRangeValid();
-        }
-        //绑定checkbox显示
-        ,bindIcheckbox:function($el){
-            var that = this;
-            $el.find('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
-            });
-        }
-        //绑定选择自定义设计范围事件
-        ,bindOtherRangeCk:function (obj) {
-            obj.find('input[name="otherRange"]').on('ifUnchecked.s',function () {
-                $(this).parents('.liBox').find('label.error').hide();
-                $(this).parents('.liBox').remove();
-                if($('.otherRangeRow div.liBox').length<1){
-                    $('.popover .editable-error-block').html('');
-                }
-                return false;
-            });
-            obj.find('input[name="designRange"]').keyup(function () {
-                $(this).parents('.liBox').find('label.error').hide();
-                return false;
-            });
-        }
-        //按钮事件绑定
-        ,bindActionClick:function () {
-            var that = this;
-            $('.designRangeBox').find('label[data-action]').on('click',function () {
-                var dataAction = $(this).attr('data-action');
-                if(dataAction=='addOtherRange'){
-                    that.bindAddRange($(this));
-                    return false;
-                }
-            });
-        }
-        //自定义范围时的验证
-        ,editOtherRangeValid:function(){
-            $(".designRangeBox form").validate({
-                rules: {
-                    otherRange:{
-                        ckDesignRange:true
-                    },
-                    designRange:{
-                        ckDesignRange:true,
-                        maxlengthCK:50
-                    }
-                },
-                messages: {
-                    otherRange:{
-                        ckDesignRange:'请输入设计范围名称!'
-                    },
-                    designRange:{
-                        ckDesignRange:'请输入设计范围名称!',
-                        maxlengthCK:"设计范围名称不能超过50个字！"
-                    }
-                },
-                errorPlacement: function (error, element) { //指定错误信息位置
-                    /*if (element.is(':radio') || element.is(':checkbox')) {
-                        error.appendTo(element.closest('.liBox'));
-                    } else {
-                        error.insertAfter(element);
-                    }*/
-                    $('.designRangeBox form').find('.error-box .col-md-12').html(error);
-                }
-            });
-            $.validator.addMethod('ckDesignRange', function(value, element) {
-                var isTrue = true;
-                $('.designRangeBox form').find(' input[name="otherRange"]:checked').each(function () {
-                    var val = $(this).closest('.liBox').find('input[name="designRange"]').val();
-                    if($.trim(val).length===0){
-                        isTrue = false;
-                        return false;
-                    }
-                });
-                if(isTrue){
-                    $('.designRangeBox form').find('.error-box .col-md-12').html('');
-                }
-                return  isTrue;
-            }, '请输入设计范围名称!');
-            $.validator.addMethod('maxlengthCK', function(value, element) {
-                var isTrue = true;
-                $('.designRangeBox form').find(' input[name="otherRange"]:checked').each(function () {
-                    var val = $(this).closest('.liBox').find('input[name="designRange"]').val();
-                    if($.trim(val).length>50){
-                        isTrue = false;
-                        return false;
-                    }
-                });
-                if(isTrue){
-                    $('.designRangeBox form').find('.error-box .col-md-12').html('');
-                }
-                return  isTrue;
-            }, '设计范围名称不能超过50个字');
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-/**
- * 添加一条变更记录
- * Created by wrb on 2016/12/21.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_addTimeChangeRecord",
-        defaults = {
-            $data : null
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.initHtmlTemplate(that.settings.$data);
-        }
-        //生成html
-        ,initHtmlTemplate:function (data) {
-            var that = this;
-            var html = template('m_project/m_addTimeChangeRecord',data);
-            $(that.element).append(html);
-        }
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-                $.data(this, "plugin_" +
-                    pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-/**
- * 选择甲方（建设单位）
- * Created by wrb on 2016/12/21.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_choseConstructCompany",
-        defaults = {
-            $title:null,
-            $isDialog:true,
-            $okCallBack:null
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.initHtmlData(function () {
-                that.bindActionClick();
-
-            });
-        },
-        //初始化数据
-        initHtmlData:function (callBack) {
-            var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.$title||'甲方单位',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '850',
-                    minHeight:'200',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    cancelText:'关闭',
-                    cancel:function () {
-
-                    },
-                    okText:'清除',
-                    ok:function () {
-                        if(that.settings.$okCallBack!=null){
-                            return that.settings.$okCallBack(null);
-                        }
-                    }
-                },function(d){//加载html后触发
-
-                    var classIdObj = $('div[id="content:'+d.id+'"] .dialogOBox');
-                    that.initHtmlTemplate(classIdObj)
-                    that.getConstructListData(1);
-                    if(callBack!=null){
-                        callBack();
-                    }
-                });
-            }else{//不以弹窗编辑
-                var classIdObj = $(that.element);
-                that.initHtmlTemplate(classIdObj);
-                if(callBack!=null){
-                    callBack();
-                }
-            }
-        }
-        //生成html
-        ,initHtmlTemplate:function (classIdObj) {
-            var that = this;
-            var html = template('m_project/m_choseConstructCompany',{});
-            classIdObj.html(html);
-        }
-        //获取甲方单位数据{type=1=常用甲方,type=2=查询甲方}
-        ,getConstructListData:function (type) {
-            var that = this;
-            var option={};
-            if(type==1){
-                option.url=restApi.url_getUsedPartA;
-            }else{
-                option.url=restApi.url_getLikedPartA;
-                option.postData={keyword:$('.choiseConstructOBox input[name="keyword"]').val()}
-            }
-
-            m_ajax.postJson(option,function (response) {
-                if(response.code=='0'){
-                    that.toGenerateConstructListHtml(response.data);
-                }else {
-                    S_dialog.error(response.info);
-                }
-
-            })
-        }
-        //生成甲方单位列表html
-        ,toGenerateConstructListHtml:function (data) {
-            var that = this
-            var iHtml = '';
-            if(data!=null && data.length>0){
-                for(var i=0;i<data.length;i++){
-                    iHtml+='<tr class="curp" data-id="'+data[i].id+'" data-name="'+data[i].companyName+'"><td>'+(i+1)+'</td>' +
-                        '<td style="word-break: break-all;">'+data[i].companyName+'</td></tr>';
-                }
-                $('.choiseConstructOBox table.constructList tbody').html(iHtml);
-                $('.choiseConstructOBox table.constructList tbody').find('tr').on('click',function () {
-                    var $data={};
-                    $data.id=$(this).attr('data-id');
-                    $data.companyName=$(this).attr('data-name');
-                    S_dialog.close($('.choiseConstructOBox'));
-                    if(that.settings.$okCallBack!=null){
-                        return that.settings.$okCallBack($data);
-                    }
-                });
-            }
-            return false;
-        }
-        //按钮事件绑定
-        ,bindActionClick:function () {
-            var that = this;
-            $('.choiseConstructOBox').find('input[name="choiseConstruct"],button[data-action]').on('click',function () {
-                var dataAction = $(this).attr('data-action');
-                if(dataAction=='choiseCommonAConstruct'){//常用甲方
-                    that.getConstructListData(1);
-                    $('.choiseConstructOBox .searchBox').addClass('hide');
-                }else if(dataAction=='searchAConstruct' || dataAction=='toSearchAConstruct'){//查询甲方
-                    that.getConstructListData(2);
-                    $('.choiseConstructOBox .searchBox').removeClass('hide');
-                }
-            });
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-
-
-/**
- * 选择乙方（组织）
- * Created by wrb on 2016/12/22.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_choseOrg",
-        defaults = {
-            $title:null,
-            $isDialog:true,
-            $okCallBack:null
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.initHtmlData(function () {
-                that.bindActionClick();
-
-            });
-        },
-        //初始化数据
-        initHtmlData:function (callBack) {
-            var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.$title||'乙方',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '850',
-                    minHeight:'200',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    cancelText:'关闭',
-                    cancel:function () {
-
-                    },
-                    okText:'清除',
-                    ok:function () {
-                        if(that.settings.$okCallBack!=null){
-                            return that.settings.$okCallBack(null);
-                        }
-                    }
-                },function(d){//加载html后触发
-
-                    var classIdObj = $('div[id="content:'+d.id+'"] .dialogOBox');
-                    that.initHtmlTemplate(classIdObj)
-                    that.getOrgListData(1);
-                    if(callBack!=null){
-                        callBack();
-                    }
-                });
-            }else{//不以弹窗编辑
-                var classIdObj = $(that.element);
-                that.initHtmlTemplate(classIdObj);
-                if(callBack!=null){
-                    callBack();
-                }
-            }
-        }
-        //生成html
-        ,initHtmlTemplate:function (classIdObj) {
-            var that = this;
-            var html = template('m_project/m_choseOrg',{});
-            classIdObj.html(html);
-        }
-        //获取乙方单位数据{type=1=常用乙方,type=2=查询乙方}
-        ,getOrgListData:function (type) {
-            var that = this;
-            var option={};
-            if(type==1){
-                option.url=restApi.url_getUsedPartB;
-            }else{
-                option.url=restApi.url_getLikedPartB;
-                option.postData={keyword:$('.choseOrgBox input[name="keyword"]').val()}
-            }
-
-            m_ajax.postJson(option,function (response) {
-                if(response.code=='0'){
-                    that.toGenerateOrgListHtml(response.data);
-                }else {
-                    S_dialog.error(response.info);
-                }
-
-            })
-        }
-        //生成乙方单位列表html
-        ,toGenerateOrgListHtml:function (data) {
-            var that = this
-            var iHtml = '';
-            if(data!=null && data.length>0){
-                for(var i=0;i<data.length;i++){
-                    iHtml+='<tr class="curp" data-id="'+data[i].id+'" data-name="'+data[i].companyName+'"><td>'+(i+1)+'</td>' +
-                        '<td style="word-break: break-all;">'+data[i].companyName+'</td></tr>';
-                }
-                $('.choseOrgBox table.orgList tbody').html(iHtml);
-                $('.choseOrgBox table.orgList tbody').find('tr').on('click',function () {
-                    var $data={};
-                    $data.id=$(this).attr('data-id');
-                    $data.companyName=$(this).attr('data-name');
-                    S_dialog.close($('.choseOrgBox'));
-                    if(that.settings.$okCallBack!=null){
-                        return that.settings.$okCallBack($data);
-                    }
-                });
-            }
-            return false;
-        }
-        //按钮事件绑定
-        ,bindActionClick:function () {
-            var that = this;
-            $('.choseOrgBox').find('input[name="choiseOrg"],button[data-action]').on('click',function (event) {
-                var dataAction = $(this).attr('data-action');
-                if(dataAction=='choiseCommonAOrg'){//常用org
-                    that.getOrgListData(1);
-                    $('.choseOrgBox .searchBox').addClass('hide');
-                }else if(dataAction=='searchAOrg' || dataAction=='toSearchAOrg'){//查询org
-                    that.getOrgListData(2);
-                    $('.choseOrgBox .searchBox').removeClass('hide');
-                }
-                event.stopPropagation();
-            });
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-
-
-/**
- * 数据字典选择(针对功能分类、设计范围这类编辑、自定义等)
- * Created by wrb on 2018/6/26.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_customDataDictionary",
-        defaults = {
-            $title:null,
-            $isDialog:true,
-            $dataDictionaryList:null,//数据字典
-            $dataList:null,//数据列表（包括数据字典）
-            $placement:null,
-            $okCallBack:null
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._designRangeList = null;
-        this._name = pluginName;
-        this._strName = this.settings.$title?this.settings.$title:'';
-        this._selectedData = [];//数据字典
-        this._selectedCustomData = [];//非数据字典
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.initHtmlData();
-        },
-        //初始化数据
-        initHtmlData:function () {
-            var that = this;
-            var $data = that.dealDataList();
-            var $top = 'top',left = $(that.element).position().left;
-            if(parseInt(left)>600){
-                $top = 'left';
-            }
-            $(that.element).m_popover({
-
-                placement: $top,
-                content: template('m_project/m_customDataDictionary', $data),
-                titleHtml: '<h3 class="popover-title">'+(that.settings.$title?that.settings.$title:'编辑')+'</h3>',
-                onShown: function ($popover) {
-
-                    that.bindActionClick();
-                    that.editValid();
-                    that.bindIcheckbox($('.data-dictionary'));
-                },
-                onSave: function ($popover) {
-
-                    if ($('.data-dictionary form').valid()) {
-                        that.saveData();
-                    }else{
-                        return false;
-                    }
-
-                }
-            }, true);
-
-        }
-        //把数据解析(哪些是来自基础数据，来自自定义)
-        ,dealDataList:function () {
-            var that = this;
-            var dataListClone = that.settings.$dataList;//已选中的数据
-            var dataDictionaryList = that.settings.$dataDictionaryList;//数据字典
-            var dataDictionarySelectedList=[];
-            var customDataList=[];
-            if(dataListClone!=null && dataListClone.length>0){
-                for (var i = 0; i < dataListClone.length; i++) {
-                    var isCon = false;
-                    for (var j = 0; j < dataDictionaryList.length; j++) {
-                        if (dataListClone[i].name == dataDictionaryList[j].name) {
-                            isCon = true;
-                            dataDictionaryList[j].selected = true;//初始化选中
-                            dataDictionarySelectedList.push({
-                                name:dataListClone[i].name,
-                                id:dataListClone[i].id,
-                                selected:true,
-                                default:true
-                            });
-                            continue;
-                        }
-                    }
-                    if (!isCon) {
-                        dataListClone[i].selected = true;//初始化选中
-                        customDataList.push({
-                            name:dataListClone[i].name,
-                            id:dataListClone[i].id,
-                            selected:true,
-                            default:false
-                        });
-                    }
-                }
-            }
-            var $data = {};
-            $data.dataDictionarySelectedList = dataDictionarySelectedList;
-            $data.customDataList = customDataList;
-            $data.dataDictionaryList = dataDictionaryList;
-            that._selectedData = dataDictionarySelectedList;
-            that._selectedCustomData = customDataList;
-            return $data;
-        }
-        //保存功能分类编辑
-        ,saveData:function (text) {
-            var that = this;
-
-            if($('.popover .editable-error-block').length>0){
-                $('.popover .editable-error-block').html('');
-            }
-            var dataDictionaryList = [];
-            $('.data-dictionary input[type="checkbox"][name="dataDictionary"]:checked').each(function () {
-
-                dataDictionaryList.push({
-                    name:$(this).val(),
-                    id:$(this).attr('data-id'),
-                    selected:true,
-                    default:true
-                });
-            });
-            $('.data-dictionary input[type="checkbox"][name="customDataDictionary"]:checked').each(function () {
-
-                dataDictionaryList.push({
-                    name:$(this).closest('.liBox').find('input[name="iptCustomDataDictionary"]').val(),
-                    id:$(this).attr('data-id')==''?null:$(this).attr('data-id'),
-                    selected:true,
-                    default:false
-                });
-            });
-
-            var newDataDictionaryList = dataDictionaryList.concat();
-            var oldDataList = that._selectedData.concat(that._selectedCustomData);
-            if(oldDataList!=null && oldDataList.length>0){
-                $.each(oldDataList, function (i, item) {
-
-                    var isRepeat = false;//不存在，则表明是删除，添加到数组，返回到后台
-                    $.each(dataDictionaryList, function (i0, item0) {
-                        if(item0.id!=null && item0.id!='' && item0.id==item.id){
-                            isRepeat = true;
-                            return false;
-                        }
-                    });
-                    if(!isRepeat){
-                        item.selected = false;
-                        newDataDictionaryList.push(item);
-                    }
-                });
-            }
-            if(that.settings.$okCallBack!=null){
-                 that.settings.$okCallBack(newDataDictionaryList);
-            }
-            return text;
-
-         }
-        //添加自定义功能分类事件
-        ,bindAddDataDictionary:function (obj) {
-            var that = this;
-
-            var iHtml = '';
-            iHtml+='<div class="col-md-4 liBox">';
-            iHtml+='    <div class="col-md-2 no-padding" >';
-            iHtml+='        <label class="i-checks" title="">';
-            iHtml+='            <input name="customDataDictionary" class="checkbox" checked type="checkbox"/>';
-            iHtml+='            <i></i>';
-            iHtml+='        </label>';
-            iHtml+='    </div>';
-            iHtml+='    <div class="col-md-10 out-box" style="padding-left: 0;padding-right: 0;">';
-            iHtml+='        <label class="input">';
-            iHtml+='            <input class="form-control input-sm" type="text" maxlength="50" name="iptCustomDataDictionary" placeholder="请输入名称" />';
-            iHtml+='        </label>';
-            iHtml+='    </div>';
-            iHtml+='</div>';
-
-            obj.parent().before(iHtml);
-            that.bindCustomDataDictionaryCk(obj.parent().prev());
-            that.bindIcheckbox(obj.parent().prev());
-            that.editValid();
-        }
-        //绑定checkbox显示
-        ,bindIcheckbox:function($el){
-            var that = this;
-            var ifChecked = function (e) {
-            };
-            var ifUnchecked = function (e) {
-            };
-            $el.find('input[name="dataDictionary"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
-            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
-
-            var ifCheckedByCustom = function (e) {
-                console.log(11)
-            };
-            var ifUncheckedByCustom = function (e) {
-
-            };
-            $el.find('input[name="customDataDictionary"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
-            }).on('ifUncheckedByCustom.s', ifUnchecked).on('ifCheckedByCustom.s', ifChecked);
-
-        }
-        //绑定选择自定义功能分类事件
-        ,bindCustomDataDictionaryCk:function (obj) {
-            obj.find('input[name="customDataDictionary"]').on('ifUnchecked.s',function () {
-                $(this).parents('.liBox').find('label.error').hide();
-                $(this).parents('.liBox').remove();
-                if($('.custom-data-dictionary div.liBox').length<1){
-                    $('.popover .editable-error-block').html('');
-                }
-                return false;
-            });
-            obj.find('input[name="iptCustomDataDictionary"]').keyup(function () {
-                $(this).parents('.liBox').find('label.error').hide();
-                return false;
-            });
-        }
-        //按钮事件绑定
-        ,bindActionClick:function () {
-            var that = this;
-            $('.data-dictionary').find('label[data-action]').on('click',function () {
-                var dataAction = $(this).attr('data-action');
-                if(dataAction=='addCustomDataDictionary'){
-                    that.bindAddDataDictionary($(this));
-                    return false;
-                }
-            });
-        }
-        //自定义功能分类时的验证
-        ,editValid:function(){
-            var that = this;
-            $(".data-dictionary form").validate({
-                rules: {
-                    customDataDictionary:{
-                        ckCustomDataDictionary:true
-                    },
-                    iptCustomDataDictionary:{
-                        ckCustomDataDictionary:true,
-                        ckIsRepeat:true,
-                        maxlengthCK:50
-                    }
-                },
-                messages: {
-                    customDataDictionary:{
-                        ckCustomDataDictionary:'请输入'+that._strName+'名称!'
-                    },
-                    iptCustomDataDictionary:{
-                        ckCustomDataDictionary:'请输入'+that._strName+'名称!',
-                        ckIsRepeat:'名称重复或已存在！',
-                        maxlengthCK:that._strName+'名称不能超过50个字！'
-                    }
-                },
-                errorPlacement: function (error, element) { //指定错误信息位置
-
-                    $('.data-dictionary form').find('.error-box .col-md-12').html(error);
-                }
-            });
-            $.validator.addMethod('ckCustomDataDictionary', function(value, element) {
-                var isTrue = true;
-                $('.data-dictionary form').find(' input[name="customDataDictionary"]:checked').each(function () {
-                    var val = $(this).closest('.liBox').find('input[name="iptCustomDataDictionary"]').val();
-                    if($.trim(val).length===0){
-                        isTrue = false;
-                        return false;
-                    }
-                });
-                if(isTrue){
-                    $('.data-dictionary form').find('.error-box .col-md-12').html('');
-                }
-                return  isTrue;
-            }, '请输入'+that._strName+'名称!');
-            $.validator.addMethod('ckIsRepeat', function(value, element) {
-                var isTrue = true;
-                var customDataList = [];
-                $('.data-dictionary input[type="checkbox"][name="customDataDictionary"]:checked').each(function(){
-
-                    var name = $(this).closest('.liBox').find('input[name="iptCustomDataDictionary"]').val();
-                    customDataList.push(name);
-                });
-
-                if(customDataList.length>0){
-
-                    var newCustomDataList = customDataList.sort();
-                    for(var i=0;i<customDataList.length;i++){
-
-                        if (newCustomDataList[i]==newCustomDataList[i+1]){
-
-                            isTrue = false;
-                        }
-                    }
-                    $.each(customDataList,function (i,item) {
-                        $.each(that.settings.$dataDictionaryList, function (i0, item0) {
-                            if(item==item0.name){
-                                isTrue = false;
-                            }
-                        });
-                    })
-                }
-                if(isTrue){
-                    $('.data-dictionary form').find('.error-box .col-md-12').html('');
-                }
-                return  isTrue;
-            }, '名称重复或已存在！');
-            $.validator.addMethod('maxlengthCK', function(value, element) {
-                var isTrue = true;
-                $('.data-dictionary form').find(' input[name="customDataDictionary"]:checked').each(function () {
-                    var val = $(this).closest('.liBox').find('input[name="iptCustomDataDictionary"]').val();
-                    if($.trim(val).length>50){
-                        isTrue = false;
-                        return false;
-                    }
-                });
-                if(isTrue){
-                    $('.data-dictionary form').find('.error-box .col-md-12').html('');
-                }
-                return  isTrue;
-            }, that._strName+'名称不能超过50个字');
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-/**
- * 编辑在位编辑type为popup时里面内容的自定义
- * Created by veata on 2016/12/21.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_defineEditableContent",
-        defaults = {
-            top:null,
-            html:null,
-            showAllButton:true,
-            showCloseButton:false,
-            title:null,
-            p_width:null,
-            p_height:null,
-            placement:null,//浮窗是在哪个位置展开：‘left’,‘right’,‘top’,‘bottom’,空值则默认为top
-            onShown: null,//浮窗显示后的事件，可以用来重新绑定值
-            saveCallback:null,//点击确定触发的事件
-            afterCallback:null,//页面加载后触发的事件
-            cancelCallback:null,//点击取消触发的事件
-            ifDelay:null,//是否延迟加载afterCallback
-            errorTipsMarginLeft:null,//错误提示margin-left
-            template:'m_project/m_defineEditableContent'
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._popoverTop = null;//初始化页面时，保存浮窗的top值
-        this._popoverHeight = null;//初始化页面时，保存浮窗的height值
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            // that.closePopover();
-            $('body').find('.popover').remove();
-            if(!$(that.element).parent().find('.popover').length){
-                that.getHtml(function(){
-                    that.getPosition();
-                    that.bindButtonClick();
-                    that.closePopover();
-                });
-            }
-
-        },
-        //当鼠标点击的焦点不在浮窗内时，关闭浮窗
-        closePopover:function(){
-            var that = this;
-            $('body').on('click',function(event){
-                // console.log('body.click');
-                // console.log(event.target);
-                // console.log($(event.target).closest('.select2-search__field').length)
-                if($(that.element).next('.popover').length>0){
-                    if($(event.target).parents('.popover.editable-container').length<1
-                        && event.target!=that.element && $(event.target).closest('.select2-search__field').length<1){
-                        that.closeEditable();
-                    }
-                }
-
-            })
-        },
-        getPosition:function(){
-            var that = this;
-            var p_p = that.settings.placement?that.settings.placement:'top';//浮窗的展示位置
-            var a_ptop = $(that.element).position().top;//a标签的top值
-            var a_width = $(that.element).outerWidth();//a标签的width值
-            var a_height = $(that.element).outerHeight();//a标签的height值
-            var a_pleft = $(that.element).position().left;//a标签的left值
-            var p_width = that.settings.p_width || $(that.element).next('.popover').width();//浮窗的宽度
-            var p_height = that.settings.p_height || $(that.element).next('.popover').height();//浮窗的高度
-            var p_top = 0;//浮窗的top值
-            var p_left = 0;//浮窗的left值
-            switch(p_p){
-                case 'top':
-                    p_top = (a_ptop-p_height);
-                    p_left = a_pleft+a_width/2-p_width/2;
-                    break;
-                case 'bottom':
-                    p_top = (a_ptop+a_height);
-                    p_left = a_pleft+a_width/2-p_width/2;
-                    break;
-                case 'left':
-                    p_top = (a_ptop-p_height/2+5);
-                    p_left = a_pleft-p_width-10;
-                    break;
-                case 'right':
-                    p_top = (a_ptop-p_height/2+7);
-                    p_left = a_pleft+a_width;
-                    break;
-
-
-            };
-            that._popoverTop = p_top;
-            that._popoverHeight = p_height;
-            $(that.element).next('.popover').removeClass('top').addClass(p_p);
-            if(p_p.indexOf('left')>-1||p_p.indexOf('right')>-1){
-                $(that.element).next('.popover').find('.arrow').css({'top':'50%','left':''});
-            }
-            $(that.element).next('.popover').css({display:'inline-block',position:'absolute',top:p_top,left:p_left});
-
-
-        },
-        getHtml:function(callback){
-            var that=this;
-            var data={};
-            data.showAllButton = that.settings.showAllButton;
-            data.showCloseButton = that.settings.showCloseButton;
-            data.title = that.settings.title;
-            var html = template(that.settings.template,data);
-            $(html).insertAfter(that.element);
-            $(that.element).next('.popover').find('.editable-input').html(that.settings.html);
-            var $popover = $(that.element).next('.popover.editable-container');
-
-            if (that.settings.onShown && that.settings.onShown !== null)
-                that.settings.onShown($popover);
-
-            if(that.settings.afterCallback){
-                that.settings.afterCallback($popover);
-            }
-            //绑定回车事件
-            $popover.find('input[type="text"],input[type="password"]').keydown(function() {
-                if (event.keyCode == '13') {//keyCode=13是回车键
-                    $popover.find('.editable-submit').click();
-                    preventDefault(event);
-                }
-            });
-            if(callback){
-                return callback($popover);
-            }
-
-        },
-        bindButtonClick:function(){
-            var that = this;
-            var $popover = $(that.element).next('.popover');
-            $popover.find('button').on('click',function(){
-                if($(this).is('.editable-submit')){
-                    var error = '';
-                    if(that.settings.saveCallback){
-                        error = that.settings.saveCallback();
-                    }
-                    if(error!=false){
-                        that.closeEditable(error);
-                    }
-                }else{
-                    if(that.settings.cancelCallback){
-                        return that.settings.cancelCallback;
-                    }
-                    that.closeEditable();
-                }
-            });
-            //点击submit按钮或浮窗其他地方，出现验证信息时，相应改变popover的top值
-            $popover.find('.popover-content,button').off('click.changePosition').on('click.changePosition',function(e){
-                setTimeout(function(){
-                    that.changePosition($popover);
-                },20);
-            });
-            //点击input表单，出现验证信息时，相应改变popover的top值
-            $popover.find('input[type="text"]').off('keyup.changePosition').on('keyup.changePosition',function(e){
-                setTimeout(function(){
-                    that.changePosition($popover);
-                },20);
-            });
-        },
-
-        //通过改变弹窗的top值来改变弹窗的位置
-        changePosition:function($popover){
-            var that = this;
-            var errTag = $popover.find('label.error,div.editable-error-block').length;
-            var popH = $popover.outerHeight();
-            var h1 = popH-that._popoverHeight;
-            if(errTag>0){
-                var newTop = that._popoverTop-h1;
-                $popover.css('top',newTop);
-            }
-        },
-        closeEditable:function(data){
-            var that = this;
-            if(data && data!=''){
-                var cssObj = {display:'block',color:'#a94442'};
-                if(that.settings.errorTipsMarginLeft!=null){
-                    cssObj.marginLeft = that.settings.errorTipsMarginLeft+'px';
-                }
-                return $(that.element).next('.popover').find('.editable-error-block').css(cssObj).text(data);
-            }
-            $(that.element).next('.popover').remove();
-            $('body').off("click");
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-
-
-/**
- * 基本信息－自定义属性模板
- * Created by wrb on 2017/08/15.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_editCustomPropertyTemp",
-        defaults = {
-            $title:null,
-            $isDialog:true,
-            $projectId:null,
-            $okCallBack:null
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._currentCompanyId = window.currentCompanyId;
-        this._currentUserId = window.currentUserId;
-        this._projectPropertyData = null;//加载的数据
-        this._projectPropertyEditData = null;//改动后的数据
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.initHtmlData();
-        },
-        //初始化数据
-        initHtmlData:function () {
-            var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.$title||'编辑项信息',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    tPadding: '0px',
-                    width: '1000',
-                    minHeight:'550',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    cancel:function () {
-
-                        /*S_dialog.confirm('当前数据未保存',function () {
-
-                        },function () {
-                            
-                        })*/
-                    },
-                    okText:'保存',
-                    ok:function () {
-                        that.saveProjectCustomFields();
-
-                    }
-                },function(d){//加载html后触发
-
-                    that.element = $('div[id="content:'+d.id+'"] .dialogOBox');
-                    that.initHtmlTemplate()
-                });
-            }else{//不以弹窗编辑
-                that.initHtmlTemplate();
-            }
-        }
-        //生成html
-        ,initHtmlTemplate:function () {
-            var that = this;
-            that.getCustomProjectPropertyData(function (data) {
-                var html = template('m_project/m_editCustomPropertyTemp',{projectPropertyData:data});
-                $(that.element).html(html);
-                that.renderSelectProperty(data.selectedPropertyList);
-                that.renderAddCusProperty(data.customPropertyList,0);
-                that.addCustomLibrary();
-                that.bindChoseLibrary();
-                that.initICheck();
-                that.addProperty_validate();
-            });
-        }
-        //获取自定义属性数据
-        ,getCustomProjectPropertyData:function (callback) {
-            var that = this;
-            var options = {};
-            options.url = restApi.url_loadProjectCustomFields;
-            options.postData = {};
-            options.postData.companyId = that._currentCompanyId;
-            options.postData.projectId = that.settings.$projectId;
-            m_ajax.postJson(options, function (response) {
-                if (response.code == '0') {
-                    that._projectPropertyData = response.data;
-                    that._projectPropertyEditData = jQuery.extend(true, {}, that._projectPropertyData);
-                    if(callback){
-                        return callback(response.data);
-                    }
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-        //添加自定义库
-        ,addCustomLibrary:function () {
-            var that = this;
-            $(that.element).find('button[data-action="addPropertyBtn"]').on('click',function () {
-
-                if($('form.addPropertyForm').valid()){
-                    var fieldName = $(this).parents('.row').find('input[name="fieldName"]').val();
-                    var unitName = $(this).parents('.row').find('input[name="unitName"]').val();
-
-                    //追加到customPropertyList
-                    if(that._projectPropertyEditData.customPropertyList==null){
-                        that._projectPropertyEditData.customPropertyList = [];
-                    }
-                    that._projectPropertyEditData.customPropertyList.push({
-                        changeStatus:1,
-                        fieldName:fieldName,
-                        fieldValue:null,
-                        id:null,
-                        sequencing:null,
-                        unitName:unitName
-                    });
-                    that.renderAddCusProperty(that._projectPropertyEditData.customPropertyList,1);
-                    //追加到selectedPropertyList
-                    if(that._projectPropertyEditData.selectedPropertyList==null){
-                        that._projectPropertyEditData.selectedPropertyList = [];
-                    }
-                    var newObj = {};
-                    that.dealSelectedPropertyList(fieldName,unitName);
-                    newObj.changeStatus = 1;
-                    newObj.fieldName = fieldName;
-                    newObj.unitName = unitName;
-                    that._projectPropertyEditData.selectedPropertyList.push(newObj);
-                    that.renderSelectProperty(that._projectPropertyEditData.selectedPropertyList);//重新渲染右边模板
-                    //清空
-                    $(this).parents('.row').find('input[name="fieldName"]').val('');
-                    $(this).parents('.row').find('input[name="unitName"]').val('');
-                }
-            });
-        }
-        //绑定选择模板库
-        ,bindChoseLibrary:function () {
-            var that = this;
-            $(that.element).find('.addPropertyForm ul.dropdown-menu>li>a').off('click').on('click',function () {
-                var value = $(this).text();
-                $(that.element).find('input[name="unitName"]').val(value);
-            });
-        }
-        //选中项删掉某项
-        ,dealSelectedPropertyList:function (fieldName,unitName) {
-            var that = this;
-            if(that._projectPropertyEditData.selectedPropertyList!=null && that._projectPropertyEditData.selectedPropertyList.length>0){
-                $.each(that._projectPropertyEditData.selectedPropertyList,function(index,item){
-                    if(item.fieldName+''+that.conversionUnitFormat(item.unitName)==fieldName+''+that.conversionUnitFormat(unitName)){//已存在已选项中
-                        that._projectPropertyEditData.selectedPropertyList.splice(index,1);
-                        return false;//跳出循环
-                    }
-                });
-            }
-        }
-        //自定义项删掉某项
-        ,dealCustomPropertyList:function (i) {
-            var that = this;
-            $.each(that._projectPropertyEditData.customPropertyList,function(index,item){
-                if(index==i){
-                    that._projectPropertyEditData.customPropertyList.splice(index,1);
-                }
-            });
-        }
-        //渲染添加的属性{isLastCheck:1=最后选中，即添加时需要}
-        ,renderAddCusProperty:function (cusList,isLastCheck) {
-            var that = this;
-            $(that.element).find('#customPropertyBox').html(template('m_project/m_editCustomPropertyTempAdd',{customPropertyList:cusList}));
-
-            var ifUnchecked = function (e) {
-
-                var fieldName = $(this).attr('data-field-name');
-                var unitName = $(this).attr('data-unit-name');
-                that.dealSelectedPropertyList(fieldName,unitName);
-                that.renderSelectProperty(that._projectPropertyEditData.selectedPropertyList);//重新渲染右边模板
-            };
-            var ifChecked = function (e) {
-                //追加到selectedPropertyList
-                if(that._projectPropertyEditData.selectedPropertyList==null){
-                    that._projectPropertyEditData.selectedPropertyList = [];
-                }
-                var fieldName = $(this).attr('data-field-name');
-                var unitName = $(this).attr('data-unit-name');
-
-                that.dealSelectedPropertyList(fieldName,unitName);
-                var newObj = {};
-                newObj.changeStatus = 1;
-                newObj.fieldName = fieldName;
-                newObj.unitName = unitName;
-                that._projectPropertyEditData.selectedPropertyList.push(newObj);
-                that.renderSelectProperty(that._projectPropertyEditData.selectedPropertyList);//重新渲染右边模板
-            };
-            $(that.element).find('#customPropertyBox .i-checks input[name="cusProjectFieldCk"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
-            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
-
-            if(isLastCheck==1){
-                $(that.element).find('#customPropertyBox .i-checks input[name="cusProjectFieldCk"]:last').iCheck('check');
-            }
-
-            $(that.element).find('#customPropertyBox').find('span.field-name').each(function () {
-                singleLimitString($(this).parents('.col-md-6'),$(this),200,20,'top');
-            });
-
-            $(that.element).find('#customPropertyBox a[data-action="delCusProperty"]').off().on('click',function (e) {
-
-                var i = $(this).attr('data-index');
-                var fieldName = $(this).attr('data-field-name');
-                var unitName = $(this).attr('data-unit-name');
-                that.dealCustomPropertyList(i);
-                that.renderAddCusProperty(that._projectPropertyEditData.customPropertyList,0);//重新渲染左边自定义模板
-                that.dealSelectedPropertyList(fieldName,unitName);
-                that.renderSelectProperty(that._projectPropertyEditData.selectedPropertyList);//重新渲染右边模板
-                e.stopPropagation();
-            });
-            $(that.element).find('input[name="cusProjectFieldCk"]').each(function () {
-                var $this = $(this);
-                var fieldName = $this.attr('data-field-name');
-                var unitName = $this.attr('data-unit-name');
-                if(that._projectPropertyEditData.selectedPropertyList!=null && that._projectPropertyEditData.selectedPropertyList.length>0){
-                    $.each(that._projectPropertyEditData.selectedPropertyList,function(index,item){
-                        if(item.fieldName+''+that.conversionUnitFormat(item.unitName)==fieldName+''+that.conversionUnitFormat(unitName)){//已存在已选项中
-                            $this.prop('checked',true);
-                            $this.iCheck('update');
-                            return false;
-                        }
-                    });
-                }
-            });
-        }
-        //渲染已选中的属性
-        ,renderSelectProperty:function (selectList) {
-            var that = this;
-            $(that.element).find('#selectPropertyBox').html(template('m_project/m_editCustomPropertyTempSelect',{selectedPropertyList:selectList}));
-            $(that.element).find('#selectPropertyBox').find('span.field-name').each(function () {
-                singleLimitString($(this).parents('.col-md-6'),$(this),200,20,'bottom');
-            });
-            $(that.element).find('#selectPropertyBox').find('a[data-action="delSelectedProperty"]').off().on('click',function (e) {
-
-                var fieldName = $(this).attr('data-field-name');
-                var unitName = $(this).attr('data-unit-name');
-                that.dealSelectedPropertyList(fieldName,unitName);
-                that.renderSelectProperty(that._projectPropertyEditData.selectedPropertyList);//重新渲染右边模板
-
-                if($(that.element).find('input[name="projectFieldCk"][data-field-name="'+fieldName+'"][data-unit-name="'+unitName+'"]').length>0){//存在基本模板，uncheck
-                    $(that.element).find('input[name="projectFieldCk"][data-field-name="'+fieldName+'"][data-unit-name="'+unitName+'"]').iCheck('uncheck');
-                }
-                if($(that.element).find('input[name="cusProjectFieldCk"][data-field-name="'+fieldName+'"][data-unit-name="'+unitName+'"]').length>0){//若存在自定义模板,uncheck
-                    $(that.element).find('input[name="cusProjectFieldCk"][data-field-name="'+fieldName+'"][data-unit-name="'+unitName+'"]').iCheck('uncheck');
-                }
-                e.stopPropagation();
-            });
-            that.bindSortable();
-        }
-        //初始化icheck
-        ,initICheck:function () {
-            var that = this;
-            var ifAllChecked = function (e) {
-                $(that.element).find('input[name="projectFieldCk"]').iCheck('check');
-
-                var baseList = that._projectPropertyEditData.basicPropertyList;
-                var selectList = that._projectPropertyEditData.selectedPropertyList;
-
-                if(selectList==null){
-                    selectList = [];
-                }
-                for(var i = 0; i < baseList.length; i++){
-                    var isResult = true;
-                    if(selectList.length>0){
-                        for(var j=0;j<selectList.length;j++){
-                            if(selectList[j].fieldName+''+that.conversionUnitFormat(selectList[j].unitName)==baseList[i].fieldName+''+that.conversionUnitFormat(baseList[i].unitName)){
-                                isResult = false;
-                                break;
-                            }
-                        }
-                    }
-                    if(isResult){
-                        baseList[i].id = null;
-                        selectList.push(baseList[i]);
-                    }
-                }
-                that._projectPropertyEditData.selectedPropertyList = selectList;
-                that.renderSelectProperty(selectList);
-
-            };
-            var ifAllUnchecked = function (e) {
-                $(that.element).find('input[name="projectFieldCk"]').iCheck('uncheck');
-            };
-            $(that.element).find('input[name="allProjectFieldCK"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
-            }).on('ifUnchecked.s', ifAllUnchecked).on('ifChecked.s', ifAllChecked);
-            var ifChecked = function (e) {
-                that.dealAllCheck();
-
-                //追加到selectedPropertyList
-                if(that._projectPropertyEditData.selectedPropertyList==null){
-                    that._projectPropertyEditData.selectedPropertyList = [];
-                }
-                var fieldName = $(this).attr('data-field-name');
-                var unitName = $(this).attr('data-unit-name');
-
-                that.dealSelectedPropertyList(fieldName,unitName);
-                var newObj = {};
-                newObj.changeStatus = 1;
-                newObj.fieldName = fieldName;
-                newObj.unitName = unitName;
-                that._projectPropertyEditData.selectedPropertyList.push(newObj);
-                console.log(that._projectPropertyEditData.selectedPropertyList);
-                that.renderSelectProperty(that._projectPropertyEditData.selectedPropertyList);//重新渲染右边模板
-
-            };
-            var ifUnchecked = function (e) {
-                that.dealAllCheck();
-                var fieldName = $(this).attr('data-field-name');
-                var unitName = $(this).attr('data-unit-name');
-                that.dealSelectedPropertyList(fieldName,unitName);
-                that.renderSelectProperty(that._projectPropertyEditData.selectedPropertyList);//重新渲染右边模板
-            };
-            $(that.element).find('input[name="projectFieldCk"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
-            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
-
-            $(that.element).find('input[name="projectFieldCk"]').each(function () {
-                var $this = $(this);
-                var fieldName = $this.attr('data-field-name'),unitName = $this.attr('data-unit-name');
-                if(that._projectPropertyEditData.selectedPropertyList!=null && that._projectPropertyEditData.selectedPropertyList.length>0){
-                    $.each(that._projectPropertyEditData.selectedPropertyList,function(index,item){
-                        if(item.fieldName+''+that.conversionUnitFormat(item.unitName)==fieldName+''+that.conversionUnitFormat(unitName)){//已存在已选项中
-                            $this.prop('checked',true);
-                            $this.iCheck('update');
-                        }
-                    });
-                    that.dealAllCheck();
-                }
-            });
-
-        }
-        //当选择标签库时，判断全选checkbox是否该选中
-        ,dealAllCheck:function() {
-            var that = this;
-            var checkedLen = $(that.element).find('input[name="projectFieldCk"]:checked').length;
-            var allLen = $(that.element).find('input[name="projectFieldCk"]').length;
-            if(checkedLen==allLen){
-                $('input[name="allProjectFieldCK"]').prop('checked',true);
-            }else{
-                $('input[name="allProjectFieldCK"]').prop('checked',false);
-            }
-            $('input[name="allProjectFieldCK"]').iCheck('update');
-        }
-        //已选自定义属性排序拖拽
-        , bindSortable: function () {
-            var that = this;
-            var sortable = Sortable.create(document.getElementById('selectPropertyBox'), {
-                animation: 200,
-                handle: '.property-span',
-                sort: true,
-                dataIdAttr: 'data-sortId',
-                ghostClass: 'my-sortable-ghost',
-                chosenClass: 'my-sortable-chosen',
-                dragClass: 'my-sortable-drag',
-                onAdd: function (evt){ //拖拽时候添加有新的节点的时候发生该事件
-                    //console.log('onAdd.foo:', [evt.item, evt.from]);
-                },
-                onUpdate: function (evt){ //拖拽更新节点位置发生该事件
-                    //console.log('onUpdate.foo:', [evt.item, evt.from]);
-                },
-                onRemove: function (evt){ //删除拖拽节点的时候促发该事件
-                    //console.log('onRemove.foo:', [evt.item, evt.from]);
-                },
-                onStart:function(evt){ //开始拖拽出发该函数
-                    //console.log('onStart.foo:', [evt.item, evt.from]);
-                },
-                onSort:function(evt){ //发生排序发生该事件
-                    //console.log('onSort.foo:', [evt.item, evt.from]);
-                },
-                onEnd: function(evt){ //拖拽完毕之后发生该事件
-                    //console.log('onEnd.foo:', [evt.item, evt.from]);
-                    //console.log(evt)
-                    that.sortSelectProperty(evt.oldIndex,evt.newIndex);
-                }
-            });
-        }
-        //选中的属性定段进行排行，重新生成新的下标值
-        ,sortSelectProperty:function (oldIndex,newIndex) {
-            var that = this;
-            var list = that._projectPropertyEditData.selectedPropertyList;
-            var newList = [];
-            for(var i=0;i<list.length;i++){
-                if(newIndex>oldIndex){//向后拖拽
-
-                    if(i<oldIndex){
-                        newList.push(list[i]);
-                    }else if(i>=oldIndex && i<newIndex){
-                        newList.push(list[i+1]);
-                    }else if(i==newIndex){
-                        newList.push(list[oldIndex]);
-                    }else{
-                        newList.push(list[i]);
-                    }
-                }else{
-                    if(i<newIndex){
-                        newList.push(list[i]);
-                    }else if(i==newIndex){
-                        newList.push(list[oldIndex]);
-                    }else if(i>newIndex && i<=oldIndex){
-                        newList.push(list[i-1]);
-                    }else{
-                        newList.push(list[i]);
-                    }
-                }
-            }
-            console.log(newList);
-            that._projectPropertyEditData.selectedPropertyList = newList;
-
-        }
-        //根据fieldName移除某项
-        ,delFieldList:function (list,name) {
-            if(list!=null){
-                $.each(list,function (index,item) {
-                    if(item!=undefined && item!=null){
-                        if(item.fieldName == name){
-                            list.splice(index,1);//存在则删除
-                        }
-                    }
-                })
-            }
-            return list;
-        }
-        //保存自定义模板
-        ,saveProjectCustomFields:function () {
-
-            var that = this,option  = {};
-            option.classId = that.element;
-            option.url = restApi.url_saveProjectCustomFields;
-            option.postData = {};
-            option.postData.projectId = that.settings.$projectId;
-            option.postData.companyId = that._currentCompanyId;
-            option.postData.operatorId = that._currentUserId;
-
-            var selectedPropertyList =  that._projectPropertyEditData.selectedPropertyList;
-            var oldSelectedPropertyList = that._projectPropertyData.selectedPropertyList;
-            var delSelectedPropertyList = that._projectPropertyData.selectedPropertyList;
-
-            if(selectedPropertyList==null)
-                selectedPropertyList = [];
-            if(oldSelectedPropertyList==null)
-                oldSelectedPropertyList = [];
-            if(delSelectedPropertyList==null)
-                delSelectedPropertyList = [];
-
-            if(oldSelectedPropertyList.length>0 && selectedPropertyList.length>0){//对比数据
-
-                for(var i=0;i<selectedPropertyList.length;i++){
-
-                    selectedPropertyList[i].sequencing = i;//排序值
-                    var newItem = jQuery.extend(true, {}, selectedPropertyList[i]);
-                    for(var j=0;j<oldSelectedPropertyList.length;j++){
-                        if(newItem.fieldName+''+that.conversionUnitFormat(newItem.unitName) == oldSelectedPropertyList[j].fieldName+''+ that.conversionUnitFormat(oldSelectedPropertyList[j].unitName)){//相同，copy旧对象，替换sequencing，fieldName,unitName
-                            selectedPropertyList[i] = jQuery.extend(true, {}, oldSelectedPropertyList[j]);
-                            selectedPropertyList[i].changeStatus = 2;//当存在库里则update
-                            selectedPropertyList[i].sequencing = i;
-                            selectedPropertyList[i].fieldName = newItem.fieldName;
-                            selectedPropertyList[i].unitName = newItem.unitName;
-                            delSelectedPropertyList = that.delFieldList(delSelectedPropertyList,newItem.fieldName);//存在则删除
-                            break;
-                        }
-                    }
-                }
-            }
-            if(delSelectedPropertyList.length>0){
-                $.each(delSelectedPropertyList,function(index,item){
-                    item.changeStatus=-1;//状态设为删除,追加到selectedPropertyList上
-                    selectedPropertyList.push(item);
-                });
-            }
-            var customPropertyList = that._projectPropertyEditData.customPropertyList;
-            var oldCustomPropertyList = that._projectPropertyData.customPropertyList;
-            var delCustomPropertyList = that._projectPropertyData.customPropertyList;
-            if(customPropertyList==null)
-                customPropertyList = [];
-            if(oldCustomPropertyList==null)
-                oldCustomPropertyList = [];
-            if(delCustomPropertyList==null)
-                delCustomPropertyList = [];
-
-            if(oldCustomPropertyList.length>0 && customPropertyList.length>0){//对比数据
-
-                for(var m=0;m<customPropertyList.length;m++){
-
-                    customPropertyList[m].sequencing = m;//排序值
-                    var newItem = jQuery.extend(true, {}, customPropertyList[m]);
-                    for(var n=0;n<oldCustomPropertyList.length;n++){
-                        if(newItem.fieldName+''+that.conversionUnitFormat(newItem.unitName) == oldCustomPropertyList[n].fieldName+''+ that.conversionUnitFormat(oldCustomPropertyList[n].unitName)){//相同，copy旧对象，替换sequencing，fieldName,unitName
-                            customPropertyList[m] = jQuery.extend(true, {}, oldCustomPropertyList[n]);
-                            customPropertyList[m].changeStatus = 2;//当存在库里则update
-                            customPropertyList[m].sequencing = m;
-                            customPropertyList[m].fieldName = newItem.fieldName;
-                            customPropertyList[m].unitName = newItem.unitName;
-                            delCustomPropertyList = that.delFieldList(delCustomPropertyList,newItem.fieldName);//存在则删除
-                            break;
-                        }
-                    }
-                }
-            }
-            if(delCustomPropertyList.length>0){
-                $.each(delCustomPropertyList,function(index,item){
-                    item.changeStatus=-1;//状态设为删除,追加到selectedPropertyList上
-                    customPropertyList.push(item);
-                });
-            }
-            option.postData.basicPropertyList = that._projectPropertyEditData.basicPropertyList;
-            option.postData.customPropertyList = customPropertyList;
-            option.postData.selectedPropertyList = selectedPropertyList;
-            m_ajax.postJson(option,function (response) {
-                if(response.code=='0'){
-                    S_toastr.success('保存成功！');
-                    if(that.settings.$okCallBack!=null){
-                        return that.settings.$okCallBack(null);
-                    }
-                }else {
-                    S_dialog.error(response.info);
-                }
-            })
-        }
-        //转换单位格式
-        , conversionUnitFormat:function (unitName) {
-
-            var that = this,_unitName = '';
-            switch(unitName){
-                case 'm&sup2;':
-                    _unitName = 'm²';
-                    break;
-                case 'm&sup3;':
-                    _unitName = 'm³';
-                    break;
-                default:
-                    _unitName = unitName;
-                    break;
-            }
-            return _unitName;
-        }
-        //添加自定义属性验证
-        , addProperty_validate: function () {
-            var that = this;
-            $('form.addPropertyForm').validate({
-                rules: {
-                    fieldName: {
-                        required: true,
-                        isReName: true
-                    }
-                },
-                messages: {
-                    fieldName: {
-                        required: '标签名称不可为空！',
-                        isReName: "该标签库已存在，请勿重复添加"
-
-                    }
-                },
-                errorPlacement: function (error, element) { //指定错误信息位置
-                    element.closest('.row').find('.col-md-12').html(error);
-                }
-            });
-            // 重名验证
-            jQuery.validator.addMethod("isReName", function (value, element) {
-
-                value = $.trim(value);
-                var unitName = $(element).parents('.addPropertyForm').find('input[name="unitName"]').val();
-                var isOk = true;
-                if(that._projectPropertyData!=null && that._projectPropertyData.basicPropertyList!=null && that._projectPropertyData.basicPropertyList.length>0){
-                    var baseList = that._projectPropertyData.basicPropertyList;
-                    for(var i=0;i<baseList.length;i++){
-                        if(value+'' + unitName == baseList[i].fieldName+''+ that.conversionUnitFormat(baseList[i].unitName)){
-                            isOk = false;
-                            break;
-                        }
-                    }
-                }
-                if(isOk && that._projectPropertyEditData!=null && that._projectPropertyEditData.customPropertyList!=null && that._projectPropertyEditData.customPropertyList.length>0){
-                    var customList = that._projectPropertyEditData.customPropertyList;
-                    for(var i=0;i<customList.length;i++){
-                        if(value+'' + unitName ==customList[i].fieldName+''+ that.conversionUnitFormat(customList[i].unitName)){
-                            isOk = false;
-                            break;
-                        }
-                    }
-                }
-                return  isOk;
-
-            }, "该标签库已存在，请勿重复添加");
-
-        }
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-
-
-/**
- * 设计阶段
- * Created by wrb on 2016/12/20.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_editDesignContent",
-        defaults = {
-            $title: null,
-            $isDialog: true,
-            $projectId: '',
-            $projectDesignContent: null,
-            $okCallBack: null,
-            $cancelCallBack: null,
-            $designContentList: null//此字段跟$projectDesignContent一样，这里不代表所有
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._designContentListClone = null;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.initHtmlData(function () {
-                that.bindActionClick();
-                that.bindDesignContentCk();
-            });
-        },
-        //初始化数据
-        initHtmlData: function (callBack) {
-            var that = this;
-            if (that.settings.$isDialog) {//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.$title || '进度变更',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '800',
-                    minHeight: '350',
-                    tPadding: '0px',
-                    url: rootPath + '/assets/module/m_common/m_dialog.html',
-                    cancel: function () {
-                        /*that.settings.$designContentList = that._designContentListClone;
-                        if (that.settings.$cancelCallBack != null) {
-                            return that.settings.$cancelCallBack(that._designContentListClone);
-                        }*/
-                    },
-                    cancelText:'关闭'
-
-
-                }, function (d) {//加载html后触发
-                    that.element = 'div[id="content:' + d.id + '"] .dialogOBox';
-                    if (that.settings.$designContentList != null) {
-                        that._designContentListClone = jQuery.extend(true, {}, that.settings.$designContentList);
-                        var $data = {};
-                        $data.designContentList = that.settings.$designContentList;
-                        $data.designContentList[0].projectProcessTimeEntityList = that.getChangeTimeDiff($data.designContentList[0].projectProcessTimeEntityList);
-                        that.initHtmlTemplate(callBack, $data)
-                    }
-
-
-                });
-            } else {//不以弹窗编辑
-                var $data = that.dealDesignContent();
-                that.initHtmlTemplate(callBack, $data, classIdObj)
-            }
-        }
-        //生成html
-        , initHtmlTemplate: function (callBack, data, classIdObj) {
-            var that = this;
-            var html = template('m_project/m_editDesignContent', data);
-            $(that.element).html(html);
-            if (callBack != null) {
-                callBack();
-            }
-        }
-        //计算变更容器的时间差（天）
-        , getChangeTimeDiff: function (list) {
-            var that = this;
-            $.each(list, function (i, item) {
-                list[i].timeDiffStr = that.countTimeDiff(item.startTime, item.endTime);
-            });
-            return list;
-        }
-        //计算时间差的方法
-        , countTimeDiff:function (startTime, endTime) {
-            var diffStr = moment(endTime).diff(moment(startTime), 'days')+1;
-            if(isNaN(diffStr) || diffStr==undefined){
-                diffStr = '';
-            }
-            return diffStr;
-        }
-        //获取设计阶段基础数据
-        , getContentData: function (callBack) {
-            var that = this;
-            var option = {};
-            option.classId = that.element;
-            option.url = restApi.url_getDesignContentList;
-            m_ajax.get(option, function (response) {
-                if (response.code == '0') {
-                    that.settings.$designContentList = response.data;
-                    return callBack(response.data);
-                } else {
-                    S_dialog.error(response.info);
-                }
-
-            })
-        }
-
-        //变更按钮事件绑定
-        , bindTimeChangeRecord: function (obj) {
-            var that = this;
-            var contentIndex = obj.closest('.designContentDiv').attr('data-i');
-            var contentObj = that.settings.$designContentList[contentIndex];
-            var options = {};
-            options.$title = '添加变更';
-            options.$okText = '保存';
-            options.$minHeight = '180';
-            options.$validate = 1;
-            options.$timeInfo={
-                startTime:obj.closest('.time-row').find('span[data-type="startTime"]').text(),
-                endTime:obj.closest('.time-row').find('span[data-type="endTime"]').text()
-            }
-            options.$okCallBack = function (data) {
-                data.timeDiffStr = that.countTimeDiff(data.startTime, data.endTime);
-                if (data != null) {
-                    if (that.settings.$okCallBack != null) {
-                        that.settings.$okCallBack(data);
-                    }
-                    if (contentObj.projectProcessTimeEntityList != null) {
-                        contentObj.projectProcessTimeEntityList.push({
-                            startTime: data.startTime,
-                            endTime: data.endTime,
-                            timeDiffStr: data.timeDiffStr,
-                            memo: data.memo
-                        });
-                    }
-                    var $option = {};
-                    $option.$data = data;
-                    $option.$data.$index = contentObj.projectProcessTimeEntityList.length - 2;
-                    $(that.element).find('div.designContentDiv[data-i="' + contentIndex + '"]').m_addTimeChangeRecord($option);
-                    $(that.element).find('.detailListDiv:last').siblings().find('a[data-action="addTimeChangeRecord"]').addClass('hide');
-                    $(that.element).find('.detailListDiv:last').siblings().find('a[data-action="delTimeChangeRecord"]').addClass('hide');
-                    $(that.element).find('.detailListDiv:last').find('a[data-action="addTimeChangeRecord"]').on('click', function () {
-                        that.bindTimeChangeRecord($(this));
-                    });
-                }
-
-            };
-            $('body').m_inputProcessTime(options);
-        }
-        //删除变更列表
-        , delTimeChangeRecord: function (obj) {
-            var that = this;
-            var contentIndex = $(obj).closest('.designContentDiv').attr('data-i');
-            var contentObj = that.settings.$designContentList[contentIndex];
-            if (contentObj.projectProcessTimeEntityList && contentObj.projectProcessTimeEntityList.length > 1) {//删除变更列表
-                if (contentObj.projectProcessTimeEntityList.length == 2) {
-                    $(obj).closest('.detailListDiv').prev().find('a').removeClass('hide');
-                } else {
-                    $(obj).closest('.detailListDiv').prev().find('a').removeClass('hide');
-                }
-                $(obj).closest('.detailListDiv').remove();
-                contentObj.projectProcessTimeEntityList.splice(contentObj.projectProcessTimeEntityList.length - 1, 1);
-                that.settings.$designContentList[contentIndex] = contentObj;
-            } else {//第一条合同进度时间
-                $(obj).closest('.liBox').find('input[name="startTime"]').val('');
-                $(obj).closest('.liBox').find('input[name="endTime"]').val('');
-                $(obj).closest('.liBox').find('input').removeAttr('disabled');
-                $(obj).closest('.liBox').find('.btnBox a').addClass('hide');
-                contentObj.projectProcessTimeEntityList.splice(contentObj.projectProcessTimeEntityList.length - 1, 1);
-                that.settings.$designContentList[contentIndex] = contentObj;
-
-                S_dialog.close($(that.element));
-                var options = {};
-                options.$isHaveMemo = false;
-                options.$timeInfo = {};
-                options.$title = '设计阶段';
-                options.$okCallBack = function (data) {
-                    if (that.settings.$okCallBack != null) {
-                        return that.settings.$okCallBack(data, 1);
-                    }
-                };
-                $('body').m_inputProcessTime(options);
-            }
-        }
-        , bindDesignContentCk: function () {
-            $(this.element).find('input[type="checkbox"][name="designContent"]').on('click', function () {
-                if ($(this).is(':checked')) {
-                    $(this).closest('.designContentDiv').find('.start-time').removeClass('hide');
-                    $(this).closest('.designContentDiv').find('.end-time').removeClass('hide');
-                } else {
-                    $(this).closest('.designContentDiv').find('.start-time').addClass('hide');
-                    $(this).closest('.designContentDiv').find('.end-time').addClass('hide');
-                }
-            });
-        }
-        //按钮事件绑定
-        , bindActionClick: function () {
-            var that = this;
-            $(that.element).find('a[data-action]').on('click', function () {
-                var dataAction = $(this).attr('data-action');
-                if (dataAction == 'addOtherContent') {
-                    that.bindAddContent($(this));
-                    return false;
-                } else if (dataAction == 'addTimeChangeRecord') {//点击变更
-                    that.bindTimeChangeRecord($(this));
-                    return false;
-                }
-                /*else if(dataAction=='delTimeChangeRecord'){
-                 var $that = this;
-                 S_dialog.confirm('您确定要删除吗？',function(){
-                 that.delTimeChangeRecord($that);
-                 },function(){})
-                 return false;
-                 }*/
-            });
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-
-
-/**
- * 设计范围
- * Created by wrb on 2016/12/20.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_editDesignRange",
-        defaults = {
-            $title:null,
-            $isDialog:true,
-            $projectId:'',
-            $projectDesignRange:null,
-            $okCallBack:null
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.initHtmlData(function () {
-                that.bindActionClick();
-            });
-        },
-        //初始化数据
-        initHtmlData:function (callBack) {
-            var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.$title||'设计范围',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '800',
-                    minHeight:'250',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    cancel:function () {
-                        
-                    },
-                    ok:function () {
-                        var check = $(".addRangeOBox form").valid();
-                        if(!check){
-                            return false;
-                        }else{
-                            var projectDesignRangeList = [];
-                            $('.addRangeOBox input[type="checkbox"][name="range"]:checked').each(function () {
-                                projectDesignRangeList.push({designRange:$(this).val()});
-                            });
-                            $('.addRangeOBox input[type="checkbox"][name="otherRange"]:checked').each(function () {
-                                projectDesignRangeList.push({designRange:$(this).closest('.liBox').find('input[name="designRange"]').val()});
-                            });
-                            if(that.settings.$okCallBack!=null){
-                                return that.settings.$okCallBack(projectDesignRangeList);
-                            }
-                        }
-
-
-                    }
-                    
-                },function(d){//加载html后触发
-                    that.element = '#content:'+d.id;
-                    that.getRangeData(function (data) {
-
-                        var $data = that.dealDesignRange();
-                        var classIdObj = $('div[id="content:'+d.id+'"] .dialogOBox');
-                        that.initHtmlTemplate(callBack,$data,classIdObj)
-                    });
-
-
-                });
-            }else{//不以弹窗编辑
-                var $data = that.dealDesignRange();
-                var classIdObj = $(that.element);
-                that.initHtmlTemplate(callBack,$data,classIdObj)
-            }
-        }
-        //生成html
-        ,initHtmlTemplate:function (callBack,data,classIdObj) {
-            var that = this;
-            var html = template('m_project/m_editDesignRange',data);
-            classIdObj.html(html);
-            if(callBack!=null){
-                callBack();
-            }
-            //给所有已有的自定义范围的checkbox添加事件
-            $.each(data.otherRange,function(i,item){
-                var obj = $('input#'+item.id).parents('.liBox');
-                that.bindOtherRangeCk(obj);
-            });
-        }
-        //把设计范围解析(哪些是来自基础数据，来自自定义)
-        ,dealDesignRange:function () {
-            var that = this;
-            var rangeListClone = that.settings.$projectDesignRange;//已选中的设计范围
-            var designRangeList = that.settings.$designRangeList;//数据字典的设计范围
-            var rangeList=[];
-            var otherRange=[];
-            if(rangeListClone!=null && rangeListClone.length>0){
-                for (var i = 0; i < rangeListClone.length; i++) {
-                    var isCon = false;
-                    for (var j = 0; j < designRangeList.length; j++) {
-                        if (rangeListClone[i].designRange == designRangeList[j].name) {
-                            isCon = true;
-                            designRangeList[j].isChecked = 1;//初始化选中
-                            rangeList.push(rangeListClone[i]);
-                            continue;
-                        }
-                    }
-                    if (!isCon) {
-                        rangeListClone[i].isChecked = 1;//初始化选中
-                        otherRange.push(rangeListClone[i]);
-                    }
-                }
-            }
-            var $data = {};
-            $data.rangeList = rangeList;
-            $data.otherRange = otherRange;
-            $data.designRangeList = designRangeList;
-            return $data;
-        }
-        //获取设计范围基础数据
-        ,getRangeData:function (callBack) {
-            var that = this;
-            var option  = {};
-            option.classId = that.element;
-            option.url = restApi.url_getDesignRangeList;
-            m_ajax.get(option,function (response) {
-                if(response.code=='0'){
-                    that.settings.$designRangeList = response.data;
-                    return callBack(response.data);
-                }else {
-                    S_dialog.error(response.info);
-                }
-
-            })
-        }
-        //添加自定义设计范围事件
-        ,bindAddRange:function (obj) {
-            var that = this;
-
-            var iHtml = '';
-            iHtml+='<div class="col-md-3 liBox">';
-            iHtml+='    <div class="col-md-2 no-padding" >';
-            iHtml+='        <label class="checkbox" title="">';
-            iHtml+='            <input name="otherRange" class="checkbox" checked type="checkbox"/>';
-            iHtml+='            <i></i>';
-            iHtml+='        </label>';
-            iHtml+='    </div>';
-            iHtml+='    <div class="col-md-10 out-box" style="padding-left: 0;padding-right: 0;">';
-            iHtml+='        <label class="input">';
-            iHtml+='            <input id="designRange" class="designRange form-control input-sm" type="text" name="designRange" placeholder="请输入名称" />';
-            iHtml+='        </label>';
-            iHtml+='    </div>';
-            iHtml+='</div>';
-
-            obj.parent().before(iHtml);
-            that.bindOtherRangeCk(obj.parent().prev());
-            that.editOtherRangeValid();
-        }
-        //绑定选择自定义设计范围事件
-        ,bindOtherRangeCk:function (obj) {
-            obj.find('input[name="otherRange"]').on('click',function () {
-                $(this).parents('.liBox').find('label.error').hide();
-                $(this).parents('.liBox').remove();
-            });
-            obj.find('input[name="designRange"]').keyup(function () {
-                $(this).parents('.liBox').find('label.error').hide();
-            });
-        }
-        //按钮事件绑定
-        ,bindActionClick:function () {
-            var that = this;
-            $('.addRangeOBox').find('label[data-action]').on('click',function () {
-                var dataAction = $(this).attr('data-action');
-                if(dataAction=='addOtherRange'){
-                    that.bindAddRange($(this));
-                    return false;
-                }
-            });
-        }
-        //自定义范围时的验证
-        ,editOtherRangeValid:function(){
-            var that = this;
-            $(".addRangeOBox form").validate({
-                onfocusout:false,
-                rules: {
-                    otherRange:{
-                        ckDesignRange:true
-                     }
-                },
-                messages: {
-                    otherRange:{
-                        ckDesignRange:'请输入设计范围名称!'
-                     }
-                },
-                errorPlacement: function (error, element) { //指定错误信息位置
-                    if (element.is(':radio') || element.is(':checkbox')) {
-                        error.appendTo(element.closest('.liBox'));
-                    } else {
-                        error.insertAfter(element);
-                    }
-                }
-            });
-            $.validator.addMethod('ckDesignRange', function(value, element) {
-                var that = this;
-                var isTrue = true;
-                $(that.element).find(' input[name="otherRange"]:checked').each(function () {
-                    var val = $(this).closest('.liBox').find('input[name="designRange"]').val();
-                    if($.trim(val).length===0){
-                        isTrue = false;
-                    }
-                });
-                return  isTrue;
-            }, '请输入设计范围名称!');
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-/**
- * 录入地址
- * Created by wrb on 2016/12/21.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_entryAddress",
-        defaults = {
-            $title:null,
-            $isDialog:true,
-            $placement:'null',
-            $province:null,//选中的省份
-            $city:null,//选中的城市
-            $county:null,//选中的县或区或镇
-            $detailAddress:'',
-            $okCallBack:null
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.initHtmlData(function (data) {
-                $("#selectRegion").citySelect({
-                    prov:that.settings.$province,
-                    city:that.settings.$city,
-                    dist:that.settings.$county,
-                    nodata:"none",
-                    required:false
-                });
-                that.bindActionClick();
-            });
-        },
-        //初始化数据
-        initHtmlData:function (callBack) {
-            var that = this;
-            var options = {};
-            options.titleHtml ='<h3 class="popover-title">'+(that.settings.$title?that.settings.$title:'编辑地址')+'</h3>';
-            options.placement =that.settings.$placement?that.settings.$placement:'top';
-            options.content =that.initHtmlTemplate();
-            options.onShown = function ($popover) {
-                if(callBack!=null){
-                    callBack();
-                }
-            };
-            options.onSave = function ($popover) {
-                return that.saveAddress();
-            };
-
-            $(that.element).m_popover(options,true);
-        }
-        //保存地址详情编辑
-        ,saveAddress:function () {
-            var that = this;
-
-            var p = $(that.element).next('.popover').find('select.prov').val();
-            var c = $(that.element).next('.popover').find('select.city').val();
-            var d = $(that.element).next('.popover').find('select.dist').val();
-            if(p==null|| p==undefined)
-                p='';
-            if(c==null|| c==undefined)
-                c='';
-            if(d==null|| d==undefined)
-                d='';
-            var $data = {};
-            $data.province = p;
-            $data.city = c;
-            $data.county = d;
-            $data.detailAddress = $('.selectRegionOBox input[name="detailAddress"]').val();
-
-            if(that.settings.$okCallBack!=null){
-                return that.settings.$okCallBack($data);
-            }
-
-        }
-        //生成html
-        ,initHtmlTemplate:function () {
-            var that = this;
-            var data = {};
-            data.$detailAddress = that.settings.$detailAddress;
-            var html = template('m_project/m_entryAddress',data);
-            return html;
-            // $(that.element).next('.popover').find('editable-input').html(html);
-        }
-        //事件绑定
-        ,bindActionClick:function () {
-            var that = this;
-            $(that.element).find('.cityBox select').change(function () {
-                var w = 508;
-                var p = $(that.element).find('select.prov').val();
-                var c = $(that.element).find('select.city').val();
-                var d = $(that.element).find('select.dist').val();
-                if(p==null|| p==undefined)
-                    p='';
-                if(c==null|| c==undefined)
-                    c='';
-                if(d==null|| d==undefined)
-                    d='';
-                var txt = p+c+d;
-                $(that.element).find('.cityText').html(txt);
-                $(that.element).find('.detailAddressLabel').css('width',(w-(txt.length*14)-5)+'px');
-            });
-        }
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-
-
-/**
- * Created by wrb on 2016/12/19.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_projectBasicInfo",
-        defaults = {
-            $isDialog:false,//是否弹窗
-            $isView:false,//是否信息浏览,是则屏蔽操作,屏蔽面包屑
-            $projectId: null,
-            $editFlag:null,
-            $deleteFlag:null,
-            $renderCallBack: null
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._projectInfo = null;//项目信息
-        this._currentUserId = null;//当前用户id
-        this._currentCompanyId = window.currentCompanyId;
-        this._currentCompanyUserId = window.currentCompanyUserId;
-        this._designContentAncestors = null;//项目设计阶段数据
-        this._constructionCateList = null;//功能分类数据字典的list
-        this._designContentList = null;//设计阶段数据字典的list
-        this._projectTypeList = null;//项目类型
-        this._name = pluginName;
-
-        this._currentUserId = window.currentUserId;
-        this._currentCompanyUserId = window.currentCompanyUserId;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            if(that.settings.$isDialog){
-                S_dialog.dialog({
-                    title: that.settings.$title||'项目基本信息',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    tPadding: '0px',
-                    width: '1000',
-                    minHeight:'700',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    cancel:function () {
-                    },
-                    cancelText:'关闭'
-
-                },function(d){//加载html后触发
-
-                    that.element = $('div[id="content:'+d.id+'"] .dialogOBox');
-                    that.renderPage();
-                });
-            }else{
-                that.renderPage();
-            }
-        }
-        //渲染界面
-        ,renderPage:function () {
-            var that = this;
-            that.getProjectData(function (data) {
-                that.initHtmlData(data);
-                //that.bindAttentionActionClick();
-                rolesControl();
-
-                if(that.settings.$isView==false){
-                    if (that.settings.$editFlag!=null && that.settings.$editFlag==1) {//具有编辑权限操作
-                        that.bindEditItem();
-                        that.uploadRecordFile();
-                        that.bindEditable();
-                        that.bindBtnAddDesignContent();
-                        that.bindCustomInfoTemp();
-                        that.bindFileEditFun();
-                    }
-                    that.bindDeleteProject();
-                }
-            });
-        }
-        ,getProjectData: function (callback) {
-            var that = this;
-            var option = {};
-            option.url = restApi.url_loadProjectDetails + '/' + that.settings.$projectId;
-            m_ajax.postJson(option, function (response) {
-                if (response.code == '0') {
-                    that._projectInfo = response.data;
-                    that._designContentAncestors = response.data.projectDesignContentList;
-                    that._constructionCateList = response.data.constructionCateList;
-                    that.getContentData(function () {
-
-                        if (callback)
-                            callback.call(that, that._projectInfo);
-                    });
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        },
-        //获取设计阶段基础数据
-        getContentData: function (callback) {
-            var that = this;
-            var option = {};
-            option.classId = that.element;
-            option.url = restApi.url_getDesignContentList;
-            m_ajax.get(option, function (response) {
-                if (response.code == '0') {
-                    that._designContentList = response.data;
-                    if (callback) {
-                        return callback();
-                    }
-                } else {
-                    S_dialog.error(response.info);
-                }
-            })
-        },
-        initHtmlData: function (data) {
-            var that = this;
-            var flag =  that.settings.$editFlag!=null && that.settings.$editFlag==1 ? true : false;//编辑标识
-            var html = template('m_project/m_projectBasicInfo', {
-                project: data,
-                isCreate: that._currentUserId == data.createBy && that._currentCompanyId == data.companyId,
-                isOperator: that._currentCompanyUserId == data.operatorPerson,
-                editFlag:flag,
-                deleteFlag:that.settings.$deleteFlag,
-                currentCompanyId : that._currentCompanyId,
-                roles: window.currentRoleCodes,
-                fastdfsUrl: window.fastdfsUrl + '/',
-                isView:that.settings.$isView
-            });
-            $(that.element).html(html);
-            if (that.settings.$renderCallBack != null) {
-                that.settings.$renderCallBack();
-            }
-
-            $(that.element).find('span[data-toggle="tooltip"]').tooltip();
-
-            if (!flag) {
-                $(that.element).find('a[data-action][data-action!="deleteProject"]').addClass('normalAElem');//删除的权限单独控制，跟编辑权限不一样,删除的权限在渲染此组件时作了处理
-            }
-            rolesControl();
-            that.bindDesignContentCheckbox();//给设计阶段的checkbox绑定事件
-        },
-        //处理文件上传的删除事件，hover事件
-        bindFileEditFun:function () {
-            var that = this;
-            $(that.element).find('.file-span').hover(function () {
-                $(this).find('a[data-action="delFile"]').show();
-            },function () {
-                $(this).find('a[data-action="delFile"]').hide();
-            });
-            $(that.element).find('.file-span a[data-action="delFile"]').on('click',function () {
-
-                var dataId = $(this).attr('data-id');
-                S_swal.confirm({
-                    title:'您确定要删除该文件吗？',
-                    text:'该文件删除后将不能恢复，确定吗？',
-                    callBack:function () {
-                        var option = {};
-                        option.url = restApi.url_netFile_delete;
-                        option.postData = {
-                            id: dataId,
-                            accountId: window.currentUserId
-                        };
-                        m_ajax.postJson(option, function (response) {
-                            if (response.code == '0') {
-                                S_swal.sure({
-                                    title:'已删除',
-                                    text:'该文件已删除。',
-                                    callBack:function () {
-                                        that._refresh();
-                                    }
-                                });
-                            } else {
-                                S_dialog.error(response.info);
-                            }
-                        });
-                    }
-                });
-            });
-        },
-        //绑定点击关注或取消关注按钮
-        bindAttentionActionClick: function () {
-            var that = this;
-            $(that.element).find('a.attention').click(function () {
-                if ($(this).hasClass('shoucang')) {//点击关注
-                    that.addAttention(this);
-                } else if ($(this).hasClass('shoucangshixin')) {//点击取消关注
-                    that.delAttention(this);
-                }
-                return false;
-            });
-        },
-        //添加项目关注
-        addAttention: function (obj) {
-            var option = {}, that = this;
-            option.url = restApi.url_attention;
-            option.postData = {};
-            option.postData.targetId = $(obj).attr('data-id');
-            option.postData.type = '1';
-            option.postData.companyUserId = window.currentCompanyUserId;
-            m_ajax.postJson(option, function (response) {
-                if (response.code == '0') {
-                    S_toastr.success('关注成功！');
-                    $(obj).removeClass('shoucang').addClass('shoucangshixin');
-                    $(obj).find('i').addClass('fc-v1-yellow');
-                    $(obj).find('.text').text('取消关注');
-                    $(obj).attr('data-attention-id', response.data);
-                    $(obj).attr('title', '取消关注该项目');
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        },
-        //取消项目关注
-        delAttention: function (obj) {
-            var option = {}, that = this;
-            option.url = restApi.url_attention + '/' + $(obj).attr('data-attention-id');
-            m_ajax.get(option, function (response) {
-                if (response.code == '0') {
-                    S_toastr.success('取消关注成功！');
-                    $(obj).removeClass('shoucangshixin').addClass('shoucang');
-                    $(obj).find('i').removeClass('fc-v1-yellow');
-                    $(obj).find('.text').text('关注');
-                    $(obj).attr('data-attention-id', '');
-                    $(obj).attr('title', '关注该项目');
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        },
-        //点击删除项目
-        bindDeleteProject: function () {
-            var that = this;
-            $(that.element).find('a[data-action="deleteProject"]').on('click',function(){
-                var $this = this;
-
-                S_swal.confirm({
-                    title:'您确定要删除该项目吗？',
-                    text:'该项目删除后将不能恢复，确定吗？',
-                    callBack:function () {
-                        var option = {};
-                        var id = $($this).attr('data-id');
-                        option.url = restApi.url_deleteProject + '/' + id;
-                        m_ajax.get(option, function (response) {
-                            if (response.code == '0') {
-                                S_swal.sure({
-                                    title:'已删除',
-                                    text:'该项目已删除。',
-                                    callBack:function () {
-                                        //window.location.href = window.rootPath + '/iWork/home/workbench'
-                                        //$('.m_metismenu a[id="projectList"]').click();
-                                        location.hash = '/';
-                                    }
-                                });
-                            } else {
-                                S_dialog.error(response.info);
-                            }
-                        });
-                    }
-                });
-            });
-        },
-        //当在位编辑的文本显示为empty时，改为“请设置”
-        dealEmptyText: function () {
-            var that = this;
-            $('.m_projectBasicInfo .editable-empty,.m_projectBasicInfo a.editable').each(function () {
-
-                var text = $(this).text();
-                if( text == 'Empty' || $.trim(text) == ''){
-                    text = '未设置'
-                }
-                $(this).text(text);
-
-                if (that.settings.$editFlag!=null && that.settings.$editFlag==1) {
-                    $(this).css('color', (($.trim(text).indexOf('未设置') > -1 || $.trim(text) == '未签订')) ? '#ccc' : '#4765a0');
-                } else {
-                    $(this).css('color', '#676a6c');
-                }
-            });
-        },
-        //上传附件
-        uploadRecordFile: function () {
-            var that = this;
-            $('#filePicker').m_fileUploader({
-                server: restApi.url_attachment_uploadProjectContract,
-                fileExts: 'pdf',
-                fileSingleSizeLimit:20*1024*1024,
-                formData: {},
-                multiple:true,
-                //duplicate:false,
-                loadingId: '.ibox-content',
-                innerHTML: '<i class="fa fa-upload fa-fixed"></i>',
-                uploadBeforeSend: function (object, data, headers) {
-                    data.companyId = window.currentCompanyId;
-                    data.accountId = window.currentUserId;
-                    data.projectId = that.settings.$projectId;
-                },
-                uploadSuccessCallback: function (file, response) {
-                    $(that.element).m_projectBasicInfo({
-                        $projectId: that.settings.$projectId,
-                        $editFlag:that.settings.$editFlag,
-                        $deleteFlag:that.settings.$deleteFlag
-                    });
-
-                    S_toastr.success('保存成功！');
-                }
-            },true);
-        }
-
-        //验证当前选的组织是否已选过，选过的话，经营负责人不能另选
-        , _validateIssueTaskCompany: function (toCompanyId, callBack) {
-
-            var options = {}, that = this;
-
-            options.url = restApi.url_validateIssueTaskCompany;
-            options.postData = {};
-            options.postData.toCompanyId = toCompanyId;
-            options.postData.projectId = that.settings.$projectId;
-            m_ajax.postJson(options, function (response) {
-
-                if (response.code == '0') {
-                    return callBack(response.data);
-                } else {
-                    S_dialog.error(response.info);
-                }
-            })
-        }
-        //获取甲方列表
-        , getConstructCompanyList: function (keyword, callback) {
-            var that = this;
-            var option = {};
-            option.url = restApi.url_constructList;
-            option.postData = {};
-            if (keyword != null) {
-                option.postData.keyword = keyword;
-            }
-            m_ajax.postJson(option, function (response) {
-                if (response.code == '0') {
-                    that._constructCompanyList = that.dealConstructCompanyLIst(response.data);
-                    if (callback != null) {
-                        return callback(that._constructCompanyList);
-                    }
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-        //处理甲方列表
-        , dealConstructCompanyLIst: function (data) {
-            var that = this;
-            var list = [];
-            $.each(data, function (i, item) {//constructCompany: constructCompanyName:
-                list.push({id: item.companyId, value: item.companyName});
-            });
-            return list;
-        }
-        //乙方
-        , chosePartyBOrg: function ($btn) {
-            var that = this;
-            var options = {};
-            options.titleHtml = '<h3 class="popover-title">编辑</h3>';
-            options.popoverStyle = 'width:360px;min-width:360px';
-            options.contentStyle = 'padding:15px 15px 0';
-            options.content = template('m_project/m_popover_partyB', {});
-            options.onShown = function ($popover) {
-
-                var $select_partB = $popover.find('select[name="partB"]:first').select2({
-                    placeholder: {
-                        id: '',
-                        text: ''
-                    },
-                    allowClear: true,
-                    language: "zh-CN",
-                    minimumResultsForSearch: Infinity,
-                    ajax: {
-                        contentType: "application/json",
-                        url: restApi.url_getUsedPartB,
-                        dataType: 'json',
-                        type: 'POST',
-                        delay: 500,
-                        data: function (params) {
-                            var ret = {
-                                keyword: params.term
-                                /*,companyId: window.currentCompanyId*/
-                            };
-                            return JSON.stringify(ret);
-                        },
-                        processResults: function (data, params) {
-
-                            return {
-                                results: $.map(data.data, function (o, i) {
-                                    return {
-                                        id: o.id,
-                                        text: o.companyName
-                                    }
-                                })
-                            };
-                        },
-                        cache: false
-                    }
-                });
-
-                var companyBid = $btn.attr('data-companyBid');
-                var companyBidName = $btn.attr('data-companyBidName');
-                if (!isNullOrBlank(companyBid)) {//不为空，初始化select值
-                    var $companyB = $('<option selected>' + companyBidName + '</option>').val(companyBid);
-                    $select_partB.append($companyB).trigger('change');
-                }
-                that._savePartyB_validate($popover);
-            };
-            options.onSave = function ($popover) {
-                var data = {};
-                data.companyBid = $popover.find('select[name="partB"]').val();
-                /*data.partBManagerId = $popover.find('select[name="operator"]').val();*/
-                /*data.partBDesignerId = $popover.find('select[name="projectLeader"]').val();*/
-
-                var flag = $popover.find('form').valid();
-                if (!flag) {
-                    return false;
-                } else {
-
-                    if (that._projectInfo.companyBid != null && that._projectInfo.companyBid != '' && data.companyBid != that._projectInfo.companyBid) {
-                        var $btn = $popover.find('button.m-popover-submit');
-                        if($btn.closest('div').find('.m-popover').length>0){
-                            return false;
-                        }
-
-                        S_swal.confirm({
-                            title:'删除（更换）乙方后，相关费用信息将被删除，你确定保存吗？',
-                            text:'此操作不可恢复，确定吗？',
-                            callBack:function () {
-                                that.saveProjectData(null, data, 'partyB', function () {
-                                    S_swal.sure({
-                                        title:'已更换',
-                                        text:'该乙方已更换成功。',
-                                        callBack:function () {
-                                            that._refreshMenu();
-                                        }
-                                    });
-
-                                });
-                            }
-                        });
-
-                    } else {
-                        that.saveProjectData(null, data, 'partyB', function () {
-                            //window.location.href = window.location.href;
-                            that._refreshMenu();
-                        });
-                    }
-                }
-                return false;
-            };
-            $btn.m_popover(options, true);
-            return false;
-        }
-        //甲方
-        , chosePartyAOrg: function ($btn) {
-            var that = this;
-            var options = {};
-            options.titleHtml = '<h3 class="popover-title">编辑</h3>';
-            options.popoverStyle = 'width:400px;min-width:400px';
-            options.contentStyle = 'padding:15px 0';
-
-            var companyName = that._projectInfo.partyACompany==null?'':that._projectInfo.partyACompany.companyName;
-            var companyId = that._projectInfo.partyACompany==null?'':that._projectInfo.partyACompany.id;
-
-            options.content = template('m_project/m_popover_partyA', {
-                constructCompanyName:companyName,
-                enterpriseId:companyId
-            });
-            options.onShown = function ($popover) {
-
-                /*var $select_partA = $popover.find('select[name="partA"]:first').select2({
-                    placeholder: {
-                        id: '',
-                        text: ''
-                    },
-                    //allowClear: true,
-                    language: "zh-CN",
-                    minimumResultsForSearch: Infinity,
-                    ajax: {
-                        contentType: "application/json",
-                        url: restApi.url_enterpriseSearch,
-                        dataType: 'json',
-                        type:'POST',
-                        delay: 500,
-                        data: function (params) {
-                            var ret={
-                                name: params.term // search term
-                            };
-                            return JSON.stringify(ret);
-                        },
-                        processResults: function (data, params) {
-                            return {
-                                results: $.map(data.data.details,function(o,i){
-                                    return {
-                                        id:o.companyid,
-                                        text:o.corpname
-                                    }
-                                })
-                            };
-                        },
-                        cache: true
-                    }
-                });
-                if (!isNullOrBlank(that._projectInfo.partyACompany)) {//不为空，初始化select值
-                    var $companyA = $('<option selected >' + that._projectInfo.partyACompany.companyName + '</option>').val(that._projectInfo.partyACompany.id);
-                    $select_partA.append($companyA).trigger('change');
-                }*/
-
-                $popover.find('input#constructCompanyName').bind("input propertychange change focus",function(event){
-                    var $this = $(this);
-                    var txt = $this.val();
-                    var mPartyALen = $('.m_partyA').length;
-                    if ($.trim(txt) != '' && mPartyALen==0) {
-                        var option = {};
-                        option.$eleId = 'constructCompanyName';
-                        $popover.find('.partyA-select-box').m_partyA(option);
-                        $popover.find('.partyA-select-box').show();
-                        that.documentBindFun();
-                    }else if($.trim(txt)!=''){
-                        $popover.find('.partyA-select-box').show();
-                    }
-                });
-
-            };
-            options.onSave = function ($popover) {
-                var data = {};
-                var enterpriseId = $popover.find('input[name="constructCompanyName"]').attr('data-id');
-                var constructCompanyName = $popover.find('input[name="constructCompanyName"]').val();
-                //if(!(that._projectInfo.partyACompany!=null && that._projectInfo.partyACompany.id==enterpriseId)){
-                    that.saveProjectData(null, constructCompanyName, 'constructCompanyName');
-                    return false;
-                //}
-            };
-            $btn.m_popover(options, true);
-            return false;
-        }
-        //window document事件绑定
-        ,documentBindFun:function () {
-            var that = this;
-            $(document).bind('click',function(e){
-                console.log('document event');
-                if(!($(e.target).closest('.partyA-select-box').length>0 || $(e.target).hasClass('partyA-select-box') || $(e.target).hasClass('constructCompanyName'))){
-                    $(that.element).find('.partyA-select-box').hide();
-                }
-            });
-        }
-        //给设计范围、设计阶段、地址绑定点击事件
-        , bindEditItem: function () {
-            var that = this;
-            $(that.element).find('a[data-action],div[data-action]').on('click', function (event) {
-                var action = $(this).attr('data-action');
-                var data = {};
-                var $this = $(this);
-                switch (action){
-                    case 'edit_designRange':
-                        var options = {};
-                        options.$projectId = that._projectInfo.id;
-                        options.$projectDesignRange = that._projectInfo.projectRangeList;
-                        options.$okCallBack = function (data) {
-                            var obj = {};
-                            obj.projectDesignRangeList = data;
-                            if (!data || data.length < 1) {
-                                obj.projectDesign = '1';//原有设计范围，后删空
-                            } else {
-                                obj.projectDesign = '0';//增改涉及范围
-                            }
-                            that.saveProjectData(null, obj, 'projectDesignRangeList');
-                        };
-                        $this.m_addProjectDesignRange(options);
-                        break;
-
-                    case 'edit_setDesignContentTime'://项目阶段12按钮绑定
-                        that.bindTimeChangeRecord(this);
-                        break;
-
-                    case 'edit_signDate'://合同签订按钮绑定
-                        var options = {};
-                        options.$placement = 'right';
-                        options.$eleId = 'a[data-action="edit_signDate"]';
-                        options.$okCallBack = function ($data) {
-                            that.saveProjectData(null, $data, 'signDate');
-                        };
-                        $this.m_quickDatePicker(options);
-                        break;
-
-                    case 'edit_projectCreateDate'://编辑立项时间
-                        var options = {};
-                        options.$title = '编辑立项时间';
-                        options.$placement = 'right';
-                        options.$eleId = 'a[data-action="edit_projectCreateDate"]';
-                        options.$okCallBack = function ($data) {
-                            that.saveProjectData(null, $data, 'projectCreateDate');
-                        };
-                        $this.m_quickDatePicker(options);
-                        break;
-
-                    case 'edit_address'://编辑地址按钮绑定
-
-                        var options = {};
-                        options.$title = '编辑';
-                        if(that._projectInfo.projectLocation!=null){
-                            options.$province = that._projectInfo.projectLocation.province;
-                            options.$city = that._projectInfo.projectLocation.city;
-                            options.$county = that._projectInfo.projectLocation.county;
-                            options.$detailAddress = that._projectInfo.projectLocation.detailAddress;
-                        }
-                        options.$placement = 'top';
-                        options.$okCallBack = function (data) {
-                            if (data.province== '' && data.city== '' && data.detailAddress== '') {
-                                S_toastr.warning('项目地点不能为空')
-                            }else{
-                                that.saveProjectData(null, data, 'address')
-                            }
-                        };
-                        $(this).m_entryAddress(options);
-                        break;
-
-                    case 'edit_companyBidName'://编辑乙方
-                        that.chosePartyBOrg($this);
-                        break;
-
-                    case 'edit_constructCompanyName'://编辑甲方
-                        that.chosePartyAOrg($this);
-                        break;
-
-                    case 'edit_builtType'://功能分类
-                        var option = {};
-                        option.$title = '功能分类';
-                        option.$dataDictionaryList = that._constructionCateList;
-                        option.$dataList = that._projectInfo.buildTypeList;
-                        option.$okCallBack = function (data) {
-                            that.saveProjectData(null, data, 'changedBuiltTypeList');
-                        };
-                        $this.m_customDataDictionary(option);
-
-                        break;
-
-                    case 'edit_projectType'://项目类型
-
-                        if(that._projectTypeList==null){
-                            that.getProjectType(function (data) {
-                                that.editProjectType(data,$this);
-                            })
-                        }else{
-                            that.editProjectType(that._projectTypeList,$this);
-                        }
-                        return false;
-                        break;
-                }
-                return false;
-            })
-        }
-
-        , editProjectType : function (projectTypeList,$this) {
-            var that = this;
-            var projectType = that._projectInfo==null||that._projectInfo.projectType==null ||that._projectInfo.projectType.content==null?'':that._projectInfo.projectType.content;
-            var options = {};
-            options.popoverStyle = 'border: 0;border-radius: 0;box-shadow: none;position: relative;display: block;';
-            options.contentStyle = 'padding:0;';
-            options.type = 'inline';
-            options.hideArrow = true;
-            options.hideElement = true;
-            options.content = template('m_project/m_popover_projectType', {projectTypeList:projectTypeList,projectType:projectType});
-            options.onShown = function ($popover) {
-
-                $popover.find('input[name="projectType"]').off('focus keyup').on('focus keyup',function () {
-                    if($.trim($(this).val())!=''){
-                        $popover.find('span.editable-clear-x').show();
-                    }else{
-                        $popover.find('span.editable-clear-x').hide();
-                    }
-                });
-                $popover.find('input[name="projectType"]').focus();
-                $popover.find('span.editable-clear-x').off('click').on('click',function () {
-                    $popover.find('input[name="projectType"]').val('');
-                    $popover.find('span.editable-clear-x').hide();
-                });
-                $popover.find('button[data-toggle]').off('click').on('click',function () {
-                    $popover.find('ul.dropdown-menu').toggle();
-                });
-                $popover.find('ul>li>a').off('click').on('click',function () {
-                    var name = $(this).text();
-                    $popover.find('input[name="projectType"]').val(name);
-                    $popover.find('ul.dropdown-menu').toggle();
-                });
-
-            };
-            options.onSave = function ($popover) {
-                var projectType = $popover.find('input[name="projectType"]').val();
-                if($.trim(projectType)==''){
-                    $popover.find('form').append('<div class="editable-error-block help-block" style="display: block;">项目类型不能为空！</div>');
-                    return false;
-                }else{
-                    that.saveProjectData(null, projectType, 'projectType');
-                }
-
-            };
-            $this.m_popover(options, true);
-        }
-        //获取项目类型
-        ,getProjectType:function (callBack) {
-            var that = this;
-            var option  = {};
-            option.url = restApi.url_projectType;
-            option.postData = {};
-            m_ajax.postJson(option,function (response) {
-                if(response.code=='0'){
-                    that._projectTypeList = response.data;
-                    if(callBack!=null){
-                        return callBack(response.data);
-                    }
-                }else {
-                    S_dialog.error(response.info);
-                }
-            })
-        }
-
-
-        //'设置进度'/'进度变更'按钮事件绑定
-        , bindTimeChangeRecord: function (obj) {
-            var that = this;
-            var contentIndex = $(obj).closest('.designContentDiv').attr('data-i');
-            var contentObj = that._designContentAncestors[contentIndex];
-            var timeList = contentObj.projectProcessTimeEntityList;
-            if (timeList == null) {
-                contentObj.projectProcessTimeEntityList = [];
-            }
-            var options = {};
-            if ($.trim($(obj).html()) == '未设置合同进度') {
-                options.$isHaveMemo = false;
-                options.$timeInfo = {};
-                options.$timeInfo.startTime = (timeList && timeList.length > 0) ? timeList[0].startTime : '';
-                options.$timeInfo.endTime = (timeList && timeList.length > 0) ? timeList[0].endTime : '';
-                options.$title = '设置进度';
-                options.$okText = '保存';
-                options.$validate = 1;
-                options.$okCallBack = function (data) {
-                    if (data != null) {
-                        var obj = data;
-                        obj.targetId = contentObj.id;
-                        obj.type = 1;
-                        that.saveProjectProcessTime(obj);
-                    }
-                };
-                $('body').m_inputProcessTime(options);
-            } else {
-                options.$isHaveMemo = false;
-                var designContentArr = [];
-                var contentObjClone = jQuery.extend(true, {}, contentObj);
-                designContentArr.push(contentObjClone);
-                options.$designContentList = designContentArr;
-                options.$okCallBack = function (data, returnType) {
-                    if (data != null) {
-                        var obj = data;
-                        obj.targetId = contentObj.id;
-                        obj.type = 1;
-                        that.saveProjectProcessTime(obj);
-                    }
-                };
-                $('body').m_editDesignContent(options);
-            }
-        }
-        //绑定设计阶段Checkbox的触发事件
-        , bindDesignContentCheckbox: function () {
-            var that = this;
-            var resetCheck = function ($el, checked) {
-                $el.prop('checked', checked);
-                var $icheck = $el.iCheck({
-                    checkboxClass: 'icheckbox_minimal-green',
-                    radioClass: 'iradio_minimal-green'
-                });
-                $icheck.off('ifUnchecked.s').on('ifUnchecked.s', ifUnchecked);
-                $icheck.off('ifChecked.s').on('ifChecked.s', ifChecked);
-            };
-            var ifChecked = function (e) {
-                var $this = $(this);
-                var i = $(this).closest('.designContentDiv').attr('data-i');
-                that._designContentList[i].isChecked = 1;
-                var designContentList = that.dealChoseDesignContent(that._designContentList);
-                that.saveProjectData(null, designContentList, 'projectDesignContentList');
-            };
-
-            var ifUnchecked = function (e) {
-                var $this = $(this);
-                var i = $(this).closest('.designContentDiv').attr('data-i');
-                var isHas = $this.attr('data-isHas');
-                var isAllUnchecked = $this.closest('div.projectDesignContent').find('input.checkbox[name="designContent"]:checked').length < 1 ? true : false;
-                if (!isNullOrBlank(isHas) && isHas === '0') {
-                    S_toastr.success('该设计内容存在签发分解任务，不能删除！');
-                    resetCheck($this, true);
-                }
-                /*else if (isAllUnchecked) {
-                    S_toastr.warning('请至少选择一个设计内容！');
-                    resetCheck($this, true);
-                } */
-                else {
-                    resetCheck($this, true);
-                    S_swal.confirm({
-                        title:'确定取消该设计内容？',
-                        text:'该设计内容取消后将不能恢复，确定吗？',
-                        callBack:function () {
-                            var id = $this.closest('.designContentDiv').attr('data-id');
-                            that.deleteProjectTask(id,function(){
-                                $this.closest('.designContentDiv').remove();
-                                S_swal.sure({
-                                    title:'已取消',
-                                    text:'该设计内容已取消。'
-                                });
-                            });
-                            resetCheck($this, false);
-                        }
-                    });
-                }
-            };
-
-            $('.i-checks input[name="designContent"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
-            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
-        }
-        //处理已选上的设计内容
-        , dealChoseDesignContent: function (list) {
-            var that = this;
-            var designContentList = [];
-            var idString = '';//原有的设计内容的id集合，用于判断保存时是否传递该内容
-            $.each(that._designContentAncestors, function (j, obj) {
-                idString += obj.id + ',';
-            });
-            $.each(list, function (i, item) {
-                if (item.isChecked == 1) {
-                    if (idString.indexOf(item.designContentId) < 0) {
-                        item.contentId = item.contentId ? item.contentId : item.id;
-                        item.id = null;
-                    }
-                    item.contentName = item.contentName ? item.contentName : item.name;
-                    item.insertStatus = '0';
-                    designContentList.push(item);
-                } else if (idString.indexOf(item.designContentId) > -1) {
-                    item.insertStatus = '1';//删除某一设计内容时
-                    designContentList.push(item);
-                }
-            });
-            return designContentList;
-        }
-        //更新设计内容时间html
-        , designContentTimeHtml: function (obj, contentIndex) {
-            var that = this;
-            var contentObj = that._designContentList[contentIndex];
-            var iHtml = '';
-            var startTime = '', endTime = '';
-            if (contentObj.projectProcessTimeEntityList && contentObj.projectProcessTimeEntityList.length > 0) {
-                var len = contentObj.projectProcessTimeEntityList.length;
-                startTime = contentObj.projectProcessTimeEntityList[len - 1].startTime;
-                endTime = contentObj.projectProcessTimeEntityList[len - 1].endTime;
-            }
-            if (startTime != null && startTime != '') {
-                iHtml += startTime;
-            }
-            if (endTime != null && endTime != '') {
-                iHtml += '~' + endTime;
-            }
-            if (startTime != null && startTime != '' && endTime != null && endTime != '') {
-                iHtml += (' 共' + (diffDays(startTime, endTime) - 0 + 1) + '天');
-            }
-            // $(obj).closest('.designContentDiv').find('.timeSpan').html(iHtml);
-            $(obj).text(iHtml);
-            that._designContentList[contentIndex] = contentObj;
-        }
-        //在位编辑内容初始化
-        , bindEditable: function () {
-            var that = this;
-            var elements = $(that.element).find('td a[data-action]:not([data-action="addDesignContent"],[data-action="customInfoTemp"],[data-action="delFile"])');
-
-
-            elements.each(function () {
-                var $this = $(this),
-                    obj = null,
-                    action = $this.attr('data-action') ? $this.attr('data-action') : $this.closest('td').attr('data-action'),
-                    type = action.indexOf("_") > -1 ? action.split("_")[0] : 'text',
-                    name = action.indexOf("_") > -1 ? action.split("_")[1] : 'text',
-                    isNumber = $this.attr('data-isNum') == 'number' ? true : false,//判断输入内容是否是数字
-                    isProjectName = name == 'projectName' ? true : false,//判断输入内容是否是项目名称
-                    noPoint = $this.attr('data-isNoPoint') == 'noPoint' ? true : false,//判断输入内容是否是数字
-                    source = '',//当为下拉框类型时
-                    content = $this.text(),//输入的内容
-                    title = $this.closest('td').prev('td').text();//输入的内容
-                if (type != 'edit') {//主要是除设计范围跟设计内容以外的信息
-                    switch (name) {//当需要多个输入框时，需设置各个value值
-                        case 'status':
-                            obj = {
-                                type: type
-                                , name: name
-                                , value: $('a[data-action="select_status"]').attr('data-status')
-                                , mode: 'inline'
-                                , source: [
-                                    {value: 0, text: '进行中'},
-                                    {value: 2, text: '已完成-未结清'},
-                                    {value: 4, text: '已完成-已结清'},
-                                    {value: 1, text: '已暂停-未结清'},
-                                    {value: 5, text: '已暂停-已结清'},
-                                    {value: 3, text: '已终止-未结清'},
-                                    {value: 6, text: '已终止-已结清'}
-                                ]
-                                , success: function (response, newValue) {
-                                    if (newValue === void 0 || newValue === null)
-                                        return false;
-                                    that.saveProjectData(response, newValue, name);
-                                }
-                            };
-                            break;
-                        /*case 'constructCompanyName':
-                            obj = {
-                                name: name
-                                , type: type
-                                , value: $.trim($('a[data-action="typeaheadjs_constructCompanyName"]').text())
-                                , mode: 'inline'
-                                , clear: true
-                                , typeahead: {
-                                    name: name,
-                                    local: []//that._constructCompanyList
-                                }
-                                , success: function (response, newValue) {
-                                    var text = $this.next().find('input.tt-query').next().text();
-                                    newValue = text;
-                                    that.saveProjectData(response, newValue, name);
-                                },validate:function(value){
-
-                                    if ($.trim(value) == ''){
-                                        var text = $this.text();
-                                        if(text =='未设置' ){
-                                            return "请输入甲方名称！";
-                                        };
-                                        return "甲方名称不能为空！";
-                                    }
-                                }
-                                , display: function (newValue) {
-                                    if (newValue == '') {
-                                        $this.next('未设置');
-                                    }
-                                }
-                            };
-
-                            break;*/
-                    }
-                    if (!obj) {
-                        $this.editable({
-                            type: type
-                            , name: name
-                            , mode: 'inline'
-                            , placeholder: '请输入' + title
-                            , source: source
-                            , value: content
-                            , emptytext: ''
-                            , success: function (response, newValue) {
-
-                                if(name && name=='designContentName') {
-
-                                    //var id = $this.attr('data-id');
-                                    //that._saveDesignContent(newValue,id);
-
-                                }else if(name && name.indexOf('propertyField')>-1){//当为field时，自定义属性值保存
-
-                                    var fieldId = $this.attr('data-field-id');
-                                    if(name.indexOf('propertyFieldDown')>-1){
-                                        var upStoreys = $(that.element).find('a[data-action^="text_propertyFieldUp"]').attr('data-field-value');
-                                        newValue = newValue+';'+upStoreys;
-                                    }else if(name.indexOf('propertyFieldUp')>-1){
-                                        var downStoreys = $(that.element).find('a[data-action^="text_propertyFieldDown"]').attr('data-field-value');
-                                        newValue = downStoreys+';'+newValue;
-                                    }
-                                    that.saveProjectPropertyFieldValue(response,newValue,fieldId,name);
-
-                                }else{
-                                    that.saveProjectData(response, newValue, name);
-                                }
-                            }
-                            , validate: (isNumber && function (value) {
-                                if ($.trim(value) != '') {
-                                    var reg = /^[0-9]+(\.[0-9]{1,2})?$/;
-                                    if (!reg.test(value)) return "请输入数字，小数位保留2位！";
-                                }
-                            }) || (noPoint && function (value) {
-                                if ($.trim(value) != '') {
-                                    var reg = /^[0-9]*[1-9][0-9]*$/;
-                                    if (!reg.test(value)) return "请输入整数！";
-                                }
-                            }) || (isProjectName && function (value) {//
-                                if ($.trim(value) == '') {
-                                    return "项目名称不能为空！";
-                                }
-                            }) || (name == 'designContentName' && function(value){
-                                if ($.trim(value) == '') {
-                                    S_toastr.warning("设计内容不能为空！");
-                                    return ' ';
-                                }
-                            })
-                        });
-                    } else {
-                        if(obj.name==='constructCompanyName'){
-                            $this.editable(obj).on('shown',function(e,editable){
-                                //editable.input.$input.val(editable.value);
-
-                            });
-                        }else{
-                            $this.editable(obj);
-                        }
-                    }
-                }
-                elements.off('click.clearEditable').on('click.clearEditable', function (event) {
-                    var action = $(this).attr('data-action');
-                    $(that.element).find('.editable-container,.popover.m-popover').each(function () {
-                        if ($(this).parent().find('a').attr('data-action') != action) {
-                            if($(this).find('button.editable-cancel').length>0){
-                                $(this).find('button.editable-cancel').click();
-                            }else{
-                                $(this).find('button.m-popover-close').click();
-                            }
-
-                        }
-                    });
-                    if (action && action.indexOf('designContentName')>-1) {
-                        $(this).closest('label.i-checks').iCheck('disable');
-                    }
-
-
-                    return false;
-                });
-                //显示x-editable事件shown
-                $this.on('shown', function(e, editable) {
-                    var unitName = $(this).attr('data-field-unit');
-                    if(unitName!=undefined){
-                        $this.parent().find('.unit-span').hide();
-                        $this.next().find('.editable-input input').css('padding-right','36px');
-                        $this.next().find('.editable-input').append('<span class="unit-span-in">'+unitName+'</span>');
-                    }
-                });
-                //点击x-editable cancel事件
-                $this.on('hidden', function(e, reason) {
-                    if(reason === 'cancel') {
-                        var unitName = $(this).attr('data-field-unit');
-                        if(unitName!=undefined){
-                            $this.parent().find('.unit-span').show();
-                        }
-                    }
-                });
-                if (action && action.indexOf('designContentName')>-1) {
-                    elements.on('hidden', function (e, reason) {
-                        $(this).closest('label.i-checks').iCheck('enable');
-                    });
-                }
-
-                that.dealEmptyText();//当在为编辑的文本显示为empty时，改为“请设置”
-            });
-
-        }
-
-        //绑定添加自定义阶段事件
-        , bindBtnAddDesignContent:function () {
-            var that=this,contentList = that._designContentList;
-            $(that.element).find('a[data-action="addDesignContent"]').on('click',function(e){
-                var options = {};
-                var $that = $(this);
-                options.$title = '添加设计任务';
-                options.designContentNameList = [];
-                $(that.element).find('.designContentDiv').each(function(){
-                    var text = $.trim($(this).find('div>span').text());
-                    options.designContentNameList.push(text);
-
-                });
-                options.onShown = function(data){
-
-                    setTimeout(function(){
-                    var p_left = $that.next('.popover.m-popover').css('left').replace('px','')-0;
-                    if(p_left>1000){
-                            $that.next('.popover.m-popover').css('left','1070px');
-                    }
-                    },50);
-                };
-                options.callBack = function(data){
-                    that._saveDesignContent(data);
-
-                };
-                $(this).m_projectDesignContent_add(options);
-                //stopPropagation(e);
-            });
-            $(that.element).find('a[data-action="addDesignContent"]').on('click.bindClear', function (e) {
-
-                var $this = $(this);
-                var $$this = $this.closest('LI').find('.editable-container input.form-control');
-                $$this.unbind();
-                that.dealDesignContent($this,$$this,contentList);
-                $this.closest('LI').find('.editable-container input.form-control').on('click',function () {
-                    that.dealDesignContent($this,$$this,contentList);
-                });
-                stopPropagation(e);
-            });
-        }
-        //提交保存设计阶段
-        ,_saveDesignContent: function(data) {
-            var that = this;
-            var options = {};
-            options.url = restApi.url_saveOrUpdateProjectDesign;
-            data.projectId = that.settings.$projectId;
-            data.companyId = that._currentCompanyId;
-            options.postData = data;
-            m_ajax.postJson(options, function (response) {
-                if (response.code == '0') {
-                    S_toastr.success('保存成功！');
-                    if(that.settings.$okBackCall!=null){
-                        that.settings.$okBackCall();
-                    }
-                    that._refresh();
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-        //阶段预选展示处理
-        , dealDesignContent : function($this,$$this,contentList){
-
-            if (contentList != null && contentList.length > 0 && $this.closest('LI').find('.tt-dropdown-menu,.tt-dataset-designContent').css('display')=='none') {
-
-                var iHtml = '<div class="tt-dataset-designConten"><div class="tt-suggestions">';
-
-                for (var i = 0; i < contentList.length; i++) {
-                    iHtml += '<div class="tt-suggestion" style="white-space: nowrap; cursor: pointer;">' +
-                        '<p style="white-space: normal;">' + contentList[i].name + '</p></div>';
-                }
-                iHtml += '</div></div>';
-
-                $this.closest('LI').find('.tt-dropdown-menu').html(iHtml).show();
-                $this.next('.editable-container').find('.editable-input .twitter-typeahead input.form-control').attr('placeholder','输入或选择要添加的设计内容');
-                $this.closest('LI').find('.tt-dropdown-menu .tt-suggestions').find('.tt-suggestion').on('click', function () {
-                    var t = $(this).find('p').text();
-                    $$this.val(t);
-                    $$this.next().text(t);
-                    $this.closest('LI').find('.tt-dropdown-menu,.tt-dataset-designContent,.tt-suggestions').hide();
-                });
-            }else{
-                return false;
-            }
-        }
-
-        //保存进度时间到后台
-        , saveProjectProcessTime: function (obj) {
-            var that = this;
-            var options = {};
-            options.url = restApi.url_saveOrUpdateProjectProcessTime;
-            options.postData = obj;
-            options.postData.projectId = that._projectInfo.id;
-            m_ajax.postJson(options, function (response) {
-                if (response.code == '0') {
-
-                    S_toastr.success('保存成功！');
-                    that._refresh();
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-        //保存基本信息时访问到后台
-        , saveProjectData: function (res, value, name, callback) {
-            var that = this;
-            var options = {};
-            options.url = restApi.url_project;
-            options.classId = '#project_detail';
-            options.postData = {};
-            if (typeof value == "object" && !value && !name) {
-                options.postData = value;
-            }
-            else if (name && name == 'partyB') {
-                options.postData.companyBid = value.companyBid;
-                options.postData.flag = 3;
-            }
-            else if (name && name == 'projectDesignRangeList') {
-
-                options.postData.projectDesignRangeList = value.projectDesignRangeList;
-                options.postData.projectDesign = value.projectDesign;
-            }
-            else if (name && name == 'investmentEstimation') {
-                options.postData.flag = 1;
-                options.postData[name] = value;
-            }
-            else if (name && name == 'constructCompanyName') {
-                options.postData.flag = 2;
-                options.postData.constructCompanyName = value;
-            }
-            else if(name && name == 'address'){
-                options.postData.province = value.province;
-                options.postData.city = value.city;
-                options.postData.county = value.county;
-                options.postData.detailAddress = value.detailAddress;
-            }
-            else if(name && name == 'signDate'){
-                options.postData.flag = 4;
-                options.postData[name] = value;
-            }
-            else {
-                options.postData[name] = value;
-            }
-            options.postData.id = that._projectInfo.id;
-
-            m_ajax.postJson(options, function (response) {
-                if (response.code == '0') {
-                    $(that.element).m_projectBasicInfo({
-                        $projectId: that.settings.$projectId,
-                        $editFlag:that.settings.$editFlag,
-                        $deleteFlag:that.settings.$deleteFlag
-                    });
-                    if(!(name && name == 'partyB')){//乙方已有swal弹窗提示
-                        S_toastr.success('保存成功！');
-                    }
-
-                    if (callback) {
-                        return callback();
-                    }
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-
-        //保存自定义属性值
-        ,saveProjectPropertyFieldValue:function (res,newValue,fieldId,name) {
-            var that = this;
-            var options = {};
-            options.url = restApi.url_saveProjectField;
-            options.postData = {};
-            options.postData.projectId = that._projectInfo.id;
-            options.postData.operatorId = that._currentUserId;
-            options.postData.id = fieldId;
-            options.postData.fieldValue = newValue;
-            m_ajax.postJson(options, function (response) {
-                if (response.code == '0') {
-                    S_toastr.success('保存成功！');
-                    that._refresh();
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-
-        //删除项目阶段
-        , deleteProjectTask: function (id,callback) {
-            var that = this;
-            var options = {};
-            options.url = restApi.url_deleteProjectDesign;
-            options.postData = {};
-            options.postData.id = id;
-            m_ajax.postJson(options, function (response) {
-                if (response.code == '0') {
-                    //S_toastr.success('保存成功！');
-                    if(callback){
-                        return callback();
-                    }
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-
-        //保存乙方验证
-        , _savePartyB_validate: function (ele) {
-            var that = this, $ele = $(ele);
-            $ele.find('form').validate({
-                rules: {
-                    operator: {
-                        operatorCk: true
-                    }
-                },
-                messages: {
-                    operator: {
-                        operatorCk: '请选择经营负责人！'
-                    }
-                },
-                errorPlacement: function (error, element) { //指定错误信息位置
-                    error.appendTo(element.closest('.form-group'));
-                    error.css({'margin-left':'0px'});
-                }
-            });
-            $.validator.addMethod('operatorCk', function (value, element) {
-                var isTrue = false;
-                var partB = $ele.find('select[name="partB"]');
-                if (partB.val() == null || partB.val() == '' || (partB.val() != null && partB.val() != '' && value != null && value != '')) {
-                    isTrue = true;
-                }
-                return isTrue;
-            }, '请选择经营负责人！');
-        }
-        //绑定自定义编辑信息模板事件
-        ,bindCustomInfoTemp:function () {
-
-            var that = this;
-            $(that.element).find('a[data-action="customInfoTemp"]').on('click',function () {
-                var option = {};
-                option.$projectId = that._projectInfo.id;
-                option.$okCallBack = function () {
-                    that._refresh();
-                };
-                $('body').m_editCustomPropertyTemp(option);
-            });
-        }
-        //刷新当前菜单
-        , _refreshMenu: function () {
-            var that=this;
-            /*var option = {};
-            option.$projectId = that.settings.$projectId;
-            $('#project_menu').m_projectMenu(option);*/
-            that._refresh();
-        }
-        //刷新当前界面
-        , _refresh: function () {
-            var option = {}, that = this;
-            option.$projectId = that.settings.$projectId;
-            option.$editFlag = that.settings.$editFlag;
-            option.$deleteFlag = that.settings.$deleteFlag;
-            option.$renderCallBack = function () {
-                if(that.settings.$deleteFlag!=1){//不存在删除项目的权限，删除此按钮
-                    $('#project_detail a[data-action="deleteProject"]').remove();
-                }
-            };
-            $('#content-right').m_projectBasicInfo(option,true);
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-/**
- * 任务签发－添加设计内容
- * Created by wrb on 2017/5/15.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_projectDesignContent_add",
-        defaults = {
-            $title:'添加设计任务',
-            designContentNameList:null,
-            onShown:null,
-            callback:null
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._currentCompanyId = window.currentCompanyId;//当前组织ID
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that._initHtml();
-        }
-        //初始化数据,生成html
-        ,_initHtml:function () {
-            var that = this;
-            var options = {};
-
-            /*var left = $(that.element).position().left;
-            console.log(left)
-            if(parseInt(left)>600){
-                //options.placement = 'right';
-            }*/
-            options.placement = 'top';
-            options.content = template('m_project/m_projectDesignContent_add');
-            options.titleHtml = '<h3 class="popover-title">'+that.settings.$title+'</h3>';
-            options.onShown = function ($popover) {
-
-
-                var option = {};
-                option.$isDialog = false;
-                option.$isHaveMemo = false;
-                $popover.find('#time-box').m_inputProcessTime(option);
-                that._saveDesignContentName_validate($popover);
-                //that._saveDesignContentTime_validate($popover);
-
-
-            };
-            options.onSave = function ($popover) {
-
-                var flag1 = $($popover).find('form.designContentNameOBox').valid();
-                //var flag2 = $($popover).find('form.inputTimeOBox').valid();
-                if (!flag1) {
-                    return false;
-                }else {
-                    var data = {};
-                    data.contentName = $popover.find('input[name="designContentName"]').val();
-                    var startTime = $popover.find('input[name="startTime"]').val();
-                    var endTime = $popover.find('input[name="endTime"]').val();
-                    if(startTime!=undefined && startTime!=''){
-                        data.startTime = startTime;
-                    }
-                    if(endTime!=undefined && endTime!=''){
-                        data.endTime = endTime;
-                    }
-                    if(that.settings.callBack){
-                        return that.settings.callBack(data);
-                    }
-                }
-            };
-
-            $(that.element).m_popover(options,true);
-            if(that.settings.onShown){
-                return that.settings.onShown();
-            }
-
-        }
-        //验证
-        ,_saveDesignContentName_validate:function($popover){
-            var that = this;
-            $popover.find('form.designContentNameOBox').validate({
-                rules: {
-                    designContentName:{
-                        required:true,
-                        notConflict:true
-                    }
-                },
-                messages: {
-                    designContentName:{
-                        required:'设计内容不能为空!',
-                        notConflict:'设计内容不能重复!'
-                    }
-                }
-            });
-            $.validator.addMethod('notConflict', function(value, element) {
-                var list = that.settings.designContentNameList;
-                var error = true;
-                if(list&&list.length>0){
-                    for(var i=0;i<list.length;i++){
-                        if(list[i]==value){
-                            error = false;
-                            break;
-                        }
-                    }
-                }
-                return error;
-            }, '阶段名称不能重复!');
-        }
-        ,_saveDesignContentTime_validate:function($popover){
-            var that = this;
-            $popover.find('form.inputTimeOBox').validate({
-                rules: {
-                    startTime:{
-                        required:true
-                    },
-                    endTime:{
-                        required:true
-                    }
-
-                },
-                messages: {
-                    startTime:{
-                        required:'请设置开始日期!'
-                    },
-                    endTime:{
-                        required:'请设置结束日期!'
-                    }
-                }
-                ,errorPlacement: function (error, element) { //指定错误信息位置
-                    if (element.hasClass('timeInput')) {
-                        error.appendTo(element.closest('.form-group'));
-                    } else {
-                        error.insertAfter(element);
-                    }
-                }
-            });
-
-        }
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-})(jQuery, window, document);
-
-/**
- * 项目左边菜单导航
- * Created by wrb on 2016/12/22.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_projectMenu",
-        defaults = {
-            $projectId:null,//项目ID
-            $projectName:null,//项目名称
-            $isFirstEnter:null,//是否是第一次进来
-            $dataAction:null,
-            $type:null//标签页标识
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-
-        this._contractPaymentFlag = null;
-        this._technicalReviewFlag = null;
-        this._cooperativeDesignFlag = null;
-        this._otherFeeFlag = null;
-        this._projectDeleteFlag = null;
-        this._projectEditFlag = null;
-        this._managerFlag = null;
-
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-
-            that.getRoleFun(function () {
-
-                var html = template('m_project/m_projectMenu',{
-                    id:that.settings.$projectId,
-                    projectName:encodeURI(that.settings.$projectName),
-                    contractPaymentFlag:that._contractPaymentFlag,
-                    technicalReviewFlag:that._technicalReviewFlag,
-                    cooperativeDesignFlag:that._cooperativeDesignFlag,
-                    otherFeeFlag:that._otherFeeFlag
-                });
-                //rolesControl();
-                $(that.element).find('ul.nav-second-level').remove();
-                $(that.element).append(html);
-                $(that.element).addClass('chosed');//添加选中标识
-
-                if(that.settings.$dataAction!=null){
-                    that.switchPage(that.settings.$dataAction);
-                    var currentEle = $('.m_metismenu li a[id="'+that.settings.$dataAction+'"]');
-                    if(currentEle.length>0){
-                        $('.m_metismenu li').removeClass('active');
-                        currentEle.parent().addClass('active');
-                    }
-                }else{
-                    $(that.element).find('.m_metismenu li:first a').click();
-                }
-                that.menuClickFun();
-
-            })
-        }
-        ,getRoleFun:function (callBack) {
-            var that = this;
-            var option={};
-            option.url=restApi.url_getProjectNavigationRole+'/'+that.settings.$projectId;
-            m_ajax.get(option,function (response) {
-                if(response.code=='0'){
-                    that._contractPaymentFlag = response.data.flag1;
-                    that._technicalReviewFlag = response.data.flag2;
-                    that._cooperativeDesignFlag = response.data.flag3;
-                    that._otherFeeFlag = response.data.flag4;
-                    that._projectDeleteFlag = response.data.deleteFlag;
-                    that._projectEditFlag = response.data.editFlag;
-                    that._managerFlag = response.data.managerFlag;
-                    if(response.data.projectName!=null && response.data.projectName!=''){
-                        that.settings.$projectName = response.data.projectName;
-                    }
-                    if(callBack!=null){
-                        callBack();
-                    }
-
-                }else {
-                    S_dialog.error(response.info);
-                }
-            })
-        }
-
-        //菜单点击事件
-        , menuClickFun:function () {
-            var that = this;
-            $(that.element).find('.nav-second-level li a').off('click').on('click',function (e) {
-                var id = $(this).attr('id');
-                $('.m_metismenu li').removeClass('active');
-                $(this).parent().addClass('active');
-                stopPropagation(e);
-            });
-        }
-        //切换页面
-        , switchPage: function (dataAction) {
-            var that = this;
-            switch (dataAction) {
-                case 'basicInfo':
-                    that.projectBasicInfo();
-                    break;
-                case 'taskIssue':
-                    that.taskIssue();
-                    break;
-                case 'productionArrangement':
-                    that.productionArrangement();
-                    break;
-                case 'contractPayment':
-                    that.contractPayment();
-                    break;
-                case 'technicalReviewFee':
-                    that.technicalReviewFee();
-                    break;
-                case 'cooperativeDesignFee':
-                    that.cooperativeDesignFee();
-                    break;
-                case 'otherFee':
-                    that.otherFee();
-                    break;
-                case 'projectDocumentLib':
-                    that.projectDocumentLib();
-                    break;
-                case 'projectMember':
-                    that.projectMember();
-                    break;
-                case 'projectDynamic':
-                    that.projectDynamic();
-                    break;
-                case 'externalCooperation':
-                    that.externalCooperation();
-                    break;
-                case 'taskIssueOverview':
-                    that.taskIssueOverview();
-                    break;
-                case 'productionArrangementOverview':
-                    that.productionArrangementOverview();
-                    break;
-                case 'incomeExpenditure':
-                    that.incomeExpenditure();
-                    break;
-                case 'cost':
-                    that.cost();
-                    break;
-                default:
-                    dataAction = 'basicInfo';
-                    that.projectBasicInfo();
-                    break;
-            }
-        }
-        //项目基本信息
-        , projectBasicInfo: function () {
-            var option = {}, that = this;
-            option.$projectId = that.settings.$projectId;
-            option.$projectName = that.settings.$projectName;
-            option.$editFlag = that._projectEditFlag;
-            option.$deleteFlag = that._projectDeleteFlag;
-            option.$renderCallBack = function () {
-                if(that._projectDeleteFlag!=1){//不存在删除项目的权限，删除此按钮
-                    $('#content-right a[data-action="deleteProject"]').remove();
-                }
-            };
-            $('#content-right').m_projectBasicInfo(option,true);
-        }
-        //任务签发
-        , taskIssue: function () {
-            var option = {}, that = this;
-            option.$projectId = that.settings.$projectId;
-            option.$projectName = that.settings.$projectName;
-            $('#content-right').m_taskIssue(option,true);
-        }
-        //生产安排
-        , productionArrangement: function () {
-            var option = {}, that = this;
-            option.$projectId = that.settings.$projectId;
-            option.$projectName = that.settings.$projectName;
-            $('#content-right').m_production(option,true);
-        }
-        //合同回款
-        , contractPayment: function () {
-            var option = {}, that = this;
-            option.$projectId = that.settings.$projectId;
-            option.$projectName = that.settings.$projectName;
-            $('#content-right').m_contractPayment(option,true);
-        }
-        //技术审查费
-        , technicalReviewFee: function () {
-            var option = {}, that = this;
-            option.$projectId = that.settings.$projectId;
-            option.$projectName = that.settings.$projectName;
-            $('#content-right').m_technicalReviewFee(option,true);
-        }
-        //合作设计费
-        , cooperativeDesignFee: function () {
-            var option = {}, that = this;
-            option.$projectId = that.settings.$projectId;
-            option.$projectName = that.settings.$projectName;
-            $('#content-right').m_cooperativeDesignFee(option,true);
-        }
-        //其他费用
-        , otherFee: function () {
-            var option = {}, that = this;
-            option.$projectId = that.settings.$projectId;
-            option.$projectName = that.settings.$projectName;
-            $('#content-right').m_otherFee(option,true);
-        }
-        //项目文档
-        , projectDocumentLib: function () {
-            var option = {}, that = this;
-            option.$projectId = that.settings.$projectId;
-            option.$projectName = that.settings.$projectName;
-            $('#content-right').m_docmgr(option,true);
-        }
-        //项目成员
-        , projectMember: function () {
-            var option = {}, that = this;
-            option.$projectId = that.settings.$projectId;
-            option.$projectName = that.settings.$projectName;
-            $('#content-right').m_projectMember(option,true);
-        }
-        //项目动态
-        , projectDynamic: function () {
-            var option = {}, that = this;
-            option.$projectId = that.settings.$projectId;
-            option.$projectName = that.settings.$projectName;
-            $('#content-right').m_projectDynamic(option,true);
-        }
-        //外部合作
-        , externalCooperation:function () {
-            var option = {}, that = this;
-            option.$projectId = that.settings.$projectId;
-            option.$projectName = that.settings.$projectName;
-            option.$isManager = that._managerFlag;
-            $('#content-right').m_projectExternalCooperation(option,true);
-        }
-        //签发总览
-        , taskIssueOverview:function () {
-            var option = {}, that = this;
-            option.$projectId = that.settings.$projectId;
-            option.$projectName = that.settings.$projectName;
-            $('#content-right').m_taskIssue_overview(option,true);
-        }
-        //生产安排总览
-        , productionArrangementOverview:function () {
-            var option = {}, that = this;
-            option.$projectId = that.settings.$projectId;
-            option.$projectName = that.settings.$projectName;
-            $('#content-right').m_production_overview(option,true);
-        }
-        //收支管理
-        , incomeExpenditure:function () {
-
-            var option = {}, that = this;
-            that.getRoleFun(function () {
-
-                option.$projectId = that.settings.$projectId;
-                option.$projectName = that.settings.$projectName;
-                option.$roleFlag = {
-                    contractPaymentFlag : that._contractPaymentFlag,
-                    technicalReviewFlag : that._technicalReviewFlag,
-                    cooperativeDesignFlag : that._cooperativeDesignFlag,
-                    otherFeeFlag : that._otherFeeFlag
-                };
-                option.$type = that.settings.$type;
-                $('#content-right').m_incomeExpenditure(option);
-            });
-
-            return false;
-        }
-        //收支管理
-        ,cost:function () {
-            var option = {}, that = this;
-            option.projectId = that.settings.$projectId;
-            option.projectName = that.settings.$projectName;
-            option.dataAction = that.settings.$type;
-            $('#content-right').m_cost_menu(option,true);
-        }
-
-
 
     });
 

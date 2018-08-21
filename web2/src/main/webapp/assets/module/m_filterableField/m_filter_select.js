@@ -38,7 +38,7 @@
         , render: function () {
             var that = this;
             var selectList = [];
-            selectList.push({fieldName:'全部',fieldValue:''});
+            selectList.push({name:'全部',id:''});
             /*if(that.settings.selectArr!=null && Object.getOwnPropertyNames(that.settings.selectArr).length>0){
                 $.each(that.settings.selectArr, function (key, value) {
                     var isSelected = false;
@@ -54,7 +54,7 @@
                     if(that._selectedStr.indexOf(item.id)>-1){
                         isSelected = true;
                     }
-                    selectList.push({fieldValue: item.id, fieldName: item.name,isSelected:isSelected});
+                    selectList.push({id: item.id, name: item.name,isSelected:isSelected});
                 });
             }
             if(that.settings.selectedArr!=null && that.settings.selectedArr.length>0){

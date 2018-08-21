@@ -7,16 +7,47 @@
     </div>
     <div class="p-w-sm">
         {{each selectList as s}}
-        <div class="{{colClass?colClass:'col-md-4'}} no-pd-right no-pd-left">
-            <label class="i-checks fw-normal">
-                {{if s.isSelected}}
-                <input name="itemCk" type="checkbox" checked value="{{s.fieldValue}}"/>
-                {{else}}
-                <input name="itemCk" type="checkbox" value="{{s.fieldValue }}" />
-                {{/if}}
-                <span class="i-checks-span">{{s.fieldName }}</span>
-            </label>
-        </div>
+            {{if s.childList!=null && s.childList.length>0}}
+
+                <div class="col-md-12 no-pd-right no-pd-left">
+                    {{if isParentCheck}}
+                        <label class="i-checks fw-normal">
+                            {{if s.isSelected}}
+                            <input name="itemCk" type="checkbox" checked value="{{s.id}}"/>
+                            {{else}}
+                            <input name="itemCk" type="checkbox" value="{{s.id }}" />
+                            {{/if}}
+                            <span class="i-checks-span">{{s.name }}</span>
+                        </label>
+                    {{else}}
+                        <label>{{s.name }}</label>
+                    {{/if}}
+                </div>
+                {{each s.childList as sub}}
+                <div class="{{colClass?colClass:'col-md-4'}} no-pd-right no-pd-left">
+                    <label class="i-checks fw-normal">
+                        {{if sub.isSelected}}
+                        <input name="itemCk" type="checkbox" checked value="{{sub.id}}"/>
+                        {{else}}
+                        <input name="itemCk" type="checkbox" value="{{sub.id }}" />
+                        {{/if}}
+                        <span class="i-checks-span">{{sub.name }}</span>
+                    </label>
+                </div>
+                {{/each}}
+
+            {{else}}
+                <div class="{{colClass?colClass:'col-md-4'}} no-pd-right no-pd-left">
+                    <label class="i-checks fw-normal">
+                        {{if s.isSelected}}
+                        <input name="itemCk" type="checkbox" checked value="{{s.id}}"/>
+                        {{else}}
+                        <input name="itemCk" type="checkbox" value="{{s.id }}" />
+                        {{/if}}
+                        <span class="i-checks-span">{{s.name }}</span>
+                    </label>
+                </div>
+            {{/if}}
         {{/each}}
         <div class="clearfix"></div>
     </div>

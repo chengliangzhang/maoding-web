@@ -2,15 +2,15 @@
     <ul class="dropdown-menu">
         {{each selectList as s}}
         <li>
-            <a class="no-margins p-r-5" data-state-no="{{s.fieldValue}}">
+            <a class="no-margins p-r-5" data-state-no="{{s.id}}">
                 {{if isMultiple}}
                     <label class="i-checks fw-normal">
                         {{if s.isSelected}}
-                        <input name="itemCk" type="checkbox" checked value="{{s.fieldValue}}"/>
+                        <input name="itemCk" type="checkbox" checked value="{{s.id}}"/>
                         {{else}}
-                        <input name="itemCk" type="checkbox" value="{{s.fieldValue}}" />
+                        <input name="itemCk" type="checkbox" value="{{s.id}}" />
                         {{/if}}
-                        <span class="i-checks-span">{{s.fieldName }}</span>
+                        <span class="i-checks-span">{{s.name }}</span>
                     </label>
                 {{else}}
                     <span class="check">
@@ -18,7 +18,7 @@
                             <i class="fa fa-check"></i>
                         {{/if}}
                     </span>
-                    {{s.fieldName}}
+                    {{s.name}}
                 {{/if}}
             </a>
         </li>
