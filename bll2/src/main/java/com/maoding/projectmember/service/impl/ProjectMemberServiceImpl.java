@@ -1107,6 +1107,6 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
      **/
     @Override
     public List<ProjectMemberDTO> listByQuery(MemberQueryDTO query) {
-        return projectMemberDao.listEntityByQuery(query);
+        return projectMemberDao.listByQuery(query);
     }
 }

@@ -112,5 +112,5 @@ public interface ProjectMemberDao extends BaseDao<ProjectMemberEntity> {
      * @param   query 查询条件
      * @return  项目成员列表
      **/
-    List<ProjectMemberDTO> listEntityByQuery(MemberQueryDTO query);
+    List<ProjectMemberDTO> listByQuery(MemberQueryDTO query);
 }

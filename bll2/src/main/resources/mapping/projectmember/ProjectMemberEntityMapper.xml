@@ -248,20 +248,41 @@
   </sql>
   
   
-  <select id="listEntityByQuery" parameterType="com.maoding.projectmember.dto.MemberQueryDTO" resultMap="listEntityByQuery">
-      select member_list.*
+  <select id="listByQuery" parameterType="com.maoding.projectmember.dto.MemberQueryDTO" resultType="com.maoding.projectmember.dto.ProjectMemberDTO">
+      select
+          company_user.user_name as companyUserName,
+          member_list.*
       from
           maoding_web_project_member member_list
-          inner join maoding_web_project_task task on (
-              task.task_status = '0'
-              and (member_list.node_id = task.id or member_list.target_id = task.id)
-          )
+          inner join maoding_web_company_user company_user on (company_user.id = member_list.company_user_id)
           <if test="parentTaskId != null">
+              inner join maoding_web_project_task task_list on (
+                  task_list.task_status = '0'
+                  and (member_list.node_id = task_list.id or member_list.target_id = task_list.id)
+              )
               inner join maoding_web_project_task parent_task on (
                   parent_task.task_status = '0'
                   and position(parent_task.task_path in task.task_path) > 0
                   and parent_task.id = #{parentTaskId}
               )
           </if>
+          <if test="notContainHeadImg != '0'.toString()">
+              left join maoding_web_user_attach attach_list on (
+                  attach_list.attach_type = 5
+                  and attach_list.account_id = member_list.account_id
+              )
+          </if>
+      <where>
+          member_list.deleted = 0
+          <if test="projectId != null">
+              and (member_list.project_id = #{projectId})
+          </if>
+          <if test="companyId != null">
+              and (member_list.company_id = #{companyId})
+          </if>
+          <if test="memberType != null">
+              and (member_list.member_type = #{memberType})
+          </if>
+      </where>
   </select>
 </mapper>

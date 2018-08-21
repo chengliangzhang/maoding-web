@@ -12,6 +12,7 @@ import com.maoding.core.base.entity.BaseEntity;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.bean.ApiResult;
+import com.maoding.core.constant.ProjectConst;
 import com.maoding.core.constant.ProjectMemberType;
 import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.*;
@@ -47,6 +48,7 @@ import com.maoding.project.service.ProjectDesignContentService;
 import com.maoding.project.service.ProjectService;
 import com.maoding.project.service.ProjectSkyDriverService;
 import com.maoding.projectcost.service.ProjectCostService;
+import com.maoding.projectmember.dto.MemberQueryDTO;
 import com.maoding.projectmember.dto.ProjectMemberDTO;
 import com.maoding.projectmember.entity.ProjectMemberEntity;
 import com.maoding.projectmember.service.ProjectMemberService;
@@ -1545,11 +1547,29 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             data.forEach(project->projectIdList.add(project.getId()));
         }
 
-        if (ObjectUtils.isNotEmpty(projectIdList)) {
-            //添加任务负责人、设计人员、校对人员、审核人员
+        if (ObjectUtils.isNotEmpty(data)) {
+            String columns = columnCodes;
+            data.forEach(project->{
+                //添加任务负责人、设计人员、校对人员、审核人员
+                if (columns.contains("taskLeader")){
+                    project.setTaskLeaders(getProjectMembers(project.getId(), ProjectConst.MEMBER_TYPE_TASK_LEADER));
+                }
+                if (columns.contains("designer")){
+                    project.setTaskLeaders(getProjectMembers(project.getId(), ProjectConst.MEMBER_TYPE_TASK_DESIGN));
+                }
+                if (columns.contains("checker")){
+                    project.setTaskLeaders(getProjectMembers(project.getId(), ProjectConst.MEMBER_TYPE_TASK_CHECK));
+                }
+                if (columns.contains("auditor")){
+                    project.setTaskLeaders(getProjectMembers(project.getId(), ProjectConst.MEMBER_TYPE_TASK_AUDIT));
+                }
 
+                //添加费用信息
+                if (columns.contains("contractPlan")){
+                    project.setContract();
+                }
 
-            //添加费用信息
+            });
         }
 
         //添加项目是否可编辑信息
@@ -1565,6 +1585,32 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         result.put("total", total);
         result.put("pageIndex", query.getPageIndex());
         return result ;
+    }
+
+    //获取某项目某类型费用，如合同计划收款、合同到账信息等
+    private double getProjectFee(String projectId, int type){
+        return 0;
+    }
+
+    //获取某项目某类型成员的合并字符串，如任务负责人、设计人员、校对人员、审核人员
+    private String getProjectMembers(String projectId, Integer memberType){
+        //查询此项目此类型成员
+        MemberQueryDTO query = new MemberQueryDTO();
+        query.setProjectId(projectId);
+        query.setMemberType(memberType);
+        List<ProjectMemberDTO> list = projectMemberService.listByQuery(query);
+
+        //转换为字符串
+        StringBuilder memberBuilder = new StringBuilder();
+        if (ObjectUtils.isNotEmpty(list)){
+            for (ProjectMemberDTO member : list) {
+                if (memberBuilder.length() > 0){
+                    memberBuilder.append("、");
+                }
+                memberBuilder.append(member.getCompanyUserName());
+            }
+        }
+        return memberBuilder.toString();
     }
 
 
