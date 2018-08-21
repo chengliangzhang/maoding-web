@@ -92,9 +92,10 @@
                     </otherwise>
                 </choose>
             </if>
-            <if test="feeType!=null and feeType!=''">
-                AND FIND_IN_SET(CONCAT(detail.exp_type_name,'_',bill.pay_type) , #{feeType})
-            </if>
+            <!-- 分离分类和分类子项后，查找方式变化了，不再使用exp_type_name_type方式进行查找 -->
+            <!--<if test="feeType!=null and feeType!=''">-->
+                <!--AND FIND_IN_SET(CONCAT(detail.exp_type_name,'_',bill.pay_type) , #{feeType})-->
+            <!--</if>-->
             <if test="receivableId!=null">
                 AND relation.to_company_id = #{receivableId}
             </if>
