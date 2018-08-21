@@ -1,7 +1,6 @@
 target/
 logs/
 node_modules/
-web2/src/main/webapp/assets/
 .idea/
 .svn/
 .depend
