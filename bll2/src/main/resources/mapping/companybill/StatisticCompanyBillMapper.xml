@@ -109,7 +109,7 @@
                 AND if(bill.pay_type=1,bill.payer_name,bill.payee_name) = #{associatedOrg}
             </if>
             <if test="feeTypeList != null and feeTypeList.size() > 0">
-                and detail.exp_type_name in
+                and concat(detail.exp_type_parent_name,'_',detail.exp_type_name) in
                 <foreach collection="feeTypeList" open="(" close=")" separator="," item="feeTypeExact">
                     #{feeTypeExact}
                 </foreach>

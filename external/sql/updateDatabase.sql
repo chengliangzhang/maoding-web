@@ -1,3 +1,30 @@
+DROP PROCEDURE IF EXISTS `update_table`;
+CREATE PROCEDURE `update_table`()
+  BEGIN
+    CREATE TABLE IF NOT EXISTS `maoding_web_project_condition` (
+      `id` varchar(32) NOT NULL COMMENT '主键',
+      `company_id` varchar(32) DEFAULT NULL COMMENT '企业id',
+      `user_id` varchar(32) DEFAULT NULL COMMENT '用户id',
+      `code` varchar(1000) DEFAULT NULL COMMENT '查询code值',
+      `type` int(1) DEFAULT NULL COMMENT '类型：0：我的项目；1：项目总览',
+      `status` int(1) DEFAULT NULL COMMENT '是否有效：0：有效：1：无效',
+      `create_date` datetime DEFAULT NULL,
+      `create_by` varchar(32) DEFAULT NULL,
+      `update_date` datetime DEFAULT NULL,
+      `update_by` varchar(32) DEFAULT NULL,
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+    if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_web_project_condition' and column_name='code') then
+      alter table maoding_web_project_condition add column `code` varchar(1000) DEFAULT NULL COMMENT '查询code值';
+    elseif exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_web_project_condition' and column_name='code' and character_maximum_length<1000) then
+      alter table maoding_web_project_condition modify column `code` varchar(1000) DEFAULT NULL COMMENT '查询code值';
+    end if;
+
+  END;
+call update_table();
+DROP PROCEDURE IF EXISTS `update_table`;
+
 -- -- 交付历史表
 DROP PROCEDURE IF EXISTS `update_table`;
 CREATE PROCEDURE `update_table`()
