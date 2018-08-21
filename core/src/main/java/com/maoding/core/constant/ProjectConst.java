@@ -77,4 +77,40 @@ public interface ProjectConst {
             put(MEMBER_TYPE_DESIGN,"52");
         }
     };
+
+    /** 标题栏选择关键字 **/
+    String TITLE_PROJECT_BASIC_CREATE_DATE = "projectCreateDate";
+    String TITLE_PROJECT_BASIC_NAME = "projectName";
+    String TITLE_PROJECT_BASIC_STATUS = "status";
+    String TITLE_PROJECT_BASIC_NO = "projectNo";
+    String TITLE_PROJECT_BASIC_PART_A = "partyA";
+    String TITLE_PROJECT_BASIC_PART_B = "partyB";
+    String TITLE_PROJECT_BASIC_SIGN_DATE = "signDate";
+    String TITLE_PROJECT_BASIC_TYPE = "projectType";
+    String TITLE_PROJECT_BASIC_CREATE_COMPANY = "createCompany";
+    String TITLE_PROJECT_BASIC_BUILDS = "buildName";
+    String TITLE_PROJECT_BASIC_ADDRESS = "address";
+    String TITLE_PROJECT_BASIC_RELATION_COMPANY = "relationCompany";
+    String TITLE_PROJECT_MEMBER_RESPONSE = "busPersonInCharge";
+    String TITLE_PROJECT_MEMBER_RESPONSE_ASSISTANT = "busPersonInChargeAssistant";
+    String TITLE_PROJECT_MEMBER_DESIGN = "designPersonInCharge";
+    String TITLE_PROJECT_MEMBER_DESIGN_ASSISTANT = "designPersonInChargeAssistant";
+    String TITLE_PROJECT_MEMBER_TASK_LEADER = "taskLeader";
+    String TITLE_PROJECT_MEMBER_TASK_DESIGNER = "designer";
+    String TITLE_PROJECT_MEMBER_TASK_CHECKER = "checker";
+    String TITLE_PROJECT_MEMBER_TASK_AUDITOR = "auditor";
+    String TITLE_PROJECT_COST_CONTRACT = "contract";
+    String TITLE_PROJECT_COST_CONTRACT_REAL = "contractReal";
+    String TITLE_PROJECT_COST_TECHNICAL_GAIN = "technicalGain";
+    String TITLE_PROJECT_COST_TECHNICAL_GAIN_REAL = "technicalGainReal";
+    String TITLE_PROJECT_COST_COOPERATE_GAIN = "cooperateGain";
+    String TITLE_PROJECT_COST_COOPERATE_GAIN_REAL = "cooperateGainReal";
+    String TITLE_PROJECT_COST_OTHER_GAIN = "otherGain";
+    String TITLE_PROJECT_COST_OTHER_GAIN_REAL = "otherGainReal";
+    String TITLE_PROJECT_COST_TECHNICAL_PAY = "technicalPay";
+    String TITLE_PROJECT_COST_TECHNICAL_PAY_REAL = "technicalPayReal";
+    String TITLE_PROJECT_COST_COOPERATE_PAY = "cooperatePay";
+    String TITLE_PROJECT_COST_COOPERATE_PAY_REAL = "cooperatePayReal";
+    String TITLE_PROJECT_COST_OTHER_PAY = "otherPay";
+    String TITLE_PROJECT_COST_OTHER_PAY_REAL = "otherPayReal";
 }
