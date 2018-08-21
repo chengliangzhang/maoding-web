@@ -1554,25 +1554,25 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             data.forEach(project->{
                 //添加人员信息，如任务负责人、设计人员、校对人员、审核人员
                 //任务负责人
-                if (columns.contains("taskLeader")){
+                if (columns.contains(ProjectConst.TITLE_PROJECT_MEMBER_TASK_LEADER)){
                     project.setTaskLeaders(getProjectMembers(project.getId(), ProjectConst.MEMBER_TYPE_TASK_LEADER));
                 }
                 //设计人员
-                if (columns.contains("designer")){
+                if (columns.contains(ProjectConst.TITLE_PROJECT_MEMBER_TASK_DESIGNER)){
                     project.setDesigners(getProjectMembers(project.getId(), ProjectConst.MEMBER_TYPE_TASK_DESIGN));
                 }
                 //校对人员
-                if (columns.contains("checker")){
+                if (columns.contains(ProjectConst.TITLE_PROJECT_MEMBER_TASK_CHECKER)){
                     project.setCheckers(getProjectMembers(project.getId(), ProjectConst.MEMBER_TYPE_TASK_CHECK));
                 }
                 //审核人员
-                if (columns.contains("auditor")){
+                if (columns.contains(ProjectConst.TITLE_PROJECT_MEMBER_TASK_AUDITOR)){
                     project.setAuditors(getProjectMembers(project.getId(), ProjectConst.MEMBER_TYPE_TASK_AUDIT));
                 }
 
                 //添加费用信息，如合同回款、合同到款等
                 //合同回款，合同到款
-                if (columns.contains("contractPlan") || columns.contains("contractReal")){
+                if (isIncludeContract(columns)){
                     ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_CONTRACT);
                     if (cost != null) {
                         project.setContract(cost.getPlan());
@@ -1582,8 +1582,9 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                         project.setContractReal(0);
                     }
                 }
+
                 //技术审查费（支出）及到款，技术审查费（收入）及付款
-                if (columns.contains("technicalGainPlan") || columns.contains("technicalGainReal") || columns.contains("technicalPayPlan") || columns.contains("technicalPayPlan")){
+                if (isIncludeTechnical(columns)){
                     //如果是项目乙方，则设置技术审查费（收入），如果不是项目乙方，则设置技术审查费（支出），否则无需设置
                     ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_TECHNICAL);
                     if (cost != null) {
@@ -1605,8 +1606,9 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                         project.setTechnicalPayReal(0);
                     }
                 }
+
                 //合作设计费（收款）及到款
-                if (columns.contains("cooperateGainPlan") || columns.contains("cooperateGainReal")){
+                if (isIncludeCooperateGain(columns)){
                     ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_COOPERATE_GAIN);
                     if (cost != null) {
                         project.setCooperateGain(cost.getPlan());
@@ -1616,8 +1618,9 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                         project.setCooperateGainReal(0);
                     }
                 }
+
                 //其他费用（收入）及到款
-                if (columns.contains("otherGainPlan") || columns.contains("otherGainReal")){
+                if (isIncludeOtherGain(columns)){
                     ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_IN);
                     if (cost != null) {
                         project.setOtherGain(cost.getPlan());
@@ -1628,7 +1631,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                     }
                 }
                 //合作设计费（支出）及付款
-                if (columns.contains("cooperatePayPlan") || columns.contains("cooperatePayReal")){
+                if (isIncludeCooperatePay(columns)){
                     ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_COOPERATE_PAY);
                     if (cost != null) {
                         project.setCooperatePay(cost.getPlan());
@@ -1639,7 +1642,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                     }
                 }
                 //其他费用（支出）及付款
-                if (columns.contains("otherPayPlan") || columns.contains("otherPayPlan")){
+                if (isIncludeOtherPay(columns)){
                     ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_OUT);
                     if (cost != null) {
                         project.setOtherPay(cost.getPlan());
@@ -1649,10 +1652,9 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                         project.setOtherPayReal(0);
                     }
                 }
-
-
             });
         }
+
 
         //添加项目是否可编辑信息
         Map<String, Object> para = setProjectUserPermissionParam((String)param.get("companyId"),(String)param.get("companyUserId"));
@@ -1667,6 +1669,50 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         result.put("total", total);
         result.put("pageIndex", query.getPageIndex());
         return result ;
+    }
+
+    //是否包含合同回款
+    private boolean isIncludeContract(String columns){
+        TraceUtils.check(columns != null);
+        return columns.contains(ProjectConst.TITLE_PROJECT_COST_CONTRACT)
+                || columns.contains(ProjectConst.TITLE_PROJECT_COST_CONTRACT_REAL);
+    }
+
+    //是否包含合作设计费收款
+    private boolean isIncludeCooperateGain(String columns){
+        TraceUtils.check(columns != null);
+        return columns.contains(ProjectConst.TITLE_PROJECT_COST_COOPERATE_GAIN)
+                || columns.contains(ProjectConst.TITLE_PROJECT_COST_COOPERATE_GAIN_REAL);
+    }
+
+    //是否包含合作设计费收款
+    private boolean isIncludeOtherGain(String columns){
+        TraceUtils.check(columns != null);
+        return columns.contains(ProjectConst.TITLE_PROJECT_COST_OTHER_GAIN)
+                || columns.contains(ProjectConst.TITLE_PROJECT_COST_OTHER_GAIN_REAL);
+    }
+
+    //是否包含合作设计费付款
+    private boolean isIncludeCooperatePay(String columns){
+        TraceUtils.check(columns != null);
+        return columns.contains(ProjectConst.TITLE_PROJECT_COST_COOPERATE_PAY)
+                || columns.contains(ProjectConst.TITLE_PROJECT_COST_COOPERATE_PAY_REAL);
+    }
+
+    //是否包含合作设计费付款
+    private boolean isIncludeOtherPay(String columns){
+        TraceUtils.check(columns != null);
+        return columns.contains(ProjectConst.TITLE_PROJECT_COST_OTHER_PAY)
+                || columns.contains(ProjectConst.TITLE_PROJECT_COST_OTHER_PAY_REAL);
+    }
+
+    //是否包含技术审查费
+    private boolean isIncludeTechnical(String columns){
+        TraceUtils.check(columns != null);
+        return columns.contains(ProjectConst.TITLE_PROJECT_COST_TECHNICAL_GAIN)
+                || columns.contains(ProjectConst.TITLE_PROJECT_COST_TECHNICAL_GAIN_REAL)
+                || columns.contains(ProjectConst.TITLE_PROJECT_COST_TECHNICAL_PAY)
+                || columns.contains(ProjectConst.TITLE_PROJECT_COST_TECHNICAL_PAY_REAL);
     }
 
     //获取某项目某类型费用，如合同计划收款、合同到账信息等
