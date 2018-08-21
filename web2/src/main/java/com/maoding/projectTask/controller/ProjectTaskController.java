@@ -6,6 +6,7 @@ import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.ProjectMemberType;
 import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
+import com.maoding.core.util.StringUtils;
 import com.maoding.core.util.TxtFileUtil;
 import com.maoding.mytask.dto.HandleMyTaskDTO;
 import com.maoding.mytask.dto.MyTaskActiveRequestDTO;
@@ -261,6 +262,9 @@ public class ProjectTaskController extends BaseController {
         }
 
         DesignManagerDTO info = projectTaskService.getDesignManagerInfo(query);
+        if (StringUtils.isEmpty(info.getDataCompanyId())){
+            info.setDataCompanyId(currentCompanyId);
+        }
         return ajaxResponseSuccess().setData(info);
     }
 

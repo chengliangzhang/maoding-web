@@ -2302,10 +2302,11 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
      */
     @Override
     public AjaxMessage saveOrUpdateProjectDesign(ProjectDesignContentDTO designContentDTO) throws Exception {
-        AjaxMessage ajaxMessage = this.validateSaveOrUpdateProjectDesign(designContentDTO);
-        if (ajaxMessage != null) {
-            return ajaxMessage;
-        }
+        //由于产品要求合同信息内的设计任务与任务签发内的签发任务脱钩，因此不必检查是否存在同名
+//        AjaxMessage ajaxMessage = this.validateSaveOrUpdateProjectDesign(designContentDTO);
+//        if (ajaxMessage != null) {
+//            return ajaxMessage;
+//        }
         String taskId = null;
         String taskDetailId = null;
         if (StringUtil.isNullOrEmpty(designContentDTO.getId())) {//新增

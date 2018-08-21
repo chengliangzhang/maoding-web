@@ -550,7 +550,6 @@ public class ProjectController extends BaseController {
     @ResponseBody
     public AjaxMessage getProjectList(@RequestBody Map<String, Object> param) throws Exception {
         String companyId = this.currentCompanyId;
-        String userId = this.currentUserId;
         String companyUserId = (String) param.get("companyUserId");
         Map<String, Object> condition = new HashMap<>();
         //查询条件
@@ -728,6 +727,7 @@ public class ProjectController extends BaseController {
         para.put("codes", codes);
         return para;
     }
+
 
     /**
      * 方法描述：新增（项目立项）、修改项目
