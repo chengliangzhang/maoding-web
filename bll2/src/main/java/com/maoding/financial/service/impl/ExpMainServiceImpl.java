@@ -278,6 +278,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         ExpMainEntity entity = new ExpMainEntity();
         BaseDTO.copyFields(dto, entity);
         entity.setApproveStatus("0");
+        entity.setType(5);//项目付款申请类型
         if (StringUtil.isNullOrEmpty(dto.getId())) {//插入
             this.saveExpMain(entity,dto,userId,companyId);
         }  else {//保存
@@ -333,6 +334,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         relationTypeDTO.setRelationId(dto.getTargetId());
         relationTypeDTO.setOperateRecordId(detailEntity.getId());
         relationTypeDTO.setRecordType(CopyTargetType.PROJECT_COST_POINT_DETAIL);
+        relation.getRelationList().add(relationTypeDTO);
         this.relationRecordService.saveRelationRecord(relation);
     }
 

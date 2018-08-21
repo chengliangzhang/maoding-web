@@ -629,6 +629,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         if(isNeedStartProcess){
             projectCostPointDetailDTO.setFeeStatus(ProjectCostConst.FEE_STATUS_START);
             entity = this.saveProjectCostPointDetailEntity(projectCostPointDetailDTO,costDTO,isInnerCompany);
+            projectCostPointDetailDTO.setId(entity.getId());
             this.startProcessForProjectFeeApply(projectCostPointDetailDTO);
         }else {
             projectCostPointDetailDTO.setFeeStatus(ProjectCostConst.FEE_STATUS_APPROVE);
@@ -696,6 +697,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
             }
             projectCostPointDetailDao.insert(entity);
         }
+        projectCostPointDetailDTO.setId(entity.getId());
         return entity;
     }
 
@@ -1253,7 +1255,9 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
                 pointDetailDataDTO.setDeleteFlag(1);//不可被删除
             }
             //累积发起收款
-            totalDTO.setBackMoney(totalDTO.getBackMoney().add(pointDetailDataDTO.getFee()));
+            if(!"2".equals(pointDetailDataDTO.getFeeStatus())) {//2代表已经退回的状态，退回的不做计算
+                totalDTO.setBackMoney(totalDTO.getBackMoney().add(pointDetailDataDTO.getFee()));
+            }
             //累计已经审批通过的金额
             if("1".equals(pointDetailDataDTO.getFeeStatus())){
                 totalDTO.setApproveBackMoneyApprove(totalDTO.getApproveBackMoneyApprove().add(pointDetailDataDTO.getFee()));

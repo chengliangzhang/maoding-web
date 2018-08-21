@@ -264,6 +264,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             repositoryService.createDeployment()
                     .addBpmnModel(getProcessDefineKey(editRequest) + ".bpmn", model)
                     .name(editRequest.getName())
+                    .tenantId(editRequest.getCurrentCompanyId())
                     .deploy();
 
             process = getProcessByKey(getProcessDefineKey(editRequest));
@@ -1069,7 +1070,11 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         try {
             // 用来设置启动流程的人员ID，引擎会自动把用户ID保存到activiti:initiator中
             identityService.setAuthenticatedUserId(workTask.getCompanyUserId());
-            processInstance = runtimeService.startProcessInstanceByKey(workTask.getKey(),workTask.getBusinessKey(), workTask.getResultMap());
+            if(ProcessTypeConst.PROCESS_TYPE_FREE.equals(workTask.getKey())){
+                processInstance = runtimeService.startProcessInstanceByKey(workTask.getKey(),workTask.getBusinessKey(), workTask.getResultMap());
+            }else {
+                processInstance = runtimeService.startProcessInstanceByKeyAndTenantId(workTask.getKey(),workTask.getBusinessKey(), workTask.getResultMap(),workTask.getCurrentCompanyId());
+            }
         } finally {
             identityService.setAuthenticatedUserId(null);
         }
@@ -1087,17 +1092,33 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      **/
     @Override
     public void completeWorkTask(WorkActionDTO workTask) {
-
+        //如果还未认领，则直接认领，并完成
+        if(workTask.getResultMap().containsKey("isNotSign")){
+            this.claimWorkTask(workTask);
+        }
+        //处理完成的动作
+        Map<String,Object> variables = new HashMap<>();
+        variables.put("isPass",workTask.getIsPass());
+        variables.putAll(workTask.getResultMap());
+        taskService.complete(workTask.getId(), variables);
     }
 
+    /**
+     * 获取任务的参数
+     * @param taskId 任务id
+     */
     @Override
     public Map<String, Object> getTaskVariables(String taskId) {
-        return null;
+        return taskService.getVariables(taskId);
     }
 
+    /**
+     * 设置任务的参数
+     * @param taskId 任务id
+     */
     @Override
     public void setTaskVariables(String taskId, Map<String, Object> variables) {
-
+        taskService.setVariables(taskId,variables);
     }
 
     /**
@@ -1108,6 +1129,91 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
      **/
     @Override
     public void claimWorkTask(WorkActionDTO workTask) {
+        taskService.claim(workTask.getId(), workTask.getCompanyUserId());
+    }
 
+
+    public String saveFreeProcess() throws Exception {
+        // 1. Build up the model from scratch
+        BpmnModel model = new BpmnModel();
+        Process process = new Process();
+        model.addProcess(process);
+        process.setId(ProcessTypeConst.PROCESS_TYPE_FREE);
+
+        process.addFlowElement(createStartEvent());
+        process.addFlowElement(createEndEvent());
+        String fromTaskId = "task1";
+        String toTaskId = null;
+        process.addFlowElement(createUserTask(fromTaskId, fromTaskId, "${approveUser}"));
+        process.addFlowElement(createSequenceFlow("start", fromTaskId,null));
+        for(int i=2;i<=50;i++){
+            toTaskId =  "task"+i;
+            process.addFlowElement(createUserTask(toTaskId, toTaskId, "${approveUser}"));
+            process.addFlowElement(createSequenceFlow(fromTaskId, toTaskId,"${isPass=='1'}"));
+            process.addFlowElement(createSequenceFlow(fromTaskId, "end","${isPass=='0'}"));
+            fromTaskId = toTaskId;
+        }
+        process.addFlowElement(createSequenceFlow(fromTaskId, "end",null));
+
+        // 2. Generate graphical information
+        new BpmnAutoLayout(model).execute();
+
+        // 3. 部署流程
+        Deployment deployment = processEngine.getRepositoryService().createDeployment()
+                .addBpmnModel("free_process.bpmn", model).name("free_process deployment")
+                .deploy();
+
+        return deployment.getId();
+    }
+
+    protected UserTask createUserTask(String id, String name, String assignee) {
+        UserTask userTask = new UserTask();
+        userTask.setName(name);
+        userTask.setId(id);
+        userTask.setAssignee(assignee);
+        return userTask;
+    }
+
+    //任务节点-组
+    protected UserTask createGroupTask(String id, String name, String candidateGroup) {
+        List<String> candidateGroups=new ArrayList<String>();
+        candidateGroups.add(candidateGroup);
+        UserTask userTask = new UserTask();
+        userTask.setName(name);
+        userTask.setId(id);
+        userTask.setCandidateGroups(candidateGroups);
+        return userTask;
+
+    }
+
+    protected SequenceFlow createSequenceFlow(String from, String to,String conditionExpression) {
+        SequenceFlow flow = new SequenceFlow();
+        flow.setSourceRef(from);
+        flow.setTargetRef(to);
+        if(!StringUtil.isNullOrEmpty(conditionExpression)){
+            flow.setConditionExpression(conditionExpression);
+        }
+        return flow;
+    }
+
+    protected StartEvent createStartEvent() {
+        StartEvent startEvent = new StartEvent();
+        startEvent.setId("start");
+        return startEvent;
+    }
+
+    protected EndEvent createEndEvent() {
+        EndEvent endEvent = new EndEvent();
+        endEvent.setId("end");
+        return endEvent;
+    }
+
+
+    //排他网关
+    protected ExclusiveGateway createExclusiveGateway(String id,String name) {
+        ExclusiveGateway exclusiveGateway = new ExclusiveGateway();
+        exclusiveGateway.setId(id);
+        exclusiveGateway.setName(name);
+        return exclusiveGateway;
     }
 }

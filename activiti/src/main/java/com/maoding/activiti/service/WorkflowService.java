@@ -189,4 +189,9 @@ public interface WorkflowService {
      **/
     void claimWorkTask(WorkActionDTO workTask);
 
+    /**
+     * 保存自由流程
+     */
+    String saveFreeProcess() throws Exception;
+
 }

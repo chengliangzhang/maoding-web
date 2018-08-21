@@ -85,7 +85,7 @@ public class ProjectCostController extends BaseController {
     }
 
     /**
-     * 方法描述：合作设计费界面数据
+     * 方法描述：收付款计划列表
      * 作者：MaoSF
      * 日期：2017/3/7
      */
@@ -117,7 +117,6 @@ public class ProjectCostController extends BaseController {
         map.put("accountId",this.currentUserId);
         return projectCostService.getOtherFee(map);
     }
-
 
     /**
      * 方法描述：保存费用总金额（type=1:合同总金额,type=2:技术审查费，type=3：合作设计费（合作设计只有更新操作））
@@ -163,6 +162,7 @@ public class ProjectCostController extends BaseController {
     public AjaxMessage saveOrUpdateReturnMoneyDetail(@RequestBody ProjectCostPointDetailDTO dto) throws Exception{
         dto.setCurrentCompanyId(this.currentCompanyId);
         dto.setAccountId(this.currentUserId);
+        dto.setCurrentCompanyUserId(this.currentCompanyUserId);
         return this.projectCostService.saveOrUpdateReturnMoneyDetail(dto);
     }
 

@@ -1,5 +1,6 @@
 package com.maoding.noAuth.controller;
 
+import com.maoding.activiti.service.WorkflowService;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.util.MapUtil;
@@ -58,6 +59,9 @@ public class DatatransferController extends BaseController {
 
     @Autowired
     private MyTaskService myTaskService;
+
+    @Autowired
+    private WorkflowService workflowService;
 
 
     @ModelAttribute
@@ -231,5 +235,13 @@ public class DatatransferController extends BaseController {
         return AjaxMessage.succeed( myTaskService.getMyTaskList4(param));
     }
 
+    /**
+     * 保存自由流程（用于初始化自由流程）
+     */
+    @RequestMapping(value = "saveFreeProcess",method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage saveFreeProcess() throws Exception{
+        return AjaxMessage.succeed(workflowService.saveFreeProcess());
+    }
 
 }

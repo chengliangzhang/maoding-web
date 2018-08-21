@@ -80,6 +80,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             workAction.setBusinessKey(dto.getBusinessKey());
             workAction.setCompanyUserId(dto.getCompanyUserId());
             workAction.setResultMap(dto.getParam());
+            workAction.setCurrentCompanyId(dto.getCurrentCompanyId());
             processInstanceId = workflowService.startProcess(workAction).getId();
             //保存审核记录
             saveAudit(dto.getBusinessKey(),dto,true);
