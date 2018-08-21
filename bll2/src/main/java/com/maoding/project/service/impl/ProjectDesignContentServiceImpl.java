@@ -1,25 +1,18 @@
 package com.maoding.project.service.impl;
 
 import com.maoding.core.bean.AjaxMessage;
-import com.maoding.core.constant.SystemParameters;
 import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.dao.ProjectDesignContentDao;
-import com.maoding.project.dao.ProjectProcessNodeDao;
 import com.maoding.project.dto.ProjectDesignContentDTO;
 import com.maoding.project.entity.ProjectDesignContentEntity;
 import com.maoding.project.entity.ProjectEntity;
-import com.maoding.project.entity.ProjectProcessNodeEntity;
 import com.maoding.project.service.ProjectDesignContentService;
 import com.maoding.task.dao.ProjectProcessTimeDao;
 import com.maoding.task.dao.ProjectTaskDao;
-import com.maoding.task.dao.ProjectTaskRelationDao;
-import com.maoding.task.dto.ProjectTaskDataDTO;
 import com.maoding.task.entity.ProjectProcessTimeEntity;
 import com.maoding.task.entity.ProjectTaskEntity;
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
