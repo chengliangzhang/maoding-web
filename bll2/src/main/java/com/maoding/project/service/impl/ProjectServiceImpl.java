@@ -8,6 +8,7 @@ import com.maoding.commonModule.service.ConstService;
 import com.maoding.conllaboration.SyncCmd;
 import com.maoding.conllaboration.service.CollaborationService;
 import com.maoding.core.base.dto.BaseDTO;
+import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.base.entity.BaseEntity;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.bean.AjaxMessage;
@@ -1902,6 +1903,15 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         query.setProjectId(projectId);
         query.setMemberType(memberType);
         return projectMemberService.listByQuery(query);
+    }
+
+    //转换为id-name对
+    private List<CoreShowDTO> toCoreShowList(List<ProjectMemberDTO> memberList){
+        List<CoreShowDTO> list = new ArrayList<>();
+        for (ProjectMemberDTO member : memberList) {
+            list.add(new CoreShowDTO(member.getId(),member.getCompanyUserName()));
+        }
+        return list;
     }
 
 

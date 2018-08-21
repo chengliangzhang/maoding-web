@@ -8,6 +8,7 @@ import com.maoding.core.base.dto.CoreQueryDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.core.constant.SystemParameters;
+import com.maoding.core.util.ObjectUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
 import com.maoding.mytask.entity.MyTaskEntity;
@@ -608,6 +609,10 @@ public class ProjectController extends BaseController {
             param.put("companyId", param.get("orgId").toString());
             condition.put("companyId", param.get("orgId").toString());
         }
+        if (ObjectUtils.isEmpty(param.get("companyId"))){
+            param.put("companyId",currentCompanyId);
+        }
+
         param.put("type", type);
         condition.put("type", type);
         param.put("companyMainId",companyId);
