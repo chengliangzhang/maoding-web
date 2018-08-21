@@ -182,6 +182,9 @@ public class ProjectTableDTO extends BaseDTO {
 
     /** 合作设计费计划收款 **/
     private double cooperateGain;
+
+    /** 合作设计费收款到账金额 **/
+    private double cooperateGainReal;
     
     /** 其他收入计划收款 **/
     private double otherGain;
@@ -277,6 +280,14 @@ public class ProjectTableDTO extends BaseDTO {
 
     public void setCooperateGain(double cooperateGain) {
         this.cooperateGain = cooperateGain;
+    }
+
+    public double getCooperateGainReal() {
+        return cooperateGainReal;
+    }
+
+    public void setCooperateGainReal(double cooperateGainReal) {
+        this.cooperateGainReal = cooperateGainReal;
     }
 
     public double getOtherGain() {

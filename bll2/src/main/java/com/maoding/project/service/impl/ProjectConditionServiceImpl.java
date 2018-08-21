@@ -126,7 +126,7 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
                         add(new OptionalTitleDTO("cooperateGainPlan","合作设计费计划收款"));
                         add(new OptionalTitleDTO("cooperateGainReal","合作设计费到账金额"));
                         add(new OptionalTitleDTO("otherGainPlan","其他收入计划收款"));
-                        add(new OptionalTitleDTO("otherGainPlan","其他收入到账金额"));
+                        add(new OptionalTitleDTO("otherGainReal","其他收入到账金额"));
                     }
                 }));
                 add(new OptionalTitleGroupDTO("项目支出情况",new ArrayList<OptionalTitleDTO>(){
@@ -136,7 +136,7 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
                         add(new OptionalTitleDTO("cooperatePayPlan","合作设计费计划付款"));
                         add(new OptionalTitleDTO("cooperatePayReal","合作设计费付款金额"));
                         add(new OptionalTitleDTO("otherPayPlan","其他支出计划付款"));
-                        add(new OptionalTitleDTO("otherPayPlan","其他支出付款金额"));
+                        add(new OptionalTitleDTO("otherPayReal","其他支出付款金额"));
                     }
                 }));
             }

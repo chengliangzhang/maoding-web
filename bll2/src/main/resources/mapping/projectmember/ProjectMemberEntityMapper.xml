@@ -269,7 +269,7 @@
           <if test="notContainHeadImg != '0'.toString()">
               left join maoding_web_user_attach attach_list on (
                   attach_list.attach_type = 5
-                  and attach_list.account_id = member_list.account_id
+                  and attach_list.user_id = member_list.account_id
               )
           </if>
       <where>
@@ -284,5 +284,6 @@
               and (member_list.member_type = #{memberType})
           </if>
       </where>
+      group by member_list.account_id
   </select>
 </mapper>

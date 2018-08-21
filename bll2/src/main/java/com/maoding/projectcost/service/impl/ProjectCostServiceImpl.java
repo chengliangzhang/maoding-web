@@ -33,7 +33,6 @@ import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.org.service.CompanyService;
 import com.maoding.org.service.CompanyUserService;
 import com.maoding.process.dto.ActivitiDTO;
-import com.maoding.process.dto.ProcessNodeDTO;
 import com.maoding.process.service.ProcessService;
 import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.dto.ProjectSimpleDTO;

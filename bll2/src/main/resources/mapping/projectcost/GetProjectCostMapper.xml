@@ -105,6 +105,9 @@
           <if test="startDate != null">
               and (ifnull(project_list.project_create_date,project_list.create_date) >= #{startDate,jdbcType=TIMESTAMP})
           </if>
+          <if test="projectId != null">
+              and (project_list.id = #{projectId})
+          </if>
       group by project_list.id
       <include refid="CommonMapper.limitSQL"/>
   </select>

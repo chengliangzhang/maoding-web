@@ -13,7 +13,7 @@ import java.util.Date;
  * 描述:
  **/
 public class ProjectCostSummaryQueryDTO extends CoreQueryDTO {
-    /** 查找的组织编号 */
+    /** 所属的组织编号 */
     private String companyId;
 
     /** 起始日期 */
@@ -29,6 +29,17 @@ public class ProjectCostSummaryQueryDTO extends CoreQueryDTO {
 
     /** 查询明细 */
     private String isDetail;
+
+    /** 所属项目编号 **/
+    private String projectId;
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
 
     public String getCompanyId() {
         return companyId;
