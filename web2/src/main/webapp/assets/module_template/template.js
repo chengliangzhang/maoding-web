@@ -1110,7 +1110,7 @@ return new String($out);
 });/*v:1*/
 template('m_cost/m_cost_paymentPlan_item',function($data,$filename
 /**/) {
-'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,pageText=$data.pageText,isManager=$data.isManager,operateCompanyId=$data.operateCompanyId,currentCompanyId=$data.currentCompanyId,totalCost=$data.totalCost,_expNumberFilter=$helpers._expNumberFilter,_isNullOrBlank=$helpers._isNullOrBlank,attachList=$data.attachList,$each=$utils.$each,a=$data.a,$index=$data.$index,companyName=$data.companyName,pointList=$data.pointList,p=$data.p,i=$data.i,startPayFlag=$data.startPayFlag,startPayFlagFroInner=$data.startPayFlagFroInner,v=$data.v,vi=$data.vi,isFinancial=$data.isFinancial,_momentFormat=$helpers._momentFormat,c=$data.c,ci=$data.ci,total=$data.total,$out='';$out+='<div class="panel-body popover-box no-borders no-padding"> <table class="table table-bordered"> <thead> <tr> <th colspan="10"> <div class="row"> <div class="col-md-3">';
+'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,pageText=$data.pageText,isManager=$data.isManager,operateCompanyId=$data.operateCompanyId,currentCompanyId=$data.currentCompanyId,totalCost=$data.totalCost,_expNumberFilter=$helpers._expNumberFilter,_isNullOrBlank=$helpers._isNullOrBlank,attachList=$data.attachList,$each=$utils.$each,a=$data.a,$index=$data.$index,companyName=$data.companyName,pointList=$data.pointList,p=$data.p,i=$data.i,startPayFlag=$data.startPayFlag,startPayFlagForInner=$data.startPayFlagForInner,v=$data.v,vi=$data.vi,isFinancial=$data.isFinancial,_momentFormat=$helpers._momentFormat,c=$data.c,ci=$data.ci,total=$data.total,$out='';$out+='<div class="panel-body popover-box no-borders no-padding"> <table class="table table-bordered"> <thead> <tr> <th colspan="10"> <div class="row"> <div class="col-md-3">';
 $out+=$escape(pageText.title);
 $out+='</div> <div class="col-md-3"> <span>计划付款金额：</span> <span class="text-navy "> ';
 if(isManager==1 && operateCompanyId==currentCompanyId){
@@ -1223,7 +1223,7 @@ $out+=$escape(p.fee!=null && p.fee-0>0?_expNumberFilter(p.fee):'0');
 $out+=' ';
 }
 $out+=' </td>  <td class="text-center"> ';
-if(p.pointDetailList!=null && p.pointDetailList.length>0 &&  startPayFlagFroInner==1 && p.pointDetailList[0].feeStatus==0){
+if(p.pointDetailList!=null && p.pointDetailList.length>0 &&  startPayFlagForInner==1 && p.pointDetailList[0].feeStatus==0){
 $out+=' <a href="javascript:void(0)" class="btn btn-primary btn-xs" data-action="paymentRequest" data-id="';
 $out+=$escape(p.pointDetailList[0].id);
 $out+='" >付款申请</a> ';
@@ -1315,7 +1315,7 @@ $out+=$escape(p.fee);
 $out+='" data-backFee="';
 $out+=$escape(p.backFee);
 $out+='">  <td class="text-center"> ';
-if(startPayFlagFroInner==1 && c.feeStatus==0){
+if(startPayFlagForInner==1 && c.feeStatus==0){
 $out+=' <a href="javascript:void(0)" class="btn btn-primary btn-xs" data-action="paymentRequest" data-id="';
 $out+=$escape(c.id);
 $out+='" >付款申请</a> ';
@@ -1721,6 +1721,31 @@ $out+='</span> </label> </div> ';
 $out+=' <div class="clearfix"></div> </div> <div class="m-t-xs"> <button type="button" class="btn btn-primary btn-xs rounded pull-right" data-action="confirm">确定</button> <button type="button" class="btn btn-default btn-xs rounded pull-right m-r-xs" data-action="cancel">取消</button> <div class="clearfix"></div> </div> </div> ';
 return new String($out);
 });/*v:1*/
+template('m_filterableField/m_filter_checkbox_select',function($data,$filename
+/**/) {
+'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,boxStyle=$data.boxStyle,$each=$utils.$each,selectList=$data.selectList,s=$data.s,$index=$data.$index,colClass=$data.colClass,$out='';$out+='<div class="data-list-filter " style="';
+$out+=$escape(boxStyle);
+$out+='"> <div class="m-b-sm check-box-title" > <label class="i-checks fw-normal"> <input name="itemCk" type="checkbox" value=""/> <span class="i-checks-span">全选</span> </label> </div> <div class="p-w-sm"> ';
+$each(selectList,function(s,$index){
+$out+=' <div class="';
+$out+=$escape(colClass?colClass:'col-md-4');
+$out+=' no-pd-right no-pd-left"> <label class="i-checks fw-normal"> ';
+if(s.isSelected){
+$out+=' <input name="itemCk" type="checkbox" checked value="';
+$out+=$escape(s.fieldValue);
+$out+='"/> ';
+}else{
+$out+=' <input name="itemCk" type="checkbox" value="';
+$out+=$escape(s.fieldValue);
+$out+='" /> ';
+}
+$out+=' <span class="i-checks-span">';
+$out+=$escape(s.fieldName);
+$out+='</span> </label> </div> ';
+});
+$out+=' <div class="clearfix"></div> </div> </div> ';
+return new String($out);
+});/*v:1*/
 template('m_filterableField/m_filter_input',function($data,$filename
 /**/) {
 'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,placeholder=$data.placeholder,txtVal=$data.txtVal,$out='';$out+='<div class="data-list-filter p-xs"> <div> <div class="form-group"> <input type="text" class="form-control input-sm" name="txtVal" placeholder="';
@@ -1742,6 +1767,41 @@ $out+=' <i class="fa fa-check"></i> ';
 }
 $out+=' </span> ';
 $out+=$escape(s.fieldName);
+$out+=' </a> </li> ';
+});
+$out+=' </ul> </div>';
+return new String($out);
+});/*v:1*/
+template('m_filterableField/m_filter_select1',function($data,$filename
+/**/) {
+'use strict';var $utils=this,$helpers=$utils.$helpers,$each=$utils.$each,selectList=$data.selectList,s=$data.s,$index=$data.$index,$escape=$utils.$escape,isMultiple=$data.isMultiple,$out='';$out+='<div class="data-list-filter"> <ul class="dropdown-menu"> ';
+$each(selectList,function(s,$index){
+$out+=' <li> <a class="no-margins p-r-5" data-state-no="';
+$out+=$escape(s.fieldValue);
+$out+='"> ';
+if(isMultiple){
+$out+=' <label class="i-checks fw-normal"> ';
+if(s.isSelected){
+$out+=' <input name="itemCk" type="checkbox" checked value="';
+$out+=$escape(s.fieldValue);
+$out+='"/> ';
+}else{
+$out+=' <input name="itemCk" type="checkbox" value="';
+$out+=$escape(s.fieldValue);
+$out+='" /> ';
+}
+$out+=' <span class="i-checks-span">';
+$out+=$escape(s.fieldName);
+$out+='</span> </label> ';
+}else{
+$out+=' <span class="check"> ';
+if(s.isSelected){
+$out+=' <i class="fa fa-check"></i> ';
+}
+$out+=' </span> ';
+$out+=$escape(s.fieldName);
+$out+=' ';
+}
 $out+=' </a> </li> ';
 });
 $out+=' </ul> </div>';
@@ -2561,6 +2621,31 @@ $out+=$escape(myExpDetails.totalExpAmount);
 $out+=' </p>元 </h5> </div> </td> </tr> </tbody> </table> </div> </div> </fieldset> </div> </div>';
 return new String($out);
 });/*v:1*/
+template('m_home/m_metismenu',function($data,$filename
+/**/) {
+'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,_url=$helpers._url,$out='';$out+='<nav class="navbar-default navbar-static-side m_metismenu " role="navigation" style="z-index: 900;"> <div class="sidebar-collapse"> <ul class="nav metismenu" id="side-menu" style="display: block;"> <li class="navbar-minimalize" style=""> <a href="javascript:void(0);" class="svg"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/workbench.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">工作台</span> <div class="clearfix"></div>  </a> </li> <li> <a id="addProject" class="svg" href="#/addProject"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/addProject.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目立项</span> <div class="clearfix"></div> </a> </li> <li class="project-menu-box" id="project-menu-box"> <a id="projectList" class="svg" href="#/"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/myProjects.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">我的项目</span> <div class="clearfix"></div> </a> </li> <li> <a id="myTask" class="svg" href="#/myTask"> <object class="pull-left" class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/myTask.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">我的任务</span> <div class="clearfix"></div> </a> </li> <!--<li> <a id="projectOverview" class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/projectOverview.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目总览</span> <div class="clearfix"></div> </a> </li>--> <!--<li class="roleControl" roleCode="project_charge_manage" flag="2"> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/incomeExpenditure.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">收支总览</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li><a href="#/paymentsDetail" id="paymentsDetail"><span class="nav-label ">收支明细</span></a></li> <li><a href="#/paymentsStatistics" id="paymentsStatistics"><span class="nav-label ">分类统计</span></a></li> <li><a href="#/profitStatement" id="profitStatement"><span class="nav-label ">利润报表</span></a></li> </ul> </li>--> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/financialManagement.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">财务管理</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" >  <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/paymentsDetail" id="paymentsDetail"><span class="nav-label ">收支明细</span></a></li> <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/paymentsStatistics" id="paymentsStatistics"><span class="nav-label ">分类统计</span></a></li> <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/profitStatement" id="profitStatement"><span class="nav-label ">利润报表</span></a></li> <li class="roleControl" roleCode="sys_finance_type" flag="2"><a href="#/financeSettings" id="financeSettings"><span class="nav-label ">财务设置</span></a></li> <li class="roleControl" roleCode="finance_fixed_edit" flag="2"><a href="#/feeEntry" id="feeEntry"><span class="nav-label ">费用录入</span></a></li> <li class="roleControl" ><a href="#/projectCost" id="projectCost"><span class="nav-label ">项目收支</span></a></li> <li class="roleControl" ><a href="#/invoiceSummary" id="invoiceSummary"><span class="nav-label ">发票汇总</span></a></li> </ul> </li> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/financeInformation.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">审批管理</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li class="roleControl" roleCode="report_exp_static" flag="2"><a href="#/reimbursementSummary" id="reimbursementSummary"><span class="nav-label ">报销统计</span></a></li> <li class="roleControl" roleCode="report_exp_static" flag="2"><a href="#/costSummary" id="costSummary"><span class="nav-label ">费用统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/leaveSummary" id="leaveSummary"><span class="nav-label ">请假统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/businessSummary" id="businessSummary"><span class="nav-label ">出差统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/workingHoursSummary" id="workingHoursSummary"><span class="nav-label ">工时统计</span></a></li> </ul> </li> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/addressBook.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">通讯录</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li><a href="#/orgInfomationShow" id="orgInfomationShow"><span class="nav-label ">组织信息</span></a></li> <li><a href="#/addressBook" id="addressBook"><span class="nav-label ">通讯录</span></a></li> </ul> </li> <li class="roleControl" roleCode="project_edit" flag="2"> <a id="projectArchiving" class="svg" href="#/projectArchiving" > <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/projectDocmgr.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目文档</span> <div class="clearfix"></div> </a> </li> </ul> </div> </nav> <div class="clearfix"></div>';
+return new String($out);
+});/*v:1*/
 template('m_historyData/m_historyData',function($data,$filename
 /**/) {
 'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,_url=$helpers._url,$out='';$out+='<div class="ibox ibox-shadow m_historyData"> <div class="ibox-title border-no-t"> <div class="ibox-tools"> <div class="mt-element-step-new" style="margin-bottom: 30px;"> <div class="row step-line"> <div class="mt-step-desc"> </div> <div class="col-md-4 mt-step-col first active" data-step="1"> <div class="mt-step-number bg-white">1</div> <div class="mt-step-title uppercase font-grey-cascade">文件上传</div> <div class="mt-step-content font-grey-cascade">根据模板填充数据并上传</div> </div> <div class="col-md-4 mt-step-col" data-step="2"> <div class="mt-step-number bg-white">2</div> <div class="mt-step-title uppercase font-grey-cascade">数据预览</div> <div class="mt-step-content font-grey-cascade">预览并校验要导入的数据</div> </div> <div class="col-md-4 mt-step-col last" data-step="3"> <div class="mt-step-number bg-white">3</div> <div class="mt-step-title uppercase font-grey-cascade">导入完成</div> <div class="mt-step-content font-grey-cascade">提交最终处理后的数据</div> </div> </div> </div> </div> </div> <div class="ibox-content"> <div class="row step-container" style="margin-bottom: 150px;"> <div class="col-md-12 text-center" style="margin-bottom: 20px;"> <img src="';
@@ -2652,31 +2737,6 @@ template('m_historyData/m_historyData_step3',function($data,$filename
 'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,_url=$helpers._url,$out='';$out+='<div class="col-md-12 text-center" style="margin-bottom: 20px;"> <img src="';
 $out+=$escape(_url('/assets/img/default/invite_success.png'));
 $out+='"> <p style="font-size:24px;">恭喜你，导入成功！</p> </div>';
-return new String($out);
-});/*v:1*/
-template('m_home/m_metismenu',function($data,$filename
-/**/) {
-'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,_url=$helpers._url,$out='';$out+='<nav class="navbar-default navbar-static-side m_metismenu " role="navigation" style="z-index: 900;"> <div class="sidebar-collapse"> <ul class="nav metismenu" id="side-menu" style="display: block;"> <li class="navbar-minimalize" style=""> <a href="javascript:void(0);" class="svg"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/workbench.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">工作台</span> <div class="clearfix"></div>  </a> </li> <li> <a id="addProject" class="svg" href="#/addProject"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/addProject.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目立项</span> <div class="clearfix"></div> </a> </li> <li class="project-menu-box" id="project-menu-box"> <a id="projectList" class="svg" href="#/"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/myProjects.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">我的项目</span> <div class="clearfix"></div> </a> </li> <li> <a id="myTask" class="svg" href="#/myTask"> <object class="pull-left" class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/myTask.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">我的任务</span> <div class="clearfix"></div> </a> </li> <!--<li> <a id="projectOverview" class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/projectOverview.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目总览</span> <div class="clearfix"></div> </a> </li>--> <!--<li class="roleControl" roleCode="project_charge_manage" flag="2"> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/incomeExpenditure.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">收支总览</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li><a href="#/paymentsDetail" id="paymentsDetail"><span class="nav-label ">收支明细</span></a></li> <li><a href="#/paymentsStatistics" id="paymentsStatistics"><span class="nav-label ">分类统计</span></a></li> <li><a href="#/profitStatement" id="profitStatement"><span class="nav-label ">利润报表</span></a></li> </ul> </li>--> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/financialManagement.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">财务管理</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" >  <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/paymentsDetail" id="paymentsDetail"><span class="nav-label ">收支明细</span></a></li> <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/paymentsStatistics" id="paymentsStatistics"><span class="nav-label ">分类统计</span></a></li> <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/profitStatement" id="profitStatement"><span class="nav-label ">利润报表</span></a></li> <li class="roleControl" roleCode="sys_finance_type" flag="2"><a href="#/financeSettings" id="financeSettings"><span class="nav-label ">财务设置</span></a></li> <li class="roleControl" roleCode="finance_fixed_edit" flag="2"><a href="#/feeEntry" id="feeEntry"><span class="nav-label ">费用录入</span></a></li> <li class="roleControl" ><a href="#/projectCost" id="projectCost"><span class="nav-label ">项目收支</span></a></li> <li class="roleControl" ><a href="#/invoiceSummary" id="invoiceSummary"><span class="nav-label ">发票汇总</span></a></li> </ul> </li> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/financeInformation.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">审批管理</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li class="roleControl" roleCode="report_exp_static" flag="2"><a href="#/reimbursementSummary" id="reimbursementSummary"><span class="nav-label ">报销统计</span></a></li> <li class="roleControl" roleCode="report_exp_static" flag="2"><a href="#/costSummary" id="costSummary"><span class="nav-label ">费用统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/leaveSummary" id="leaveSummary"><span class="nav-label ">请假统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/businessSummary" id="businessSummary"><span class="nav-label ">出差统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/workingHoursSummary" id="workingHoursSummary"><span class="nav-label ">工时统计</span></a></li> </ul> </li> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/addressBook.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">通讯录</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li><a href="#/orgInfomationShow" id="orgInfomationShow"><span class="nav-label ">组织信息</span></a></li> <li><a href="#/addressBook" id="addressBook"><span class="nav-label ">通讯录</span></a></li> </ul> </li> <li class="roleControl" roleCode="project_edit" flag="2"> <a id="projectArchiving" class="svg" href="#/projectArchiving" > <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/projectDocmgr.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目文档</span> <div class="clearfix"></div> </a> </li> </ul> </div> </nav> <div class="clearfix"></div>';
 return new String($out);
 });/*v:1*/
 template('m_imgCropper/m_imgCropper','<div class="m_imgCropper" style="overflow: auto;max-height: 500px;"> <form class="form-horizontal rounded-4x noborder"> <div class="ibox m-b-xs"> <div class="ibox-content"> <div class="title row"> <div class="col-md-12"> <div class="margin-bottom-20"> <span>请先上传一张图片,支持jpg、jpeg、png格式。</span> <div class="btnFilePicker" class="dp-inline-block"></div> </div> </div> </div> <div class="setArea row m-b-xs hide"> <div class="col-md-9"> <div class="thumbnail thumbnail-style"> <img class="img-container img-responsive" src=""> </div> </div> <div class="col-md-3"> <div class="thumbnail thumbnail-style" style="width: 110px;height: 110px;"> <div class="clearfix"> <div class="img-preview preview-md"></div> </div> </div> </div> </div> </div> </div> </form> </div>');/*v:1*/
@@ -3889,7 +3949,7 @@ $out+=' </tbody> <tfoot><tr><td colspan="3" id="userList"></td></tr></tfoot> </t
 return new String($out);
 });/*v:1*/
 template('m_payments/m_payments_detail_menu','<div class="ibox"> <div class="ibox-title secondary-menu-outbox"> <div class="row"> <div class="col-md-6">  <div class="no-margin p-h-sm breadcrumb-box" > <ol class="breadcrumb"> <li> 财务管理 </li> <li class="active fa fa-angle-right"> <strong>收支明细</strong> </li> </ol> </div> </div> <div class="col-md-6 text-right p-w-sm"> <ul class="secondary-menu-ul pull-right"> <li class="active" id="ledger" class="roleControl" ><a>台账</a></li> <li id="receivable" class="roleControl" ><a>应收</a></li> <li id="payable" class="roleControl" ><a>应付</a></li> </ul> </div> <div class="clearfix"></div> </div> </div> <div class="ibox-content no-padding" id="content-box"> </div> </div>');/*v:1*/
-template('m_payments/m_payments_ledger','<div class="m_payments_ledger"> <form role="form" class="form-inline m-md"> <div class="form-group z-index-1"> <label class="">当前组织：</label> <div class="btn-group" id="selectOrg"> </div> </div> <div class="form-group"> <label class="m-t-xs">时间：</label> <div class="btn-group pull-right"> <a class="btn btn-default btn-sm m-r-none" href="javascript:void(0)" data-action="setTime" data-days="30">一个月</a> <a class="btn btn-default btn-sm m-r-none" href="javascript:void(0)" data-action="setTime" data-days="90">一季度</a> <a class="btn btn-default btn-sm m-r-none" href="javascript:void(0)" data-action="setTime" data-days="180">半年</a> <a class="btn btn-default btn-sm m-r-none" href="javascript:void(0)" data-action="setTime" data-days="360">一年</a> </div> </div> <div class="form-group"> <div class="input-group dp-inline-block"> <input type="text" class="form-control input-sm " id="ipt_startTime" name="startTime" placeholder="开始日期" readonly="" value="" style="width: 110px;" > <span class="input-group-addon no-padding"> <i class="icon-sm icon-append fa fa-calendar"></i> </span> </div> <div class="input-group dp-inline-block"> <input type="text" class="form-control input-sm" id="ipt_endTime" name="endTime" placeholder="结束日期" readonly="" value="" style="width: 110px;" > <span class="input-group-addon no-padding"> <i class="icon-sm icon-append fa fa-calendar"></i> </span> </div> </div> <button class="btn btn-white btn-sm" data-action="refreshBtn">刷新数据</button> </form> <div class="data-list-box"> <div class="row"> <input type="hidden" name="profitType" value=""/> <input type="hidden" name="feeType" value=""/> <input type="hidden" name="projectName" value=""/> <input type="hidden" name="toCompany" value=""/> <input type="hidden" name="fromCompany" value=""/> <div class="col-md-12 data-list-container p-w-lg"></div> <div class="col-md-12 p-w-m"> <div id="data-pagination-container" class="m-pagination pull-right "></div> </div> </div> </div> </div>');/*v:1*/
+template('m_payments/m_payments_ledger','<div class="m_payments_ledger"> <form role="form" class="form-inline m-md"> <div class="form-group z-index-1"> <label class="">当前组织：</label> <div class="btn-group" id="selectOrg"> </div> </div> <div class="time-combination form-group"> </div> <button class="btn btn-white btn-sm" data-action="refreshBtn">刷新数据</button> </form> <div class="data-list-box"> <div class="row"> <div class="col-md-12 data-list-container p-w-lg"></div> <div class="col-md-12 p-w-m"> <div id="data-pagination-container" class="m-pagination pull-right "></div> </div> </div> </div> </div>');/*v:1*/
 template('m_payments/m_payments_ledger_list',function($data,$filename
 /**/) {
 'use strict';var $utils=this,$helpers=$utils.$helpers,_isBlank=$helpers._isBlank,summary=$data.summary,$escape=$utils.$escape,_expNumberFilter=$helpers._expNumberFilter,$each=$utils.$each,dataList=$data.dataList,d=$data.d,$index=$data.$index,_momentFormat=$helpers._momentFormat,_expPositiveNumberFilter=$helpers._expPositiveNumberFilter,_url=$helpers._url,$out='';$out+='<div class="m-b-sm"> <span>当前余额：</span> <span> ';
@@ -3904,7 +3964,7 @@ $out+=' <span class="fc-v1-green">';
 $out+=$escape(_expNumberFilter(summary.sumBalance));
 $out+='</span> ';
 }
-$out+=' 元 &nbsp;&nbsp; </span> </div> <table class="table table-bordered table-responsive"> <thead> <tr> <th width="15%">日期</th> <th width="15%"> <span class="th-span-pr">金额（元）</span> <a class="icon-filter pull-right" id="filterProfitType" style="display: none;"><i class="icon iconfont icon-shaixuan"></i></a> </th> <th width="15%"> 收支分类子项 <a class="icon-filter pull-right" id="filterFeeType" style="display: none;"><i class="icon iconfont icon-shaixuan"></i></a> </th> <th width="20%">备注</th> <th width="15%"> 关联组织 <a class="icon-filter pull-right" id="filterFromCompany" style="display: none;"><i class="icon iconfont icon-shaixuan"></i></a> </th> <th width="15%"> 关联项目 <a class="icon-filter pull-right" id="filterProjectName" style="display: none;"><i class="icon iconfont icon-shaixuan"></i></a> </th> </tr> </thead> <tbody> ';
+$out+=' 元 &nbsp;&nbsp; </span> </div> <table class="table table-bordered table-responsive"> <thead> <tr> <th width="12%">日期</th> <th width="13%"> <span class="th-span-pr">金额（元）</span> <a class="icon-filter pull-right" id="filterProfitType"><i class="icon iconfont icon-shaixuan"></i></a> </th> <th width="12%"> 收支分类 <a class="icon-filter pull-right" id="filterFeeType"><i class="icon iconfont icon-shaixuan"></i></a> </th> <th width="12%"> 收支分类子项 <a class="icon-filter pull-right" id="filterSubFeeType"><i class="icon iconfont icon-shaixuan"></i></a> </th> <th width="16%">备注</th> <th width="13%"> 收款组织 <a class="icon-filter pull-right" id="filterToCompany"><i class="icon iconfont icon-shaixuan"></i></a> </th> <th width="13%"> 付款组织 <a class="icon-filter pull-right" id="filterFromCompany"><i class="icon iconfont icon-shaixuan"></i></a> </th> <th width="14%"> 关联项目 <a class="icon-filter pull-right" id="filterProjectName"><i class="icon iconfont icon-shaixuan"></i></a> </th> </tr> </thead> <tbody> ';
 $each(dataList,function(d,$index){
 $out+=' <tr> <td>';
 $out+=$escape(_momentFormat(d.profitDate,'YYYY/MM/DD'));
@@ -3919,17 +3979,23 @@ $out+=$escape(_expNumberFilter(d.profitFee));
 $out+='</span> ';
 }
 $out+=' </td> <td>';
+$out+=$escape(d.feeTypeParentName);
+$out+='</td> <td>';
 $out+=$escape(d.feeTypeName);
 $out+='</td> <td>';
 $out+=$escape(d.feeName);
 $out+='</td> <td> ';
+if(d.toCompanyName!=null && d.toCompanyName!=''){
+$out+=' ';
+$out+=$escape(d.toCompanyName);
+$out+=' ';
+}else{
+$out+=' -- ';
+}
+$out+=' </td> <td> ';
 if(d.fromCompanyName!=null && d.fromCompanyName!=''){
 $out+=' ';
 $out+=$escape(d.fromCompanyName);
-$out+=' ';
-}else if(d.toCompanyName!=null && d.toCompanyName!=''){
-$out+=' ';
-$out+=$escape(d.toCompanyName);
 $out+=' ';
 }else{
 $out+=' -- ';

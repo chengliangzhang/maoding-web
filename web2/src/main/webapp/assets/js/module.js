@@ -244,6 +244,7 @@ var restApi = {
     , url_getStaticCompanyForPaymentDetail: window.rootPath + '/iWork/org/getStaticCompanyForPaymentDetail'
     , url_getStaticCompanyForFinance: window.rootPath + '/iWork/org/getStaticCompanyForFinance'
     , url_getStatisticClassicData: window.rootPath + '/iWork/statistic/getStatisticClassicData'
+    , url_getTitleFilter: window.rootPath + '/iWork/statistic/getTitleFilter'
 
     /**审批汇总**/
     , url_getProjectWorking: window.rootPath + '/iWork/project/getProjectWorking'
@@ -2997,7 +2998,7 @@ return new String($out);
 });/*v:1*/
 template('m_cost/m_cost_paymentPlan_item',function($data,$filename
 /**/) {
-'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,pageText=$data.pageText,isManager=$data.isManager,operateCompanyId=$data.operateCompanyId,currentCompanyId=$data.currentCompanyId,totalCost=$data.totalCost,_expNumberFilter=$helpers._expNumberFilter,_isNullOrBlank=$helpers._isNullOrBlank,attachList=$data.attachList,$each=$utils.$each,a=$data.a,$index=$data.$index,companyName=$data.companyName,pointList=$data.pointList,p=$data.p,i=$data.i,startPayFlag=$data.startPayFlag,startPayFlagFroInner=$data.startPayFlagFroInner,v=$data.v,vi=$data.vi,isFinancial=$data.isFinancial,_momentFormat=$helpers._momentFormat,c=$data.c,ci=$data.ci,total=$data.total,$out='';$out+='<div class="panel-body popover-box no-borders no-padding"> <table class="table table-bordered"> <thead> <tr> <th colspan="10"> <div class="row"> <div class="col-md-3">';
+'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,pageText=$data.pageText,isManager=$data.isManager,operateCompanyId=$data.operateCompanyId,currentCompanyId=$data.currentCompanyId,totalCost=$data.totalCost,_expNumberFilter=$helpers._expNumberFilter,_isNullOrBlank=$helpers._isNullOrBlank,attachList=$data.attachList,$each=$utils.$each,a=$data.a,$index=$data.$index,companyName=$data.companyName,pointList=$data.pointList,p=$data.p,i=$data.i,startPayFlag=$data.startPayFlag,startPayFlagForInner=$data.startPayFlagForInner,v=$data.v,vi=$data.vi,isFinancial=$data.isFinancial,_momentFormat=$helpers._momentFormat,c=$data.c,ci=$data.ci,total=$data.total,$out='';$out+='<div class="panel-body popover-box no-borders no-padding"> <table class="table table-bordered"> <thead> <tr> <th colspan="10"> <div class="row"> <div class="col-md-3">';
 $out+=$escape(pageText.title);
 $out+='</div> <div class="col-md-3"> <span>计划付款金额：</span> <span class="text-navy "> ';
 if(isManager==1 && operateCompanyId==currentCompanyId){
@@ -3110,7 +3111,7 @@ $out+=$escape(p.fee!=null && p.fee-0>0?_expNumberFilter(p.fee):'0');
 $out+=' ';
 }
 $out+=' </td>  <td class="text-center"> ';
-if(p.pointDetailList!=null && p.pointDetailList.length>0 &&  startPayFlagFroInner==1 && p.pointDetailList[0].feeStatus==0){
+if(p.pointDetailList!=null && p.pointDetailList.length>0 &&  startPayFlagForInner==1 && p.pointDetailList[0].feeStatus==0){
 $out+=' <a href="javascript:void(0)" class="btn btn-primary btn-xs" data-action="paymentRequest" data-id="';
 $out+=$escape(p.pointDetailList[0].id);
 $out+='" >付款申请</a> ';
@@ -3202,7 +3203,7 @@ $out+=$escape(p.fee);
 $out+='" data-backFee="';
 $out+=$escape(p.backFee);
 $out+='">  <td class="text-center"> ';
-if(startPayFlagFroInner==1 && c.feeStatus==0){
+if(startPayFlagForInner==1 && c.feeStatus==0){
 $out+=' <a href="javascript:void(0)" class="btn btn-primary btn-xs" data-action="paymentRequest" data-id="';
 $out+=$escape(c.id);
 $out+='" >付款申请</a> ';
@@ -3608,6 +3609,31 @@ $out+='</span> </label> </div> ';
 $out+=' <div class="clearfix"></div> </div> <div class="m-t-xs"> <button type="button" class="btn btn-primary btn-xs rounded pull-right" data-action="confirm">确定</button> <button type="button" class="btn btn-default btn-xs rounded pull-right m-r-xs" data-action="cancel">取消</button> <div class="clearfix"></div> </div> </div> ';
 return new String($out);
 });/*v:1*/
+template('m_filterableField/m_filter_checkbox_select',function($data,$filename
+/**/) {
+'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,boxStyle=$data.boxStyle,$each=$utils.$each,selectList=$data.selectList,s=$data.s,$index=$data.$index,colClass=$data.colClass,$out='';$out+='<div class="data-list-filter " style="';
+$out+=$escape(boxStyle);
+$out+='"> <div class="m-b-sm check-box-title" > <label class="i-checks fw-normal"> <input name="itemCk" type="checkbox" value=""/> <span class="i-checks-span">全选</span> </label> </div> <div class="p-w-sm"> ';
+$each(selectList,function(s,$index){
+$out+=' <div class="';
+$out+=$escape(colClass?colClass:'col-md-4');
+$out+=' no-pd-right no-pd-left"> <label class="i-checks fw-normal"> ';
+if(s.isSelected){
+$out+=' <input name="itemCk" type="checkbox" checked value="';
+$out+=$escape(s.fieldValue);
+$out+='"/> ';
+}else{
+$out+=' <input name="itemCk" type="checkbox" value="';
+$out+=$escape(s.fieldValue);
+$out+='" /> ';
+}
+$out+=' <span class="i-checks-span">';
+$out+=$escape(s.fieldName);
+$out+='</span> </label> </div> ';
+});
+$out+=' <div class="clearfix"></div> </div> </div> ';
+return new String($out);
+});/*v:1*/
 template('m_filterableField/m_filter_input',function($data,$filename
 /**/) {
 'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,placeholder=$data.placeholder,txtVal=$data.txtVal,$out='';$out+='<div class="data-list-filter p-xs"> <div> <div class="form-group"> <input type="text" class="form-control input-sm" name="txtVal" placeholder="';
@@ -3629,6 +3655,41 @@ $out+=' <i class="fa fa-check"></i> ';
 }
 $out+=' </span> ';
 $out+=$escape(s.fieldName);
+$out+=' </a> </li> ';
+});
+$out+=' </ul> </div>';
+return new String($out);
+});/*v:1*/
+template('m_filterableField/m_filter_select1',function($data,$filename
+/**/) {
+'use strict';var $utils=this,$helpers=$utils.$helpers,$each=$utils.$each,selectList=$data.selectList,s=$data.s,$index=$data.$index,$escape=$utils.$escape,isMultiple=$data.isMultiple,$out='';$out+='<div class="data-list-filter"> <ul class="dropdown-menu"> ';
+$each(selectList,function(s,$index){
+$out+=' <li> <a class="no-margins p-r-5" data-state-no="';
+$out+=$escape(s.fieldValue);
+$out+='"> ';
+if(isMultiple){
+$out+=' <label class="i-checks fw-normal"> ';
+if(s.isSelected){
+$out+=' <input name="itemCk" type="checkbox" checked value="';
+$out+=$escape(s.fieldValue);
+$out+='"/> ';
+}else{
+$out+=' <input name="itemCk" type="checkbox" value="';
+$out+=$escape(s.fieldValue);
+$out+='" /> ';
+}
+$out+=' <span class="i-checks-span">';
+$out+=$escape(s.fieldName);
+$out+='</span> </label> ';
+}else{
+$out+=' <span class="check"> ';
+if(s.isSelected){
+$out+=' <i class="fa fa-check"></i> ';
+}
+$out+=' </span> ';
+$out+=$escape(s.fieldName);
+$out+=' ';
+}
 $out+=' </a> </li> ';
 });
 $out+=' </ul> </div>';
@@ -4448,6 +4509,31 @@ $out+=$escape(myExpDetails.totalExpAmount);
 $out+=' </p>元 </h5> </div> </td> </tr> </tbody> </table> </div> </div> </fieldset> </div> </div>';
 return new String($out);
 });/*v:1*/
+template('m_home/m_metismenu',function($data,$filename
+/**/) {
+'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,_url=$helpers._url,$out='';$out+='<nav class="navbar-default navbar-static-side m_metismenu " role="navigation" style="z-index: 900;"> <div class="sidebar-collapse"> <ul class="nav metismenu" id="side-menu" style="display: block;"> <li class="navbar-minimalize" style=""> <a href="javascript:void(0);" class="svg"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/workbench.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">工作台</span> <div class="clearfix"></div>  </a> </li> <li> <a id="addProject" class="svg" href="#/addProject"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/addProject.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目立项</span> <div class="clearfix"></div> </a> </li> <li class="project-menu-box" id="project-menu-box"> <a id="projectList" class="svg" href="#/"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/myProjects.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">我的项目</span> <div class="clearfix"></div> </a> </li> <li> <a id="myTask" class="svg" href="#/myTask"> <object class="pull-left" class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/myTask.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">我的任务</span> <div class="clearfix"></div> </a> </li> <!--<li> <a id="projectOverview" class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/projectOverview.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目总览</span> <div class="clearfix"></div> </a> </li>--> <!--<li class="roleControl" roleCode="project_charge_manage" flag="2"> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/incomeExpenditure.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">收支总览</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li><a href="#/paymentsDetail" id="paymentsDetail"><span class="nav-label ">收支明细</span></a></li> <li><a href="#/paymentsStatistics" id="paymentsStatistics"><span class="nav-label ">分类统计</span></a></li> <li><a href="#/profitStatement" id="profitStatement"><span class="nav-label ">利润报表</span></a></li> </ul> </li>--> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/financialManagement.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">财务管理</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" >  <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/paymentsDetail" id="paymentsDetail"><span class="nav-label ">收支明细</span></a></li> <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/paymentsStatistics" id="paymentsStatistics"><span class="nav-label ">分类统计</span></a></li> <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/profitStatement" id="profitStatement"><span class="nav-label ">利润报表</span></a></li> <li class="roleControl" roleCode="sys_finance_type" flag="2"><a href="#/financeSettings" id="financeSettings"><span class="nav-label ">财务设置</span></a></li> <li class="roleControl" roleCode="finance_fixed_edit" flag="2"><a href="#/feeEntry" id="feeEntry"><span class="nav-label ">费用录入</span></a></li> <li class="roleControl" ><a href="#/projectCost" id="projectCost"><span class="nav-label ">项目收支</span></a></li> <li class="roleControl" ><a href="#/invoiceSummary" id="invoiceSummary"><span class="nav-label ">发票汇总</span></a></li> </ul> </li> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/financeInformation.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">审批管理</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li class="roleControl" roleCode="report_exp_static" flag="2"><a href="#/reimbursementSummary" id="reimbursementSummary"><span class="nav-label ">报销统计</span></a></li> <li class="roleControl" roleCode="report_exp_static" flag="2"><a href="#/costSummary" id="costSummary"><span class="nav-label ">费用统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/leaveSummary" id="leaveSummary"><span class="nav-label ">请假统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/businessSummary" id="businessSummary"><span class="nav-label ">出差统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/workingHoursSummary" id="workingHoursSummary"><span class="nav-label ">工时统计</span></a></li> </ul> </li> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/addressBook.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">通讯录</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li><a href="#/orgInfomationShow" id="orgInfomationShow"><span class="nav-label ">组织信息</span></a></li> <li><a href="#/addressBook" id="addressBook"><span class="nav-label ">通讯录</span></a></li> </ul> </li> <li class="roleControl" roleCode="project_edit" flag="2"> <a id="projectArchiving" class="svg" href="#/projectArchiving" > <object class="pull-left" data="';
+$out+=$escape(_url('/assets/img/home/projectDocmgr.svg'));
+$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目文档</span> <div class="clearfix"></div> </a> </li> </ul> </div> </nav> <div class="clearfix"></div>';
+return new String($out);
+});/*v:1*/
 template('m_historyData/m_historyData',function($data,$filename
 /**/) {
 'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,_url=$helpers._url,$out='';$out+='<div class="ibox ibox-shadow m_historyData"> <div class="ibox-title border-no-t"> <div class="ibox-tools"> <div class="mt-element-step-new" style="margin-bottom: 30px;"> <div class="row step-line"> <div class="mt-step-desc"> </div> <div class="col-md-4 mt-step-col first active" data-step="1"> <div class="mt-step-number bg-white">1</div> <div class="mt-step-title uppercase font-grey-cascade">文件上传</div> <div class="mt-step-content font-grey-cascade">根据模板填充数据并上传</div> </div> <div class="col-md-4 mt-step-col" data-step="2"> <div class="mt-step-number bg-white">2</div> <div class="mt-step-title uppercase font-grey-cascade">数据预览</div> <div class="mt-step-content font-grey-cascade">预览并校验要导入的数据</div> </div> <div class="col-md-4 mt-step-col last" data-step="3"> <div class="mt-step-number bg-white">3</div> <div class="mt-step-title uppercase font-grey-cascade">导入完成</div> <div class="mt-step-content font-grey-cascade">提交最终处理后的数据</div> </div> </div> </div> </div> </div> <div class="ibox-content"> <div class="row step-container" style="margin-bottom: 150px;"> <div class="col-md-12 text-center" style="margin-bottom: 20px;"> <img src="';
@@ -4539,31 +4625,6 @@ template('m_historyData/m_historyData_step3',function($data,$filename
 'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,_url=$helpers._url,$out='';$out+='<div class="col-md-12 text-center" style="margin-bottom: 20px;"> <img src="';
 $out+=$escape(_url('/assets/img/default/invite_success.png'));
 $out+='"> <p style="font-size:24px;">恭喜你，导入成功！</p> </div>';
-return new String($out);
-});/*v:1*/
-template('m_home/m_metismenu',function($data,$filename
-/**/) {
-'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,_url=$helpers._url,$out='';$out+='<nav class="navbar-default navbar-static-side m_metismenu " role="navigation" style="z-index: 900;"> <div class="sidebar-collapse"> <ul class="nav metismenu" id="side-menu" style="display: block;"> <li class="navbar-minimalize" style=""> <a href="javascript:void(0);" class="svg"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/workbench.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">工作台</span> <div class="clearfix"></div>  </a> </li> <li> <a id="addProject" class="svg" href="#/addProject"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/addProject.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目立项</span> <div class="clearfix"></div> </a> </li> <li class="project-menu-box" id="project-menu-box"> <a id="projectList" class="svg" href="#/"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/myProjects.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">我的项目</span> <div class="clearfix"></div> </a> </li> <li> <a id="myTask" class="svg" href="#/myTask"> <object class="pull-left" class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/myTask.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">我的任务</span> <div class="clearfix"></div> </a> </li> <!--<li> <a id="projectOverview" class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/projectOverview.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目总览</span> <div class="clearfix"></div> </a> </li>--> <!--<li class="roleControl" roleCode="project_charge_manage" flag="2"> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/incomeExpenditure.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">收支总览</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li><a href="#/paymentsDetail" id="paymentsDetail"><span class="nav-label ">收支明细</span></a></li> <li><a href="#/paymentsStatistics" id="paymentsStatistics"><span class="nav-label ">分类统计</span></a></li> <li><a href="#/profitStatement" id="profitStatement"><span class="nav-label ">利润报表</span></a></li> </ul> </li>--> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/financialManagement.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">财务管理</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" >  <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/paymentsDetail" id="paymentsDetail"><span class="nav-label ">收支明细</span></a></li> <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/paymentsStatistics" id="paymentsStatistics"><span class="nav-label ">分类统计</span></a></li> <li class="roleControl" roleCode="finance_report" flag="2"><a href="#/profitStatement" id="profitStatement"><span class="nav-label ">利润报表</span></a></li> <li class="roleControl" roleCode="sys_finance_type" flag="2"><a href="#/financeSettings" id="financeSettings"><span class="nav-label ">财务设置</span></a></li> <li class="roleControl" roleCode="finance_fixed_edit" flag="2"><a href="#/feeEntry" id="feeEntry"><span class="nav-label ">费用录入</span></a></li> <li class="roleControl" ><a href="#/projectCost" id="projectCost"><span class="nav-label ">项目收支</span></a></li> <li class="roleControl" ><a href="#/invoiceSummary" id="invoiceSummary"><span class="nav-label ">发票汇总</span></a></li> </ul> </li> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/financeInformation.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">审批管理</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li class="roleControl" roleCode="report_exp_static" flag="2"><a href="#/reimbursementSummary" id="reimbursementSummary"><span class="nav-label ">报销统计</span></a></li> <li class="roleControl" roleCode="report_exp_static" flag="2"><a href="#/costSummary" id="costSummary"><span class="nav-label ">费用统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/leaveSummary" id="leaveSummary"><span class="nav-label ">请假统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/businessSummary" id="businessSummary"><span class="nav-label ">出差统计</span></a></li> <li class="roleControl" roleCode="summary_leave" flag="2"><a href="#/workingHoursSummary" id="workingHoursSummary"><span class="nav-label ">工时统计</span></a></li> </ul> </li> <li> <a class="svg" href="javascript:void(0);"> <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/addressBook.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">通讯录</span> <span class="fa arrow"></span> <div class="clearfix"></div> </a> <ul class="nav nav-second-level collapse in" > <li><a href="#/orgInfomationShow" id="orgInfomationShow"><span class="nav-label ">组织信息</span></a></li> <li><a href="#/addressBook" id="addressBook"><span class="nav-label ">通讯录</span></a></li> </ul> </li> <li class="roleControl" roleCode="project_edit" flag="2"> <a id="projectArchiving" class="svg" href="#/projectArchiving" > <object class="pull-left" data="';
-$out+=$escape(_url('/assets/img/home/projectDocmgr.svg'));
-$out+='" type="image/svg+xml"></object> <span class="nav-label pull-left">项目文档</span> <div class="clearfix"></div> </a> </li> </ul> </div> </nav> <div class="clearfix"></div>';
 return new String($out);
 });/*v:1*/
 template('m_imgCropper/m_imgCropper','<div class="m_imgCropper" style="overflow: auto;max-height: 500px;"> <form class="form-horizontal rounded-4x noborder"> <div class="ibox m-b-xs"> <div class="ibox-content"> <div class="title row"> <div class="col-md-12"> <div class="margin-bottom-20"> <span>请先上传一张图片,支持jpg、jpeg、png格式。</span> <div class="btnFilePicker" class="dp-inline-block"></div> </div> </div> </div> <div class="setArea row m-b-xs hide"> <div class="col-md-9"> <div class="thumbnail thumbnail-style"> <img class="img-container img-responsive" src=""> </div> </div> <div class="col-md-3"> <div class="thumbnail thumbnail-style" style="width: 110px;height: 110px;"> <div class="clearfix"> <div class="img-preview preview-md"></div> </div> </div> </div> </div> </div> </div> </form> </div>');/*v:1*/
@@ -5776,7 +5837,7 @@ $out+=' </tbody> <tfoot><tr><td colspan="3" id="userList"></td></tr></tfoot> </t
 return new String($out);
 });/*v:1*/
 template('m_payments/m_payments_detail_menu','<div class="ibox"> <div class="ibox-title secondary-menu-outbox"> <div class="row"> <div class="col-md-6">  <div class="no-margin p-h-sm breadcrumb-box" > <ol class="breadcrumb"> <li> 财务管理 </li> <li class="active fa fa-angle-right"> <strong>收支明细</strong> </li> </ol> </div> </div> <div class="col-md-6 text-right p-w-sm"> <ul class="secondary-menu-ul pull-right"> <li class="active" id="ledger" class="roleControl" ><a>台账</a></li> <li id="receivable" class="roleControl" ><a>应收</a></li> <li id="payable" class="roleControl" ><a>应付</a></li> </ul> </div> <div class="clearfix"></div> </div> </div> <div class="ibox-content no-padding" id="content-box"> </div> </div>');/*v:1*/
-template('m_payments/m_payments_ledger','<div class="m_payments_ledger"> <form role="form" class="form-inline m-md"> <div class="form-group z-index-1"> <label class="">当前组织：</label> <div class="btn-group" id="selectOrg"> </div> </div> <div class="form-group"> <label class="m-t-xs">时间：</label> <div class="btn-group pull-right"> <a class="btn btn-default btn-sm m-r-none" href="javascript:void(0)" data-action="setTime" data-days="30">一个月</a> <a class="btn btn-default btn-sm m-r-none" href="javascript:void(0)" data-action="setTime" data-days="90">一季度</a> <a class="btn btn-default btn-sm m-r-none" href="javascript:void(0)" data-action="setTime" data-days="180">半年</a> <a class="btn btn-default btn-sm m-r-none" href="javascript:void(0)" data-action="setTime" data-days="360">一年</a> </div> </div> <div class="form-group"> <div class="input-group dp-inline-block"> <input type="text" class="form-control input-sm " id="ipt_startTime" name="startTime" placeholder="开始日期" readonly="" value="" style="width: 110px;" > <span class="input-group-addon no-padding"> <i class="icon-sm icon-append fa fa-calendar"></i> </span> </div> <div class="input-group dp-inline-block"> <input type="text" class="form-control input-sm" id="ipt_endTime" name="endTime" placeholder="结束日期" readonly="" value="" style="width: 110px;" > <span class="input-group-addon no-padding"> <i class="icon-sm icon-append fa fa-calendar"></i> </span> </div> </div> <button class="btn btn-white btn-sm" data-action="refreshBtn">刷新数据</button> </form> <div class="data-list-box"> <div class="row"> <input type="hidden" name="profitType" value=""/> <input type="hidden" name="feeType" value=""/> <input type="hidden" name="projectName" value=""/> <input type="hidden" name="toCompany" value=""/> <input type="hidden" name="fromCompany" value=""/> <div class="col-md-12 data-list-container p-w-lg"></div> <div class="col-md-12 p-w-m"> <div id="data-pagination-container" class="m-pagination pull-right "></div> </div> </div> </div> </div>');/*v:1*/
+template('m_payments/m_payments_ledger','<div class="m_payments_ledger"> <form role="form" class="form-inline m-md"> <div class="form-group z-index-1"> <label class="">当前组织：</label> <div class="btn-group" id="selectOrg"> </div> </div> <div class="time-combination form-group"> </div> <button class="btn btn-white btn-sm" data-action="refreshBtn">刷新数据</button> </form> <div class="data-list-box"> <div class="row"> <div class="col-md-12 data-list-container p-w-lg"></div> <div class="col-md-12 p-w-m"> <div id="data-pagination-container" class="m-pagination pull-right "></div> </div> </div> </div> </div>');/*v:1*/
 template('m_payments/m_payments_ledger_list',function($data,$filename
 /**/) {
 'use strict';var $utils=this,$helpers=$utils.$helpers,_isBlank=$helpers._isBlank,summary=$data.summary,$escape=$utils.$escape,_expNumberFilter=$helpers._expNumberFilter,$each=$utils.$each,dataList=$data.dataList,d=$data.d,$index=$data.$index,_momentFormat=$helpers._momentFormat,_expPositiveNumberFilter=$helpers._expPositiveNumberFilter,_url=$helpers._url,$out='';$out+='<div class="m-b-sm"> <span>当前余额：</span> <span> ';
@@ -5791,7 +5852,7 @@ $out+=' <span class="fc-v1-green">';
 $out+=$escape(_expNumberFilter(summary.sumBalance));
 $out+='</span> ';
 }
-$out+=' 元 &nbsp;&nbsp; </span> </div> <table class="table table-bordered table-responsive"> <thead> <tr> <th width="15%">日期</th> <th width="15%"> <span class="th-span-pr">金额（元）</span> <a class="icon-filter pull-right" id="filterProfitType" style="display: none;"><i class="icon iconfont icon-shaixuan"></i></a> </th> <th width="15%"> 收支分类子项 <a class="icon-filter pull-right" id="filterFeeType" style="display: none;"><i class="icon iconfont icon-shaixuan"></i></a> </th> <th width="20%">备注</th> <th width="15%"> 关联组织 <a class="icon-filter pull-right" id="filterFromCompany" style="display: none;"><i class="icon iconfont icon-shaixuan"></i></a> </th> <th width="15%"> 关联项目 <a class="icon-filter pull-right" id="filterProjectName" style="display: none;"><i class="icon iconfont icon-shaixuan"></i></a> </th> </tr> </thead> <tbody> ';
+$out+=' 元 &nbsp;&nbsp; </span> </div> <table class="table table-bordered table-responsive"> <thead> <tr> <th width="12%">日期</th> <th width="13%"> <span class="th-span-pr">金额（元）</span> <a class="icon-filter pull-right" id="filterProfitType"><i class="icon iconfont icon-shaixuan"></i></a> </th> <th width="12%"> 收支分类 <a class="icon-filter pull-right" id="filterFeeType"><i class="icon iconfont icon-shaixuan"></i></a> </th> <th width="12%"> 收支分类子项 <a class="icon-filter pull-right" id="filterSubFeeType"><i class="icon iconfont icon-shaixuan"></i></a> </th> <th width="16%">备注</th> <th width="13%"> 收款组织 <a class="icon-filter pull-right" id="filterToCompany"><i class="icon iconfont icon-shaixuan"></i></a> </th> <th width="13%"> 付款组织 <a class="icon-filter pull-right" id="filterFromCompany"><i class="icon iconfont icon-shaixuan"></i></a> </th> <th width="14%"> 关联项目 <a class="icon-filter pull-right" id="filterProjectName"><i class="icon iconfont icon-shaixuan"></i></a> </th> </tr> </thead> <tbody> ';
 $each(dataList,function(d,$index){
 $out+=' <tr> <td>';
 $out+=$escape(_momentFormat(d.profitDate,'YYYY/MM/DD'));
@@ -5806,17 +5867,23 @@ $out+=$escape(_expNumberFilter(d.profitFee));
 $out+='</span> ';
 }
 $out+=' </td> <td>';
+$out+=$escape(d.feeTypeParentName);
+$out+='</td> <td>';
 $out+=$escape(d.feeTypeName);
 $out+='</td> <td>';
 $out+=$escape(d.feeName);
 $out+='</td> <td> ';
+if(d.toCompanyName!=null && d.toCompanyName!=''){
+$out+=' ';
+$out+=$escape(d.toCompanyName);
+$out+=' ';
+}else{
+$out+=' -- ';
+}
+$out+=' </td> <td> ';
 if(d.fromCompanyName!=null && d.fromCompanyName!=''){
 $out+=' ';
 $out+=$escape(d.fromCompanyName);
-$out+=' ';
-}else if(d.toCompanyName!=null && d.toCompanyName!=''){
-$out+=' ';
-$out+=$escape(d.toCompanyName);
 $out+=' ';
 }else{
 $out+=' -- ';
@@ -12618,906 +12685,6 @@ return new String($out);
 
 })(jQuery, window, document);
 /**
- * Created by wrb on 2016/12/21.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_inputProcessTime",
-        defaults = {
-            $title: null,
-            $isDialog: true,
-            $isHaveMemo: true,
-            $timeInfo: null,
-            $okCallBack: null,
-            $isOkSave: false,//默认false
-            $okText: null,//按钮文字
-            $saveDataUrl: null,//直接保存url
-            $minHeight: null,//弹窗的最小高度
-            $saveData: null,//保存格外的参数
-            $currentAppointmentDate: null,//当前任务的合同进度时间
-            $saveTimeKeyVal: null,//保存到库所对应的时间字段 key 值
-            $validate:null//验证{默认第一套验证}
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.initHtmlData(function () {
-                that.initSpinner();
-                if(that.settings.$validate!=null && that.settings.$validate==1){
-                    that.addInputTime_validate1();
-                }else if(that.settings.$validate!=null && that.settings.$validate==2){
-
-                }else{
-                    that.addInputTime_validate();
-                }
-
-            });
-        },
-
-        //初始化数据
-        initHtmlData: function (callBack) {
-            var that = this;
-            if (that.settings.$isDialog) {//以弹窗编辑
-                var options = {};
-                options.title = that.settings.$title || '设计依据';
-                options.contentEle = 'dialogOBox';
-                options.lock = 3;
-                options.width = '510';
-                options.minHeight = that.settings.$minHeight || '100';
-                options.tPadding = '0px';
-                options.url = rootPath + '/assets/module/m_common/m_dialog.html';
-                options.cancel = function () {
-                };
-                if (that.settings.$isOkSave) {//直接保存
-                    options.okText = '保存';
-                    options.ok = function () {
-                        if ($('form.inputTimeOBox').valid()) {
-                            var $data = $("form.inputTimeOBox").serializeObject();
-                            var timeObj = {};
-                            if (that.settings.$saveTimeKeyVal != null) {//处理保存到库所对应的时间字段 key 值,此处传入的key是有序的
-                                for (var key in $data) {
-                                    if (key == 'startTime') {
-                                        timeObj[that.settings.$saveTimeKeyVal[0]] = $data[key];
-                                        continue;
-                                    }
-                                    if (key == 'endTime') {
-                                        timeObj[that.settings.$saveTimeKeyVal[1]] = $data[key];
-                                        continue;
-                                    }
-                                    if (key == 'memo') {
-                                        timeObj[that.settings.$saveTimeKeyVal[2]] = $data[key];
-                                        timeObj[that.settings.$saveTimeKeyVal[2]] = $.trim(timeObj[that.settings.$saveTimeKeyVal[2]]);
-                                        continue;
-                                    }
-                                }
-                            }
-                            $.extend(timeObj, that.settings.$saveData);
-                            var option = {};
-                            if($('#page-wrapper #content-right').length>0){
-                                option.classId = '#page-wrapper #content-right';
-                            }
-                            option.url = that.settings.$saveDataUrl;
-                            option.postData = timeObj;
-                            m_ajax.postJson(option, function (response) {
-                                if (response.code == '0') {
-                                    S_toastr.success("保存成功!");
-                                    if (that.settings.$okCallBack != null) {
-                                        return that.settings.$okCallBack(response.data);
-                                    }
-                                } else {
-                                    S_dialog.error(response.info);
-                                }
-                            })
-                        } else {
-                            return false;
-                        }
-                    }
-                } else {//返回上级
-                    options.okText = '确定';
-                    options.ok = function () {
-                        if ($('form.inputTimeOBox').valid()) {
-                            var $data = $("form.inputTimeOBox").serializeObject();
-                            if (that.settings.$okCallBack != null) {
-                                return that.settings.$okCallBack($data);
-                            }
-                        } else {
-                            return false;
-                        }
-                    };
-                }
-                if (that.settings.$okText != null) {
-                    options.okText = that.settings.$okText;
-                }
-
-
-                S_dialog.dialog(options, function (d) {//加载html后触发
-
-                    var $data = {};
-                    $data.$isHaveMemo = that.settings.$isHaveMemo;
-                    $data.$timeInfo = {};
-                    if (that.settings.$timeInfo != null) {
-                        $data.$timeInfo = that.settings.$timeInfo;
-                    }
-                    var classIdObj = $('div[id="content:' + d.id + '"] .dialogOBox');
-                    that.initHtmlTemplate(callBack, $data, classIdObj)
-                });
-            } else {//不以弹窗编辑
-                var $data = {};
-                $data.$isHaveMemo = that.settings.$isHaveMemo;
-                $data.$timeInfo = {};
-                if (that.settings.$timeInfo != null) {
-                    $data.$timeInfo = that.settings.$timeInfo;
-                }
-                var classIdObj = $(that.element);
-                that.initHtmlTemplate(callBack, $data, classIdObj)
-            }
-        }
-        //计算时间差的方法
-        , countTimeDiff: function (startTime, endTime) {
-            return moment(endTime).diff(moment(startTime), 'days') + 1;
-        }
-        //生成html
-        , initHtmlTemplate: function (callBack, data, classIdObj) {
-            var that = this;
-            if (that.settings.$currentAppointmentDate != null) {
-                data.appointmentStartTime = that.settings.$currentAppointmentDate.startTime;
-                data.appointmentEndTime = that.settings.$currentAppointmentDate.endTime;
-            }
-            var html = template('m_common/m_inputProcessTime', data);
-            classIdObj.html(html);
-
-            m_inputProcessTime_onpicked();
-
-            $(that.element).find('.fa-calendar').click(function () {
-                $(this).closest('.input-group').find('input:first').focus();
-            });
-
-            if (callBack != null) {
-                callBack();
-            }
-        }
-        //初始化Spinner
-        , initSpinner: function () {
-            $('form.inputTimeOBox').find('.dayCountSpinner:eq(0)')
-                .spinner({
-                    delay: 200,
-                    changed: function (e, newVal, oldVal) {
-                        var startTime = $('form.inputTimeOBox').find('.startTime:eq(0)').val();
-                        if (startTime === null || _.isBlank(startTime))
-                            return;
-
-                        if (newVal == 0) {
-                            $('form.inputTimeOBox').find('.endTime:eq(0)').val('');
-                            return;
-                        }
-
-                        var endTime = moment(startTime).add(newVal - 1, 'days').format('YYYY-MM-DD');
-                        $('form.inputTimeOBox').find('.endTime:eq(0)').val(endTime);
-                    }
-                });
-        }
-        //step1的表单验证
-        , addInputTime_validate: function () {
-            var that = this;
-            $('form.inputTimeOBox').validate({
-                rules: {
-                    startTime: {
-                        required: true
-                    }
-                    , endTime: {
-                        required: true
-                    }
-                    , memo: {
-                        required: true,
-                        maxlength: 250,
-                        isBlank:true
-                    }
-                },
-                messages: {
-                    startTime: {
-                        required: '请设置开始日期！'
-                    }
-                    , endTime: {
-                        required: '请设置结束日期！'
-                    }
-                    , memo: {
-                        required: '请输入进度变更原因！',
-                        maxlength: '输入不能超过250个字符！',
-                        isBlank:'请输入进度变更原因!'
-                    }
-                },
-                errorElement: "label",  //用来创建错误提示信息标签
-                errorPlacement: function (error, element) {  //重新编辑error信息的显示位置
-                    error.appendTo(element.closest('.form-group'));
-                }
-            });
-            $.validator.addMethod('isBlank', function(value, element) {
-                value = $.trim(value);
-                var isOk = true;
-                if( value!=null && $.trim(value)==''){
-                    isOk = false;
-                }
-                return  isOk;
-            }, '请输入进度变更原因!');
-
-        }
-        , addInputTime_validate1: function () {
-            var that = this;
-            $('form.inputTimeOBox').validate({
-                rules: {
-                    startTime: {
-                        ckTime: true
-                    }
-                },
-                messages: {
-                    startTime: {
-                        ckTime: '请输入日期!'
-                    }
-                },
-                errorElement: "label",  //用来创建错误提示信息标签
-                errorPlacement: function (error, element) {  //重新编辑error信息的显示位置
-                    error.appendTo(element.closest('.form-group'));
-                }
-            });
-            $.validator.addMethod('ckTime', function(value, element) {
-                var isOk = true;
-                var startTime = $('.inputTimeOBox input[name="startTime"]').val();
-                var endTime = $('.inputTimeOBox input[name="endTime"]').val();
-                if(startTime=='' && endTime==''){
-                    isOk = false;
-                }
-                return  isOk;
-            }, '请输入日期!');
-
-            $('form.inputTimeOBox').find('input,textarea').on('click',function () {
-                $('form.inputTimeOBox label.error').hide();
-            });
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_popover",
-        defaults = {
-            clearOnInit: true,//初始化是否清掉其他的Popover
-            titleHtml: null,
-            hideArrow: false,
-            popoverStyle: '',//父容器popover的追加样式，如弹窗宽度
-            contentStyle: 'padding: 10px 14px 10px;',//popover-content的追加样式
-            content: null,//自定义内容，可以用模板
-            placement: null,//浮窗是在哪个位置展开：‘left’,‘right’,‘top’,‘bottom’,空值则默认为top
-            onShown: null,//浮窗显示后的事件，可以用来重新绑定值
-            onSave: null,//提交事件
-            onClear: null,//清除事件
-            onClose: null,//关闭事件
-            template: 'm_common/m_popover',//主框架,
-            type:null,//默认浮窗,inline=内置
-            hideElement:false,//隐藏该标签
-            closeOnDocumentClicked: null//自定义样式类处理关闭editable
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = options;
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._popoverTop = null;//初始化页面时，保存浮窗的top值
-        this._popoverHeight = null;//初始化页面时，保存浮窗的height值
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-
-            if (that.settings.clearOnInit === true) {
-                //清掉其他的Popover
-                $(document).find('.m-popover').each(function (i, o) {
-                    $(o).remove();
-                });
-
-                $(document).off('click.m-popover');
-            }
-
-            var html = template(that.settings.template, {
-                titleHtml: that.settings.titleHtml,
-                popoverStyle: that.settings.popoverStyle,
-                contentStyle: that.settings.contentStyle,
-                content: that.settings.content
-            });
-
-            $(html).insertAfter($(that.element));
-            var $popover = $(that.element).next('.m-popover');
-
-            if (that.settings.hideArrow === true)
-                $popover.find('.arrow').eq(0).hide();
-
-            if (that.settings.onShown && that.settings.onShown !== null)
-                that.settings.onShown($popover);
-
-            if(that.settings.hideElement === true){
-                $(that.element).hide();
-            }
-
-            //防止冒泡
-            $popover.off('click.m-popover').on('click.m-popover', function (e) {
-                stopPropagation(e);
-                return false;
-            });
-
-            setTimeout(function () {
-                if(that.settings.type==null || that.settings.type!='inline'){
-                    that.setPosition();
-                }
-                that.bindBtnClick();
-                that.bindPopoverClickedOut();
-            }, 50);
-
-            //绑定回车事件
-            $popover.find('input[type="text"]').keydown(function () {
-                if (event.keyCode == '13') {//keyCode=13是回车键
-                    var $btnSubmit = $popover.find('.m-popover-submit');
-                    if ($btnSubmit && $btnSubmit.length > 0)
-                        $btnSubmit.click();
-                }
-            });
-
-        },
-        //当鼠标点击的焦点不在浮窗内时，关闭浮窗
-        bindPopoverClickedOut: function () {
-            var that = this;
-            $(document).on('click.m-popover', function (e) {
-                //console.log('document.clicked');
-                var flag = $(e.target).parents('.select2-container').length > 0 || $(e.target).is('.select2-container');
-                //防止select2搜索框点击触发关闭
-                if ($(e.target).closest('.select2-search__field').length > 0 || flag)
-                    return false;
-
-                if (typeof that.settings.closeOnDocumentClicked === 'function') {
-                    if (that.settings.closeOnDocumentClicked(e) === false)
-                        return false;
-                }
-
-                if (that.settings.onClose && that.settings.onClose !== null) {
-                    //返回false则不关闭
-                    if (that.settings.onClose($(e.target)) !== false)
-                        that.closeFilter();
-                }
-                else {
-                    that.closeFilter();
-                }
-            });
-        },
-        setPosition: function () {
-            var that = this;
-            var $popover = $(that.element).next('.m-popover');
-            if ($popover.length > 0) {
-                var p_p = that.settings.placement ? that.settings.placement : 'top';//浮窗的展示位置
-                var a_ptop = $(that.element).position().top;//a标签的top值
-                var a_width = $(that.element).outerWidth();//a标签的width值
-                var a_height = $(that.element).outerHeight();//a标签的height值
-                var a_pleft = $(that.element).position().left;//a标签的left值
-                var p_width = $popover.width();//浮窗的宽度
-                var p_height = $popover.outerHeight();//浮窗的高度
-                var p_top = 0;//浮窗的top值
-                var p_left = 0;//浮窗的left值
-                switch (p_p) {
-                    case 'top':
-                        p_top = (a_ptop - p_height);
-                        p_left = a_pleft + a_width / 2 - p_width / 2;
-                        break;
-                    case 'bottom':
-                        p_top = (a_ptop + a_height);
-                        p_left = a_pleft + a_width / 2 - p_width / 2;
-                        break;
-                    case 'left':
-                        p_top = (a_ptop - p_height / 2 + 5);
-                        p_left = a_pleft - p_width - 10;
-                        break;
-                    case 'right':
-                        p_top = (a_ptop - p_height / 2 + 7);
-                        p_left = a_pleft + a_width;
-                        break;
-
-
-                };
-                that._popoverTop = p_top;
-                that._popoverHeight = p_height;
-                $popover.removeClass('top').addClass(p_p);
-                if (p_p.indexOf('left') > -1 || p_p.indexOf('right') > -1) {
-                    $popover.find('.arrow').css({'top': '50%', 'left': ''});
-                }
-
-                $popover.css({
-                    display: 'inline-block',
-                    position: 'absolute',
-                    top: p_top,
-                    left: p_left
-                });
-            }
-        },
-        bindBtnClick: function () {
-            var that = this;
-            var $popover = $(that.element).next('.m-popover');
-            if ($popover.length > 0) {
-
-                //查找【提交按钮】并绑定事件
-                var $btnSubmit = $popover.find('.m-popover-submit');
-                if ($btnSubmit.length > 0) {
-                    $btnSubmit.click(function (e) {
-
-                        if (that.settings.onSave && that.settings.onSave !== null) {
-                            if (that.settings.onSave($popover) !== false)
-                                that.closeFilter();
-                        }
-                        else
-                            that.closeFilter();
-
-                        stopPropagation(e);
-                        return false;
-                    });
-                }
-
-                //查找【清除按钮】并绑定事件
-                var $btnClear = $popover.find('.m-popover-clear');
-                if ($btnClear.length > 0) {
-                    $btnClear.click(function (e) {
-
-                        //如果没有自定义清除函数，则使用默认
-                        if (that.settings.onClear && that.settings.onClear !== null)
-                            that.settings.onClear($popover);
-                        else {
-                            //查找第一个input清空
-                            var $input = $(this).closest('form').find('input:first');
-                            if ($input.length > 0)
-                                $input.val('');
-                        }
-
-                        stopPropagation(e);
-                        return false;
-                    });
-                }
-
-                //查找【关闭按钮】并绑定事件
-                var $btnClose = $popover.find('.m-popover-close');
-                if ($btnClose.length > 0) {
-                    $btnClose.click(function (e) {
-
-                        if (that.settings.onClose && that.settings.onClose !== null) {
-                            //返回false则不关闭
-                            if (that.settings.onClose($popover) !== false)
-                                that.closeFilter();
-                        }
-                        else {
-                            that.closeFilter();
-                        }
-
-                        stopPropagation(e);
-                        return false;
-                    });
-                }
-                /*var $btnSubmit = $popover.find('.m-popover-submit');
-                 //点击submit按钮或浮窗其他地方，出现验证信息时，相应改变popover的top值
-                 $popover.find('.popover-content,button,input').off('click.changePosition').on('click.changePosition',function(e){
-                 setTimeout(function(){
-                 that.changePosition($popover);
-                 },20);
-                 });
-                 //点击input表单，出现验证信息时，相应改变popover的top值
-                 $popover.find('input[type="text"]').off('keyup.changePosition').on('keyup.changePosition',function(e){
-                 setTimeout(function(){
-                 console.log(2222)
-                 that.changePosition($popover);
-                 },20);
-                 });*/
-                $popover.resize(function () {
-                    setTimeout(function () {
-                        that.changePosition($popover);
-                    }, 20);
-                });
-            }
-        },
-        //通过改变弹窗的top值来改变弹窗的位置
-        changePosition: function ($popover) {
-            var that = this;
-            var errTag = $popover.find('label.error').length;
-            var errTagH = errTag * ($popover.find('label.error').outerHeight() - 0);
-            var popH = $popover.height();
-            var popT = $popover.position().top;
-            var h1 = popH - that._popoverHeight;
-
-            if (that.settings.placement != null && that.settings.placement == 'top') {//当为top，popoverTop需要设置
-                if (h1 == -4) {
-                    $popover.css('top', that._popoverTop + 'px');
-                } else {
-                    var newTop = that._popoverTop - h1 - 4;
-                    $popover.css('top', newTop);
-                }
-
-            } else if (that.settings.placement != null && (that.settings.placement == 'left' || that.settings.placement == 'right')) {
-
-                $popover.find('.arrow').css('top', (that._popoverHeight) / 2 + 'px');
-            }
-        },
-        closeFilter: function () {
-            var that = this;
-            $(that.element).siblings('.m-popover').each(function (i, o) {
-                $(o).remove();
-            });
-            $(document).off('click.m-popover');
-            if(that.settings.hideElement === true){
-                $(that.element).show();
-            }
-        }
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-
-
-
-/**
- * 快速选择时间，以在位编辑的方式打开
- * Created by veata on 2016/12/21.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_quickDatePicker",
-        defaults = {
-            $title:null,
-            $placement:true,//浮窗展开的位置，共四个值‘top’,‘bottom’,‘left’,‘right’,
-            $okCallBack:null,
-            $isClear:true,//展示清空按钮
-            $eleId:null//当前元素浮动窗ID
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.initHtmlData(function (data) {
-                WdatePicker({eCont:'quickDatePicker',onpicked:function(dp){that.saveDate(dp)}});
-                $('#quickDatePicker iframe').css('height','232px');//firefox有时不出来修改
-            });
-        },
-        //初始化数据
-        initHtmlData:function (callBack) {
-            var that = this;
-            var title = '变更合同签订日期';
-            if(that.settings.$title!=null){
-                title = that.settings.$title;
-            }
-            $(that.settings.$eleId).m_popover({
-                placement: that.settings.$placement==null?'top':that.settings.$placement,
-                titleHtml : '<div i="header" class="ui-dialog-header"><button i="close" class="ui-dialog-close">&#215;</button><div i="title" class="ui-dialog-title">'+title+'</div></div>',
-                content: template('m_common/m_quickDatePicker', {isClear:that.settings.$isClear}),
-                contentStyle: 'height:257px;',
-                onShown: function ($popover) {
-                    if(callBack!=null){
-                        callBack();
-                    }
-                    if($popover.prev().text()=='未签订'){
-                        $popover.find('.ui-dialog-header').remove();
-                    }
-                    $popover.find('.ui-dialog-close').on('click',function () {
-                        $(that.settings.$eleId).next().remove();
-                    });
-                    that.bindClearDate($popover);
-                },
-                onSave: function ($popover) {
-                    return that.saveDate();
-                }
-            }, true);
-        }
-        //保存编辑
-        ,saveDate:function (dp) {
-            var that = this;
-            var $data = dp.cal.getDateStr();
-
-            if(that.settings.$okCallBack!=null){
-                return that.settings.$okCallBack($data);
-            }
-        }
-        ,bindClearDate:function ($popover) {
-            var that = this;
-            $popover.find('button.m-popover-clear').on('click',function () {
-                if(that.settings.$okCallBack!=null){
-                    return that.settings.$okCallBack(null);
-                }
-            });
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-
-
-/**
- * Created by veata on 2017/02/14.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_top",
-        defaults = {
-            data: null
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            this.initHtml();
-        },
-        initHtml: function () {
-            var that = this;
-
-            //请求基础数据
-            var option = {};
-            option.url = restApi.url_getCurrUserOfWork;
-            m_ajax.postJson(option, function (response) {
-                if (response.code == '0') {
-                    var $data = {};
-                    $data.rootPath = window.rootPath;
-                    if (response.data != null) {
-                        $data.companyFilePath = response.data.companyInfo != null ? response.data.companyInfo.filePath : '';
-                        $data.userInfo = response.data.userInfo != null ? response.data.userInfo : {};
-                        $data.orgList = response.data.orgList;
-                        $data.companyInfo = response.data.companyInfo != null ? response.data.companyInfo : {};
-                        $data.companyUserInfo = response.data.companyUser != null ? response.data.companyUser : {};
-                        $data.fastdfsUrl = response.data.fastdfsUrl;
-                        $data.roleCodes = response.data.roleCodes;
-                        $data.fileCenterUrl = response.data.fileCenterUrl;
-                        $data.enterpriseUrl = response.data.enterpriseUrl;
-                        $data.adminFlag = response.data.adminFlag;
-                        $data.isAuth = response.data.isAuth;
-                        window.adminFlag = $data.adminFlag;
-                        var globalData = {
-                            currentCompanyId : $data.companyInfo.id,
-                            currentUserId : $data.userInfo.id,
-                            currentCompanyUserId : $data.companyUserInfo.id,
-                            currentRoleCodes : $data.roleCodes==null?'':$data.roleCodes
-                        };
-                        that.globalVariables(globalData);
-
-                        if (isNullOrBlank(response.data.unReadMessage) || response.data.unReadMessage === 0)
-                            $data.unReadMessage = '';
-                        else
-                            $data.unReadMessage = response.data.unReadMessage;
-
-                        if (isNullOrBlank(response.data.unReadNotice) || response.data.unReadNotice === 0)
-                            $data.unReadNotice = '';
-                        else
-                            $data.unReadNotice = response.data.unReadNotice;
-
-                        if (isNullOrBlank($data.userInfo.imgUrl))
-                            $data.userInfo.imgUrl = window.rootPath + '/assets/img/head_default.png';
-                        else
-                            $data.userInfo.imgUrl = $data.userInfo.imgUrl;
-
-
-                        var data = {};
-                        data.rootPath = window.rootPath;
-                        $.extend(data, $data);
-                        var html = template('m_common/m_top', data);
-                        $('#m_top').html(html);
-
-                        rolesControl();
-                        that.bindActionClick();
-                        $.each($('#top-nav li'), function (i, o) {
-                            var $el = $(o);
-                            if ($el.data('nav') === currentNav)
-                                $el.addClass('active');
-                        });
-
-                        var oLi=$('#m_top_orgList');
-                        if(oLi.find('li').length==0){
-                            oLi.prev().find('.caret').remove();
-                            oLi.remove()
-                        }
-                    }
-
-                    that.renderToolTip();
-
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-
-
-        }
-        //渲染ToolTip
-        , renderToolTip: function () {
-            $('.tooltip-demo').tooltip({
-                selector: '[data-toggle=tooltip]',
-                container: 'body',
-                trigger: 'hover'
-            });
-        },
-        //更改组织全局变量
-        globalVariables:function (data) {
-            window.currentCompanyId = data.currentCompanyId;
-            window.currentUserId = data.currentUserId;
-            window.currentCompanyUserId = data.currentCompanyUserId;
-            window.currentRoleCodes = data.currentRoleCodes;
-        }
-        , switchOrg: function (orgId) {
-            var option = {};
-            option.url = restApi.url_switchCompany + '/' + orgId;
-            m_ajax.getJson(option, function (response) {
-                if (response.code == '0') {
-                    window.location.href = window.rootPath + '/iWork/home/workbench';
-                } else {
-                    S_dialog.error(response.info);
-                }
-            })
-        }
-        //事件绑定
-        , bindActionClick: function () {
-            var that = this;
-            $(that.element).find('a[data-action]').on('click', function (e) {
-                var $this = $(this);
-                var dataAction = $this.attr('data-action');
-                switch (dataAction) {
-                    case 'switchOrg'://切换组织
-                        var companyInfoId = window.currentCompanyId;
-                        var orgId = $(this).attr('org-id');
-                        if (orgId != companyInfoId) {
-                            that.switchOrg(orgId);
-                        }
-                        return false;
-                        break;
-                    case 'messageCenter'://消息界面
-                        location.hash = '/messageCenter';
-                        $('#unReadMessageCount').html('');
-                        break;
-                    case 'backstageMgt'://后台管理
-
-                        if(window.currentRoleCodes.indexOf('com_enterprise_edit')>-1 || window.currentRoleCodes.indexOf('sys_enterprise_logout')>-1){//具有组织编辑权限
-                            location.hash = '/backstageMgt/orgInfo';
-                        }else if(window.currentRoleCodes.indexOf('hr_org_set')>-1 || window.currentRoleCodes.indexOf('hr_employee')>-1 || window.currentRoleCodes.indexOf('org_data_import')>-1 || window.currentRoleCodes.indexOf('org_partner')>-1){//具有组织架构权限
-                            location.hash = '/backstageMgt/organizational';
-                        }else if(window.currentRoleCodes.indexOf('sys_role_permission')>-1 || window.adminFlag==1){//具有权限配置权限
-                            location.hash = '/backstageMgt/organizational';
-                        }else if(window.currentRoleCodes.indexOf('sys_role_auth')>-1){//具有企业认证权限
-                            location.hash = '/backstageMgt/enterpriseCertification';
-                        }else if(window.currentRoleCodes.indexOf('data_import')>-1){//具有历史导入
-                            location.hash = '/backstageMgt/historicalDataImport';
-                        }
-                        break;
-                    case 'personalSettings'://个人设置
-                        location.hash = '/personalSettings';
-                        break;
-                    case 'announcement'://公告
-                        location.hash = '/announcement';
-                        $('#unReadNoticeCount').html('');
-                        break;
-                    case 'createOrg'://创建组织
-                        location.hash = '/createOrg';
-                        break;
-                    /*case 'financeSettings'://财务设置
-                        var option = {};
-                        option.$isFirstEnter = true;
-                        $('#content-right').m_financeSettings_menu(option);
-                        that.dealMenuShowOrHide(0);
-                        break;*/
-                }
-            })
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-/**
  * 项目信息－收款计划-添加节点
  * Created by wrb on 2018/8/10.
  */
@@ -16730,6 +15897,2148 @@ return new String($out);
 
 })(jQuery, window, document);
 
+/**
+ * Created by wrb on 2016/12/21.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_inputProcessTime",
+        defaults = {
+            $title: null,
+            $isDialog: true,
+            $isHaveMemo: true,
+            $timeInfo: null,
+            $okCallBack: null,
+            $isOkSave: false,//默认false
+            $okText: null,//按钮文字
+            $saveDataUrl: null,//直接保存url
+            $minHeight: null,//弹窗的最小高度
+            $saveData: null,//保存格外的参数
+            $currentAppointmentDate: null,//当前任务的合同进度时间
+            $saveTimeKeyVal: null,//保存到库所对应的时间字段 key 值
+            $validate:null//验证{默认第一套验证}
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.initHtmlData(function () {
+                that.initSpinner();
+                if(that.settings.$validate!=null && that.settings.$validate==1){
+                    that.addInputTime_validate1();
+                }else if(that.settings.$validate!=null && that.settings.$validate==2){
+
+                }else{
+                    that.addInputTime_validate();
+                }
+
+            });
+        },
+
+        //初始化数据
+        initHtmlData: function (callBack) {
+            var that = this;
+            if (that.settings.$isDialog) {//以弹窗编辑
+                var options = {};
+                options.title = that.settings.$title || '设计依据';
+                options.contentEle = 'dialogOBox';
+                options.lock = 3;
+                options.width = '510';
+                options.minHeight = that.settings.$minHeight || '100';
+                options.tPadding = '0px';
+                options.url = rootPath + '/assets/module/m_common/m_dialog.html';
+                options.cancel = function () {
+                };
+                if (that.settings.$isOkSave) {//直接保存
+                    options.okText = '保存';
+                    options.ok = function () {
+                        if ($('form.inputTimeOBox').valid()) {
+                            var $data = $("form.inputTimeOBox").serializeObject();
+                            var timeObj = {};
+                            if (that.settings.$saveTimeKeyVal != null) {//处理保存到库所对应的时间字段 key 值,此处传入的key是有序的
+                                for (var key in $data) {
+                                    if (key == 'startTime') {
+                                        timeObj[that.settings.$saveTimeKeyVal[0]] = $data[key];
+                                        continue;
+                                    }
+                                    if (key == 'endTime') {
+                                        timeObj[that.settings.$saveTimeKeyVal[1]] = $data[key];
+                                        continue;
+                                    }
+                                    if (key == 'memo') {
+                                        timeObj[that.settings.$saveTimeKeyVal[2]] = $data[key];
+                                        timeObj[that.settings.$saveTimeKeyVal[2]] = $.trim(timeObj[that.settings.$saveTimeKeyVal[2]]);
+                                        continue;
+                                    }
+                                }
+                            }
+                            $.extend(timeObj, that.settings.$saveData);
+                            var option = {};
+                            if($('#page-wrapper #content-right').length>0){
+                                option.classId = '#page-wrapper #content-right';
+                            }
+                            option.url = that.settings.$saveDataUrl;
+                            option.postData = timeObj;
+                            m_ajax.postJson(option, function (response) {
+                                if (response.code == '0') {
+                                    S_toastr.success("保存成功!");
+                                    if (that.settings.$okCallBack != null) {
+                                        return that.settings.$okCallBack(response.data);
+                                    }
+                                } else {
+                                    S_dialog.error(response.info);
+                                }
+                            })
+                        } else {
+                            return false;
+                        }
+                    }
+                } else {//返回上级
+                    options.okText = '确定';
+                    options.ok = function () {
+                        if ($('form.inputTimeOBox').valid()) {
+                            var $data = $("form.inputTimeOBox").serializeObject();
+                            if (that.settings.$okCallBack != null) {
+                                return that.settings.$okCallBack($data);
+                            }
+                        } else {
+                            return false;
+                        }
+                    };
+                }
+                if (that.settings.$okText != null) {
+                    options.okText = that.settings.$okText;
+                }
+
+
+                S_dialog.dialog(options, function (d) {//加载html后触发
+
+                    var $data = {};
+                    $data.$isHaveMemo = that.settings.$isHaveMemo;
+                    $data.$timeInfo = {};
+                    if (that.settings.$timeInfo != null) {
+                        $data.$timeInfo = that.settings.$timeInfo;
+                    }
+                    var classIdObj = $('div[id="content:' + d.id + '"] .dialogOBox');
+                    that.initHtmlTemplate(callBack, $data, classIdObj)
+                });
+            } else {//不以弹窗编辑
+                var $data = {};
+                $data.$isHaveMemo = that.settings.$isHaveMemo;
+                $data.$timeInfo = {};
+                if (that.settings.$timeInfo != null) {
+                    $data.$timeInfo = that.settings.$timeInfo;
+                }
+                var classIdObj = $(that.element);
+                that.initHtmlTemplate(callBack, $data, classIdObj)
+            }
+        }
+        //计算时间差的方法
+        , countTimeDiff: function (startTime, endTime) {
+            return moment(endTime).diff(moment(startTime), 'days') + 1;
+        }
+        //生成html
+        , initHtmlTemplate: function (callBack, data, classIdObj) {
+            var that = this;
+            if (that.settings.$currentAppointmentDate != null) {
+                data.appointmentStartTime = that.settings.$currentAppointmentDate.startTime;
+                data.appointmentEndTime = that.settings.$currentAppointmentDate.endTime;
+            }
+            var html = template('m_common/m_inputProcessTime', data);
+            classIdObj.html(html);
+
+            m_inputProcessTime_onpicked();
+
+            $(that.element).find('.fa-calendar').click(function () {
+                $(this).closest('.input-group').find('input:first').focus();
+            });
+
+            if (callBack != null) {
+                callBack();
+            }
+        }
+        //初始化Spinner
+        , initSpinner: function () {
+            $('form.inputTimeOBox').find('.dayCountSpinner:eq(0)')
+                .spinner({
+                    delay: 200,
+                    changed: function (e, newVal, oldVal) {
+                        var startTime = $('form.inputTimeOBox').find('.startTime:eq(0)').val();
+                        if (startTime === null || _.isBlank(startTime))
+                            return;
+
+                        if (newVal == 0) {
+                            $('form.inputTimeOBox').find('.endTime:eq(0)').val('');
+                            return;
+                        }
+
+                        var endTime = moment(startTime).add(newVal - 1, 'days').format('YYYY-MM-DD');
+                        $('form.inputTimeOBox').find('.endTime:eq(0)').val(endTime);
+                    }
+                });
+        }
+        //step1的表单验证
+        , addInputTime_validate: function () {
+            var that = this;
+            $('form.inputTimeOBox').validate({
+                rules: {
+                    startTime: {
+                        required: true
+                    }
+                    , endTime: {
+                        required: true
+                    }
+                    , memo: {
+                        required: true,
+                        maxlength: 250,
+                        isBlank:true
+                    }
+                },
+                messages: {
+                    startTime: {
+                        required: '请设置开始日期！'
+                    }
+                    , endTime: {
+                        required: '请设置结束日期！'
+                    }
+                    , memo: {
+                        required: '请输入进度变更原因！',
+                        maxlength: '输入不能超过250个字符！',
+                        isBlank:'请输入进度变更原因!'
+                    }
+                },
+                errorElement: "label",  //用来创建错误提示信息标签
+                errorPlacement: function (error, element) {  //重新编辑error信息的显示位置
+                    error.appendTo(element.closest('.form-group'));
+                }
+            });
+            $.validator.addMethod('isBlank', function(value, element) {
+                value = $.trim(value);
+                var isOk = true;
+                if( value!=null && $.trim(value)==''){
+                    isOk = false;
+                }
+                return  isOk;
+            }, '请输入进度变更原因!');
+
+        }
+        , addInputTime_validate1: function () {
+            var that = this;
+            $('form.inputTimeOBox').validate({
+                rules: {
+                    startTime: {
+                        ckTime: true
+                    }
+                },
+                messages: {
+                    startTime: {
+                        ckTime: '请输入日期!'
+                    }
+                },
+                errorElement: "label",  //用来创建错误提示信息标签
+                errorPlacement: function (error, element) {  //重新编辑error信息的显示位置
+                    error.appendTo(element.closest('.form-group'));
+                }
+            });
+            $.validator.addMethod('ckTime', function(value, element) {
+                var isOk = true;
+                var startTime = $('.inputTimeOBox input[name="startTime"]').val();
+                var endTime = $('.inputTimeOBox input[name="endTime"]').val();
+                if(startTime=='' && endTime==''){
+                    isOk = false;
+                }
+                return  isOk;
+            }, '请输入日期!');
+
+            $('form.inputTimeOBox').find('input,textarea').on('click',function () {
+                $('form.inputTimeOBox label.error').hide();
+            });
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_popover",
+        defaults = {
+            clearOnInit: true,//初始化是否清掉其他的Popover
+            titleHtml: null,
+            hideArrow: false,
+            popoverStyle: '',//父容器popover的追加样式，如弹窗宽度
+            contentStyle: 'padding: 10px 14px 10px;',//popover-content的追加样式
+            content: null,//自定义内容，可以用模板
+            placement: null,//浮窗是在哪个位置展开：‘left’,‘right’,‘top’,‘bottom’,空值则默认为top
+            onShown: null,//浮窗显示后的事件，可以用来重新绑定值
+            onSave: null,//提交事件
+            onClear: null,//清除事件
+            onClose: null,//关闭事件
+            template: 'm_common/m_popover',//主框架,
+            type:null,//默认浮窗,inline=内置
+            hideElement:false,//隐藏该标签
+            closeOnDocumentClicked: null//自定义样式类处理关闭editable
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = options;
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._popoverTop = null;//初始化页面时，保存浮窗的top值
+        this._popoverHeight = null;//初始化页面时，保存浮窗的height值
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+
+            if (that.settings.clearOnInit === true) {
+                //清掉其他的Popover
+                $(document).find('.m-popover').each(function (i, o) {
+                    $(o).remove();
+                });
+
+                $(document).off('click.m-popover');
+            }
+
+            var html = template(that.settings.template, {
+                titleHtml: that.settings.titleHtml,
+                popoverStyle: that.settings.popoverStyle,
+                contentStyle: that.settings.contentStyle,
+                content: that.settings.content
+            });
+
+            $(html).insertAfter($(that.element));
+            var $popover = $(that.element).next('.m-popover');
+
+            if (that.settings.hideArrow === true)
+                $popover.find('.arrow').eq(0).hide();
+
+            if (that.settings.onShown && that.settings.onShown !== null)
+                that.settings.onShown($popover);
+
+            if(that.settings.hideElement === true){
+                $(that.element).hide();
+            }
+
+            //防止冒泡
+            $popover.off('click.m-popover').on('click.m-popover', function (e) {
+                stopPropagation(e);
+                return false;
+            });
+
+            setTimeout(function () {
+                if(that.settings.type==null || that.settings.type!='inline'){
+                    that.setPosition();
+                }
+                that.bindBtnClick();
+                that.bindPopoverClickedOut();
+            }, 50);
+
+            //绑定回车事件
+            $popover.find('input[type="text"]').keydown(function () {
+                if (event.keyCode == '13') {//keyCode=13是回车键
+                    var $btnSubmit = $popover.find('.m-popover-submit');
+                    if ($btnSubmit && $btnSubmit.length > 0)
+                        $btnSubmit.click();
+                }
+            });
+
+        },
+        //当鼠标点击的焦点不在浮窗内时，关闭浮窗
+        bindPopoverClickedOut: function () {
+            var that = this;
+            $(document).on('click.m-popover', function (e) {
+                //console.log('document.clicked');
+                var flag = $(e.target).parents('.select2-container').length > 0 || $(e.target).is('.select2-container');
+                //防止select2搜索框点击触发关闭
+                if ($(e.target).closest('.select2-search__field').length > 0 || flag)
+                    return false;
+
+                if (typeof that.settings.closeOnDocumentClicked === 'function') {
+                    if (that.settings.closeOnDocumentClicked(e) === false)
+                        return false;
+                }
+
+                if (that.settings.onClose && that.settings.onClose !== null) {
+                    //返回false则不关闭
+                    if (that.settings.onClose($(e.target)) !== false)
+                        that.closeFilter();
+                }
+                else {
+                    that.closeFilter();
+                }
+            });
+        },
+        setPosition: function () {
+            var that = this;
+            var $popover = $(that.element).next('.m-popover');
+            if ($popover.length > 0) {
+                var p_p = that.settings.placement ? that.settings.placement : 'top';//浮窗的展示位置
+                var a_ptop = $(that.element).position().top;//a标签的top值
+                var a_width = $(that.element).outerWidth();//a标签的width值
+                var a_height = $(that.element).outerHeight();//a标签的height值
+                var a_pleft = $(that.element).position().left;//a标签的left值
+                var p_width = $popover.width();//浮窗的宽度
+                var p_height = $popover.outerHeight();//浮窗的高度
+                var p_top = 0;//浮窗的top值
+                var p_left = 0;//浮窗的left值
+                switch (p_p) {
+                    case 'top':
+                        p_top = (a_ptop - p_height);
+                        p_left = a_pleft + a_width / 2 - p_width / 2;
+                        break;
+                    case 'bottom':
+                        p_top = (a_ptop + a_height);
+                        p_left = a_pleft + a_width / 2 - p_width / 2;
+                        break;
+                    case 'left':
+                        p_top = (a_ptop - p_height / 2 + 5);
+                        p_left = a_pleft - p_width - 10;
+                        break;
+                    case 'right':
+                        p_top = (a_ptop - p_height / 2 + 7);
+                        p_left = a_pleft + a_width;
+                        break;
+
+
+                };
+                that._popoverTop = p_top;
+                that._popoverHeight = p_height;
+                $popover.removeClass('top').addClass(p_p);
+                if (p_p.indexOf('left') > -1 || p_p.indexOf('right') > -1) {
+                    $popover.find('.arrow').css({'top': '50%', 'left': ''});
+                }
+
+                $popover.css({
+                    display: 'inline-block',
+                    position: 'absolute',
+                    top: p_top,
+                    left: p_left
+                });
+            }
+        },
+        bindBtnClick: function () {
+            var that = this;
+            var $popover = $(that.element).next('.m-popover');
+            if ($popover.length > 0) {
+
+                //查找【提交按钮】并绑定事件
+                var $btnSubmit = $popover.find('.m-popover-submit');
+                if ($btnSubmit.length > 0) {
+                    $btnSubmit.click(function (e) {
+
+                        if (that.settings.onSave && that.settings.onSave !== null) {
+                            if (that.settings.onSave($popover) !== false)
+                                that.closeFilter();
+                        }
+                        else
+                            that.closeFilter();
+
+                        stopPropagation(e);
+                        return false;
+                    });
+                }
+
+                //查找【清除按钮】并绑定事件
+                var $btnClear = $popover.find('.m-popover-clear');
+                if ($btnClear.length > 0) {
+                    $btnClear.click(function (e) {
+
+                        //如果没有自定义清除函数，则使用默认
+                        if (that.settings.onClear && that.settings.onClear !== null)
+                            that.settings.onClear($popover);
+                        else {
+                            //查找第一个input清空
+                            var $input = $(this).closest('form').find('input:first');
+                            if ($input.length > 0)
+                                $input.val('');
+                        }
+
+                        stopPropagation(e);
+                        return false;
+                    });
+                }
+
+                //查找【关闭按钮】并绑定事件
+                var $btnClose = $popover.find('.m-popover-close');
+                if ($btnClose.length > 0) {
+                    $btnClose.click(function (e) {
+
+                        if (that.settings.onClose && that.settings.onClose !== null) {
+                            //返回false则不关闭
+                            if (that.settings.onClose($popover) !== false)
+                                that.closeFilter();
+                        }
+                        else {
+                            that.closeFilter();
+                        }
+
+                        stopPropagation(e);
+                        return false;
+                    });
+                }
+                /*var $btnSubmit = $popover.find('.m-popover-submit');
+                 //点击submit按钮或浮窗其他地方，出现验证信息时，相应改变popover的top值
+                 $popover.find('.popover-content,button,input').off('click.changePosition').on('click.changePosition',function(e){
+                 setTimeout(function(){
+                 that.changePosition($popover);
+                 },20);
+                 });
+                 //点击input表单，出现验证信息时，相应改变popover的top值
+                 $popover.find('input[type="text"]').off('keyup.changePosition').on('keyup.changePosition',function(e){
+                 setTimeout(function(){
+                 console.log(2222)
+                 that.changePosition($popover);
+                 },20);
+                 });*/
+                $popover.resize(function () {
+                    setTimeout(function () {
+                        that.changePosition($popover);
+                    }, 20);
+                });
+            }
+        },
+        //通过改变弹窗的top值来改变弹窗的位置
+        changePosition: function ($popover) {
+            var that = this;
+            var errTag = $popover.find('label.error').length;
+            var errTagH = errTag * ($popover.find('label.error').outerHeight() - 0);
+            var popH = $popover.height();
+            var popT = $popover.position().top;
+            var h1 = popH - that._popoverHeight;
+
+            if (that.settings.placement != null && that.settings.placement == 'top') {//当为top，popoverTop需要设置
+                if (h1 == -4) {
+                    $popover.css('top', that._popoverTop + 'px');
+                } else {
+                    var newTop = that._popoverTop - h1 - 4;
+                    $popover.css('top', newTop);
+                }
+
+            } else if (that.settings.placement != null && (that.settings.placement == 'left' || that.settings.placement == 'right')) {
+
+                $popover.find('.arrow').css('top', (that._popoverHeight) / 2 + 'px');
+            }
+        },
+        closeFilter: function () {
+            var that = this;
+            $(that.element).siblings('.m-popover').each(function (i, o) {
+                $(o).remove();
+            });
+            $(document).off('click.m-popover');
+            if(that.settings.hideElement === true){
+                $(that.element).show();
+            }
+        }
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+
+
+
+/**
+ * 快速选择时间，以在位编辑的方式打开
+ * Created by veata on 2016/12/21.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_quickDatePicker",
+        defaults = {
+            $title:null,
+            $placement:true,//浮窗展开的位置，共四个值‘top’,‘bottom’,‘left’,‘right’,
+            $okCallBack:null,
+            $isClear:true,//展示清空按钮
+            $eleId:null//当前元素浮动窗ID
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.initHtmlData(function (data) {
+                WdatePicker({eCont:'quickDatePicker',onpicked:function(dp){that.saveDate(dp)}});
+                $('#quickDatePicker iframe').css('height','232px');//firefox有时不出来修改
+            });
+        },
+        //初始化数据
+        initHtmlData:function (callBack) {
+            var that = this;
+            var title = '变更合同签订日期';
+            if(that.settings.$title!=null){
+                title = that.settings.$title;
+            }
+            $(that.settings.$eleId).m_popover({
+                placement: that.settings.$placement==null?'top':that.settings.$placement,
+                titleHtml : '<div i="header" class="ui-dialog-header"><button i="close" class="ui-dialog-close">&#215;</button><div i="title" class="ui-dialog-title">'+title+'</div></div>',
+                content: template('m_common/m_quickDatePicker', {isClear:that.settings.$isClear}),
+                contentStyle: 'height:257px;',
+                onShown: function ($popover) {
+                    if(callBack!=null){
+                        callBack();
+                    }
+                    if($popover.prev().text()=='未签订'){
+                        $popover.find('.ui-dialog-header').remove();
+                    }
+                    $popover.find('.ui-dialog-close').on('click',function () {
+                        $(that.settings.$eleId).next().remove();
+                    });
+                    that.bindClearDate($popover);
+                },
+                onSave: function ($popover) {
+                    return that.saveDate();
+                }
+            }, true);
+        }
+        //保存编辑
+        ,saveDate:function (dp) {
+            var that = this;
+            var $data = dp.cal.getDateStr();
+
+            if(that.settings.$okCallBack!=null){
+                return that.settings.$okCallBack($data);
+            }
+        }
+        ,bindClearDate:function ($popover) {
+            var that = this;
+            $popover.find('button.m-popover-clear').on('click',function () {
+                if(that.settings.$okCallBack!=null){
+                    return that.settings.$okCallBack(null);
+                }
+            });
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+
+
+/**
+ * Created by veata on 2017/02/14.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_top",
+        defaults = {
+            data: null
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            this.initHtml();
+        },
+        initHtml: function () {
+            var that = this;
+
+            //请求基础数据
+            var option = {};
+            option.url = restApi.url_getCurrUserOfWork;
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+                    var $data = {};
+                    $data.rootPath = window.rootPath;
+                    if (response.data != null) {
+                        $data.companyFilePath = response.data.companyInfo != null ? response.data.companyInfo.filePath : '';
+                        $data.userInfo = response.data.userInfo != null ? response.data.userInfo : {};
+                        $data.orgList = response.data.orgList;
+                        $data.companyInfo = response.data.companyInfo != null ? response.data.companyInfo : {};
+                        $data.companyUserInfo = response.data.companyUser != null ? response.data.companyUser : {};
+                        $data.fastdfsUrl = response.data.fastdfsUrl;
+                        $data.roleCodes = response.data.roleCodes;
+                        $data.fileCenterUrl = response.data.fileCenterUrl;
+                        $data.enterpriseUrl = response.data.enterpriseUrl;
+                        $data.adminFlag = response.data.adminFlag;
+                        $data.isAuth = response.data.isAuth;
+                        window.adminFlag = $data.adminFlag;
+                        var globalData = {
+                            currentCompanyId : $data.companyInfo.id,
+                            currentUserId : $data.userInfo.id,
+                            currentCompanyUserId : $data.companyUserInfo.id,
+                            currentRoleCodes : $data.roleCodes==null?'':$data.roleCodes
+                        };
+                        that.globalVariables(globalData);
+
+                        if (isNullOrBlank(response.data.unReadMessage) || response.data.unReadMessage === 0)
+                            $data.unReadMessage = '';
+                        else
+                            $data.unReadMessage = response.data.unReadMessage;
+
+                        if (isNullOrBlank(response.data.unReadNotice) || response.data.unReadNotice === 0)
+                            $data.unReadNotice = '';
+                        else
+                            $data.unReadNotice = response.data.unReadNotice;
+
+                        if (isNullOrBlank($data.userInfo.imgUrl))
+                            $data.userInfo.imgUrl = window.rootPath + '/assets/img/head_default.png';
+                        else
+                            $data.userInfo.imgUrl = $data.userInfo.imgUrl;
+
+
+                        var data = {};
+                        data.rootPath = window.rootPath;
+                        $.extend(data, $data);
+                        var html = template('m_common/m_top', data);
+                        $('#m_top').html(html);
+
+                        rolesControl();
+                        that.bindActionClick();
+                        $.each($('#top-nav li'), function (i, o) {
+                            var $el = $(o);
+                            if ($el.data('nav') === currentNav)
+                                $el.addClass('active');
+                        });
+
+                        var oLi=$('#m_top_orgList');
+                        if(oLi.find('li').length==0){
+                            oLi.prev().find('.caret').remove();
+                            oLi.remove()
+                        }
+                    }
+
+                    that.renderToolTip();
+
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+
+
+        }
+        //渲染ToolTip
+        , renderToolTip: function () {
+            $('.tooltip-demo').tooltip({
+                selector: '[data-toggle=tooltip]',
+                container: 'body',
+                trigger: 'hover'
+            });
+        },
+        //更改组织全局变量
+        globalVariables:function (data) {
+            window.currentCompanyId = data.currentCompanyId;
+            window.currentUserId = data.currentUserId;
+            window.currentCompanyUserId = data.currentCompanyUserId;
+            window.currentRoleCodes = data.currentRoleCodes;
+        }
+        , switchOrg: function (orgId) {
+            var option = {};
+            option.url = restApi.url_switchCompany + '/' + orgId;
+            m_ajax.getJson(option, function (response) {
+                if (response.code == '0') {
+                    window.location.href = window.rootPath + '/iWork/home/workbench';
+                } else {
+                    S_dialog.error(response.info);
+                }
+            })
+        }
+        //事件绑定
+        , bindActionClick: function () {
+            var that = this;
+            $(that.element).find('a[data-action]').on('click', function (e) {
+                var $this = $(this);
+                var dataAction = $this.attr('data-action');
+                switch (dataAction) {
+                    case 'switchOrg'://切换组织
+                        var companyInfoId = window.currentCompanyId;
+                        var orgId = $(this).attr('org-id');
+                        if (orgId != companyInfoId) {
+                            that.switchOrg(orgId);
+                        }
+                        return false;
+                        break;
+                    case 'messageCenter'://消息界面
+                        location.hash = '/messageCenter';
+                        $('#unReadMessageCount').html('');
+                        break;
+                    case 'backstageMgt'://后台管理
+
+                        if(window.currentRoleCodes.indexOf('com_enterprise_edit')>-1 || window.currentRoleCodes.indexOf('sys_enterprise_logout')>-1){//具有组织编辑权限
+                            location.hash = '/backstageMgt/orgInfo';
+                        }else if(window.currentRoleCodes.indexOf('hr_org_set')>-1 || window.currentRoleCodes.indexOf('hr_employee')>-1 || window.currentRoleCodes.indexOf('org_data_import')>-1 || window.currentRoleCodes.indexOf('org_partner')>-1){//具有组织架构权限
+                            location.hash = '/backstageMgt/organizational';
+                        }else if(window.currentRoleCodes.indexOf('sys_role_permission')>-1 || window.adminFlag==1){//具有权限配置权限
+                            location.hash = '/backstageMgt/organizational';
+                        }else if(window.currentRoleCodes.indexOf('sys_role_auth')>-1){//具有企业认证权限
+                            location.hash = '/backstageMgt/enterpriseCertification';
+                        }else if(window.currentRoleCodes.indexOf('data_import')>-1){//具有历史导入
+                            location.hash = '/backstageMgt/historicalDataImport';
+                        }
+                        break;
+                    case 'personalSettings'://个人设置
+                        location.hash = '/personalSettings';
+                        break;
+                    case 'announcement'://公告
+                        location.hash = '/announcement';
+                        $('#unReadNoticeCount').html('');
+                        break;
+                    case 'createOrg'://创建组织
+                        location.hash = '/createOrg';
+                        break;
+                    /*case 'financeSettings'://财务设置
+                        var option = {};
+                        option.$isFirstEnter = true;
+                        $('#content-right').m_financeSettings_menu(option);
+                        that.dealMenuShowOrHide(0);
+                        break;*/
+                }
+            })
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+/**
+ * Created by Wuwq on 2017/3/6.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_filterableField",
+        defaults = {
+            filterTagContainer: null, /*存储过滤标签的元素*/
+            field: null,
+            fieldDisplayName: null,
+            filterType: null,
+            customProcess: function (popoverOptions, m_filterableField) {
+            },
+            selectLocalData:null,
+            onChanged: null
+        };
+
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = options;
+        this._defaults = defaults;
+        this._name = pluginName;
+
+        this.init();
+    }
+
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that._render();
+            that._bindClick();
+        }
+        , _render: function () {
+            var that = this;
+            var $el = $(that.element);
+            $el.addClass('field-filterable');
+            $el.append('<span class="field-filter-indicator"></span>');
+        }
+        , _bindClick: function () {
+            var that = this;
+            var $el = $(that.element);
+
+            $el.find('.field-filter-indicator').click(function (e) {
+                var popoverOptions = {};
+                switch (that.settings.filterType) {
+                    case 'custom':
+                        that.settings.customProcess(popoverOptions, that);
+                        break;
+                    case 'contain':
+                        popoverOptions.placement = 'left';
+                        popoverOptions.content = template('m_filterableField/m_filterType_contain');
+                        popoverOptions.onShown = function ($popover) {
+                            //恢复浮动窗口里的值
+                            var filter = $(that.settings.filterTagContainer).m_filterTag('getFilter', that.settings.field);
+                            if (filter && filter !== null) {
+                                $popover.find('input:first').val(filter.filterValue)
+                            }
+                        };
+                        popoverOptions.onSave = function ($popover) {
+                            var filter = {
+                                field: that.settings.field,
+                                fieldDisplayName: that.settings.fieldDisplayName,
+                                filterType: that.settings.filterType,
+                                filterValue: $popover.find('input:first').val()
+                            };
+                            $(that.settings.filterTagContainer).m_filterTag('saveFilter', filter);
+
+                            if (that.settings.onChanged && that.settings.onChanged !== null)
+                                that.settings.onChanged(filter);
+                        };
+                        break;
+                    case 'select_local_data':
+                        var selectLocalData = that.settings.selectLocalData;
+                        popoverOptions.popoverStyle = 'width:296px;min-width:296px';
+                        popoverOptions.placement = 'left';
+                        popoverOptions.content = template('m_filterableField/m_filterType_select_local_data');
+                        popoverOptions.onShown = function ($popover) {
+                            var $select = $popover.find('select[name="filter_select"]:first').select2({
+                                allowClear: false,
+                                language: "zh-CN",
+                                minimumResultsForSearch: Infinity,
+                                data: selectLocalData
+                            });
+
+                            //恢复浮动窗口里的值
+                            var filter = $(that.settings.filterTagContainer).m_filterTag('getFilter', that.settings.field);
+                            if (filter && filter !== null) {
+                                $popover.find('select[name="filter_select"]:first').val(filter.filterValue);
+                                $select.trigger('change');
+                            }
+                        };
+                        popoverOptions.onSave = function ($popover) {
+                            var filterValue = $popover.find('select[name="filter_select"]:first').find('option:selected').val();
+                            var filterValueDisplayName = _.find(selectLocalData, function (o) {
+                                return o.id == filterValue
+                            }).text;
+                            var filter = {
+                                field: that.settings.field,
+                                fieldDisplayName: that.settings.fieldDisplayName,
+                                filterType: that.settings.filterType,
+                                filterValue: filterValue,
+                                filterValueDisplayName: filterValueDisplayName
+                            };
+                            $(that.settings.filterTagContainer).m_filterTag('saveFilter', filter);
+
+                            if (that.settings.onChanged && that.settings.onChanged !== null)
+                                that.settings.onChanged(filter);
+                        };
+                        break;
+                    case 'select':
+                        popoverOptions.placement = 'left';
+                        popoverOptions.content = template('m_filterableField/m_filterType_select');
+                        popoverOptions.onShown = function ($popover) {
+                            //恢复浮动窗口里的值
+                            var filter = $(that.settings.filterTagContainer).m_filterTag('getFilter', that.settings.field);
+                            if (filter && filter !== null) {
+
+                            }
+                        };
+                        popoverOptions.onSave = function ($popover) {
+                            var filter = {
+                                field: that.settings.field,
+                                fieldDisplayName: that.settings.fieldDisplayName,
+                                filterType: that.settings.filterType,
+                                filterValue: null
+                            };
+                            $(that.settings.filterTagContainer).m_filterTag('saveFilter', filter);
+
+                            if (that.settings.onChanged && that.settings.onChanged !== null)
+                                that.settings.onChanged(filter);
+                        };
+                        break;
+                    case 'dateRange':
+                        popoverOptions.popoverStyle = 'width:335px;min-width:335px';
+                        popoverOptions.placement = 'left';
+                        popoverOptions.content = template('m_filterableField/m_filterType_dateRange');
+                        popoverOptions.onClear = function ($popover) {
+                            var $input = $popover.find('form input');
+                            if ($input.length > 0)
+                                $input.val('');
+                        };
+                        popoverOptions.onShown = function ($popover) {
+                            //恢复浮动窗口里的值
+                            var filter = $(that.settings.filterTagContainer).m_filterTag('getFilter', that.settings.field);
+
+                            $popover.find('.input-group-addon').on('click',function(e){
+                                $(this).prev('input').focus();
+                                stopPropagation(e);
+                            });
+                            if (filter && filter !== null) {
+                                var split = filter.filterValue.split(',');
+                                $popover.find('input[name="filter_startDate"]').val(split[0]);
+                                $popover.find('input[name="filter_endDate"]').val(split[1]);
+                            }else{ return false};
+                        };
+                        popoverOptions.onSave = function ($popover) {
+                            var startDate = $popover.find('input[name="filter_startDate"]').val();
+                            var endDate = $popover.find('input[name="filter_endDate"]').val();
+                            var filterValue = startDate + ',' + endDate;
+                            if ($.trim(filterValue) == ',') {
+                                filterValue = '';
+                            }
+                            var filter = {
+                                field: that.settings.field,
+                                fieldDisplayName: that.settings.fieldDisplayName,
+                                filterType: that.settings.filterType,
+                                filterValue: filterValue
+                            };
+                            $(that.settings.filterTagContainer).m_filterTag('saveFilter', filter);
+
+                            if (that.settings.onChanged && that.settings.onChanged !== null){
+                                that.settings.onChanged(filter);
+                            }else{
+                                return false
+                            }
+
+                        };
+                        break;
+                }
+
+                $(this).m_popover_filter(popoverOptions, true);
+
+                stopPropagation(e);
+                return false;
+            });
+        }
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+
+/**
+ * Created by Wuwq on 2017/1/5.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_filterTag",
+        defaults = {
+            filters: [],
+            onRemoved: null
+        };
+
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = options;
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that._render();
+        }
+        , _render: function () {
+            var that = this;
+            var html = template('m_filterableField/m_filterTag', {filters: that.settings.filters});
+            $(that.element).html(html);
+            that._bindBtnRemove();
+        }
+        , _bindBtnRemove: function () {
+            var that = this;
+            $(that.element).find('.filter-tag-remove').each(function (i, o) {
+                $(o).click(function () {
+                    var field = $(this).closest('.filter-tag').attr('data-field');
+                    var filters = _.reject(that.settings.filters, function (o) {
+                        return field === o.field;
+                    });
+                    that.settings.filters = filters;
+                    if (that.settings.onRemoved)
+                        that.settings.onRemoved();
+                    that._render();
+                });
+            });
+        }
+        , saveFilter: function (f) {
+
+            var that = this;
+
+            //判断过滤值是否为空，如果为空值则去掉过滤
+            if (f.filterValue !== null && !_.isBlank(f.filterValue)) {
+                var m = _.find(that.settings.filters, function (o) {
+                    return f.field === o.field;
+                });
+                //判断是否已存在过滤标签
+                if (m && m !== null) {
+                    m.filterValue = f.filterValue;
+                    m.filterValueDisplayName = f.filterValueDisplayName;
+                } else {
+                    that.settings.filters.push(f);
+                }
+            } else {
+                var filters = _.reject(that.settings.filters, function (o) {
+                    return f.field === o.field;
+                });
+                that.settings.filters = filters;
+            }
+
+            that._render();
+        }
+        , getFilters: function () {
+            var that = this;
+            return that.settings.filters;
+        }
+        , getFilter: function (field) {
+            var that = this;
+            var filter = _.find(that.settings.filters, function (f) {
+                return f.field === field;
+            });
+            return filter || null;
+        }
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+/**
+ * select下拉筛选-双重循环选择
+ * Created by wrb on 2018/8/15.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_filter_checkbox_select",
+        defaults = {
+            eleId:null,//元素ID
+            align:null,//浮窗位置
+            colClass:null,//列class
+            boxStyle:null,//样式
+            dialogWidth:null,//弹窗宽度
+            selectArr:null,//筛选的数据(list对象,selectArr:[{id: "XX1", name: "XX2"}]
+            selectedArr:null,//当前选中项（checkbox时多个,[id1,id2]）
+            selectedCallBack:null//选择回调
+        };
+
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = options;
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._selectedArr = this.settings.selectedArr;
+        this._selectedStr = '';
+
+        if(this._selectedArr!=null && this._selectedArr.length>0)
+            this._selectedStr = this._selectedArr.join(',');　　//转为字符串
+
+        this.init();
+    }
+
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.render();
+        }
+        , render: function () {
+            var that = this;
+            var selectList = [];
+
+            if(that.settings.selectArr!=null && that.settings.selectArr.length>0){
+                $.each(that.settings.selectArr, function (i, item) {
+                    var isSelected = false;
+                    if(that._selectedStr.indexOf(item.id)>-1){
+                        isSelected = true;
+                    }
+                    selectList.push({fieldValue: item.id, fieldName: item.name,isSelected:isSelected});
+                });
+            }
+            if(that.settings.selectedArr!=null && that.settings.selectedArr.length>0){
+                $(that.element).find('i').addClass('fc-v1-blue');
+            }
+
+            var iHtml = template('m_filterableField/m_filter_checkbox_select',{
+                selectList:selectList,
+                colClass:that.settings.colClass,
+                boxStyle:that.settings.boxStyle
+            });
+            var iTextObj = iHtml.getTextWH();
+            var iWHObj = setDialogWH(iTextObj.width,iTextObj.height);
+
+            $(that.element).off('click').on('click',function (e) {
+                S_dialog.dialog({
+                    contentEle: 'dialogOBox',
+                    ele:that.settings.eleId,
+                    lock: 2,
+                    align: that.settings.align||'bottom right',
+                    quickClose:true,
+                    noTriangle:true,
+                    width: that.settings.dialogWidth || iWHObj.width+20,
+                    height:iWHObj.height+10,
+                    tPadding: '0px',
+                    url: rootPath+'/assets/module/m_common/m_dialog.html'
+
+                },function(d){//加载html后触发
+
+                    var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
+                    $(dialogEle).html(iHtml);
+                    $(dialogEle).css('overflow-x','hidden');
+
+                    that.initICheck($(dialogEle));
+                    //滚动事件
+                    $(dialogEle).scroll(function() {
+                        if($(this).scrollTop()>50){
+                            $(dialogEle).find('.check-box-title').addClass('check-box-title-fixed');
+                        }else{
+                            $(dialogEle).find('.check-box-title').removeClass('check-box-title-fixed');
+                        }
+                    });
+                });
+                e.stopPropagation();
+                return false;
+            });
+        }
+        //初始化iCheck
+        ,initICheck:function ($ele) {
+            var that = this;
+            var ifChecked = function (e) {
+                var id = $(this).val();
+                if(id==''){//选择的是全部-全选
+                    $ele.find('input[name="itemCk"]').prop('checked',true);
+                    $ele.find('input[name="itemCk"]').iCheck('update');
+                }
+                that.dealAllCheck($ele);
+                that.getSelectedData($ele);
+            };
+            var ifUnchecked = function (e) {
+                var id = $(this).val();
+                if(id==''){//选择的是全部-全选
+                    $ele.find('input[name="itemCk"]').prop('checked',false);
+                    $ele.find('input[name="itemCk"]').iCheck('update');
+                }
+                that.dealAllCheck($ele);
+                that.getSelectedData($ele);
+            };
+            $ele.find('input[name="itemCk"]').iCheck({
+                checkboxClass: 'icheckbox_minimal-green',
+                radioClass: 'iradio_minimal-green'
+            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
+        }
+        //判断是否全选
+        ,dealAllCheck:function ($ele) {
+            var that = this;
+            var allLen = $ele.find('input[name="itemCk"][value!=""]').length;
+            var allCkLen = $ele.find('input[name="itemCk"][value!=""]:checked').length;
+
+            if(allCkLen==allLen){
+                $ele.find('input[name="itemCk"][value=""]').prop('checked',true);
+                $ele.find('input[name="itemCk"][value=""]').iCheck('update');
+            }else{
+                $ele.find('input[name="itemCk"][value=""]').prop('checked',false);
+                $ele.find('input[name="itemCk"][value=""]').iCheck('update');
+            }
+        }
+        //获取选中的数据
+        ,getSelectedData :function ($ele) {
+            var that = this;
+            var selectedArr = [];
+            $ele.find('input[name="itemCk"][value!=""]:checked').each(function () {
+                selectedArr.push($(this).val());
+            });
+            if(that.settings.selectedCallBack)
+                that.settings.selectedCallBack(selectedArr);
+        }
+
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+
+/**
+ * select下拉筛选
+ * Created by wrb on 2018/8/15.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_filter_select",
+        defaults = {
+            eleId:null,//元素ID
+            align:null,//浮窗位置
+            isMultiple:false,//是否多选，是，开放checkbox
+            selectArr:null,//筛选的数据(list对象,selectArr:[{id: "XX1", name: "XX2"}]
+            selectedArr:null,//当前选中项（checkbox时多个,[id1,id2]）
+            selectedCallBack:null//选择回调
+        };
+
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = options;
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._selectedArr = this.settings.selectedArr;
+        this._selectedStr = '';
+
+        if(this._selectedArr!=null && this._selectedArr.length>0)
+            this._selectedStr = this._selectedArr.join(',');　　//转为字符串
+
+        this.init();
+    }
+
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.render();
+        }
+        , render: function () {
+            var that = this;
+            var selectList = [];
+            selectList.push({fieldName:'全部',fieldValue:''});
+            /*if(that.settings.selectArr!=null && Object.getOwnPropertyNames(that.settings.selectArr).length>0){
+                $.each(that.settings.selectArr, function (key, value) {
+                    var isSelected = false;
+                    if(that._selectedStr.indexOf(key)>-1){
+                        isSelected = true;
+                    }
+                    selectList.push({fieldValue: key, fieldName: value,isSelected:isSelected});
+                });
+            }*/
+            if(that.settings.selectArr!=null && that.settings.selectArr.length>0){
+                $.each(that.settings.selectArr, function (i, item) {
+                    var isSelected = false;
+                    if(that._selectedStr.indexOf(item.id)>-1){
+                        isSelected = true;
+                    }
+                    selectList.push({fieldValue: item.id, fieldName: item.name,isSelected:isSelected});
+                });
+            }
+            if(that.settings.selectedArr!=null && that.settings.selectedArr.length>0){
+                $(that.element).find('i').addClass('fc-v1-blue');
+            }
+
+            var iHtml = template('m_filterableField/m_filter_select1',{
+                selectList:selectList,
+                isMultiple:that.settings.isMultiple
+            });
+            var iTextObj = iHtml.getTextWH();
+            var iWHObj = setDialogWH(iTextObj.width,iTextObj.height);
+
+            $(that.element).on('click',function (e) {
+                S_dialog.dialog({
+                    contentEle: 'dialogOBox',
+                    ele:that.settings.eleId,
+                    lock: 2,
+                    align: that.settings.align||'bottom right',
+                    quickClose:true,
+                    noTriangle:true,
+                    width: iWHObj.width+20,
+                    height:iWHObj.height,
+                    tPadding: '0px',
+                    url: rootPath+'/assets/module/m_common/m_dialog.html'
+
+                },function(d){//加载html后触发
+
+                    var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
+                    $(dialogEle).html(iHtml);
+                    $(dialogEle).css('overflow-x','hidden');
+
+                    if(that.settings.isMultiple)
+                        that.initICheck($(dialogEle));
+
+                    $(dialogEle).find('.dropdown-menu a').on('click',function () {
+
+                        var val = $(this).attr('data-state-no');
+                        var selectedArr = [];
+                        if(val!='')
+                            selectedArr.push(val);
+
+                        if(that.settings.selectedCallBack)
+                            that.settings.selectedCallBack(selectedArr);
+
+                        S_dialog.close($(dialogEle));
+                    });
+
+                });
+                e.stopPropagation();
+                return false;
+            });
+        }
+        //初始化iCheck
+        ,initICheck:function ($ele) {
+            var that = this;
+            var ifChecked = function (e) {
+                var id = $(this).val();
+                if(id==''){//选择的是全部-全选
+                    $ele.find('input[name="itemCk"]').prop('checked',true);
+                    $ele.find('input[name="itemCk"]').iCheck('update');
+                }
+                that.dealAllCheck($ele);
+                that.getSelectedData($ele);
+            };
+            var ifUnchecked = function (e) {
+                var id = $(this).val();
+                if(id==''){//选择的是全部-全选
+                    $ele.find('input[name="itemCk"]').prop('checked',false);
+                    $ele.find('input[name="itemCk"]').iCheck('update');
+                }
+                that.dealAllCheck($ele);
+                that.getSelectedData($ele);
+            };
+            $ele.find('input[name="itemCk"]').iCheck({
+                checkboxClass: 'icheckbox_minimal-green',
+                radioClass: 'iradio_minimal-green'
+            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
+        }
+        //判断是否全选
+        ,dealAllCheck:function ($ele) {
+            var that = this;
+            var allLen = $ele.find('input[name="itemCk"][value!=""]').length;
+            var allCkLen = $ele.find('input[name="itemCk"][value!=""]:checked').length;
+
+            if(allCkLen==allLen){
+                $ele.find('input[name="itemCk"][value=""]').prop('checked',true);
+                $ele.find('input[name="itemCk"][value=""]').iCheck('update');
+            }else{
+                $ele.find('input[name="itemCk"][value=""]').prop('checked',false);
+                $ele.find('input[name="itemCk"][value=""]').iCheck('update');
+            }
+        }
+        //获取选中的数据
+        ,getSelectedData :function ($ele) {
+            var that = this;
+            var selectedArr = [];
+            $ele.find('input[name="itemCk"][value!=""]:checked').each(function () {
+                selectedArr.push($(this).val());
+            });
+            if(that.settings.selectedCallBack)
+                that.settings.selectedCallBack(selectedArr);
+
+        }
+
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+
+/**
+ * 时间组合筛选
+ * Created by wrb on 2018/8/14.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_filter_timeCombination",
+        defaults = {
+            selectTimeCallBack:null//时间选择回调
+        };
+
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = options;
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._timeData = {
+            startTime:'',
+            endTime:''
+        };//选择的时间
+        this.init();
+    }
+
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.render();
+        }
+        ,render:function () {
+            var that = this;
+            var html = template('m_filterableField/m_filter_timeCombination',{});
+            $(that.element).html(html);
+            that.bindSetTime();
+            that.bindChoseTime();
+        }
+        //快捷时间
+        , bindSetTime: function () {
+            var that = this;
+            $(that.element).find('a[data-action="setTime"]').click(function () {
+                var days = $(this).attr('data-days');
+                var endTime = getNowDate();
+                var startTime = '';//moment(endTime).subtract(days, 'days').format('YYYY-MM-DD');
+
+                if (endTime != null && endTime.indexOf('-') > -1) {
+
+                    var month = endTime.substring(5, 7) - 0;//当前月份
+
+                    if (days == 30) {//一个月
+
+                        startTime = endTime.substring(0, 8) + '01';
+
+                    } else if (days == 90) {//一季度
+
+                        if (month >= 1 && month <= 3) {//第一季度
+                            startTime = endTime.substring(0, 5) + '01-01';
+                        } else if (month >= 4 && month <= 6) {//第二季度
+                            startTime = endTime.substring(0, 5) + '04-01';
+                        } else if (month >= 7 && month <= 9) {//第三季度
+                            startTime = endTime.substring(0, 5) + '07-01';
+                        } else if (month >= 10 && month <= 12) {//第四季度
+                            startTime = endTime.substring(0, 5) + '10-01';
+                        }
+
+                    } else if (days == 180) {//半年
+
+                        if (month >= 1 && month <= 6) {//前半年
+                            startTime = endTime.substring(0, 5) + '01-01';
+                        } else if (month >= 7 && month <= 12) {//后半年
+                            startTime = endTime.substring(0, 5) + '07-01';
+                        }
+
+                    } else if (days == 360) {//一年
+
+                        startTime = endTime.substring(0, 5) + '01-01';
+                    }
+                }
+                that.getDateTime(startTime,endTime);
+
+                $(this).blur();
+            });
+
+        }
+        //时间绑定事件
+        , bindChoseTime:function () {
+            var that = this;
+            var currDate = getNowDate();
+            $(that.element).find('input[name="startTime"]').off('click').on('click',function () {
+
+                var endTime = $(that.element).find('input[name="endTime"]').val();
+                var onpicked =function(dp){
+
+                    that._timeData.startTime = dp.cal.getNewDateStr();
+                    that._timeData.endTime = endTime;
+                    if(that.settings.selectTimeCallBack)
+                        that.settings.selectTimeCallBack(that._timeData);
+
+                };
+                WdatePicker({el:this,maxDate:endTime,onpicked:onpicked});
+            });
+            $(that.element).find('input[name="endTime"]').off('click').on('click',function () {
+
+                var startTime = $(that.element).find('input[name="startTime"]').val();
+                var onpicked =function(dp){
+
+                    that._timeData.startTime = startTime;
+                    that._timeData.endTime = dp.cal.getNewDateStr();
+                    if(that.settings.selectTimeCallBack)
+                        that.settings.selectTimeCallBack(that._timeData);
+
+                };
+                WdatePicker({el:this,minDate:startTime,onpicked:onpicked});
+            });
+            $(that.element).find('i.fa-calendar').off('click').on('click',function () {
+                $(this).closest('.input-group').find('input').click();
+            });
+
+            $(that.element).find('input[name="ipt_year"]').click(function () {
+
+                var onpicked =function(dp){
+
+                    var year = dp.cal.getNewDateStr();
+                    year  = year.substring(0,4);
+
+                    var endTime = year+'-12-31';
+                    var startTime = year+'-01-01';
+
+                    var currYear = new Date().getFullYear();
+                    if(year==currYear){//今年
+                        endTime  = getNowDate();
+                    }
+
+                    that.initMonthSelect();
+
+                    that.getDateTime(startTime,endTime);
+                };
+                WdatePicker({el:this,dateFmt:'yyyy年',maxDate:currDate,onpicked:onpicked});
+            });
+
+        }
+        //渲染收票方
+        ,initMonthSelect:function () {
+            var that = this;
+            var currYear = new Date().getFullYear();
+            var year = $(that.element).find('input[name="ipt_year"]').val();
+            year  = year.substring(0,4);
+            var month = new Date().getMonth();
+            var monthLen = 12;
+            if(year==currYear){//今年
+                monthLen = month+1;
+            }
+            var staffArr = [{id:'',text:'请选择月份'}];
+            for(var i=0;i<monthLen;i++){
+
+                var m = i+1;
+                if(m.length<2){
+                    m = '0' + m;
+                }
+
+                staffArr.push({id:m,text:(i+1)+'月'});
+            }
+            $(that.element).find('select[name="ipt_month"]').select2({
+                tags:false,
+                allowClear: false,
+                placeholder: "请选择月份",
+                containerCssClass:'select-sm',
+                minimumResultsForSearch: -1,
+                language: "zh-CN",
+                data: staffArr
+            });
+            $(that.element).find('select[name="ipt_month"]').on("change", function (e) {
+
+                var currYear = new Date().getFullYear();
+                var year = $(that.element).find('input[name="ipt_year"]').val();
+                year  = year.substring(0,4);
+                var month = $(that.element).find('select[name="ipt_month"]').val();
+                var lastDay = (new Date((new Date(year,month,1)).getTime()-1000*60*60*24)).getDate();
+                var endTime = year+'-'+month+'-'+lastDay;
+                var startTime = year+'-'+month+'-01';
+                if(month==''){
+                    endTime  =  year+'-12-31';
+                    startTime = year+'-01-01';
+                }
+                if(year==currYear && month==new Date().getMonth()+1){//今年
+                    endTime  = getNowDate();
+                }
+                that.getDateTime(startTime,endTime);
+            })
+        }
+
+        ,getDateTime:function (startTime,endTime) {
+            var that = this;
+
+            $(that.element).find('#ipt_startTime').val(startTime);
+            $(that.element).find('#ipt_endTime').val(endTime);
+
+            that._timeData.startTime = startTime;
+            that._timeData.endTime = endTime;
+
+            if(that.settings.selectTimeCallBack)
+                that.settings.selectTimeCallBack(that._timeData);
+        }
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_popover_filter",
+        defaults = {
+            titleHtml: null,
+            popoverStyle: '',
+            content: null,
+            placement: null,//浮窗是在哪个位置展开：‘left’,‘right’,‘top’,‘bottom’,空值则默认为top
+            onShown: null,
+            onSave: null,
+            onClear: null,
+            template: 'm_filterableField/m_popover_filter'
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = options;
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+
+            //清掉其他列的Popover
+            var $table = $(that.element).closest('.table');
+            if ($table.length > 0) {
+                $table.find('.popover-filter').each(function (i, o) {
+                    $(o).remove();
+                });
+            }
+
+            var html = template(that.settings.template, {
+                titleHtml: that.settings.titleHtml,
+                popoverStyle: that.settings.popoverStyle
+            });
+            $(html).insertAfter(that.element);
+            var $popover = $(that.element).next('.popover-filter');
+            $popover.find('.popover-content').html(that.settings.content);
+
+            //回车键
+            $popover.find('.popover-content input').keydown(function (e) {
+                if (event.keyCode == 13) {
+                    stopPropagation(e);
+                    preventDefault(e);
+                    return false;
+                }
+            });
+
+            //防止冒泡
+            $popover.off('click.popover-filter').on('click.popover-filter', function (e) {
+                stopPropagation(e);
+                return false;
+            });
+
+            if (that.settings.onShown && that.settings.onShown !== null)
+                that.settings.onShown($popover);
+
+            setTimeout(function () {
+                that.setPosition();
+                that.bindBtnClick();
+                that.bindPopoverClickedOut();
+            }, 50);
+        },
+        //当鼠标点击的焦点不在浮窗内时，关闭浮窗
+        bindPopoverClickedOut: function () {
+            var that = this;
+            $(document).on('click.popover-filter', function (e) {
+                //console.log('document.clicked');
+                var flag = $(e.target).parents('.select2-container').length > 0 || $(e.target).is('.select2-container');
+                //防止select2搜索框点击触发关闭
+                if ($(e.target).closest('.select2-search__field').length > 0 || flag)
+                    return false;
+
+                that.closeFilter();
+            });
+        },
+        setPosition: function () {
+            var that = this;
+            var $popover = $(that.element).next('.popover-filter');
+            if ($popover.length > 0) {
+                var p_p = that.settings.placement ? that.settings.placement : 'top';//浮窗的展示位置
+                var a_ptop = $(that.element).position().top;//a标签的top值
+                var a_width = $(that.element).width();//a标签的width值
+                var a_height = $(that.element).height();//a标签的height值
+                var a_pleft = $(that.element).position().left;//a标签的left值
+                var p_width = $popover.width();//浮窗的宽度
+                var p_height = $popover.height();//浮窗的高度
+                var p_top = 0;//浮窗的top值
+                var p_left = 0;//浮窗的left值
+                switch (p_p) {
+                    case 'top':
+                        p_top = (a_ptop - p_height);
+                        p_left = a_pleft + a_width / 2 - p_width / 2;
+                        break;
+                    case 'bottom':
+                        p_top = (a_ptop + a_height);
+                        p_left = a_pleft + a_width / 2 - p_width / 2;
+                        break;
+                    case 'left':
+                        p_top = (a_ptop - p_height / 2 + 5);
+                        p_left = a_pleft - p_width - 10;
+                        break;
+                    case 'right':
+                        p_top = (a_ptop - p_height / 2 + 7);
+                        p_left = a_pleft + a_width;
+                        break;
+                }
+
+                $popover.removeClass('top').addClass(p_p);
+                if (p_p.indexOf('left') > -1 || p_p.indexOf('right') > -1) {
+                    $popover.find('.arrow').css({'top': '50%', 'left': ''});
+                }
+
+                $popover.css({
+                    display: 'inline-block',
+                    position: 'absolute',
+                    top: p_top,
+                    left: p_left
+                });
+
+
+                //自动调整左右超出浏览器窗口的情况
+                var left = $popover.offset().left;
+                var winWidth = $(window).width();
+                var pWidth = $popover.width();
+                if (left < 0) {
+                    $popover.offset({left: 0});
+                }
+                else if (left + pWidth > winWidth) {
+                    var left = winWidth - pWidth;
+                    if (left > 0)
+                        $popover.offset({left: left});
+                }
+            }
+        },
+        bindBtnClick: function () {
+            var that = this;
+            var $popover = $(that.element).next('.popover-filter');
+            if ($popover.length > 0) {
+
+                var $btnSubmit = $popover.find('.filter-submit');
+                if ($btnSubmit.length > 0) {
+                    $btnSubmit.click(function (e) {
+
+                        if (that.settings.onSave && that.settings.onSave !== null)
+                            that.settings.onSave($popover);
+
+                        that.closeFilter();
+
+                        stopPropagation(e);
+                        return false;
+                    });
+                }
+
+                var $btnClear = $popover.find('.filter-clear');
+                if ($btnClear.length > 0) {
+                    $btnClear.click(function (e) {
+
+                        //如果没有自定义清除函数，则使用默认
+                        if (that.settings.onClear && that.settings.onClear !== null)
+                            that.settings.onClear($popover);
+                        else {
+                            //查找第一个input清空
+                            var $input = $(this).closest('form').find('input:first');
+                            if ($input.length > 0)
+                                $input.val('');
+                        }
+
+                        stopPropagation(e);
+                        return false;
+                    });
+                }
+
+                var $btnClose = $popover.find('.filter-close');
+                if ($btnClose.length > 0) {
+                    $btnClose.click(function (e) {
+
+                        that.closeFilter();
+
+                        stopPropagation(e);
+                        return false;
+                    });
+                }
+            }
+        },
+        closeFilter: function () {
+            var that = this;
+            $(that.element).siblings('.popover-filter').each(function (i, o) {
+                $(o).remove();
+            });
+            $(document).off('click.popover-filter');
+        }
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+
+
+
 ;(function ($, window, document, undefined) {
 
     "use strict";
@@ -19914,852 +21223,6 @@ return new String($out);
     };
 
 })(jQuery, window, document);
-
-/**
- * Created by Wuwq on 2017/3/6.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_filterableField",
-        defaults = {
-            filterTagContainer: null, /*存储过滤标签的元素*/
-            field: null,
-            fieldDisplayName: null,
-            filterType: null,
-            customProcess: function (popoverOptions, m_filterableField) {
-            },
-            selectLocalData:null,
-            onChanged: null
-        };
-
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = options;
-        this._defaults = defaults;
-        this._name = pluginName;
-
-        this.init();
-    }
-
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that._render();
-            that._bindClick();
-        }
-        , _render: function () {
-            var that = this;
-            var $el = $(that.element);
-            $el.addClass('field-filterable');
-            $el.append('<span class="field-filter-indicator"></span>');
-        }
-        , _bindClick: function () {
-            var that = this;
-            var $el = $(that.element);
-
-            $el.find('.field-filter-indicator').click(function (e) {
-                var popoverOptions = {};
-                switch (that.settings.filterType) {
-                    case 'custom':
-                        that.settings.customProcess(popoverOptions, that);
-                        break;
-                    case 'contain':
-                        popoverOptions.placement = 'left';
-                        popoverOptions.content = template('m_filterableField/m_filterType_contain');
-                        popoverOptions.onShown = function ($popover) {
-                            //恢复浮动窗口里的值
-                            var filter = $(that.settings.filterTagContainer).m_filterTag('getFilter', that.settings.field);
-                            if (filter && filter !== null) {
-                                $popover.find('input:first').val(filter.filterValue)
-                            }
-                        };
-                        popoverOptions.onSave = function ($popover) {
-                            var filter = {
-                                field: that.settings.field,
-                                fieldDisplayName: that.settings.fieldDisplayName,
-                                filterType: that.settings.filterType,
-                                filterValue: $popover.find('input:first').val()
-                            };
-                            $(that.settings.filterTagContainer).m_filterTag('saveFilter', filter);
-
-                            if (that.settings.onChanged && that.settings.onChanged !== null)
-                                that.settings.onChanged(filter);
-                        };
-                        break;
-                    case 'select_local_data':
-                        var selectLocalData = that.settings.selectLocalData;
-                        popoverOptions.popoverStyle = 'width:296px;min-width:296px';
-                        popoverOptions.placement = 'left';
-                        popoverOptions.content = template('m_filterableField/m_filterType_select_local_data');
-                        popoverOptions.onShown = function ($popover) {
-                            var $select = $popover.find('select[name="filter_select"]:first').select2({
-                                allowClear: false,
-                                language: "zh-CN",
-                                minimumResultsForSearch: Infinity,
-                                data: selectLocalData
-                            });
-
-                            //恢复浮动窗口里的值
-                            var filter = $(that.settings.filterTagContainer).m_filterTag('getFilter', that.settings.field);
-                            if (filter && filter !== null) {
-                                $popover.find('select[name="filter_select"]:first').val(filter.filterValue);
-                                $select.trigger('change');
-                            }
-                        };
-                        popoverOptions.onSave = function ($popover) {
-                            var filterValue = $popover.find('select[name="filter_select"]:first').find('option:selected').val();
-                            var filterValueDisplayName = _.find(selectLocalData, function (o) {
-                                return o.id == filterValue
-                            }).text;
-                            var filter = {
-                                field: that.settings.field,
-                                fieldDisplayName: that.settings.fieldDisplayName,
-                                filterType: that.settings.filterType,
-                                filterValue: filterValue,
-                                filterValueDisplayName: filterValueDisplayName
-                            };
-                            $(that.settings.filterTagContainer).m_filterTag('saveFilter', filter);
-
-                            if (that.settings.onChanged && that.settings.onChanged !== null)
-                                that.settings.onChanged(filter);
-                        };
-                        break;
-                    case 'select':
-                        popoverOptions.placement = 'left';
-                        popoverOptions.content = template('m_filterableField/m_filterType_select');
-                        popoverOptions.onShown = function ($popover) {
-                            //恢复浮动窗口里的值
-                            var filter = $(that.settings.filterTagContainer).m_filterTag('getFilter', that.settings.field);
-                            if (filter && filter !== null) {
-
-                            }
-                        };
-                        popoverOptions.onSave = function ($popover) {
-                            var filter = {
-                                field: that.settings.field,
-                                fieldDisplayName: that.settings.fieldDisplayName,
-                                filterType: that.settings.filterType,
-                                filterValue: null
-                            };
-                            $(that.settings.filterTagContainer).m_filterTag('saveFilter', filter);
-
-                            if (that.settings.onChanged && that.settings.onChanged !== null)
-                                that.settings.onChanged(filter);
-                        };
-                        break;
-                    case 'dateRange':
-                        popoverOptions.popoverStyle = 'width:335px;min-width:335px';
-                        popoverOptions.placement = 'left';
-                        popoverOptions.content = template('m_filterableField/m_filterType_dateRange');
-                        popoverOptions.onClear = function ($popover) {
-                            var $input = $popover.find('form input');
-                            if ($input.length > 0)
-                                $input.val('');
-                        };
-                        popoverOptions.onShown = function ($popover) {
-                            //恢复浮动窗口里的值
-                            var filter = $(that.settings.filterTagContainer).m_filterTag('getFilter', that.settings.field);
-
-                            $popover.find('.input-group-addon').on('click',function(e){
-                                $(this).prev('input').focus();
-                                stopPropagation(e);
-                            });
-                            if (filter && filter !== null) {
-                                var split = filter.filterValue.split(',');
-                                $popover.find('input[name="filter_startDate"]').val(split[0]);
-                                $popover.find('input[name="filter_endDate"]').val(split[1]);
-                            }else{ return false};
-                        };
-                        popoverOptions.onSave = function ($popover) {
-                            var startDate = $popover.find('input[name="filter_startDate"]').val();
-                            var endDate = $popover.find('input[name="filter_endDate"]').val();
-                            var filterValue = startDate + ',' + endDate;
-                            if ($.trim(filterValue) == ',') {
-                                filterValue = '';
-                            }
-                            var filter = {
-                                field: that.settings.field,
-                                fieldDisplayName: that.settings.fieldDisplayName,
-                                filterType: that.settings.filterType,
-                                filterValue: filterValue
-                            };
-                            $(that.settings.filterTagContainer).m_filterTag('saveFilter', filter);
-
-                            if (that.settings.onChanged && that.settings.onChanged !== null){
-                                that.settings.onChanged(filter);
-                            }else{
-                                return false
-                            }
-
-                        };
-                        break;
-                }
-
-                $(this).m_popover_filter(popoverOptions, true);
-
-                stopPropagation(e);
-                return false;
-            });
-        }
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-
-/**
- * Created by Wuwq on 2017/1/5.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_filterTag",
-        defaults = {
-            filters: [],
-            onRemoved: null
-        };
-
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = options;
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that._render();
-        }
-        , _render: function () {
-            var that = this;
-            var html = template('m_filterableField/m_filterTag', {filters: that.settings.filters});
-            $(that.element).html(html);
-            that._bindBtnRemove();
-        }
-        , _bindBtnRemove: function () {
-            var that = this;
-            $(that.element).find('.filter-tag-remove').each(function (i, o) {
-                $(o).click(function () {
-                    var field = $(this).closest('.filter-tag').attr('data-field');
-                    var filters = _.reject(that.settings.filters, function (o) {
-                        return field === o.field;
-                    });
-                    that.settings.filters = filters;
-                    if (that.settings.onRemoved)
-                        that.settings.onRemoved();
-                    that._render();
-                });
-            });
-        }
-        , saveFilter: function (f) {
-
-            var that = this;
-
-            //判断过滤值是否为空，如果为空值则去掉过滤
-            if (f.filterValue !== null && !_.isBlank(f.filterValue)) {
-                var m = _.find(that.settings.filters, function (o) {
-                    return f.field === o.field;
-                });
-                //判断是否已存在过滤标签
-                if (m && m !== null) {
-                    m.filterValue = f.filterValue;
-                    m.filterValueDisplayName = f.filterValueDisplayName;
-                } else {
-                    that.settings.filters.push(f);
-                }
-            } else {
-                var filters = _.reject(that.settings.filters, function (o) {
-                    return f.field === o.field;
-                });
-                that.settings.filters = filters;
-            }
-
-            that._render();
-        }
-        , getFilters: function () {
-            var that = this;
-            return that.settings.filters;
-        }
-        , getFilter: function (field) {
-            var that = this;
-            var filter = _.find(that.settings.filters, function (f) {
-                return f.field === field;
-            });
-            return filter || null;
-        }
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-/**
- * 时间组合筛选
- * Created by wrb on 2018/8/14.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_filter_timeCombination",
-        defaults = {
-            selectTimeCallBack:null//时间选择回调
-        };
-
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = options;
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._timeData = {
-            startTime:'',
-            endTime:''
-        };//选择的时间
-        this.init();
-    }
-
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.render();
-        }
-        ,render:function () {
-            var that = this;
-            var html = template('m_filterableField/m_filter_timeCombination',{});
-            $(that.element).html(html);
-            that.bindSetTime();
-            that.bindChoseTime();
-        }
-        //快捷时间
-        , bindSetTime: function () {
-            var that = this;
-            $(that.element).find('a[data-action="setTime"]').click(function () {
-                var days = $(this).attr('data-days');
-                var endTime = getNowDate();
-                var startTime = '';//moment(endTime).subtract(days, 'days').format('YYYY-MM-DD');
-
-                if (endTime != null && endTime.indexOf('-') > -1) {
-
-                    var month = endTime.substring(5, 7) - 0;//当前月份
-
-                    if (days == 30) {//一个月
-
-                        startTime = endTime.substring(0, 8) + '01';
-
-                    } else if (days == 90) {//一季度
-
-                        if (month >= 1 && month <= 3) {//第一季度
-                            startTime = endTime.substring(0, 5) + '01-01';
-                        } else if (month >= 4 && month <= 6) {//第二季度
-                            startTime = endTime.substring(0, 5) + '04-01';
-                        } else if (month >= 7 && month <= 9) {//第三季度
-                            startTime = endTime.substring(0, 5) + '07-01';
-                        } else if (month >= 10 && month <= 12) {//第四季度
-                            startTime = endTime.substring(0, 5) + '10-01';
-                        }
-
-                    } else if (days == 180) {//半年
-
-                        if (month >= 1 && month <= 6) {//前半年
-                            startTime = endTime.substring(0, 5) + '01-01';
-                        } else if (month >= 7 && month <= 12) {//后半年
-                            startTime = endTime.substring(0, 5) + '07-01';
-                        }
-
-                    } else if (days == 360) {//一年
-
-                        startTime = endTime.substring(0, 5) + '01-01';
-                    }
-                }
-                that.getDateTime(startTime,endTime);
-
-                $(this).blur();
-            });
-
-        }
-        //时间绑定事件
-        , bindChoseTime:function () {
-            var that = this;
-            var currDate = getNowDate();
-            $(that.element).find('input[name="startTime"]').off('click').on('click',function () {
-
-                var endTime = $(that.element).find('input[name="endTime"]').val();
-                var onpicked =function(dp){
-
-                    that._timeData.startTime = dp.cal.getNewDateStr();
-                    that._timeData.endTime = endTime;
-                    if(that.settings.selectTimeCallBack)
-                        that.settings.selectTimeCallBack(that._timeData);
-
-                };
-                WdatePicker({el:this,maxDate:endTime,onpicked:onpicked});
-            });
-            $(that.element).find('input[name="endTime"]').off('click').on('click',function () {
-
-                var startTime = $(that.element).find('input[name="startTime"]').val();
-                var onpicked =function(dp){
-
-                    that._timeData.startTime = startTime;
-                    that._timeData.endTime = dp.cal.getNewDateStr();
-                    if(that.settings.selectTimeCallBack)
-                        that.settings.selectTimeCallBack(that._timeData);
-
-                };
-                WdatePicker({el:this,minDate:startTime,onpicked:onpicked});
-            });
-            $(that.element).find('i.fa-calendar').off('click').on('click',function () {
-                $(this).closest('.input-group').find('input').click();
-            });
-
-            $(that.element).find('input[name="ipt_year"]').click(function () {
-
-                var onpicked =function(dp){
-
-                    var year = dp.cal.getNewDateStr();
-                    year  = year.substring(0,4);
-
-                    var endTime = year+'-12-31';
-                    var startTime = year+'-01-01';
-
-                    var currYear = new Date().getFullYear();
-                    if(year==currYear){//今年
-                        endTime  = getNowDate();
-                    }
-
-                    that.initMonthSelect();
-
-                    that.getDateTime(startTime,endTime);
-                };
-                WdatePicker({el:this,dateFmt:'yyyy年',maxDate:currDate,onpicked:onpicked});
-            });
-
-        }
-        //渲染收票方
-        ,initMonthSelect:function () {
-            var that = this;
-            var currYear = new Date().getFullYear();
-            var year = $(that.element).find('input[name="ipt_year"]').val();
-            year  = year.substring(0,4);
-            var month = new Date().getMonth();
-            var monthLen = 12;
-            if(year==currYear){//今年
-                monthLen = month+1;
-            }
-            var staffArr = [{id:'',text:'请选择月份'}];
-            for(var i=0;i<monthLen;i++){
-
-                var m = i+1;
-                if(m.length<2){
-                    m = '0' + m;
-                }
-
-                staffArr.push({id:m,text:(i+1)+'月'});
-            }
-            $(that.element).find('select[name="ipt_month"]').select2({
-                tags:false,
-                allowClear: false,
-                placeholder: "请选择月份",
-                containerCssClass:'select-sm',
-                minimumResultsForSearch: -1,
-                language: "zh-CN",
-                data: staffArr
-            });
-            $(that.element).find('select[name="ipt_month"]').on("change", function (e) {
-
-                var currYear = new Date().getFullYear();
-                var year = $(that.element).find('input[name="ipt_year"]').val();
-                year  = year.substring(0,4);
-                var month = $(that.element).find('select[name="ipt_month"]').val();
-                var lastDay = (new Date((new Date(year,month,1)).getTime()-1000*60*60*24)).getDate();
-                var endTime = year+'-'+month+'-'+lastDay;
-                var startTime = year+'-'+month+'-01';
-                if(month==''){
-                    endTime  =  year+'-12-31';
-                    startTime = year+'-01-01';
-                }
-                if(year==currYear && month==new Date().getMonth()+1){//今年
-                    endTime  = getNowDate();
-                }
-                that.getDateTime(startTime,endTime);
-            })
-        }
-
-        ,getDateTime:function (startTime,endTime) {
-            var that = this;
-
-            $(that.element).find('#ipt_startTime').val(startTime);
-            $(that.element).find('#ipt_endTime').val(endTime);
-
-            that._timeData.startTime = startTime;
-            that._timeData.endTime = endTime;
-
-            if(that.settings.selectTimeCallBack)
-                that.settings.selectTimeCallBack(that._timeData);
-        }
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_popover_filter",
-        defaults = {
-            titleHtml: null,
-            popoverStyle: '',
-            content: null,
-            placement: null,//浮窗是在哪个位置展开：‘left’,‘right’,‘top’,‘bottom’,空值则默认为top
-            onShown: null,
-            onSave: null,
-            onClear: null,
-            template: 'm_filterableField/m_popover_filter'
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = options;
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-
-            //清掉其他列的Popover
-            var $table = $(that.element).closest('.table');
-            if ($table.length > 0) {
-                $table.find('.popover-filter').each(function (i, o) {
-                    $(o).remove();
-                });
-            }
-
-            var html = template(that.settings.template, {
-                titleHtml: that.settings.titleHtml,
-                popoverStyle: that.settings.popoverStyle
-            });
-            $(html).insertAfter(that.element);
-            var $popover = $(that.element).next('.popover-filter');
-            $popover.find('.popover-content').html(that.settings.content);
-
-            //回车键
-            $popover.find('.popover-content input').keydown(function (e) {
-                if (event.keyCode == 13) {
-                    stopPropagation(e);
-                    preventDefault(e);
-                    return false;
-                }
-            });
-
-            //防止冒泡
-            $popover.off('click.popover-filter').on('click.popover-filter', function (e) {
-                stopPropagation(e);
-                return false;
-            });
-
-            if (that.settings.onShown && that.settings.onShown !== null)
-                that.settings.onShown($popover);
-
-            setTimeout(function () {
-                that.setPosition();
-                that.bindBtnClick();
-                that.bindPopoverClickedOut();
-            }, 50);
-        },
-        //当鼠标点击的焦点不在浮窗内时，关闭浮窗
-        bindPopoverClickedOut: function () {
-            var that = this;
-            $(document).on('click.popover-filter', function (e) {
-                //console.log('document.clicked');
-                var flag = $(e.target).parents('.select2-container').length > 0 || $(e.target).is('.select2-container');
-                //防止select2搜索框点击触发关闭
-                if ($(e.target).closest('.select2-search__field').length > 0 || flag)
-                    return false;
-
-                that.closeFilter();
-            });
-        },
-        setPosition: function () {
-            var that = this;
-            var $popover = $(that.element).next('.popover-filter');
-            if ($popover.length > 0) {
-                var p_p = that.settings.placement ? that.settings.placement : 'top';//浮窗的展示位置
-                var a_ptop = $(that.element).position().top;//a标签的top值
-                var a_width = $(that.element).width();//a标签的width值
-                var a_height = $(that.element).height();//a标签的height值
-                var a_pleft = $(that.element).position().left;//a标签的left值
-                var p_width = $popover.width();//浮窗的宽度
-                var p_height = $popover.height();//浮窗的高度
-                var p_top = 0;//浮窗的top值
-                var p_left = 0;//浮窗的left值
-                switch (p_p) {
-                    case 'top':
-                        p_top = (a_ptop - p_height);
-                        p_left = a_pleft + a_width / 2 - p_width / 2;
-                        break;
-                    case 'bottom':
-                        p_top = (a_ptop + a_height);
-                        p_left = a_pleft + a_width / 2 - p_width / 2;
-                        break;
-                    case 'left':
-                        p_top = (a_ptop - p_height / 2 + 5);
-                        p_left = a_pleft - p_width - 10;
-                        break;
-                    case 'right':
-                        p_top = (a_ptop - p_height / 2 + 7);
-                        p_left = a_pleft + a_width;
-                        break;
-                }
-
-                $popover.removeClass('top').addClass(p_p);
-                if (p_p.indexOf('left') > -1 || p_p.indexOf('right') > -1) {
-                    $popover.find('.arrow').css({'top': '50%', 'left': ''});
-                }
-
-                $popover.css({
-                    display: 'inline-block',
-                    position: 'absolute',
-                    top: p_top,
-                    left: p_left
-                });
-
-
-                //自动调整左右超出浏览器窗口的情况
-                var left = $popover.offset().left;
-                var winWidth = $(window).width();
-                var pWidth = $popover.width();
-                if (left < 0) {
-                    $popover.offset({left: 0});
-                }
-                else if (left + pWidth > winWidth) {
-                    var left = winWidth - pWidth;
-                    if (left > 0)
-                        $popover.offset({left: left});
-                }
-            }
-        },
-        bindBtnClick: function () {
-            var that = this;
-            var $popover = $(that.element).next('.popover-filter');
-            if ($popover.length > 0) {
-
-                var $btnSubmit = $popover.find('.filter-submit');
-                if ($btnSubmit.length > 0) {
-                    $btnSubmit.click(function (e) {
-
-                        if (that.settings.onSave && that.settings.onSave !== null)
-                            that.settings.onSave($popover);
-
-                        that.closeFilter();
-
-                        stopPropagation(e);
-                        return false;
-                    });
-                }
-
-                var $btnClear = $popover.find('.filter-clear');
-                if ($btnClear.length > 0) {
-                    $btnClear.click(function (e) {
-
-                        //如果没有自定义清除函数，则使用默认
-                        if (that.settings.onClear && that.settings.onClear !== null)
-                            that.settings.onClear($popover);
-                        else {
-                            //查找第一个input清空
-                            var $input = $(this).closest('form').find('input:first');
-                            if ($input.length > 0)
-                                $input.val('');
-                        }
-
-                        stopPropagation(e);
-                        return false;
-                    });
-                }
-
-                var $btnClose = $popover.find('.filter-close');
-                if ($btnClose.length > 0) {
-                    $btnClose.click(function (e) {
-
-                        that.closeFilter();
-
-                        stopPropagation(e);
-                        return false;
-                    });
-                }
-            }
-        },
-        closeFilter: function () {
-            var that = this;
-            $(that.element).siblings('.popover-filter').each(function (i, o) {
-                $(o).remove();
-            });
-            $(document).off('click.popover-filter');
-        }
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-
-
 
 /**
  * 报销条目
@@ -25089,6 +25552,321 @@ return new String($out);
 ;(function ($, window, document, undefined) {
 
     "use strict";
+    var pluginName = "m_inviteBranch",
+        defaults = {
+            a_companyName: null,
+            a_systemManager: null,
+            cellphone: null,
+            userId: null
+        };
+
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = options;
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that._render();
+        }
+        //渲染首屏
+        , _render: function () {
+            var that = this;
+
+            var option = {};
+            option.url = restApi.url_getCompanyByInviteUrl + '/' + $('#invitedId').val();
+            option.classId = '.div-invite-bPaner';
+            option.postData = {};
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+
+                    that.settings.a_companyName = response.data.companyName;
+                    that.settings.a_systemManager = response.data.systemManager;
+
+                    var data = {};
+                    data.companyName = response.data.companyName;
+                    data.systemManager = response.data.systemManager;
+                    data.cellphone = response.data.cellphone;
+                    data.filePath = response.data.filePath;
+                    var html = template('m_inviteBranch/m_inviteBranch', data);
+                    $(that.element).html(html);
+                    that._bindKeyDownEnter();
+                    that._bindAction();
+                } else {
+                    S_dialog.tips(response.info);
+                }
+            });
+        }
+        //回车键
+        , _bindKeyDownEnter: function () {
+            var that = this;
+            $('#cellphone').keydown(function (e) {
+                if (event.keyCode == 13) {
+                    that._verify();
+                    stopPropagation(e);
+                    preventDefault(e);
+                    return false;
+                }
+            });
+        }
+        , _bindAction: function () {
+            var that = this;
+            $(that.element).find('.btn-ok:eq(0)').click(function () {
+                that._verify();
+            });
+        }
+        //验证手机号
+        , _verify: function () {
+            var that = this;
+            var invitedId = $('#invitedId').val();
+            that.settings.cellphone = $('#cellphone').val();
+
+            var option = {};
+            option.url = restApi.url_verifyIdentityForBPartner;
+            option.classId = '.div-invite-bPaner';
+            option.postData = {id: invitedId, cellphone: that.settings.cellphone};
+            m_ajax.postJson(option, function (response) {
+                if (response.code === '0') {
+                    that._renderOrg();
+                } else {
+                    S_dialog.tips(response.info);
+                }
+            });
+        }
+        //渲染团队选择页面
+        , _renderOrg: function () {
+            var that = this;
+
+            var invitedId = $('#invitedId').val();
+
+            var option = {};
+            option.url = restApi.url_getCompanyPrincipal;
+            option.classId = '.div-invite-bPaner';
+            option.postData = {id: invitedId, cellphone: that.settings.cellphone};
+            m_ajax.postJson(option, function (response) {
+                if (response.code === '0') {
+                    if (response.data.companyList) {
+                        if (response.data.companyList.length > 0) {
+                            var html = template('m_inviteBranch/m_inviteBranch_org', {companyList: response.data.companyList,a_companyName:that.settings.a_companyName});
+                            $(that.element).html(html);
+                            that._bindCreateOrg(response.data);
+                            that._bindSelectOrg();
+                        } else {
+                            var html = template('m_inviteBranch/m_inviteBranch_org_hasNo', {});
+                            $(that.element).html(html);
+                            that._bindCreateOrg(response.data);
+                        }
+                    }
+                } else {
+                    S_dialog.tips(response.info);
+                }
+            });
+        }
+        //创建团队
+        , _bindCreateOrg: function (data) {
+            var that = this;
+            $(that.element).find('a[data-action="createOrg"]').click(function (e) {
+                if (data.userId === void 0 || data.userId === null) {
+                    var html = template('m_inviteBranch/m_inviteBranch_create_hasNo', {a_companyName:that.settings.a_companyName});
+                    $(that.element).html(html);
+                    that._bindCreateOrgAndAccountSubmit();
+                } else {
+                    that.settings.userId = data.userId;
+                    var html = template('m_inviteBranch/m_inviteBranch_create_has', {a_companyName:that.settings.a_companyName});
+                    $(that.element).html(html);
+                    that._bindCreateOrgSubmit();
+                }
+                that.createOrgOBox_validate();
+            });
+        }
+        , _bindCreateOrgSubmit: function () {
+            var that = this;
+            var invitedId = $('#invitedId').val();
+            $(that.element).find('a[data-action="createOrgSubmit"]').click(function (e) {
+                var companyName = $(that.element).find('input[name="companyName"]:eq(0)').val();
+                var option = {};
+                if($(that.element).find("form.createOrgOBox").valid()) {
+                    option.url = restApi.url_createBusinessPartner;
+                    option.classId = 'body';
+                    option.postData = {
+                        userId: that.settings.userId,
+                        inviteId: invitedId,
+                        cellphone: that.settings.cellphone,
+                        companyName: companyName
+                    };
+                    m_ajax.postJson(option, function (response) {
+                        if (response.code === '0') {
+                            var html = template('m_inviteBranch/m_inviteBranch_success', {
+                                companyName: companyName,
+                                a_companyName: that.settings.a_companyName
+                            });
+                            $(that.element).html(html);
+                        } else {
+                            S_dialog.tips(response.info);
+                        }
+                    });
+                }
+            });
+        }
+        , _bindCreateOrgAndAccountSubmit: function () {
+            var that = this;
+            var invitedId = $('#invitedId').val();
+            $(that.element).find('a[data-action="createOrgAndAccountSubmit"]').click(function (e) {
+
+                var userName = $(that.element).find('input[name="userName"]:eq(0)').val();
+                var adminPassword = $(that.element).find('input[name="adminPassword"]:eq(0)').val();
+                var companyName = $(that.element).find('input[name="companyName"]:eq(0)').val();
+
+                var option = {};
+                if($(that.element).find("form.createOrgOBox").valid()){
+                    option.url = restApi.url_createBusinessPartner;
+                    option.classId = 'body';
+                    option.postData = {
+                        inviteId: invitedId,
+                        companyName: companyName,
+                        cellphone: that.settings.cellphone,
+                        userName: userName,
+                        adminPassword: adminPassword
+                    };
+                    m_ajax.postJson(option, function (response) {
+                        if (response.code === '0') {
+                            S_dialog.tips("操作成功");
+                            var html = template('m_inviteBranch/m_inviteBranch_success', {
+                                companyName: companyName,
+                                a_companyName: that.settings.a_companyName
+                            });
+                            $(that.element).html(html);
+                        } else {
+                            S_dialog.tips(response.info);
+                        }
+                    });
+                }
+            });
+        }
+
+        ,createOrgOBox_validate: function () {//注册的表单验证
+            var that = this;
+            $(that.element).find("form.createOrgOBox").validate({
+                rules: {
+                    userName: "required",
+                    adminPassword: {
+                        required: true,
+                        rangelength: [6, 12],
+                        checkSpace: true
+                    },
+                    companyName:"required"
+
+                },
+                messages: {
+                    userName: "请输入姓名！",
+                    adminPassword: {
+                        required: '请输入密码！',
+                        rangelength: "密码为6-12位！",
+                        checkSpace: "密码不应含有空格!"
+                    },
+                    companyName:"请输入组织名称！"
+
+                },
+                errorElement: 'label'
+            });
+            //密码验证
+            $.validator.addMethod("checkSpace", function (value, element) {
+                var pattern = /^\S+$/gi;
+                return this.optional(element) || pattern.test(value);
+            }, "密码不应含有空格!");
+        }
+        , _bindSelectOrg: function () {
+            var that = this;
+            var invitedId = $('#invitedId').val();
+
+            $(that.element).find('li[data-action="selectOrg"]').click(function (e) {
+                S_dialog.tips('选择无效，该组织'+$(this).attr('data-memo'));
+            });
+
+            $(that.element).find('li[data-action="selectOrgApply"]').click(function (e) {
+                var companyId = $(this).attr('data-company-id');
+                var companyName=$(this).attr('data-company-name');
+                $(this).m_popover({
+                    placement: 'top',
+                    content: template('m_common/m_popover_confirm', {confirmMsg: '确定选择该组织来建立分支机构关系吗?'}),
+                    onSave: function ($popover) {
+                        var option = {};
+                        option.url = restApi.url_applayBusinessPartner;
+                        option.classId = 'body';
+                        option.postData = {
+                            inviteId: invitedId,
+                            cellphone: that.settings.cellphone,
+                            companyId: companyId
+                        };
+                        m_ajax.postJson(option, function (response) {
+                            if (response.code === '0') {
+                                S_dialog.tips("操作成功");
+                                var html = template('m_inviteBranch/m_inviteBranch_success', {
+                                    companyName: companyName,
+                                    a_companyName: that.settings.a_companyName
+                                });
+                                $(that.element).html(html);
+                            } else {
+                                S_dialog.tips(response.info);
+                            }
+                        });
+                    }
+                }, true);
+            });
+        }
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+/**
+ * Created by Wuwq on 2017/1/5.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
     var pluginName = "m_inviteBPartner",
         defaults = {
             a_companyName: null,
@@ -25345,321 +26123,6 @@ return new String($out);
                             if (response.code === '0') {
                                 S_dialog.tips("操作成功");
                                 var html = template('m_inviteBPartner/m_inviteBPartner_success', {
-                                    companyName: companyName,
-                                    a_companyName: that.settings.a_companyName
-                                });
-                                $(that.element).html(html);
-                            } else {
-                                S_dialog.tips(response.info);
-                            }
-                        });
-                    }
-                }, true);
-            });
-        }
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-/**
- * Created by Wuwq on 2017/1/5.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_inviteBranch",
-        defaults = {
-            a_companyName: null,
-            a_systemManager: null,
-            cellphone: null,
-            userId: null
-        };
-
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = options;
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that._render();
-        }
-        //渲染首屏
-        , _render: function () {
-            var that = this;
-
-            var option = {};
-            option.url = restApi.url_getCompanyByInviteUrl + '/' + $('#invitedId').val();
-            option.classId = '.div-invite-bPaner';
-            option.postData = {};
-            m_ajax.postJson(option, function (response) {
-                if (response.code == '0') {
-
-                    that.settings.a_companyName = response.data.companyName;
-                    that.settings.a_systemManager = response.data.systemManager;
-
-                    var data = {};
-                    data.companyName = response.data.companyName;
-                    data.systemManager = response.data.systemManager;
-                    data.cellphone = response.data.cellphone;
-                    data.filePath = response.data.filePath;
-                    var html = template('m_inviteBranch/m_inviteBranch', data);
-                    $(that.element).html(html);
-                    that._bindKeyDownEnter();
-                    that._bindAction();
-                } else {
-                    S_dialog.tips(response.info);
-                }
-            });
-        }
-        //回车键
-        , _bindKeyDownEnter: function () {
-            var that = this;
-            $('#cellphone').keydown(function (e) {
-                if (event.keyCode == 13) {
-                    that._verify();
-                    stopPropagation(e);
-                    preventDefault(e);
-                    return false;
-                }
-            });
-        }
-        , _bindAction: function () {
-            var that = this;
-            $(that.element).find('.btn-ok:eq(0)').click(function () {
-                that._verify();
-            });
-        }
-        //验证手机号
-        , _verify: function () {
-            var that = this;
-            var invitedId = $('#invitedId').val();
-            that.settings.cellphone = $('#cellphone').val();
-
-            var option = {};
-            option.url = restApi.url_verifyIdentityForBPartner;
-            option.classId = '.div-invite-bPaner';
-            option.postData = {id: invitedId, cellphone: that.settings.cellphone};
-            m_ajax.postJson(option, function (response) {
-                if (response.code === '0') {
-                    that._renderOrg();
-                } else {
-                    S_dialog.tips(response.info);
-                }
-            });
-        }
-        //渲染团队选择页面
-        , _renderOrg: function () {
-            var that = this;
-
-            var invitedId = $('#invitedId').val();
-
-            var option = {};
-            option.url = restApi.url_getCompanyPrincipal;
-            option.classId = '.div-invite-bPaner';
-            option.postData = {id: invitedId, cellphone: that.settings.cellphone};
-            m_ajax.postJson(option, function (response) {
-                if (response.code === '0') {
-                    if (response.data.companyList) {
-                        if (response.data.companyList.length > 0) {
-                            var html = template('m_inviteBranch/m_inviteBranch_org', {companyList: response.data.companyList,a_companyName:that.settings.a_companyName});
-                            $(that.element).html(html);
-                            that._bindCreateOrg(response.data);
-                            that._bindSelectOrg();
-                        } else {
-                            var html = template('m_inviteBranch/m_inviteBranch_org_hasNo', {});
-                            $(that.element).html(html);
-                            that._bindCreateOrg(response.data);
-                        }
-                    }
-                } else {
-                    S_dialog.tips(response.info);
-                }
-            });
-        }
-        //创建团队
-        , _bindCreateOrg: function (data) {
-            var that = this;
-            $(that.element).find('a[data-action="createOrg"]').click(function (e) {
-                if (data.userId === void 0 || data.userId === null) {
-                    var html = template('m_inviteBranch/m_inviteBranch_create_hasNo', {a_companyName:that.settings.a_companyName});
-                    $(that.element).html(html);
-                    that._bindCreateOrgAndAccountSubmit();
-                } else {
-                    that.settings.userId = data.userId;
-                    var html = template('m_inviteBranch/m_inviteBranch_create_has', {a_companyName:that.settings.a_companyName});
-                    $(that.element).html(html);
-                    that._bindCreateOrgSubmit();
-                }
-                that.createOrgOBox_validate();
-            });
-        }
-        , _bindCreateOrgSubmit: function () {
-            var that = this;
-            var invitedId = $('#invitedId').val();
-            $(that.element).find('a[data-action="createOrgSubmit"]').click(function (e) {
-                var companyName = $(that.element).find('input[name="companyName"]:eq(0)').val();
-                var option = {};
-                if($(that.element).find("form.createOrgOBox").valid()) {
-                    option.url = restApi.url_createBusinessPartner;
-                    option.classId = 'body';
-                    option.postData = {
-                        userId: that.settings.userId,
-                        inviteId: invitedId,
-                        cellphone: that.settings.cellphone,
-                        companyName: companyName
-                    };
-                    m_ajax.postJson(option, function (response) {
-                        if (response.code === '0') {
-                            var html = template('m_inviteBranch/m_inviteBranch_success', {
-                                companyName: companyName,
-                                a_companyName: that.settings.a_companyName
-                            });
-                            $(that.element).html(html);
-                        } else {
-                            S_dialog.tips(response.info);
-                        }
-                    });
-                }
-            });
-        }
-        , _bindCreateOrgAndAccountSubmit: function () {
-            var that = this;
-            var invitedId = $('#invitedId').val();
-            $(that.element).find('a[data-action="createOrgAndAccountSubmit"]').click(function (e) {
-
-                var userName = $(that.element).find('input[name="userName"]:eq(0)').val();
-                var adminPassword = $(that.element).find('input[name="adminPassword"]:eq(0)').val();
-                var companyName = $(that.element).find('input[name="companyName"]:eq(0)').val();
-
-                var option = {};
-                if($(that.element).find("form.createOrgOBox").valid()){
-                    option.url = restApi.url_createBusinessPartner;
-                    option.classId = 'body';
-                    option.postData = {
-                        inviteId: invitedId,
-                        companyName: companyName,
-                        cellphone: that.settings.cellphone,
-                        userName: userName,
-                        adminPassword: adminPassword
-                    };
-                    m_ajax.postJson(option, function (response) {
-                        if (response.code === '0') {
-                            S_dialog.tips("操作成功");
-                            var html = template('m_inviteBranch/m_inviteBranch_success', {
-                                companyName: companyName,
-                                a_companyName: that.settings.a_companyName
-                            });
-                            $(that.element).html(html);
-                        } else {
-                            S_dialog.tips(response.info);
-                        }
-                    });
-                }
-            });
-        }
-
-        ,createOrgOBox_validate: function () {//注册的表单验证
-            var that = this;
-            $(that.element).find("form.createOrgOBox").validate({
-                rules: {
-                    userName: "required",
-                    adminPassword: {
-                        required: true,
-                        rangelength: [6, 12],
-                        checkSpace: true
-                    },
-                    companyName:"required"
-
-                },
-                messages: {
-                    userName: "请输入姓名！",
-                    adminPassword: {
-                        required: '请输入密码！',
-                        rangelength: "密码为6-12位！",
-                        checkSpace: "密码不应含有空格!"
-                    },
-                    companyName:"请输入组织名称！"
-
-                },
-                errorElement: 'label'
-            });
-            //密码验证
-            $.validator.addMethod("checkSpace", function (value, element) {
-                var pattern = /^\S+$/gi;
-                return this.optional(element) || pattern.test(value);
-            }, "密码不应含有空格!");
-        }
-        , _bindSelectOrg: function () {
-            var that = this;
-            var invitedId = $('#invitedId').val();
-
-            $(that.element).find('li[data-action="selectOrg"]').click(function (e) {
-                S_dialog.tips('选择无效，该组织'+$(this).attr('data-memo'));
-            });
-
-            $(that.element).find('li[data-action="selectOrgApply"]').click(function (e) {
-                var companyId = $(this).attr('data-company-id');
-                var companyName=$(this).attr('data-company-name');
-                $(this).m_popover({
-                    placement: 'top',
-                    content: template('m_common/m_popover_confirm', {confirmMsg: '确定选择该组织来建立分支机构关系吗?'}),
-                    onSave: function ($popover) {
-                        var option = {};
-                        option.url = restApi.url_applayBusinessPartner;
-                        option.classId = 'body';
-                        option.postData = {
-                            inviteId: invitedId,
-                            cellphone: that.settings.cellphone,
-                            companyId: companyId
-                        };
-                        m_ajax.postJson(option, function (response) {
-                            if (response.code === '0') {
-                                S_dialog.tips("操作成功");
-                                var html = template('m_inviteBranch/m_inviteBranch_success', {
                                     companyName: companyName,
                                     a_companyName: that.settings.a_companyName
                                 });
@@ -33895,99 +34358,6 @@ return new String($out);
 })(jQuery, window, document);
 
 /**
- * Created by Wuwq on 2017/1/19.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_page",
-        defaults = {
-            loadingId: null,
-            pageIndex: 0,
-            pageSize: 10,
-            total: 0,
-            pageBtnCount: 5,
-            showFirstLastBtn: false,
-            firstBtnText: null,
-            lastBtnText: null,
-            /*prevBtnText: "&laquo;",
-             nextBtnText: "&raquo;",*/
-            prevBtnText: '上一页',
-            nextBtnText: '下一页',
-            loadFirstPage: true,
-            remote: {
-                url: null,
-                params: null,
-                pageParams: null,
-                success: null,
-                beforeSend: null,
-                complete: null,
-                pageIndexName: 'pageIndex',
-                pageSizeName: 'pageSize',
-                totalName: 'data.total',
-                traditional: false,
-                remoteWrongFormat: null
-            },
-            pageElementSort: ['$page', '$size', '$jump', '$info'],
-            showInfo: false,
-            infoFormat: '{start} ~ {end} of {total} entires',
-            noInfoText: '0 entires',
-            showJump: false,
-            jumpBtnText: 'Go',
-            showPageSizes: false,
-            pageSizeItems: [5, 10, 15, 20],
-            debug: false
-        };
-
-    function Plugin(element, options) {
-        this.element = element;
-        var remote = $.extend({}, defaults.remote, options.remote);
-        this.settings = $.extend({}, defaults, options);
-        this.settings.remote = remote;
-        this._defaults = defaults;
-        this._name = pluginName;
-        this.init();
-    }
-
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            if (that.settings.loadingId !== null && that.settings.remote.beforeSend === null) {
-                that.settings.remote.beforeSend = function () {
-                    $_loading.show(that.settings.loadingId, '正在加载中...');
-                }
-            }
-            if (that.settings.loadingId !== null && that.settings.remote.complete === null) {
-                that.settings.remote.complete = function () {
-                    $_loading.close(that.settings.loadingId);
-                }
-            }
-
-            if (that.settings.remote.remoteWrongFormat === null) {
-                that.settings.remote.remoteWrongFormat = function (res) {
-                    if (res && res.code === '500')
-                        S_dialog.error('很抱歉，请求发生异常');
-                }
-            }
-
-            if ($(that.element).pagination())
-                $(that.element).pagination('destroy');
-            $(that.element).pagination(that.settings);
-        }
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-            /*if ( !$.data( this, "plugin_" + pluginName ) ) {
-             $.data( this, "plugin_" +
-             pluginName, new Plugin( this, options ) );
-             }*/
-            new Plugin(this, options);
-        });
-    };
-
-})(jQuery, window, document);
-/**
  * 收支总览-收支明细-菜单
  * Created by wrb on 2017/11/30.
  */
@@ -34111,6 +34481,23 @@ return new String($out);
         this._companyListBySelect = null;//筛选组织
         this._selectedOrg = null;//当前组织筛选-选中组织对象
         this._feeTypeList = [];//筛选组织-收支类型
+
+        this._feeTypeNameList  = [];
+        this._feeTypeParentNameList  = [];
+
+        this._filterTimeData = {};//时间筛选
+        this._filterData = {
+            combineCompanyId:null,
+            startDate:null,
+            endDate:null,
+            profitType:null,
+            feeType:null,
+            projectName:null,
+            feeTypeList:[],
+            feeTypeParentList:[],
+            fromCompanyName:null
+        };
+
         this.init();
     }
 
@@ -34125,14 +34512,33 @@ return new String($out);
             var that = this;
             var html = template('m_payments/m_payments_ledger',{});
             $(that.element).html(html);
+            that.getFeeType();
+
+            var timeOption = {};
+            timeOption.selectTimeCallBack = function (data) {
+                console.log(data);
+                if(!isNullOrBlank(data.startTime))
+                    that._filterData.startDate = data.startTime;
+
+                if(!isNullOrBlank(data.endTime))
+                    that._filterData.endDate = data.endTime;
+
+
+                that.renderLedgerList();
+            };
+            $(that.element).find('.time-combination').m_filter_timeCombination(timeOption,true);
+
             var option = {};
             option.$selectedCallBack = function (data) {
                 that._selectedOrg = data;
+                if(that._selectedOrg==null){
+                    that._filterData.combineCompanyId=that._companyList.id;
+                }else{
+                    that._filterData.combineCompanyId=that._selectedOrg.id;
+                }
                 that.renderLedgerList();
             };
             option.$renderCallBack = function () {
-                that.bindSetTime();
-                that.bindChoseTime();
                 that.bindBtnActionClick();
             };
             $(that.element).find('#selectOrg').m_org_chose_byTree(option);
@@ -34143,30 +34549,7 @@ return new String($out);
 
             var option = {};
             option.param = {};
-
-            if(that._selectedOrg==null){
-                option.param.combineCompanyId=that._companyList.id;
-            }else{
-                option.param.combineCompanyId=that._selectedOrg.id;
-            }
-
-            var startDate=$(that.element).find('#ipt_startTime').val();
-            var endDate=$(that.element).find('#ipt_endTime').val();
-            if(startDate!=''){
-                option.param.startDate=startDate;
-            }
-            if(endDate!=''){
-                option.param.endDate=endDate;
-            }
-
-            option.param.profitType=$(that.element).find('input[name="profitType"]').val();
-            option.param.feeType=$(that.element).find('input[name="feeType"]').val();
-            //option.param.associatedOrg=$(that.element).find('input[name="associatedOrg"]').val();
-            option.param.projectName=$(that.element).find('input[name="projectName"]').val();
-            option.param.feeTypeList = that._feeTypeList;
-
-            //option.param.toCompanyName=$(that.element).find('input[name="toCompany"]').val();
-            option.param.fromCompanyName=$(that.element).find('input[name="fromCompany"]').val();
+            option.param = that._filterData;
 
             paginationFun({
                 eleId: '#data-pagination-container',
@@ -34195,89 +34578,113 @@ return new String($out);
                         $(that.element).find('input[name="endTime"]').val(endDateStr);
                     }
 
-                    that.filterHover();
-                    that.filterActionClick();
+                    that.renderFeeTypeFilter();
+                    that.renderSubFeeTypeFilter();
+                    that.renderProfitTypeFilter();
 
                 } else {
                     S_dialog.error(response.info);
                 }
             });
         }
-
-        //快捷时间
-        , bindSetTime: function () {
+        /**
+         * 获取收支分类
+         * @param feeTypeParentList feeTypeParentList==null0为一级，feeTypeParentList!=null则查询此子类
+         */
+        ,getFeeType:function (callBack) {
             var that = this;
-            $(that.element).find('a[data-action="setTime"]').click(function () {
-                var days = $(this).attr('data-days');
-                var endTime = getNowDate();
-                var startTime = '';//moment(endTime).subtract(days, 'days').format('YYYY-MM-DD');
-
-                if (endTime != null && endTime.indexOf('-') > -1) {
-
-                    var month = endTime.substring(5, 7) - 0;//当前月份
-
-                    if (days == 30) {//一个月
-
-                        startTime = endTime.substring(0, 8) + '01';
-
-                    } else if (days == 90) {//一季度
-
-                        if (month >= 1 && month <= 3) {//第一季度
-                            startTime = endTime.substring(0, 5) + '01-01';
-                        } else if (month >= 4 && month <= 6) {//第二季度
-                            startTime = endTime.substring(0, 5) + '04-01';
-                        } else if (month >= 7 && month <= 9) {//第三季度
-                            startTime = endTime.substring(0, 5) + '07-01';
-                        } else if (month >= 10 && month <= 12) {//第四季度
-                            startTime = endTime.substring(0, 5) + '10-01';
-                        }
-
-                    } else if (days == 180) {//半年
-
-                        if (month >= 1 && month <= 6) {//前半年
-                            startTime = endTime.substring(0, 5) + '01-01';
-                        } else if (month >= 7 && month <= 12) {//后半年
-                            startTime = endTime.substring(0, 5) + '07-01';
-                        }
-
-                    } else if (days == 360) {//一年
-
-                        startTime = endTime.substring(0, 5) + '01-01';
-                    }
+            var option = {};
+            option.url = restApi.url_getTitleFilter;
+            option.postData = {};
+            option.postData.feeTypeParentList  = that._filterData.feeTypeParentList;
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+                    that._feeTypeNameList  = response.data.feeTypeNameList;
+                    that._feeTypeParentNameList  = response.data.feeTypeParentNameList;
+                    if(callBack!=null)
+                        callBack();
+                } else {
+                    S_dialog.error(response.info);
                 }
-                $('#ipt_startTime').val(startTime);
-                $('#ipt_endTime').val(endTime);
+            });
+        }
+        //渲染收支类型筛选
+        ,renderFeeTypeFilter:function () {
+            var that  = this;
+            var option = {};
+            var newList = [];
+            if(that._feeTypeParentNameList!=null && that._feeTypeParentNameList.length>0){
+                $.each(that._feeTypeParentNameList,function (i,item) {
+                    newList.push({id:item.expTypeValue,name:item.expTypeValue});
+                })
+            }
+            option.selectArr = newList;
+            option.selectedArr = that._filterData.feeTypeParentList;
+            option.eleId = 'filterFeeType';
+            option.selectedCallBack = function (data) {
+                console.log(data);
+                that._filterData.feeTypeParentList = data;
+                that.getFeeType(function () {
+                    that.renderSubFeeTypeFilter(1);
+                });
                 that.renderLedgerList();
-                $(this).blur();
-            });
+            };
+            $(that.element).find('#filterFeeType').m_filter_select(option, true);
         }
-        //时间绑定事件
-        , bindChoseTime:function () {
-            var that = this;
-            $(that.element).find('input[name="startTime"]').off('click').on('click',function () {
+        /**
+         * 渲染收支子类筛选
+         */
+        ,renderSubFeeTypeFilter:function () {
+            var that  = this;
+            var option = {};
+            var newList = [];
 
-                var endTime = $(that.element).find('input[name="endTime"]').val();
-                var onpicked =function(dp){
+            if(that._feeTypeNameList!=null && that._feeTypeNameList.length>0){
+                $.each(that._feeTypeNameList,function (i,item) {
+                    if(item.childList!=null && item.childList.length>0){
+                        $.each(item.childList,function (subI,subItem) {
+                            newList.push({id:subItem.expTypeValue,name:subItem.expTypeValue});
+                        });
+                    }
 
-                    that.renderLedgerList();
+                })
+            }
+            option.selectArr = newList;
+            option.selectedArr = that._filterData.feeTypeList;
+            option.eleId = 'filterSubFeeType';
+            option.boxStyle = 'min-width:525px;';
+            option.dialogWidth = '525';
+            option.selectedCallBack = function (data) {
+                console.log(data);
+                that._filterData.feeTypeList = data;
+                that.renderLedgerList();
 
-                };
-                WdatePicker({el:this,maxDate:endTime,onpicked:onpicked})
-            });
-            $(that.element).find('input[name="endTime"]').off('click').on('click',function () {
-
-                var startTime = $(that.element).find('input[name="startTime"]').val();
-                var onpicked =function(dp){
-
-                    that.renderLedgerList();
-
-                };
-                WdatePicker({el:this,minDate:startTime,onpicked:onpicked})
-            });
-            $(that.element).find('i.fa-calendar').off('click').on('click',function () {
-                $(this).closest('.input-group').find('input').click();
-            });
+            };
+            $(that.element).find('#filterSubFeeType').m_filter_checkbox_select(option, true);
         }
+        //渲染金额类型筛选
+        ,renderProfitTypeFilter:function () {
+            var that  = this;
+            var option = {};
+            var newList = [
+                {fieldName:'项目收支',fieldValue:'3'},
+                {fieldName:'非项目收支',fieldValue:'4'}
+            ];
+            option.selectArr = newList;
+            option.selectedArr = [];
+            if(isNullOrBlank(that._filterData.profitType))
+                option.selectedArr.push(that._filterData.profitType);
+
+            option.eleId = 'filterProfitType';
+            option.selectedCallBack = function (data) {
+                if(data && data.length>0)
+                    that._filterData.profitType = data[0];
+
+                that.renderLedgerList();
+            };
+            $(that.element).find('#filterProfitType').m_filter_select(option, true);
+        }
+
         //按钮事件绑定
         , bindBtnActionClick:function () {
             var that = this;
@@ -34443,7 +34850,7 @@ return new String($out);
                         });
 
                         break;
-                    case 'filterFeeType'://收支类型
+                    case 'filterSubFeeType'://收支类型
 
                         if(that._feeTypeList!=null && that._feeTypeList.length>0){
                             $this.closest('th').find('.icon-filter i').addClass('fc-v1-blue');
@@ -35130,13 +35537,13 @@ return new String($out);
             };
             $(that.element).find('#selectOrg').m_org_chose_byTree(option);
 
-            var option = {};
-            option.selectTimeCallBack = function (data) {
+            var timeOption = {};
+            timeOption.selectTimeCallBack = function (data) {
                 console.log(data);
                 that._filterTimeData = data;
                 that.renderList();
             };
-            $(that.element).find('.time-combination').m_filter_timeCombination(option,true);
+            $(that.element).find('.time-combination').m_filter_timeCombination(timeOption,true);
         }
 
         ,renderList:function () {
@@ -36556,6 +36963,99 @@ return new String($out);
 })(jQuery, window, document);
 
 /**
+ * Created by Wuwq on 2017/1/19.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_page",
+        defaults = {
+            loadingId: null,
+            pageIndex: 0,
+            pageSize: 10,
+            total: 0,
+            pageBtnCount: 5,
+            showFirstLastBtn: false,
+            firstBtnText: null,
+            lastBtnText: null,
+            /*prevBtnText: "&laquo;",
+             nextBtnText: "&raquo;",*/
+            prevBtnText: '上一页',
+            nextBtnText: '下一页',
+            loadFirstPage: true,
+            remote: {
+                url: null,
+                params: null,
+                pageParams: null,
+                success: null,
+                beforeSend: null,
+                complete: null,
+                pageIndexName: 'pageIndex',
+                pageSizeName: 'pageSize',
+                totalName: 'data.total',
+                traditional: false,
+                remoteWrongFormat: null
+            },
+            pageElementSort: ['$page', '$size', '$jump', '$info'],
+            showInfo: false,
+            infoFormat: '{start} ~ {end} of {total} entires',
+            noInfoText: '0 entires',
+            showJump: false,
+            jumpBtnText: 'Go',
+            showPageSizes: false,
+            pageSizeItems: [5, 10, 15, 20],
+            debug: false
+        };
+
+    function Plugin(element, options) {
+        this.element = element;
+        var remote = $.extend({}, defaults.remote, options.remote);
+        this.settings = $.extend({}, defaults, options);
+        this.settings.remote = remote;
+        this._defaults = defaults;
+        this._name = pluginName;
+        this.init();
+    }
+
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            if (that.settings.loadingId !== null && that.settings.remote.beforeSend === null) {
+                that.settings.remote.beforeSend = function () {
+                    $_loading.show(that.settings.loadingId, '正在加载中...');
+                }
+            }
+            if (that.settings.loadingId !== null && that.settings.remote.complete === null) {
+                that.settings.remote.complete = function () {
+                    $_loading.close(that.settings.loadingId);
+                }
+            }
+
+            if (that.settings.remote.remoteWrongFormat === null) {
+                that.settings.remote.remoteWrongFormat = function (res) {
+                    if (res && res.code === '500')
+                        S_dialog.error('很抱歉，请求发生异常');
+                }
+            }
+
+            if ($(that.element).pagination())
+                $(that.element).pagination('destroy');
+            $(that.element).pagination(that.settings);
+        }
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+            /*if ( !$.data( this, "plugin_" + pluginName ) ) {
+             $.data( this, "plugin_" +
+             pluginName, new Plugin( this, options ) );
+             }*/
+            new Plugin(this, options);
+        });
+    };
+
+})(jQuery, window, document);
+/**
  * Created by wrb on 2016/12/15.
  */
 ;(function ($, window, document, undefined) {
@@ -37600,742 +38100,6 @@ return new String($out);
         return this.each(function () {
             new Plugin(this, options);
         });
-    };
-
-})(jQuery, window, document);
-
-/**
- * 项目收支流程设置
- * 合同回款=2；技术审查费收款=3；技术审查费付款=4；合作设计费收款=5,；合作设计费付款=6
- * Created by wrb on 2018/7/17.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_process_finance_setting",
-        defaults = {
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._selectedOrg = null;//当前选中组织
-        this._processList = [];//请求返回的数据缓存
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            var html = template('m_process/m_process_finance_setting',{});
-            $(that.element).html(html);
-
-
-            var option = {};
-            option.$renderType = 1;
-            option.$selectedCallBack = function (data) {
-                that._selectedOrg = data;
-                that.renderContent();
-            };
-            option.$renderCallBack = function (data) {
-
-            };
-            $(that.element).find('#left-box').m_org_chose_byTree(option);
-
-        }
-
-        //渲染右边（项目收支流程设置列表）
-        ,renderContent:function () {
-            var that = this;
-            var option  = {};
-            option.classId = '#content-right';
-            option.url = restApi.url_getProcessByCompany;
-            option.postData = {
-                companyId:that._selectedOrg.id
-            };
-            m_ajax.postJson(option,function (response) {
-                if(response.code=='0'){
-                    that._processList = response.data;
-                    var html = template('m_process/m_process_finance_setting_content',{
-                        receiveProcessList:response.data.receiveProcessList,
-                        payProcessList:response.data.payProcessList
-                    });
-                    $(that.element).find('#right-box').html(html);
-                    that.initICheck();
-                    that.bindActionClick();
-
-                }else {
-                    S_dialog.error(response.info);
-                }
-            });
-
-        }
-        ,initICheck:function () {
-            var that = this;
-            var ifChecked = function (e) {
-            };
-            var ifUnchecked = function (e) {
-            };
-            var ifClicked = function (e) {
-                var param = {};
-                if ($(this).is(':checked')) {
-                    $(this).iCheck('uncheck');
-                    param.status = 0;
-                }else{
-                    $(this).iCheck('check');
-                    param.status = 1;
-                }
-                param.id = $(this).closest('tr').attr('data-id');
-                that.saveChangeSelectionStatus(param);
-            };
-            $(that.element).find('input[name^="iCheck"]').iCheck({
-                checkboxClass: 'icheckbox_square-pink',
-                radioClass: 'iradio_square-blue'
-            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked).on('ifClicked',ifClicked);
-        }
-        //更改选择状态
-        ,saveChangeSelectionStatus:function (param) {
-            var that = this;
-            var option = {};
-            option.classId = '#content-right';
-            option.url = restApi.url_selectedProcessForProjectPay;
-            option.postData = param;
-            m_ajax.postJson(option, function (response) {
-                if(response.code=='0'){
-                    S_toastr.success('操作成功！');
-                }else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-
-        //事件绑定
-        , bindActionClick:function () {
-            var that = this;
-            $(that.element).find('a[data-action],button[data-action]').off('click').on('click',function (e) {
-                var $this = $(this),dataAction = $this.attr('data-action'),
-                    $i = $this.closest('tr').attr('data-i');
-                var dataId = $this.closest('tr').attr('data-id'),
-                    dataProcessType = $this.closest('tr').attr('data-process-type'),
-                    dataProcessId = $this.closest('tr').attr('data-process-id');
-
-                switch (dataAction){
-                    case 'add'://添加流程设置
-
-                        var option = {};
-                        option.$type = $this.attr('data-action-type');//0=收款，1=付款
-                        option.$saveCallBack = function () {
-                            that.renderContent();
-                        };
-                        $('body').m_process_finance_setting_add(option);
-
-                        return false;
-                        break;
-                    case 'edit'://编辑流程设置
-
-                        var option = {};
-                        option.$type = $this.attr('data-action-type');//0=收款，1=付款
-                        if(that._processList!=null && that._processList.receiveProcessList!=null && option.$type==0){
-                            option.$processInfo = that._processList.receiveProcessList[$i];
-                        }else if(that._processList!=null && that._processList.payProcessList!=null && option.$type==1){
-                            option.$processInfo = that._processList.payProcessList[$i];
-                        }else{
-                            option.$processInfo = null;
-                        }
-                        option.$saveCallBack = function () {
-                            that.renderContent();
-                        };
-                        $('body').m_process_finance_setting_add(option);
-                        return false;
-                        break;
-
-                    case 'del'://删除流程
-
-                        S_swal.confirm({
-                            title:'确定删除该流程?',
-                            text:'删除后将不能恢复，确定吗？',
-                            callBack:function () {
-                                var option = {};
-                                option.classId = '#content-right';
-                                option.url = restApi.url_deleteProcessForProjectPay;
-                                option.postData = {};
-                                option.postData.id = dataId;
-                                m_ajax.postJson(option, function (response) {
-                                    if (response.code == '0') {
-                                        S_swal.sure({
-                                            title:'已删除',
-                                            text:'该流程删除成功。',
-                                            callBack:function () {
-                                                that.renderContent();
-                                            }
-                                        });
-                                    } else {
-                                        S_dialog.error(response.info);
-                                    }
-                                });
-                            }
-                        });
-
-                        break;
-
-                    case 'itemEdit'://编辑列表项
-
-                        window.location.hash = '/backstageMgt/financeSettingProcess?processType='+dataProcessType+'&processId='+dataProcessId;
-                        break;
-
-                }
-
-            });
-        }
-
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-
-/**
- * 项目收支流程设置-添加/编辑
- * Created by wrb on 2018/7/17.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_process_finance_setting_add",
-        defaults = {
-            $title:null,
-            $isDialog:true,
-            $type:0,//0=收款，1=付款
-            $processInfo:null,//流程信息，不为空即编辑
-            $saveCallBack:null//保存后事件
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._applicableTeam = null;//适用团队选择
-        this._associatedTeam = null;//关联团队选择
-
-
-        this._typeName= this.settings.$type==0?'收款':'付款';
-        this._editTypeName= this.settings.$processInfo==null?'新增':'编辑';
-
-
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-            that.initHtmlData(function () {
-                that.save_validate();
-
-                //适用团队选择框
-                var option = {};
-                option.$buttonStyle = 'width: 516px;border-radius: 4px;';
-                option.$spanStyle = 'width: 487px;display: inline-block;text-align: left;color: #444;font-size: 13px;';
-                if(that.settings.$processInfo!=null && that.settings.$processInfo.companyId!=null & that.settings.$processInfo.companyId!=''){
-                    option.$selectedId = that.settings.$processInfo.companyId;
-                }
-                option.$selectedCallBack = function (data) {
-                    that._applicableTeam = data;
-                };
-                option.$renderCallBack = function () {
-                };
-                $(that.element).find('#applicableTeam').m_org_chose_byTree(option);
-
-                //关联团队选择框
-                var option1 = {};
-                option1.$buttonStyle = 'width: 516px;border-radius: 4px;';
-                option1.$spanStyle = 'width: 487px;display: inline-block;text-align: left;color: #444;font-size: 13px;';
-                if(that.settings.$processInfo!=null && that.settings.$processInfo.companyId!=null & that.settings.$processInfo.companyId!=''){
-                    option1.$selectedId = that.settings.$processInfo.relationCompanyId;
-                }
-                option1.$selectedCallBack = function (data) {
-                    that._associatedTeam = data;
-                };
-                option1.$renderCallBack = function () {
-                };
-                $(that.element).find('#associatedTeam').m_org_chose_byTree(option1);
-
-
-                $(that.element).find('select[name="receiptType"]').select2({
-                    allowClear: false,
-                    language: "zh-CN",
-                    minimumResultsForSearch: -1
-                });
-                //编辑状态 展示信息处理
-                if(that.settings.$processInfo!=null){
-                    $(that.element).find('select[name="receiptType"]').val(that.settings.$processInfo.processType).trigger('change');
-                    $(that.element).find('select[name="receiptType"]').prop("disabled", true);
-                }
-            });
-        }
-        //初始化数据并加载模板
-        ,initHtmlData:function (callBack) {
-            var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.$title||that._editTypeName+that._typeName+'计划流程',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '700',
-                    tPadding: '0px',
-                    overFlow:'unset',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    okText:'保存',
-                    ok:function () {
-                        if($(that.element).find('form.form-horizontal').valid()){
-                            that.save();
-                        }else{
-                            return false;
-                        }
-                    },
-                    cancel:function () {
-
-                    }
-                },function(d){//加载html后触发
-
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    that.renderPage();
-
-                    if(callBack!=null){
-                        callBack();
-                    }
-
-                });
-            }else{//不以弹窗编辑
-
-                that.renderPage();
-                if(callBack!=null){
-                    callBack();
-                }
-            }
-        }
-        //渲染界面
-        ,renderPage:function () {
-            var that = this;
-            var html = template('m_process/m_process_finance_setting_add',{
-                type:that.settings.$type,
-                typeName:that._typeName,
-                processInfo:that.settings.$processInfo
-            });
-            $(that.element).html(html);
-        }
-
-        //发送
-        ,save:function () {
-            var that = this;
-            var option  = {};
-            option.classId = that.element;
-            option.url = restApi.url_saveProcess;
-            option.postData = {
-                processType:$(that.element).find('select[name="receiptType"]').val(),
-                companyId:that._applicableTeam.id,
-                relationCompanyId:that._associatedTeam.id,
-                description:$(that.element).find('textarea[name="description"]').val()
-
-            };
-            if(that.settings.$processInfo!=null && that.settings.$processInfo.id!=null){
-                option.postData.id = that.settings.$processInfo.id;
-                option.postData.processId = that.settings.$processInfo.processId;
-            }
-            m_ajax.postJson(option,function (response) {
-                if(response.code=='0'){
-                    S_toastr.success('操作成功！');
-                    if(that.settings.$saveCallBack!=null){
-                        that.settings.$saveCallBack();
-                    }
-                }else {
-                    S_dialog.error(response.info);
-                }
-            })
-
-        }
-        //保存验证
-        ,save_validate:function(){
-            var that = this;
-            $(that.element).find('form.form-horizontal').validate({
-                rules: {
-                    receiptType:{
-                        required:true
-                    }
-                },
-                messages: {
-                    receiptType:{
-                        required:'请选择'+that._typeName+'类型!'
-                    }
-                },
-                errorPlacement:function(error,element){
-                    error.appendTo(element.parent());
-                }
-            });
-
-        }
-
-    });
-
-    $.fn[pluginName] = function (options) {
-        return this.each(function () {
-
-            //if (!$.data(this, "plugin_" + pluginName)) {
-            $.data(this, "plugin_" +
-                pluginName, new Plugin(this, options));
-            //}
-        });
-    };
-
-})(jQuery, window, document);
-
-/**
- * 项目收支流程-合同回款设置
- * Created by wrb on 2018/7/18.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_process_finance_setting_contractPayment",
-        defaults = {
-            $processType:null,//流程类型
-            $processId:null//流程ID
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._selectedOrg = null;//当前选中组织
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-
-            var option  = {};
-            option.classId= '#content-box';
-            option.url = restApi.url_listProcessNode;
-            option.postData = {
-                processId:that.settings.$processId
-            };
-            m_ajax.postJson(option,function (response) {
-                if(response.code=='0'){
-
-                    var html = template('m_process/m_process_finance_setting_contractPayment',{listProcessNode:response.data});
-                    $(that.element).html(html);
-                    that.bindActionClick();
-                    that.initICheck();
-
-                }else {
-                    S_dialog.error(response.info);
-                }
-            });
-
-
-        }
-        //初始化iCheck
-        ,initICheck:function () {
-            var that = this;
-            var ifChecked = function (e) {
-                var param = {};
-                param.status = 1;
-                param.nodeId = $(this).closest('tr').attr('data-id');
-                param.processId = $(this).closest('tr').attr('data-process-id');
-                param.statusType = $(this).attr('data-type');
-                that.saveChangeSelectionStatus(param);
-            };
-            var ifUnchecked = function (e) {
-                var param = {};
-                param.status = 0;
-                param.nodeId = $(this).closest('tr').attr('data-id');
-                param.processId = $(this).closest('tr').attr('data-process-id');
-                param.statusType = $(this).attr('data-type');
-                that.saveChangeSelectionStatus(param);
-            };
-            $(that.element).find('input[name="iCheck"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_square-blue'
-            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
-        }
-        //更改选择状态
-        ,saveChangeSelectionStatus:function (param) {
-            var that = this;
-            var option = {};
-            option.classId = '#content-right';
-            option.url = restApi.url_selectedProcessNodeStatus;
-            option.postData = param;
-            m_ajax.postJson(option, function (response) {
-                if(response.code=='0'){
-                    S_toastr.success('操作成功！');
-                }else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-        //事件绑定
-        , bindActionClick:function () {
-            var that = this;
-            $(that.element).find('a[data-action],button[data-action]').off('click').on('click',function (e) {
-                var $this = $(this),dataAction = $this.attr('data-action');
-                var dataActionType = $this.attr('data-action-type');
-                var dataId = $this.attr('data-id');
-                switch (dataAction){
-                    case 'viewTemplate':
-
-                        $(that.element).find('a[data-action="viewTemplate"]').removeClass('active');
-                        $this.addClass('active');
-                        $(that.element).find('.panel#template'+dataActionType).show().siblings('.panel').hide();
-                        break;
-
-                    case 'back'://返回项目收支流程
-
-                        window.history.go(-1);
-                        break;
-
-                }
-
-            });
-        }
-
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
-    };
-
-})(jQuery, window, document);
-
-/**
- * 项目收支流程-技术审查费设置
- * Created by wrb on 2018/7/20.
- */
-;(function ($, window, document, undefined) {
-
-    "use strict";
-    var pluginName = "m_process_finance_setting_technicalReviewFee",
-        defaults = {
-            $processType:null,//流程类型
-            $processId:null//流程ID
-        };
-
-    // The actual plugin constructor
-    function Plugin(element, options) {
-        this.element = element;
-
-        this.settings = $.extend({}, defaults, options);
-        this._defaults = defaults;
-        this._name = pluginName;
-        this._selectedOrg = null;//当前选中组织
-        this.init();
-    }
-
-    // Avoid Plugin.prototype conflicts
-    $.extend(Plugin.prototype, {
-        init: function () {
-            var that = this;
-
-            var option  = {};
-            option.classId= '#content-box';
-            option.url = restApi.url_listProcessNode;
-            option.postData = {
-                processId:that.settings.$processId
-            };
-            m_ajax.postJson(option,function (response) {
-                if(response.code=='0'){
-
-                    var html = template('m_process/m_process_finance_setting_technicalReviewFee',{listProcessNode:response.data});
-                    $(that.element).html(html);
-                    that.bindActionClick();
-                    that.initICheck();
-
-                }else {
-                    S_dialog.error(response.info);
-                }
-            });
-
-
-        }
-        //初始化iCheck
-        ,initICheck:function () {
-            var that = this;
-            var ifChecked = function (e) {
-                var param = {};
-                param.status = 1;
-                param.nodeId = $(this).closest('tr').attr('data-id');
-                param.processId = $(this).closest('tr').attr('data-process-id');
-                param.statusType = $(this).attr('data-type');
-                that.saveChangeSelectionStatus(param);
-            };
-            var ifUnchecked = function (e) {
-                var param = {};
-                param.status = 0;
-                param.nodeId = $(this).closest('tr').attr('data-id');
-                param.processId = $(this).closest('tr').attr('data-process-id');
-                param.statusType = $(this).attr('data-type');
-                that.saveChangeSelectionStatus(param);
-            };
-            $(that.element).find('input[name="iCheck"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_square-blue'
-            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
-        }
-        //更改选择状态
-        ,saveChangeSelectionStatus:function (param) {
-            var that = this;
-            var option = {};
-            option.classId = '#content-right';
-            option.url = restApi.url_selectedProcessNodeStatus;
-            option.postData = param;
-            m_ajax.postJson(option, function (response) {
-                if(response.code=='0'){
-                    S_toastr.success('操作成功！');
-                }else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-        //事件绑定
-        , bindActionClick:function () {
-            var that = this;
-            $(that.element).find('a[data-action],button[data-action]').off('click').on('click',function (e) {
-                var $this = $(this),dataAction = $this.attr('data-action');
-                var dataActionType = $this.attr('data-action-type');
-                var dataId = $this.attr('data-id');
-                switch (dataAction){
-                    case 'back'://返回项目收支流程
-
-                        window.history.go(-1);
-                        break;
-                }
-
-            });
-        }
-
-    });
-
-    /*
-     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
-     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
-     3.调用方法： $('#id').pluginName('methodName',args);
-     */
-    $.fn[pluginName] = function (options, args) {
-        var instance;
-        var funcResult;
-        var jqObj = this.each(function () {
-
-            //从缓存获取实例
-            instance = $.data(this, "plugin_" + pluginName);
-
-            if (options === undefined || options === null || typeof options === "object") {
-
-                var opts = $.extend(true, {}, defaults, options);
-
-                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
-                if (args === true) {
-                    instance = new Plugin(this, opts);
-                } else {
-                    if (instance === undefined || instance === null)
-                        instance = new Plugin(this, opts);
-                }
-
-                //写入缓存
-                $.data(this, "plugin_" + pluginName, instance);
-            }
-            else if (typeof options === "string" && typeof instance[options] === "function") {
-
-                //options作为方法名，args则作为方法要调用的参数
-                //如果方法没有返回值，funcReuslt为undefined
-                funcResult = instance[options].call(instance, args);
-            }
-        });
-
-        return funcResult === undefined ? jqObj : funcResult;
     };
 
 })(jQuery, window, document);
@@ -43533,6 +43297,742 @@ return new String($out);
 })(jQuery, window, document);
 
 
+
+/**
+ * 项目收支流程设置
+ * 合同回款=2；技术审查费收款=3；技术审查费付款=4；合作设计费收款=5,；合作设计费付款=6
+ * Created by wrb on 2018/7/17.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_process_finance_setting",
+        defaults = {
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._selectedOrg = null;//当前选中组织
+        this._processList = [];//请求返回的数据缓存
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            var html = template('m_process/m_process_finance_setting',{});
+            $(that.element).html(html);
+
+
+            var option = {};
+            option.$renderType = 1;
+            option.$selectedCallBack = function (data) {
+                that._selectedOrg = data;
+                that.renderContent();
+            };
+            option.$renderCallBack = function (data) {
+
+            };
+            $(that.element).find('#left-box').m_org_chose_byTree(option);
+
+        }
+
+        //渲染右边（项目收支流程设置列表）
+        ,renderContent:function () {
+            var that = this;
+            var option  = {};
+            option.classId = '#content-right';
+            option.url = restApi.url_getProcessByCompany;
+            option.postData = {
+                companyId:that._selectedOrg.id
+            };
+            m_ajax.postJson(option,function (response) {
+                if(response.code=='0'){
+                    that._processList = response.data;
+                    var html = template('m_process/m_process_finance_setting_content',{
+                        receiveProcessList:response.data.receiveProcessList,
+                        payProcessList:response.data.payProcessList
+                    });
+                    $(that.element).find('#right-box').html(html);
+                    that.initICheck();
+                    that.bindActionClick();
+
+                }else {
+                    S_dialog.error(response.info);
+                }
+            });
+
+        }
+        ,initICheck:function () {
+            var that = this;
+            var ifChecked = function (e) {
+            };
+            var ifUnchecked = function (e) {
+            };
+            var ifClicked = function (e) {
+                var param = {};
+                if ($(this).is(':checked')) {
+                    $(this).iCheck('uncheck');
+                    param.status = 0;
+                }else{
+                    $(this).iCheck('check');
+                    param.status = 1;
+                }
+                param.id = $(this).closest('tr').attr('data-id');
+                that.saveChangeSelectionStatus(param);
+            };
+            $(that.element).find('input[name^="iCheck"]').iCheck({
+                checkboxClass: 'icheckbox_square-pink',
+                radioClass: 'iradio_square-blue'
+            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked).on('ifClicked',ifClicked);
+        }
+        //更改选择状态
+        ,saveChangeSelectionStatus:function (param) {
+            var that = this;
+            var option = {};
+            option.classId = '#content-right';
+            option.url = restApi.url_selectedProcessForProjectPay;
+            option.postData = param;
+            m_ajax.postJson(option, function (response) {
+                if(response.code=='0'){
+                    S_toastr.success('操作成功！');
+                }else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+
+        //事件绑定
+        , bindActionClick:function () {
+            var that = this;
+            $(that.element).find('a[data-action],button[data-action]').off('click').on('click',function (e) {
+                var $this = $(this),dataAction = $this.attr('data-action'),
+                    $i = $this.closest('tr').attr('data-i');
+                var dataId = $this.closest('tr').attr('data-id'),
+                    dataProcessType = $this.closest('tr').attr('data-process-type'),
+                    dataProcessId = $this.closest('tr').attr('data-process-id');
+
+                switch (dataAction){
+                    case 'add'://添加流程设置
+
+                        var option = {};
+                        option.$type = $this.attr('data-action-type');//0=收款，1=付款
+                        option.$saveCallBack = function () {
+                            that.renderContent();
+                        };
+                        $('body').m_process_finance_setting_add(option);
+
+                        return false;
+                        break;
+                    case 'edit'://编辑流程设置
+
+                        var option = {};
+                        option.$type = $this.attr('data-action-type');//0=收款，1=付款
+                        if(that._processList!=null && that._processList.receiveProcessList!=null && option.$type==0){
+                            option.$processInfo = that._processList.receiveProcessList[$i];
+                        }else if(that._processList!=null && that._processList.payProcessList!=null && option.$type==1){
+                            option.$processInfo = that._processList.payProcessList[$i];
+                        }else{
+                            option.$processInfo = null;
+                        }
+                        option.$saveCallBack = function () {
+                            that.renderContent();
+                        };
+                        $('body').m_process_finance_setting_add(option);
+                        return false;
+                        break;
+
+                    case 'del'://删除流程
+
+                        S_swal.confirm({
+                            title:'确定删除该流程?',
+                            text:'删除后将不能恢复，确定吗？',
+                            callBack:function () {
+                                var option = {};
+                                option.classId = '#content-right';
+                                option.url = restApi.url_deleteProcessForProjectPay;
+                                option.postData = {};
+                                option.postData.id = dataId;
+                                m_ajax.postJson(option, function (response) {
+                                    if (response.code == '0') {
+                                        S_swal.sure({
+                                            title:'已删除',
+                                            text:'该流程删除成功。',
+                                            callBack:function () {
+                                                that.renderContent();
+                                            }
+                                        });
+                                    } else {
+                                        S_dialog.error(response.info);
+                                    }
+                                });
+                            }
+                        });
+
+                        break;
+
+                    case 'itemEdit'://编辑列表项
+
+                        window.location.hash = '/backstageMgt/financeSettingProcess?processType='+dataProcessType+'&processId='+dataProcessId;
+                        break;
+
+                }
+
+            });
+        }
+
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+
+/**
+ * 项目收支流程设置-添加/编辑
+ * Created by wrb on 2018/7/17.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_process_finance_setting_add",
+        defaults = {
+            $title:null,
+            $isDialog:true,
+            $type:0,//0=收款，1=付款
+            $processInfo:null,//流程信息，不为空即编辑
+            $saveCallBack:null//保存后事件
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._applicableTeam = null;//适用团队选择
+        this._associatedTeam = null;//关联团队选择
+
+
+        this._typeName= this.settings.$type==0?'收款':'付款';
+        this._editTypeName= this.settings.$processInfo==null?'新增':'编辑';
+
+
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+            that.initHtmlData(function () {
+                that.save_validate();
+
+                //适用团队选择框
+                var option = {};
+                option.$buttonStyle = 'width: 516px;border-radius: 4px;';
+                option.$spanStyle = 'width: 487px;display: inline-block;text-align: left;color: #444;font-size: 13px;';
+                if(that.settings.$processInfo!=null && that.settings.$processInfo.companyId!=null & that.settings.$processInfo.companyId!=''){
+                    option.$selectedId = that.settings.$processInfo.companyId;
+                }
+                option.$selectedCallBack = function (data) {
+                    that._applicableTeam = data;
+                };
+                option.$renderCallBack = function () {
+                };
+                $(that.element).find('#applicableTeam').m_org_chose_byTree(option);
+
+                //关联团队选择框
+                var option1 = {};
+                option1.$buttonStyle = 'width: 516px;border-radius: 4px;';
+                option1.$spanStyle = 'width: 487px;display: inline-block;text-align: left;color: #444;font-size: 13px;';
+                if(that.settings.$processInfo!=null && that.settings.$processInfo.companyId!=null & that.settings.$processInfo.companyId!=''){
+                    option1.$selectedId = that.settings.$processInfo.relationCompanyId;
+                }
+                option1.$selectedCallBack = function (data) {
+                    that._associatedTeam = data;
+                };
+                option1.$renderCallBack = function () {
+                };
+                $(that.element).find('#associatedTeam').m_org_chose_byTree(option1);
+
+
+                $(that.element).find('select[name="receiptType"]').select2({
+                    allowClear: false,
+                    language: "zh-CN",
+                    minimumResultsForSearch: -1
+                });
+                //编辑状态 展示信息处理
+                if(that.settings.$processInfo!=null){
+                    $(that.element).find('select[name="receiptType"]').val(that.settings.$processInfo.processType).trigger('change');
+                    $(that.element).find('select[name="receiptType"]').prop("disabled", true);
+                }
+            });
+        }
+        //初始化数据并加载模板
+        ,initHtmlData:function (callBack) {
+            var that = this;
+            if(that.settings.$isDialog){//以弹窗编辑
+                S_dialog.dialog({
+                    title: that.settings.$title||that._editTypeName+that._typeName+'计划流程',
+                    contentEle: 'dialogOBox',
+                    lock: 3,
+                    width: '700',
+                    tPadding: '0px',
+                    overFlow:'unset',
+                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    okText:'保存',
+                    ok:function () {
+                        if($(that.element).find('form.form-horizontal').valid()){
+                            that.save();
+                        }else{
+                            return false;
+                        }
+                    },
+                    cancel:function () {
+
+                    }
+                },function(d){//加载html后触发
+
+                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
+                    that.renderPage();
+
+                    if(callBack!=null){
+                        callBack();
+                    }
+
+                });
+            }else{//不以弹窗编辑
+
+                that.renderPage();
+                if(callBack!=null){
+                    callBack();
+                }
+            }
+        }
+        //渲染界面
+        ,renderPage:function () {
+            var that = this;
+            var html = template('m_process/m_process_finance_setting_add',{
+                type:that.settings.$type,
+                typeName:that._typeName,
+                processInfo:that.settings.$processInfo
+            });
+            $(that.element).html(html);
+        }
+
+        //发送
+        ,save:function () {
+            var that = this;
+            var option  = {};
+            option.classId = that.element;
+            option.url = restApi.url_saveProcess;
+            option.postData = {
+                processType:$(that.element).find('select[name="receiptType"]').val(),
+                companyId:that._applicableTeam.id,
+                relationCompanyId:that._associatedTeam.id,
+                description:$(that.element).find('textarea[name="description"]').val()
+
+            };
+            if(that.settings.$processInfo!=null && that.settings.$processInfo.id!=null){
+                option.postData.id = that.settings.$processInfo.id;
+                option.postData.processId = that.settings.$processInfo.processId;
+            }
+            m_ajax.postJson(option,function (response) {
+                if(response.code=='0'){
+                    S_toastr.success('操作成功！');
+                    if(that.settings.$saveCallBack!=null){
+                        that.settings.$saveCallBack();
+                    }
+                }else {
+                    S_dialog.error(response.info);
+                }
+            })
+
+        }
+        //保存验证
+        ,save_validate:function(){
+            var that = this;
+            $(that.element).find('form.form-horizontal').validate({
+                rules: {
+                    receiptType:{
+                        required:true
+                    }
+                },
+                messages: {
+                    receiptType:{
+                        required:'请选择'+that._typeName+'类型!'
+                    }
+                },
+                errorPlacement:function(error,element){
+                    error.appendTo(element.parent());
+                }
+            });
+
+        }
+
+    });
+
+    $.fn[pluginName] = function (options) {
+        return this.each(function () {
+
+            //if (!$.data(this, "plugin_" + pluginName)) {
+            $.data(this, "plugin_" +
+                pluginName, new Plugin(this, options));
+            //}
+        });
+    };
+
+})(jQuery, window, document);
+
+/**
+ * 项目收支流程-合同回款设置
+ * Created by wrb on 2018/7/18.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_process_finance_setting_contractPayment",
+        defaults = {
+            $processType:null,//流程类型
+            $processId:null//流程ID
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._selectedOrg = null;//当前选中组织
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+
+            var option  = {};
+            option.classId= '#content-box';
+            option.url = restApi.url_listProcessNode;
+            option.postData = {
+                processId:that.settings.$processId
+            };
+            m_ajax.postJson(option,function (response) {
+                if(response.code=='0'){
+
+                    var html = template('m_process/m_process_finance_setting_contractPayment',{listProcessNode:response.data});
+                    $(that.element).html(html);
+                    that.bindActionClick();
+                    that.initICheck();
+
+                }else {
+                    S_dialog.error(response.info);
+                }
+            });
+
+
+        }
+        //初始化iCheck
+        ,initICheck:function () {
+            var that = this;
+            var ifChecked = function (e) {
+                var param = {};
+                param.status = 1;
+                param.nodeId = $(this).closest('tr').attr('data-id');
+                param.processId = $(this).closest('tr').attr('data-process-id');
+                param.statusType = $(this).attr('data-type');
+                that.saveChangeSelectionStatus(param);
+            };
+            var ifUnchecked = function (e) {
+                var param = {};
+                param.status = 0;
+                param.nodeId = $(this).closest('tr').attr('data-id');
+                param.processId = $(this).closest('tr').attr('data-process-id');
+                param.statusType = $(this).attr('data-type');
+                that.saveChangeSelectionStatus(param);
+            };
+            $(that.element).find('input[name="iCheck"]').iCheck({
+                checkboxClass: 'icheckbox_minimal-green',
+                radioClass: 'iradio_square-blue'
+            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
+        }
+        //更改选择状态
+        ,saveChangeSelectionStatus:function (param) {
+            var that = this;
+            var option = {};
+            option.classId = '#content-right';
+            option.url = restApi.url_selectedProcessNodeStatus;
+            option.postData = param;
+            m_ajax.postJson(option, function (response) {
+                if(response.code=='0'){
+                    S_toastr.success('操作成功！');
+                }else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+        //事件绑定
+        , bindActionClick:function () {
+            var that = this;
+            $(that.element).find('a[data-action],button[data-action]').off('click').on('click',function (e) {
+                var $this = $(this),dataAction = $this.attr('data-action');
+                var dataActionType = $this.attr('data-action-type');
+                var dataId = $this.attr('data-id');
+                switch (dataAction){
+                    case 'viewTemplate':
+
+                        $(that.element).find('a[data-action="viewTemplate"]').removeClass('active');
+                        $this.addClass('active');
+                        $(that.element).find('.panel#template'+dataActionType).show().siblings('.panel').hide();
+                        break;
+
+                    case 'back'://返回项目收支流程
+
+                        window.history.go(-1);
+                        break;
+
+                }
+
+            });
+        }
+
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
+
+/**
+ * 项目收支流程-技术审查费设置
+ * Created by wrb on 2018/7/20.
+ */
+;(function ($, window, document, undefined) {
+
+    "use strict";
+    var pluginName = "m_process_finance_setting_technicalReviewFee",
+        defaults = {
+            $processType:null,//流程类型
+            $processId:null//流程ID
+        };
+
+    // The actual plugin constructor
+    function Plugin(element, options) {
+        this.element = element;
+
+        this.settings = $.extend({}, defaults, options);
+        this._defaults = defaults;
+        this._name = pluginName;
+        this._selectedOrg = null;//当前选中组织
+        this.init();
+    }
+
+    // Avoid Plugin.prototype conflicts
+    $.extend(Plugin.prototype, {
+        init: function () {
+            var that = this;
+
+            var option  = {};
+            option.classId= '#content-box';
+            option.url = restApi.url_listProcessNode;
+            option.postData = {
+                processId:that.settings.$processId
+            };
+            m_ajax.postJson(option,function (response) {
+                if(response.code=='0'){
+
+                    var html = template('m_process/m_process_finance_setting_technicalReviewFee',{listProcessNode:response.data});
+                    $(that.element).html(html);
+                    that.bindActionClick();
+                    that.initICheck();
+
+                }else {
+                    S_dialog.error(response.info);
+                }
+            });
+
+
+        }
+        //初始化iCheck
+        ,initICheck:function () {
+            var that = this;
+            var ifChecked = function (e) {
+                var param = {};
+                param.status = 1;
+                param.nodeId = $(this).closest('tr').attr('data-id');
+                param.processId = $(this).closest('tr').attr('data-process-id');
+                param.statusType = $(this).attr('data-type');
+                that.saveChangeSelectionStatus(param);
+            };
+            var ifUnchecked = function (e) {
+                var param = {};
+                param.status = 0;
+                param.nodeId = $(this).closest('tr').attr('data-id');
+                param.processId = $(this).closest('tr').attr('data-process-id');
+                param.statusType = $(this).attr('data-type');
+                that.saveChangeSelectionStatus(param);
+            };
+            $(that.element).find('input[name="iCheck"]').iCheck({
+                checkboxClass: 'icheckbox_minimal-green',
+                radioClass: 'iradio_square-blue'
+            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
+        }
+        //更改选择状态
+        ,saveChangeSelectionStatus:function (param) {
+            var that = this;
+            var option = {};
+            option.classId = '#content-right';
+            option.url = restApi.url_selectedProcessNodeStatus;
+            option.postData = param;
+            m_ajax.postJson(option, function (response) {
+                if(response.code=='0'){
+                    S_toastr.success('操作成功！');
+                }else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+        //事件绑定
+        , bindActionClick:function () {
+            var that = this;
+            $(that.element).find('a[data-action],button[data-action]').off('click').on('click',function (e) {
+                var $this = $(this),dataAction = $this.attr('data-action');
+                var dataActionType = $this.attr('data-action-type');
+                var dataId = $this.attr('data-id');
+                switch (dataAction){
+                    case 'back'://返回项目收支流程
+
+                        window.history.go(-1);
+                        break;
+                }
+
+            });
+        }
+
+    });
+
+    /*
+     1.一般初始化（缓存单例）： $('#id').pluginName(initOptions);
+     2.强制初始化（无视缓存）： $('#id').pluginName(initOptions,true);
+     3.调用方法： $('#id').pluginName('methodName',args);
+     */
+    $.fn[pluginName] = function (options, args) {
+        var instance;
+        var funcResult;
+        var jqObj = this.each(function () {
+
+            //从缓存获取实例
+            instance = $.data(this, "plugin_" + pluginName);
+
+            if (options === undefined || options === null || typeof options === "object") {
+
+                var opts = $.extend(true, {}, defaults, options);
+
+                //options作为初始化参数，若args===true则强制重新初始化，否则根据缓存判断是否需要初始化
+                if (args === true) {
+                    instance = new Plugin(this, opts);
+                } else {
+                    if (instance === undefined || instance === null)
+                        instance = new Plugin(this, opts);
+                }
+
+                //写入缓存
+                $.data(this, "plugin_" + pluginName, instance);
+            }
+            else if (typeof options === "string" && typeof instance[options] === "function") {
+
+                //options作为方法名，args则作为方法要调用的参数
+                //如果方法没有返回值，funcReuslt为undefined
+                funcResult = instance[options].call(instance, args);
+            }
+        });
+
+        return funcResult === undefined ? jqObj : funcResult;
+    };
+
+})(jQuery, window, document);
 
 /**
  * 设计范围

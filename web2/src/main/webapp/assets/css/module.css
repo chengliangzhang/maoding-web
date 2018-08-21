@@ -1968,7 +1968,7 @@ form.sky-form label.select i {
 }
 
 .p-r-5 {
-    padding-right: 5px;
+    padding-right: 5px !important;
 }
 
 .p-l-5 {
@@ -2798,8 +2798,8 @@ body div label.error, div.popover.m-popover label.error {
 .icon-filter{
     height: 15px;
     width: 15px;
+    color: #ccc;
 }
-
 /*kendoui 无数据样式重写*/
 .k-widget .k-status{
     background: #fff;
@@ -4023,7 +4023,12 @@ body div label.error, div.popover.m-popover label.error {
     margin-left: 4px;
     cursor: pointer;
 }
-
+.data-list-filter .check-box-title{
+    border-bottom: solid 1px #f2f2f2;padding: 15px 15px 5px;
+}
+.data-list-filter .check-box-title-fixed{
+    border-bottom: solid 1px #f2f2f2;padding: 15px 15px 5px;position: fixed;background: #fff;z-index: 1030;width: 98.2%;border-radius: 5px 5px 0 0;
+}
 .m_filter_timeCombination .input-group .form-control.time-input{
     width: 110px;
 }
@@ -4065,103 +4070,6 @@ body div label.error, div.popover.m-popover label.error {
     color: #ddd;
     margin: -2px 0 0 8px;
 }
-
-.m_expTypeSelect{
-}
-
-.m_expTypeSelect select{
-    position: relative;font-weight: normal;
-}
-
-.m_expTypeSelect select input[name="collectExpType"]{
-    width: 100%;background: none;
-}
-
-.m_expTypeSelect .typeNameArea .clearBtn{
-    position: absolute;right:22px;z-index:999;top: 16px;
-}
-
-.m_expTypeSelect .typeNameArea .firstItem{
-    color: #4765a0;
-}
-
-.m_expTypeSelect .typeNameArea .firstItem{
-    color: #4765a0;
-}
-
-.m_expTypeSelect .typeNameArea .thumbnail hr{
-    margin: 10px 0;
-}
-
-
-
-
-
-.m_feeEntry #left-box{
-    border-right: solid 1px #ccc;
-}
-.m_feeEntry .date-chose-box{
-    padding: 9px 0;
-}
-.m_feeEntry .month-menu-box{
-    height: 100px;
-    border-bottom: solid 1px #ebebeb;
-}
-.m_feeEntry .month-menu-box.active{
-    background-color: #d7d7d7;
-}
-.m_feeEntry .month-menu-box .month{
-    font-size: 20px;
-    font-weight: bold;
-    padding-top: 20px;
-}
-.m_feeEntry .month-menu-box .detail .income{
-    padding-top: 20px;
-}
-.m_feeEntry .month-menu-box .detail .income span,
-.m_feeEntry .month-menu-box .detail .expenditure span{
-    font-size: 20px;
-}
-.m_feeEntry .month .user-name{
-    font-size: 14px;
-    font-weight: normal;
-    margin-top: 5px;
-    line-height: 20px;
-}
-
-.m_feeEntry_settings #left-box{
-    border-right: solid 1px #ccc;
-}
-.m_feeEntry_settings .table>tbody>tr>td.p-l-25{
-    padding-left: 25px;
-}
-.m_feeEntry_settings .check-box {
-    height: 20px;
-    display: inline-block;
-    padding-top: 2px;
-}
-.m_feeEntry_settings .check-box .i-checks .i-checks-span{
-    font-size: 14px;
-}
-.m_feeEntry_settings .btn-add{
-    margin: -1px 0 0 10px;
-    padding: 0;
-    float: left;
-}
-
-.m_reimbursementSummary .table>thead>tr>th,
-.m_costSummary .table>thead>tr>th{
-    position: relative;
-}
-
-.m_reimbursementSummary .dropdown-menu li button.btn-default {
-    border: none;
-}
-.m_reimbursementSummary .dropdown-menu li button.btn-default:hover {
-    border: none;
-}
-
-
 .m_historyData .webuploader-pick {
     position: relative;
     display: inline;
@@ -4358,6 +4266,103 @@ ul.secondary-menu-ul li.active a{
     height: 20px;
     margin-right: 0;
 }
+
+.m_expTypeSelect{
+}
+
+.m_expTypeSelect select{
+    position: relative;font-weight: normal;
+}
+
+.m_expTypeSelect select input[name="collectExpType"]{
+    width: 100%;background: none;
+}
+
+.m_expTypeSelect .typeNameArea .clearBtn{
+    position: absolute;right:22px;z-index:999;top: 16px;
+}
+
+.m_expTypeSelect .typeNameArea .firstItem{
+    color: #4765a0;
+}
+
+.m_expTypeSelect .typeNameArea .firstItem{
+    color: #4765a0;
+}
+
+.m_expTypeSelect .typeNameArea .thumbnail hr{
+    margin: 10px 0;
+}
+
+
+
+
+
+.m_feeEntry #left-box{
+    border-right: solid 1px #ccc;
+}
+.m_feeEntry .date-chose-box{
+    padding: 9px 0;
+}
+.m_feeEntry .month-menu-box{
+    height: 100px;
+    border-bottom: solid 1px #ebebeb;
+}
+.m_feeEntry .month-menu-box.active{
+    background-color: #d7d7d7;
+}
+.m_feeEntry .month-menu-box .month{
+    font-size: 20px;
+    font-weight: bold;
+    padding-top: 20px;
+}
+.m_feeEntry .month-menu-box .detail .income{
+    padding-top: 20px;
+}
+.m_feeEntry .month-menu-box .detail .income span,
+.m_feeEntry .month-menu-box .detail .expenditure span{
+    font-size: 20px;
+}
+.m_feeEntry .month .user-name{
+    font-size: 14px;
+    font-weight: normal;
+    margin-top: 5px;
+    line-height: 20px;
+}
+
+.m_feeEntry_settings #left-box{
+    border-right: solid 1px #ccc;
+}
+.m_feeEntry_settings .table>tbody>tr>td.p-l-25{
+    padding-left: 25px;
+}
+.m_feeEntry_settings .check-box {
+    height: 20px;
+    display: inline-block;
+    padding-top: 2px;
+}
+.m_feeEntry_settings .check-box .i-checks .i-checks-span{
+    font-size: 14px;
+}
+.m_feeEntry_settings .btn-add{
+    margin: -1px 0 0 10px;
+    padding: 0;
+    float: left;
+}
+
+.m_reimbursementSummary .table>thead>tr>th,
+.m_costSummary .table>thead>tr>th{
+    position: relative;
+}
+
+.m_reimbursementSummary .dropdown-menu li button.btn-default {
+    border: none;
+}
+.m_reimbursementSummary .dropdown-menu li button.btn-default:hover {
+    border: none;
+}
+
+
 .m-invite-group a,
 .m-invite-group a:link,
 .m-invite-group a:visited {
@@ -4777,6 +4782,116 @@ a[data-action="edit_birthday"]:hover{border-bottom: dashed 1px #08c}
     padding: 4px 12px;
 }
 
+
+.m_projectAdd .no-float {
+    float: none;
+}
+
+.m_projectAdd .editable-empty, .m_projectAdd .editable-empty:hover, .m_projectAdd .editable-empty:focus {
+    color: #ccc;
+    font-style: normal;
+}
+
+.m_projectAdd .editable-click {
+    border-bottom: none;
+}
+
+.m_projectAdd a[type="button"].editable-click, .m_projectAdd a[type="button"].editable-click:hover {
+    border-bottom: 1px solid #e7eaec !important;
+}
+
+.m_projectAdd .todo-list.small-list.bg-white>li{
+    padding-left: 0;
+}
+
+.m_projectAdd span#designContent-error{
+    display: block;
+    color: red;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+/*.m_projectAdd .addDesignContentLi .editable-container .editable-error-block {*/
+    /*display: none !important;*/
+/*}*/
+
+.m_projectAdd li.designContentTemplate a[data-action="choseTemplate"].actived,.m_projectAdd li.designContentTemplate a[data-action="withoutTemplate"].actived {
+    border-color: #324c80;
+    color: #324c80;
+}
+
+.m_projectAdd li.designContentTemplate a[data-action="choseTemplate"],.m_projectAdd li.designContentTemplate a[data-action="withoutTemplate"] {
+    margin-right: 15px;
+    border-radius: 0;
+    margin-top: 10px;
+}
+
+.m_projectAdd form.projectAddForm div.designContentBox li.designContentLi{
+    /*padding-top: 20px;*/
+}
+
+.m_projectAdd li.designContentLi span.designContentDiv{
+    display: inline-block;
+    border: 1px solid #e5e6e7;
+    padding: 10px 10px 10px 10px;
+    overflow: hidden;
+    vertical-align: middle;
+    margin-right: 15px;
+    margin-top: 10px;
+    height:57px;
+    width: 255px;
+}
+.m_projectAdd li.addDesignContentLi span.addDesignContentDiv{
+    display: inline-block;
+    border: 1px dashed #e5e6e7;
+    padding: 10px 10px 10px 10px;
+    overflow: hidden;
+    vertical-align: middle;
+    margin-right: 15px;
+    margin-top: 0;
+    height:57px;
+    width: 255px;
+ }
+
+ .m_projectAdd li.designContentLi span.designContentDiv label.i-checks {
+    margin-bottom: 0;
+    float: left;
+    margin-right: 10px;
+    margin-top: 6px;
+}
+.m_projectAdd span.content-name{
+    width: auto;
+    max-width: 195px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -webkit-text-overflow: ellipsis;
+    -moz-text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    line-height: 12px;
+}
+.m_projectAdd li.designContentLi{
+    padding-top: 27px;
+}
+
+.m_projectAdd li.addDesignContentLi a[data-action="addDesignContent"]{
+    width: 100%;
+    height: 100%;
+    border: none!important;
+    padding-top: 18px;
+    border-radius: 0;
+}
+.m_projectAdd li.addDesignContentLi a[data-action="addDesignContent"]:hover{
+    border: none!important;
+}
+.m_projectAdd .select2-container .select2-selection--single{height: 34px;border-radius: 0px;}
+.m_projectAdd .select2-container--default .select2-selection--single .select2-selection__arrow{height: 32px;}
+.m_projectAdd .select2-container--default .select2-selection--single .select2-selection__rendered{line-height: 32px;}
+
+
+
+
 .m_editCustomPropertyTemp .box-left{
     height: 475px;overflow: auto;padding-top: 17px;
 }
@@ -5014,116 +5129,6 @@ ul.project-menu-ul li a{
 ul.project-menu-ul li.active a{
     color: #108ee9;
 }
-
-.m_projectAdd .no-float {
-    float: none;
-}
-
-.m_projectAdd .editable-empty, .m_projectAdd .editable-empty:hover, .m_projectAdd .editable-empty:focus {
-    color: #ccc;
-    font-style: normal;
-}
-
-.m_projectAdd .editable-click {
-    border-bottom: none;
-}
-
-.m_projectAdd a[type="button"].editable-click, .m_projectAdd a[type="button"].editable-click:hover {
-    border-bottom: 1px solid #e7eaec !important;
-}
-
-.m_projectAdd .todo-list.small-list.bg-white>li{
-    padding-left: 0;
-}
-
-.m_projectAdd span#designContent-error{
-    display: block;
-    color: red;
-    font-weight: bold;
-    margin-left: 5px;
-}
-
-/*.m_projectAdd .addDesignContentLi .editable-container .editable-error-block {*/
-    /*display: none !important;*/
-/*}*/
-
-.m_projectAdd li.designContentTemplate a[data-action="choseTemplate"].actived,.m_projectAdd li.designContentTemplate a[data-action="withoutTemplate"].actived {
-    border-color: #324c80;
-    color: #324c80;
-}
-
-.m_projectAdd li.designContentTemplate a[data-action="choseTemplate"],.m_projectAdd li.designContentTemplate a[data-action="withoutTemplate"] {
-    margin-right: 15px;
-    border-radius: 0;
-    margin-top: 10px;
-}
-
-.m_projectAdd form.projectAddForm div.designContentBox li.designContentLi{
-    /*padding-top: 20px;*/
-}
-
-.m_projectAdd li.designContentLi span.designContentDiv{
-    display: inline-block;
-    border: 1px solid #e5e6e7;
-    padding: 10px 10px 10px 10px;
-    overflow: hidden;
-    vertical-align: middle;
-    margin-right: 15px;
-    margin-top: 10px;
-    height:57px;
-    width: 255px;
-}
-.m_projectAdd li.addDesignContentLi span.addDesignContentDiv{
-    display: inline-block;
-    border: 1px dashed #e5e6e7;
-    padding: 10px 10px 10px 10px;
-    overflow: hidden;
-    vertical-align: middle;
-    margin-right: 15px;
-    margin-top: 0;
-    height:57px;
-    width: 255px;
- }
-
- .m_projectAdd li.designContentLi span.designContentDiv label.i-checks {
-    margin-bottom: 0;
-    float: left;
-    margin-right: 10px;
-    margin-top: 6px;
-}
-.m_projectAdd span.content-name{
-    width: auto;
-    max-width: 195px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
-    -webkit-text-overflow: ellipsis;
-    -moz-text-overflow: ellipsis;
-    white-space: nowrap;
-    display: inline-block;
-    line-height: 12px;
-}
-.m_projectAdd li.designContentLi{
-    padding-top: 27px;
-}
-
-.m_projectAdd li.addDesignContentLi a[data-action="addDesignContent"]{
-    width: 100%;
-    height: 100%;
-    border: none!important;
-    padding-top: 18px;
-    border-radius: 0;
-}
-.m_projectAdd li.addDesignContentLi a[data-action="addDesignContent"]:hover{
-    border: none!important;
-}
-.m_projectAdd .select2-container .select2-selection--single{height: 34px;border-radius: 0px;}
-.m_projectAdd .select2-container--default .select2-selection--single .select2-selection__arrow{height: 32px;}
-.m_projectAdd .select2-container--default .select2-selection--single .select2-selection__rendered{line-height: 32px;}
-
-
-
-
 .m_projectList .project-list table thead th{
     white-space:nowrap;
     position: relative;
