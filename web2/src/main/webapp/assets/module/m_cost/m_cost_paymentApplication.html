@@ -1,0 +1,54 @@
+<div class="ibox no-margins">
+    <div class="ibox-content no-borders">
+        <form class="form-horizontal">
+            <div class="form-group m-b-none">
+                <label class="col-24-md-5 text-right">收款方：</label>
+                <div class="col-24-md-19">
+                    {{pointInfo.companyName}}
+                </div>
+            </div>
+            <div class="form-group m-b-none">
+                <label class="col-24-md-5 text-right">关联节点：</label>
+                <div class="col-24-md-19">
+                    {{pointInfo.feeDescription}}
+                </div>
+            </div>
+            <div class="form-group m-b-none">
+                <label class="col-24-md-5 text-right">节点金额：</label>
+                <div class="col-24-md-19">
+                    {{pointInfo.fee}} 万元
+                </div>
+            </div>
+            {{if pointInfo.isInnerCompany}}
+            <div class="form-group m-b-none">
+                <label class="col-24-md-5 text-right">申请人：</label>
+                <div class="col-24-md-19">
+                    {{pointInfo.userName}}
+                </div>
+            </div>
+            <div class="form-group m-b-none">
+                <label class="col-24-md-5 text-right">申请金额：</label>
+                <div class="col-24-md-19">
+                    {{pointInfo.subFee}} 万元
+                </div>
+            </div>
+            {{/if}}
+            <div class="hr-line-dashed m-t-none"></div>
+            <div class="form-group {{pointInfo.isInnerCompany?'hide':''}}">
+                <label class="col-24-md-5 control-label">申请付款金额：</label>
+                <div class="col-24-md-19">
+                    <div class="input-group">
+                        <input placeholder="金额" class="form-control pay-input" type="text" name="fee" value="{{pointInfo.subFee}}">
+                        <span class="input-group-addon">万元</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-24-md-5 control-label">备注：</label>
+                <div class="col-24-md-19">
+                    <textarea placeholder="请输入备注" class="form-control" type="text" name="pointDetailDescription"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

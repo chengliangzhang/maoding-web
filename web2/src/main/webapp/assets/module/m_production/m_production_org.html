@@ -1,0 +1,117 @@
+<style>
+    table.partB{border-right:0px;margin-bottom: 0px;}
+    table.partB,table.partB tbody,table.partB tbody tr,table.partB tbody tr td{border-bottom: 0px}
+</style>
+{{if isShowTips==1}}
+<div class="alert alert-warning alert-dismissable">
+    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+    如若要进行生产安排，请先指定设计负责人！
+</div>
+{{/if}}
+{{if departBCompany !=null && isRoleCompany}}
+<table class="table table-bordered tree-box partB" style="width: 12%;float: left;border-right:0px;">
+    <tr class="" >
+        <td align="center" height="40" class="gray-bg font-bold" style="border-right:0px; ">乙方</td>
+    </tr>
+</table>
+<table class="table table-bordered tree-box partB"  style="width: 88%;float: left;">
+    <tbody>
+        <tr class="" >
+            <td width="32%" height="40" class="treeTd">&nbsp;{{departBCompany.companyName}}</td>
+            <td width="14%" align="center" class="gray-bg font-bold">经营负责人</td>
+            <td width="20%">
+                <div class="full-width l-h-20">
+                    {{if departBCompany.isUpdateOperator==1}}
+                        <a href="javascript:void(0)" data-action="changeOperatorPerson" data-i="0" data-id="{{departBCompany.operatorPersonId}}" data-user-name="{{departBCompany.operatorPersonName}}"
+                           data-company-id="{{departBCompany.id}}" class="pull-left">{{departBCompany.operatorPersonName}}</a>
+                        <a href="javascript:void(0)" data-action="changeOperatorPerson" data-i="0" data-id="{{departBCompany.operatorPersonId}}" data-user-name="{{departBCompany.operatorPersonName}}"
+                           data-company-id="{{departBCompany.id}}" class="pull-right showTooltip" data-placement="top"
+                           data-toggle="tooltip" data-original-title="{{departBCompany.operatorPersonId==currentCompanyUserId?'更换':'更换'}}经营负责人">
+                            <i class="fa fa-retweet"></i>
+                        </a>
+                    {{else}}
+                        {{departBCompany.operatorPersonName}}
+                    {{/if}}
+                </div>
+            </td>
+            <td width="14%" align="center" class="gray-bg font-bold">设计负责人</td>
+            <td width="20%">
+                <div class="full-width l-h-20">
+                    {{if departBCompany.isUpdateDesign==1}}
+                    <a href="javascript:void(0)" data-action="changeManagerPerson" data-i="0" data-id="{{departBCompany.designPersonId}}" data-user-name="{{departBCompany.designPersonName}}"
+                       data-company-id="{{departBCompany.id}}" class="pull-left">
+                        {{departBCompany.designPersonName==null?'未设置':departBCompany.designPersonName}}
+                    </a>
+                    {{if departBCompany.designPersonName!=null}}
+                    <a href="javascript:void(0)" data-action="changeManagerPerson" data-i="0" data-id="{{departBCompany.designPersonId}}" data-user-name="{{departBCompany.designPersonName}}"
+                       data-company-id="{{departBCompany.id}}" class="pull-right showTooltip" data-placement="top" data-toggle="tooltip" data-original-title="更换设计负责人">
+                        <i class="fa fa-retweet"></i>
+                    </a>
+                    {{/if}}
+                    {{else}}
+                    {{departBCompany.designPersonName}}
+                    {{/if}}
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+{{/if}}
+<table class="table table-bordered tree-box" style="width: 12%;float: left;border-right:0px;">
+    <tbody>
+        <tr class="" >
+            <td align="center" height="40" class="gray-bg font-bold" style="border-right:0px; ">立项组织</td>
+        </tr>
+        {{if productionOrgList.length>1}}
+        <tr class="" >
+            <td align="center" height="{{(productionOrgList.length-1)*40}}" class="gray-bg font-bold" style="vertical-align: middle;border-right:0px; ">设计组织</td>
+        </tr>
+        {{/if}}
+    </tbody>
+</table>
+<table class="tree table no-treegrid-expander table-bordered tree-box" style="width: 88%;float: left;">
+    <tbody>
+    {{each productionOrgList as t}}
+    {{if t!=null}}
+    <tr class="tree-box-tr treegrid-{{t.treeId}} {{if t.pid!=null && t.pid!=''}}treegrid-parent-{{t.pid}}{{/if}}" data-i="{{$index}}">
+        <td width="32%" height="40" class="treeTd"><span class="companyName" data-string="{{t.companyName}}">&nbsp;{{t.companyName}}</span></td>
+        <td width="14%" align="center" class="gray-bg font-bold">经营负责人</td>
+        <td width="20%">
+            <div class="full-width l-h-20">
+                {{if t.isUpdateOperator==1}}
+                    <a href="javascript:void(0)" data-action="changeOperatorPerson" data-i="0" data-id="{{t.operatorPersonId}}" data-user-name="{{t.operatorPersonName}}"
+                       data-company-id="{{t.id}}" class="pull-left">{{t.operatorPersonName}}</a>
+                    <a href="javascript:void(0)" data-action="changeOperatorPerson" data-i="0" data-id="{{t.operatorPersonId}}" data-user-name="{{t.operatorPersonName}}"
+                       data-company-id="{{t.id}}" class="pull-right showTooltip" data-placement="top"
+                       data-toggle="tooltip" data-original-title="{{t.operatorPersonId==currentCompanyUserId?'更换':'更换'}}经营负责人">
+                        <i class="fa fa-retweet"></i>
+                    </a>
+                {{else}}
+                    {{t.operatorPersonName}}
+                {{/if}}
+            </div>
+        </td>
+        <td width="14%" align="center" class="gray-bg font-bold">设计负责人</td>
+        <td width="20%">
+            <div class="full-width l-h-20">
+                {{if t.isUpdateDesign==1}}
+                    <a href="javascript:void(0)" data-action="changeManagerPerson" data-i="0" data-id="{{t.designPersonId}}" data-user-name="{{t.designPersonName}}"
+                       data-company-id="{{t.id}}" class="pull-left">{{t.designPersonName==null?'未设置':t.designPersonName}}</a>
+                    {{if t.designPersonName!=null}}
+                        <a href="javascript:void(0)" data-action="changeManagerPerson" data-i="0" data-id="{{t.designPersonId}}" data-user-name="{{t.designPersonName}}"
+                           data-company-id="{{t.id}}" class="pull-right showTooltip" data-placement="top" data-toggle="tooltip" data-original-title="更换设计负责人">
+                            <i class="fa fa-retweet"></i>
+                        </a>
+                    {{/if}}
+                {{else}}
+                    {{t.designPersonName}}
+                {{/if}}
+            </div>
+        </td>
+    </tr>
+    {{/if}}
+    {{/each}}
+    </tbody>
+</table>
+<div class="clearfix"></div>
+<hr/>

@@ -1,0 +1,125 @@
+<div class="ibox m_approval_mgt_setProcess">
+    <div class="ibox-content no-borders">
+        <h4>模板管理</h4>
+        <div class="row m-t-sm">
+            <div class="col-md-2 text-right">模版模型：</div>
+            <div class="col-md-10">{{name}}</div>
+        </div>
+        <div class="row m-t-sm">
+            <div class="col-md-2 text-right">审批流程：</div>
+            <div class="col-md-10">
+                <div>
+                    <label class="i-checks">
+                        <input class="ck"  name="iCheck" type="radio" data-type="1" />
+                        自由流程
+                    </label>
+                    <span class="fc-ccc">（组织成员可自行添加相应的审批人）</span>
+                </div>
+                <div class="m-t-xs">
+                    <label class="i-checks">
+                        <input class="ck"  name="iCheck" type="radio" data-type="2" />
+                        固定流程
+                    </label>
+                    <span class="fc-ccc">（组织成员需按照规定好的审批人流程进行审批）</span>
+                </div>
+                <div class="panel panel-default" data-type="2" data-i="0" style="display: none;">
+                    <div class="panel-heading">
+                        当为“固定流程”时
+                    </div>
+                    <div class="panel-body" >
+                        {{if fixedProcess!=null && fixedProcess.length>0}}
+                            {{each fixedProcess as f i}}
+                                {{if f.flowTaskList!=null && f.flowTaskList.length>0}}
+                                    {{each f.flowTaskList as p pi}}
+                                        <div class="approver-outbox">
+                                            {{each p.candidateUserList as u ui}}
+                                            <div class="approver-box text-center">
+                                                <div class="img-circle">
+                                                    <img alt="image" class="img-circle" src="{{_isNullOrBlank(u.imgUrl)?_url('/assets/img/head_default.png'):u.imgUrl}}" width="50" height="50">
+                                                </div>
+                                                <div class="m-t-xs">{{u.name}}</div>
+                                                <a href="javascript:void(0);" class="approver-remove" data-action="removeApprover" style="display: none;"><i class="glyphicon glyphicon-remove"></i></a>
+                                            </div>
+                                            {{/each}}
+                                        </div>
+                                        {{if pi+1 < f.flowTaskList.length }}
+                                            <div class="arrow-icon p-h-m">
+                                                <i class="fa fa-long-arrow-right"></i>
+                                            </div>
+                                        {{/if}}
+
+                                    {{/each}}
+                                {{/if}}
+                            {{/each}}
+                        {{/if}}
+
+                        <div class="approver-box text-center">
+                            <a class="btn btn-default btn-circle " type="button" data-action="addReview">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                            <div class="m-t-xs">添加</div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <p>比如组织报销流程为“酋长  >  部落”，设定固定流程后，组织成员填写审批单时，审批人已经默认设置为“酋长  >  部落”，且成员自己不能修改。 </p>
+                    </div>
+                </div>
+                <div class="m-t-xs">
+                    <label class="i-checks">
+                        <input class="ck"  name="iCheck" type="radio" data-type="3"  />
+                        分条件设置流程
+                    </label>
+                    <span class="fc-ccc">（申请人提交的表单会进入相应审批条件设置的审批流程）</span>
+                    <a class="btn btn-link" data-action="setApprovalCondition" data-type="3" style="display: none;">设置审批条件</a>
+                </div>
+                <div id="flowTaskGroupList">
+                    {{if condProcess!=null && condProcess.length>0}}
+                        {{each condProcess as f i}}
+                        <div class="panel panel-default" data-type="3" data-i="{{i}}">
+                            <div class="panel-heading">
+                                {{f.title}}
+                            </div>
+                            <div class="panel-body">
+                                {{if f.flowTaskList!=null && f.flowTaskList.length>0}}
+                                    {{each f.flowTaskList as p pi}}
+                                        <div class="approver-outbox">
+                                        {{each p.candidateUserList as u ui}}
+                                            <div class="approver-box text-center">
+                                                <div class="img-circle">
+                                                    <img alt="image" class="img-circle" src="{{_isNullOrBlank(u.imgUrl)?_url('/assets/img/head_default.png'):u.imgUrl}}" width="50" height="50">
+                                                </div>
+                                                <div class="m-t-xs">{{u.name}}</div>
+                                                <a href="javascript:void(0);" class="approver-remove" data-action="removeApprover" style="display: none;"><i class="glyphicon glyphicon-remove"></i></a>
+                                            </div>
+                                        {{/each}}
+                                        </div>
+                                        {{if pi+1 < f.flowTaskList.length }}
+                                            <div class="arrow-icon p-h-m">
+                                                <i class="fa fa-long-arrow-right"></i>
+                                            </div>
+                                        {{/if}}
+                                    {{/each}}
+                                {{/if}}
+                                <div class="approver-box text-center">
+                                    <a class="btn btn-default btn-circle " type="button" data-action="addReview">
+                                        <i class="fa fa-plus"></i>
+                                    </a>
+                                    <div class="m-t-xs">添加</div>
+                                </div>
+                            </div>
+                        </div>
+                        {{/each}}
+                    {{/if}}
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-10">
+                <a class="btn btn-primary" data-action="save">保存</a>
+                <a class="btn btn-default" data-action="back">返回</a>
+            </div>
+        </div>
+    </div>
+</div>

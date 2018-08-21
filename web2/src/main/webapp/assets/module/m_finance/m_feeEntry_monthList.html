@@ -1,0 +1,32 @@
+<div class="text-center f-s-20 border-bottom date-chose-box">
+    <a class="m-r-md" data-action="prevYear"><i class="fa fa-angle-left"></i></a>
+    <span data-type="selectedYear">{{selectedYear}}</span>
+    {{if selectedYear<currentYear}}
+        <a class="m-l-md" data-action="nextYear"><i class="fa fa-angle-right"></i></a>
+    {{else}}
+        <span class="m-l-md fc-ccc"><i class="fa fa-angle-right"></i></span>
+    {{/if}}
+</div>
+{{each monthList as m mi}}
+<div class="month-menu-box curp {{currentExpDate==null?(mi==0?'active':''):(currentExpDate==m.expDate?'active':'')}}" data-action="getExpFixed" data-expdate="{{m.expDate}}">
+    <div class="col-md-6 month">
+        {{_momentFormat(m.expDate,'MM月')}}
+        <div class="user-name">
+            财务人员：
+            {{if m.userName!=null && m.userName!=''}}
+                {{m.userName}}
+            {{else}}
+                --
+            {{/if}}
+        </div>
+    </div>
+    <div class="col-md-6 detail text-right">
+        <div class="income">
+            收入：<span>{{_expNumberFilter(m.incomeAmount)}}</span> 元
+        </div>
+        <div class="expenditure">
+            支出：<span>{{_expNumberFilter(m.expAmount)}}</span> 元
+        </div>
+    </div>
+</div>
+{{/each}}

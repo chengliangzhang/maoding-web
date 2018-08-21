@@ -1,0 +1,33 @@
+/*uploadmgr*/
+.uploadmgr {
+    border-top: solid 1px #eee;
+}
+
+.uploadmgr .upload-item-list{
+    margin: 10px 0 0 0;
+    padding: 10px 10px 0 0;
+    max-height: 230px;
+    overflow: scroll;
+}
+
+.uploadmgr .webuploader-pick {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    overflow: inherit;
+    background: #4765a0;
+    padding: 0;
+    border-radius: 0;
+}
+
+.uploadmgr .webuploader-pick-hover{
+    background: #4765a0 ;
+}
+
+.uploadmgr .btn-select{
+    background: #4765a0 ;
+}
+
+.uploadmgr .btn-select:hover{
+    background: #4765a0 ;
+}

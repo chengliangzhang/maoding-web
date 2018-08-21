@@ -1,0 +1,22 @@
+.m_editCustomPropertyTemp .box-left{
+    height: 475px;overflow: auto;padding-top: 17px;
+}
+.m_editCustomPropertyTemp .box-right{
+    height: 475px;overflow: auto;padding: 28px 34px;
+}
+.m_editCustomPropertyTemp .list-group-item{
+    border: none;
+    padding: 0px;
+}
+.m_editCustomPropertyTemp.i-checks-span>.property-span{
+    border-radius: 3px;
+    padding: 1px;
+    display: inline-block;
+}
+.m_editCustomPropertyTemp.property-span{
+    border-radius: 3px;
+    padding: 1px;
+}
+.m_editCustomPropertyTemp .tooltip-inner{
+    max-width: 120px;word-break: break-all;text-align: left;
+}

@@ -1,0 +1,47 @@
+<table class="table table-hover table-bordered table-responsive">
+    <thead>
+    <tr>
+        <th width="5%">序号</th>
+        <th width="20%">任务名称</th>
+        <th width="20%">项目</th>
+        <th width="12%">角色</th>
+        <th width="28%">描述</th>
+        <th width="15%">时间</th>
+        <!--<th width="18%">计划进度</th>
+        <th width="18%">计划提示</th>
+        <th width="12%">任务状态</th>-->
+    </tr>
+    </thead>
+    <tbody>
+    {{each myDataList as m mi}}
+    <tr class="curp" id="{{m.id}}" i="{{mi}}" data-type="{{m.taskType}}" data-project-id="{{m.projectId}}" data-target-id="{{m.targetId}}">
+        <td class="v-middle">
+            {{mi+1+pageIndex*10}}
+        </td>
+        <td class="v-middle">{{m.taskName}}</td>
+        <td class="v-middle"><span data-type="projectName">{{m.projectName}}</span></td>
+        <td class="v-middle">{{m.role}}</td>
+        <td class="v-middle">
+            <!--{{m.planStartTime}}-{{m.planEndTime}}
+            {{if m.planStartTime!=null && m.planStartTime!='' && m.planEndTime!=null && m.planEndTime!=''}}
+            | 共{{_timeDifference(m.planStartTime,m.planEndTime)}}天
+            {{/if}}-->
+            {{#m.description}}
+        </td>
+        <td class="v-middle">
+           {{_momentFormat(m.createDate,'YYYY/MM/DD')}}
+        </td>
+    </tr>
+    {{/each}}
+    {{if myDataList==null || myDataList.length==0}}
+    <tr class="no-data">
+        <td colspan="6" align="center">
+            <div class="text-center">
+                <img src="{{_url('/assets/img/default/without_data.png')}}">
+            </div>
+            <span style="color:#4765a0">您还没有相关任务</span>
+        </td>
+    </tr>
+    {{/if}}
+    </tbody>
+</table>

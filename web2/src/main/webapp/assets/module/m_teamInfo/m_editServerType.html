@@ -1,0 +1,26 @@
+<style>
+    .form-group.serverTypeBox label.checkbox input{position: absolute;}
+    .form-group.serverTypeBox input[type="text"].form-control{width: 100%;}
+    .form-group.serverTypeBox form{margin: 0;}
+    .form-group.serverTypeBox{margin: 0;}
+</style>
+<div class="form-group serverTypeBox p-n" style="width: 340px;">
+    <form class="sky-form rounded-bottom" >
+        <fieldset class="no-padding">
+            <div class="row">
+                {{each serverTypeList as d}}
+                <div class="col-md-4">
+                    <label class="i-checks fw-normal">
+                        {{if serverTypeIndex!=null &&  serverTypeIndex.indexOf(d.id)>-1}}
+                        <input name="serverType" type="checkbox" checked value="{{d.name}}" data-id="{{d.id}}"/>
+                        {{else}}
+                        <input name="serverType" type="checkbox"  value="{{d.name}}" data-id="{{d.id}}"/>
+                        {{/if}}
+                        {{d.name }}
+                    </label>
+                </div>
+                {{/each}}
+            </div>
+        </fieldset>
+    </form>
+</div>

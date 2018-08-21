@@ -1,0 +1,42 @@
+<div class="ibox m-b-none m_addressBook">
+    <div class="ibox-title secondary-menu-outbox">
+        <div class="row">
+            <div class="col-md-6">
+                <!--面包屑-->
+                <div class="no-margin p-h-sm breadcrumb-box" >
+                    <ol class="breadcrumb">
+                        <li>
+                            通讯录
+                        </li>
+                        <li class="active fa fa-angle-right">
+                            <strong>通讯录</strong>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-6 text-right p-xs treeSwitch">
+                <a href="javascript:void(0)" data-action="treeSwitch">
+                    <img src="{{rootPath}}/assets/img/whole_org_framework.png" style="height: 23px;" data-toggle="tooltip" data-placement="top" title="查看完整组织架构" />
+                </a>
+            </div>
+            <div class="clearfix"></div>
+
+        </div>
+    </div>
+    <div class="ibox-content no-padding no-border">
+        <div class="row">
+            <div class="col-24-sm-8 col-24-md-8 col-24-lg-6 " id="org-tree-box" style="height:500px;overflow: auto;border-right:solid 1px #d9d9d9;">
+                <div class="clearfix margin-bottom-10"></div>
+                <div id="organization_treeH">
+                    <ul class="sidebar-nav list-group sidebar-nav-v1">
+                    </ul>
+                </div>
+            </div>
+            <!--组织架构树 end-->
+            <div class="col-24-sm-16 col-24-md-16 col-24-lg-18 no-padding" id="orgUserListBox">
+
+            </div>
+        </div>
+
+    </div>
+</div>

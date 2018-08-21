@@ -1,0 +1,51 @@
+.m-invite-group a,
+.m-invite-group a:link,
+.m-invite-group a:visited {
+    cursor: pointer;
+    color: #676a6c;
+    text-decoration: none;
+}
+
+.m-invite-group a:hover,
+.m-invite-group a:active,
+.m-invite-group a:focus {
+    cursor: pointer;
+    color: #4765a0;
+    text-decoration: none;
+}
+
+.m-invite-group li {
+    background-color: #fff !important;
+    border-bottom: none;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 10px 8px 10px 12px !important;
+}
+
+.m-invite-group li.unselectable img{
+    height: 80%;
+    height: calc(100% - 10px);
+    height: -moz-calc(100% - 10px);
+    height: -webkit-calc(100% - 10px);
+}
+
+.m-invite-group li.unselectable:hover,
+.m-invite-group li.unselectable:active,
+.m-invite-group li.unselectable:focus {
+    background-color:#fff!important
+}
+
+
+.m-invite-group li.selectable img{
+    height: 80%;
+    height: calc(100% - 10px);
+    height: -moz-calc(100% - 10px);
+    height: -webkit-calc(100% - 10px);
+}
+
+.m-invite-group li.selectable:hover,
+.m-invite-group li.selectable:active,
+.m-invite-group li.selectable:focus {
+    background-color: #e7f4f9 !important;
+}

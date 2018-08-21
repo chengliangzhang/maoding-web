@@ -1,0 +1,36 @@
+<style>
+    .m_org_chose_byTree #orgTreeH{
+        display: block;
+        position: absolute;
+        top: 0px;
+        border: 1px solid #e7eaec;
+        padding: 10px;
+        border-radius: 4px;
+        height: 300px;
+        overflow: auto;
+        z-index: 9;
+        background-color: #fff;
+    }
+
+</style>
+{{if renderType==1}}
+<div id="orgTreeH" >
+    <ul class="sidebar-nav list-group sidebar-nav-v1">
+    </ul>
+</div>
+{{else}}
+<div class="btn-group m_org_chose_byTree">
+    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-action="selectOrg" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false"  data-stopPropagation="true" style="{{buttonStyle==null?'':buttonStyle}}">
+        <span class="company-name" style="{{spanStyle==null?'':spanStyle}}">{{companyList.text}}</span> <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+        <li>
+            <div id="orgTreeH" >
+                <ul class="sidebar-nav list-group sidebar-nav-v1">
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>
+{{/if}}

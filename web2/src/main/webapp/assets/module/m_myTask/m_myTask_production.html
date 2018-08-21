@@ -1,0 +1,37 @@
+<div class="ibox">
+    <div class="ibox-title secondary-menu-outbox">
+        <div class="row">
+            <div class="col-md-6">
+                <!--面包屑-->
+                <div class="no-margin p-h-sm breadcrumb-box" >
+                    <ol class="breadcrumb">
+                        <li>
+                            我的任务
+                        </li>
+                        <li class=" fa fa-angle-right">
+                            {{projectName}}
+                        </li>
+                        <li class="active fa fa-angle-right">
+                            <strong>
+                                {{if enterType == 'approved'}}
+                                    审批
+                                {{else if enterType == 'designer'}}
+                                    设、校、审
+                                {{else }}
+                                    生产安排
+                                {{/if}}
+                            </strong>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-6 text-right p-sm">
+            </div>
+            <div class="clearfix"></div>
+
+        </div>
+    </div>
+    <div class="ibox-content no-padding">
+        <div id="productionList" class="list-box"></div>
+    </div>
+</div>

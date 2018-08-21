@@ -1,0 +1,12 @@
+<div class="uploadmgr {{boxClass==null?'tag-box tag-box-v1 box-shadow shadow-effect-1':boxClass}}">
+    <div class="alertmgr"></div>
+    <a href="javascript:void(0)" class="btn-select btn-u btn-u-sm btn-u-dark-blue rounded" type="button"><i class="fa fa-plus"></i>&nbsp;选择文件</a>
+    <!--<a href="javascript:void(0)" class="btn-start btn-u btn-u-sm btn-u-dark-blue rounded dp-none" type="button"><i class="fa fa-caret-right"></i>&nbsp;开始</a>
+    <a href="javascript:void(0)" class="btn-pause btn-u btn-u-sm btn-u-dark-blue rounded dp-none" type="button"><i class="fa  fa-times"></i>&nbsp;暂停</a>-->
+    {{if isShowBtnClose}}
+        <a href="javascript:void(0)" type="button" class="btn-close close">×</a>
+    {{/if}}
+    <div class="upload-item-list">
+    </div>
+    <p class="pull-right"><!--已上传<span class="numOfSuccess">0</span>个--></p>
+</div>

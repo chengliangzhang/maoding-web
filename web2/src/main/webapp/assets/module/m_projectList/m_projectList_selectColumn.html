@@ -1,0 +1,13 @@
+<div class="select-column">
+    <ul class="dropdown-menu" style="display: block;position: relative;width: 100%;margin: 0;">
+        {{each columnArr as d i}}
+        {{if i>2}}
+        <li>
+            <a data-code="{{d.code}}" class="{{columnCodes.indexOf(d.code)>-1?'active':''}}">
+                {{d.name}}
+            </a>
+        </li>
+        {{/if}}
+        {{/each}}
+    </ul>
+</div>

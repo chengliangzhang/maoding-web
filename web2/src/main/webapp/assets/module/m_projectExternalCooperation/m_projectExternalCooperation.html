@@ -1,0 +1,79 @@
+<div class="ibox m_contractPayment">
+    <div class="ibox-title secondary-menu-outbox">
+        <div class="row">
+            <div class="col-md-6">
+                <!--面包屑-->
+                <div class="no-margin p-h-sm breadcrumb-box" >
+                    <ol class="breadcrumb">
+                        <li>
+                            我的项目
+                        </li>
+                        <li class=" fa fa-angle-right">
+                            {{projectName}}
+                        </li>
+                        <li class="active fa fa-angle-right">
+                            <strong>外部合作</strong>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-6 text-right ">
+                {{if isHasRoleOperate==1}}
+                    <a href="javascript:void(0)" class="btn btn-primary btn-xs pull-right m-t"
+                       data-action="inviteExternalCooperation" >邀请合作设计组织</a>
+                {{/if}}
+            </div>
+            <div class="clearfix"></div>
+
+        </div>
+    </div>
+    <div class="ibox-content no-padding">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="text-align-center ">联系方式</th>
+                <th class="text-align-center ">合作组织</th>
+                <th class="text-align-center ">企业负责人</th>
+                <th class="text-align-center ">合作内容</th>
+                <th class="text-align-center ">经营负责人</th>
+                <th class="text-align-center ">操作</th>
+            </tr>
+            </thead>
+            <tbody class="border-no-t">
+            {{each projectPartnerList as p}}
+            <tr class="{{p.companyId!=null && p.companyId!=''?'':'gray-bg'}}">
+                <td class="text-align-center">{{p.phone}}</td>
+                <td class="text-align-center">{{p.companyName}}</td>
+                <td class="text-align-center">{{p.companyManagerName}}</td>
+                <td class="text-align-center">{{p.taskNameSplice}}</td>
+                <td class="text-align-center">{{p.projectManagerName}}</td>
+                <td class="text-align-center">
+                    {{if p.companyId!=null && p.companyId!='' && isHasRoleOperate==1}}
+                    <a href="javascript:void(0);" class="btn btn-primary btn-xs m-r-xs autoMargin"
+                       data-action="relieveRelationship" data-id="{{p.id}}">解除合作</a>
+                    {{/if}}
+                    {{if p.companyId==null || p.companyId==''}}
+                    <span class="badge">未建立合作关系</span>
+                    {{if isHasRoleOperate==1}}
+                    <a href="javascript:void(0);" class="btn btn-danger btn-xs pull-right m-r-xs autoMargin"
+                       data-action="resendSMS" data-id="{{p.id}}">重新推送短信</a>
+                    {{/if}}
+                    {{/if}}
+                </td>
+            </tr>
+            {{/each}}
+            {{if projectPartnerList==null || projectPartnerList.length==0}}
+            <tr class="no-data">
+                <td colspan="10" align="center">
+                    <div class="text-center">
+                        <img src="{{_url('/assets/img/default/without_exp.png')}}">
+                    </div>
+                    <span style="color:#4765a0">暂无合作设计组织</span>
+                </td>
+            </tr>
+            {{/if}}
+            </tbody>
+
+        </table>
+    </div>
+</div>

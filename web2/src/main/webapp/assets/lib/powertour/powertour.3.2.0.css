@@ -1,0 +1,96 @@
+/*
+ * Name        : Power Tour
+ * Description : CSS for the tour plugin.
+ * Version     : Version 3.2.0
+ * Author      : CreativeMilk
+ * Author URI  : www.creativemilk.net
+ * Updated     : 2015-11-22 15:34:41 UTC+02:00
+ * Copyright   : (c) 2015 CreativeMilk
+ */
+
+.powertour-step{
+	padding    : 0;
+	position   : absolute;
+	visibility : hidden;
+	z-index    : 0;
+}
+.powertour-hook{
+	position : relative;
+}
+.powertour-step.powertour-hide iframe{
+	visibility : hidden; /* opera issue with yt video*/
+}
+.powertour-step.powertour-show iframe{
+	visibility : visible;
+	display    : block
+}
+.powertour-activestep{
+	visibility : visible;
+}
+.powertour-step:before,
+.powertour-step:after,
+.powertour-step > *:before,
+.powertour-step > *:after{
+	content : "";
+	display : table;
+}
+.powertour-step:after,
+.powertour-step > *:after{
+	clear : both; 
+}
+.powertour-step,
+.powertour-step > *:after{
+	zoom : 1;/*IE*/
+}
+#powertour-mask{
+	width    : 100%;
+	height   : 100%;
+	z-index  : 9000!important;
+	position : fixed;
+	top      : 0;
+	left     : 0;
+	display  : none;
+}
+.powertour-step > *{
+	position : relative;
+}
+.powertour-step.animated,
+.powertour-tooltip:hover .powertour-step,
+.powertour-step.powertour-show{
+	visibility : visible;
+}
+[data-powertour-position]{
+	position:fixed!important
+}
+.powertour-step.powertour-activestep,
+.powertour-step.powertour-keepvisible,
+.powertour-activehook.powertour-highlight,
+.powertour-tooltip:hover .powertour-step{
+	z-index : 9001!important;	
+}
+body .powertour-step > *{
+	display : inherit
+}
+
+/* 
+    NEW 3.0.0 (TINY VERSION)
+	
+	Used FX IN/OUT classes for tiny version, 
+	you can modify these 2 classes. 
+*/
+
+.powertour-fxin{
+	opacity            : 1;
+	
+	-moz-transition    : 0.4s;
+	-webkit-transition : 0.4s;
+	transition         : 0.4s;	
+}
+
+.powertour-fxout{
+	opacity            : 0;
+	
+	-moz-transition    : 0.4s;
+	-webkit-transition : 0.4s;
+	transition         : 0.4s;	
+}

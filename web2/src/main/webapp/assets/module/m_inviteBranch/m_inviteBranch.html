@@ -1,0 +1,36 @@
+<div class="ibox">
+    <div class="ibox-title border-fff">
+        <span class="f-s-16 dp-inline-block l-h-16">分支机构邀请组织</span>
+    </div>
+    <div class="ibox-content text-center">
+        <div class="m-b-sm">
+            {{if filePath!='' && filePath!=null}}
+            <img alt="image" class="img-circle wth-100 h-100"
+                 src="{{filePath}}">
+            {{else}}
+            <img alt="image" class="img-circle wth-100 h-100"
+                 src="{{_url('/assets/img/default/org_default_headPic.png')}}">
+            {{/if}}
+        </div>
+        <p class="f-s-18">{{companyName}}</p>
+        <p class="f-s-14 fc-aaa">企业负责人:{{systemManager}}</p>
+    </div>
+    <div class="ibox-content">
+        <div class="row">
+            <div class="col-sm-12">
+                <form role="form">
+                    <div class="form-group">
+                        <label class="f-s-14 fw-400">您的手机号：</label>
+                        <p class="f-s-14 fc-dark-blue fw--600">{{cellphone}}</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="f-s14 fw-400">输入完整手机号校验身份：</label>
+                        <input name="cellphone" id='cellphone' placeholder="手机号" class="form-control"></div>
+                    <div class="form-group">
+                        <a class="btn btn-primary btn-block btn-ok">确定</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

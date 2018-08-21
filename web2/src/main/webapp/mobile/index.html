@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta charset="UTF-8">
+    <title>卯丁</title>
+    <link rel="stylesheet" href="lib/fullpage/jquery.fullpage.min.css">
+    <link rel="stylesheet" href="css/app.min.css?_tz_=2">
+    <link rel="stylesheet" href="lib/fakeloader/fakeLoader.min.css">
+</head>
+<body>
+<div id="fakeLoader"></div>
+<div id="container" style="width: 100%;height:100%;display: none;">
+    <div id="header-wrapper">
+        <div class="header">
+       <span class="header_logo">
+             <img src="img/logo.png"/>
+        </span>
+            <span class="header_word">
+             卯丁
+        </span>
+        </div>
+    </div>
+    <div id="fullpage">
+        <div class="section" id="section1">
+            <div class="f_wrapper">
+                <div class="f_img_wrapper">
+                    <img id='f1_img' src="img/1d.png">
+                </div>
+            </div>
+        </div>
+        <div class="section" id="section2">
+            <div class="f_wrapper">
+                <div class="f_img_word_wrapper">
+                    <div class="f_img_wrapper f_wrapper_fix10">
+                        <img id='f2_img' src="img/2a.png">
+                    </div>
+                    <div class="f_word_wrapper">
+                        <h1 class="f_word_h" style="margin-bottom: 60px;">组织管理</h1>
+                        <p class="f_word_p p-t-sm">快速创建多元化的企业组织构架，</p>
+                        <p class="f_word_p">构建开放型的人力资源体系。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section" id="section3">
+            <div class="f_wrapper">
+                <div class="f_img_word_wrapper">
+                    <div class="f_word_wrapper2  f_wrapper_fix30">
+                        <h1 class="f_word_h" style="margin-bottom: 60px;">项目管理</h1>
+                        <p class="f_word_p p-t-sm">支持跨组织合作设计，</p>
+                        <p class="f_word_p">建立各类任务流的下行与回溯体系，</p>
+                        <p class="f_word_p">形成PDCA闭环。</p>
+                    </div>
+                    <div class="f_img_wrapper2">
+                        <img id='f3_img' src="img/3a.png">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section" id="section4">
+            <div class="f_wrapper">
+                <div class="f_img_word_wrapper">
+                    <div class="f_img_wrapper f_wrapper_fix10">
+                        <img id='f4_img' src="img/4a.png">
+                    </div>
+                    <div class="f_word_wrapper">
+                        <h1 class="f_word_h" style="margin-bottom: 60px;">协同设计</h1>
+                        <p class="f_word_p p-t-sm">集成AutoCAD协同工具，</p>
+                        <p class="f_word_p" >设计数据实时采集，</p>
+                        <p class="f_word_p" >实现管理与生产的无缝对接。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section" id="section5">
+            <div class="f_wrapper">
+                <div class="f_img_word_wrapper">
+                    <div class="f_word_wrapper2 f_wrapper_fix30">
+                        <h1 class="f_word_h" style="margin-bottom: 60px;">项目费控</h1>
+                        <p class="f_word_p p-t-sm">跟踪、记录项目收支全过程，</p>
+                        <p class="f_word_p">实时查询项目收支，</p>
+                        <p class="f_word_p">管理项目成本，辅助决策。</p>
+                    </div>
+                    <div class="f_img_wrapper2">
+                        <img id='f5_img' src="img/5a.png">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section" id="section6">
+            <div class="f_wrapper">
+                <div class="f_img_word_wrapper">
+                    <div class="f_img_wrapper f_wrapper_fix10">
+                        <img id='f6_img' src="img/6b.png">
+                    </div>
+                    <div class="f_word_wrapper">
+                        <h1 class="f_word_h" style="margin-bottom: 60px;">即时通讯</h1>
+                        <p class="f_word_p p-t-sm">自动生成公司群、部门群、项目群，</p>
+                        <p class="f_word_p">建立以项目为核心的信息推送体系。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="copyrights">
+                <p>
+                    深圳市卯丁技术有限公司 © 2016 粤ICP备16006511号-1
+                </p>
+            </div>
+        </div>
+    </div>
+    <div id="footer-wrapper">
+        <div class="btn-wrapper">
+            <a class="btn" id="btnDown" href="javascript:void(0);"><span>立即下载</span></a>
+        </div>
+    </div>
+</div>
+<iframe id="iframeDown" style="display: none"></iframe>
+<script type="text/javascript" src="lib/jquery-1x/jquery.min.js"></script>
+<script type="text/javascript" src="lib/fakeloader/fakeLoader.min.js"></script>
+<script type="text/javascript" src="lib/fullpage/vendors/scrolloverflow.min.js"></script>
+<script type="text/javascript" src="lib/fullpage/jquery.fullpage.min.js"></script>
+<script type="text/javascript" src="js/app.min.js"></script>
+<script>
+    $("#fakeLoader").fakeLoader({
+        zIndex:9999,
+        timeToHide:1200,
+        bgColor:'#34495e',
+        spinner:'spinner4'
+    });
+
+    $('#btnDown').click(function(){
+        $('#iframeDown').attr('src','https://www.imaoding.com/download');
+    });
+
+
+    if(window.location.host.indexOf('imaoding.com')!=-1) {
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?ff910f060adb4a14d82f73a4a8918537";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    }
+</script>
+</body>
+</html>

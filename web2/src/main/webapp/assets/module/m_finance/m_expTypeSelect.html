@@ -1,0 +1,24 @@
+<div class="m_expTypeSelect">
+    <input type="text" class="form-control curp bg-none"  readonly="readonly" id="collectExpType" name="collectExpType"
+           data-action="collectExpType" placeholder="报销类别">
+
+    <div class=" typeNameArea hide pt-absolute" style="z-index: 99;min-width: 596px;">
+        <div class="thumbnail clearfix click p-sm">
+            <div class="clearBtn"><!-- 清除数据按钮-->
+                <a href="javascript:void(0);" data-action="deleteAll" class="btn-u btn-u-red btn-u-xs rounded">清除</a>
+            </div>
+            {{each expTypeList as value i}}
+            <div class="items col-lg-2 text-center no-padding">
+                <a href="javascript:void(0);" class="click firstItem color-dark curp" data-action="firstItem" name="{{value.parent.name}}" id="{{value.parent.id}}">{{value.parent.name}}</a>
+                <hr/>
+                {{each value.child as item d}}
+                <div class="childItem margin-bottom-5">
+                    <a href="javascript:void(0);" data-action="childItem" parent-name="{{value.parent.name}}" name="{{item.name}}" id="{{item.id}}" class="color-dark curp">{{item.name}}</a>
+                </div>
+                {{/each}}
+            </div>
+            {{/each}}
+            <div class="items col-lg-2 text-center no-padding"><a class="click firstItem color-dark "  >&nbsp;</a><hr/></div>
+        </div>
+    </div>
+</div>

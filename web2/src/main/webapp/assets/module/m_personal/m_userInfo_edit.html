@@ -1,0 +1,65 @@
+<form class="userInfoForm form-horizontal border-none">
+    <div class="ibox">
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-md-12 margin-top-20">
+                    <div class="row cube-portfolio margin-top-20">
+                        <div class="col-sm-offset-1 col-md-offset-1 col-md-3 cbp-l-grid-agency cbp-caption-active cbp-caption-zoom cbp-ready">
+                            <div class="thumbnails thumbnail-style cbp-item-wrapper text-align-center wid-200" style="box-sizing:border-box;padding:9px;border: solid 1px #eee;">
+                                <div class="cbp-caption">
+                                    <img  class="img-responsive" alt="Picture"
+                                          src="{{userDto.headImgUrl}}" style="width: 180px;height: 180px;" >
+                                    <div class="cbp-caption-activeWrap">
+                                        <div class="cbp-l-caption-alignCenter">
+                                            <div class="cbp-l-caption-body">
+                                                <ul class="link-captions no-bottom-space">
+                                                    <li>
+                                                        <a href="javascript:void(0)" class="btn-u btn-u-primary rounded" id="comUpload" data-action="changeHeadPic"
+                                                           title="点击设置头像">{{userDto.headImg!=null && userDto.headImg!=''?'替换头像':'上传头像'}}</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-offset-1 col-md-offset-1 col-md-5 col-lg-offset-0">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">姓名<span class="color-red">*</span>：</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="userName" value="{{userDto.userName}}">
+                                    <input type="hidden" name="id" value="{{userDto.id}}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">性别：</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="sex">
+                                        <option value="男" {{if userDto.sex=='男'}}selected{{/if}}>男</option>
+                                        <option value="女" {{if userDto.sex=='女'}}selected{{/if}}>女</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">出生日期：</label>
+                                <div class="col-sm-10 ">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="birthday" onFocus="WdatePicker()" value="{{userDto.birthday}}">
+                                        <span class="input-group-addon"><i class="icon-append fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-offset-1 col-md-offset-0 col-md-2  col-lg-offset-1">
+                            <label class="input">
+                                <a href="javascript:void(0)" data-action="cancelEditUserInfo" class="btn-u btn-u-dark-blue rounded">取消</a>
+                                <a href="javascript:void(0)" data-action="saveUserInfo" class="btn-u btn-u-dark-blue rounded">保存</a>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

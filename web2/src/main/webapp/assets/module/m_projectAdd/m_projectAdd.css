@@ -1,0 +1,109 @@
+
+.m_projectAdd .no-float {
+    float: none;
+}
+
+.m_projectAdd .editable-empty, .m_projectAdd .editable-empty:hover, .m_projectAdd .editable-empty:focus {
+    color: #ccc;
+    font-style: normal;
+}
+
+.m_projectAdd .editable-click {
+    border-bottom: none;
+}
+
+.m_projectAdd a[type="button"].editable-click, .m_projectAdd a[type="button"].editable-click:hover {
+    border-bottom: 1px solid #e7eaec !important;
+}
+
+.m_projectAdd .todo-list.small-list.bg-white>li{
+    padding-left: 0;
+}
+
+.m_projectAdd span#designContent-error{
+    display: block;
+    color: red;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+/*.m_projectAdd .addDesignContentLi .editable-container .editable-error-block {*/
+    /*display: none !important;*/
+/*}*/
+
+.m_projectAdd li.designContentTemplate a[data-action="choseTemplate"].actived,.m_projectAdd li.designContentTemplate a[data-action="withoutTemplate"].actived {
+    border-color: #324c80;
+    color: #324c80;
+}
+
+.m_projectAdd li.designContentTemplate a[data-action="choseTemplate"],.m_projectAdd li.designContentTemplate a[data-action="withoutTemplate"] {
+    margin-right: 15px;
+    border-radius: 0;
+    margin-top: 10px;
+}
+
+.m_projectAdd form.projectAddForm div.designContentBox li.designContentLi{
+    /*padding-top: 20px;*/
+}
+
+.m_projectAdd li.designContentLi span.designContentDiv{
+    display: inline-block;
+    border: 1px solid #e5e6e7;
+    padding: 10px 10px 10px 10px;
+    overflow: hidden;
+    vertical-align: middle;
+    margin-right: 15px;
+    margin-top: 10px;
+    height:57px;
+    width: 255px;
+}
+.m_projectAdd li.addDesignContentLi span.addDesignContentDiv{
+    display: inline-block;
+    border: 1px dashed #e5e6e7;
+    padding: 10px 10px 10px 10px;
+    overflow: hidden;
+    vertical-align: middle;
+    margin-right: 15px;
+    margin-top: 0;
+    height:57px;
+    width: 255px;
+ }
+
+ .m_projectAdd li.designContentLi span.designContentDiv label.i-checks {
+    margin-bottom: 0;
+    float: left;
+    margin-right: 10px;
+    margin-top: 6px;
+}
+.m_projectAdd span.content-name{
+    width: auto;
+    max-width: 195px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -webkit-text-overflow: ellipsis;
+    -moz-text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    line-height: 12px;
+}
+.m_projectAdd li.designContentLi{
+    padding-top: 27px;
+}
+
+.m_projectAdd li.addDesignContentLi a[data-action="addDesignContent"]{
+    width: 100%;
+    height: 100%;
+    border: none!important;
+    padding-top: 18px;
+    border-radius: 0;
+}
+.m_projectAdd li.addDesignContentLi a[data-action="addDesignContent"]:hover{
+    border: none!important;
+}
+.m_projectAdd .select2-container .select2-selection--single{height: 34px;border-radius: 0px;}
+.m_projectAdd .select2-container--default .select2-selection--single .select2-selection__arrow{height: 32px;}
+.m_projectAdd .select2-container--default .select2-selection--single .select2-selection__rendered{line-height: 32px;}
+
+
+

@@ -1,0 +1,58 @@
+<div class="ibox m_organizational">
+    <!--组织架构树 开始-->
+    <div class="ibox-content no-padding">
+        <div class="col-24-md-24">
+            <div class="row org-btn-box">
+                <div class="treeSwitch" style="">
+                    <a class="m-t-sm" href="javascript:void(0)" data-action="treeSwitch">
+                        <img src="{{rootPath}}/assets/img/whole_org_framework.png" style="height: 23px;" data-toggle="tooltip" data-placement="top" title="查看完整组织架构" />
+                    </a>
+                </div>
+                <div class="col-24-md-23 col-24-sm-23 col-24-xs-23 headContent">
+                    <a href="javascript:void(0)" class=" roleControl" roleCode="hr_org_set" flag="2" data-action="addDepart">
+                        <i class="iconfont rounded icon-2fengongsi m-r-xs"></i>添加部门
+                    </a>
+                    <span class="divice roleControl" roleCode="hr_org_set" flag="2" >|</span>
+                    <!--<a href="javascript:void(0)" class="btn btn-default btn-sm roleControl" roleCode="hr_org_set" flag="2" data-action="editDepart">编辑部门</a>-->
+                    <a href="javascript:void(0)" class="roleControl no-pd-right" roleCode="hr_org_set" flag="2" data-action="addUser">添加人员</a>
+                    <a type="button" class="dropdown-toggle roleControl" roleCode="hr_org_set" flag="2" data-toggle="dropdown"
+                       aria-haspopup="false" aria-expanded="false" data-action="drop_down"><i class="fa fa-caret-down "></i></a>
+                    <ul class="dropdown-menu dropdown-menu-left dropdown-menu-v1">
+                        <li>
+                            <a href="javascript:void(0)" class="roleControl dp-block" roleCode="hr_org_set" flag="2" data-action="inviteUser">邀请加入</a>
+                        </li>
+                    </ul>
+                    <a href="javascript:void(0)" class="roleControl" roleCode="hr_org_set" flag="2" data-action="bulkImport">批量导入成员</a>
+                    <a href="javascript:void(0)" class="count-info roleControl" roleCode="hr_org_set" flag="2" data-action="toAuditUser">
+                        待审核人员
+                        {{if toAuditEmpNum>0}}
+                        <span id="toAuditEmpNumTip" class="badge badge-danger">
+                            {{toAuditEmpNum}}
+                        </span>
+                        {{/if}}
+                    </a>
+                    {{if roleCodes.indexOf('hr_org_set')>-1}}
+                    <span class="divice">|</span>
+                    {{/if}}
+                    <a href="javascript:void(0)" class="roleControl" roleCode="org_partner" flag="2" data-action="addSubCompany"><i class="iconfont rounded icon-2fengongsi1 m-r-xs"></i>创建分支机构</a>
+                    <a href="javascript:void(0)" class="roleControl" roleCode="org_partner" flag="2" data-action="addPartner"><i class="iconfont rounded icon-2fengongsi1 m-r-xs"></i>创建事业合伙人</a>
+                    <!--<a href="javascript:void(0)" class="roleControl" roleCode="org_partner" flag="2" data-action="inviteBranch">邀请分支机构</a>
+                    <a href="javascript:void(0)" class="roleControl" roleCode="org_partner" flag="2" data-action="inviteCorp">邀请事业合伙人</a>-->
+                </div>
+            </div>
+        </div>
+        <div class="col-24-sm-8 col-24-md-8 col-24-lg-6"  id="org-tree-box" style="height: 500px;overflow: auto;border-right:solid 1px #d9d9d9;">
+            <div class="clearfix margin-bottom-10"></div>
+            <div id="organization_treeH">
+                <ul class="sidebar-nav list-group sidebar-nav-v1">
+                </ul>
+            </div>
+        </div>
+        <!--组织架构树 end-->
+        <div class="col-24-sm-16 col-24-md-16 col-24-lg-18 no-padding" id="orgUserListBox">
+
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+</div>

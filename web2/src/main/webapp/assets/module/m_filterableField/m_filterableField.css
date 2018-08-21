@@ -1,0 +1,21 @@
+/* table filter -------------------------------------------------------------*/
+.table > thead > tr > th.field-filterable:hover {
+    cursor: pointer;
+}
+
+.table > thead > tr > th > span.field-filter-indicator {
+    display: inline-block;
+    speak: none;
+    font-family: 'FontAwesome';
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    padding-left: 5px;
+}
+
+.table > thead > tr > th > span.field-filter-indicator:before {
+    content: "\f0b0";
+    color: #4765a0;
+}

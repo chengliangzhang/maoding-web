@@ -1,0 +1,26 @@
+
+<tr target="target{{detail}}">
+    <td>
+        <input class="form-control" type="text" id="expAmount" class="form-control" maxlength="20" name="expAmount{{detail}}" placeholder="输入报销金额">
+    </td>
+    <td class="expTypeTd">
+    </td>
+    <td>
+        <input type="text" id="expUse" name="expUse{{detail}}" class="form-control" placeholder="输入用途说明" maxlength="1000" />
+    </td>
+    <td>
+        <select id="projectId" name="projectId{{detail}}" class="form-control curp p-r-24">
+            <option value="">选择关联项目</option>
+            {{each projectList as pro d}}
+            <option value="{{pro.id}}">{{pro.projectName}}</option>
+            {{/each}}
+        </select>
+    </td>
+    <td>
+        {{if detail!=0}}
+        <div class="m-t-xs">
+        <a href="javascript:void(0);" class="btn-u btn-u-sm btn-u-red getClickFun rounded" i="{{detail}}" data-action="deleteDetail" title="删除"><i class="fa fa-close"></i></a>
+        </div>
+        {{/if}}
+    </td>
+</tr>

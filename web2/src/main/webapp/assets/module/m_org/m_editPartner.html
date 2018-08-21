@@ -1,0 +1,94 @@
+<form class="sky-form rounded-bottom branchCompanyOBox">
+    <div class="panel-body">
+        <fieldset>
+            <!--<div class="form-group">
+                <div class="headline">
+                    <h4>组织信息</h4>
+                </div>
+            </div>-->
+            <div class="row">
+                <label class="col-md-3 text-right">类型标示： <span class="color-red">*</span></label>
+                <div class="col-md-9">
+                    <div class="radio radio-inline m-t-none ">
+                        <input id="t1" class="curp" value="1" name="roleType" type="radio" checked>
+                        <label class="r-blue-bg" for="t1"><!--独立组织型--></label>
+                        <!--<span>拥有财务管理权限，可下设分支机构</span>
+                        <a href="javascript:void(0);" data-action="roleRightsPreView" data-value="1"><i class="fa fa-question-circle"></i></a>-->
+                    </div>
+                    <div class="radio radio-inline curp">
+                        <input id="t2" class="curp" value="2" name="roleType" type="radio" >
+                        <label class="r-green-bg" for="t2"><!--独立财务型--></label>
+                        <!--<span>拥有财务管理权限，不可下设分支机构</span>
+                        <a href="javascript:void(0);" data-action="roleRightsPreView" data-value="2" class="hide"><i class="fa fa-question-circle"></i></a>-->
+                    </div>
+                    <div class="radio radio-inline curp">
+                        <input id="t3" class="curp" value="3" name="roleType" type="radio" >
+                        <label class="r-red-bg" for="t3"><!--非独立组织型--></label>
+                        <!--<span>无财务管理权限，可下设分支机构</span>
+                        <a href="javascript:void(0);" data-action="roleRightsPreView" data-value="3" class="hide"><i class="fa fa-question-circle"></i></a>-->
+                    </div>
+                    <span><a class="btn-link" data-action="roleRightsPreView">权限预览</a></span>
+                </div>
+            </div>
+            <div class="row form-group m-t-xs">
+                <label class="col-md-3 text-right">组织名称： <span class="color-red">*</span></label>
+                <div class="col-md-9">
+                    <input type="text" class="form-control" name="companyName" value="{{companyObj.companyName}}">
+                </div>
+            </div>
+            <!--<div class="row">
+                <div class="col-md-6 form-group" id="citysBox">
+                    <label>所在地区<span class="color-red">*</span></label>
+                    <div>
+                        <label class="select dp-inline-block no-padding"  style="width: 32.5%;">
+                            <select class="prov form-control" name="province"></select>
+                            <i></i>
+                        </label>
+                        <label class="select dp-inline-block no-padding" style="width: 32.5%;">
+                            <select class="city form-control" name="city" disabled="disabled" style="display: none;"></select>
+                            <i style="display: none;"></i>
+                        </label>
+                        <label class="select dp-inline-block no-padding" style="width: 32%;">
+                            <select class="dist form-control" name="county" disabled="disabled" style="display: none;"></select>
+                            <i style="display: none;"></i>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row serviceTypeEdit">
+                <div class="col-md-12 ">
+                    <label>服务类型<span class="color-red">*</span></label>
+                    <div class="row out-box">
+                        <div class="col-md-12">
+                            {{each serverTypeList as st i}}
+                            <div class="serviceType checkbox checkbox-inline">
+                                <input type="checkbox" id="serviceType{{i}}" name="serverType" value="{{st.id}}">
+                                <label for="serviceType{{i}}"> {{st.name }}</label>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                <span name="severType" style="padding-left: 15px;"></span>
+            </div>-->
+            {{if companyObj.editType==1}}
+                <div class="row form-group">
+                    <label class="col-md-3 text-right">负责人手机号： <span class="color-red">*</span></label>
+                    <div class="col-md-9">
+                        <input type="text"  class="form-control" name="cellphone" maxlength="11">
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-md-3 text-right">负责人姓名： <span class="color-red">*</span></label>
+                    <div class="col-md-9">
+                        <input type="text"  class="form-control" name="userName">
+                    </div>
+                </div>
+                <!--<div class="col-md-6 form-group" style="clear:both;">
+                    <label>管理员密码： <span class="color-red">*</span></label>
+                    <input type="text" class="form-control adminPassword" name="adminPassword" maxlength="11" autocomplete="off" onfocus="this.type='password'">
+                </div>-->
+            {{/if}}
+        </fieldset>
+    </div>
+</form>

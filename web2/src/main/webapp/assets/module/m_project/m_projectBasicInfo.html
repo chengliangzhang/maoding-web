@@ -1,0 +1,445 @@
+<div class="ibox m_projectBasicInfo {{isView==true?'min-h':''}}">
+    <div class="ibox-title secondary-menu-outbox {{isView==true?'hide':''}}">
+        <div class="row">
+            <div class="col-md-6">
+                <!--面包屑-->
+                <div class="no-margin p-h-sm breadcrumb-box" >
+                    <ol class="breadcrumb">
+                        <li>
+                            我的项目
+                        </li>
+                        <li class=" fa fa-angle-right">
+                            {{project.projectName}}
+                        </li>
+                        <li class="active fa fa-angle-right">
+                            <strong>基本信息</strong>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right m-t-sm m-r-xs">
+                    <!--{{if (project.attentionId==null || project.attentionId=='')}}
+                    <a class="btn btn-sm btn-default btn-bitbucket attention shoucang m-r-none" title="关注该项目"
+                       data-id="{{project.id}}" data-attention-id="{{project.attentionId}}"><i
+                            class="fa fa-star"></i>&nbsp;<span
+                            class="text">关注</span></a>
+                    {{/if}}
+                    {{if project.attentionId!=null && project.attentionId!=''}}
+                    <a class="btn btn-sm btn-default btn-bitbucket attention shoucangshixin m-r-none" title="取消关注该项目"
+                       data-id="{{project.id}}" data-attention-id="{{project.attentionId}}"><i
+                            class="fa fa-star fc-v1-yellow"></i>&nbsp;<span
+                            class="text">取消关注</span></a>
+                    {{/if}}-->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ibox-content no-pd-bottom no-borders">
+        <form class="sky-form no-margins">
+            <div class="row">
+                <div class="col-md-6"><h3>基本信息</h3></div>
+                <div class="col-md-6">
+                    {{if deleteFlag!=null && deleteFlag==1}}
+                    <a class="btn btn-default btn-sm m-r-none pull-right {{isView==true?'hide':''}}"  data-toggle="tooltip" data-placement="top"
+                       data-action="deleteProject"  data-id="{{project.id}}" title="删除该项目" style="color: red"><span>删除项目</span>
+                    </a>
+                    {{/if}}
+                </div>
+            </div>
+            <table class="table table-bordered">
+                <tbody>
+                <tr>
+                    <td width="12%"><b>项目名称</b></td>
+                    <td width="37%">
+                        <span><a href="javascript:void(0);"
+                                 data-action="text_projectName">{{project.projectName}}</a></span>
+                    </td>
+
+                    <td><b>项目状态</b></td>
+                    <td>
+                        <a href="javascript:void(0);" data-action="select_status" data-status="{{project.projectStatus.valueId}}">
+                            {{project.projectStatus.content}}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><b>项目编号</b></td>
+                    <td>
+                        <span><a href="javascript:void(0);"
+                                 data-action="text_projectNo">{{project.projectNo}}</a>
+                        </span>
+                    </td>
+                    <td width="12%"><b>甲方</b></td>
+                    <td width="39%">
+                        {{if editFlag}}
+                            {{if _isNullOrBlank(project.partyACompany)}}
+                                <a class="curp constructCompanyName" style="line-height: 30px;color:#ccc;" data-action="edit_constructCompanyName">未设置</a>
+                            {{else}}
+                            <a class="curp constructCompanyName" data-action="edit_constructCompanyName">
+                                {{project.partyACompany.companyName}}
+                            </a>
+                            {{/if}}
+                        {{else}}
+                            <span>
+                                {{if !_isNullOrBlank(project.partyACompany)}}
+                                    {{project.partyACompany.companyName}}
+                                {{/if}}
+                            </span>
+                        {{/if}}
+                    </td>
+                </tr>
+                <tr>
+                    <td><b>合同签订</b></td>
+                    <td>
+                        {{if editFlag}}
+                            {{if project.contractDate!=null && project.contractDate!=''}}
+                                <span><a href="javascript:void(0);" data-action="edit_signDate" class="editable editable-click">{{project.contractDate}}</a></span>
+                            {{/if}}
+                            {{if project.contractDate==null || project.contractDate==''}}
+                                <span><a href="javascript:void(0);" data-action="edit_signDate" class="editable editable-click" style="color:#ccc;font-style:normal;">未签订</a></span>
+                            {{/if}}
+                        {{/if}}
+                        {{if !editFlag}}
+                            {{if project.contractDate!=null && project.contractDate!=''}}
+                                <span>{{project.contractDate}}</span>
+                            {{/if}}
+                            {{if project.contractDate==null || project.contractDate==''}}
+                                <span>未签订</span>
+                            {{/if}}
+                        {{/if}}
+
+                    </td>
+                    <td><b>乙方</b></td>
+                    <td>
+                        <span>
+                            <input type="hidden" name="companyBid" value="{{project.partyBCompany!=null?project.partyBCompany.id:''}}"/>
+                            {{if editFlag}}
+                                {{if _isNullOrBlank(project.partyBCompany)}}
+                                    <a class="curp companyChoise" style="line-height: 30px;color:#ccc;" data-action="edit_companyBidName">请点击选择乙方</a>
+                                {{else}}
+                                    <a class="curp companyBidName" style="line-height: 30px;"
+                                       data-action="edit_companyBidName"
+                                       data-companyBid="{{project.partyBCompany.id}}"
+                                       data-companyBidName="{{project.partyBCompany.companyName}}"
+                                       data-partBManagerId="{{project.operatorOfPartyB==null?'':project.operatorOfPartyB.id}}"
+                                       data-partBManagerName="{{project.operatorOfPartyB==null?'':project.operatorOfPartyB.companyUserName}}"
+                                       data-partBDesignerId=""
+                                       data-partBDesignerName="">
+                                        {{project.partyBCompany.companyName}}&nbsp;&nbsp;
+                                    </a>
+                                {{/if}}
+                            {{else}}
+                                <span></span>
+                            {{/if}}
+
+                            {{if !editFlag && project.partyBCompany!=null}}
+                                   {{project.partyBCompany.companyName}}&nbsp;&nbsp;
+                            {{/if}}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><b>项目类型</b></td>
+                    <td>
+                        <a href="javascript:void(0);" data-action="edit_projectType" class="editable editable-click">
+                            {{project.projectType==null||project.projectType.content==null||project.projectType.content==''?'未设置':project.projectType.content}}
+                        </a>
+                    </td>
+                    <td><b>立项组织</b></td>
+                    <td>
+                        {{if project.creatorCompany!=null}}
+                        {{project.creatorCompany.companyName}}
+                        {{/if}}
+                    </td>
+                </tr>
+                <tr>
+                    <td><b>功能分类</b></td>
+                    <td>
+                        <a href="javascript:void(0);" class="editable editable-click" data-action="edit_builtType">
+                            {{if project.buildTypeList!=null && project.buildTypeList.length>0}}
+                                {{each project.buildTypeList as b bi}}
+                                    {{if bi == project.buildTypeList.length-1}}
+                                        {{b.name}}
+                                    {{else}}
+                                        {{b.name}},
+                                    {{/if}}
+                                {{/each}}
+                            {{else}}
+                                未设置
+                            {{/if}}
+                        </a>
+                    </td>
+                    <td><b>项目地点</b></td>
+                    <td>
+                        <span>
+                            <a href="javascript:void(0);" class="editable editable-click" data-action="edit_address"
+                               id="address" data-original-title title>
+                                {{if project.projectLocation!=null}}
+                                    {{if project.projectLocation.province && project.projectLocation.province!=''}}
+                                        {{project.projectLocation.province}}&nbsp;&nbsp;
+                                    {{/if}}
+                                    {{if project.projectLocation.city && project.projectLocation.city!=''}}
+                                        {{project.projectLocation.city}}&nbsp;&nbsp;
+                                    {{/if}}
+                                    {{if project.projectLocation.county && project.projectLocation.county!=''}}
+                                        {{project.projectLocation.county}}&nbsp;&nbsp;
+                                    {{/if}}
+                                    {{if project.projectLocation.detailAddress && project.projectLocation.detailAddress!=''}}
+                                        {{project.projectLocation.detailAddress}}
+                                    {{/if}}
+                                {{/if}}
+                            </a>
+                        </span>
+                    </td>
+
+                </tr>
+
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 class="pull-left">专业信息</h3>
+                    {{if editFlag}}
+                    <a class="pull-left m-t-xs m-l-sm" href="javascript:void(0);" data-action="customInfoTemp">
+                        <i class="fa fa-pencil text-navy"></i>
+                    </a>
+                    {{/if}}
+                </div>
+            </div>
+            <table class="table table-bordered">
+                {{if project.projectPropertyList!=null && project.projectPropertyList.length>0}}
+                {{each project.projectPropertyList as p pi}}
+                {{if pi%2==0}}
+                <tr>
+                    <td width="12%"><b>{{p.fieldName}}</b></td>
+                    <td width="37%">
+                        {{if p.fieldName=='建筑层数' && p.unitName=='层'}}
+                        <div>
+                            地下：
+                            <span class="dp-inline-block" style="min-width: 10%;">
+                                <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{_subStr(p.fieldValue,';',0)}}"
+                                   data-action="text_propertyFieldDown{{pi}}">{{_subStr(p.fieldValue,';',0)}}</a>
+                            </span>
+                            {{if _subStr(p.fieldValue,';',0)!=''}}
+                            <span class="unit-span">&nbsp;层</span>
+                            {{/if}}
+                            ；地上：
+                            <span class="dp-inline-block" style="min-width: 10%;">
+                                <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{_subStr(p.fieldValue,';',1)}}"
+                                   data-action="text_propertyFieldUp{{pi}}">{{_subStr(p.fieldValue,';',1)}}</a>
+                            </span>
+                            {{if _subStr(p.fieldValue,';',1)!=''}}
+                            <span class="unit-span">&nbsp;层</span>
+                            {{/if}}
+                        </div>
+
+                        {{else}}
+                        <span>
+                            {{if p.unitName!=null && p.unitName!=''}}
+                                <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{p.fieldValue}}"
+                                   data-action="text_propertyField{{pi}}">{{p.fieldValue}}</a>
+                                <span class="unit-span">{{p.unitName}}</span>
+                            {{else}}
+                                <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{p.fieldValue}}"
+                                   data-action="text_propertyField{{pi}}">{{p.fieldValue}}</a>
+                            {{/if}}
+                        </span>
+                        {{/if}}
+                    </td>
+                    {{else}}
+                    <td width="12%"><b>{{p.fieldName}}</b></td>
+                    <td>
+                        {{if p.fieldName=='建筑层数' && p.unitName=='层'}}
+                        <div>
+                            地下：
+                            <span class="dp-inline-block" style="min-width: 10%;">
+                                <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{_subStr(p.fieldValue,';',0)}}"
+                                   data-action="text_propertyFieldDown{{pi}}">{{_subStr(p.fieldValue,';',0)}}</a>
+                            </span>
+                            {{if _subStr(p.fieldValue,';',0)!=''}}
+                            <span class="unit-span">&nbsp;层</span>
+                            {{/if}}
+                            ；地上：
+                            <span class="dp-inline-block" style="min-width: 10%;">
+                                <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{_subStr(p.fieldValue,';',1)}}"
+                                   data-action="text_propertyFieldUp{{pi}}">{{_subStr(p.fieldValue,';',1)}}</a>
+                            </span>
+                            {{if _subStr(p.fieldValue,';',1)!=''}}
+                            <span class="unit-span">&nbsp;层</span>
+                            {{/if}}
+                        </div>
+                        {{else}}
+                        <span>
+                            {{if p.unitName!=null && p.unitName!=''}}
+                                <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{p.fieldValue}}"
+                                   data-action="text_propertyField{{pi}}">{{p.fieldValue}}</a>
+                                <span class="unit-span">{{p.unitName}}</span>
+                            {{else}}
+                                 <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{p.fieldValue}}"
+                                    data-action="text_propertyField{{pi}}">{{p.fieldValue}}</a>
+                            {{/if}}
+                        </span>
+                        {{/if}}
+                    </td>
+                </tr>
+                {{/if}}
+                {{/each}}
+                {{if (project.projectPropertyList.length+1)%2==0}}
+                <td width="12%"></td>
+                <td></td>
+                </tr>
+                {{/if}}
+                {{/if}}
+            </table>
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 class="pull-left">设计范围</h3>
+                    {{if editFlag}}
+                        <a href="javascript:void(0)" class="designRangeEditBtn pull-left m-t-xs m-l-sm"  data-action="edit_designRange">
+                            <i class=" fa fa-pencil fc-dark-blue"></i>
+                        </a>
+                    {{/if}}
+                </div>
+            </div>
+            <table class="table table-bordered">
+                <tbody>
+                <tr>
+                    <td  width="12%"><b>设计范围</b></td>
+                    <td colspan="3">
+                        {{if project.projectRangeList && project.projectRangeList.length>0}}
+                            {{each project.projectRangeList as r j}}
+                            <div class=" adaptWidth2 c-tool-tip designRangeDiv m-xs dp-inline-block">
+                                <div class="rounded-md text-center greyBg_item" title="{{r.designRange}}" tool-tip>
+                                    <span>{{r.designRange}}</span>
+                                </div>
+                            </div>
+                            {{/each}}
+                        {{else if !editFlag}}
+                            <span></span>
+                        {{/if}}
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 class="pull-left">合同信息</h3>
+                </div>
+            </div>
+            <table class="table table-bordered">
+                <tbody>
+                <tr>
+                    <td><b>合同附件</b></td>
+                    <td colspan="3">
+                        <!-- 展示部分 -->
+                        <!-- 具有编辑权限 -->
+                        {{if editFlag}}
+                        {{if project.contractList!=null && project.contractList.length>0}}
+                        {{each project.contractList as f fi}}
+                        <span class="file-span m-r-xs p-w-xs">
+                            <a href="{{fastdfsUrl+f.filePath}}" target="_blank" class="designIcon fa theContractFile ">
+                                {{(f.fileName==null || f.fileName=='')?project.projectName+'合同附件.pdf':f.fileName}}
+                            </a>
+                            <span class="file-del-span">
+                                <a class="curp" href="javascript:void(0)" data-id="{{f.id}}" data-action="delFile" style="display: none;">
+                                    <i class="fa fa-times color-red"></i>
+                                </a>
+                            </span>
+                        </span>
+                        {{/each}}
+                        {{/if}}
+                        <!-- 非具有编辑权限可查看（文件不为空） -->
+                        {{else if !editFlag && project.creatorCompany.id == currentCompanyId && (project.contractList!=null && project.contractList.length>0)}}
+                        {{each project.contractList as f fi}}
+                        <a href="{{fastdfsUrl+f.filePath}}" target="_blank" class="designIcon fa theContractFile m-r-xs p-w-xs roleControl"
+                           roleCode="project_view_amount,sys_enterprise_logout,project_eidt" flag="1">
+
+                            {{(f.fileName==null || f.fileName=='')?project.projectName+'合同附件.pdf':f.fileName}}
+                        </a>
+                        {{/each}}
+                        <!-- 非具有编辑权限可查看(文件为空) -->
+                        {{else if !editFlag && project.creatorCompany.id == currentCompanyId && (project.contractList==null || project.contractList.length==0)}}
+
+                        <span class=" roleControl" roleCode="project_view_amount,sys_enterprise_logout" flag="6">暂无上传文件</span>
+
+                        {{else}}
+                        ***
+                        {{/if}}
+                        <!-- 上传按钮部分 -->
+                        {{if editFlag}}
+                        <a href="javascript:void(0)" id="filePicker" name="recordAttach" class="upload-btn" title="请上传PDF文件"></a>
+                        {{if project.filePath==null || project.filePath==''}}
+                        <note class="pt-relative" style="color: #777;bottom: 3px;" >请上传pdf文件！</note>
+                        {{/if}}
+                        {{/if}}
+                    </td>
+                </tr>
+                <tr style="height: 70px">
+                    <td width="12%"><b>设计任务</b></td>
+                    <td colspan="3">
+                        <div class="no-padding projectDesignContent">
+                            <ul class="todo-list small-list bg-white" style="border:1px solid rgba(0,0,0,0)">
+                                <li class="designContentLi" data-i="{{i}}" style="margin-bottom: -8px;padding-bottom: 0px;">
+                                    {{if project.projectDesignContentList && project.projectDesignContentList.length>0}}
+                                    {{each project.projectDesignContentList as c i}}
+                                    {{if editFlag}}
+                                    <span class="design_item designContentDiv" data-i="{{i}}" data-id="{{c.id}}">
+                                          <label class="i-checks dp-inline-block m-b-none">
+                                              <input name="designContent" class="checkbox dinline" type="checkbox" checked
+                                                     value="{{c.id}}" content-name="{{c.contentName}}"  data-isHas="{{c.isHas}}"/>
+                                          </label>
+                                          <div class="pull-left">
+                                              <span class="content-name" data-toggle="tooltip" data-original-title="{{c.contentName}}">
+                                              {{c.contentName}}
+                                              </span>
+                                                {{if c.projectProcessTimeEntityList!=null && c.projectProcessTimeEntityList.length>0}}
+                                                    <a href="javascript:void(0)" type="button" class="editable editable-click dp-block" data-action="edit_setDesignContentTime">
+                                                       {{_momentFormat(c.projectProcessTimeEntityList[c.projectProcessTimeEntityList.length-1].startTime,'YYYY/MM/DD')}} -
+                                                        {{_momentFormat(c.projectProcessTimeEntityList[c.projectProcessTimeEntityList.length-1].endTime,'YYYY/MM/DD')}}
+                                                    </a>
+                                                {{else}}
+                                                    <a href="javascript:void(0)" type="button"
+                                                       class="editable editable-click editable-empty dp-block"
+                                                       data-action="edit_setDesignContentTime">未设置合同进度</a>
+                                                {{/if}}
+                                          </div>
+                                    </span>
+                                    {{else}}
+                                    <span class="design_item designContentDiv" data-i="">
+                                          <div class="pull-left">
+                                              <span class="content-name" data-toggle="tooltip" data-original-title="{{c.contentName}}">
+                                              {{c.contentName}}
+                                              </span>
+                                              {{if project.creatorCompany.id == currentCompanyId || (project.partyBCompany!=null && project.partyBCompany.id==currentCompanyId)}}
+                                              <span class="dp-block">
+                                                  {{if c.projectProcessTimeEntityList.length>0 && c.projectProcessTimeEntityList[c.projectProcessTimeEntityList.length-1].startTime}}
+                                                       {{_momentFormat(c.projectProcessTimeEntityList[c.projectProcessTimeEntityList.length-1].startTime,'YYYY/MM/DD')}} -
+                                                        {{_momentFormat(c.projectProcessTimeEntityList[c.projectProcessTimeEntityList.length-1].endTime,'YYYY/MM/DD')}}
+                                                  {{/if}}
+                                              </span>
+                                              {{/if}}
+                                          </div>
+                                    </span>
+                                    {{/if}}
+                                    {{/each}}
+                                    {{/if}}
+                                    {{if editFlag}}
+                                    <span class="design_item addDesignContentDiv v-middle text-center no-padding" >
+                                            <a class="btn btn-outline btn-default" href="javascript:void(0)" data-action="addDesignContent" type="button">
+                                                <i class="fa fa-plus-square fc-v1-green"></i>&nbsp;添加设计任务
+                                            </a>
+                                        </span>
+                                    {{/if}}
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>

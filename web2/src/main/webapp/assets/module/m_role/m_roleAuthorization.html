@@ -1,0 +1,97 @@
+<form class="sky-form rounded-4x m-roleAuthorization rolePermissionsConfigOBox border-none">
+    <fieldset style="max-height: 600px;overflow: auto;">
+        <div class="ibox">
+            <div class="ibox-content">
+                <table class="table  table-bordered">
+                    <thead style="background: #f5f5f5;">
+                    <tr>
+                        <th width="20%" class="text-center">权限组</th>
+                        <th width="50%" class="text-center">操作权限</th>
+                        <th width="30%" class="text-center">
+                            <a href="javascript:void(0)" class="btn btn-link btn-xs" data-action="chooseAll">全选</a>
+                            <a href="javascript:void(0)" class="btn btn-link btn-xs" data-action="chooseNothing">全不选</a>
+                            <a href="javascript:void(0)" class="btn btn-link btn-xs" data-action="recoveryChoice">恢复原始</a>
+                        </th>
+                    </tr>
+                    </thead>
+                    {{each rolePermissions as role i}}
+                    <tbody p-code="{{role.code}}">
+                    <tr style="background-clip: padding-box;" role-code="{{role.code}}">
+                        <td rowspan="{{role.permissionList.length}}" id="{{role.id}}" class="text-center vmiddle v_a_middle pTarget">
+                            <span class="dp-block pt-relative">
+                                {{role.name}}
+                                {{if role.code != 'SystemManager'}}
+                                <span class="dp-inline-block">
+                                    <a href="javascript:void(0)" class="btn btn-link btn-xs" data-action="chooseAllRoleItem">全选</a>
+                                    <a href="javascript:void(0)" class="btn btn-link btn-xs" data-action="delAllRoleItem">全不选</a>
+                                </span>
+                                {{/if}}
+                            </span>
+                        </td>
+                        <td class="vmiddle" p-code="{{role.permissionList[0].code}}" id="{{role.permissionList[0].id}}">
+                            <span class="dp-block pt-relative">
+                                {{role.permissionList[0].name}}
+                            </span>
+                        </td>
+                        {{if role.permissionList[0].code != 'sys_enterprise_logout'}}
+                        <td data-action="chooseUserPermission" class="v-middle text-align-center">
+                            <div class="i-checks checkbox-inline" style="min-height: 17px;">
+                                <input type="checkbox" id="inlineCheckbox{{role.permissionList[0].id}}" name="userPermission" permission-id="{{role.permissionList[0].id}}"
+                                       isCheck="{{role.permissionList[0].type}}"/>
+                                <label for="inlineCheckbox{{role.permissionList[0].id}}"></label>
+                            </div>
+                        </td>
+                        {{else}}
+                        <td class="text-center">
+                            {{if role.permissionList[0].type==1}}
+                            <span class="fa fa-check p-r-5" permission-id="{{role.permissionList[0].id}}"></span>
+                            {{/if}}
+                            {{if role.permissionList[0].type!=1}}
+                            <span class="glyphicon glyphicon-remove p-r-5"></span>
+                            {{/if}}
+                        </td>
+                        {{/if}}
+                    </tr>
+                    {{each role.permissionList as mem a}}
+                    {{if a>0}}
+                    <tr style="background-clip: padding-box;">
+                        <td class="vmiddle" p-code="{{mem.code}}" id="{{mem.id}}">
+                            <span class="dp-block pt-relative">
+                                {{mem.name}}
+                            </span>
+                        </td>
+                        {{if mem.code != 'sys_enterprise_logout'}}
+                        <td data-action="chooseUserPermission" class="v-middle text-align-center" isCheck="{{mem.type}}">
+                            <div class="i-checks checkbox-inline" style="min-height: 17px;">
+                                <input type="checkbox" id="inlineCheckbox{{mem.id}}" name="userPermission" permission-id="{{mem.id}}"
+                                       isCheck="{{mem.type}}"/>
+                                <label for="inlineCheckbox{{mem.id}}"></label>
+                            </div>
+                        </td>
+                        {{else}}
+                        <td class="text-center">
+                            {{if mem.type==1}}
+                            <span class="fa fa-check p-r-5" permission-id="{{mem.id}}"></span>
+                            {{/if}}
+                            {{if mem.type!=1}}
+                            <span class="glyphicon glyphicon-remove p-r-5"></span>
+                            {{/if}}
+                        </td>
+                        {{/if}}
+                    </tr>
+                    {{/if}}
+                    {{/each}}
+
+                    </tbody>
+                    {{/each}}
+                </table>
+            </div>
+        </div>
+    </fieldset>
+</form>
+<script>
+    $('.i-checks').iCheck({
+        checkboxClass: 'icheckbox_minimal-green',
+        radioClass: 'iradio_minimal-green'
+    });
+</script>

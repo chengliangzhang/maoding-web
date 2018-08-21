@@ -1,0 +1,28 @@
+<div class="data-list-filter p-sm" >
+    <div class="m-b-sm" style="border-bottom: solid 1px #f2f2f2;">
+        <label class="i-checks fw-normal">
+            <input name="ipt_allCheck" type="checkbox" value="0"/>
+            <span class="i-checks-span">全选</span>
+        </label>
+    </div>
+    <div>
+        {{each checkList as d}}
+        <div class="col-md-4 no-pd-right no-pd-left">
+            <label class="i-checks fw-normal">
+                {{if currCheckedVal.indexOf(d.id)>-1}}
+                    <input name="ipt_check" type="checkbox" checked value="{{d.id}}"/>
+                {{else}}
+                    <input name="ipt_check" type="checkbox"  value="{{d.id}}"/>
+                {{/if}}
+                <span class="i-checks-span">{{d.name }}</span>
+            </label>
+        </div>
+        {{/each}}
+        <div class="clearfix"></div>
+    </div>
+    <div class="m-t-xs">
+        <button type="button" class="btn btn-primary btn-xs rounded pull-right" data-action="confirm">确定</button>
+        <button type="button" class="btn btn-default btn-xs rounded pull-right m-r-xs" data-action="cancel">取消</button>
+        <div class="clearfix"></div>
+    </div>
+</div>

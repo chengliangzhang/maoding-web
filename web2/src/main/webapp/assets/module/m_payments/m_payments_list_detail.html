@@ -1,0 +1,97 @@
+<div class="m-t-md">
+    <div class="form-group col-md-12">
+        <label class="col-sm-2 control-label">节点信息：</label>
+        <div class="col-sm-10">{{detailData.feeName}}</div>
+    </div>
+    <div class="form-group col-md-12">
+        <label class="col-sm-2 control-label">关联项目：</label>
+        <div class="col-sm-10">{{detailData.projectName}}</div>
+    </div>
+    <div class="form-group col-md-12">
+        <label class="col-sm-2 control-label">收支类型：</label>
+        <div class="col-sm-10">{{detailData.feeTypeName}}</div>
+    </div>
+    <div class="form-group col-md-12">
+        <label class="col-sm-2 control-label">发起时间：</label>
+        <div class="col-sm-10">{{_momentFormat(detailData.createDate,'YYYY/MM/DD')}}</div>
+    </div>
+    <div class="form-group col-md-12">
+        <label class="col-sm-2 control-label">节点金额：</label>
+        <div class="col-sm-10">{{_expNumberFilter(detailData.nodeFee)}}元</div>
+    </div>
+    <div class="form-group col-md-12">
+        <label class="col-sm-2 control-label">发起金额：</label>
+        <div class="col-sm-10">{{_expNumberFilter(detailData.launchFee)}}元</div>
+    </div>
+    <div class="form-group col-md-12">
+        <label class="col-sm-2 control-label">
+            {{if type==2}}
+            付款金额：
+            {{else}}
+            到账金额：
+            {{/if}}
+        </label>
+        <div class="col-sm-10">{{_expNumberFilter(detailData.accountFee)}}元</div>
+    </div>
+    <div class="form-group col-md-12">
+        <label class="col-sm-2 control-label">
+            {{if type==2}}
+            应付金额：
+            {{else}}
+            应收金额：
+            {{/if}}
+        </label>
+        <div class="col-sm-10">{{_expNumberFilter(detailData.receivableFee)}}元</div>
+    </div>
+    <div class="col-md-12 p-w-lg">
+        <label class="control-label">
+            {{if type==2}}
+            付款明细：
+            {{else}}
+            到账明细：
+            {{/if}}
+        </label>
+        <div style="max-height: 200px;overflow: auto;">
+            <table class="table table-bordered table-responsive">
+                <thead>
+                <tr>
+                    <th>
+                        {{if type==2}}
+                        付款日期
+                        {{else}}
+                        到账日期
+                        {{/if}}
+                    </th>
+                    <th>
+                        {{if type==2}}
+                        付账金额（元）
+                        {{else}}
+                        到账金额（元）
+                        {{/if}}
+                    </th>
+                    <th>收支类型</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{each detailData.paymentDetailDTOList as d}}
+                <tr data-action="viewDetail" data-id="{{d.id}}">
+                    <td>{{_momentFormat(d.createDate,'YYYY/MM/DD')}}</td>
+                    <td>{{_expNumberFilter(d.accountFee)}} </td>
+                    <td>{{d.feeTypeName}}</td>
+                </tr>
+                {{/each}}
+                {{if !(detailData.paymentDetailDTOList && detailData.paymentDetailDTOList.length>0)}}
+                <tr>
+                    <td colspan="3" class="text-center v-middle">
+                        <div class="">
+                            <img src="{{_url('/assets/img/default/without_data.png')}}" height="100">
+                            <span class="fc-dark-blue dp-block">没有相关数据</span>
+                        </div>
+                    </td>
+                </tr>
+                {{/if}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

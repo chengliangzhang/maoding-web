@@ -1,0 +1,49 @@
+<table class="table table-bordered table-responsive">
+    <thead>
+    <tr>
+        <th width="">日期</th>
+        <th>
+           申请人
+        </th>
+        <th>
+            金额（元）
+        </th>
+        <th>
+            收支分类子项
+        </th>
+        <th>
+            备注
+        </th>
+        <th>收票方名称</th>
+        <th>关联项目</th>
+        <th>发票类型</th>
+        <th>发票号码</th>
+    </tr>
+    </thead>
+    <tbody>
+        {{if dataList!=null && dataList.length>0}}
+        {{each dataList as d i}}
+        <tr>
+            <td>{{_momentFormat(d.applyDate,'YYYY/MM/DD')}}</td>
+            <td>{{d.companyUserName}}</td>
+            <td>{{_expNumberFilter(d.fee)}}</td>
+            <td>{{d.costTypeName}}</td>
+            <td>{{d.feeDescription}}</td>
+            <td>{{d.relationCompanyName}}</td>
+            <td>{{d.projectName}}</td>
+            <td>{{d.invoiceTypeName}}</td>
+            <td>{{d.invoiceNo}}</td>
+        </tr>
+        {{/each}}
+        {{else}}
+        <tr>
+            <td colspan="9" class="text-center v-middle">
+                <div class="m-b-xl m-t-md">
+                    <img src="{{_url('/assets/img/default/without_data.png')}}">
+                    <span class="fc-dark-blue dp-block">没有相关数据</span>
+                </div>
+            </td>
+        </tr>
+        {{/if}}
+    </tbody>
+</table>

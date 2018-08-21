@@ -1,0 +1,24 @@
+<form class="form" style="font-size: 12px;">
+    <div class="form-group m-b-xs" style="padding: 15px 0 60px;">
+        <label class="col-24-sm-4 control-label text-right m-t-xs" for="constructCompanyName" >甲方</label>
+        <!--<select name="partA" id="partB" class="col-24-sm-17 form-control input-sm" style="width:230px;"></select>-->
+        <div class="col-24-sm-14" style="padding-right: 0;">
+            <input type="text" class="form-control constructCompanyName" name="constructCompanyName" id="constructCompanyName"
+                   placeholder="请输入甲方名称" autocomplete="off" data-id="{{enterpriseId}}" value="{{constructCompanyName}}">
+
+            <div class="partyA-select-box" style="position: absolute; top: 100%; left: 14px; z-index: 100; right: auto;background: #fff;border: solid 1px #ccc;border-radius: 5px;box-shadow: 1px 1px 6px 0 #9a9a9a;min-width: 80%; display: none;">
+
+            </div>
+
+        </div>
+        <div class="col-24-sm-6" style="padding: 0 10px 0;">
+            <button type="button" class="btn btn-default btn-sm m-popover-close m-n pull-right">
+                <i class="fa fa-remove"></i>
+            </button>
+            <button type="button" class="btn btn-primary btn-sm m-popover-submit m-r-xs pull-right" >
+                <i class="fa fa-check"></i>
+            </button>
+        </div>
+    </div>
+
+</form>

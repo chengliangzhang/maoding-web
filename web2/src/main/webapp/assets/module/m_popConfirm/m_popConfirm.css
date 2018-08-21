@@ -1,0 +1,15 @@
+/*覆盖bootstrap*/
+.popover-title {
+    padding: 10px;
+    margin: 0;
+    font-size: 14px;
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #ebebeb;
+    border-radius: 4px 4px 0 0;
+}
+
+.popover-content {
+    padding: 10px 14px 10px;
+}
+.popover .popover-content form.editableform{margin-bottom:0; }
+

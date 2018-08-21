@@ -1,0 +1,43 @@
+<div class="ibox">
+    <div class="ibox-title secondary-menu-outbox">
+        <div class="row">
+            <div class="col-md-6">
+                <!--面包屑-->
+                <div class="no-margin p-h-sm breadcrumb-box" >
+                    <ol class="breadcrumb ">
+                        <li>
+                            我的项目
+                        </li>
+                        <li class=" fa fa-angle-right">
+                            {{projectName}}
+                        </li>
+                        <li class="active fa fa-angle-right">
+                            <strong>文档库</strong>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-6 text-right">
+                <a class="btn btn-primary btn-sm m-t-sm btn-flag" data-action="uploadFile">上传文件</a>
+                <a class="btn btn-primary btn-sm m-t-sm btn-flag" data-action="createFolder">新建文件夹</a>
+                <a class="btn btn-primary btn-sm m-t-sm" data-action="sendArchiveNotice" style="display: none;">发送归档通知</a>
+            </div>
+            <div class="clearfix"></div>
+
+        </div>
+    </div>
+    <div class="ibox-content no-padding">
+        <div class="col-24-sm-8 col-24-md-8 col-24-lg-6" id="documentTreeBox" style="height: 500px;overflow: auto;border-right:solid 1px #d9d9d9;">
+            <div class="m-t-md" id="documentDirectoryTree">
+                <ul class="sidebar-nav list-group sidebar-nav-v1">
+
+                </ul>
+            </div>
+        </div>
+        <div class="col-24-sm-16 col-24-md-16 col-24-lg-18 no-padding">
+            <div class="docmgr panel panel-default tag-box-v4 border-none" id="fileItems">
+
+            </div>
+        </div>
+    </div>
+</div>

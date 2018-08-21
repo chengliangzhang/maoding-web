@@ -1,0 +1,29 @@
+<div class="ibox">
+    <div class="ibox-content">
+        <div class="row">
+            {{each issuePlanList as p i}}
+            <div class="col-md-12">
+                <span>{{p.fromCompanyName}}</span>
+                <span> > </span>
+                <span>{{p.companyName}}</span>
+                <span>{{p.planStartTime}}</span>
+                <span>-</span>
+                <span>{{p.planEndTime}}</span>
+                <span>
+                    {{if p.taskState==1}}
+                        进行中
+                    {{else if p.taskState==2}}
+                        超时进行
+                    {{else if p.taskState==3}}
+                        正常完成
+                    {{else if p.taskState==4}}
+                        超时完成
+                    {{else if p.taskState==5}}
+                        未开始
+                    {{/if}}
+                </span>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>

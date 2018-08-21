@@ -1,0 +1,109 @@
+<style>
+    .MyExpDetailsCheckExpenseOBox .float_Mask{background-color: white;padding: 21px 3px;position: absolute;top: 19px;left: 30%;  }
+    .MyExpDetailsCheckExpenseOBox.ibox-content .timeline-v2.timeline-me>li .cbp_tmtime{width: 40%;}
+    .MyExpDetailsCheckExpenseOBox.ibox-content .timeline-v2.timeline-me:before{left: 32%}
+    .MyExpDetailsCheckExpenseOBox.ibox-content .timeline-v2.timeline-me>li .cbp_tmicon{top: 5px;left: 32%;}
+    .MyExpDetailsCheckExpenseOBox.ibox-content .timeline-v2.timeline-me>li .cbp_tmlabel{margin: 0 0 20px 40%;}
+</style>
+<div class="ibox m-b-xs">
+    <div class="ibox-content MyExpDetailsCheckExpenseOBox no-pd-bottom" style="max-height:700px;overflow-y: auto">
+        <fieldset style="padding-top:5px;">
+            <div class="headline m-b-sm">
+                <h2>{{typeStr}}状态</h2>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel-body">
+                        <ul class="timeline-v2 timeline-me">
+                            {{each myExpDetails.auditList as item j}}
+                            <li style="height: 60px;">
+                                <time class="cbp_tmtime" datetime="">
+                                    <span style="top:0;font-size: 14px; {{(j==myExpDetails.auditList.length-1)?'color: #FF5722;':''}}">{{item.userName}}</span>
+                                    <span style="top:0;font-size: 13px;">{{item.companyName}}</span>
+                                </time>
+
+                                <i class="cbp_tmicon rounded-x hidden-xs"
+                                   style=" {{(j==myExpDetails.auditList.length-1)?'background: #FF5722;':''}}"></i>
+                                <div class="cbp_tmlabel">
+                                    <h2 style="font-size: 14px;padding:0; {{(j==myExpDetails.auditList.length-1)?'color:#FF5722;':''}}">
+                                        {{item.approveStatusName=="待审核"?"待审批":item.approveStatusName}} &nbsp;&nbsp;&nbsp;<span>{{item.expDate}}</span>
+                                    </h2>
+                                    {{if item.approveStatusName=='发起申请'}}
+                                    <p style="font-size: 13px;word-break: break-all;color:#999;line-height: 20px;">
+                                        {{typeStr}}备注：{{item.remark}}</p>
+                                    {{/if}}
+                                    {{if item.approveStatusName=='退回'}}
+                                    <p style="font-size: 13px;word-break: break-all;color:#999;line-height: 20px;">
+                                        退回原因：{{item.remark}}</p>
+                                    {{/if}}
+                                </div>
+                                {{if item.approveStatusName.indexOf('完成')>-1}}
+                                <span class="float_Mask"></span>
+                                {{/if}}
+                            </li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {{if myExpDetails.expAttachEntityList&&myExpDetails.expAttachEntityList.length>0}}
+            <div class="headline m-b">
+                <h2>相关票据</h2>
+            </div>
+            <div class="row margin-bottom-30">
+                <div class="col-md-12 p-w-m">
+                    {{each myExpDetails.expAttachEntityList as file j}}
+                    <span class="label m-r-xs dp-inline-block" style="background: #ecf0f1;padding: 5px 10px;">
+                            <a class="curp m-l-xs" href="{{fastdfsUrl}}{{file.fileGroup}}/{{file.filePath}}"
+                               target="_blank">
+                            <i class="fa fa-file-image-o"></i>&nbsp;{{file.fileName}}
+                            </a>
+                            </span>
+                    {{/each}}
+                </div>
+            </div>
+            {{/if}}
+            <div class="headline m-b-sm">
+                <h2>{{typeStr}}信息</h2>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label>{{typeStr}}编号：</label>
+                    <b>{{expNo}}</b>
+                </div>
+                <div class="col-md-12">
+                    <table class="table m-b-none">
+                        <thead>
+                        <tr>
+                            <td class="no-pd-left">{{typeStr}}条目</td>
+                            <td>{{typeStr}}金额</td>
+                            <td>{{typeStr}}类别</td>
+                            <td>用途说明</td>
+                            <td class="no-pd-right">关联项目</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{each myExpDetails.detailList as each i}}
+                        <tr>
+                            <td class="no-pd-left">{{i+1}}</td>
+                            <td>{{each.expAmount}}</td>
+                            <td>{{each.expTypeName}}</td>
+                            <td style="word-break: break-all;">{{each.expUse}}</td>
+                            <td class="no-pd-right">{{each.projectName}}</td>
+                        </tr>
+                        {{/each}}
+                        <tr>
+                            <td colspan="5">
+                                <div class="pull-right ">
+                                    <h5>合计金额：<p class="color-red dp-inline-block">{{myExpDetails.totalExpAmount}} </p>元
+                                    </h5>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
