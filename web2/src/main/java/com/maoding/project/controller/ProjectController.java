@@ -31,7 +31,6 @@ import com.maoding.project.service.ProjectDesignContentService;
 import com.maoding.project.service.ProjectService;
 import com.maoding.projectmember.dto.ProjectMemberDTO;
 import com.maoding.projectmember.service.ProjectMemberService;
-import com.maoding.role.dto.ProjectUserPermissionEnum;
 import com.maoding.role.service.PermissionService;
 import com.maoding.system.dto.DataDictionaryDTO;
 import com.maoding.system.service.DataDictionaryService;
@@ -52,7 +51,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -615,24 +617,6 @@ public class ProjectController extends BaseController {
         if (StringUtils.isEmpty((String)param.get("accountId"))){
             param.put("accountId",this.currentUserId);
         }
-    }
-
-
-    private Map<String, Object> setProjectUserPermissionParam() {
-        Map<String, Object> para = new HashMap<>();
-        para.put("companyUserId", this.currentCompanyUserId);
-        para.put("companyId", this.currentCompanyId);
-        List<String> codes = new ArrayList<String>();
-        codes.add(ProjectUserPermissionEnum.ORG_MANAGER.getName());
-        codes.add(ProjectUserPermissionEnum.PROJECT_MANAGER.getName());
-        codes.add(ProjectUserPermissionEnum.DESIGN_MANAGER.getName());
-        codes.add(ProjectUserPermissionEnum.SUPER_PROJECT_EDIT.getName());
-        codes.add(ProjectUserPermissionEnum.PROJECT_CHARGE_MANAGER.getName());
-        codes.add(ProjectUserPermissionEnum.FINANCE_BACK_FEE.getName());
-        codes.add(ProjectUserPermissionEnum.PROJECT_EDIT.getName());
-        codes.add(ProjectUserPermissionEnum.PROJECT_OVERVIEW.getName());
-        para.put("codes", codes);
-        return para;
     }
 
 

@@ -1504,6 +1504,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
     public Map<String, Object> getTitleFilter(Map<String, Object> param,Map<String, Object> condition) throws Exception {
         String companyId = (String)param.get("companyId");
         String accountId = (String)param.get("accountId");
+        String companyUserId = (String) param.get("companyUserId");
         param.remove("pageIndex");
         param.remove("pageSize");//此处不分页处理，查询所有项目信息
 
@@ -1529,7 +1530,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         StringBuffer buildTypeIds = new StringBuffer();
         setSelConditions(dataList, companyNames, partyANames, partyBNames, buildTypeNames, buildTypeIds,
                 busPersonInChargeMap, designPersonInChargeMap, busPersonInChargeAssistantMap, designPersonInChargeAssistantMap);
-        Map<String, Object> para = setProjectUserPermissionParam();
+        Map<String, Object> para = setProjectUserPermissionParam(companyId,companyUserId);
         List<PermissionDTO> permissionDTOS = permissionService.getProjectUserPermission(para);
         if (0 < permissionDTOS.size()) {
             param.put("flag", 1);
