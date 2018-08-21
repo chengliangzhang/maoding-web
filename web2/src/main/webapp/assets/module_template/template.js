@@ -1723,25 +1723,69 @@ return new String($out);
 });/*v:1*/
 template('m_filterableField/m_filter_checkbox_select',function($data,$filename
 /**/) {
-'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,boxStyle=$data.boxStyle,$each=$utils.$each,selectList=$data.selectList,s=$data.s,$index=$data.$index,colClass=$data.colClass,$out='';$out+='<div class="data-list-filter " style="';
+'use strict';var $utils=this,$helpers=$utils.$helpers,$escape=$utils.$escape,boxStyle=$data.boxStyle,$each=$utils.$each,selectList=$data.selectList,s=$data.s,$index=$data.$index,isParentCheck=$data.isParentCheck,sub=$data.sub,colClass=$data.colClass,$out='';$out+='<div class="data-list-filter " style="';
 $out+=$escape(boxStyle);
 $out+='"> <div class="m-b-sm check-box-title" > <label class="i-checks fw-normal"> <input name="itemCk" type="checkbox" value=""/> <span class="i-checks-span">全选</span> </label> </div> <div class="p-w-sm"> ';
 $each(selectList,function(s,$index){
+$out+=' ';
+if(s.childList!=null && s.childList.length>0){
+$out+=' <div class="col-md-12 no-pd-right no-pd-left"> ';
+if(isParentCheck){
+$out+=' <label class="i-checks fw-normal"> ';
+if(s.isSelected){
+$out+=' <input name="itemCk" type="checkbox" checked value="';
+$out+=$escape(s.id);
+$out+='"/> ';
+}else{
+$out+=' <input name="itemCk" type="checkbox" value="';
+$out+=$escape(s.id);
+$out+='" /> ';
+}
+$out+=' <span class="i-checks-span">';
+$out+=$escape(s.name);
+$out+='</span> </label> ';
+}else{
+$out+=' <label>';
+$out+=$escape(s.name);
+$out+='</label> ';
+}
+$out+=' </div> ';
+$each(s.childList,function(sub,$index){
+$out+=' <div class="';
+$out+=$escape(colClass?colClass:'col-md-4');
+$out+=' no-pd-right no-pd-left"> <label class="i-checks fw-normal"> ';
+if(sub.isSelected){
+$out+=' <input name="itemCk" type="checkbox" checked value="';
+$out+=$escape(sub.id);
+$out+='"/> ';
+}else{
+$out+=' <input name="itemCk" type="checkbox" value="';
+$out+=$escape(sub.id);
+$out+='" /> ';
+}
+$out+=' <span class="i-checks-span">';
+$out+=$escape(sub.name);
+$out+='</span> </label> </div> ';
+});
+$out+=' ';
+}else{
 $out+=' <div class="';
 $out+=$escape(colClass?colClass:'col-md-4');
 $out+=' no-pd-right no-pd-left"> <label class="i-checks fw-normal"> ';
 if(s.isSelected){
 $out+=' <input name="itemCk" type="checkbox" checked value="';
-$out+=$escape(s.fieldValue);
+$out+=$escape(s.id);
 $out+='"/> ';
 }else{
 $out+=' <input name="itemCk" type="checkbox" value="';
-$out+=$escape(s.fieldValue);
+$out+=$escape(s.id);
 $out+='" /> ';
 }
 $out+=' <span class="i-checks-span">';
-$out+=$escape(s.fieldName);
+$out+=$escape(s.name);
 $out+='</span> </label> </div> ';
+}
+$out+=' ';
 });
 $out+=' <div class="clearfix"></div> </div> </div> ';
 return new String($out);
@@ -1777,21 +1821,21 @@ template('m_filterableField/m_filter_select1',function($data,$filename
 'use strict';var $utils=this,$helpers=$utils.$helpers,$each=$utils.$each,selectList=$data.selectList,s=$data.s,$index=$data.$index,$escape=$utils.$escape,isMultiple=$data.isMultiple,$out='';$out+='<div class="data-list-filter"> <ul class="dropdown-menu"> ';
 $each(selectList,function(s,$index){
 $out+=' <li> <a class="no-margins p-r-5" data-state-no="';
-$out+=$escape(s.fieldValue);
+$out+=$escape(s.id);
 $out+='"> ';
 if(isMultiple){
 $out+=' <label class="i-checks fw-normal"> ';
 if(s.isSelected){
 $out+=' <input name="itemCk" type="checkbox" checked value="';
-$out+=$escape(s.fieldValue);
+$out+=$escape(s.id);
 $out+='"/> ';
 }else{
 $out+=' <input name="itemCk" type="checkbox" value="';
-$out+=$escape(s.fieldValue);
+$out+=$escape(s.id);
 $out+='" /> ';
 }
 $out+=' <span class="i-checks-span">';
-$out+=$escape(s.fieldName);
+$out+=$escape(s.name);
 $out+='</span> </label> ';
 }else{
 $out+=' <span class="check"> ';
@@ -1799,7 +1843,7 @@ if(s.isSelected){
 $out+=' <i class="fa fa-check"></i> ';
 }
 $out+=' </span> ';
-$out+=$escape(s.fieldName);
+$out+=$escape(s.name);
 $out+=' ';
 }
 $out+=' </a> </li> ';
