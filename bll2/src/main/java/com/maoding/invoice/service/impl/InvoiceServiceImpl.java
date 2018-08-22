@@ -96,7 +96,7 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
                 invoice.setCostTypeName(getCostTypeName(invoice.getCostType()));
                 invoice.setInvoiceTypeName(getInvoiceTypeName(invoice.getInvoiceType()));
                 if (StringUtils.isEmpty(invoice.getRelationCompanyName()) && StringUtils.isNotEmpty(invoice.getRelationCompanyId())){
-                    String companyName = companyDao.getCompanyName(invoice.getRelationCompanyId());
+                    String companyName = getRelationCompanyName(invoice.getRelationCompanyId(),invoice.getRelationCompanyName());
                     invoice.setRelationCompanyName(companyName);
                 }
             });

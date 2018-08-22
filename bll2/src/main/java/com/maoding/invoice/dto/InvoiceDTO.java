@@ -84,6 +84,17 @@ public class InvoiceDTO extends CoreDTO {
     /** 个人任务编号 **/
     private String myTaskId;
 
+    /** 个人任务状态 **/
+    private String myTaskStatus;
+
+    public String getMyTaskStatus() {
+        return myTaskStatus;
+    }
+
+    public void setMyTaskStatus(String myTaskStatus) {
+        this.myTaskStatus = myTaskStatus;
+    }
+
     public String getMyTaskId() {
         return myTaskId;
     }
