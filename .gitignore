@@ -10,3 +10,7 @@ node_modules/
 *.rar*
 *.orig*
 upload_test*.*
+
+web2/src/main/webapp/assets/css/module.css
+web2/src/main/webapp/assets/js/module.js
+web2/src/main/webapp/assets/module_template/template.js
