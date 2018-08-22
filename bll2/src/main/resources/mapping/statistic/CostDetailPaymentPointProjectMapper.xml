@@ -83,7 +83,7 @@
         </if>
     </sql>
 
-    <select id="selectStatisticByQuery" resultType="projectCostStatisticDTO" parameterType="projectCostQueryDTO">
+    <select id="selectStatisticByQuery" resultType="com.maoding.statistic.dto.ProjectCostStatisticDTO" parameterType="com.maoding.projectcost.dto.ProjectCostQueryDTO">
         SELECT
             <if test="isCount!=null">
                 SQL_CALC_FOUND_ROWS
@@ -131,7 +131,7 @@
         <include refid="getOrderBy"/>
         <include refid="getLimit"/>
     </select>
-    <select id="selectStatisticSummaryByQuery" resultType="companyCostStatisticDTO" parameterType="projectCostQueryDTO">
+    <select id="selectStatisticSummaryByQuery" resultType="com.maoding.statistic.dto.CompanyCostStatisticDTO" parameterType="com.maoding.projectcost.dto.ProjectCostQueryDTO">
         SELECT
             convert(sum(h.pointed_fee),DECIMAL(12,6)) as pointed_fee,
             convert((sum(h.pointed_fee) - sum(h.paid_fee)),DECIMAL(12,6)) as un_finished_paid_fee,

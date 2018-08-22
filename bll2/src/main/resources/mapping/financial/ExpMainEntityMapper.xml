@@ -295,5 +295,31 @@
         <include refid="getLeaveDetailListCondition"/>
         ORDER BY main.exp_date DESC
     </select>
-    
+
+
+    <select id="selectAllocationUser" resultType="com.maoding.financial.dto.ExpMainDataDTO" parameterType="java.util.Map" >
+        select
+        a.id as id,a.allocation_user_id as companyUserId,b.user_id as accountId,b.user_name as userName,a.allocation_date as expDate,a.remark as remark,a.approve_status as approveStatus,
+        d.oss_file_path AS imgUrl,
+        company.company_name,company.id as companyId
+        from maoding_web_exp_main a
+        LEFT JOIN maoding_web_company_user b on a.allocation_user_id = b.id
+        LEFT JOIN (<include refid="UserAttachEntityMapper.getHeadImg" /> ) d on b.user_id = d.user_id and d.attach_type = 5
+        left join maoding_web_company company on (b.company_id = company.id)
+        where a.id = #{id,jdbcType=VARCHAR}
+    </select>
+
+
+    <select id="selectByIdWithUserNameByParam" resultType="com.maoding.financial.dto.ExpMainDataDTO" parameterType="java.util.Map" >
+        select
+        a.id as id,a.company_user_id as companyUserId,b.user_id as accountId,b.user_name as userName,a.exp_date as expDate,
+        a.remark as remark,a.approve_status as approveStatus,a.type,
+        d.oss_file_path AS fileFullPath,
+        company.company_name,company.id as companyId
+        from maoding_web_exp_main a
+        LEFT JOIN maoding_web_company_user b on a.company_user_id = b.id
+        LEFT JOIN (<include refid="UserAttachEntityMapper.getHeadImg" /> ) d on b.user_id = d.user_id and d.attach_type = 5
+        left join maoding_web_company company on (b.company_id = company.id)
+        where a.id = #{id,jdbcType=VARCHAR}
+    </select>
 </mapper>

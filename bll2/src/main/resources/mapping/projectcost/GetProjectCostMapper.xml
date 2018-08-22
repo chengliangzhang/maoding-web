@@ -142,4 +142,115 @@
       group by project_list.id
       <include refid="CommonMapper.limitSQL"/>
   </select>
+
+    <select id="getProjectAmountFeeByCostId" resultType="com.maoding.projectcost.dto.ProjectCooperatorCostDTO" parameterType="com.maoding.projectcost.dto.ProjectCostQueryDTO">
+        SELECT
+        sum(ifnull(if(c.fee_status != 2,c.fee,0),0)) as detailFee,
+        sum(ifnull(if(c.fee_status = 1,c.fee,0),0)) as detailPayFee,
+        sum(ifnull(d.paid_fee,0)) as sumPaidFee,
+        sum(ifnull(d.pay_fee,0)) as sumPayFee
+        from maoding_web_project_cost_point b
+        INNER JOIN maoding_web_project_cost_point_detail c on b.id = c.point_id and c.`status` = 0
+        LEFT  JOIN (SELECT sum(if(pay_date is not null,fee,0)) as pay_fee, sum(if(paid_date is not null,fee,0))as paid_fee,point_detail_id
+        from maoding_web_project_cost_payment_detail f where project_id = #{projectId} and `status` = 0 GROUP BY point_detail_id) d on c.id = d.point_detail_id
+        where b.cost_id= #{costId} and b.`status`=0
+        <if test="pointId!=null">
+            and b.id = #{pointId}
+        </if>
+        and (c.company_id = #{companyId} or c.relation_company_id = #{companyId})
+    </select>
+
+
+    <select id="listProjectAmountFeeByCostId" resultType="com.maoding.projectcost.dto.ProjectCostPointInfoDTO" parameterType="com.maoding.projectcost.dto.ProjectCostQueryDTO">
+        SELECT
+        b.id,
+        b.fee_description,
+        b.fee_proportion,
+        b.fee,
+        count(DISTINCT c.id) as pointDetailCount,
+        sum(ifnull(if(c.fee_status != 2,c.fee,0),0)) as detailFee,
+        sum(ifnull(if(c.fee_status = 1,c.fee,0),0)) as detailPayFee,
+        sum(ifnull(d.paid_fee,0)) as sumPaidFee,
+        sum(ifnull(d.pay_fee,0)) as sumPayFee
+        from maoding_web_project_cost_point b
+        LEFT JOIN maoding_web_project_cost_point_detail c on b.id = c.point_id and c.`status` = 0 and  (c.company_id = #{companyId} or c.relation_company_id = #{companyId})
+        LEFT JOIN (SELECT sum(if(pay_date is not null,fee,0)) as pay_fee, sum(if(paid_date is not null,fee,0))as paid_fee,point_detail_id
+        from maoding_web_project_cost_payment_detail f where project_id = #{projectId} and `status` = 0 GROUP BY point_detail_id) d on c.id = d.point_detail_id
+        where b.cost_id= #{costId}
+        and b.`status`=0
+        <if test="pointId!=null">
+            and b.id = #{pointId}
+        </if>
+        <if test="pointDetailId!=null">
+            and c.id = #{pointDetailId}
+        </if>
+        group by b.id
+        order by b.create_date
+    </select>
+
+
+    <select id="listProjectAmountFeeByPointId" resultType="com.maoding.projectcost.dto.ProjectCostPointDetailInfoDTO" parameterType="com.maoding.projectcost.dto.ProjectCostQueryDTO">
+        SELECT
+        c.id,
+        c.fee,
+        c.fee_status as feeStatus,
+        c.point_detail_description as pointDetailDescription,
+        c.invoice,
+        DATE_FORMAT(c.create_date,'%Y-%m-%d')  as pointDetailDate,
+        f.user_name as userName,
+        sum(ifnull(if(c.fee_status != 2,c.fee,0),0)) as detailFee,
+        sum(ifnull(if(c.fee_status = 1,c.fee,0),0)) as detailPayFee,
+        sum(ifnull(d.paid_fee,0)) as sumPaidFee,
+        sum(ifnull(d.pay_fee,0)) as sumPayFee
+        FROM maoding_web_project_cost_point_detail c
+        LEFT JOIN (SELECT sum(if(pay_date is not null,fee,0)) as pay_fee, sum(if(paid_date is not null,fee,0))as paid_fee,point_detail_id
+        from maoding_web_project_cost_payment_detail f where project_id = #{projectId} and `status` = 0 GROUP BY point_detail_id) d on c.id = d.point_detail_id
+        left join maoding_web_project_cost_operater e on e.cost_detail_id = c.id and e.type = 1
+        left join maoding_web_company_user f on e.company_user_id = f.id
+        where 1=1
+        <if test="pointId!=null">
+            and c.point_id= #{pointId}
+        </if>
+        <if test="pointDetailId!=null">
+            and c.id = #{pointDetailId}
+        </if>
+        and c.`status` = 0
+        and (c.company_id = #{companyId} or c.relation_company_id = #{companyId})
+        group by c.id
+        order by c.create_date
+    </select>
+
+    <select id="listProjectPaymentFeeByPointDetailId" resultType="com.maoding.projectcost.dto.ProjectCostPaymentDetailDTO" parameterType="com.maoding.projectcost.dto.ProjectCostQueryDTO">
+        SELECT
+        d.id,
+        d.fee,
+        <!--  c.point_detail_description as pointDetailDescription, -->
+        d.invoice,
+        d.pay_date,
+        d.paid_date,
+        f.user_name as userName,
+        d.fee
+        FROM maoding_web_project_cost_point_detail c
+        INNER JOIN  maoding_web_project_cost_payment_detail d on c.id = d.point_detail_id
+        <if test="payType!=null and payType==1">
+            left join maoding_web_project_cost_operater e on e.cost_detail_id = d.id and e.type = 5
+            left join maoding_web_company_user f on e.company_user_id = f.id
+        </if>
+        <if test="payType!=null and payType==2">
+            left join maoding_web_project_cost_operater e on e.cost_detail_id = d.id and e.type = 6
+            left join maoding_web_company_user f on e.company_user_id = f.id
+        </if>
+        where c.fee_status !=2
+        <if test="pointId!=null">
+            and c.point_id= #{pointId}
+        </if>
+        <if test="pointDetailId!=null">
+            and c.id = #{pointDetailId}
+        </if>
+        and c.`status` = 0
+        and d.`status` = 0
+        and (c.company_id = #{companyId} or c.relation_company_id = #{companyId})
+        order by c.create_date
+    </select>
+
 </mapper>

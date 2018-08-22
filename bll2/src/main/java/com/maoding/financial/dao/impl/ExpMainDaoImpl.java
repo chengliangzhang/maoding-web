@@ -2,10 +2,7 @@ package com.maoding.financial.dao.impl;
 
 import com.maoding.core.base.dao.GenericDao;
 import com.maoding.financial.dao.ExpMainDao;
-import com.maoding.financial.dto.ExpMainDTO;
-import com.maoding.financial.dto.ExpSummaryDTO;
-import com.maoding.financial.dto.LeaveDetailDTO;
-import com.maoding.financial.dto.LeaveDetailQueryDTO;
+import com.maoding.financial.dto.*;
 import com.maoding.financial.entity.ExpMainEntity;
 import com.maoding.org.dto.CompanyRelationDTO;
 import com.maoding.statistic.dto.StatisticDetailQueryDTO;
@@ -53,6 +50,15 @@ public class ExpMainDaoImpl extends GenericDao<ExpMainEntity> implements ExpMain
      */
     public ExpMainDTO selectByIdWithUserName(String id) {
         return this.sqlSession.selectOne("ExpMainEntityMapper.selectByIdWithUserName", id);
+    }
+
+    /**
+     * 方法描述：查询报销主表记录并关联账号表
+     * 作   者：LY
+     * 日   期：2016/8/2 15:10
+     */
+    public ExpMainDataDTO selectByIdWithUserNameMap(Map<String, Object> param){
+        return this.sqlSession.selectOne("ExpMainEntityMapper.selectByIdWithUserNameByParam", param);
     }
 
     /**
@@ -148,6 +154,11 @@ public class ExpMainDaoImpl extends GenericDao<ExpMainEntity> implements ExpMain
     }
 
     @Override
+    public List<AuditDataDTO> getAuditData(QueryAuditDTO query) {
+        return this.sqlSession.selectList("GetExpMainPageMapper.getAuditData",query);
+    }
+
+    @Override
     public List<LeaveDetailDTO> getLeaveDetailList(LeaveDetailQueryDTO queryDTO) {
         return this.sqlSession.selectList("ExpMainEntityMapper.getLeaveDetailList", queryDTO);
     }
@@ -165,5 +176,10 @@ public class ExpMainDaoImpl extends GenericDao<ExpMainEntity> implements ExpMain
     @Override
     public ExpMainDTO getExpMainByRelationId(String relationId) {
         return this.sqlSession.selectOne("GetExpMainPageMapper.getExpMainByRelationId", relationId);
+    }
+
+    @Override
+    public ExpMainDataDTO selectAllocationUser(Map<String, Object> param) {
+        return this.sqlSession.selectOne("ExpMainEntityMapper.selectAllocationUser", param);
     }
 }

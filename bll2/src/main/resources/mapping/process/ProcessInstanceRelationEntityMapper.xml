@@ -22,6 +22,14 @@
     from maoding_process_instance_relation
     where id = #{id,jdbcType=VARCHAR}
   </select>
+
+  <select id="getProcessInstanceRelation" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_process_instance_relation a
+    where target_id = #{targetId,jdbcType=VARCHAR}
+  </select>
+
   <delete id="deleteById" parameterType="java.lang.String" >
     delete from maoding_process_instance_relation
     where id = #{id,jdbcType=VARCHAR}

@@ -28,6 +28,17 @@
 
   </resultMap>
 
+
+	<resultMap id="BaseResultMap2" type="com.maoding.org.dto.CompanyUserDataDTO">
+		<id column="id" property="id" jdbcType="VARCHAR"/>
+		<result column="company_id" property="companyId" jdbcType="VARCHAR"/>
+		<result column="user_id" property="userId" jdbcType="VARCHAR"/>
+		<result column="user_name" property="userName" jdbcType="VARCHAR"/>
+		<result column="account_name" property="accountName" jdbcType="VARCHAR"/>
+		<result column="cellphone" property="cellphone" jdbcType="VARCHAR"/>
+		<result column="file_full_path" property="fileFullPath" jdbcType="VARCHAR"/>
+	</resultMap>
+
 	<resultMap id="departListMap" type="com.maoding.org.dto.UserDepartDTO">
 		<result column="depart_id" property="departId"/>
 		<result column="depart_name" property="departName"/>
@@ -278,5 +289,31 @@
 		LEFT  JOIN  maoding_web_account b on b.id = a.user_id
 		where user_id = #{userId,jdbcType=VARCHAR} and company_id = #{companyId,jdbcType=VARCHAR}
 	</select>
+	
+    <select id="getCompanyUserDataById" resultType="com.maoding.org.dto.CompanyUserAppDTO"
+            parameterType="java.util.Map">
+        SELECT a.id,a.user_id as userId,a.user_name as userName,a.email,b.oss_file_path as fileFullPath,
+        c.cellphone,c.user_name as accountName,d.aliasName as companyName
+        from  maoding_web_company_user a
+        LEFT JOIN (<include refid="UserAttachEntityMapper.getHeadImg" /> ) b on a.user_id = b.user_id AND b.attach_type=5
+        LEFT JOIN maoding_web_account c on a.user_id = c.id
+        LEFT JOIN (<include refid="CompanyEntityMapper.getAliasNameSql" /> ) d on a.company_id = d.id
+        where a.id = #{companyUserId}
+    </select>
 
+
+	<!-- 获取抄送人 -->
+	<select id="getCopyUser" resultMap="BaseResultMap2" parameterType="com.maoding.commonModule.dto.QueryCopyRecordDTO">
+		select DISTINCT a.id, a.user_id , a.company_id ,a.user_name,c.user_name as account_name,c.cellphone,
+		ua.oss_file_path AS 'file_full_path',d.aliasName as company_name
+		FROM maoding_web_company_user a
+		INNER JOIN maoding_copy_record b ON a.id = b.company_user_id
+		INNER JOIN maoding_web_account c ON a.user_id = c.id
+		INNER JOIN (<include refid="CompanyEntityMapper.getAliasNameSql" /> ) d on a.company_id = d.id
+		LEFT JOIN (<include refid="UserAttachEntityMapper.getHeadImg" /> ) ua ON ua.user_id = a.user_id AND ua.attach_type = 5
+		WHERE 1 = 1 and b.deleted = 0
+		<if test="targetId!=null">
+			AND b.target_id = #{targetId}
+		</if>
+	</select>
 </mapper>

@@ -1,6 +1,6 @@
 package com.maoding.org.dto;
 
-import com.maoding.core.base.dto.BaseDTO;
+import com.maoding.attach.dto.FilePathWithBaseDTO;
 import com.maoding.org.entity.OrgUserEntity;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.List;
  * 作    者：MaoSF
  * 日    期：2016年7月6日-下午5:38:15
  */
-public class CompanyUserDTO extends BaseDTO implements java.io.Serializable{
+public class CompanyUserDTO extends FilePathWithBaseDTO implements java.io.Serializable{
 
 	/**
 	 * 手机号码

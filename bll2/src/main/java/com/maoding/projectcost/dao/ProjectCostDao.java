@@ -1,11 +1,9 @@
 package com.maoding.projectcost.dao;
 
 import com.maoding.core.base.dao.BaseDao;
-import com.maoding.projectcost.dto.ProjectCostDTO;
-import com.maoding.projectcost.dto.ProjectCostSingleSummaryDTO;
-import com.maoding.projectcost.dto.ProjectCostSummaryQueryDTO;
-import com.maoding.projectcost.dto.ProjectExpSingleSummaryDTO;
+import com.maoding.projectcost.dto.*;
 import com.maoding.projectcost.entity.ProjectCostEntity;
+import com.maoding.projectcost.dto.ProjectCostQueryDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -52,4 +50,9 @@ public interface ProjectCostDao extends BaseDao<ProjectCostEntity> {
      * @author 张成亮
      **/
     List<ProjectExpSingleSummaryDTO> listProjectExpSummary(ProjectCostSummaryQueryDTO query);
+
+    /**
+     * 根据costId 查询应收，应付，已收，已付
+     */
+    ProjectCooperatorCostDTO getProjectAmountFeeByCostId(ProjectCostQueryDTO queryDTO);
 }

@@ -176,4 +176,10 @@ public class UserAttachServiceImpl extends GenericService<UserAttachEntity>  imp
 		}
 		return url;
 	}
+
+
+	@Override
+	public String getHeadImgNotFullPath(String userId) throws Exception {
+		return this.userAttachDao.getHeadImg(userId);
+	}
 }

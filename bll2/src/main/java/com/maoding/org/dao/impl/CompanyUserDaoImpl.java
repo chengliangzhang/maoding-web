@@ -2,13 +2,12 @@ package com.maoding.org.dao.impl;
 
 
 import com.beust.jcommander.internal.Maps;
+import com.maoding.commonModule.dto.QueryCopyRecordDTO;
 import com.maoding.core.base.dao.GenericDao;
 import com.maoding.core.util.ChineseToEnglishUtil;
 import com.maoding.core.util.StringUtil;
 import com.maoding.org.dao.CompanyUserDao;
-import com.maoding.org.dto.CompanyUserLiteDTO;
-import com.maoding.org.dto.CompanyUserTableDTO;
-import com.maoding.org.dto.UserDepartDTO;
+import com.maoding.org.dto.*;
 import com.maoding.org.entity.CompanyUserEntity;
 import org.springframework.stereotype.Service;
 
@@ -295,5 +294,15 @@ public class CompanyUserDaoImpl extends GenericDao<CompanyUserEntity> implements
 			return user.getUserName();
 		}
 		return null;
+	}
+	@Override
+	public CompanyUserAppDTO getCompanyUserDataById(String companyUserId) {
+		return this.sqlSession.selectOne("GetCompanyUserByOrgIdMapper.getCompanyUserDataById", companyUserId);
+	}
+
+
+	@Override
+	public List<CompanyUserDataDTO> getCopyUser(QueryCopyRecordDTO query) {
+		return this.sqlSession.selectList("GetCompanyUserByOrgIdMapper.getCopyUser", query);
 	}
 }

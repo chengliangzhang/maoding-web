@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="LeaveDetailEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.financial.entity.LeaveDetailEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="main_id" property="mainId" jdbcType="VARCHAR" />
+    <result column="leave_type" property="leaveType" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="time_unit" property="timeUnit" jdbcType="INTEGER" />
+    <result column="leave_time" property="leaveTime" jdbcType="VARCHAR" />
+    <result column="project_id" property="projectId" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, main_id, leave_type, address, time_unit, leave_time, project_id, start_time, 
+    end_time, create_date, create_by, update_date, update_by
+  </sql>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_web_leave_detail
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getLeaveDetailByMainId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_web_leave_detail
+    where main_id = #{mainId,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_web_leave_detail
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maoding.financial.entity.LeaveDetailEntity" >
+    insert into maoding_web_leave_detail (id, main_id, leave_type, 
+      address, time_unit, leave_time, 
+      project_id, start_time, end_time, 
+      create_date, create_by, update_date, 
+      update_by)
+    values (#{id,jdbcType=VARCHAR}, #{mainId,jdbcType=VARCHAR}, #{leaveType,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{timeUnit,jdbcType=INTEGER}, #{leaveTime,jdbcType=VARCHAR}, 
+      #{projectId,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.financial.entity.LeaveDetailEntity" >
+    update maoding_web_leave_detail
+    <set >
+      <if test="mainId != null" >
+        main_id = #{mainId,jdbcType=VARCHAR},
+      </if>
+      <if test="leaveType != null" >
+        leave_type = #{leaveType,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="timeUnit != null" >
+        time_unit = #{timeUnit,jdbcType=INTEGER},
+      </if>
+      <if test="leaveTime != null" >
+        leave_time = #{leaveTime,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="update" parameterType="com.maoding.financial.entity.LeaveDetailEntity" >
+    update maoding_web_leave_detail
+    set main_id = #{mainId,jdbcType=VARCHAR},
+      leave_type = #{leaveType,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      time_unit = #{timeUnit,jdbcType=INTEGER},
+      leave_time = #{leaveTime,jdbcType=VARCHAR},
+      project_id = #{projectId,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

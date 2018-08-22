@@ -1,7 +1,8 @@
 package com.maoding.financial.service.impl;
 
-import com.maoding.commonModule.dto.RelationTypeDTO;
-import com.maoding.commonModule.dto.SaveRelationRecordDTO;
+import com.maoding.attach.dto.FileDataDTO;
+import com.maoding.commonModule.dto.*;
+import com.maoding.commonModule.service.CopyRecordService;
 import com.maoding.commonModule.service.RelationRecordService;
 import com.maoding.companybill.dto.SaveCompanyBillDTO;
 import com.maoding.companybill.service.CompanyBalanceService;
@@ -12,6 +13,7 @@ import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.*;
 import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
+import com.maoding.enterprise.service.EnterpriseService;
 import com.maoding.exception.CustomException;
 import com.maoding.financial.dao.ExpAuditDao;
 import com.maoding.financial.dao.ExpDetailDao;
@@ -21,6 +23,7 @@ import com.maoding.financial.entity.ExpAuditEntity;
 import com.maoding.financial.entity.ExpDetailEntity;
 import com.maoding.financial.entity.ExpMainEntity;
 import com.maoding.financial.service.ExpMainService;
+import com.maoding.financial.service.LeaveDetailDao;
 import com.maoding.message.dto.SendMessageDTO;
 import com.maoding.message.entity.MessageEntity;
 import com.maoding.message.service.MessageService;
@@ -28,6 +31,7 @@ import com.maoding.mytask.service.MyTaskService;
 import com.maoding.org.dao.CompanyDao;
 import com.maoding.org.dao.CompanyUserDao;
 import com.maoding.org.dto.CompanyRelationDTO;
+import com.maoding.org.dto.CompanyUserDetailDTO;
 import com.maoding.org.dto.CompanyUserTableDTO;
 import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.org.service.CompanyUserService;
@@ -39,6 +43,7 @@ import com.maoding.project.service.ProjectSkyDriverService;
 import com.maoding.role.service.PermissionService;
 import com.maoding.statistic.dto.StatisticDetailQueryDTO;
 import com.maoding.statistic.dto.StatisticDetailSummaryDTO;
+import com.maoding.user.service.UserAttachService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -103,6 +108,17 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
     @Autowired
     private RelationRecordService relationRecordService;
 
+    @Autowired
+    private CopyRecordService copyRecordService;
+
+    @Autowired
+    private UserAttachService userAttachService;
+
+    @Autowired
+    private EnterpriseService enterpriseService;
+
+    @Autowired
+    private LeaveDetailDao leaveDetailDao;
 
     /**
      * 方法描述：报销增加或者修改
@@ -763,43 +779,80 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
      * 日   期：2016/8/2 14:13
      */
     public Map<String, Object> getExpMainDetail(String id) throws Exception {
-        Map<String, Object> map = new HashMap<String, Object>();
+        // ExpDetailDataDTO result = new ExpDetailDataDTO();
+        CompanyUserEntity companyUserEntity = null;
+        Map<String, Object> map = new HashMap<>();
+        ExpMainEntity expMainEntity = expMainDao.selectById(id);
+        if (null == expMainEntity) {
+            return map;
+        }
+        //获取最后一个审批人信息（ 和currentAuditPerson重复，只是为了保持兼容，暂时保留）
+        ExpAuditEntity auditEntity = expAuditDao.selectLastAudit(id);
+        CompanyUserDetailDTO companyUser = null;
+        if(auditEntity!=null){
+            companyUser = companyUserService.selectCompanyUserById(auditEntity.getAuditPerson());
+        }
+        Map<String, String> exp = new HashMap<>();
+        companyUserEntity = companyUserDao.selectById(expMainEntity.getCompanyUserId());
+        if(companyUserEntity!=null){
+            exp.put("submitter", companyUserEntity.getUserName());
+        }
+        if(companyUser!=null){
+            exp.put("auditCompanyUserId", companyUser.getId());
+            exp.put("auditUserName", companyUser.getUserName());
+            exp.put("auditCompanyName", companyUser.getCompanyName());
+        }
+        exp.put("expFlag", expMainEntity.getExpFlag() + "");
+        exp.put("submittime", DateUtils.formatTimeSlash(expMainEntity.getCreateDate()));
+        exp.put("remark", expMainEntity.getRemark());
+        exp.put("approveStatus", expMainEntity.getApproveStatus());
+        exp.put("versionNum", expMainEntity.getVersionNum() + "");
+        exp.put("expNo", expMainEntity.getExpNo());
+
+        ExpAuditEntity recallAudit = this.expAuditDao.selectLastRecallAudit(id);
+        if (recallAudit!=null) {
+            exp.put("sendBackReason", recallAudit.getAuditMessage());
+        } else {
+            exp.put("sendBackReason", "");
+        }
+
+        //获取详情信息
         List<ExpDetailDTO> detailList = expDetailDao.selectDetailDTOByMainId(id);
-
-        map.put("detailList", detailList);
-        List<ExpMainDTO> auditList = new ArrayList<>();
-        ExpMainDTO expMainDTO = expMainDao.selectByIdWithUserName(id);
-        expMainDTO.setApproveStatusName("发起申请");
-        auditList.add(expMainDTO);
-        List<ExpMainDTO> list = expAuditDao.selectAuditDetailByMainId(id);
-        for (ExpMainDTO dto : list) {
-            if (!StringUtil.isNullOrEmpty(expMainDTO.getAllocationDate())) {
-                dto.setIsNew("N");
-            }
-            dto.setApproveStatusName(getApproveStatusName(dto.getApproveStatus(), dto.getIsNew()));
-        }
-        //报销拨款
-        if (!StringUtil.isNullOrEmpty(expMainDTO.getAllocationDate())) {
-            ExpMainDTO allocation = new ExpMainDTO();
-            allocation.setId(expMainDTO.getId());
-            allocation.setApproveStatusName("财务拨款");
-            allocation.setUserName(expMainDTO.getAllocationUserName());
-            allocation.setExpDate(expMainDTO.getAllocationDate());
-            allocation.setCompanyName(companyDao.getCompanyName(expMainDTO.getAllocationUserCompanyId()));
-            allocation.setIsNew("Y");
-            list.add(allocation);
+        for(ExpDetailDTO detail:detailList){
+            detail.setRelationRecordData( this.relationRecordService.getRelationList(new QueryRelationRecordDTO(id,detail.getId())));
         }
 
+        //获取审批历史记录
+        List<AuditDTO> auditList = this.getAuditList(id,expMainEntity);
+        //获取当前审批人信息
+        ExpMainDataDTO currentAuditPerson = new ExpMainDataDTO();
+        BaseDTO.copyFields(auditList.get(auditList.size()-1),currentAuditPerson);
+        //获取附件
         Map<String, Object> param = new HashMap<>();
         param.put("targetId", id);
         param.put("type", NetFileType.EXPENSE_ATTACH);
-        List<ProjectSkyDriveEntity> expAttachEntityList = projectSkyDriverService.getNetFileByParam(param);
-        map.put("expAttachEntityList", BaseDTO.copyFields(expAttachEntityList, ExpAttachDTO.class));
-        auditList.addAll(list);
+        List<FileDataDTO> attachList = this.projectSkyDriverService.getAttachDataList(param);
+
+        //返回数据
+        map.put("exp", exp);
+        map.put("currentAuditPerson", currentAuditPerson);
         map.put("auditList", auditList);
-        map.put("expNo", expMainDTO.getExpNo());
-        map.put("versionNum", expMainDTO.getVersionNum());
-        map.put("totalExpAmount", detailList.get(0).getTotalExpAmount());
+        map.put("attachList", attachList);
+        if(!CollectionUtils.isEmpty(detailList)){
+            map.put("totalExpAmount", detailList.get(0).getTotalExpAmount());//每条记录中都记录了总金额
+        }else {
+            map.put("totalExpAmount", 0);
+        }
+        //填充外部组织名称
+        if (!StringUtil.isNullOrEmpty(expMainEntity.getEnterpriseId())) {
+            map.put("enterpriseName",enterpriseService.getEnterpriseName(expMainEntity.getEnterpriseId()));
+            map.put("enterpriseId",expMainEntity.getEnterpriseId());
+        }
+        map.put("detailList", detailList);
+        //查询抄送人
+        map.put("ccCompanyUserList",copyRecordService.getCopyRecode(new QueryCopyRecordDTO(id)));
+        //返回流程标识，给前端控制是否要给审批人，以及按钮显示的控制
+        map.putAll(processService.getCurrentTaskUser(new AuditEditDTO(id,null,null),auditList,(detailList.get(0).getTotalExpAmount()).toString()));
         return map;
     }
 
@@ -982,7 +1035,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
      * 请假任务详情
      */
     @Override
-    public Map<String, Object> getLeaveDetail(LeaveDetailQueryDTO queryDTO) {
+    public Map<String, Object> getLeaveDetail(LeaveDetailQueryDTO queryDTO) throws Exception {
         Map<String, Object> map = new HashMap<>();
         List<ExpMainDTO> expMainDTOS = new ArrayList<ExpMainDTO>();
         ExpMainDTO expMainDTO = new ExpMainDTO();
@@ -1002,10 +1055,155 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
             expMainDTOS.add(expMainDTO);
         }
         map.put("expAuditEntities", expMainDTOS);
+        map.put("leaveDetail",getLeaveDetail(queryDTO.getId()));
 
         return map;
     }
 
+    private LeaveDTO getLeaveDetail(String id) throws Exception {
+        LeaveDTO result = leaveDetailDao.getLeaveById(id);
+        if(result==null){
+            return new LeaveDTO();
+        }
+        Map<String,Object> param = new HashMap<>();
+        param.put("id",id);
+        List<AuditDTO> auditList = expAuditDao.selectAuditByMainId(param);
+        result.setAuditList(auditList);
+        if(!CollectionUtils.isEmpty(auditList)){
+            if("2".equals(result.getApproveStatus())){//如果是退回，把退回原因提取到最外层，以便前端展示
+                result.setCallbackReason(auditList.get(auditList.size()-1).getAuditMessage());
+            }
+            //获取审核人
+            AuditDTO audit = auditList.get(0);
+            result.setAuditPersonName(audit.getUserName());
+            result.setAuditPerson(audit.getCompanyUserId());
 
+            //copy一份最后审批人到到你跟前审批人上
+            AuditDTO currentAuditPerson = new AuditDTO();
+            BaseDTO.copyFields(auditList.get(auditList.size()-1),currentAuditPerson);
+            result.setCurrentAuditPerson(currentAuditPerson);
+        }
+        //发起申请的记录
+        AuditDTO applyDTO = new AuditDTO();
+        applyDTO.setUserName(result.getUserName());
+        applyDTO.setCompanyUserId(result.getCompanyUserId());
+        applyDTO.setApproveDate(result.getExpDate());
+        if("3".equals(result.getApproveStatus())){
+            applyDTO.setApproveStatus(result.getApproveStatus());
+        }else {
+            applyDTO.setApproveStatus(null);
+        }
+        applyDTO.setApproveStatusName("发起申请");
+        applyDTO.setFileFullPath(userAttachService.getHeadImgNotFullPath(result.getAccountId()));
+        auditList.add(0,applyDTO);
+
+        param.clear();
+        param.put("targetId", id);
+        param.put("type", NetFileType.EXPENSE_ATTACH);
+        List<FileDataDTO> expAttachList = this.projectSkyDriverService.getAttachDataList(param);
+        result.setAttachList(expAttachList);
+
+        //获取抄送人
+        result.setCcCompanyUserList(copyRecordService.getCopyRecode(new QueryCopyRecordDTO(id)));
+        //返回流程标识，给前端控制是否要给审批人，以及按钮显示的控制
+        Map<String,Object> processData = processService.getCurrentTaskUser(new AuditEditDTO(id,null,null),auditList,result.getLeaveTime());
+        result.setProcessFlag(processData.get("processFlag"));
+        result.setProcessType(processData.get("processType"));
+        result.setConditionList(processData.get("conditionList"));
+
+        return result;
+    }
+
+
+    @Override
+    public void saveCopy(List<String> ccCompanyUserList,String sendCompanyUserId,String targetId,String operateRecordId) throws Exception{
+        //保存抄送人
+        SaveCopyRecordDTO copyDTO = new SaveCopyRecordDTO();
+        copyDTO.setCompanyUserList(ccCompanyUserList);
+        //当前人为发送人，在数据库中的字段为sendCompanyUserId
+        copyDTO.setSendCompanyUserId(sendCompanyUserId);
+        copyDTO.setOperateRecordId(operateRecordId);
+        copyDTO.setTargetId(targetId);
+        if(targetId.equals(operateRecordId)){
+            copyDTO.setRecordType(CopyTargetType.EXP_MAIN);
+        }else {
+            copyDTO.setRecordType(CopyTargetType.EXP_AUDIT);
+        }
+        copyDTO.setRecordType(CopyTargetType.EXP_AUDIT);
+        this.copyRecordService.saveCopyRecode(copyDTO);
+
+    }
+
+    @Override
+    public Map<String, Object> getAuditInfoByRelationId(String relationId,String companyUserId) throws Exception {
+        ExpMainDTO expMain = this.expMainDao.getExpMainByRelationId(relationId);
+        List<AuditDTO> list = null;
+        Map<String, Object> result = new HashMap<>();
+        if(expMain!=null){
+            list =  getAuditList(expMain.getId(),null);
+            // result.putAll(processService.getCurrentTaskUser(new AuditEditDTO(expMain.getId(),null,null),list,(expMain.getExpSumAmount()).toString()));
+            if(("0".equals(expMain.getApproveStatus()) || "5".equals(expMain.getApproveStatus()))
+                    && !CollectionUtils.isEmpty(list)){
+                AuditDTO auditDTO = list.get(list.size()-1);
+                if(companyUserId!=null && companyUserId.equals(auditDTO.getCompanyUserId())){
+                    result.put("auditFlag","1");//处于审批的状态
+                    result.put("mainId",expMain.getId());
+                }
+            }
+            processService.getCurrentTaskUser(new AuditEditDTO(expMain.getId(),null,null),list,(expMain.getExpSumAmount()).toString());
+            result.put("approveStatus",expMain.getApproveStatus());
+        }
+
+        result.put("auditList",list);
+        return result;
+    }
+
+
+    private List<AuditDTO> getAuditList(String id, ExpMainEntity expMainEntity) throws Exception {
+        Map<String,Object> param = new HashMap<>();
+        param.put("id",id);
+        List<AuditDTO> auditList = expAuditDao.selectAuditByMainId(param);
+//        for (AuditDTO dto : auditList) {
+//            dto.setApproveStatusName(getApproveStatusName(dto.getApproveStatus(), dto.getIsNew()));
+//        }
+        ExpMainDataDTO expMainDTO = expMainDao.selectByIdWithUserNameMap(param);
+        AuditDTO applyDTO = new AuditDTO();
+        BaseDTO.copyFields(expMainDTO,applyDTO);
+        if("3".equals(expMainDTO.getApproveStatus())){
+            applyDTO.setApproveStatus(expMainDTO.getApproveStatus());
+        }else {
+            applyDTO.setApproveStatus(null);
+        }
+        applyDTO.setApproveStatusName("发起申请");
+        applyDTO.setFileFullPath(userAttachService.getHeadImgNotFullPath(expMainDTO.getAccountId()));
+        applyDTO.setApproveDate(expMainDTO.getExpDate());
+        auditList.add(0,applyDTO);
+        if(expMainEntity!=null){//费用申请，不需要一下内容
+            //报销拨款
+            if (!StringUtil.isNullOrEmpty(expMainEntity.getAllocationDate())) {
+                ExpMainDataDTO expAllocationDataDTO = expMainDao.selectAllocationUser(param);
+                AuditDTO  expAllocationDTO = new AuditDTO();
+                BaseDTO.copyFields(expAllocationDataDTO,expAllocationDTO);
+                expAllocationDTO.setId(expMainDTO.getId());
+                expAllocationDTO.setApproveStatus("6");//财务已拨款
+                // expAllocationDTO.setApproveStatusName(getApproveStatusName(expAllocationDTO.getApproveStatus(), "Y"));
+                expAllocationDTO.setIsNew("Y");
+                expAllocationDTO.setApproveDate(expMainEntity.getAllocationDate());
+                //头像
+                CompanyUserEntity user = companyUserDao.selectById(expMainEntity.getAllocationUserId());
+                if(user!=null){
+                    expAllocationDTO.setFileFullPath(userAttachService.getHeadImgNotFullPath(user.getUserId()));
+                }
+                auditList.add(expAllocationDTO);
+            }else if("1".equals(expMainEntity.getApproveStatus())){
+                AuditDTO expAllocationDTO = new AuditDTO();
+                expAllocationDTO.setId(expMainEntity.getId());
+                expAllocationDTO.setApproveStatus("7");//等待财务拨款;
+                // expAllocationDTO.setApproveStatusName("等待财务拨款");
+                auditList.add(expAllocationDTO);
+            }
+        }
+        return auditList;
+    }
 }
 

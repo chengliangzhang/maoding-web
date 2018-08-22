@@ -1,9 +1,10 @@
 package com.maoding.projectcost.dto;
 
-import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.invoice.dto.InvoiceEditDTO;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 深圳市设计同道技术有限公司
@@ -46,6 +47,13 @@ public class ProjectCostPointDetailDTO extends InvoiceEditDTO {
     private Integer payType;
 
     private String auditPerson;
+
+    /**
+     * 费用申请流程结束后关联的申请单id
+     */
+    private String mainId;
+
+    private List<ProjectCostPaymentDetailDTO> paymentDetailList = new ArrayList<>();
 
     public String getProjectId() {
         return projectId;
@@ -133,5 +141,21 @@ public class ProjectCostPointDetailDTO extends InvoiceEditDTO {
 
     public void setPointDetailDescription(String pointDetailDescription) {
         this.pointDetailDescription = pointDetailDescription;
+    }
+
+    public List<ProjectCostPaymentDetailDTO> getPaymentDetailList() {
+        return paymentDetailList;
+    }
+
+    public void setPaymentDetailList(List<ProjectCostPaymentDetailDTO> paymentDetailList) {
+        this.paymentDetailList = paymentDetailList;
+    }
+
+    public String getMainId() {
+        return mainId;
+    }
+
+    public void setMainId(String mainId) {
+        this.mainId = mainId;
     }
 }

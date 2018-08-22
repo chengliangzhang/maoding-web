@@ -58,7 +58,6 @@ public interface ProcessTypeConst {
     /** 付款审批 */
     String PROCESS_TYPE_PROJECT_COST_APPLY = PROCESS_TYPE_COST_APPLY;
 
-
     /**
      * 自由流程
      */
@@ -73,6 +72,16 @@ public interface ProcessTypeConst {
      * 分条件流程
      */
       Integer PROCESS_TYPE_CONDITION = 3;
+	  
+    /**
+     * 通过
+     */
+    String PASS = "1";
+
+    /**
+     * 不通过
+     */
+    String NOT_PASS = "0";
 
     /** 流程定义内默认流程路径名称 */
     String DEFAULT_FLOW_TASK_KEY = "defaultFlow";

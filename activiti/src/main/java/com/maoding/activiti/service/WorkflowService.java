@@ -65,6 +65,12 @@ public interface WorkflowService {
     void deleteProcessDefine(ProcessDefineQueryDTO deleteRequest);
 
     /**
+     * 流程挂起
+     * 用于单据撤销
+     */
+    void suspendProcessInstanceById(String processInstanceId);
+	
+    /**
      * 描述       查询符合条件的流程定义，返回列表
      * 日期       2018/8/2
      * @author   张成亮
@@ -166,6 +172,16 @@ public interface WorkflowService {
      * @param   workTask 当前任务
      **/
     void completeWorkTask(WorkActionDTO workTask);
+	
+	
+    /**
+     * @author  MaoSF
+     * @date    2018/7/30
+     * @description     查询当前任务
+     * @param   name :对应参数中的key，value：参数的值（act_ru_variable表中）
+     * @return  当前任务列表
+     **/
+    List<FlowTaskDTO> listWorkTaskVariableValueEquals(String name,String value);
 
     /**
      * 获取任务的参数
@@ -189,9 +205,48 @@ public interface WorkflowService {
      **/
     void claimWorkTask(WorkActionDTO workTask);
 
+
     /**
+     * @param taskId 当前任务Id
+     * @author MaoSF
+     * @date 2018/8/02
+     * @description 根据当前任务的id获取流程的key
+     **/
+    String getProcessKeyByTaskId(String taskId);
+
+    /**
+     * @param processInstanceId 当前流程实例id
+     * @author MaoSF
+     * @date 2018/8/02
+     * @description 根据当前流程实例id获取流程的key
+     **/
+    String getProcessKeyByProcessInstanceId(String processInstanceId);
+
+    /**
+     * @param processInstanceId 当前流程实例id
+     * @author MaoSF
+     * @date 2018/8/02
+     * @description 根据当前流程实例id获取流程的id
+     **/
+    String getProcessDefineIdByProcessInstanceId(String processInstanceId);
+	
+	/**
      * 保存自由流程
      */
     String saveFreeProcess() throws Exception;
 
+
+    /**
+     * @param processKey 流程的key
+     * @author MaoSF
+     * @date 2018/8/02
+     * @description 根据当前流程实例id获取流程的id
+     **/
+    String getProcessDefineIdByProcessKey(String processKey);
+
+
+    /**
+     * 查询当前审批单的审批人
+     */
+    List<UserTaskDTO> listFlowTaskUser(ProcessDetailPrepareDTO query);
 }

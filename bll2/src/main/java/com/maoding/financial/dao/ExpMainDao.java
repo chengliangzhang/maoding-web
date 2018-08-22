@@ -1,10 +1,7 @@
 package com.maoding.financial.dao;
 
 import com.maoding.core.base.dao.BaseDao;
-import com.maoding.financial.dto.ExpMainDTO;
-import com.maoding.financial.dto.ExpSummaryDTO;
-import com.maoding.financial.dto.LeaveDetailDTO;
-import com.maoding.financial.dto.LeaveDetailQueryDTO;
+import com.maoding.financial.dto.*;
 import com.maoding.financial.entity.ExpMainEntity;
 import com.maoding.org.dto.CompanyRelationDTO;
 import com.maoding.statistic.dto.StatisticDetailQueryDTO;
@@ -42,6 +39,14 @@ public interface ExpMainDao extends BaseDao<ExpMainEntity> {
      * @param id 报销主表id
      */
     public ExpMainDTO selectByIdWithUserName(String id);
+
+    /**
+     * 方法描述：查询报销主表记录并关联账号表
+     * 作   者：LY
+     * 日   期：2016/8/2 15:10
+     * @param param 报销主表id
+     */
+    public ExpMainDataDTO selectByIdWithUserNameMap(Map<String, Object> param);
 
     /**
      * 方法描述：报销汇总list
@@ -110,6 +115,11 @@ public interface ExpMainDao extends BaseDao<ExpMainEntity> {
     public List<ExpMainEntity> selectByParam(Map<String, Object> param);
 
     /**
+     * 获取审核信息
+     */
+    List<AuditDataDTO> getAuditData(QueryAuditDTO query);
+	
+    /**
      * 方法描述：项目收支明细-台账模块获取费用申请，报销申请
      * 作   者：DongLiu
      * 日   期：2017/12/6 18:36
@@ -135,4 +145,9 @@ public interface ExpMainDao extends BaseDao<ExpMainEntity> {
      */
     ExpMainDTO getExpMainByRelationId(String relationId);
 
+
+    /**
+     * 财务拨款信息
+     */
+    ExpMainDataDTO selectAllocationUser(Map<String, Object> param);
 }

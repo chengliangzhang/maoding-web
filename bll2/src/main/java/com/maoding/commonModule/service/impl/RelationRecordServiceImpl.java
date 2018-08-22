@@ -1,6 +1,7 @@
 package com.maoding.commonModule.service.impl;
 
 import com.maoding.commonModule.dao.RelationRecordDao;
+import com.maoding.commonModule.dto.QueryRelationRecordDTO;
 import com.maoding.commonModule.dto.RelationTypeDTO;
 import com.maoding.commonModule.dto.SaveRelationRecordDTO;
 import com.maoding.commonModule.entity.RelationRecordEntity;
@@ -8,8 +9,14 @@ import com.maoding.commonModule.service.RelationRecordService;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.financial.dao.ExpMainDao;
+import com.maoding.financial.dto.AuditDataDTO;
+import com.maoding.financial.dto.QueryAuditDTO;
+import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service("relationRecordService")
 public class RelationRecordServiceImpl extends NewBaseService implements RelationRecordService {
@@ -37,16 +44,26 @@ public class RelationRecordServiceImpl extends NewBaseService implements Relatio
         }
     }
 
+    @Override
+    public AuditDataDTO getRelationList(QueryRelationRecordDTO query) throws Exception {
+        List<AuditDataDTO> list = new ArrayList<>();
+        List<RelationRecordEntity> relationList = this.relationRecordDao.getRelationRecord(query);
+        for(RelationRecordEntity relation:relationList){
+            QueryAuditDTO queryAudit = new QueryAuditDTO();
+            queryAudit.setMainId(relation.getRelationId());
+            list.addAll(expMainDao.getAuditData(queryAudit));
+        }
+        return CollectionUtils.isEmpty(list)?null:list.get(0);
+    }
 
-//    @Override
-//    public AuditDataDTO getRelationList(QueryRelationRecordDTO query) throws Exception {
-//        List<AuditDataDTO> list = new ArrayList<>();
-//        List<RelationRecordEntity> relationList = this.relationRecordDao.getRelationRecord(query);
-//        for(RelationRecordEntity relation:relationList){
-//            QueryAuditDTO queryAudit = new QueryAuditDTO();
-//            queryAudit.setMainId(relation.getRelationId());
-//            list.addAll(expMainDao.getAuditData(queryAudit));
-//        }
-//        return CollectionUtils.isEmpty(list)?null:list.get(0);
-//    }
+    @Override
+    public RelationRecordEntity getRelationRecord(String mainId) {
+        QueryRelationRecordDTO query = new QueryRelationRecordDTO();
+        query.setTargetId(mainId);
+        List<RelationRecordEntity> relationList = this.relationRecordDao.getRelationRecord(query);
+        if(CollectionUtils.isEmpty(relationList)){
+            return null;
+        }
+        return relationList.get(0);
+    }
 }

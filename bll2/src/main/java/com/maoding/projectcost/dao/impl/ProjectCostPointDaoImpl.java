@@ -4,7 +4,10 @@ import com.maoding.core.base.dao.GenericDao;
 import com.maoding.projectcost.dao.ProjectCostPointDao;
 import com.maoding.projectcost.dto.ProjectCostPointDTO;
 import com.maoding.projectcost.dto.ProjectCostPointDataForMyTaskDTO;
+import com.maoding.projectcost.dto.ProjectCostPointDetailInfoDTO;
+import com.maoding.projectcost.dto.ProjectCostPointInfoDTO;
 import com.maoding.projectcost.entity.ProjectCostPointEntity;
+import com.maoding.projectcost.dto.ProjectCostQueryDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -74,4 +77,16 @@ public class ProjectCostPointDaoImpl extends GenericDao<ProjectCostPointEntity> 
     public String getCostFeeCompanyByTaskId(String taskId){
         return this.sqlSession.selectOne("GetProjectCostPointMapper.getCostFeeCompanyByTaskId", taskId);
     }
+
+
+    @Override
+    public List<ProjectCostPointInfoDTO> listProjectAmountFeeByCostId(ProjectCostQueryDTO query) {
+        return this.sqlSession.selectList("GetProjectCostMapper.listProjectAmountFeeByCostId", query);
+    }
+
+    @Override
+    public List<ProjectCostPointDetailInfoDTO> listProjectAmountFeeByPointId(ProjectCostQueryDTO query) {
+        return this.sqlSession.selectList("GetProjectCostMapper.listProjectAmountFeeByPointId", query);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.maoding.financial.dto;
 
+import com.maoding.commonModule.dto.RelationTypeDTO;
 import com.maoding.core.base.dto.BaseDTO;
 
 import java.math.BigDecimal;
@@ -70,6 +71,16 @@ public class ExpDetailDTO extends BaseDTO {
      * 关联项目name
      */
     private String projectName;
+
+    /**
+     * 保存的记录
+     */
+    private RelationTypeDTO relationRecord;
+
+    /**
+     * 返回给前端的记录
+     */
+    private AuditDataDTO relationRecordData;
 
     public String getMainId() {
         return mainId;
@@ -165,5 +176,21 @@ public class ExpDetailDTO extends BaseDTO {
 
     public void setExpAllName(String expAllName) {
         this.expAllName = expAllName;
+    }
+
+    public RelationTypeDTO getRelationRecord() {
+        return relationRecord;
+    }
+
+    public void setRelationRecord(RelationTypeDTO relationRecord) {
+        this.relationRecord = relationRecord;
+    }
+
+    public AuditDataDTO getRelationRecordData() {
+        return relationRecordData;
+    }
+
+    public void setRelationRecordData(AuditDataDTO relationRecordData) {
+        this.relationRecordData = relationRecordData;
     }
 }

@@ -33,7 +33,18 @@ import java.util.Map;
      * 作者：MaoSF
      * 日期：2016/12/1
      */
-     Map<String, Object> getMyTaskByParam(Map<String, Object> param) throws Exception;
+    /** 在移动端已经使用List<MyTaskEntity> getMyTaskByParam()代替 **/
+    @Deprecated
+     Map<String, Object> getMyTaskByParamMap(Map<String, Object> param) throws Exception;
+
+    /**
+     * 方法描述：根据参数查询我的任务（companyId,companyUserId)（此方法，不查询财务数据）
+     * 作者：MaoSF
+     * 日期：2016/12/1
+     * @param:
+     * @return:
+     */
+    List<MyTaskEntity> getMyTaskByParam(Map<String, Object> param) throws Exception;
 
     /**
      * 方法描述：根据参数查询我的任务（companyId,companyUserId，projectId)

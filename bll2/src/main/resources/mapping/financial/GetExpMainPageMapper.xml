@@ -488,6 +488,84 @@
             AND m.company_id =#{companyId,jdbcType=VARCHAR}
         </if>
     </select>
+    
+    <select id="getAuditData" resultType="com.maoding.financial.dto.AuditDataDTO" parameterType="com.maoding.financial.dto.QueryAuditDTO">
+        SELECT exp_main.id,exp_main.company_user_id as companyUserId,exp_main.version_num as versionNum,company_user.user_name as userName,exp_main.exp_no as expNo,
+        exp_main.approve_status as approveStatus,exp_main.type,
+        (select sum(exp_amount) from maoding_web_exp_detail where main_id = exp_main.id) as amount,
+        leave_detail.start_time as startTime,leave_detail.end_time as endTime,
+        leave_detail.leave_time as leaveTime,leave_detail.leave_type as leaveType,leave_detail.address
+        from maoding_web_exp_main exp_main
+        INNER JOIN maoding_web_company_user company_user on exp_main.company_user_id = company_user.id
+        <if test="type=='7'.toString()">
+            INNER JOIN maoding_copy_record copy on exp_main.id = copy.target_id
+        </if>
+        LEFT JOIN maoding_web_leave_detail leave_detail on exp_main.id = leave_detail.main_id
+        LEFT JOIN maoding_web_exp_audit exp_audit on exp_main.id = exp_audit.main_id
+        WHERE 1=1 AND exp_main.approve_status != '4'
+        <if test="companyUserId != null" >
+            AND exp_main.company_user_id =#{companyUserId}
+        </if>
+        <if test="mainId != null" >
+            AND exp_main.id =#{mainId}
+        </if>
+        <if test="expType != null" >
+            AND exp_main.type = #{expType}
+        </if>
+        <if test="expTypes != null" >
+            AND POSITION(exp_main.type IN #{expTypes})
+        </if>
+        <if test="auditPerson != null" >
+            AND exp_audit.audit_person =#{auditPerson}
+        </if>
+        <if test="userIds!=null">
+            AND POSITION(exp_main.company_user_id IN #{userIds})
+        </if>
+        <if test="type=='2'.toString()">
+            and exp_audit.approve_status = 0 and exp_audit.is_new='Y'
+        </if>
+        <if test="type=='3'.toString()">
+            and exp_audit.approve_status != 0
+        </if>
+        <if test="type=='4'.toString()">
+            <choose>
+                <when test="ignoreRecall!=null">
+                    and (exp_main.approve_status = 1 or exp_main.approve_status = 6 )
+                </when>
+                <otherwise>
+                    and (exp_main.approve_status = 1 or exp_main.approve_status = 6 or exp_main.approve_status = 2)
+                </otherwise>
+            </choose>
+        </if>
+        <if test="type=='5'.toString()">
+            and exp_main.approve_status = 5
+        </if>
+        <if test="type=='6'.toString()">
+            and exp_main.approve_status = 0
+        </if>
+        <if test="type=='7'.toString()">
+            and copy.deleted = 0
+            and copy.company_user_id = #{ccCompanyUserId}
+            and (exp_main.approve_status = 6 and 3> exp_main.type or exp_main.approve_status = 1  and exp_main.type >2 )
+        </if>
+        <if test="keyword!=null">
+            AND  (leave_detail.address  LIKE '%' #{keyword} '%' or ((exp_main.type = 1 or exp_main.type=2) and exp_main.exp_no  LIKE '%' #{keyword} '%'))
+        </if>
+        <if test="startDate!=null">
+            <![CDATA[and #{startDate} <= exp_main.exp_date ]]>
+        </if>
+        <if test="endDate!=null">
+            <![CDATA[and  #{endDate} >= exp_main.exp_date  ]]>
+        </if>
+        <if test="month != null" >
+            and SUBSTR(exp_main.exp_date,1,7)=#{month}
+        </if>
+        GROUP BY exp_main.id
+        order by exp_main.create_date DESC
+        <if test="startPage!=null">
+            LIMIT #{startPage},#{endPage}
+        </if>
+    </select>
 
     <select id="getTotalAmountByMainId" resultType="java.lang.String" parameterType="java.lang.String">
         select sum(exp_amount) as exp_sum_amount from maoding_web_exp_detail where main_id = #{mainId}

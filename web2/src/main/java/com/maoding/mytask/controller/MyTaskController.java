@@ -90,7 +90,7 @@ public class MyTaskController extends BaseController {
     public AjaxMessage getMyTask(@RequestBody Map<String, Object> map) throws Exception {
         map.put("companyId", this.currentCompanyId);
         map.put("handlerId", this.currentCompanyUserId);
-        Map result = myTaskService.getMyTaskByParam(map);
+        Map result = myTaskService.getMyTaskByParamMap(map);
         return AjaxMessage.succeed("查询成功").setData(result);
     }
 

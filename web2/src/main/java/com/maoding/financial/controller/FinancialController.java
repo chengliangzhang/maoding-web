@@ -10,6 +10,7 @@ import com.maoding.financial.service.ExpFixedService;
 import com.maoding.financial.service.ExpMainService;
 import com.maoding.org.dto.CompanyRelationDTO;
 import com.maoding.org.service.CompanyService;
+import com.maoding.process.service.ProcessService;
 import com.maoding.system.service.SystemService;
 import org.apache.shiro.authc.AccountException;
 import org.apache.shiro.authz.annotation.Logical;
@@ -52,6 +53,9 @@ public class FinancialController extends BaseController {
 
     @Autowired
     private CompanyService companyService;
+
+    @Autowired
+    private ProcessService processService;
 
     @ModelAttribute
     public void before() {
@@ -743,5 +747,16 @@ public class FinancialController extends BaseController {
         para.put("data", detailDTOS);
         para.put("flow", flow);
         return this.ajaxResponseSuccess().setData(para);
+    }
+
+    /**
+     * 方法描述：在新增审批单据的时候，请求审批人接口
+     * 作   者：MaoSF
+     * 日   期：2016/12/22
+     */
+    @RequestMapping(value = "/getProcessType", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage getProcessType(@RequestBody AuditEditDTO dto) throws Exception{
+        return AjaxMessage.succeed(processService.getCurrentProcess(dto));
     }
 }

@@ -909,7 +909,7 @@ public class ProjectController extends BaseController {
         if (StringUtil.isNullOrEmpty(param.get("handlerId"))) {
             param.put("handlerId", this.currentCompanyUserId);
         }
-        Map<String, Object> resultMap = myTaskService.getMyTaskByParam(param);
+        Map<String, Object> resultMap = myTaskService.getMyTaskByParamMap(param);
         return ajaxResponseSuccess().setData(resultMap);
     }
 

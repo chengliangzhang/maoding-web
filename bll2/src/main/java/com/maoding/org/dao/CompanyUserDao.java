@@ -1,9 +1,8 @@
 package com.maoding.org.dao;
 
+import com.maoding.commonModule.dto.QueryCopyRecordDTO;
 import com.maoding.core.base.dao.BaseDao;
-import com.maoding.org.dto.CompanyUserLiteDTO;
-import com.maoding.org.dto.CompanyUserTableDTO;
-import com.maoding.org.dto.UserDepartDTO;
+import com.maoding.org.dto.*;
 import com.maoding.org.entity.CompanyUserEntity;
 
 import java.util.List;
@@ -220,4 +219,18 @@ public interface CompanyUserDao extends BaseDao<CompanyUserEntity>{
 	String getUserNameByCompanyIdAndUserId(String companyId,String userId);
 
 	String getUserName(String companyUserId);
+	/**
+	 * 方法描述：查询员工简单信息
+	 * 作        者：MaoSF
+	 * 日        期：2016年7月8日-下午4:24:08
+	 */
+	CompanyUserAppDTO getCompanyUserDataById(String companyUserId);
+
+
+	/**
+	 * 方法描述：获取抄送人的信息
+	 * 作        者：MaoSF
+	 * 日        期：2016年7月9日-下午2:28:06
+	 */
+	List<CompanyUserDataDTO> getCopyUser(QueryCopyRecordDTO query);
 }

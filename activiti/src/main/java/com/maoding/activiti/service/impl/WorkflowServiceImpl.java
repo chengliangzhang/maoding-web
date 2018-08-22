@@ -10,6 +10,7 @@ import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.*;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -19,11 +20,9 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -40,18 +39,25 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     private RepositoryService repositoryService;
 
     @Autowired
-    private IdentityService identityService;
-
-
+    private RuntimeService runtimeService;
 
     @Autowired
-    private ProcessEngine processEngine;
+    private FormService formService;
+
+    @Autowired
+    private IdentityService identityService;
 
     @Autowired
     private TaskService taskService;
 
     @Autowired
-    private RuntimeService runtimeService;
+    private HistoryService historyService;
+
+    @Autowired
+    private ManagementService managementService;
+
+    @Autowired
+    private  ProcessEngine processEngine;
 
     /**
      * 描述       加载流程，准备进行编辑
@@ -470,6 +476,14 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
 
+    /**
+     * 流程挂起
+     * 用于单据撤销
+     */
+    @Override
+    public void suspendProcessInstanceById(String processInstanceId) {
+        runtimeService.suspendProcessInstanceById(processInstanceId);
+    }
 
 
 
@@ -1033,6 +1047,26 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         return taskList;
     }
 
+    @Override
+    public List<FlowTaskDTO> listWorkTaskVariableValueEquals(String name, String value) {
+        List<Task> list = processEngine.getTaskService()
+                .createTaskQuery()
+                .processVariableValueEquals(name,value)
+                .list();
+        List<FlowTaskDTO> taskList = new ArrayList<>();
+        list.stream().forEach(task->{
+            FlowTaskDTO flowTask = new FlowTaskDTO();
+            flowTask.setId(task.getId());
+            flowTask.setName(task.getName());
+            FlowUserDTO assignee = new FlowUserDTO();
+            assignee.setId(task.getAssignee());
+            flowTask.setAssigneeUser(assignee);
+            taskList.add(flowTask);
+        });
+        return taskList;
+
+    }
+
     /**
      * @param query 当前任务查询器
      * @return 当前任务个数
@@ -1083,7 +1117,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         return workTaskDTO;
     }
 
-
     /**
      * @param workTask 当前任务
      * @author 张成亮
@@ -1096,7 +1129,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         if(workTask.getResultMap().containsKey("isNotSign")){
             this.claimWorkTask(workTask);
         }
-        //处理完成的动作
+       //处理完成的动作
         Map<String,Object> variables = new HashMap<>();
         variables.put("isPass",workTask.getIsPass());
         variables.putAll(workTask.getResultMap());
@@ -1132,6 +1165,33 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         taskService.claim(workTask.getId(), workTask.getCompanyUserId());
     }
 
+    /**
+     * @param taskId 当前任务Id
+     * @author MaoSF
+     * @date 2018/8/02
+     * @description 根据当前任务的id获取流程的key
+     **/
+    @Override
+    public String getProcessKeyByTaskId(String taskId) {
+        String processInstanceId = taskService.createTaskQuery().taskId(taskId).singleResult().getProcessInstanceId();
+        return getProcessKeyByProcessInstanceId(processInstanceId);
+    }
+	
+	/**
+     * @param processInstanceId 当前流程实例id
+     * @author MaoSF
+     * @date 2018/8/02
+     * @description 根据当前流程实例id获取流程的key
+     **/
+    @Override
+    public String getProcessKeyByProcessInstanceId(String processInstanceId) {
+        return getProcessByProcessInstanceId(processInstanceId).getKey();
+    }
+
+    @Override
+    public String getProcessDefineIdByProcessInstanceId(String processInstanceId) {
+        return getProcessByProcessInstanceId(processInstanceId).getId();
+    }
 
     public String saveFreeProcess() throws Exception {
         // 1. Build up the model from scratch
@@ -1215,5 +1275,127 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         exclusiveGateway.setId(id);
         exclusiveGateway.setName(name);
         return exclusiveGateway;
+    }
+
+
+    @Override
+    public String getProcessDefineIdByProcessKey(String processKey) {
+        ProcessDefinitionQuery processDefinitionQuery = this.repositoryService.createProcessDefinitionQuery().processDefinitionKey(processKey);
+        if(processDefinitionQuery!=null){
+            List<ProcessDefinition> processDefinitionList = processDefinitionQuery.active().orderByProcessDefinitionVersion().desc().list();//latestVersion().singleResult();
+            if(!CollectionUtils.isEmpty(processDefinitionList)){
+                return processDefinitionList.get(0).getId();
+            }
+        }
+        return null;
+    }
+
+
+    private ProcessDefDTO getProcessByProcessInstanceId(String processInstanceId){
+        ProcessDefDTO def = new ProcessDefDTO();
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+        if(processInstance!=null){
+            def.setId(processInstance.getProcessDefinitionId());
+            def.setKey(processInstance.getProcessDefinitionKey());
+        }else {
+            HistoricProcessInstance processInstance2 = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+            if(processInstance2!=null){
+                def.setId(processInstance2.getProcessDefinitionId());
+                def.setKey(processInstance2.getProcessDefinitionKey());
+            }
+        }
+        return def;
+    }
+
+    @Override
+    public  List<UserTaskDTO> listFlowTaskUser(ProcessDetailPrepareDTO query) {
+        List<UserTaskDTO> list = new ArrayList<>();
+        BpmnModel model = repositoryService.getBpmnModel(query.getSrcProcessDefineId());
+        if(model != null) {
+            Collection<FlowElement> flowElements = model.getMainProcess().getFlowElements();
+            StartEvent start = null;
+            for(FlowElement e : flowElements) {
+                if(e instanceof StartEvent){
+                    //接下来获取分支
+                    start = (StartEvent)e;
+                    break;
+                }
+            }
+            List<SequenceFlow> sequenceFlows =  start.getOutgoingFlows();
+            sequenceFlows.stream().forEach(s->{
+                UserTaskDTO userTask = new UserTaskDTO();
+                Map<String,Double> condition = getPointMapFromCondition(s.getConditionExpression());
+                if(condition!=null){
+                    userTask.setMax(condition.get("max")+"");
+                    userTask.setMin(condition.get("min")+"");
+                }
+                getUserTask(flowElements,s.getTargetRef(),userTask);
+                list.add(userTask);
+            });
+        }
+        return list;
+    }
+
+    public void  getUserTask( Collection<FlowElement> flowElements,String refId,UserTaskDTO userTask){
+        flowElements.stream().forEach(f->{
+            if(refId.equals(f.getId())){
+                if(f instanceof UserTask){
+                    UserTask t = (UserTask)f;
+                    if(!StringUtil.isNullOrEmpty(t.getAssignee())){
+                        userTask.getAssignList().add(t.getAssignee());
+                    }else if(!CollectionUtils.isEmpty(t.getCandidateUsers())){
+                        userTask.getAssignList().addAll(t.getCandidateUsers());
+                    }
+                    List<SequenceFlow> sequenceFlows =  t.getOutgoingFlows();
+                    sequenceFlows.stream().forEach(s->{
+                        getUserTask(flowElements,s.getTargetRef(),userTask);
+                    });
+                }
+            }
+        });
+    }
+
+    //根据表达式获取数字条件节点
+    private Map<String,Double> getPointMapFromCondition(String conditionStr){
+        Map<String,Double> result = new HashMap<>();
+        if(StringUtils.isNotEmpty(conditionStr)){
+        //    conditionStr= conditionStr.replaceAll(" || ", " or ").replaceAll(" && ", " and ");
+            String split = null;
+            if(conditionStr.contains("and")){
+                split = "and";
+            }
+            if(conditionStr.contains("or")){
+                split = "or";
+            }
+            String[] conditions = new String[1];
+            if(StringUtil.isNullOrEmpty(split)){
+                conditions[0] = conditionStr;
+            }else {
+                conditions = conditionStr.split(split);
+            }
+
+            for(String condition:conditions){
+                String s = getCondition(condition);
+                if(s.contains(">=")){
+                    result.put("min",DigitUtils.parseDouble(StringUtils.lastRight(s,">=").trim()));
+                }else   if(s.contains(">")){
+                    result.put("max",DigitUtils.parseDouble(StringUtils.left(s,">").trim()));
+                }else {
+                    result.put("max",DigitUtils.parseDouble(StringUtils.lastRight(s,">").trim()));
+                }
+            }
+        }
+        return result;
+    }
+
+    private static String getCondition( String condition ){
+        String s = condition;
+        if(condition.contains("${")){
+            s = StringUtils.right(condition,"${");
+        }
+        if(condition.contains("}")){
+            s  = StringUtils.left(s,"}");
+        }
+        return s;
     }
 }

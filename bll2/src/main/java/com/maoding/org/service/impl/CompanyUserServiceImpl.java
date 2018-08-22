@@ -1,5 +1,6 @@
 package com.maoding.org.service.impl;
 
+import com.maoding.commonModule.dto.QueryCopyRecordDTO;
 import com.maoding.conllaboration.service.CollaborationService;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.GenericService;
@@ -149,6 +150,16 @@ public class CompanyUserServiceImpl extends GenericService<CompanyUserEntity>  i
 		return dto;
 	}
 
+	@Override
+	public CompanyUserDetailDTO selectCompanyUserById(String id) throws Exception {
+		CompanyUserDetailDTO dto = new CompanyUserDetailDTO();
+		CompanyUserEntity user = companyUserDao.selectById(id);
+		if(user!=null){
+			BaseDTO.copyFields(user,dto);
+			dto.setCompanyName(companyDao.getCompanyName(user.getCompanyId()));
+		}
+		return dto;
+	}
 
 	@Override
 	public int getCompanyUserByOrgIdCount(Map<String, Object> param)
@@ -1457,5 +1468,11 @@ public class CompanyUserServiceImpl extends GenericService<CompanyUserEntity>  i
 			return list.get(0);
 		}
 		return null;
+	}
+
+
+	@Override
+	public List<CompanyUserDataDTO> getCopyUser(QueryCopyRecordDTO query) {
+		return this.companyUserDao.getCopyUser(query);
 	}
 }

@@ -1,14 +1,12 @@
-package com.maoding.statistic.dto;
+package com.maoding.projectcost.dto;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import org.apache.ibatis.type.Alias;
+import com.maoding.core.base.dto.BaseDTO;
 
 /**
  * 用于查询的DTO
  * Created by Chengliang.zhang on 2017/4/27.
  */
-@Alias("projectCostQueryDTO")
-public class ProjectCostQueryDTO {
+public class ProjectCostQueryDTO extends BaseDTO {
     /**
      * 公司ID
      */
@@ -55,6 +53,67 @@ public class ProjectCostQueryDTO {
      * 是否计算总条数
      */
     private Boolean isCount;
+	
+	/**
+     * 主记录id
+     */
+    private String costId;
+	
+
+    /**
+     * 收款节点的id
+     */
+    private String pointId;
+
+    /**
+     * 发起收款的节点id
+     */
+    private String pointDetailId;
+
+    /**
+     * 收款计划：1，付款计划：2
+     */
+    private Integer payType;
+
+    public Boolean getCount() {
+        return isCount;
+    }
+
+    public void setCount(Boolean count) {
+        isCount = count;
+    }
+
+    public String getCostId() {
+        return costId;
+    }
+
+    public void setCostId(String costId) {
+        this.costId = costId;
+    }
+
+    public String getPointId() {
+        return pointId;
+    }
+
+    public void setPointId(String pointId) {
+        this.pointId = pointId;
+    }
+
+    public String getPointDetailId() {
+        return pointDetailId;
+    }
+
+    public void setPointDetailId(String pointDetailId) {
+        this.pointDetailId = pointDetailId;
+    }
+
+    public Integer getPayType() {
+        return payType;
+    }
+
+    public void setPayType(Integer payType) {
+        this.payType = payType;
+    }
 
     public String getCompanyId() {
         return companyId;

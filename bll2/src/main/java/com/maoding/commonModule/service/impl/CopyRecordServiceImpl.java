@@ -7,6 +7,7 @@ import com.maoding.commonModule.entity.CopyRecordEntity;
 import com.maoding.commonModule.service.CopyRecordService;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.NewBaseService;
+import com.maoding.org.dto.CompanyUserDataDTO;
 import com.maoding.org.service.CompanyUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ public class CopyRecordServiceImpl extends NewBaseService implements CopyRecordS
     @Autowired
     private CopyRecordDao copyRecordDao;
 
+    @Autowired
+    private CompanyUserService companyUserService;
+
     @Override
     public void saveCopyRecode(SaveCopyRecordDTO dto) throws Exception {
         CopyRecordEntity copy = (CopyRecordEntity)BaseDTO.copyFields(dto,CopyRecordEntity.class);
@@ -31,6 +35,11 @@ public class CopyRecordServiceImpl extends NewBaseService implements CopyRecordS
             copy.setDeleted(0);
             copyRecordDao.insert(copy);
         }
+    }
+
+    @Override
+    public List<CompanyUserDataDTO> getCopyRecode(QueryCopyRecordDTO dto) throws Exception {
+        return companyUserService.getCopyUser(dto);
     }
 
     @Override

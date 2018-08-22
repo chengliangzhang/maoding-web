@@ -389,4 +389,12 @@
             <![CDATA[ project_id = #{projectId} AND task_status = '0' AND task_type < 3 ]]>
         </where>
     </select>
+
+
+    <sql id = "getAliasNameSql">
+        select
+        if(b.nick_name is null or b.nick_name='',a.company_name,b.nick_name) as aliasName,a.id
+        from maoding_web_company a
+        LEFT JOIN maoding_web_business_partner b on a.id = b.company_id and b.type=3
+    </sql>
 </mapper>

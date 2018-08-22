@@ -6,6 +6,7 @@ import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.util.StringUtils;
 import com.maoding.projectcost.dto.*;
 import com.maoding.projectcost.service.ProjectCostService;
+import com.maoding.projectcost.dto.ProjectCostQueryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -283,6 +284,19 @@ public class ProjectCostController extends BaseController {
         }
         CorePageDTO<ProjectCostSummaryDTO> page = projectCostService.listPageProjectCostSummary(query);
         return AjaxMessage.succeed(page);
+    }
+
+    /**
+     * 方法描述：发起付款计划节点信息
+     * 参数：projectId= 项目id，pointId:节点id，costId：收付款计划id
+     * 作者：MaoSF
+     * 日期：2017/3/7
+     */
+    @RequestMapping(value = {"/getProjectCostPaymentDetailByPointDetailIdForPay"}, method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage getProjectCostPaymentDetailByPointDetailIdForPay(@RequestBody ProjectCostQueryDTO queryDTO) throws Exception {
+        updateCurrentUserInfo(queryDTO);
+        return AjaxMessage.succeed(this.projectCostService.getProjectCostPaymentDetailByPointDetailIdForPay(queryDTO));
     }
 
 }

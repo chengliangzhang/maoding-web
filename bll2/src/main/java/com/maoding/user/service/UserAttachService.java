@@ -65,4 +65,6 @@ public interface UserAttachService extends BaseService<UserAttachEntity>{
 	public Object saveUserAttach(MultipartFile file,Map<String,Object>param)throws Exception;
 
 	String getHeadImgUrl(String userId) throws Exception;
+
+	String getHeadImgNotFullPath(String userId) throws Exception;
 }

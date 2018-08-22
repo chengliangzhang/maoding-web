@@ -84,4 +84,8 @@ public interface ExpAuditDao extends BaseDao<ExpAuditEntity> {
     public List<ExpAuditEntity> selectDetailByMainId(String mainId);
 
     ExpAuditEntity selectLastRecallAudit(String mainId);
+    /**
+     * 获取最新的审批记录
+     */
+    ExpAuditEntity selectLastAudit(String mainId);
 }

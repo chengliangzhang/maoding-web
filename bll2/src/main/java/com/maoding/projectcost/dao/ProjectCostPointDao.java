@@ -3,7 +3,10 @@ package com.maoding.projectcost.dao;
 import com.maoding.core.base.dao.BaseDao;
 import com.maoding.projectcost.dto.ProjectCostPointDTO;
 import com.maoding.projectcost.dto.ProjectCostPointDataForMyTaskDTO;
+import com.maoding.projectcost.dto.ProjectCostPointDetailInfoDTO;
+import com.maoding.projectcost.dto.ProjectCostPointInfoDTO;
 import com.maoding.projectcost.entity.ProjectCostPointEntity;
+import com.maoding.projectcost.dto.ProjectCostQueryDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -51,4 +54,16 @@ public interface ProjectCostPointDao extends BaseDao<ProjectCostPointEntity> {
      * 获取当前数据
      */
     String getCostFeeCompanyByTaskId(String taskId);
+
+
+    /**
+     * 收付款节点详情
+     */
+    List<ProjectCostPointInfoDTO> listProjectAmountFeeByCostId(ProjectCostQueryDTO query);
+
+
+    /**
+     * 发起收款，付款详情
+     */
+    List<ProjectCostPointDetailInfoDTO> listProjectAmountFeeByPointId(ProjectCostQueryDTO query);
 }

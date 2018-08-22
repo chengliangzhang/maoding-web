@@ -113,4 +113,13 @@ public class ExpAuditDaoImpl extends GenericDao<ExpAuditEntity> implements ExpAu
     public ExpAuditEntity selectLastRecallAudit(String mainId) {
         return sqlSession.selectOne("ExpAuditEntityMapper.selectLastRecallAudit", mainId);
     }
+
+    @Override
+    public ExpAuditEntity selectLastAudit(String mainId) {
+        List<ExpAuditEntity> list = this.selectByMainId(mainId);
+        if(!CollectionUtils.isEmpty(list)){
+            return list.get(0);
+        }
+        return null;
+    }
 }

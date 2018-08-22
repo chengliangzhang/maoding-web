@@ -4,6 +4,7 @@ import com.maoding.core.base.dao.GenericDao;
 import com.maoding.projectcost.dao.ProjectCostPaymentDetailDao;
 import com.maoding.projectcost.dto.ProjectCostPaymentDetailDTO;
 import com.maoding.projectcost.entity.ProjectCostPaymentDetailEntity;
+import com.maoding.projectcost.dto.ProjectCostQueryDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -62,4 +63,8 @@ public class ProjectCostPaymentDetailDaoImpl extends GenericDao<ProjectCostPayme
         return this.sqlSession.selectList("GetProjectCostPaymentDetailMapper.selectByPointDetailId", map);
     }
 
+    @Override
+    public List<ProjectCostPaymentDetailDTO> listProjectPaymentFeeByPointDetailId(ProjectCostQueryDTO query) {
+        return this.sqlSession.selectList("GetProjectCostMapper.listProjectPaymentFeeByPointDetailId",query);
+    }
 }

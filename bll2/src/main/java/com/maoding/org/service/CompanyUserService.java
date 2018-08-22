@@ -1,12 +1,9 @@
 package com.maoding.org.service;
 
+import com.maoding.commonModule.dto.QueryCopyRecordDTO;
 import com.maoding.core.base.service.BaseService;
 import com.maoding.core.bean.AjaxMessage;
-import com.maoding.org.dto.CompanyUserDTO;
-import com.maoding.org.dto.CompanyUserLiteDTO;
-import com.maoding.org.dto.CompanyUserTableDTO;
-import com.maoding.org.dto.ImportFileCompanyUserDTO;
-import com.maoding.org.entity.CompanyEntity;
+import com.maoding.org.dto.*;
 import com.maoding.org.entity.CompanyUserEntity;
 
 import java.util.List;
@@ -57,6 +54,8 @@ public interface CompanyUserService extends BaseService<CompanyUserEntity>{
 	 * @return
 	 */
 	public CompanyUserTableDTO getCompanyUserById(String id) throws Exception;
+
+	CompanyUserDetailDTO selectCompanyUserById(String id) throws Exception;
 	
 	/**
 	 * 方法描述：组织人员条数（分页查询）（暂无使用）
@@ -354,4 +353,10 @@ public interface CompanyUserService extends BaseService<CompanyUserEntity>{
 	 */
 	CompanyUserTableDTO getOrgManager(String companyId);
 
+	/**
+	 * 方法描述：获取抄送人的信息
+	 * 作        者：MaoSF
+	 * 日        期：2016年7月9日-下午2:28:06
+	 */
+	List<CompanyUserDataDTO> getCopyUser(QueryCopyRecordDTO query);
 }

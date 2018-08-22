@@ -2,10 +2,15 @@ package com.maoding.process.service;
 
 
 import com.maoding.activiti.dto.*;
+import com.maoding.financial.dto.AuditDTO;
+import com.maoding.financial.dto.AuditEditDTO;
+import com.maoding.financial.dto.SaveExpMainDTO;
 import com.maoding.process.dto.ActivitiDTO;
-import org.springframework.web.bind.annotation.RequestBody;
+import com.maoding.process.dto.TaskDTO;
+import com.maoding.process.dto.UserTaskNodeDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProcessService {
 
@@ -55,25 +60,33 @@ public interface ProcessService {
      **/
     List<ProcessDefineGroupDTO> listProcessDefineWithGroup(ProcessDefineQueryDTO query);
 
-//    /**
-//     * 任务签收
-//     */
-//    void claimTask(TaskDTO dto) throws Exception;
-//
-//    /**
-//     * 任务完成(直接完成activiti中的任务，id 为ru_task 中的id)
-//     */
-//    void completeTask(TaskDTO dto) throws Exception;
-//
-//    /**
-//     * 任务完成(直接完成审核表中的任务（audit），id 为exp_audit 中的id)
-//     */
-//    void completeTask2(TaskDTO dto) throws Exception;
-//
-//    /**
-//     * id:审批记录的id
-//     */
-//    Map<String,Object> getCurrentProcess(AuditEditDTO dto);
-//
-//    List<UserTaskNodeDTO> getUserListForAudit(AuditEditDTO dto);
+    /**
+     * 任务签收
+     */
+    void claimTask(TaskDTO dto) throws Exception;
+
+    /**
+     * 任务完成(直接完成activiti中的任务，id 为ru_task 中的id)
+     */
+    void completeTask(TaskDTO dto) throws Exception;
+
+    /**
+     * 任务完成(直接完成审核表中的任务（audit），id 为exp_audit 中的id)
+     */
+    void completeTask2(TaskDTO dto) throws Exception;
+
+    /**
+     * id:审批记录的id
+     */
+    Map<String,Object> getCurrentProcess(AuditEditDTO dto);
+
+    Map<String,Object> getCurrentTaskUser(AuditEditDTO dto, List<AuditDTO> auditList, String value) throws Exception;
+
+    List<UserTaskNodeDTO> getUserListForAudit(AuditEditDTO dto);
+
+    /**
+     * 流程挂起
+     * 用于单据撤销
+     */
+    int suspendProcess(SaveExpMainDTO dto);
 }

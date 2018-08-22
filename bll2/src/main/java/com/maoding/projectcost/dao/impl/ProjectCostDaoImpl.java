@@ -2,11 +2,9 @@ package com.maoding.projectcost.dao.impl;
 
 import com.maoding.core.base.dao.GenericDao;
 import com.maoding.projectcost.dao.ProjectCostDao;
-import com.maoding.projectcost.dto.ProjectCostDTO;
-import com.maoding.projectcost.dto.ProjectCostSingleSummaryDTO;
-import com.maoding.projectcost.dto.ProjectCostSummaryQueryDTO;
-import com.maoding.projectcost.dto.ProjectExpSingleSummaryDTO;
+import com.maoding.projectcost.dto.*;
 import com.maoding.projectcost.entity.ProjectCostEntity;
+import com.maoding.projectcost.dto.ProjectCostQueryDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -62,4 +60,10 @@ public class ProjectCostDaoImpl extends GenericDao<ProjectCostEntity> implements
     public List<ProjectExpSingleSummaryDTO> listProjectExpSummary(ProjectCostSummaryQueryDTO query) {
         return sqlSession.selectList("GetProjectCostMapper.listProjectExpSummary", query);
     }
+
+    @Override
+    public ProjectCooperatorCostDTO getProjectAmountFeeByCostId(ProjectCostQueryDTO queryDTO) {
+        return this.sqlSession.selectOne("GetProjectCostMapper.getProjectAmountFeeByCostId", queryDTO);
+    }
+
 }

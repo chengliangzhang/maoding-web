@@ -45,6 +45,8 @@ public class DateUtils extends PropertyEditorSupport {
             "yyyy年MM月dd日");
     public static final SimpleDateFormat time_sdf = new SimpleDateFormat(
             "yyyy-MM-dd HH:mm");
+    public static final SimpleDateFormat time_sdf_slash = new SimpleDateFormat(
+            "yyyy/MM/dd HH:mm");
     public static final SimpleDateFormat yyyymmddhhmmss = new SimpleDateFormat(
             "yyyyMMddHHmmss");
     public static final SimpleDateFormat short_time_sdf = new SimpleDateFormat(
@@ -62,11 +64,32 @@ public class DateUtils extends PropertyEditorSupport {
         }
     }.get());
 
+    public static final  SimpleDateFormat leaveOffFormat = new SimpleDateFormat(
+            "yyyy/MM/dd HH:mm");
+    public static final  SimpleDateFormat workOutFormat = new SimpleDateFormat(
+            "yyyy/MM/dd a",Locale.CHINESE);
+
     // 以毫秒表示的时间
     private static final long DAY_IN_MILLIS = 24 * 3600 * 1000;
     private static final long HOUR_IN_MILLIS = 3600 * 1000;
     private static final long MINUTE_IN_MILLIS = 60 * 1000;
     private static final long SECOND_IN_MILLIS = 1000;
+
+
+    /** 获取起始时间到终止时间的字符串 */
+    public static String getTimeText(Date startTime, Date endTime, SimpleDateFormat fmt){
+        String s = "";
+        if (startTime != null) {
+            s = DateUtils.date2Str(startTime, fmt);
+        }
+        if ((startTime != null) || (endTime != null)) {
+            s += " — ";
+        }
+        if (endTime != null) {
+            s += DateUtils.date2Str(endTime, fmt);
+        }
+        return s;
+    }
 
     // 指定模式的时间格式
     private static SimpleDateFormat getSDFormat(String pattern) {
@@ -523,6 +546,17 @@ public class DateUtils extends PropertyEditorSupport {
      */
     public static String formatTime(Date date) {
         return time_sdf.format(date);
+    }
+
+    /**
+     * 指定日期的默认显示，具体格式：年-月-日 时：分
+     *
+     * @param date
+     *            指定的日期
+     * @return 指定日期按“年/月/日 时：分“格式显示
+     */
+    public static String formatTimeSlash(Date date) {
+        return time_sdf_slash.format(date);
     }
 
     // ////////////////////////////////////////////////////////////////////////////

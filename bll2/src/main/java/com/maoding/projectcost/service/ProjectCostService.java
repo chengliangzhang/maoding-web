@@ -6,6 +6,7 @@ import com.maoding.core.bean.AjaxMessage;
 import com.maoding.invoice.dto.InvoiceEditDTO;
 import com.maoding.projectcost.dto.*;
 import com.maoding.projectcost.entity.ProjectCostEntity;
+import com.maoding.projectcost.dto.ProjectCostQueryDTO;
 import com.maoding.task.entity.ProjectTaskEntity;
 
 import java.util.List;
@@ -195,4 +196,15 @@ public interface ProjectCostService extends BaseService<ProjectCostEntity>{
      *                endDate 终止日期
      **/
     CorePageDTO<ProjectCostSummaryDTO> listPageProjectCostSummary(ProjectCostSummaryQueryDTO query);
+
+    /**
+    * 费用付款申请  流程结束后，数据处理
+    */
+    AjaxMessage completeProjectFeeApply(ProjectCostPointDetailDTO projectCostPointDetailDTO)throws Exception;
+
+
+    /**
+     * 发起付款界面详情，财务付款确认详情，审批人审批界面
+     */
+    Map<String, Object> getProjectCostPaymentDetailByPointDetailIdForPay(ProjectCostQueryDTO queryDTO) throws Exception;
 }

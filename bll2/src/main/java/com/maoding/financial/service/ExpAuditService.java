@@ -21,7 +21,7 @@ public interface ExpAuditService extends BaseService<ExpAuditEntity>{
     ExpAuditEntity saveExpAudit(String mainId,String auditPerson,String submitAuditId,String accountId,String parentId) throws Exception;
 
 
-  //  int completeAudit(SaveExpMainDTO dto) throws Exception;
+    int completeAudit(SaveExpMainDTO dto) throws Exception;
 
     String saveAudit(SaveExpMainDTO dto) throws Exception;
 }

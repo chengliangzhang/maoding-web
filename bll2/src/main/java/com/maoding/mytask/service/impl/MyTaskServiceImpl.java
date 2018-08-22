@@ -186,9 +186,10 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
      * @param:
      * @return:
      */
+    /** 在移动端已经改为List<MyTaskEntity> getMyTaskByParam **/
     @Override
-
-    public Map<String, Object> getMyTaskByParam(Map<String, Object> param) throws Exception {
+    @Deprecated
+    public Map<String, Object> getMyTaskByParamMap(Map<String, Object> param) throws Exception {
 
         String companyId = (String) param.get("companyId");
         if (StringUtil.isNullOrEmpty(companyId)) {
@@ -265,6 +266,20 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         for (MyTaskDTO dto : data) {
             convertMyTask(dto, null, dto.getCompanyId());
         }
+    }
+
+
+    /**
+     * 方法描述：根据参数查询我的任务（companyId,companyUserId)
+     * 作者：MaoSF
+     * 日期：2016/12/1
+     */
+    @Override
+    public List<MyTaskEntity> getMyTaskByParam(Map<String, Object> param) throws Exception {
+        if (param.get("status") == null) {//如果没有给status，则默认查询未处理的数据
+            param.put("status", "0");
+        }
+        return this.myTaskDao.getMyTaskByParam(param);
     }
 
     /**

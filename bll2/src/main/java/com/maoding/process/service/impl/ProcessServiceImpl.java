@@ -5,22 +5,30 @@ import com.maoding.activiti.service.WorkflowService;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.constant.ProcessTypeConst;
+import com.maoding.core.constant.ProjectCostConst;
 import com.maoding.core.util.ObjectUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
 import com.maoding.core.util.TraceUtils;
+import com.maoding.financial.dto.AuditDTO;
+import com.maoding.financial.dto.AuditEditDTO;
 import com.maoding.financial.dto.SaveExpMainDTO;
 import com.maoding.financial.entity.ExpMainEntity;
 import com.maoding.financial.service.ExpAuditService;
 import com.maoding.financial.service.ExpMainService;
 import com.maoding.org.dao.CompanyUserDao;
+import com.maoding.org.dto.CompanyUserAppDTO;
 import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.process.dao.ProcessInstanceRelationDao;
 import com.maoding.process.dao.ProcessTypeDao;
 import com.maoding.process.dto.ActivitiDTO;
+import com.maoding.process.dto.TaskDTO;
+import com.maoding.process.dto.UserTaskNodeDTO;
 import com.maoding.process.entity.ProcessInstanceRelationEntity;
 import com.maoding.process.entity.ProcessTypeEntity;
 import com.maoding.process.service.ProcessService;
+import com.maoding.projectcost.dto.ProjectCostPointDetailDTO;
+import com.maoding.projectcost.service.ProjectCostService;
 import com.maoding.user.service.UserAttachService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,6 +68,9 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
     @Autowired
     private WorkflowService workflowService;
+
+    @Autowired
+    private ProjectCostService projectCostService;
 
     private static final String auditIdKey = "auditId";
 
@@ -318,16 +329,30 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
         //没有任务，说明流程已经结束
         if(isPass && CollectionUtils.isEmpty(taskList)){
-            ExpMainEntity exp = new ExpMainEntity();
+            ExpMainEntity exp = this.expMainService.selectById(businessKey);
             exp.setId(businessKey);
             exp.setApproveStatus("1");//审批通过的状态
             this.expMainService.updateById(exp);
+            if(exp.getType()==5){
+                //推送任务
+                ProjectCostPointDetailDTO projectCostPointDetailDTO = new ProjectCostPointDetailDTO();
+                projectCostPointDetailDTO.setMainId(businessKey);
+                projectCostPointDetailDTO.setFeeStatus(ProjectCostConst.FEE_STATUS_APPROVE);
+                projectCostService.completeProjectFeeApply(projectCostPointDetailDTO);
+            }
         }
         if(!isPass){
-            ExpMainEntity exp = new ExpMainEntity();
+            ExpMainEntity exp = this.expMainService.selectById(businessKey);
             exp.setId(businessKey);
             exp.setApproveStatus("2");//退回的状态
             this.expMainService.updateById(exp);
+            if(exp.getType()==5){
+                //推送任务
+                ProjectCostPointDetailDTO projectCostPointDetailDTO = new ProjectCostPointDetailDTO();
+                projectCostPointDetailDTO.setMainId(businessKey);
+                projectCostPointDetailDTO.setFeeStatus(ProjectCostConst.FEE_STATUS_NOT_APPROVE);
+                projectCostService.completeProjectFeeApply(projectCostPointDetailDTO);
+            }
         }
     }
 
@@ -409,159 +434,229 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         });
     }
 
-//    /**
-//     * 签收任务
-//     */
-//    @Override
-//    public void claimTask(TaskDTO dto) throws Exception {
-//        WorkActionDTO actionDTO = new WorkActionDTO();
-//        actionDTO.setCompanyUserId(dto.getCompanyUserId());
-//        actionDTO.setId(dto.getTaskId());
-//        workflowService.claimWorkTask(actionDTO);
-//
-//    }
+    /**
+     * 签收任务
+     */
+    @Override
+    public void claimTask(TaskDTO dto) throws Exception {
+        WorkActionDTO actionDTO = new WorkActionDTO();
+        actionDTO.setCompanyUserId(dto.getCompanyUserId());
+        actionDTO.setId(dto.getTaskId());
+        workflowService.claimWorkTask(actionDTO);
 
-//    /**
-//     * 完成任务
-//     */
-//    @Override
-//    public void completeTask(TaskDTO dto) throws Exception {
-//      //  claimTask(dto);
-//        Map<String, Object> variable =  workflowService.getTaskVariables(dto.getTaskId());
-//        //处理当前任务 对应 myTask 表中的任务 先获取，再处理，myTask表中的id保存在activiti对应的任务的variable对应的myTaskId中
-//        if(variable.containsKey(auditIdKey) && !StringUtil.isNullOrEmpty(auditIdKey)){
-//            SaveExpMainDTO saveExpMain = new SaveExpMainDTO();
-//            saveExpMain.setId(dto.getBusinessKey());
-//            saveExpMain.setCompanyUserId(dto.getCompanyUserId());
-//            saveExpMain.setVersionNum(dto.getVersionNum());
-//            expAuditService.completeAudit(saveExpMain);
-//        }
-//        //以便在我的任务列表中，能获取到activiti中的任务。
-//        WorkActionDTO workAction = new WorkActionDTO();
-//        workAction.setId(dto.getTaskId());
-//        workAction.setResultMap(dto.getVariables());
-//        workflowService.completeWorkTask(workAction);
-//        //保存我的任务（当前任务完成，如果下一个节点不是结束节点，系统会自动为下一个节点产生一个任务，系统需要保存一条相应的审核记录中）
-//        this.saveAudit(dto.getBusinessKey(),dto,false);
-//
-//    }
+    }
+
+    /**
+     * 完成任务
+     */
+    @Override
+    public void completeTask(TaskDTO dto) throws Exception {
+      //  claimTask(dto);
+        Map<String, Object> variable =  workflowService.getTaskVariables(dto.getTaskId());
+        //处理当前任务 对应 myTask 表中的任务 先获取，再处理，myTask表中的id保存在activiti对应的任务的variable对应的myTaskId中
+        if(variable.containsKey(auditIdKey) && !StringUtil.isNullOrEmpty(auditIdKey)){
+            SaveExpMainDTO saveExpMain = new SaveExpMainDTO();
+            saveExpMain.setId(dto.getBusinessKey());
+            saveExpMain.setCompanyUserId(dto.getCompanyUserId());
+            saveExpMain.setVersionNum(dto.getVersionNum());
+            expAuditService.completeAudit(saveExpMain);
+        }
+        //以便在我的任务列表中，能获取到activiti中的任务。
+        WorkActionDTO workAction = new WorkActionDTO();
+        workAction.setId(dto.getTaskId());
+        workAction.setResultMap(dto.getVariables());
+        workflowService.completeWorkTask(workAction);
+        //保存我的任务（当前任务完成，如果下一个节点不是结束节点，系统会自动为下一个节点产生一个任务，系统需要保存一条相应的审核记录中）
+        this.saveAudit(dto.getBusinessKey(),dto,false);
+
+    }
 
 
-//    /**
-//     * 完成任务
-//     */
-//    @Override
-//    public void completeTask2(TaskDTO dto) throws Exception {
-//        //  claimTask(dto);
-//
-//        List<FlowTaskDTO> list = workflowService.listWorkTaskVariableValueEquals(auditIdKey,dto.getId());
-//        for(FlowTaskDTO task:list){
-//            //查询当前流程是否是自由流程
-//            String processKey = workflowService.getProcessKeyByTaskId(task.getId());
-//            WorkActionDTO workAction = new WorkActionDTO();
-//            workAction.setId(task.getId());
-//            //如果是自由流程，如果前端没有传递审批人，则直接结束流程
-//            if(ProcessTypeConst.PROCESS_TYPE_FREE.equals(processKey) && StringUtil.isNullOrEmpty(dto.getNextCompanyUserId())){
-//                workAction.setIsPass(ProcessTypeConst.NOT_PASS);
-//            }else if(StringUtil.isNullOrEmpty(dto.getApproveStatus()) || ProcessTypeConst.PASS.equals(dto.getApproveStatus())){
-//                workAction.setIsPass(ProcessTypeConst.PASS);
-//            }else {
-//                workAction.setIsPass(ProcessTypeConst.NOT_PASS);
-//            }
-//            dto.getVariables().put("approveUser",dto.getNextCompanyUserId());
-//            workAction.setResultMap(dto.getVariables());
-//            workAction.setCompanyUserId(dto.getCurrentCompanyUserId());
-//            if(task.getAssignee()==null || task.getAssignee().getId()==null){
-//                workAction.getResultMap().put("isNotSign","1");
-//            }
-//            workflowService.completeWorkTask(workAction);
-//            //保存我的任务（当前任务完成，如果下一个节点不是结束节点，系统会自动为下一个节点产生一个任务，系统需要保存一条相应的审核记录中）
-//            this.saveAudit(dto.getBusinessKey(),dto, ProcessTypeConst.PASS.equals(workAction.getIsPass()));
-//        }
-//    }
+    /**
+     * 完成任务
+     */
+    @Override
+    public void completeTask2(TaskDTO dto) throws Exception {
+        //  claimTask(dto);
 
-//    /**
-//     *
-//     * @param dto:mainId:审批主记录的id
-//     * @param dto:targetType 审批类型
-//     * @return 返回到前端的标识，1：代表是自由流程，需要前端传递审批人 0：代表不是自由流程，不需要前端传递审批人
-//     */
-//    @Override
-//    public  Map<String,Object>  getCurrentProcess(AuditEditDTO dto) {
-//        String processDefineId = null;
-//        Map<String,Object> result = new HashMap<>();
-//        result.put("processFlag",1);//返回到前端的标识，1：代表是自由流程，需要前端传递审批人
-//        result.put("conditionList",new ArrayList<>());//首先默认返回个空数组
-//        result.put("processType", ProcessTypeConst.TYPE_FREE);
-//        if(StringUtil.isNullOrEmpty(dto.getMainId())){
-//            ProcessTypeEntity processType = this.processTypeDao.getCurrentProcessType(dto.getAppOrgId(),dto.getAuditType());
-//            if(!(processType==null || ProcessTypeConst.TYPE_FREE == processType.getType())){
-//                processDefineId = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getAppOrgId()));
-//            }
-//        }else {
-//            ProcessInstanceRelationEntity instanceRelation = processInstanceRelationDao.getProcessInstanceRelation(dto.getMainId());
-//            if(instanceRelation!=null){
-//                processDefineId = workflowService.getProcessDefineIdByProcessInstanceId(instanceRelation.getProcessInstanceId());
-//            }
-//        }
-//        if(!StringUtil.isNullOrEmpty(processDefineId) && !processDefineId.contains(ProcessTypeConst.PROCESS_TYPE_FREE)){
-//            List<UserTaskNodeDTO> userList = new ArrayList<>();
-//            ProcessDetailPrepareDTO detailPrepareDTO = new ProcessDetailPrepareDTO();
-//            detailPrepareDTO.setSrcProcessDefineId(processDefineId);
-//            List<UserTaskDTO> userTaskList = this.workflowService.listFlowTaskUser(detailPrepareDTO);
-//            //todo 重新封装
-//            userList = this.getUserList(userTaskList);
-//            result.put("processFlag",0);//代表不是自由流程，不需要前端传递审批人
-//            result.put("conditionList",userList);
-//            String key = processDefineId.split(":")[0];
-//            result.put("processType",key.substring(key.lastIndexOf("_")+1));
-//        }
-//        return result;
-//    }
-//
-//    @Override
-//    public List<UserTaskNodeDTO> getUserListForAudit(AuditEditDTO dto) {
-//        List<UserTaskNodeDTO> userList = new ArrayList<>();
-//        String processDefineId = null;
-//        if(StringUtil.isNullOrEmpty(dto.getMainId())){
-//            ProcessTypeEntity processType = this.processTypeDao.getCurrentProcessType(dto.getAppOrgId(),dto.getAuditType());
-//            if(processType==null || ProcessTypeConst.TYPE_FREE == processType.getType()){
-//                return userList;
-//            }else {
-//                processDefineId = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getAppOrgId()));
-//            }
-//        }else {
-//            ProcessInstanceRelationEntity instanceRelation = processInstanceRelationDao.getProcessInstanceRelation(dto.getMainId());
-//            if(instanceRelation!=null){
-//                processDefineId = workflowService.getProcessDefineIdByProcessInstanceId(instanceRelation.getProcessInstanceId());
-//            }
-//        }
-//        if(!StringUtil.isNullOrEmpty(processDefineId) && !processDefineId.equals(ProcessTypeConst.PROCESS_TYPE_FREE)){
-//            ProcessDetailPrepareDTO detailPrepareDTO = new ProcessDetailPrepareDTO();
-//            detailPrepareDTO.setSrcProcessDefineId(processDefineId);
-//            List<UserTaskDTO> userTaskList = this.workflowService.listFlowTaskUser(detailPrepareDTO);
-//            //todo 重新封装
-//            userList = this.getUserList(userTaskList);
-//        }
-//        return userList;
-//    }
-//
-//
-//    /**
-//     * 重新组织数据，根据id，把用户的信息获取，返回到前端
-//     */
-//    private List<UserTaskNodeDTO> getUserList(List<UserTaskDTO> userTaskList){
-//        List<UserTaskNodeDTO> list = new ArrayList<>();
-//        userTaskList.stream().forEach(u->{
-//            UserTaskNodeDTO taskNode = new UserTaskNodeDTO();
-//            taskNode.setMax(u.getMax());
-//            taskNode.setMin(u.getMin()==null?"0":u.getMin());
-//            u.getAssignList().stream().forEach(assign->{
-//                taskNode.getUserList().add(companyUserDao.getCompanyUserDataById(assign));
-//            });
-//            list.add(taskNode);
-//        });
-//        return list;
-//    }
+        List<FlowTaskDTO> list = workflowService.listWorkTaskVariableValueEquals(auditIdKey,dto.getId());
+        for(FlowTaskDTO task:list){
+            //查询当前流程是否是自由流程
+            String processKey = workflowService.getProcessKeyByTaskId(task.getId());
+            WorkActionDTO workAction = new WorkActionDTO();
+            workAction.setId(task.getId());
+            //如果是自由流程，如果前端没有传递审批人，则直接结束流程
+            if(ProcessTypeConst.PROCESS_TYPE_FREE.equals(processKey) && StringUtil.isNullOrEmpty(dto.getNextCompanyUserId())){
+                workAction.setIsPass(ProcessTypeConst.NOT_PASS);
+            }else if(StringUtil.isNullOrEmpty(dto.getApproveStatus()) || ProcessTypeConst.PASS.equals(dto.getApproveStatus())){
+                workAction.setIsPass(ProcessTypeConst.PASS);
+            }else {
+                workAction.setIsPass(ProcessTypeConst.NOT_PASS);
+            }
+            dto.getVariables().put("approveUser",dto.getNextCompanyUserId());
+            workAction.setResultMap(dto.getVariables());
+            workAction.setCompanyUserId(dto.getCurrentCompanyUserId());
+            if(task.getAssigneeUser()==null || task.getAssigneeUser().getId()==null){
+                workAction.getResultMap().put("isNotSign","1");
+            }
+            workflowService.completeWorkTask(workAction);
+            //保存我的任务（当前任务完成，如果下一个节点不是结束节点，系统会自动为下一个节点产生一个任务，系统需要保存一条相应的审核记录中）
+            this.saveAudit(dto.getBusinessKey(),dto, ProcessTypeConst.PASS.equals(workAction.getIsPass()));
+        }
+    }
+
+    /**
+     *
+     * @param dto:mainId:审批主记录的id
+     * @param dto:targetType 审批类型
+     * @return 返回到前端的标识，1：代表是自由流程，需要前端传递审批人 0：代表不是自由流程，不需要前端传递审批人
+     */
+    @Override
+    public  Map<String,Object>  getCurrentProcess(AuditEditDTO dto) {
+        String processDefineId = null;
+        Map<String,Object> result = new HashMap<>();
+        result.put("processFlag",1);//返回到前端的标识，1：代表是自由流程，需要前端传递审批人
+        result.put("conditionList",new ArrayList<>());//首先默认返回个空数组
+        result.put("processType", ProcessTypeConst.TYPE_FREE);
+        if(StringUtil.isNullOrEmpty(dto.getMainId())){
+            ProcessTypeEntity processType = this.processTypeDao.getCurrentProcessType(dto.getAppOrgId(),dto.getAuditType());
+            if(!(processType==null || ProcessTypeConst.TYPE_FREE == processType.getType())){
+                processDefineId = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getAppOrgId()));
+            }
+        }else {
+            ProcessInstanceRelationEntity instanceRelation = processInstanceRelationDao.getProcessInstanceRelation(dto.getMainId());
+            if(instanceRelation!=null){
+                processDefineId = workflowService.getProcessDefineIdByProcessInstanceId(instanceRelation.getProcessInstanceId());
+            }
+        }
+        if(!StringUtil.isNullOrEmpty(processDefineId) && !processDefineId.contains(ProcessTypeConst.PROCESS_TYPE_FREE)){
+            List<UserTaskNodeDTO> userList = new ArrayList<>();
+            ProcessDetailPrepareDTO detailPrepareDTO = new ProcessDetailPrepareDTO();
+            detailPrepareDTO.setSrcProcessDefineId(processDefineId);
+            List<UserTaskDTO> userTaskList = this.workflowService.listFlowTaskUser(detailPrepareDTO);
+            //todo 重新封装
+            userList = this.getUserList(userTaskList);
+            result.put("processFlag",0);//代表不是自由流程，不需要前端传递审批人
+            result.put("conditionList",userList);
+            String key = processDefineId.split(":")[0];
+            result.put("processType",key.substring(key.lastIndexOf("_")+1));
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String,Object> getCurrentTaskUser(AuditEditDTO dto, List<AuditDTO> auditList, String value) throws Exception{
+        Map<String,Object>  result = getCurrentProcess(dto);
+        String processType = result.get("processType").toString();
+        if("0".equals(result.get("processFlag")) && !StringUtil.isNullOrEmpty(value)){
+            List<UserTaskNodeDTO> taskList = (List<UserTaskNodeDTO>)result.get("conditionList");
+            List<CompanyUserAppDTO> userList = this.getUserList(taskList,value,processType);
+            int index = 0;
+            if(!CollectionUtils.isEmpty(auditList)){//理论上是不会为空的
+                index = auditList.size()-1;
+            }else {
+                auditList = new ArrayList<>();
+            }
+            for(int i = index;i<userList.size();i++){
+                AuditDTO audit = new AuditDTO();
+                BaseDTO.copyFields(userList.get(i),audit);
+                audit.setApproveStatus("0");//待审批状态
+                auditList.add(audit);
+            }
+        }
+        return result;
+    }
+
+
+   private List<CompanyUserAppDTO> getUserList(List<UserTaskNodeDTO> taskList,String value,String processType){
+       if(!CollectionUtils.isEmpty(taskList)) {
+           if(ProcessTypeConst.TYPE_FIXED== Integer.parseInt(processType)){//固定流程的情况下
+               return taskList.get(0).getUserList();
+           }else {//是条件流程的情况下
+               for(UserTaskNodeDTO t:taskList){
+                   if(isCurrentBrunchProcess(t,value)){
+                       return t.getUserList();
+                   }
+               }
+           }
+       }
+       return null;
+   }
+
+   private boolean isCurrentBrunchProcess(UserTaskNodeDTO t,String value){
+       double v = Double.parseDouble(value);
+       double max = StringUtil.isNullOrEmpty(t.getMax())?-1:Double.parseDouble(t.getMax());
+       double min = StringUtil.isNullOrEmpty(t.getMin())?0:Double.parseDouble(t.getMin());
+       if (max == -1) {
+           //这里处理最大的值的情况下
+           if (v >= min) {
+               return true;
+           }
+       } else {
+           if (v >= min && v < max) {
+               return true;
+           }
+       }
+       return false;
+   }
+
+    @Override
+    public List<UserTaskNodeDTO> getUserListForAudit(AuditEditDTO dto) {
+        List<UserTaskNodeDTO> userList = new ArrayList<>();
+        String processDefineId = null;
+        if(StringUtil.isNullOrEmpty(dto.getMainId())){
+            ProcessTypeEntity processType = this.processTypeDao.getCurrentProcessType(dto.getAppOrgId(),dto.getAuditType());
+            if(processType==null || ProcessTypeConst.TYPE_FREE == processType.getType()){
+                return userList;
+            }else {
+                processDefineId = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getAppOrgId()));
+            }
+        }else {
+            ProcessInstanceRelationEntity instanceRelation = processInstanceRelationDao.getProcessInstanceRelation(dto.getMainId());
+            if(instanceRelation!=null){
+                processDefineId = workflowService.getProcessDefineIdByProcessInstanceId(instanceRelation.getProcessInstanceId());
+            }
+        }
+        if(!StringUtil.isNullOrEmpty(processDefineId) && !processDefineId.equals(ProcessTypeConst.PROCESS_TYPE_FREE)){
+            ProcessDetailPrepareDTO detailPrepareDTO = new ProcessDetailPrepareDTO();
+            detailPrepareDTO.setSrcProcessDefineId(processDefineId);
+            List<UserTaskDTO> userTaskList = this.workflowService.listFlowTaskUser(detailPrepareDTO);
+            //todo 重新封装
+            userList = this.getUserList(userTaskList);
+        }
+        return userList;
+    }
+
+    @Override
+    public int suspendProcess(SaveExpMainDTO dto) {
+        //查询流程实例与审核单的关联关系
+        ProcessInstanceRelationEntity instanceRelation = processInstanceRelationDao.getProcessInstanceRelation(dto.getId());
+        if(instanceRelation!=null){
+            workflowService.suspendProcessInstanceById(instanceRelation.getProcessInstanceId());
+        }
+        //对报审核单据进行状态设置
+        ExpMainEntity entity = new ExpMainEntity();
+        entity.setId(dto.getId());
+        entity.setApproveStatus(ProjectCostConst.FEE_STATUS_REPEAL.toString());
+        return this.expMainService.updateById(entity);
+    }
+
+
+    /**
+     * 重新组织数据，根据id，把用户的信息获取，返回到前端
+     */
+    private List<UserTaskNodeDTO> getUserList(List<UserTaskDTO> userTaskList){
+        List<UserTaskNodeDTO> list = new ArrayList<>();
+        userTaskList.stream().forEach(u->{
+            UserTaskNodeDTO taskNode = new UserTaskNodeDTO();
+            taskNode.setMax(u.getMax());
+            taskNode.setMin(u.getMin()==null?"0":u.getMin());
+            u.getAssignList().stream().forEach(assign->{
+                taskNode.getUserList().add(companyUserDao.getCompanyUserDataById(assign));
+            });
+            list.add(taskNode);
+        });
+        return list;
+    }
 
 }

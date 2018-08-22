@@ -192,10 +192,16 @@ public interface ExpMainService extends BaseService<ExpMainEntity>{
      * */
     Integer getLeaveDetailCount(LeaveDetailQueryDTO queryDTO);
 
+    void saveCopy(List<String> ccCompanyUserList,String sendCompanyUserId,String targetId,String operateRecordId) throws Exception;
     /**
      * 请假任务详情
      * */
-    Map<String, Object> getLeaveDetail(LeaveDetailQueryDTO queryDTO);
+    Map<String, Object> getLeaveDetail(LeaveDetailQueryDTO queryDTO) throws Exception;
 
 
+    /**
+     * 根据付款申请的id获取审核信息
+     * @param relationId(发起付款申请的id)
+     */
+    Map<String,Object> getAuditInfoByRelationId(String relationId,String companyUserId) throws Exception;
 }

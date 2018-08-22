@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="GetLeaveMapper">
+    <resultMap id="BaseResultMap" type="com.maoding.financial.dto.LeaveDTO">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="company_user_id" property="companyUserId" jdbcType="VARCHAR"/>
+        <result column="account_id" property="accountId" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="approve_status" property="approveStatus" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="audit_person" property="auditPerson" jdbcType="VARCHAR"/>
+        <result column="approve_date" property="approveDate" jdbcType="VARCHAR"/>
+        <result column="leave_type" property="leaveType" jdbcType="INTEGER"/>
+        <result column="version_num" property="versionNum" jdbcType="INTEGER"/>
+        <result column="exp_flag" property="expFlag" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="submit_time" property="submitTime" jdbcType="VARCHAR" />
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+        <result column="exp_date" property="expDate" jdbcType="DATE" />
+        <result column="leave_time" property="leaveTime" jdbcType="VARCHAR"/>
+        <result column="project_id" property="projectId" jdbcType="VARCHAR"/>
+        <result column="project_name" property="projectName" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getLeaveById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT a.id,a.company_user_id,a.remark,a.approve_status,DATE_FORMAT(a.create_date,'%Y/%m/%d %H:%i') as submit_time,a.exp_date,
+        a.version_num,a.exp_flag,a.type,
+        b.project_id,b.address,b.start_time,b.end_time,b.leave_time,b.leave_type,
+        c.user_name,c.user_id as account_id,d.project_name
+        from maoding_web_exp_main a
+        INNER JOIN maoding_web_leave_detail b on a.id = b.main_id
+        INNER JOIN maoding_web_company_user c on a.company_user_id = c.id
+        LEFT JOIN maoding_web_project d on b.project_id = d.id
+        where  a.id = #{id}
+    </select>
+
+    <select id="listLeave" resultType="com.maoding.financial.dto.LeaveSimpleDTO" parameterType="com.maoding.financial.dto.QueryLeaveDTO">
+        SELECT exp_main.id,exp_main.company_user_id,exp_main.remark,exp_main.approve_status,DATE_FORMAT(exp_main.create_date,'%Y/%m/%d %H:%i') as submit_time,exp_main.exp_date,
+        exp_main.version_num,exp_main.exp_flag,exp_main.type,
+        leave_detail.address,leave_detail.start_time,leave_detail.end_time,leave_detail.leave_time,leave_detail.leave_type,
+        company_user.user_name,company_user.user_id as account_id,project.project_name
+        from maoding_web_exp_main exp_main
+        INNER JOIN maoding_web_leave_detail leave_detail on exp_main.id = leave_detail.main_id
+        INNER JOIN maoding_web_company_user company_user on exp_main.company_user_id = company_user.id
+        LEFT JOIN maoding_web_project project on leave_detail.project_id = project.id
+        <where>
+            <if test="expId != null">
+                and find_in_set(exp_main.id,#{expId})
+            </if>
+            <if test="minLeaveEndTime != null">
+                and leave_detail.end_time >= #{minLeaveEndTime}
+            </if>
+            <if test="approveStatus != null">
+                and find_in_set(exp_main.approve_status,#{approveStatus})
+            </if>
+            <if test="companyUserId != null">
+                and find_in_set(exp_main.company_user_id,#{companyUserId})
+            </if>
+            <if test="expType != null">
+                and find_in_set(exp_main.type,#{expType})
+            </if>
+            <if test="leaveType != null">
+                and find_in_set(leave_detail.leave_type,#{leaveType})
+            </if>
+        </where>
+    </select>
+
+
+</mapper>
