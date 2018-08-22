@@ -100,10 +100,10 @@
                 AND relation.to_company_id = #{receivableId}
             </if>
             <if test="fromCompanyName!=null">
-                AND if(bill.pay_type=2,tocompany.company_name ,if(bill.fee_type = 1,bill.payer_name,fcompany.company_name )) = #{fromCompanyName}
+                AND ifnull(fcompany.company_name,payer_name) = #{fromCompanyName}
             </if>
             <if test="toCompanyName!=null">
-                AND tocompany.company_name = #{toCompanyName}
+                AND if(bill.fee_type IN (5, 6),'--',ifnull(tocompany.company_name,payee_name)) = #{toCompanyName}
             </if>
             <if test="associatedOrg!=null">
                 AND if(bill.pay_type=1,bill.payer_name,bill.payee_name) = #{associatedOrg}
