@@ -81,6 +81,17 @@ public class InvoiceDTO extends CoreDTO {
      */
     private String invoiceNo;
 
+    /** 个人任务编号 **/
+    private String myTaskId;
+
+    public String getMyTaskId() {
+        return myTaskId;
+    }
+
+    public void setMyTaskId(String myTaskId) {
+        this.myTaskId = myTaskId;
+    }
+
     public Date getApplyDate() {
         return applyDate;
     }

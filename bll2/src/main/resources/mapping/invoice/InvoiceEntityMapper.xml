@@ -194,6 +194,7 @@
     <result column="project_id" property="projectId" jdbcType="VARCHAR"/>
     <result column="invoice_type" property="invoiceType" jdbcType="INTEGER"/>
     <result column="invoice_no" property="invoiceNo" jdbcType="VARCHAR"/>
+    <result column="my_task_id" property="myTaskId" jdbcType="VARCHAR"/>
   </resultMap>
 
   <select id="listInvoice" resultMap="InvoiceMap" parameterType="com.maoding.invoice.dto.InvoiceQueryDTO">
@@ -204,6 +205,7 @@
           company_user.user_name as company_user_name,
           project_list.id as project_id,
           project_list.project_name,
+          work_list.id as my_task_id,
           invoice_list.*
       from maoding_invoice invoice_list
           <!-- 金额、分类、备注 -->
@@ -231,6 +233,12 @@
           inner join maoding_web_project project_list on (
               project_list.pstatus = '0'
               and project_list.id = cost_detail.project_id
+          )
+          <!-- 关联个人任务 -->
+          inner join maoding_web_my_task work_list on (
+              work_list.status = '0'
+              and work_list.company_id = cost_detail.company_id
+              and work_list.target_id = cost_detail.id
           )
       where (invoice_list.deleted = 0)
           and (invoice_list.company_id = #{currentCompanyId})
