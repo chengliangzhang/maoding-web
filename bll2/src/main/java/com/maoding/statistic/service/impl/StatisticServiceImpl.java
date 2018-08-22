@@ -555,24 +555,20 @@ public class StatisticServiceImpl implements StatisticService {
     @Override
     public Map<String,List<Map<String, String>>> getRelationCompany(StatisticDetailQueryDTO dto) {
         Map<String,List<Map<String, String>>> result = new HashMap<>();
-        result.put("fromCompany",new ArrayList<>());
         result.put("toCompany",new ArrayList<>());
+        result.put("fromCompany",new ArrayList<>());
+        //添加收款组织
         dto.setPayType(1);
         List<Map<String, String>> toCompany =  statisticDao.getRelationCompany(dto);
         result.get("toCompany").addAll(toCompany);
+        //添加付款组织
         dto.setPayType(2);
         List<Map<String, String>> fromCompany =  statisticDao.getRelationCompany(dto);
         result.get("fromCompany").addAll(fromCompany);
-//        for(Map<String,String> company:list){
-//            if(!StringUtil.isNullOrEmpty(company.get("companyName"))){
-//                if(company.get("payType")!=null && "2".equals(company.get("payType"))){
-//                    result.get("fromCompany").add(company);
-//                }
-//                if(company.get("payType")!=null && "1".equals(company.get("payType"))){
-//                    result.get("toCompany").add(company);
-//                }
-//            }
-//        }
+        //添加关联组织
+//        dto.setPayType(3);
+//        List<Map<String, String>> relationCompany =  statisticDao.getRelationCompany(dto);
+//        result.get("relationCompany").addAll(relationCompany);
         return result;
     }
 

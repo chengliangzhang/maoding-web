@@ -380,13 +380,23 @@
             parameterType="com.maoding.statistic.dto.StatisticDetailQueryDTO">
         select * from (
             SELECT
-            if(a.fee_type=1 and #{payType}=2,a.payer_name,fcompany.company_name) as companyName,
-            if(a.fee_type=1 and #{payType}=2,replace(uuid(),'-',''),fcompany.id) as companyId
+            if(a.fee_type=1 and #{payType}=2,a.payer_name,company_list.company_name) as companyName,
+            if(a.fee_type=1 and #{payType}=2,replace(uuid(),'-',''),company_list.id) as companyId
             from maoding_web_company_bill a
             INNER JOIN maoding_web_company_bill_relation b on a.id = b.id
-            LEFT JOIN maoding_web_company fcompany ON<if test="payType==2"> if(a.pay_type=1,b.from_company_id,b.to_company_id) = fcompany.id </if>
-            <if test="payType==1">b.to_company_id = fcompany.id</if>
-            -- LEFT JOIN maoding_web_company tocompany ON b.to_company_id = tocompany.id
+            LEFT JOIN maoding_web_company company_list ON (
+                <choose>
+                    <when test="payType == 1">
+                        b.to_company_id = company_list.id
+                    </when>
+                    <when test="payType == 2">
+                        b.from_company_id = company_list.id
+                    </when>
+                    <otherwise>
+                        if(a.pay_type=1,b.from_company_id,b.to_company_id) = company_list.id
+                    </otherwise>
+                </choose>
+            )
             where a.deleted = 0
             <if test="statisticCompanyList!=null and statisticCompanyList.size() > 0">
                 and
