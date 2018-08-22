@@ -176,6 +176,7 @@ public class ProjectCostController extends BaseController {
     public AjaxMessage applyProjectCostPayFee(@RequestBody ProjectCostPointDetailDTO dto) throws Exception{
         dto.setCurrentCompanyId(this.currentCompanyId);
         dto.setAccountId(this.currentUserId);
+        dto.setCurrentCompanyUserId(this.currentCompanyUserId);
         return this.projectCostService.applyProjectCostPayFee(dto);
     }
 

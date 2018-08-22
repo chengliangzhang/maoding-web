@@ -492,4 +492,13 @@
     <select id="getTotalAmountByMainId" resultType="java.lang.String" parameterType="java.lang.String">
         select sum(exp_amount) as exp_sum_amount from maoding_web_exp_detail where main_id = #{mainId}
     </select>
+
+    <select id="getExpMainByRelationId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        SELECT a.*,b.exp_amount as exp_sum_amount
+        from maoding_web_exp_main a
+        INNER JOIN maoding_web_exp_detail b on a.id = b.main_id
+        INNER JOIN maoding_relation_record c on a.id = c.target_id
+        where c.relation_id = #{relationId} and a.approve_status !=4
+        limit 1
+    </select>
 </mapper>

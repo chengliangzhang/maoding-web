@@ -130,4 +130,9 @@ public interface ExpMainDao extends BaseDao<ExpMainEntity> {
 
     String getTotalAmountByMainId(String mainId);
 
+    /**
+     * 根据关联项获取审批单
+     */
+    ExpMainDTO getExpMainByRelationId(String relationId);
+
 }

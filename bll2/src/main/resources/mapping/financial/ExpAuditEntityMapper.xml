@@ -148,6 +148,24 @@
     inner join maoding_web_company company on (company.id = c.company_id)
     where b.id = #{id,jdbcType=VARCHAR} order by a.create_date
   </select>
+
+  <!--selectAuditByMainId 和 selectAuditDetailByMainId 一样，只是返回值换了类型 -->
+  <select id="selectAuditByMainId" resultType="com.maoding.financial.dto.AuditDTO"  parameterType="java.util.Map">
+    select a.id,c.user_id as accountId,c.user_id as userId,c.id as companyUserId,c.user_name as userName,c.email,
+    a.approve_date as approveDate,a.audit_message
+    ,a.approve_status as approveStatus,a.is_new as isNew,
+   --  d.oss_file_path AS fileFullPath,
+    account.cellphone,
+    e.company_name,e.id as companyId
+    from maoding_web_exp_main  b
+    INNER JOIN maoding_web_exp_audit a on a.main_id = b.id
+    INNER JOIN maoding_web_company_user c on a.audit_person = c.id
+    INNER JOIN maoding_web_account account on  account.id = c.user_id
+  --   LEFT JOIN (<include refid="UserAttachEntityMapper.getHeadImg" /> ) d on c.user_id = d.user_id and d.attach_type = 5
+    left join maoding_web_company e on (c.company_id = e.id)
+    where b.id = #{id,jdbcType=VARCHAR} order by a.create_date
+  </select>
+
   <select id="selectDetailByMainId"  parameterType="java.lang.String" resultMap="BaseResultMap">
     SELECT t.id, t.parent_id, t.is_new, t.main_id, t.approve_status, t.approve_date, user.user_name as audit_person, t.audit_message,
       t.create_date, t.create_by, t.update_date, t.update_by FROM maoding_web_exp_audit t

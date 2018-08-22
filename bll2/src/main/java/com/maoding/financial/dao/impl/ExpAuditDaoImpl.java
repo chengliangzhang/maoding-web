@@ -2,6 +2,7 @@ package com.maoding.financial.dao.impl;
 
 import com.maoding.core.base.dao.GenericDao;
 import com.maoding.financial.dao.ExpAuditDao;
+import com.maoding.financial.dto.AuditDTO;
 import com.maoding.financial.dto.ExpAuditDTO;
 import com.maoding.financial.dto.ExpMainDTO;
 import com.maoding.financial.entity.ExpAuditEntity;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 深圳市设计同道技术有限公司
@@ -95,6 +97,11 @@ public class ExpAuditDaoImpl extends GenericDao<ExpAuditEntity> implements ExpAu
      */
     public List<ExpMainDTO> selectAuditDetailByMainId(String id){
         return this.sqlSession.selectList("ExpAuditEntityMapper.selectAuditDetailByMainId", id);
+    }
+
+    @Override
+    public List<AuditDTO> selectAuditByMainId(Map<String, Object> map) {
+        return this.sqlSession.selectList("ExpAuditEntityMapper.selectAuditByMainId", map);
     }
 
     @Override

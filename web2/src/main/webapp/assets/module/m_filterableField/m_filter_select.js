@@ -24,9 +24,10 @@
         this._selectedArr = this.settings.selectedArr;
         this._selectedStr = '';
 
-        if(this._selectedArr!=null && this._selectedArr.length>0)
+        if(this._selectedArr!=null && this._selectedArr.length>0){
             this._selectedStr = this._selectedArr.join(',');　　//转为字符串
-
+            this._selectedStr += this._selectedStr+','
+        }
         this.init();
     }
 
@@ -51,7 +52,7 @@
             if(that.settings.selectArr!=null && that.settings.selectArr.length>0){
                 $.each(that.settings.selectArr, function (i, item) {
                     var isSelected = false;
-                    if(that._selectedStr.indexOf(item.id)>-1){
+                    if(that._selectedStr.indexOf(item.id+',')>-1){
                         isSelected = true;
                     }
                     selectList.push({id: item.id, name: item.name,isSelected:isSelected});

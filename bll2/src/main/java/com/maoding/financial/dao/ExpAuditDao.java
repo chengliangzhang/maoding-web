@@ -1,11 +1,13 @@
 package com.maoding.financial.dao;
 
 import com.maoding.core.base.dao.BaseDao;
+import com.maoding.financial.dto.AuditDTO;
 import com.maoding.financial.dto.ExpAuditDTO;
 import com.maoding.financial.dto.ExpMainDTO;
 import com.maoding.financial.entity.ExpAuditEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 深圳市设计同道技术有限公司
@@ -66,13 +68,18 @@ public interface ExpAuditDao extends BaseDao<ExpAuditEntity> {
     public int transAuditPer(ExpAuditEntity auditEntity);
 
     /**
-     * 方法描述：根据报销主表id查询审批激励
+     * 方法描述：根据报销主表id查询审批记录
      * 作   者：LY
      * 日   期：2016/8/2 15:35
      *
      * @param id 报销主表id
      */
     public List<ExpMainDTO> selectAuditDetailByMainId(String id);
+
+    /**
+     * 查询审批记录（和 selectAuditDetailByMainId 一样 ）
+     */
+    List<AuditDTO> selectAuditByMainId(Map<String, Object> map);
 
     public List<ExpAuditEntity> selectDetailByMainId(String mainId);
 

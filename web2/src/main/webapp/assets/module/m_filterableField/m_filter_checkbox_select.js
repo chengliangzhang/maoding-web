@@ -27,8 +27,10 @@
         this._selectedArr = this.settings.selectedArr;
         this._selectedStr = '';
 
-        if(this._selectedArr!=null && this._selectedArr.length>0)
+        if(this._selectedArr!=null && this._selectedArr.length>0){
             this._selectedStr = this._selectedArr.join(',');　　//转为字符串
+            this._selectedStr += this._selectedStr+','
+        }
 
         this.init();
     }
@@ -45,14 +47,14 @@
             if(that.settings.selectArr!=null && that.settings.selectArr.length>0){
                 $.each(that.settings.selectArr, function (i, item) {
                     var isSelected = false;
-                    if(that._selectedStr.indexOf(item.id)>-1){
+                    if(that._selectedStr.indexOf(item.id+',')>-1){
                         isSelected = true;
                     }
                     var childList = [];
                     if(item.childList!=null && item.childList.length>0){
                         $.each(item.childList,function (subI,subItem) {
                             var subSelected = false;
-                            if(that._selectedStr.indexOf(subItem.id)>-1){
+                            if(that._selectedStr.indexOf(subItem.id+',')>-1){
                                 subSelected = true;
                             }
                             childList.push({id:subItem.id,name:subItem.name,isSelected:subSelected});

@@ -641,7 +641,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
 
     @Override
     public AjaxMessage applyProjectCostPayFee(ProjectCostPointDetailDTO projectCostPointDetailDTO) throws Exception {
-        ActivitiDTO activitiDTO = new ActivitiDTO(null,null,projectCostPointDetailDTO.getCurrentCompanyId(),null,projectCostPointDetailDTO.getFee(), ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY);
+        ActivitiDTO activitiDTO = new ActivitiDTO(null,projectCostPointDetailDTO.getCurrentCompanyUserId(),projectCostPointDetailDTO.getCurrentCompanyId(),null,projectCostPointDetailDTO.getFee(), ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY);
         activitiDTO.getParam().put("approveUser",projectCostPointDetailDTO.getAuditPerson());
         if(processService.isNeedStartProcess(activitiDTO)){
             projectCostPointDetailDTO.setFeeStatus(ProjectCostConst.FEE_STATUS_APPROVE_ING);//申请中状态
@@ -960,7 +960,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         result.put("currentFeeOrgId",map.get("companyId"));
         result.put("startReceiveFlag",this.getStartReceiveFlag(map));//发起回款
         result.put("startPayFlag",this.getStartPayFlag(map,cost,isInnerCompany)); //发起付款申请（外部）
-        result.put("startPayFlagFroInner",this.getStartPayFlagForInner(map,cost,isInnerCompany));  //发起付款申请（内部）
+        result.put("startPayFlagForInner",this.getStartPayFlagForInner(map,cost,isInnerCompany));  //发起付款申请（内部）
         //查询是否是内部组织
         result.put("isInnerCompany",isInnerCompany);
         //获取附件

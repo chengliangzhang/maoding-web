@@ -161,4 +161,9 @@ public class ExpMainDaoImpl extends GenericDao<ExpMainEntity> implements ExpMain
     public String getTotalAmountByMainId(String mainId) {
         return this.sqlSession.selectOne("GetExpMainPageMapper.getTotalAmountByMainId", mainId);
     }
+
+    @Override
+    public ExpMainDTO getExpMainByRelationId(String relationId) {
+        return this.sqlSession.selectOne("GetExpMainPageMapper.getExpMainByRelationId", relationId);
+    }
 }
