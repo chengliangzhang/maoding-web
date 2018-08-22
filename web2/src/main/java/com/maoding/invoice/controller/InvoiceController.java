@@ -4,6 +4,7 @@ import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.util.ObjectUtils;
+import com.maoding.core.util.StringUtils;
 import com.maoding.invoice.dto.InvoiceDTO;
 import com.maoding.invoice.dto.InvoiceInfoDTO;
 import com.maoding.invoice.dto.InvoiceQueryDTO;
@@ -35,6 +36,10 @@ public class InvoiceController extends BaseController {
     @ResponseBody
     public AjaxMessage listInvoice(@RequestBody InvoiceQueryDTO query) throws Exception {
         updateCurrentUserInfo(query);
+        if (StringUtils.isEmpty(query.getCompanyId())){
+            query.setCompanyId(query.getCurrentCompanyId());
+        }
+
         if (ObjectUtils.isEmpty(query.getPageSize())){
             List<InvoiceDTO> list = invoiceService.listInvoice(query);
             return AjaxMessage.succeed(list);

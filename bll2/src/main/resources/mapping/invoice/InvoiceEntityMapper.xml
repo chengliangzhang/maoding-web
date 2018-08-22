@@ -243,7 +243,15 @@
               and work_list.target_id = cost_detail.id
           )
       where (invoice_list.deleted = 0)
-          and (invoice_list.company_id = #{currentCompanyId})
+          <if test="companyId != null">
+              and (invoice_list.company_id = #{companyId})
+          </if>
+          <if test="startTime != null">
+              and (ifnull(invoice_list.apply_date,invoice_list.create_date) >= #{startTime,jdbcType=TIMESTAMP})
+          </if>
+          <if test="endTime != null">
+              and (addDate(#{endTime,jdbcType=TIMESTAMP},1) > ifnull(invoice_list.apply_date,invoice_list.create_date))
+          </if>
       group by invoice_list.id
       order by invoice_list.apply_date desc
       <include refid="CommonMapper.limitSQL"/>
