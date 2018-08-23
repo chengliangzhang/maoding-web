@@ -4,6 +4,7 @@ import com.maoding.core.base.service.GenericService;
 import com.maoding.core.util.ObjectUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
+import com.maoding.core.util.TraceUtils;
 import com.maoding.project.dao.ProjectConditionDao;
 import com.maoding.project.dto.*;
 import com.maoding.project.entity.ProjectConditionEntity;
@@ -83,6 +84,9 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
      **/
     @Override
     public OptionalTitleSelectedDTO listOptionalTitle(TitleQueryDTO query) {
+        TraceUtils.check(query.getType() != null,log,"type不能为空");
+
+        //从数据库内读取所有的可选标题栏
         List<OptionalTitleGroupDTO> optionalTitleGroupList = projectConditionDao.listOptionalTitleGroup(query);
 
         //设置所有的被选中状态为"0"
