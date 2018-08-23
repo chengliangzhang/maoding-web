@@ -696,9 +696,7 @@ END;
 DROP PROCEDURE IF EXISTS `initConst`;
 CREATE PROCEDURE `initConst`()
   BEGIN
-    -- 常量分类
-    delete from md_list_const where classic_id = 0;
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,0,'常量分类',null);
+    -- 分类
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,1,'操作权限',null);
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,2,'合作类型',null);
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,3,'任务类型',null);
@@ -735,6 +733,80 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,36,'模板变量类型',null);
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,37,'模板内容定义','md_type_template_content_detail_const');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,38,'项目模板','md_type_template_const');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,39,'可选标题栏','md_type_optional_title');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,40,'可选标题栏群组','md_type_optional_title_group');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,41,'web可选标题栏类型','md_web_type_title_classic');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,42,'标题过滤器类型','md_type_filter');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,43,'列表字段类型','md_type_field');
+
+    -- -- -- -- --
+    delete from md_list_const where classic_id = 43;
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (43,0,'列表字段类型','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (43,1,'字符串','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (43,2,'日期','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (43,3,'金额-万元','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (43,4,'金额-元','');
+
+    -- -- -- -- --
+    delete from md_list_const where classic_id = 42;
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (42,0,'标题过滤器类型','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (42,1,'字符串','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (42,2,'单选列表','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (42,3,'多选列表','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (42,4,'日期','');
+
+    -- -- -- -- --
+    delete from md_list_const where classic_id = 41;
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (41,-1,'web可选标题栏类型','0.布尔标志:1-分组/不分组');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (41,0,'我的项目列表','1');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (41,1,'项目总览列表','1');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (41,2,'发票汇总列表','0');
+
+    -- -- -- -- --
+    delete from md_list_const where classic_id = 40;
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (40,0,'可选标题栏群组','1.web可选标题栏类型');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (40,1,'项目基本信息','0,1');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (40,2,'项目成员信息','0,1');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (40,3,'项目收入情况','0,1');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (40,4,'项目支出情况','0,1');
+
+    -- -- -- -- --
+    delete from md_list_const where classic_id = 39;
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,0,'可选标题栏：1.关键字;2.名称','1.布尔标志:1-可隐藏/不可隐藏,2.web可选标题栏类型;3.可选标题栏群组;4.过滤器类型;5.字段类型');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,1,'projectCreateDate;立项时间','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,2,'projectName;项目名称','1;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,3,'status;项目状态','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,4,'projectNo;项目编号','1;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,5,'partyA;甲方','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,6,'partyB;乙方','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,7,'signDate;合同签订','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,8,'projectType;项目类型','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,9,'createCompany;立项组织','1;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,10,'buildName;功能分类','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,11,'address;项目地点','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,12,'relationCompany;合作组织','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,13,'busPersonInCharge;经营负责人','0;2;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,14,'busPersonInChargeAssistant;经营助理','0;2;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,15,'designPersonInCharge;设计负责人','0;2;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,16,'designPersonInChargeAssistant;设计助理','0;2;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,17,'taskLeader;任务负责人','0;2;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,18,'designer;设计人员','0;2;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,19,'checker;校对人员','0;2;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,20,'auditor;审核人员','0;2;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,21,'contract;合同计划收款','0;3;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,22,'contractReal;合同到账信息','0;3;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,23,'technicalGain;技术审查费计划收款','0;3;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,24,'technicalGainReal;技术审查费到账金额','0;3;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,25,'cooperateGain;合作设计费计划收款','0;3;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,26,'cooperateGainReal;合作设计费到账金额','0;3;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,27,'otherGain;其他收入计划收款','0;3;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,28,'otherGainReal;其他收入到账金额','0;3;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,29,'technicalPay;技术审查费计划付款','0;4;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,30,'technicalPayReal;技术审查费付款金额','0;4;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,31,'cooperatePay;合作设计费计划付款','0;4;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,32,'cooperatePayReal;合作设计费付款金额','0;4;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,33,'otherPay;其他支出计划付款','0;4;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,34,'otherPayReal;其他支出付款金额','0;4;0,1;4;2');
 
     -- -- -- -- --
     delete from md_list_const where classic_id = 38;
@@ -1124,3 +1196,92 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (1,131,'finance_back_fee;确认到账日期',null);
   END;
 call initConst();
+
+-- 可选标题栏
+DROP PROCEDURE IF EXISTS `initConst`;
+CREATE PROCEDURE `initConst`()
+  BEGIN
+    -- -- 常量
+    delete from md_list_const where classic_id = 39;
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,0,'可选标题栏：1.关键字;2.名称','1.布尔标志:1-可隐藏/不可隐藏,2.web可选标题栏类型;3.可选标题栏群组;4.过滤器类型;5.字段类型');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,1,'projectCreateDate;立项时间','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,2,'projectName;项目名称','1;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,3,'status;项目状态','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,4,'projectNo;项目编号','1;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,5,'partyA;甲方','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,6,'partyB;乙方','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,7,'signDate;合同签订','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,8,'projectType;项目类型','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,9,'createCompany;立项组织','1;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,10,'buildName;功能分类','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,11,'address;项目地点','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,12,'relationCompany;合作组织','0;1;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,13,'busPersonInCharge;经营负责人','0;2;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,14,'busPersonInChargeAssistant;经营助理','0;2;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,15,'designPersonInCharge;设计负责人','0;2;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,16,'designPersonInChargeAssistant;设计助理','0;2;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,17,'taskLeader;任务负责人','0;2;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,18,'designer;设计人员','0;2;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,19,'checker;校对人员','0;2;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,20,'auditor;审核人员','0;2;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,21,'contract;合同计划收款','0;3;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,22,'contractReal;合同到账信息','0;3;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,23,'technicalGain;技术审查费计划收款','0;3;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,24,'technicalGainReal;技术审查费到账金额','0;3;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,25,'cooperateGain;合作设计费计划收款','0;3;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,26,'cooperateGainReal;合作设计费到账金额','0;3;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,27,'otherGain;其他收入计划收款','0;3;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,28,'otherGainReal;其他收入到账金额','0;3;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,29,'technicalPay;技术审查费计划付款','0;4;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,30,'technicalPayReal;技术审查费付款金额','0;4;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,31,'cooperatePay;合作设计费计划付款','0;4;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,32,'cooperatePayReal;合作设计费付款金额','0;4;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,33,'otherPay;其他支出计划付款','0;4;0,1;4;2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,34,'otherPayReal;其他支出付款金额','0;4;0,1;4;2');
+
+    -- -- 类型
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,39,'可选标题栏','md_type_optional_title');
+
+    -- 视图
+    CREATE OR REPLACE VIEW `md_type_optional_title` AS
+      select
+        option_title.code_id as id,
+        option_title.code_id as type_id,
+        option_title.title as type_title,
+        substring(option_title.title,
+                  1,
+                  char_length(substring_index(option_title.title,';',1)))
+          as type_code,
+        substring(option_title.title,
+                  char_length(substring_index(option_title.title,';',1))+2,
+                  char_length(substring_index(option_title.title,';',2)) - char_length(substring_index(option_title.title,';',1))-1)
+          as type_name,
+        option_title.extra as type_extra,
+        substring(option_title.extra,
+                  1,
+                  char_length(substring_index(option_title.extra,';',1)))
+          as type_attr,
+        substring(option_title.extra,1,1) as can_be_hide,
+        substring(option_title.extra,
+                  char_length(substring_index(option_title.extra,';',1))+2,
+                  char_length(substring_index(option_title.extra,';',2)) - char_length(substring_index(option_title.extra,';',1))-1)
+          as web_classic,
+        substring(option_title.extra,
+                  char_length(substring_index(option_title.extra,';',2))+2,
+                  char_length(substring_index(option_title.extra,';',3)) - char_length(substring_index(option_title.extra,';',2))-1)
+          as group_type,
+        substring(option_title.extra,
+                  char_length(substring_index(option_title.extra,';',3))+2,
+                  char_length(substring_index(option_title.extra,';',4)) - char_length(substring_index(option_title.extra,';',3))-1)
+          as filter_type,
+        substring(option_title.extra,
+                  char_length(substring_index(option_title.extra,';',4))+2,
+                  char_length(substring_index(option_title.extra,';',5)) - char_length(substring_index(option_title.extra,';',4))-1)
+          as field_type
+      from
+        md_list_const option_title
+      where
+        option_title.classic_id = 39;
+  END;
+call initConst();
+
