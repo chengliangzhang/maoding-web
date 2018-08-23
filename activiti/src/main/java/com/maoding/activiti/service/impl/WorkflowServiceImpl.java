@@ -82,6 +82,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         ProcessDefineDetailDTO processDefineDetail;
 
         //补充未填写字段
+        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),log,"!key不可以为空");
         //name字段
         if (StringUtils.isEmpty(prepareRequest.getName())){
             prepareRequest.setName(ProcessTypeConst.nameMap.get(prepareRequest.getKey()));
