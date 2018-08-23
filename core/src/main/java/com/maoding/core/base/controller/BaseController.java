@@ -268,8 +268,13 @@ public abstract class BaseController {
 			} else if(ex instanceof UnauthorizedException){
 				log.warn("权限校验未通过");
 				return ajaxResponseUnauthorizedException();
-			} else if(ex instanceof CustomException){
+			} else if(ex instanceof CustomException) {
 				return AjaxMessage.error(ex.getMessage());
+			} else if (ex instanceof HttpMessageNotReadableException){
+				log.error("无法读取输入参数异常:",ex);
+				return AjaxMessage.error("输入参数格式错误");
+			} else if(ex instanceof IllegalArgumentException) {
+				return AjaxMessage.error("参数错误:" + ex.getMessage());
 			} else{
 				log.info("其他情况");
 				if (ex != null){
