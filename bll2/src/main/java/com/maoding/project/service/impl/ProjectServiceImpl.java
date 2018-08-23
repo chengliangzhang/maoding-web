@@ -1659,7 +1659,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
 
         //查询被选中的显示列
         String columnCodes = "";
-        Map<String, Object> proCondition = getProConditionMap(param, query.getCompanyId(), query.getAccountId());
+        Map<String, Object> proCondition = getProConditionMap(param, query.getCurrentCompanyId(), query.getAccountId());
         List<ProjectConditionDTO> conditionDTOS = projectConditionService.selProjectConditionList(proCondition);
         if (0 < conditionDTOS.size()) {
             columnCodes = conditionDTOS.get(0).getCode();

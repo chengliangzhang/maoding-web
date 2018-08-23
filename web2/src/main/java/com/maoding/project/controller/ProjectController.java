@@ -619,6 +619,9 @@ public class ProjectController extends BaseController {
         condition.put("companyMainId", companyId);
 
         //如果没有传递操作者用户编号，添加默认操作者用户编号
+        if (StringUtils.isEmpty((String)param.get("currentCompanyId"))){
+            param.put("currentCompanyId",this.currentCompanyId);
+        }
         if (StringUtils.isEmpty((String)param.get("accountId"))){
             param.put("accountId",this.currentUserId);
         }
