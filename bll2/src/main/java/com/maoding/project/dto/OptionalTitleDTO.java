@@ -17,6 +17,17 @@ public class OptionalTitleDTO {
     /** 是否被选中 **/
     private String isSelected;
 
+    /** 是否可被隐藏:0-可被隐藏，1-不可被隐藏 **/
+    private String canBeHide;
+
+    public String getCanBeHide() {
+        return canBeHide;
+    }
+
+    public void setCanBeHide(String canBeHide) {
+        this.canBeHide = canBeHide;
+    }
+
     public OptionalTitleDTO(){}
     public OptionalTitleDTO(String code,String name){
         setCode(code);

@@ -82,7 +82,9 @@
         <id column="group_name" property="name"/>
         <collection property="optionalTitleList" ofType="com.maoding.project.dto.OptionalTitleDTO">
             <id column="code" property="code"/>
+            <result column="name" property="name"/>
             <result column="is_selected" property="isSelected"/>
+            <result column="can_be_hide" property="canBeHide"/>
         </collection>
     </resultMap>
 
