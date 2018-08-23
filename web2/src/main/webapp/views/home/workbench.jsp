@@ -25,12 +25,7 @@
 
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/icon/iconfont.min.css">
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/chosen/chosen.css">
-    <link rel="stylesheet" href="<%=rootPath %>/assets/css/shortcode_timeline2.min.css">
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/footable/footable.core.css">
-
-    <%--<link rel="stylesheet" href="<%=rootPath %>/assets/lib/kendoUI/styles/kendo.common.min.css">
-    <link rel="stylesheet" href="<%=rootPath %>/assets/lib/kendoUI/styles/kendo.common-material.min.css">
-    <link rel="stylesheet" href="<%=rootPath %>/assets/lib/kendoUI/styles/kendo.material.min.css">--%>
 
 </head>
 <body class="no-skin-config">
@@ -88,12 +83,6 @@
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/footable/footable.all.min.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/js/router.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/context-menu/context-menu.js"></script>
-
-<%--<script type="text/javascript" src="<%=rootPath %>/assets/lib/kendoUI/js/kendo.all.min.js"></script>
-<script type="text/javascript" src="<%=rootPath %>/assets/lib/kendoUI/js/cultures/kendo.culture.zh-CN.min.js"></script>
-<script type="text/javascript" src="<%=rootPath %>/assets/lib/kendoUI/js/messages/kendo.messages.zh-CN.min.js"></script>--%>
-
-
 
 
 

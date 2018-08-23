@@ -12,6 +12,9 @@ public class ProcessInstanceRelationEntity extends BaseEntity{
 
     private Integer deleted;
 
+    public ProcessInstanceRelationEntity(){
+
+    }
     public ProcessInstanceRelationEntity(String targetId,String processInstanceId,String targetType){
         this.initEntity();
         this.deleted = 0;

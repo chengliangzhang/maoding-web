@@ -3,12 +3,15 @@ package com.maoding.message.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.maoding.commonModule.dao.RelationRecordDao;
 import com.maoding.commonModule.dto.QueryCopyRecordDTO;
 import com.maoding.commonModule.entity.CopyRecordEntity;
+import com.maoding.commonModule.entity.RelationRecordEntity;
 import com.maoding.commonModule.service.CopyRecordService;
 import com.maoding.core.base.dto.BaseShowDTO;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.core.constant.ProjectCostConst;
 import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.BeanUtilsEx;
 import com.maoding.core.util.DateUtils;
@@ -21,8 +24,10 @@ import com.maoding.financial.dao.ExpMainDao;
 import com.maoding.financial.dto.ExpMainDTO;
 import com.maoding.financial.entity.ExpAuditEntity;
 import com.maoding.financial.entity.ExpMainEntity;
+import com.maoding.financial.service.ExpMainService;
 import com.maoding.hxIm.dto.ImSendMessageDTO;
 import com.maoding.hxIm.service.ImQueueProducer;
+import com.maoding.invoice.service.InvoiceService;
 import com.maoding.message.dao.MessageDao;
 import com.maoding.message.dto.*;
 import com.maoding.message.entity.MessageEntity;
@@ -37,9 +42,11 @@ import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.dao.ProjectProcessNodeDao;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.entity.ProjectProcessNodeEntity;
+import com.maoding.projectcost.dao.ProjectCostDao;
 import com.maoding.projectcost.dao.ProjectCostPaymentDetailDao;
 import com.maoding.projectcost.dao.ProjectCostPointDao;
 import com.maoding.projectcost.dao.ProjectCostPointDetailDao;
+import com.maoding.projectcost.entity.ProjectCostEntity;
 import com.maoding.projectcost.entity.ProjectCostPaymentDetailEntity;
 import com.maoding.projectcost.entity.ProjectCostPointDetailEntity;
 import com.maoding.projectcost.entity.ProjectCostPointEntity;
@@ -96,7 +103,7 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
     private CompanyUserDao companyUserDao;
 
     @Autowired
-    private ImQueueProducer imQueueProducer;
+    private InvoiceService invoiceService;
 
     @Autowired
     private ExpAuditDao expAuditDao;
@@ -113,6 +120,12 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
 
     @Autowired
     private ProjectMemberService projectMemberService;
+
+    @Autowired
+    private RelationRecordDao relationRecordDao;
+
+    @Autowired
+    private ProjectCostDao projectCostDao;
 
     @Autowired
     private ZInfoDAO zInfoDAO;
@@ -568,6 +581,24 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
                 para.put("expName", expMainDTO.getExpName());
                 para.put("expAmount", getExpAmount(expMainDTO));
                 break;
+            case SystemParameters.MESSAGE_TYPE_243: //"hi，?转交了?申请的“?”报销金额?元，请你审批，谢谢！"
+            case SystemParameters.MESSAGE_TYPE_244:
+            case SystemParameters.MESSAGE_TYPE_245:
+            case SystemParameters.MESSAGE_TYPE_246:
+                ProjectCostPointDetailEntity pointDetail = this.getPointDetailByMainId(targetId);
+                para.put("expUserName", getExpUserName(targetId));
+                para.put("projectName", getProjectName(pointDetail.getProjectId()));
+                para.put("expName", getExpName(pointDetail));
+                para.put("expAmount", getFee(pointDetail));
+                //查询审批原因
+                if(messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_245 ){
+                    ExpAuditEntity recallAudit = this.expAuditDao.selectLastRecallAudit(messageEntity.getTargetId());
+                    if(recallAudit!=null){
+                        para.put("reason",recallAudit.getAuditMessage());
+                    }
+                }
+                break;
+
             case SystemParameters.MESSAGE_TYPE_11: //"hi，?发起了“?：?”的技术审查费?万元，请确认付款金额，谢谢！"
             case SystemParameters.MESSAGE_TYPE_12: //"“? - 技术审查费 - ?” 金额：?万，已确认付款"
             case SystemParameters.MESSAGE_TYPE_13: //"“? - 技术审查费 - ?” 金额：?万，已确认到账"
@@ -577,10 +608,29 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
             case SystemParameters.MESSAGE_TYPE_17: //"hi，?发起了“?：?”的合同回款?万元，请你跟进并确认实际到帐金额和日期，谢谢！"
             case SystemParameters.MESSAGE_TYPE_31: //"hi，?发起了“?：?”的其他支出?万元，请你跟进并确认实际付款金额和日期，谢谢！"
             case SystemParameters.MESSAGE_TYPE_32: //"hi，?发起了“?：?”的其他收入?万元，请你跟进并确认实际到帐金额和日期，谢谢！"
+            case SystemParameters.MESSAGE_TYPE_100:
+            case SystemParameters.MESSAGE_TYPE_101:
+            case SystemParameters.MESSAGE_TYPE_102:
+            case SystemParameters.MESSAGE_TYPE_103:
+            case SystemParameters.MESSAGE_TYPE_110:
+            case SystemParameters.MESSAGE_TYPE_111:
+            case SystemParameters.MESSAGE_TYPE_112:
+            case SystemParameters.MESSAGE_TYPE_113:
+            case SystemParameters.MESSAGE_TYPE_114:
+            case SystemParameters.MESSAGE_TYPE_115:
+            case SystemParameters.MESSAGE_TYPE_116:
                 ProjectCostPointDetailEntity detail6 = projectCostPointDetailDao.selectById(targetId);
                 para.put("projectName", getProjectName(projectId));
                 para.put("feeDescription",getFeeDescription(detail6));
                 para.put("fee",  getFee(detail6));
+                if(messageEntity.getMessageType()>=100 && messageEntity.getMessageType()<104){
+                    para.put("toCompanyName", this.invoiceService.getInvoiceReceiveCompanyName(detail6.getInvoice()));
+                    //因为传递进来的统一是100，所以再次重新处理一下messageType
+                    setMessageType(detail6,messageEntity);
+                }
+                if(messageEntity.getMessageType()>SystemParameters.MESSAGE_TYPE_103){
+                    para.put("auditPersonName", this.getLastAuditPersonName(targetId,messageEntity));//最后审核人
+                }
                 break;
             case SystemParameters.MESSAGE_TYPE_18: //"hi，?确认了“?：?”的实际到金额为?万元，到账日期为?，谢谢！"
             case SystemParameters.MESSAGE_TYPE_23: //"hi，?确认了“?：?”的技术审查费付款金额为?万元，请你跟进并确认实际付款日期，谢谢！"
@@ -599,6 +649,7 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
                 para.put("fee", getPaymentFee(payment4));
                 para.put("paymentDate", getPaymentDate(payment4, messageEntity.getMessageType()));
                 break;
+
             case SystemParameters.MESSAGE_TYPE_35: //"“? - ?”的所有设计任务已完成"
                 para.put("projectName", getProjectName(projectId));
                 para.put("taskName", getTaskNameTree(targetId));
@@ -943,6 +994,23 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
         return StringUtil.getRealData(entity.getFee());
     }
 
+    private void setMessageType(ProjectCostPointDetailEntity entity,MessageEntity messageEntity) {
+        ProjectCostEntity cost = projectCostDao.getProjectCostByPointId(entity.getPointId());
+        Integer costType = Integer.parseInt(cost.getType());
+        if(costType==1){
+            messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_100);
+        }
+        if(costType==2){
+            messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_101);
+        }
+        if(costType==3){
+            messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_102);
+        }
+        if(costType==5){
+            messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_103);
+        }
+    }
+
     private String getPaymentFee(ProjectCostPaymentDetailEntity entity) {
         if (entity == null) return "";
         return StringUtil.getRealData(entity.getFee());
@@ -961,6 +1029,39 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
         return "";
     }
 
+    /***
+     * 在此处重新处理一下messageEntity.getMessageType()，因为在myTask 中传递进入的，都是以无申请的类型传递的
+     * 为了避免查询重复，所有再查询，如果有付款申请，则重新赋予messageType的值
+     */
+    private String getLastAuditPersonName(String targetId,MessageEntity messageEntity){
+        ExpMainDTO expMain = this.expMainDao.getExpMainByRelationId(targetId);
+        if(expMain!=null){
+            if(messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_111){
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_112);
+            }
+            if(messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_114){
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_115);
+            }
+            if(messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_31){
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_116);
+            }
+            ExpAuditEntity audit = expAuditDao.getLastAuditByMainId(expMain.getId());
+            if(audit!=null){
+                return this.companyUserDao.getUserName(audit.getAuditPerson());
+            }
+        }
+        return null;
+    }
+
+    private ProjectCostPointDetailEntity getPointDetailByMainId(String mainId){
+        ProjectCostPointDetailEntity pointDetail = new ProjectCostPointDetailEntity();
+        RelationRecordEntity relationRecord = this.relationRecordDao.getRelationRecodeByTargetId(mainId);
+        if(relationRecord!=null){
+            pointDetail = this.projectCostPointDetailDao.selectById(relationRecord.getRelationId());
+        }
+        return pointDetail;
+    }
+
     private String getExpUserName(String targetId) {
         ExpMainEntity em = expMainDao.selectById(targetId);
         if (em == null) return "";
@@ -975,6 +1076,15 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
     private String getExpName(ExpMainDTO entity) {
         if (entity == null) return "";
         return entity.getExpName();
+    }
+
+    private String getExpName(ProjectCostPointDetailEntity entity) {
+        if (entity == null) return "";
+        ProjectCostEntity cost = this.projectCostDao.getProjectCostByPointId(entity.getPointId());
+        if(cost!=null){
+            return ProjectCostConst.COST_TYPE_MAP.get(cost.getType()+"");
+        }
+        return "";
     }
 
     private String getExpAmount(ExpMainDTO entity) {

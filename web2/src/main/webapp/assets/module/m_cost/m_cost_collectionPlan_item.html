@@ -18,13 +18,21 @@
                         </span>
                     </div>
                     <div class="col-md-3">
-                        合同附件：
+                        <span class="pull-left">合同附件：</span>
                         {{if attachList!=null && attachList.length>0}}
                             {{each attachList as a}}
-                                <a href="{{a.fileFullPath}}" target="_blank">{{a.fileName}}</a>
+                                <span class="bg-v1-grey b-r-sm p-xxs m-r-xs f-s-12 pull-left" style="padding: 3px 5px;">
+                                    <a href="{{a.fileFullPath}}" target="_blank">{{a.fileName}}</a>
+                                    <a class="curp" href="javascript:void(0)" data-id="{{a.id}}" data-action="delAttach">
+                                        <i class="fa fa-times color-red"></i>
+                                    </a>
+                                </span>
                             {{/each}}
                         {{else}}
-                            <span>无</span>
+                            <span class="pull-left m-r-xs">暂无上传文件</span>
+                        {{/if}}
+                        {{if isManager==1 && operateCompanyId==currentCompanyId}}
+                        <a href="javascript:void(0)" id="filePicker" data-action="recordAttach" class="upload-icon pull-left" title="请上传PDF文件"></a>
                         {{/if}}
                     </div>
                     <div class="col-md-3">
@@ -121,7 +129,7 @@
                 </div>
             </td>
             <!-- 发票信息 -->
-            <td class="text-center">
+            <td class="text-center {{ p.pointDetailList!=null && p.pointDetailList[0] && (!_isNullOrBlank(p.pointDetailList[0].invoiceNo) || !_isNullOrBlank(p.pointDetailList[0].roleMap.invoiceConfirm))?'':'bg-muted'}}">
                 {{if p.pointDetailList!=null && p.pointDetailList.length>0 && !_isNullOrBlank(p.pointDetailList[0].invoice) && !_isNullOrBlank(p.pointDetailList[0].roleMap.invoiceConfirm)}}
 
                     <a href="javascript:void(0)" class="btn btn-primary btn-xs" data-action="confirmInvoice" data-id="{{p.pointDetailList[0].id}}" data-invoice="{{p.pointDetailList[0].invoice}}">确认开票</a>
@@ -132,7 +140,7 @@
 
                 {{/if}}
             </td>
-            <td class="text-center">
+            <td class="text-center {{ p.pointDetailList!=null && p.pointDetailList[0] && (!_isNullOrBlank(p.pointDetailList[0].invoiceNo) || !_isNullOrBlank(p.pointDetailList[0].roleMap.invoiceConfirm))?'':'bg-muted'}}">
                 {{if p.pointDetailList!=null && p.pointDetailList.length>0 && p.pointDetailList[0].invoiceType==1}}
                     普票
                 {{else if p.pointDetailList!=null && p.pointDetailList.length>0 && p.pointDetailList[0].invoiceType==2}}
@@ -198,14 +206,14 @@
             </td>
 
             <!-- 发票信息 -->
-            <td class="text-center">
+            <td class="text-center {{!_isNullOrBlank(c.invoiceNo) || !_isNullOrBlank(c.roleMap.invoiceConfirm)?'':'bg-muted'}}">
                 {{if !_isNullOrBlank(c.invoice) && !_isNullOrBlank(c.roleMap.invoiceConfirm)}}
                     <a href="javascript:void(0)" class="btn btn-primary btn-xs" data-action="confirmInvoice" data-id="{{c.id}}" data-invoice="{{c.invoice}}">确认开票</a>
                 {{else}}
                     {{c.invoiceNo}}
                 {{/if}}
             </td>
-            <td class="text-center">
+            <td class="text-center {{!_isNullOrBlank(c.invoiceNo) || !_isNullOrBlank(c.roleMap.invoiceConfirm)?'':'bg-muted'}}">
                 {{if c.invoiceType==1}}
                     普票
                 {{else if c.invoiceType==2}}

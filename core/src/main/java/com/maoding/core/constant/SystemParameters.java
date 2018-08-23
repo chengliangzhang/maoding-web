@@ -306,6 +306,9 @@ public interface SystemParameters {
 
             put(String.format("%d", MESSAGE_TYPE_306), "%sendUserName% 发布了“%projectName%”的设计任务，请在任务中查看并进行<a href=\"%url%\">［任务签发］</a>。");//ok
 
+            //许佳迪，发起了“卯丁科技大厦：定金支付10%。”的合作设计费收款16.88万元，请你跟进并确认付款。
+            put(String.format("%d", MESSAGE_TYPE_307), "%sendUserName% 发起了“%projectName%：%feeDescription%”的合作设计费收款%fee%万元，请你跟进并确认付款。");//ok
+
             //hi，“卯丁科技大厦一期-方案设计”的设计任务已完成，请你跟进相关项目收支的经营工作，谢谢！
             //许佳迪，提交了“卯丁科技大厦一期-方案设计”的设计任务，请你跟进相关项目收支的经营工作，谢谢！
             put(String.format("%d", MESSAGE_TYPE_304), "%sendUserName%，提交了“%projectName%-%taskName%”的设计任务，请你跟进相关项目收支的经营工作，谢谢！");
@@ -402,6 +405,12 @@ public interface SystemParameters {
             put("232","你提交的出差申请，出差地：%address%，出差时间：%startTime1% - %endTime1%，已完成审批。");
             put("233","%sendUserName%同意并转交了%expUserName%的出差申请，出差地：%address%，出差时间：%startTime1% - %endTime1%，%sendUserName%给你，请你审批。");
 
+            //许佳迪，提交的付款申请“卯丁科技大厦：定金支付10%。”的技术审查费付款16.88万元，请你及时审批
+            put("243","%sendUserName% 提交的付款申请“%projectName%：%feeDescription%。”的%expName%付款%fee%万元，请你及时审批。");
+            put("244","你提交的付款申请“%projectName%：%feeDescription%。”的%expName%付款%fee%万元，已完成审批。");
+            put("245","%sendUserName% 拒绝了你的付款申请“%projectName%：%feeDescription%。”的%expName%付款%fee%万元，退回原因：%reason%。");//ok
+            put("246","%sendUserName%同意了%expUserName%的付款申请“%projectName%：%feeDescription%。”的%expName%付款%fee%万元给你，请你审批。");
+
             //财务拨款（报销，费用）
             put("234","你申请的报销“%expName%”共计%expAmount%元，财务已拨款。");
             put("235","你申请的费用“%expName%”共计%expAmount%元，财务已拨款。");
@@ -430,10 +439,16 @@ public interface SystemParameters {
             //许佳迪，确认了“卯丁科技大厦一期：合作设计费节点”的合作设计费付款金额为30万元，请你跟进并确认实际到账日期。
             put("16", "%sendUserName%，确认了“%projectName%：%feeDescription%” 的合作设计费付款金额为%fee%万，请你跟进并确认实际到账日期。");
 
+            //财务发票确认
+            put("100", "%sendUserName%，发起了“%projectName%：%feeDescription%”的合同回款%fee%万元，发票方为：%toCompanyName%，请你跟进确认发票号码及发票类型。");//财务发票确认
+            put("101", "%sendUserName%，发起了“%projectName%：%feeDescription%”的技术审查费%fee%万元，发票方为：%toCompanyName%，请你跟进确认发票号码及发票类型。");//财务发票确认
+            put("102", "%sendUserName%，发起了“%projectName%：%feeDescription%”的合作设计费%fee%万元，发票方为：%toCompanyName%，请你跟进确认发票号码及发票类型。");//财务发票确认
+            put("103", "%sendUserName%，发起了“%projectName%：%feeDescription%”的其他收入%fee%万元，发票方为：%toCompanyName%，请你跟进确认发票号码及发票类型。");//财务发票确认
             //合同回款
             //? - 合同回款 - ?” 金额：?万，开始收款了 -->hi，XXX发起了“卯丁科技大厦一期：回款节点”的合同回款30万元，请你跟进并确认实际到帐金额和日期，谢谢！
             //许佳迪，发起了“卯丁科技大厦一期：方案完成后7日内支付10%”的合同回款30万元，请你跟进并确认实际到帐金额和日期。
             put("17", "%sendUserName%，发起了“%projectName%：%feeDescription%”的合同回款%fee%万元，请你跟进并确认实际到帐金额和日期。");//合同回款--通知财务收款
+
             //? - 合同回款 - ?” 金额：?万，已确认到账，到账日期为? --->hi，XXX确认了“卯丁科技大厦一期：回款节点”的实际到金额为30万元，到账日期为xxxx-xx-xx，谢谢！
             //许佳迪， 确认了“卯丁科技大厦一期：回款节点”的实际到金额为30万元，到账日期为xxxx-xx-xx。
             put("18", "%sendUserName%，确认了“%projectName%：%feeDescription%”的实际到金额为%fee%万元，到账日期为%paymentDate%。");//合同回款到账，通知经营负责人，企业负责人
@@ -442,6 +457,7 @@ public interface SystemParameters {
             //? - 技术审查费 - ?” 金额：?万，已付款，请进行相关操作 -->hi，XXX确认了“卯丁科技大厦一期：技术审查费节点”的技术审查费付款金额为30万元，请你跟进并确认实际付款日期，谢谢！
             //许佳迪，发起了 “卯丁科技大厦一期：技术审查费节点”的技术审查费付款金额为30万元，请你跟进并确认实际付款日期。
             put("23", "%sendUserName%，发起了“%projectName%：%feeDescription%”的技术审查费付款金额为%fee%万元，请你跟进并确认实际付款日期。");//技术审查费财务人员付款操作
+
             //? - 技术审查费 - ?” 金额：?万，已到账，请进行相关操作-->hi，XXX确认了“卯丁科技大厦一期：技术审查费节点”的技术审查费付款金额为30万元，请你跟进并确认实际到账日期，谢谢！
             //许佳迪，确认了“卯丁科技大厦一期：技术审查费节点”的技术审查费付款金额为30万元，请你跟进并确认实际到账日期。
             put("24", "%sendUserName%，确认了“%projectName%：%feeDescription%”的技术审查费付款金额为%fee%万元，请你跟进并确认实际到账日期。");//技术审查费财务人员到账操作
@@ -450,6 +466,22 @@ public interface SystemParameters {
             put("25", "%sendUserName%，发起了“%projectName%：%feeDescription%”的合作设计费付款金额为%fee%万元，请你跟进并确认实际付款日期，谢谢！");//合作设计费财务人员付款操作
             //? - 合作设计费 - ?” 金额：?万，已到账，请进行相关操作-->hi，XXX确认了“卯丁科技大厦一期：合作设计费节点”的合作设计费付款金额为30万元，请你跟进并确认实际到账日期，谢谢！
             put("26", "%sendUserName%，确认了“%projectName%：%feeDescription%”的合作设计费付款金额为%fee%万元，请你跟进并确认实际到账日期，谢谢！");//合作设计费财务人员到账操作
+
+            //技术审查费收款-财务
+            put("110", "%sendUserName%，确认了“%projectName%：%feeDescription%”的技术审查费收款金额为%fee%万，请你跟进并确认实际到帐金额和日期。");
+            //技术审查费付款-财务-无申请
+            put("111", "%sendUserName%，确认了“%projectName%：%feeDescription%”的技术审查费付款金额为%fee%万，请你跟进并确认实际到帐金额和日期。");
+            //技术审查费付款-财务-有申请
+            put("112", "%sendUserName%，确认了“%projectName%：%feeDescription%”的技术审查费付款金额为%fee%万，%auditPersonName% 已同意拨款，请你跟进并确认实际付款金额和日期。");
+
+            //合作设计费收款-财务
+            put("113", "%sendUserName%，确认了“%projectName%：%feeDescription%”的合作设计费收款金额为%fee%万，请你跟进并确认实际到帐金额和日期。");
+            //合作设计费付款-财务-无申请
+            put("114", "%sendUserName%，确认了“%projectName%：%feeDescription%”的合作设计费付款金额为%fee%万，请你跟进并确认实际到帐金额和日期。");
+            //合作设计费付款-财务-有申请
+            put("115", "%sendUserName%，确认了“%projectName%：%feeDescription%”的合作设计费付款金额为%fee%万，%auditPersonName% 已同意拨款，请你跟进并确认实际付款金额和日期。");
+            //其他支出-财务-有申请
+            put("116", "%sendUserName%，确认了“%projectName%：%feeDescription%”的其他支出%fee%万，%auditPersonName% 已同意拨款，请你跟进并确认实际付款金额和日期。");
 
             //? - 技术审查费 - ?” 金额：?万，已确认付款，付款日期为?--->hi，XXX确认了“卯丁科技大厦一期：技术审查费节点”的技术审查费付款金额为30万元，实际付款日期为xxxx-xx-xx，谢谢！
             //许佳迪，确认了“卯丁科技大厦一期：技术审查费节点”的技术审查费付款金额为30万元，实际付款日期为xxxx-xx-xx。
@@ -469,6 +501,7 @@ public interface SystemParameters {
             //“? - 其他收支 - ?” 金额：?万，开始付款了 --> hi，XXX发起了“卯丁科技大厦一期：节点描述”的其他支出30万元，请你跟进并确认实际付款金额和日期，谢谢！
             //许佳迪，发起了“卯丁科技大厦一期：节点描述”的其他支出30万元，请你跟进并确认实际付款金额和日期。
             put("31", "%sendUserName%，发起了“%projectName%：%feeDescription%”的其他支出%fee%万元，请你跟进并确认实际付款金额和日期。");//通知财务人员付款
+
             //? - 其他收支 - ?” 金额：?万，开始收款了 -->hi，XXX发起了“卯丁科技大厦一期：节点描述”的其他收入30万元，请你跟进并确认实际到帐金额和日期，谢谢！
             //许佳迪，发起了“卯丁科技大厦一期：节点描述”的其他收入30万元，请你跟进并确认实际到帐金额和日期。
             put("32", "%sendUserName%，发起了“%projectName%：%feeDescription%”的其他收入%fee%万元，请你跟进并确认实际到帐金额和日期。");//通知财务人员收款
@@ -565,6 +598,7 @@ public interface SystemParameters {
             //hi,xxx组织，经营负责人XXX发布了“卯丁科技大厦一期”的设计任务，请在任务中查看并进行［任务签发］，
             put(String.format("%d", MESSAGE_TYPE_303),new MessageTemplate("hi,%sendCompanyName%组织，经营负责人%sendUserName%发布了“%projectName%”的设计任务，请你担任该项目的经营负责人,点击查看详情。" ,1));
             put(String.format("%d", MESSAGE_TYPE_306), new MessageTemplate("hi,%sendCompanyName%组织，%sendUserName% 发布了“%projectName%”的设计任务，点击查看详情。",1));//ok
+            put(String.format("%d", MESSAGE_TYPE_307), new MessageTemplate("hi,%sendCompanyName%组织，%sendUserName% 发布了“%projectName%”的设计任务，点击查看详情。",1));//ok
 
             /****************/
             //“卯丁科技大厦一期-方案设计”的设计任务已完成，请你跟进相关项目收支的经营工作，
@@ -663,6 +697,12 @@ public interface SystemParameters {
             put("238",new MessageTemplate("%expUserName% 提交的请假申请，请假类型：%leaveTypeName%，请假时间：%startTime1% - %endTime1%，已完成审批，请知晓",1));//ok
             put("239",new MessageTemplate("%expUserName% 提交的出差申请，出差地：%address%，出差时间：%startTime1% - %endTime1%，已完成审批，请知晓",1));
 
+            //许佳迪，提交的付款申请“卯丁科技大厦：定金支付10%。”的技术审查费付款16.88万元，请你及时审批
+            put("243",new MessageTemplate("%sendUserName% 提交的付款申请“%projectName%：%feeDescription%。”的%expName%付款%fee%万元，请你及时审批。",0));
+            put("244",new MessageTemplate("你提交的付款申请“%projectName%：%feeDescription%。”的%expName%付款%fee%万元，已完成审批。",1));
+            put("245",new MessageTemplate("%sendUserName% 拒绝了你的付款申请“%projectName%：%feeDescription%。”的%expName%付款%fee%万元，退回原因：%reason%。",1));//ok
+            put("246",new MessageTemplate("%sendUserName%同意了%expUserName%的付款申请“%projectName%：%feeDescription%。”的%expName%付款%fee%万元给你，请你审批。",0));
+
             //财务拨款（报销，费用）
             put("234",new MessageTemplate("你申请的报销“%expName%”共计%expAmount%元，财务已拨款。",1));
             put("235",new MessageTemplate("你申请的费用“%expName%”共计%expAmount%元，财务已拨款。",1));
@@ -680,6 +720,29 @@ public interface SystemParameters {
 
             put("15",new MessageTemplate("“%projectName% - 合作设计费 - %feeDescription%” 金额：%fee%万，已确认付款",1));
             put("16",new MessageTemplate("“%projectName% - 合作设计费 - %feeDescription%” 金额：%fee%万，已确认到账",1));
+
+            //财务发票确认
+            put("100",new MessageTemplate( "%sendUserName%，发起了“%projectName%：%feeDescription%”的合同回款%fee%万元，发票方为：%toCompanyName%，请你跟进确认发票号码及发票类型。",0));//财务发票确认
+            put("101",new MessageTemplate( "%sendUserName%，发起了“%projectName%：%feeDescription%”的技术审查费%fee%万元，发票方为：%toCompanyName%，请你跟进确认发票号码及发票类型。",0));//财务发票确认
+            put("102",new MessageTemplate( "%sendUserName%，发起了“%projectName%：%feeDescription%”的合作设计费%fee%万元，发票方为：%toCompanyName%，请你跟进确认发票号码及发票类型。",0));//财务发票确认
+            put("103",new MessageTemplate( "%sendUserName%，发起了“%projectName%：%feeDescription%”的其他收入%fee%万元，发票方为：%toCompanyName%，请你跟进确认发票号码及发票类型。",0));//财务发票确认
+
+
+            //技术审查费收款-财务
+            put("110", new MessageTemplate("%sendUserName%，确认了“%projectName%：%feeDescription%”的技术审查费收款金额为%fee%万，请你跟进并确认实际到帐金额和日期。",0));
+            //技术审查费付款-财务-无申请
+            put("111",new MessageTemplate( "%sendUserName%，确认了“%projectName%：%feeDescription%”的技术审查费付款金额为%fee%万，请你跟进并确认实际到帐金额和日期。",0));
+            //技术审查费付款-财务-有申请
+            put("112", new MessageTemplate("%sendUserName%，确认了“%projectName%：%feeDescription%”的技术审查费付款金额为%fee%万，%auditPersonName% 已同意拨款，请你跟进并确认实际付款金额和日期。",0));
+
+            //合作设计费收款-财务
+            put("113",new MessageTemplate( "%sendUserName%，确认了“%projectName%：%feeDescription%”的合作设计费收款金额为%fee%万，请你跟进并确认实际到帐金额和日期。",0));
+            //合作设计费付款-财务-无申请
+            put("114", new MessageTemplate("%sendUserName%，确认了“%projectName%：%feeDescription%”的合作设计费付款金额为%fee%万，请你跟进并确认实际到帐金额和日期。",0));
+            //合作设计费付款-财务-有申请
+            put("115", new MessageTemplate("%sendUserName%，确认了“%projectName%：%feeDescription%”的合作设计费付款金额为%fee%万，%auditPersonName% 已同意拨款，请你跟进并确认实际付款金额和日期。",0));
+            //其他支出-财务-有申请
+            put("116", new MessageTemplate("%sendUserName%，确认了“%projectName%：%feeDescription%”的其他支出%fee%万，%auditPersonName% 已同意拨款，请你跟进并确认实际付款金额和日期。",0));
 
             //合同回款
             //? - 合同回款 - ?” 金额：?万，开始收款了 -->XXX发起了“卯丁科技大厦一期：回款节点”的合同回款30万元，请你跟进并确认实际到帐金额和日期，
@@ -775,6 +838,7 @@ public interface SystemParameters {
     int MESSAGE_TYPE_304 = 304;//1.(设计负责人或任务负责人确认经营签发的一级和二级任务完成时（生产的根任务完成后，给本组织的经营负责人推）每一个都需要推送）
     int MESSAGE_TYPE_305 = 305; //经营负责人指定了助理
     int MESSAGE_TYPE_306 = 306; //(发布消息给外部团队，给其经营负责人推送消息）
+    int MESSAGE_TYPE_307 = 307; //组织内部，如果是收款方发起收款，推送消息给付款方经营负责人，要求其付款申请
     int MESSAGE_TYPE_4 = 4;//
     //任务负责人
     int MESSAGE_TYPE_401 = 401;//1.立项方经营负责人
@@ -810,10 +874,23 @@ public interface SystemParameters {
     int MESSAGE_TYPE_14 = 14;//1.乙方经营负责人
     int MESSAGE_TYPE_15 = 15;//1.乙方经营负责人
     int MESSAGE_TYPE_16 = 16;//1.乙方经营负责人
-    int MESSAGE_TYPE_17 = 17;//1.乙方经营负责人
+    int MESSAGE_TYPE_17 = 17;//1.财务-合同回款到账确认
     int MESSAGE_TYPE_18 = 18;//1.合同回款财务人员到账操作
     int MESSAGE_TYPE_19 = 19;//1.乙方经营负责人
     int MESSAGE_TYPE_20 = 20;//1.乙方经营负责人
+
+    int MESSAGE_TYPE_100 = 100;//财务发票确认- 合同回款
+    int MESSAGE_TYPE_101 = 101;//财务发票确认- 技术审查费
+    int MESSAGE_TYPE_102 = 102;//财务发票确认- 合作设计费
+    int MESSAGE_TYPE_103 = 103;//财务发票确认- 其他费用
+
+    int MESSAGE_TYPE_110 = 110;//技术审查费收款-财务
+    int MESSAGE_TYPE_111 = 111;//技术审查费付款-财务 - 无申请
+    int MESSAGE_TYPE_112 = 112;//技术审查费付款-财务 - 有申请
+    int MESSAGE_TYPE_113 = 113;//合作设计费收款-财务
+    int MESSAGE_TYPE_114 = 114;//合作设计费付款-财务 - 无申请
+    int MESSAGE_TYPE_115 = 115;//合作设计费付款-财务 - 有申请
+    int MESSAGE_TYPE_116 = 116;//其他费用付款  -财务 - 有申请
 
     int MESSAGE_TYPE_21 = 21;//流程审批完成，给负责人发送消息
     int MESSAGE_TYPE_22 = 22;//同意报销,给报销人推送消息
@@ -833,6 +910,12 @@ public interface SystemParameters {
     int MESSAGE_TYPE_231 = 231;
     int MESSAGE_TYPE_232 = 232;
     int MESSAGE_TYPE_233 = 233;
+    //许佳迪，提交的付款申请“卯丁科技大厦：定金支付10%。”的技术审查费付款16.88万元，请你及时审批
+    int MESSAGE_TYPE_243 = 243;
+    int MESSAGE_TYPE_244 = 244;
+    int MESSAGE_TYPE_245 = 245;
+    int MESSAGE_TYPE_246 = 246;
+
 
     //抄送
     int MESSAGE_TYPE_236 = 236;//报销

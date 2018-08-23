@@ -120,6 +120,9 @@ public abstract class BaseController {
 	}
 
 	protected <T>T getFromSession(String key,Class<T>clazz){
+		if(SecurityUtils.getSubject().getSession()==null || SecurityUtils.getSubject().getSession().getAttribute(key)==null){
+			//throw new LoginException("");
+		}
 		return (T) SecurityUtils.getSubject().getSession().getAttribute(key);
 	}
 

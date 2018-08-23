@@ -20,7 +20,14 @@
         this._currentCompanyId = window.currentCompanyId;//当前组织ID
         this._currentCompanyUserId = window.currentCompanyUserId;//当前员工ID
         this._selectedOrg = null;//当前组织筛选-选中组织对象
-        this._filterTimeData = {};//时间筛选
+        this._dataList = [];//分页数据
+
+        /*********** 筛选字段 ***********/
+        this._filterData = {
+            companyId:null,
+            startTime:null,
+            endTime:null
+        };
         this.init();
     }
 
@@ -35,7 +42,25 @@
             var that = this;
             var html = template('m_summary/m_summary_invoice',{});
             $(that.element).html(html);
-            that.renderList();
+
+            var option = {};
+            option.$selectedCallBack = function (data) {
+                that._filterData.companyId = data.id;
+                that.renderList();
+            };
+            option.$renderCallBack = function () {
+
+            };
+            $(that.element).find('#selectOrg').m_org_chose_byTree(option);
+
+            var timeOption = {};
+            timeOption.selectTimeCallBack = function (data) {
+                console.log(data);
+                that._filterData.startTime = data.startTime;
+                that._filterData.endTime = data.endTime;
+                that.renderList();
+            };
+            $(that.element).find('.time-combination').m_filter_timeCombination(timeOption,true);
 
         }
 
@@ -43,6 +68,7 @@
             var that = this;
             var option = {};
             option.param = {};
+            option.param = filterParam(that._filterData);
             paginationFun({
                 eleId: '#data-pagination-container',
                 loadingId: '.data-list-box',
@@ -51,11 +77,13 @@
             }, function (response) {
 
                 if (response.code == '0') {
-
+                    that._dataList = response.data.data;
                     var html = template('m_summary/m_summary_invoice_list',{
                         dataList:response.data.data
                     });
                     $(that.element).find('.data-list-container').html(html);
+
+                    that.bindActionClick();
 
                 } else {
                     S_dialog.error(response.info);
@@ -69,11 +97,25 @@
             $(that.element).find('button[data-action]').on('click',function () {
                 var $this = $(this);
                 var dataAction = $this.attr('data-action');
+                var dataId = $this.closest('tr').attr('data-id');//当前元素赋予的ID
+                //获取节点数据
+                var dataItem = getObjectInArray(that._dataList,dataId);
                 switch (dataAction){
 
                     case 'refreshBtn':
                         that.renderPage();
                         return false;
+                        break;
+                    case 'confirmInvoice'://确认开票
+                        var option = {};
+                        option.invoiceId = dataId;
+                        option.taskId = dataItem.myTaskId;
+                        option.projectId = dataItem.projectId;
+                        option.dialogHeight = '150';
+                        option.saveCallBack = function () {
+                            that.renderList();
+                        };
+                        $('body').m_cost_confirmInvoice(option,true);
                         break;
                 }
             });

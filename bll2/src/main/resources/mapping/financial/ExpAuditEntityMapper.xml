@@ -128,7 +128,8 @@
     select
     <include refid="Base_Column_List" />
     from maoding_web_exp_audit
-    where main_id = #{mainId,jdbcType=VARCHAR} and is_new = 'Y'
+    where main_id = #{mainId,jdbcType=VARCHAR}
+    order by create_date
   </select>
 
   <select id="selectAuditPersonByMainId" parameterType="java.lang.String" resultType="com.maoding.financial.dto.ExpAuditDTO">
@@ -161,7 +162,7 @@
     INNER JOIN maoding_web_exp_audit a on a.main_id = b.id
     INNER JOIN maoding_web_company_user c on a.audit_person = c.id
     INNER JOIN maoding_web_account account on  account.id = c.user_id
-  --   LEFT JOIN (<include refid="UserAttachEntityMapper.getHeadImg" /> ) d on c.user_id = d.user_id and d.attach_type = 5
+
     left join maoding_web_company e on (c.company_id = e.id)
     where b.id = #{id,jdbcType=VARCHAR} order by a.create_date
   </select>

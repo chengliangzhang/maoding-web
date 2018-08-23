@@ -1,45 +1,50 @@
-<style>
-    .float_Mask{background-color: white;padding: 21px 3px;position: absolute;top: 19px;left: 124px;  }
-</style>
 <div class="ibox m-b-xs">
-    <div class="ibox-content MyExpDetailsCheckExpenseOBox no-pd-bottom" style="max-height:700px;overflow-y: auto">
-        <fieldset style="padding-top:5px;">
+    <div class="ibox-content MyExpDetailsCheckExpenseOBox no-pd-bottom">
+        <fieldset>
             <div class="headline m-b-sm">
                 <h2>报销状态</h2>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="panel-body">
-                        <ul class="timeline-v2 timeline-me">
-                            {{each myExpDetails.auditList as item j}}
-                            <li style="height: 60px;">
-                                <time class="cbp_tmtime" datetime="">
-                                    <span style="top:0;font-size: 14px; {{(j==myExpDetails.auditList.length-1)?'color: #FF5722;':''}}">{{item.userName}}</span>
-                                    <span style="top:0;font-size: 13px;">{{item.expDate}}</span>
-                                </time>
-
-                                <i class="cbp_tmicon rounded-x hidden-xs"
-                                   style="top: 5px; {{(j==myExpDetails.auditList.length-1)?'background: #FF5722;':''}}"></i>
-                                <div class="cbp_tmlabel">
-                                    <h2 style="font-size: 14px;padding:0; {{(j==myExpDetails.auditList.length-1)?'color:#FF5722;':''}}">
-                                        {{item.approveStatusName=="待审核"?"待审批":item.approveStatusName}}</h2>
-                                    {{if item.approveStatusName=='发起申请'}}
-                                    <p style="font-size: 13px;word-break: break-all;color:#999;line-height: 20px;">
-                                        报销备注：{{item.remark}}</p>
-                                    {{/if}}
-                                    {{if item.approveStatusName=='退回'}}
-                                    <p style="font-size: 13px;word-break: break-all;color:#999;line-height: 20px;">
-                                        退回原因：{{item.remark}}</p>
-                                    {{/if}}
-                                </div>
-                                {{if item.approveStatusName.indexOf('完成')>-1}}
-                                <span class="float_Mask"></span>
+            <div id="vertical-timeline" class="vertical-container dark-timeline center-orientation timeline-box">
+                {{if myExpDetails.auditList!=null && myExpDetails.auditList.length>0}}
+                {{each myExpDetails.auditList as s i}}
+                <div class="vertical-timeline-block">
+                    <div class="vertical-timeline-icon navy-bg">
+                        <i class="fa fa-circle-o"></i>
+                    </div>
+                    <div class="vertical-timeline-content">
+                        {{if s.approveStatus=='1'}}
+                        <h2 class="text-success">{{s.userName}}</h2>
+                        {{else if s.approveStatus=='2' || s.approveStatus=='3'}}
+                        <h2 class="text-danger">{{s.userName}}</h2>
+                        {{else}}
+                        <h2>{{s.userName}}</h2>
+                        {{/if}}
+                        <p class="no-margins">
+                            {{s.companyName}}
+                        </p>
+                        <span class="vertical-date">
+                            {{if s.approveStatus=='1'}}
+                                <span class="text-success">{{s.approveStatusName=="待审核"?"待审批":s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.expDate,'YYYY/MM/DD')}} </span>
+                            {{else if s.approveStatus=='2' || s.approveStatus=='3'}}
+                                <span class="text-danger">{{s.approveStatusName=="待审核"?"待审批":s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.expDate,'YYYY/MM/DD')}} </span>
+                            {{else}}
+                                <span>{{s.approveStatusName=="待审核"?"待审批":s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.expDate,'YYYY/MM/DD')}} </span>
+                            {{/if}}
+                            <br>
+                            <small>
+                                {{if s.approveStatusName=='发起申请'}}
+                                    报销备注：{{s.remark}}
                                 {{/if}}
-                            </li>
-                            {{/each}}
-                        </ul>
+                                {{if s.approveStatusName=='退回'}}
+                                    退回原因：{{s.remark}}
+                                {{/if}}
+                            </small>
+
+                        </span>
                     </div>
                 </div>
+                {{/each}}
+                {{/if}}
             </div>
             {{if myExpDetails.expAttachEntityList&&myExpDetails.expAttachEntityList.length>0}}
             <div class="headline m-b">

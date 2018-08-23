@@ -87,7 +87,6 @@
     LIMIT 1
   </select>
 
-
   <select id="getCostPointDetail" resultType="com.maoding.projectcost.dto.ProjectCostPointDetailDataDTO" parameterType="java.util.Map">
     select
     a.*,b.*

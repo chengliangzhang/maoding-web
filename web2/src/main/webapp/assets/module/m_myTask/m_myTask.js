@@ -46,17 +46,17 @@
                 params.status = status;
             }
             paginationFun({
-                eleId: '#pagination-container',
-                loadingId: '.my-task-list',
+                eleId: '#data-pagination-container',
+                loadingId: '.data-list-container',
                 url: url,
                 params: params
             }, function (response) {
 
                 var html = template('m_myTask/m_myTask_list', {
                     myDataList:response.data.data,
-                    pageIndex:$("#pagination-container").pagination('getPageIndex')
+                    pageIndex:$("#data-pagination-container").pagination('getPageIndex')
                 });
-                $(that.element).find('.my-task-list').html(html);
+                $(that.element).find('.data-list-container').html(html);
                 that.goToTaskDetail();
 
             });

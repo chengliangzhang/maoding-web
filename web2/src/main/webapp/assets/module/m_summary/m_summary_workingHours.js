@@ -77,12 +77,6 @@
 
                 switch (dataAction){
                     case 'viewDetail'://查看详情
-
-                        /*var option = {};
-                        option.$projectId = projectId;
-                        option.$projectName = $this.text();
-                        $('#content-right').m_summary_workingHours_detail(option);*/
-
                         location.hash = '/workingHoursSummary/detail?projectId='+projectId+'&projectName='+encodeURI($this.text());
                         break;
                 }

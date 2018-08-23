@@ -962,6 +962,12 @@ input.form-control[readonly] {
     background: url("../img/icon/ic_operation_pressed.png") no-repeat;
 }
 
+.upload-icon .webuploader-pick {
+    background: #4765a0;
+    padding: 2px 10px;
+    vertical-align: middle;
+}
+
 /*重写日期图标*/
 i.icon-sm{
     height: 28px;line-height: 28px;
@@ -1472,14 +1478,7 @@ body div label.error, div.popover.m-popover label.error {
     line-height: 24px;
 }
 
-/*sweet-alert 样式重写*/
-.sweet-alert {
-    z-index: 1025;
-}
-.sweet-overlay {
-    z-index: 1024;
-}
-
+/*check-box*/
 .check-box .i-checks .icheckbox_minimal-green{
     float:left;
 }
@@ -1537,8 +1536,31 @@ body div label.error, div.popover.m-popover label.error {
     color: #fff;
     background-color: #007bff;
 }
-
-
+/**timeline**/
+.timeline-box.center-orientation .vertical-timeline-block .vertical-timeline-content{
+    padding: 5px 10px;
+    float: none;
+}
+.timeline-box.center-orientation .vertical-timeline-content::before,
+.timeline-box.center-orientation .vertical-timeline-block:nth-child(even) .vertical-timeline-content::before{
+    top: 10px;
+    left: 100%;
+    right: 0;
+    border-color: transparent transparent transparent #f5f5f5;
+    border-left-color: #f5f5f5;
+}
+.timeline-box.center-orientation .vertical-timeline-block:nth-child(even) .vertical-timeline-content .vertical-date{
+    left: 122%;
+    right: inherit;
+    text-align: inherit;
+}
+.timeline-box.center-orientation .vertical-timeline-icon{
+    width: 30px;
+    height: 30px;
+}
+.timeline-box#vertical-timeline.center-orientation:before{
+    margin-left:-12px;
+}
 
 
 

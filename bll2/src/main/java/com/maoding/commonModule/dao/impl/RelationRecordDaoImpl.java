@@ -5,6 +5,7 @@ import com.maoding.commonModule.dto.QueryRelationRecordDTO;
 import com.maoding.commonModule.entity.RelationRecordEntity;
 import com.maoding.core.base.dao.GenericDao;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -19,5 +20,16 @@ public class RelationRecordDaoImpl extends GenericDao<RelationRecordEntity> impl
     @Override
     public List<RelationRecordEntity> getRelationRecord(QueryRelationRecordDTO query) {
         return this.sqlSession.selectList("RelationRecordEntityMapper.getRelationRecord",query);
+    }
+
+    @Override
+    public RelationRecordEntity getRelationRecodeByTargetId(String targetId) {
+        QueryRelationRecordDTO query = new QueryRelationRecordDTO();
+        query.setTargetId(targetId);
+        List<RelationRecordEntity> list = this.getRelationRecord(query);
+        if(!CollectionUtils.isEmpty(list)){
+            return list.get(0);
+        }
+        return null;
     }
 }

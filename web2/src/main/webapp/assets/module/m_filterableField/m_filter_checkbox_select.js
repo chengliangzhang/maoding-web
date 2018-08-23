@@ -85,7 +85,7 @@
                     quickClose:true,
                     noTriangle:true,
                     width: that.settings.dialogWidth || iWHObj.width+20,
-                    height:iWHObj.height+10,
+                    height:iWHObj.height+20,
                     tPadding: '0px',
                     url: rootPath+'/assets/module/m_common/m_dialog.html'
 

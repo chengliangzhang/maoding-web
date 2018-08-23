@@ -61,6 +61,11 @@ public class ProjectCostPaymentDetailDTO extends BaseDTO {
 
     Integer operateFlag;//1：收款，2：付款,3:经营负责人确认付款
 
+    /**
+     * 用于接收我的任务中传递过来的日期
+     */
+    private String dateStr;
+
     public String getProjectId() {
         return projectId;
     }
@@ -147,5 +152,13 @@ public class ProjectCostPaymentDetailDTO extends BaseDTO {
 
     public void setOperateFlag(Integer operateFlag) {
         this.operateFlag = operateFlag;
+    }
+
+    public String getDateStr() {
+        return dateStr;
+    }
+
+    public void setDateStr(String dateStr) {
+        this.dateStr = dateStr;
     }
 }

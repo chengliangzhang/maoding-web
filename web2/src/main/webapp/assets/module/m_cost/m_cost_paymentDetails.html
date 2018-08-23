@@ -1,0 +1,54 @@
+<div class="ibox no-margins m_cost_paymentDetails">
+    <div class="ibox-content no-borders">
+        <form class="form-horizontal">
+            <div class="form-group m-b-none">
+                <label class="col-24-md-5 text-right">申请付款金额：</label>
+                <div class="col-24-md-19">
+                    {{_isNullOrBlank(pointDetailInfo.fee)?'0':_expNumberFilter(pointDetailInfo.fee)}}万
+                </div>
+            </div>
+            <div class="form-group m-b-none">
+                <label class="col-24-md-5 text-right">备注：</label>
+                <div class="col-24-md-19">
+                    {{pointDetailInfo.pointDetailDescription}}
+                </div>
+            </div>
+        </form>
+        <h4>审批状态</h4>
+        <div class="hr-line-dashed m-t-none"></div>
+        <div id="vertical-timeline" class="vertical-container dark-timeline center-orientation timeline-box">
+            {{if auditList!=null && auditList.length>0}}
+            {{each auditList as s i}}
+            <div class="vertical-timeline-block">
+                <div class="vertical-timeline-icon navy-bg">
+                    <i class="fa fa-circle-o"></i>
+                </div>
+                <div class="vertical-timeline-content">
+                    {{if s.approveStatus=='1'}}
+                        <h2 class="text-success">{{s.userName}}</h2>
+                    {{else if s.approveStatus=='2' || s.approveStatus=='3'}}
+                        <h2 class="text-danger">{{s.userName}}</h2>
+                    {{else}}
+                        <h2>{{s.userName}}</h2>
+                    {{/if}}
+                    <p class="no-margins">
+                        {{s.companyName}}
+                    </p>
+                    <span class="vertical-date">
+                        {{if s.approveStatus=='1'}}
+                            <span class="text-success">{{s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.approveDate,'YYYY/MM/DD')}} </span>
+                        {{else if s.approveStatus=='2' || s.approveStatus=='3'}}
+                            <span class="text-danger">{{s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.approveDate,'YYYY/MM/DD')}} </span>
+                        {{else}}
+                            <span>{{s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.approveDate,'YYYY/MM/DD')}} </span>
+                        {{/if}}
+                        <br>
+                        <small>{{s.auditMessage}}</small>
+                    </span>
+                </div>
+            </div>
+            {{/each}}
+            {{/if}}
+        </div>
+    </div>
+</div>

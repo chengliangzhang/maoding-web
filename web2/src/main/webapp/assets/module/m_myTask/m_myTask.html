@@ -7,19 +7,27 @@
                 </div>
             </div>
             <div class="col-md-6 text-right btn-pd">
-                <strong>按任务状态筛选：</strong>
+
+            </div>
+        </div>
+    </div>
+    <div class="ibox-content">
+        <form class="form-inline m-b-sm">
+            <div class="form-group z-index-1">
+                <label  class="">按任务状态筛选：</label>
                 <select class="search-by-state" name="searchByState" >
                     <option value="">全部</option>
                     <option value="0" selected>未完成</option>
                     <option value="1">已完成</option>
                 </select>
             </div>
+        </form>
+        <div class="data-list-box">
+            <div class="data-list-container"></div>
+            <div class="p-w-xs">
+                <div id="data-pagination-container" class="m-pagination pull-right "></div>
+            </div>
         </div>
-    </div>
-    <div class="ibox-content no-padding">
-
-        <div class="my-task-list"></div>
-        <div id="pagination-container" class="m-pagination pull-right"></div>
     </div>
 </div>
 

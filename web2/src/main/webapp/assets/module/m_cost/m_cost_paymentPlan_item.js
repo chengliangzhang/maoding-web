@@ -57,6 +57,7 @@
                 that.bindEditable();
                 that.bindActionClick();
                 that.initEditCostPoint();
+                that.uploadRecordFile();
             },t);
         }
         //{t==1，重新请求数据}
@@ -485,6 +486,35 @@
                         };
                         $('body').m_cost_paymentApplication(option,true);
                         break;
+
+                    case 'viewPaymentDetails'://付款详情
+
+                        var option = {};
+                        option.pointDetailId = dataId;
+                        $('body').m_cost_paymentDetails(option,true);
+                        break;
+                    case 'delAttach'://删除附件
+
+                        S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+
+                            var option = {};
+                            option.url = restApi.url_netFile_delete;
+                            option.postData = {
+                                id: dataId,
+                                accountId: window.currentUserId
+                            };
+                            m_ajax.postJson(option, function (response) {
+                                if (response.code == '0') {
+                                    S_toastr.success('删除成功！');
+                                    that.initHtml(1);
+                                } else {
+                                    S_dialog.error(response.info);
+                                }
+                            });
+
+                        }, function () {
+                        });
+                        break;
                 }
 
             });
@@ -682,6 +712,32 @@
                 }
 
             });
+        }
+        //上传附件
+        ,uploadRecordFile: function () {
+            var that = this;
+            $(that.element).find('a[data-action="recordAttach"]').m_fileUploader({
+                server: restApi.url_attachment_uploadCostPlanAttach,
+                fileExts: 'pdf',
+                fileSingleSizeLimit:20*1024*1024,
+                formData: {},
+                multiple:true,
+                //duplicate:false,
+                loadingId: that.element,
+                innerHTML: '<i class="fa fa-upload fa-fixed"></i>',
+                uploadBeforeSend: function (object, data, headers) {
+                    data.companyId = window.currentCompanyId;
+                    data.accountId = window.currentUserId;
+                    data.projectId = that.settings.projectId;
+                    data.targetId = that._projectCost.costId;
+
+                },
+                uploadSuccessCallback: function (file, response) {
+                    //console.log(response)
+                    S_toastr.success('上传成功！');
+                    that.initHtml(1);
+                }
+            },true);
         }
 
 

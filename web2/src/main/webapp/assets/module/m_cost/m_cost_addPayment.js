@@ -177,7 +177,8 @@
                     }
                 },
                 errorPlacement: function (error, element) { //指定错误信息位置
-                    error.insertAfter(element);
+                    //error.insertAfter(element);
+                    error.appendTo(element.closest('.col-sm-10'));
                 }
             });
             $.validator.addMethod('minNumber', function(value, element) {
@@ -218,7 +219,12 @@
         //添加发票验证
         ,add_invoice_validate:function () {
             var that = this;
-            console.log($(that.element).find('form select[name="invoiceName"]').length)
+            $(that.element).find('form input[name="applyDate"]').rules('add',{
+                required:true,
+                messages:{
+                    required:'请选择申请时间！'
+                }
+            });
             $(that.element).find('form select[name="invoiceName"]').rules('add',{
                 required:true,
                 messages:{
@@ -241,6 +247,7 @@
         //删除发票验证
         ,remove_invoice_validate:function () {
             var that = this;
+            $(that.element).find('form input[name="applyDate"]').rules('remove','required');
             $(that.element).find('form select[name="invoiceName"]').rules('remove','required');
             $(that.element).find('form input[name="taxIdNumber"]').rules('remove','required');
             $(that.element).find('form input[name="invoiceContent"]').rules('remove','required');

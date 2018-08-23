@@ -109,6 +109,9 @@ var restApi = {
     , url_inviteProjectParent: window.rootPath + '/iWork/org/inviteProjectParent'
 
 
+    , url_listOptionalTitle: window.rootPath + '/iWork/project/listOptionalTitle'
+
+
 
     /** 项目动态 **/
     , url_getProjectDynamicList: window.rootPath + '/iWork/project/getProjectDynamicList'
@@ -173,6 +176,7 @@ var restApi = {
     , url_listProjectCost: window.rootPath + '/iWork/projectcost/listProjectCost'
     , url_listProjectCostSummary: window.rootPath + '/iWork/projectcost/listProjectCostSummary'
     , url_applyProjectCostPayFee: window.rootPath + '/iWork/projectcost/applyProjectCostPayFee'
+    , url_getProjectCostPaymentDetailByPointDetailIdForPay: window.rootPath + '/iWork/projectcost/getProjectCostPaymentDetailByPointDetailIdForPay'
 
     /**发票**/
     , url_listInvoice: window.rootPath + '/iWork/invoice/listInvoice'

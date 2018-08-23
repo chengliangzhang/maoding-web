@@ -54,6 +54,15 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
         return invoiceInfo;
     }
 
+    @Override
+    public String getInvoiceReceiveCompanyName(String invoiceId) {
+        InvoiceInfoDTO invoiceInfo = this.getInvoice(invoiceId);
+        if(invoiceInfo!=null){
+            return invoiceInfo.getRelationCompanyName();
+        }
+        return null;
+    }
+
     /**
      * 获取立项方组织的名称
      */
@@ -106,7 +115,7 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
 
     //获取收支分类子项名称
     private String getCostTypeName(int costType){
-        return ProjectCostConst.COST_TYPE_MAP.get(costType);
+        return ProjectCostConst.COST_TYPE_MAP.get(costType+"");
     }
 
     //获取收支分类子项名称

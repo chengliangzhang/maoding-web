@@ -34,6 +34,10 @@ public class MessageJsonDTO {
 
     private String paymentDate;
 
+    private String toCompanyName;//收方名称
+
+    private String auditPersonName;//审核人
+
     /*****************报销****************/
     private String expUserName;//报销人
 
@@ -61,7 +65,6 @@ public class MessageJsonDTO {
     /**
      * 发送归档通知
      */
-
     private String deadline;
 
     private String remarks;
@@ -303,5 +306,21 @@ public class MessageJsonDTO {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getToCompanyName() {
+        return toCompanyName;
+    }
+
+    public void setToCompanyName(String toCompanyName) {
+        this.toCompanyName = toCompanyName;
+    }
+
+    public String getAuditPersonName() {
+        return auditPersonName;
+    }
+
+    public void setAuditPersonName(String auditPersonName) {
+        this.auditPersonName = auditPersonName;
     }
 }

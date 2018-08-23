@@ -21,6 +21,11 @@ public interface InvoiceService {
     InvoiceInfoDTO getInvoice(String invoiceId);
 
     /**
+     * 获取收款方名
+     */
+    String getInvoiceReceiveCompanyName(String invoiceId);
+
+    /**
      * 描述     查询发票列表
      * 日期     2018/8/14
      * @author  张成亮

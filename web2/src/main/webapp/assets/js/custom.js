@@ -1540,3 +1540,18 @@ var getObjectInArray = function (arr,id) {
     });
     return obj;
 };
+/**
+ * 过滤对象中value为空或null的key
+ * @param param
+ * @returns {{}}
+ */
+var filterParam = function (param) {
+    var newParam = {};
+    if(param!=null && Object.getOwnPropertyNames(param).length>0){
+        $.each(param, function (key, value) {
+            if(!isNullOrBlank(value))
+                newParam[key] = value;
+        });
+    }
+    return newParam
+};

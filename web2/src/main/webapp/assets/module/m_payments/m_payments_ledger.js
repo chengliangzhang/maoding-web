@@ -66,7 +66,7 @@
                     that._filterData.endDate = data.endTime;
 
 
-                that.renderLedgerList();
+                that.renderDataList();
             };
             $(that.element).find('.time-combination').m_filter_timeCombination(timeOption,true);
 
@@ -78,7 +78,7 @@
                 }else{
                     that._filterData.combineCompanyId=that._selectedOrg.id;
                 }
-                that.renderLedgerList();
+                that.renderDataList();
             };
             option.$renderCallBack = function () {
                 that.bindBtnActionClick();
@@ -86,7 +86,7 @@
             $(that.element).find('#selectOrg').m_org_chose_byTree(option);
         }
         //渲染台账list
-        , renderLedgerList:function () {
+        , renderDataList:function () {
             var that = this;
 
             var option = {};
@@ -176,7 +176,7 @@
                 that.getFeeType(function () {
                     that.renderSubFeeTypeFilter(1);
                 });
-                that.renderLedgerList();
+                that.renderDataList();
             };
             $(that.element).find('#filterFeeType').m_filter_select(option, true);
         }
@@ -207,7 +207,7 @@
             option.selectedCallBack = function (data) {
                 console.log(data);
                 that._filterData.feeTypeList = data;
-                that.renderLedgerList();
+                that.renderDataList();
 
             };
             $(that.element).find('#filterSubFeeType').m_filter_checkbox_select(option, true);
@@ -232,7 +232,7 @@
                 }else{
                     that._filterData.profitType = null;
                 }
-                that.renderLedgerList();
+                that.renderDataList();
             };
             $(that.element).find('#filterProfitType').m_filter_select(option, true);
         }
@@ -270,7 +270,7 @@
                 }else{
                     that._filterData[key] = null;
                 }
-                that.renderLedgerList();
+                that.renderDataList();
             };
             console.log(option)
             $(that.element).find('#'+id).m_filter_select(option, true);
@@ -285,7 +285,7 @@
             option.oKCallBack = function (data) {
 
                 that._filterData.projectName = data;
-                that.renderLedgerList();
+                that.renderDataList();
             };
             $(that.element).find('#filterProjectName').m_filter_input(option, true);
         }

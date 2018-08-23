@@ -18,13 +18,21 @@
                         </span>
                     </div>
                     <div class="col-md-3">
-                        合同附件：
+                        <span class="pull-left">合同附件：</span>
                         {{if attachList!=null && attachList.length>0}}
                             {{each attachList as a}}
-                                <a href="{{a.fileFullPath}}" target="_blank">{{a.fileName}}</a>
+                            <span class="bg-v1-grey b-r-sm p-xxs m-r-xs f-s-12 pull-left" style="padding: 3px 5px;">
+                                        <a href="{{a.fileFullPath}}" target="_blank">{{a.fileName}}</a>
+                                        <a class="curp" href="javascript:void(0)" data-id="{{a.id}}" data-action="delAttach">
+                                            <i class="fa fa-times color-red"></i>
+                                        </a>
+                                    </span>
                             {{/each}}
                         {{else}}
-                            <span>无</span>
+                            <span class="pull-left m-r-xs">暂无上传文件</span>
+                        {{/if}}
+                        {{if isManager==1 && operateCompanyId==currentCompanyId}}
+                            <a href="javascript:void(0)" id="filePicker" data-action="recordAttach" class="upload-icon pull-left" title="请上传PDF文件"></a>
                         {{/if}}
                     </div>
                     <div class="col-md-3">
@@ -44,7 +52,7 @@
             <th width="9%"  class="text-center v-middle">金额（万元）</th>
             <th width="9%"  class="text-center">发起人</th>
             <th width="9%"  class="text-center">金额（万元）</th>
-            <th width="14%"  class="text-center">审批人</th>
+            <th width="14%"  class="text-center">审批状态</th>
 
             <th width="13%"  class="text-center">付款金额（万元）</th>
             <th width="9%"  class="text-center">付款日期</th>
@@ -123,10 +131,20 @@
                 </div>
             </td>
 
-            <!--以下是审批人-->
-            <td class="text-center">
+            <!--以下是审批状态 (0：未申请，5：审批中，2，退回，3撤销，1：已审批)-->
+            <td class="text-center {{p.pointDetailList[0] && p.pointDetailList[0].auditStatus==4?'bg-muted':''}}">
                 {{if p.pointDetailList!=null && p.pointDetailList.length>0}}
-                    {{p.pointDetailList[0].auditPersonName}}
+                    {{ if p.pointDetailList[0].auditStatus == 0}}
+                        <a href="javascript:void(0);" class="btn btn-link text-navy" data-action="viewPaymentDetails" data-id="{{p.pointDetailList[0].id}}">待审核</a>
+                    {{else if p.pointDetailList[0].auditStatus == 1}}
+                        <a href="javascript:void(0);" class="btn btn-link text-navy" data-action="viewPaymentDetails" data-id="{{p.pointDetailList[0].id}}">已审批</a>
+                    {{else if p.pointDetailList[0].auditStatus == 2}}
+                        <a href="javascript:void(0);" class="btn btn-link text-navy" data-action="viewPaymentDetails" data-id="{{p.pointDetailList[0].id}}">已退回</a>
+                    {{else if p.pointDetailList[0].auditStatus == 3}}
+                        <a href="javascript:void(0);" class="btn btn-link text-navy" data-action="viewPaymentDetails" data-id="{{p.pointDetailList[0].id}}">已撤销</a>
+                    {{else if p.pointDetailList[0].auditStatus == 5}}
+                        <a href="javascript:void(0);" class="btn btn-link text-navy" data-action="viewPaymentDetails" data-id="{{p.pointDetailList[0].id}}">审批中</a>
+                    {{/if}}
                 {{/if}}
             </td>
 
@@ -191,9 +209,19 @@
                     {{/if}}
                 </div>
             </td>
-            <!--以下是审批人-->
-            <td class="text-center">
-                {{c.auditPersonName}}
+            <!--以下是审批状态-->
+            <td class="text-center {{ c.auditStatus==4?'bg-muted':''}}">
+                {{ if c.auditStatus == 0}}
+                    <a href="javascript:void(0);" class="btn btn-link text-navy" data-action="viewPaymentDetails" data-id="{{c.id}}">待审核</a>
+                {{else if c.auditStatus == 1}}
+                    <a href="javascript:void(0);" class="btn btn-link text-navy" data-action="viewPaymentDetails" data-id="{{c.id}}">已审批</a>
+                {{else if c.auditStatus == 2}}
+                    <a href="javascript:void(0);" class="btn btn-link text-navy" data-action="viewPaymentDetails" data-id="{{c.id}}">已退回</a>
+                {{else if c.auditStatus == 3}}
+                    <a href="javascript:void(0);" class="btn btn-link text-navy" data-action="viewPaymentDetails" data-id="{{c.id}}">已撤销</a>
+                {{else if c.auditStatus == 5}}
+                    <a href="javascript:void(0);" class="btn btn-link text-navy" data-action="viewPaymentDetails" data-id="{{c.id}}">审批中</a>
+                {{/if}}
             </td>
             <!--以下是付款节点-->
             <td class="text-center no-padding" colspan="2">

@@ -11,4 +11,6 @@ public interface RelationRecordDao extends BaseDao<RelationRecordEntity> {
     int deleteRelationRecord(RelationRecordEntity entity);
 
     List<RelationRecordEntity> getRelationRecord(QueryRelationRecordDTO query);
+
+    RelationRecordEntity getRelationRecodeByTargetId(String targetId);
 }

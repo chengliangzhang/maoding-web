@@ -17,6 +17,16 @@
         this.settings = $.extend({}, defaults, options);
         this._defaults = defaults;
         this._name = pluginName;
+
+        /******************** 筛选字段 ********************/
+        this._filterData = {
+            startDate:null,
+            endDate:null,
+            applyName:null,
+            leaveType:null,
+            auditPerson:null
+        };
+
         this.init();
     }
 
@@ -37,17 +47,13 @@
             var option = {};
             option.classId = 'mySummaryListBox';
             option.param = {};
-            option.param.type = that.settings.$type;
 
-            option.param.startDate = $('input[name="startDate"]').val();
-            option.param.endDate = $('input[name="endDate"]').val();
-            option.param.applyName = $('input[name="applyName"]').val();
-            option.param.leaveType = $('input[name="leaveType"]').val();
-            option.param.auditPerson = $('input[name="auditPerson"]').val();
+            that._filterData.type = that.settings.$type;
+            option.param = filterParam(that._filterData);
 
             paginationFun({
-                eleId: '#mySummary-pagination-container',
-                loadingId: '#mySummaryListData',
+                eleId: '#data-pagination-container',
+                loadingId: '.data-list-container',
                 url: restApi.url_getLeaveDetailList,
                 params: option.param
             }, function (response) {
@@ -58,13 +64,13 @@
                     $data.type = that.settings.$type;
                     $data.myDataList = response.data.data;
                     $data.rootPath = window.rootPath;
-                    $data.pageIndex = $("#mySummary-pagination-container").pagination('getPageIndex');
+                    $data.pageIndex = $("#data-pagination-container").pagination('getPageIndex');
                     var html = template('m_summary/m_leaveSummary_list', $data);
-                    $('#mySummaryListData').html(html);
+                    $(that.element).find('.data-list-container').html(html);
+
                     rolesControl();
                     that.bindClickOpenShowExp($data.myDataList);
                     that.bindActionClick();
-                    that.filterHover();
 
                     return false;
                 } else {
@@ -76,7 +82,7 @@
         //打开查看报销详情
         , bindClickOpenShowExp: function (data) {//openShowExp
             var that = this;
-            $('#mySummaryListData').find('tr[data-action="openShowExp"]').each(function () {
+            $(that.element).find('.data-list-container tr[data-action="openShowExp"]').each(function () {
                 $(this).bind('click', function (event) {
                     var i = $(this).attr('i');
                     var options = {};
@@ -95,20 +101,7 @@
                 });
             });
         }
-        //筛选hover事件
-        ,filterHover:function () {
-            var that =  this;
 
-            $(that.element).find('.mySummaryListBox  th').hover(function () {
-                if( $(this).find(' .icon-filter i').hasClass('icon-shaixuan') && !$(this).find(' .icon-filter i').hasClass('fc-v1-blue')){
-                    $(this).find(' .icon-filter').show();
-                }
-            },function () {
-                if( $(this).find(' .icon-filter i').hasClass('icon-shaixuan') && !$(this).find(' .icon-filter i').hasClass('fc-v1-blue')) {
-                    $(this).find(' .icon-filter').hide();
-                }
-            });
-        }
         //绑定事件
         , bindActionClick:function () {
             var that = this;
@@ -117,183 +110,68 @@
 
                 var $this = $(this);
                 var id = $this.attr('id');
+                var filterArr = id.split('_');
                 switch (id){
-                    case 'filterAuditPerson'://审批人
-                    case 'filterApplyName': //申请人
-                        var txtVal = '',placeholder='';
-                        if(id=='filterAuditPerson'){
-                            txtVal = $('input[name="auditPerson"]').val();
-                            placeholder = '审批人';
-                        }else{
-                            txtVal = $('input[name="applyName"]').val();
-                            placeholder = '申请人';
-                        }
+                    case 'filter_auditPerson'://审批人
+                    case 'filter_applyName': //申请人
 
-                        if(txtVal!=''){
-                            $this.closest('th').find('.icon-filter i').addClass('fc-v1-blue');
-                            $this.closest('th').find('.icon-filter').show();
-                        }
-                        $this.on('click',function () {
-                            S_dialog.dialog({
-                                contentEle: 'dialogOBox',
-                                ele:id,
-                                lock: 2,
-                                align: 'bottom right',
-                                quickClose:true,
-                                noTriangle:true,
-                                width: '220',
-                                minHeight:'100',
-                                tPadding: '0px',
-                                url: rootPath+'/assets/module/m_common/m_dialog.html'
+                        var option = {};
+                        option.inputValue = that._filterData[filterArr[1]];
+                        option.eleId = id;
+                        option.oKCallBack = function (data) {
 
-
-                            },function(d){//加载html后触发
-
-                                var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-
-
-                                var iHtml = template('m_filterableField/m_filter_input',{
-                                    txtVal:txtVal,
-                                    placeholder:placeholder
-                                });
-
-                                $(dialogEle).html(iHtml);
-                                $(dialogEle).find('button[data-action="sureFilter"]').on('click',function () {
-                                    var val = $(dialogEle).find('input[name="txtVal"]').val();
-
-                                    if(id=='filterAuditPerson'){
-                                        $(that.element).find('input[name="auditPerson"]').val(val);
-                                    }else{
-                                        $(that.element).find('input[name="applyName"]').val(val);
-                                    }
-
-                                    that.getData();
-
-                                    S_dialog.close($(dialogEle));
-                                });
-
-                            });
-                        });
-
+                            that._filterData[filterArr[1]] = data;
+                            that.getData();
+                        };
+                        $(that.element).find('#'+id).m_filter_input(option, true);
                         break;
-                    case 'filterApplyDate': //申请时间
+                    case 'filter_startDate_endDate': //申请时间
+                        var timeData = {};
+                        timeData.startTime = that._filterData[filterArr[1]];
+                        timeData.endTime = that._filterData[filterArr[2]];
 
-                        var startTime = '';
-                        var endTime = '';
+                        var option = {};
+                        option.timeData = timeData;
+                        option.eleId = id;
+                        option.okCallBack = function (data) {
 
-                        startTime = $(that.element).find('input[name="startDate"]').val();
-                        endTime = $(that.element).find('input[name="endDate"]').val();
-
-                        if(startTime!='' || endTime!=''){
-                            $this.closest('th').find('.icon-filter i').addClass('fc-v1-blue');
-                            $this.closest('th').find('.icon-filter').show();
-                        }
-                        $this.on('click',function () {
-                            S_dialog.dialog({
-                                contentEle: 'dialogOBox',
-                                ele:id,
-                                lock: 2,
-                                align: 'bottom right',
-                                quickClose:true,
-                                noTriangle:true,
-                                width: '220',
-                                minHeight:'100',
-                                tPadding: '0px',
-                                url: rootPath+'/assets/module/m_common/m_dialog.html'
-
-
-                            },function(d){//加载html后触发
-
-                                var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-
-                                var iHtml = template('m_filterableField/m_filter_time',{
-                                    startTime:startTime,
-                                    endTime:endTime
-                                });
-
-                                $(dialogEle).html(iHtml);
-                                $(dialogEle).find('button[data-action="sureTimeFilter"]').off('click').on('click',function () {
-
-                                    var startTime = $(dialogEle).find('input[name="startTime"]').val();
-                                    var endTime = $(dialogEle).find('input[name="endTime"]').val();
-
-                                    $(that.element).find('input[name="startDate"]').val(startTime);
-                                    $(that.element).find('input[name="endDate"]').val(endTime);
-
-                                    that.getData();
-
-                                    S_dialog.close($(dialogEle));
-                                });
-                                $(dialogEle).find('button[data-action="clearTimeInput"]').off('click').on('click',function () {
-                                    $(dialogEle).find('input').val('');
-                                });
-                                $(dialogEle).find('i.fa-calendar').off('click').on('click',function () {
-                                    $(this).closest('.input-group').find('input').focus();
-                                });
-
-                            });
-                        });
-
+                            that._filterData[filterArr[1]] = data.startTime;
+                            that._filterData[filterArr[2]] = data.endTime;
+                            that.getData();
+                        };
+                        $(that.element).find('#'+id).m_filter_time(option, true);
                         break;
-                    case 'filterLeaveType': //申请类型
+                    case 'filter_leaveType': //申请类型
 
-                        var currCheckValue = '',selectList = [];
+                        var selectList = [],selectedArr = [];
 
-                        currCheckValue = $(that.element).find('input[name="leaveType"]').val();
                         selectList = [
-                            {fieldName:'全部',fieldValue:''},
-                            {fieldName:'年假',fieldValue:'1'},
-                            {fieldName:'事假',fieldValue:'2'},
-                            {fieldName:'病假',fieldValue:'3'},
-                            {fieldName:'调休假',fieldValue:'4'},
-                            {fieldName:'婚假',fieldValue:'5'},
-                            {fieldName:'产假',fieldValue:'6'},
-                            {fieldName:'陪产假',fieldValue:'7'},
-                            {fieldName:'丧假',fieldValue:'8'},
-                            {fieldName:'其他',fieldValue:'9'}
+                            {name:'年假',id:'1'},
+                            {name:'事假',id:'2'},
+                            {name:'病假',id:'3'},
+                            {name:'调休假',id:'4'},
+                            {name:'婚假',id:'5'},
+                            {name:'产假',id:'6'},
+                            {name:'陪产假',id:'7'},
+                            {name:'丧假',id:'8'},
+                            {name:'其他',id:'9'}
                         ];
+                        if(!isNullOrBlank(that._filterData[filterArr[1]]))
+                            selectedArr.push(that._filterData[filterArr[1]]);
 
-                        if(currCheckValue!=''){
-                            $this.closest('th').find('.icon-filter i').addClass('fc-v1-blue');
-                            $this.closest('th').find('.icon-filter').show();
-                        }
-
-                        var iHtml = template('m_filterableField/m_filter_select',{
-                            currCheckValue:currCheckValue,
-                            selectList:selectList
-                        });
-                        var iTextObj = iHtml.getTextWH();
-                        var iWHObj = setDialogWH(iTextObj.width,iTextObj.height);
-
-                        $this.on('click',function () {
-                            S_dialog.dialog({
-                                contentEle: 'dialogOBox',
-                                ele:id,
-                                lock: 2,
-                                align: 'bottom right',
-                                quickClose:true,
-                                noTriangle:true,
-                                width: iWHObj.width,
-                                height:iWHObj.height,
-                                tPadding: '0px',
-                                url: rootPath+'/assets/module/m_common/m_dialog.html'
-
-                            },function(d){//加载html后触发
-
-                                var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-                                $(dialogEle).html(iHtml);
-
-                                $(dialogEle).find('.dropdown-menu a').on('click',function () {
-
-                                    var val = $(this).attr('data-state-no');
-
-                                    $(that.element).find('input[name="leaveType"]').val(val);
-
-                                    that.getData();
-                                    S_dialog.close($(dialogEle));
-                                });
-                            });
-                        });
+                        var option = {};
+                        option.selectArr = selectList;
+                        option.selectedArr = selectedArr;
+                        option.eleId = id;
+                        option.selectedCallBack = function (data) {
+                            if(data && data.length>0){
+                                that._filterData[filterArr[1]] = data[0];
+                            }else{
+                                that._filterData[filterArr[1]] = null;
+                            }
+                            that.getData();
+                        };
+                        $(that.element).find('#'+id).m_filter_select(option, true);
 
                         break;
                 }

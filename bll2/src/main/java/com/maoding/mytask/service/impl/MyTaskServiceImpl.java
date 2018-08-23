@@ -1442,10 +1442,10 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                 myTask.getTaskType() == SystemParameters.OTHER_FEE_FOR_PAY
                 || myTask.getTaskType()==SystemParameters.TECHNICAL_REVIEW_FEE_FOR_PAY_2
                 || myTask.getTaskType()==SystemParameters.COOPERATIVE_DESIGN_FEE_FOR_PAY_2)) {//其他费用－付款
-            detailDTO.setPayDate(paidDate);
+            detailDTO.setDateStr(paidDate);
             detailDTO.setOperateFlag(CompanyBillType.DIRECTION_PAYER);
         } else {
-            detailDTO.setPaidDate(paidDate);
+            detailDTO.setDateStr(paidDate);
             detailDTO.setOperateFlag(CompanyBillType.DIRECTION_PAYEE);
         }
         detailDTO.setCurrentCompanyUserId(handler.getId());
@@ -1594,11 +1594,12 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         detailDTO.setCurrentCompanyUserId(handler.getId());
         if (myTask.getTaskType() == 16 || myTask.getTaskType() == 18) {
             detailDTO.setPayDate(paidDate);
-            detailDTO.setOperateFlag(CompanyBillType.DIRECTION_PAYEE);
-        }
-        if (myTask.getTaskType() == 17 || myTask.getTaskType() == 19) {
-            detailDTO.setPaidDate(paidDate);
             detailDTO.setOperateFlag(CompanyBillType.DIRECTION_PAYER);//付款
+
+        }
+        if (myTask.getTaskType() == 17 || myTask.getTaskType() == 19) {//到账
+            detailDTO.setPaidDate(paidDate);
+            detailDTO.setOperateFlag(CompanyBillType.DIRECTION_PAYEE);
         }
         detailDTO.setProjectId(myTask.getProjectId());
         detailDTO.setCurrentCompanyId(myTask.getCompanyId());
@@ -1734,7 +1735,20 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
                 messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_32);
                 break;
             case 29:
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_32);
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_100);
+                break;
+            case 30:
+                //查询是否有申请
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_111);
+                break;
+            case 31:
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_110);
+                break;
+            case 32:
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_114);
+                break;
+            case 33:
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_113);
                 break;
             case SystemParameters.DELIVER_CONFIRM_FINISH:
                 messageEntity.setUserId(task.getCreateBy());
@@ -1978,13 +1992,13 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
             case 29:
                 return "发票确认";
             case 30:
-                return "技术审查费 - 确认付款日期";
+                return "技术审查费 - 付款确认";
             case 31:
-                return "技术审查费 - 确认到账日期";
+                return "技术审查费 - 到账确认";
             case 32:
-                return "合作设计费 - 确认付款日期";
+                return "合作设计费 - 付款确认";
             case 33:
-                return "合作设计费 - 确认到账日期";
+                return "合作设计费 - 到账确认";
             case 22://所有设计任务已完成，给组织的设计负责人推送任务
                 return "审批任务 - "+taskName;
             case SystemParameters.DELIVER_CONFIRM_FINISH:

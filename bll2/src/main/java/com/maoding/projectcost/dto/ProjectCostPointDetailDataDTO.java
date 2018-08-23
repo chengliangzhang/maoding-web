@@ -38,6 +38,11 @@ public class ProjectCostPointDetailDataDTO {
     private String feeStatus;
 
     /**
+     * 审批状态
+     */
+    private String auditStatus;
+
+    /**
      * 金额
      */
     private BigDecimal fee;
@@ -365,5 +370,13 @@ public class ProjectCostPointDetailDataDTO {
 
     public void setNotPayFee2(BigDecimal notPayFee2) {
         this.notPayFee2 = notPayFee2;
+    }
+
+    public String getAuditStatus() {
+        return auditStatus;
+    }
+
+    public void setAuditStatus(String auditStatus) {
+        this.auditStatus = auditStatus;
     }
 }

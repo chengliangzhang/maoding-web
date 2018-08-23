@@ -21,6 +21,7 @@
         this._companyList = null;//组织列表
         this._companyListBySelect = null;//筛选组织
         this._selectedOrg = null;//当前组织筛选-选中组织对象
+        this.initParam();
         this.init();
     }
 
@@ -30,6 +31,19 @@
             var that = this;
             that.initHtmlData();
         }
+        //初始化参数
+        ,initParam:function () {
+            var that = this;
+            /******************** 筛选字段 ********************/
+            that._filterData = {
+                startDate:null,
+                endDate:null,
+                receivableId:null,
+                feeType:null,
+                associatedOrg:null,
+                projectName:null
+            };
+        }
         //初始化数据并加载模板
         ,initHtmlData:function () {
             var that = this;
@@ -38,34 +52,35 @@
             var option = {};
             option.$selectedCallBack = function (data) {
                 that._selectedOrg = data;
-                that.renderReceivableList();
+                that.renderDataList();
             };
             option.$renderCallBack = function () {
-                that.bindSetTime();
-                that.bindChoseTime();
                 that.bindRefreshBtn();
             };
             $(that.element).find('#selectOrg').m_org_chose_byTree(option);
 
+
+            var timeOption = {};
+            timeOption.selectTimeCallBack = function (data) {
+                console.log(data);
+                if(!isNullOrBlank(data.startTime))
+                    that._filterData.startDate = data.startTime;
+
+                if(!isNullOrBlank(data.endTime))
+                    that._filterData.endDate = data.endTime;
+
+                that.renderDataList();
+            };
+            $(that.element).find('.time-combination').m_filter_timeCombination(timeOption,true);
+
         }
         //渲染应收list
-        ,renderReceivableList:function () {
+        ,renderDataList:function () {
             var that = this;
             var option = {};
             option.param = {};
-            option.param.receivableId=that._selectedOrg.id;
-            var startDate=$(that.element).find('#ipt_startTime').val();
-            var endDate=$(that.element).find('#ipt_endTime').val();
-            if(startDate!=''){
-                option.param.startDate=startDate;
-            }
-            if(endDate!=''){
-                option.param.endDate=endDate;
-            }
-
-            option.param.feeType=$(that.element).find('input[name="feeType"]').val();
-            option.param.associatedOrg=$(that.element).find('input[name="associatedOrg"]').val();
-            option.param.projectName=$(that.element).find('input[name="projectName"]').val();
+            that._filterData.receivableId = that._selectedOrg.id;
+            option.param = filterParam(that._filterData);
 
             paginationFun({
                 eleId: '#data-pagination-container',
@@ -84,7 +99,6 @@
                     $(that.element).find('.data-list-container').html(html);
                     that.bindViewDetail();
                     that.bindGoExpensesPage();
-                    that.filterHover();
                     that.filterActionClick();
 
                 } else {
@@ -92,86 +106,10 @@
                 }
             });
         }
-        //快捷时间
-        , bindSetTime: function () {
-            var that = this;
-            $(that.element).find('a[data-action="setTime"]').click(function () {
-                var days = $(this).attr('data-days');
-                var endTime = getNowDate();
-                var startTime = '';//moment(endTime).subtract(days, 'days').format('YYYY-MM-DD');
-
-                if (endTime != null && endTime.indexOf('-') > -1) {
-
-                    var month = endTime.substring(5, 7) - 0;//当前月份
-
-                    if (days == 30) {//一个月
-
-                        startTime = endTime.substring(0, 8) + '01';
-
-                    } else if (days == 90) {//一季度
-
-                        if (month >= 1 && month <= 3) {//第一季度
-                            startTime = endTime.substring(0, 5) + '01-01';
-                        } else if (month >= 4 && month <= 6) {//第二季度
-                            startTime = endTime.substring(0, 5) + '04-01';
-                        } else if (month >= 7 && month <= 9) {//第三季度
-                            startTime = endTime.substring(0, 5) + '07-01';
-                        } else if (month >= 10 && month <= 12) {//第四季度
-                            startTime = endTime.substring(0, 5) + '10-01';
-                        }
-
-                    } else if (days == 180) {//半年
-
-                        if (month >= 1 && month <= 6) {//前半年
-                            startTime = endTime.substring(0, 5) + '01-01';
-                        } else if (month >= 7 && month <= 12) {//后半年
-                            startTime = endTime.substring(0, 5) + '07-01';
-                        }
-
-                    } else if (days == 360) {//一年
-
-                        startTime = endTime.substring(0, 5) + '01-01';
-                    }
-
-                }
-
-                $('#ipt_startTime').val(startTime);
-                $('#ipt_endTime').val(endTime);
-                that.renderReceivableList();
-                $(this).blur();
-            });
-        }
-        //时间绑定事件
-        , bindChoseTime:function () {
-            var that = this;
-            $(that.element).find('input[name="startTime"]').off('click').on('click',function () {
-
-                var endTime = $(that.element).find('input[name="endTime"]').val();
-                var onpicked =function(dp){
-
-                    that.renderReceivableList();
-
-                };
-                WdatePicker({el:this,maxDate:endTime,onpicked:onpicked})
-            });
-            $(that.element).find('input[name="endTime"]').off('click').on('click',function () {
-
-                var startTime = $(that.element).find('input[name="startTime"]').val();
-                var onpicked =function(dp){
-
-                    that.renderReceivableList();
-
-                };
-                WdatePicker({el:this,minDate:startTime,onpicked:onpicked})
-            });
-            $(that.element).find('i.fa-calendar').off('click').on('click',function () {
-                $(this).closest('.input-group').find('input').click();
-            });
-        }
         , bindRefreshBtn:function () {
             var that = this;
             $(that.element).find('button[data-action="refreshBtn"]').on("click", function (e) {
-
+                that.initParam();
                 that.initHtmlData();
                 return false;
             })
@@ -198,19 +136,6 @@
                 return false;
             });
         }
-        //筛选hover事件
-        ,filterHover:function () {
-            var that =  this;
-            $(that.element).find('.data-list-box  th').hover(function () {
-                if( $(this).find(' .icon-filter i').hasClass('icon-shaixuan') && !$(this).find(' .icon-filter i').hasClass('fc-v1-blue')){
-                    $(this).find(' .icon-filter').show();
-                }
-            },function () {
-                if( $(this).find(' .icon-filter i').hasClass('icon-shaixuan') && !$(this).find(' .icon-filter i').hasClass('fc-v1-blue')) {
-                    $(this).find(' .icon-filter').hide();
-                }
-            });
-        }
         //筛选事件
         ,filterActionClick:function () {
             var that = this;
@@ -218,124 +143,57 @@
 
                 var $this = $(this);
                 var id = $this.attr('id');
+                var filterArr = id.split('_');
                 switch (id){
-                    case 'filterFeeType'://收支类型
-                    case 'filterAssociatedOrg'://关联组织
+                    case 'filter_feeType'://收支类型
+                    case 'filter_associatedOrg'://关联组织
 
-                        var currCheckValue = '',selectList = [];
-                        if(id=='filterFeeType'){
-                            currCheckValue = $(that.element).find('input[name="feeType"]').val()
+                        var selectedArr = [],selectList = [];
+                        if(id=='filter_feeType'){
                             selectList = [
-                                {fieldName:'全部',fieldValue:''},
-                                {fieldName:'合同回款',fieldValue:'1'},
-                                {fieldName:'技术审查费',fieldValue:'2'},
-                                {fieldName:'合作设计费',fieldValue:'3'},
-                                {fieldName:'其他收支',fieldValue:'4'}
+                                {name:'技术审查费',id:'2'},
+                                {name:'合作设计费',id:'3'},
+                                {name:'其他收支',id:'4'}
                             ]
-                        }else if(id=='filterAssociatedOrg'){
-                            currCheckValue = $(that.element).find('input[name="associatedOrg"]').val()
-                            selectList.push({fieldName:'全部',fieldValue:''});
-                            /*if(that._companyList!=null && that._companyList.length>0){
-                                $.each(that._companyList, function (i, item) {
-                                    selectList.push({fieldValue: item.id, fieldName: item.companyName});
-                                });
-                            }*/
+                        }
+                        else if(id=='filter_associatedOrg'){
+
                             if(that._companyListBySelect!=null && Object.getOwnPropertyNames(that._companyListBySelect).length>0){
                                 $.each(that._companyListBySelect, function (key, value) {
-                                    selectList.push({fieldValue: key, fieldName: value});
+                                    selectList.push({id: key, name: value});
                                 });
                             }
                         }
-                        if(currCheckValue!=''){
-                            $this.closest('th').find('.icon-filter i').addClass('fc-v1-blue');
-                            $this.closest('th').find('.icon-filter').show();
-                        }
-                        $this.on('click',function () {
-                            S_dialog.dialog({
-                                contentEle: 'dialogOBox',
-                                ele:id,
-                                lock: 2,
-                                align: 'bottom right',
-                                quickClose:true,
-                                noTriangle:true,
-                                width: '180',
-                                height:'195',
-                                tPadding: '0px',
-                                url: rootPath+'/assets/module/m_common/m_dialog.html'
 
-                            },function(d){//加载html后触发
+                        if(!isNullOrBlank(that._filterData[filterArr[1]]))
+                            selectedArr.push(that._filterData[filterArr[1]]);
 
-                                var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-
-                                var iHtml = template('m_filterableField/m_filter_select',{
-                                    currCheckValue:currCheckValue,
-                                    selectList:selectList
-                                });
-                                $(dialogEle).html(iHtml);
-                                $(dialogEle).find('.dropdown-menu a').on('click',function () {
-
-                                    var val = $(this).attr('data-state-no');
-                                    if(id=='filterFeeType'){
-                                        $(that.element).find('input[name="feeType"]').val(val);
-                                    }else if(id=='filterAssociatedOrg'){
-                                        $(that.element).find('input[name="associatedOrg"]').val(val);
-                                    }
-                                    that.renderReceivableList();
-                                    S_dialog.close($(dialogEle));
-                                });
-                            });
-                        });
+                        var option = {};
+                        option.selectArr = selectList;
+                        option.selectedArr = selectedArr;
+                        option.eleId = id;
+                        option.selectedCallBack = function (data) {
+                            if(data && data.length>0){
+                                that._filterData[filterArr[1]] = data[0];
+                            }else{
+                                that._filterData[filterArr[1]] = null;
+                            }
+                            that.renderDataList();
+                        };
+                        $(that.element).find('#'+id).m_filter_select(option, true);
 
                         break;
-                    case 'filterProjectName': //项目
-                        var txtVal = '',placeholder='';
-                        if(id=='filterProjectName'){
-                            txtVal = $('input[name="projectName"]').val();
-                            placeholder = '请输入项目名称';
-                        }
+                    case 'filter_projectName': //项目
 
-                        if(txtVal!=''){
-                            $this.closest('th').find('.icon-filter i').addClass('fc-v1-blue');
-                            $this.closest('th').find('.icon-filter').show();
-                        }
-                        $this.on('click',function () {
-                            S_dialog.dialog({
-                                contentEle: 'dialogOBox',
-                                ele:id,
-                                lock: 2,
-                                align: 'bottom right',
-                                quickClose:true,
-                                noTriangle:true,
-                                width: '220',
-                                minHeight:'100',
-                                tPadding: '0px',
-                                url: rootPath+'/assets/module/m_common/m_dialog.html'
+                        var option = {};
+                        option.inputValue = that._filterData[filterArr[1]];
+                        option.eleId = id;
+                        option.oKCallBack = function (data) {
 
-
-                            },function(d){//加载html后触发
-
-                                var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-
-
-                                var iHtml = template('m_filterableField/m_filter_input',{
-                                    txtVal:txtVal,
-                                    placeholder:placeholder
-                                });
-
-                                $(dialogEle).html(iHtml);
-                                $(dialogEle).find('button[data-action="sureFilter"]').on('click',function () {
-                                    var val = $(dialogEle).find('input[name="txtVal"]').val();
-
-                                    if(id=='filterProjectName'){
-                                        $(that.element).find('input[name="projectName"]').val(val);
-                                    }
-                                    that.renderReceivableList();
-
-                                    S_dialog.close($(dialogEle));
-                                });
-
-                            });
-                        });
+                            that._filterData[filterArr[1]] = data;
+                            that.renderDataList();
+                        };
+                        $(that.element).find('#'+id).m_filter_input(option, true);
 
                         break;
                 }

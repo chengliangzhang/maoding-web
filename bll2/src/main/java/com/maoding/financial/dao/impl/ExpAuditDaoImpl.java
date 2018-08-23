@@ -51,7 +51,7 @@ public class ExpAuditDaoImpl extends GenericDao<ExpAuditEntity> implements ExpAu
     public ExpAuditEntity getLastAuditByMainId(String mainId) {
         List<ExpAuditEntity> list = this.selectByMainId(mainId);
         if(!CollectionUtils.isEmpty(list)){
-            return list.get(0);
+            return list.get(list.size()-1);
         }
         return null;
     }

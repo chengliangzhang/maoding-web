@@ -29,15 +29,13 @@ public interface ProjectCostConst {
     //合作设计费付款
     int FEE_TYPE_COOPERATE_PAY = 11;
 
-    Map<Integer,String> COST_TYPE_MAP = new HashMap<Integer,String>(){
+    Map<String,String> COST_TYPE_MAP = new HashMap<String,String>(){
         {
-            put(ProjectCostConst.FEE_TYPE_CONTRACT,"合同回款");
-            put(ProjectCostConst.FEE_TYPE_TECHNICAL,"技术审查费");
-            put(ProjectCostConst.FEE_TYPE_COOPERATE,"合作设计费");
-            put(ProjectCostConst.FEE_TYPE_OUT,"其他费用（付款）");
-            put(ProjectCostConst.FEE_TYPE_IN,"其他费用（收款）");
-
+            put("1","合同回款");
+            put("2","技术审查费");
+            put("3","合作设计费");
+            put("4","其他付款");
+            put("5","其他收款");
         }
     };
-
 }

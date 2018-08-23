@@ -8,6 +8,7 @@
     var pluginName = "m_cost_confirmInvoice",
         defaults = {
             isDialog:true,
+            dialogHeight:null,//弹窗高度
             projectId:null,
             invoiceId:null,//发票ID
             pointInfo:null,//节点信息
@@ -70,7 +71,7 @@
                     contentEle: 'dialogOBox',
                     lock: 3,
                     width: '705',
-                    minHeight: '300',
+                    minHeight: that.settings.dialogHeight||'300',
                     tPadding: '0px',
                     url: rootPath+'/assets/module/m_common/m_dialog.html',
                     cancel:function () {
