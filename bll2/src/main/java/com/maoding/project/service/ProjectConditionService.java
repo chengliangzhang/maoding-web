@@ -1,9 +1,9 @@
 package com.maoding.project.service;
 
-import com.maoding.core.base.dto.CoreQueryDTO;
 import com.maoding.core.base.service.BaseService;
 import com.maoding.project.dto.OptionalTitleSelectedDTO;
 import com.maoding.project.dto.ProjectConditionDTO;
+import com.maoding.project.dto.TitleQueryDTO;
 import com.maoding.project.entity.ProjectConditionEntity;
 
 import java.util.List;
@@ -34,5 +34,5 @@ public interface ProjectConditionService extends BaseService<ProjectConditionEnt
      *                accountId 查询用户编号，默认为当前用户编号
      *                currentCompanyId 查询用户所在公司编号，默认为当前选择公司编号
      **/
-    OptionalTitleSelectedDTO listOptionalTitle(CoreQueryDTO query);
+    OptionalTitleSelectedDTO listOptionalTitle(TitleQueryDTO query);
 }
