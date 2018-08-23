@@ -2956,4 +2956,44 @@ CREATE OR REPLACE VIEW `md_title` AS
     inner join md_optional_title optional_title on (find_in_set(optional_title.code,user_title.code) and optional_title.can_be_hide = 1)
     inner join md_type_filter filter_type on (filter_type.id = optional_title.filter_type)
   where user_title.status = '0';
+
+-- 项目基本信息
+CREATE OR REPLACE VIEW `md_project` AS
+  select
+    project_list.id,
+    project_list.project_name as name,
+    project_list.company_id,
+    project_list.company_bid,
+    project_list.project_type,
+    project_list.project_no,
+    project_list.status,
+    ifnull(project_list.project_create_date,project_list.create_date) as create_date,
+    project_list.contract_date,
+    concat(project_list.province,project_list.city) as address,
+    create_company.company_name as create_company_name,
+    create_company_user.user_name as create_company_user_name,
+    concat(create_company.company_name,'/',create_company_user.user_name) as creator
+  from maoding_web_project project_list
+    inner join maoding_web_company create_company on (create_company.status = '0' and create_company.id = project_list.company_id)
+    inner join maoding_web_company_user create_company_user on (
+      create_company_user.company_id = project_list.company_id
+      and create_company_user.user_id = project_list.create_by)
+  where project_list.pstatus = '0';
+
+-- 项目参与人（md_web_role_project)
+
+-- 任务参与人（md_web_role_task)
+
+-- 项目功能分类
+
+-- 项目参与组织
+
+-- 项目收付款计划
+
+-- 项目实际收付款
+
+-- 项目自定义属性
+
+-- 程序内计算：甲方、状态
+
 -- -- -- 创建及更改视图 -- 结束 -- -- --
