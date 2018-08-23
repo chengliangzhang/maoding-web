@@ -1173,6 +1173,16 @@ public class ProjectController extends BaseController {
         return AjaxMessage.succeed("保存成功");
     }
 
+    /**
+     * 描述       获取项目列表
+     * 日期       2018/8/23
+     * @author   张成亮
+     **/
+    @RequestMapping(value = "/listProject", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage listProject(@RequestBody ProjectQueryDTO query) throws Exception {
+        return AjaxMessage.failed("尚未实现");
+    }
 
 }
 
