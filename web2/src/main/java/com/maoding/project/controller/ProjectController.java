@@ -4,7 +4,6 @@ import com.maoding.commonModule.dto.ContentDTO;
 import com.maoding.commonModule.dto.TemplateQueryDTO;
 import com.maoding.commonModule.service.ConstService;
 import com.maoding.core.base.controller.BaseController;
-import com.maoding.core.base.dto.CoreQueryDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.core.constant.SystemParameters;
@@ -1136,14 +1135,44 @@ public class ProjectController extends BaseController {
      * @param   query 查询条件
      *                accountId 查询用户编号，默认为当前用户编号
      *                currentCompanyId 查询用户所在公司编号，默认为当前选择公司编号
+     *                type 查询用户所在公司编号，默认为当前选择公司编号
      **/
     @RequestMapping(value ={"/listOptionalTitle"} , method = RequestMethod.POST)
     @ResponseBody
-    public AjaxMessage listOptionalTitle(@RequestBody CoreQueryDTO query) throws Exception {
+    public AjaxMessage listOptionalTitle(@RequestBody TitleQueryDTO query) throws Exception {
         updateCurrentUserInfo(query);
         OptionalTitleSelectedDTO result = projectConditionService.listOptionalTitle(query);
         return AjaxMessage.succeed(result);
     }
+
+    /**
+     * 描述    获取标题栏设置
+     * 日期     2018/8/23
+     * @author  张成亮
+     * @param
+     **/
+    @RequestMapping(value = "/listTitle", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage listTitle(@RequestBody TitleQueryDTO query) throws Exception {
+        updateCurrentUserInfo(query);
+        List<TitleColumnDTO> list = null;
+        return AjaxMessage.failed(list);
+    }
+
+    /**
+     * 描述    保存标题栏设置
+     * 日期     2018/8/23
+     * @author  张成亮
+     * @param
+     **/
+    @RequestMapping(value = "/changeTitle", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage changeOptionalTitle(@RequestBody TitleEditDTO request) throws Exception {
+        updateCurrentUserInfo(request);
+        return AjaxMessage.failed(null);
+    }
+
+
 }
 
 
