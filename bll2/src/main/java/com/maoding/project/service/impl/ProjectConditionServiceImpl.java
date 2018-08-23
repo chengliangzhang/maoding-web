@@ -1,10 +1,7 @@
 package com.maoding.project.service.impl;
 
 import com.maoding.core.base.service.GenericService;
-import com.maoding.core.util.ObjectUtils;
-import com.maoding.core.util.StringUtil;
-import com.maoding.core.util.StringUtils;
-import com.maoding.core.util.TraceUtils;
+import com.maoding.core.util.*;
 import com.maoding.project.dao.ProjectConditionDao;
 import com.maoding.project.dto.*;
 import com.maoding.project.entity.ProjectConditionEntity;
@@ -13,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -89,40 +85,25 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
         //从数据库内读取所有的可选标题栏
         List<OptionalTitleGroupDTO> optionalTitleGroupList = projectConditionDao.listOptionalTitleGroup(query);
 
-        //设置所有的被选中状态为"0"
-//        optionalTitleGroupList.forEach(group-> group.getOptionalTitleList().forEach(title->title.setIsSelected("0")));
-
-        //查询当前的标题选项状态
-        Map<String,Object> conditionQuery = new HashMap<>();
-        //过滤出当前组织
-        conditionQuery.put("companyId",query.getCurrentCompanyId());
-        //过滤出当前用户
-        conditionQuery.put("userId",query.getAccountId());
-        //过滤出有效的
-        conditionQuery.put("status","0");
-
-        List<ProjectConditionDTO> list = selProjectConditionList(conditionQuery);
+        List<TitleColumnDTO> list = projectConditionDao.listTitle(query);
 
         //更新被选中状态，并生成已选择列表
         List<OptionalTitleDTO> selectedTitleList = new ArrayList<>();
         if (ObjectUtils.isNotEmpty(list)){
             //设置查找出的项的被选中状态为"1"
-            for (ProjectConditionDTO condition : list){
-                String[] codeArray = condition.getCode().split(",");
-                for (String code : codeArray) {
-                    for (OptionalTitleGroupDTO optionalTitleGroup : optionalTitleGroupList) {
-                        boolean found = false;
-                        for (OptionalTitleDTO optionalTitle : optionalTitleGroup.getOptionalTitleList()) {
-                            if (StringUtils.contains(code, optionalTitle.getCode())) {
-                                optionalTitle.setIsSelected("1");
-                                selectedTitleList.add(optionalTitle);
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (found) {
+            for (TitleColumnDTO title : list){
+                for (OptionalTitleGroupDTO optionalTitleGroup : optionalTitleGroupList) {
+                    boolean found = false;
+                    for (OptionalTitleDTO optionalTitle : optionalTitleGroup.getOptionalTitleList()) {
+                        if (StringUtils.isSame(title.getCode(), optionalTitle.getCode())) {
+                            optionalTitle.setIsSelected("1");
+                            selectedTitleList.add(optionalTitle);
+                            found = true;
                             break;
                         }
+                    }
+                    if (found) {
+                        break;
                     }
                 }
             }
@@ -133,5 +114,68 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
         result.setOptionalTitleGroupList(optionalTitleGroupList);
         result.setSelectedTitleList(selectedTitleList);
         return result;
+    }
+
+    /**
+     * 描述     保存标题设置
+     * 日期     2018/8/23
+     *
+     * @param request 保存请求
+     * @author 张成亮
+     **/
+    @Override
+    public void changeOptionalTitle(TitleEditDTO request) {
+        TraceUtils.check(request.getType() != null,log,"!type不能为空");
+
+        if (ObjectUtils.isNotEmpty(request.getTitleCodeList())){
+            StringBuilder sb = new StringBuilder();
+            for(String code : request.getTitleCodeList()){
+                if (sb.length() > 0){
+                    sb.append(",");
+                }
+                sb.append(code);
+            }
+            TitleQueryDTO query = BeanUtils.createFrom(request,TitleQueryDTO.class);
+            List<TitleColumnDTO> list = projectConditionDao.listTitle(query);
+            if (ObjectUtils.isNotEmpty(list)){
+                String id = StringUtils.left(ObjectUtils.getFirst(list).getId(),32);
+                ProjectConditionEntity entity = new ProjectConditionEntity();
+                entity.setId(id);
+                entity.resetUpdateDate();
+                entity.setUpdateBy(request.getAccountId());
+                entity.setCompanyId(request.getCurrentCompanyId());
+                entity.setUserId(request.getAccountId());
+                entity.setStatus(0);
+                entity.setType(request.getType());
+                entity.setCode(sb.toString());
+                projectConditionDao.updateById(entity);
+            } else {
+                ProjectConditionEntity entity = new ProjectConditionEntity();
+                entity.initEntity();
+                entity.setCreateBy(request.getAccountId());
+                entity.setCompanyId(request.getCurrentCompanyId());
+                entity.setUserId(request.getAccountId());
+                entity.setStatus(0);
+                entity.setType(request.getType());
+                entity.setCode(sb.toString());
+                projectConditionDao.insert(entity);
+            }
+        }
+    }
+
+    /**
+     * 描述       查询标题设置
+     * 日期       2018/8/23
+     *
+     * @param query
+     * @author 张成亮
+     */
+    @Override
+    public List<TitleColumnDTO> listTitle(TitleQueryDTO query) {
+        TraceUtils.check(query.getType() != null,log,"!type不能为空");
+
+        List<TitleColumnDTO> titleList = projectConditionDao.listTitle(query);
+
+        return titleList;
     }
 }

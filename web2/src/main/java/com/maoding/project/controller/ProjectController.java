@@ -1155,7 +1155,7 @@ public class ProjectController extends BaseController {
     @ResponseBody
     public AjaxMessage listTitle(@RequestBody TitleQueryDTO query) throws Exception {
         updateCurrentUserInfo(query);
-        List<TitleColumnDTO> list = null;
+        List<TitleColumnDTO> list = projectConditionService.listTitle(query);
         return AjaxMessage.failed(list);
     }
 
@@ -1169,7 +1169,8 @@ public class ProjectController extends BaseController {
     @ResponseBody
     public AjaxMessage changeOptionalTitle(@RequestBody TitleEditDTO request) throws Exception {
         updateCurrentUserInfo(request);
-        return AjaxMessage.failed(null);
+        projectConditionService.changeOptionalTitle(request);
+        return AjaxMessage.succeed("保存成功");
     }
 
 

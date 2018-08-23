@@ -91,12 +91,31 @@
     <!-- 查找可选标题栏 -->
     <select id="listOptionalTitleGroup" resultMap="OptionalTitleGroupMap" parameterType="com.maoding.project.dto.TitleQueryDTO">
         select option_title.*
-            ,0 as is_selected
+            ,(not option_title.can_be_hide) as is_selected
         from md_optional_title option_title
         <where>
             <if test="type != null">
                 and option_title.classic_type = #{type}
             </if>
         </where>
+    </select>
+
+    <!-- 查找项目列表标题栏 -->
+    <select id="listTitle" resultType="com.maoding.project.dto.TitleColumnDTO" parameterType="com.maoding.project.dto.TitleQueryDTO">
+        select title_list.*
+            ,title_list.field_type as type
+        from md_title title_list
+        <where>
+            <if test="type != null">
+                and title_list.classic_type = #{type}
+            </if>
+            <if test="currentCompanyId != null">
+                and (title_list.company_id = #{currentCompanyId} or title_list.company_id is null)
+            </if>
+            <if test="accountId != null">
+                and (title_list.user_id = #{accountId} or title_list.user_id is null)
+            </if>
+        </where>
+        order by title_list.can_be_hide
     </select>
 </mapper>
