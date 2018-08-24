@@ -331,6 +331,7 @@
             group_concat(distinct if(team_member.is_task_designer,concat(team_member.user_name,','),'') separator '') as designer,
             group_concat(distinct if(team_member.is_task_checker,concat(team_member.user_name,','),'') separator '') as checker,
             group_concat(distinct if(team_member.is_task_auditor,concat(team_member.user_name,','),'') separator '') as auditor,
+            group_concat(distinct if(relation_company.id is not null,concat(relation_company.company_name,','),'') separator '') as relationCompany,
             project_list.*
         from maoding_web_project project_list
             inner join md_project_member member_list on (
@@ -369,6 +370,13 @@
                     and ((team_member.is_task_auditor and team_member.company_user_id != #{auditor}) or (!team_member.is_task_auditor))
                 </if>
             )
+            left join maoding_web_project_task issue_task ON (
+                issue_task.task_status = '0'
+                and issue_task.is_operater_task = 1
+                and issue_task.from_company_id = member_list.company_id
+            )
+            inner join maoding_web_company relation_company on (relation_company.status = '0' and relation_company.id = issue_task.company_id)
+
         <where>
             <include refid="BasicFilterForProjectQuery"/>
         </where>

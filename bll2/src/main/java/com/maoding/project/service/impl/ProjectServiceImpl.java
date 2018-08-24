@@ -2752,8 +2752,8 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         ProjectNeedInfoDTO needFill = getNeedFillInfo(titleList);
 
         //查询主列表，包括projectId、过滤、排序、总数信息
-        List<ProjectVariableDTO> mainList = null;
-        int count = 0;
+        List<ProjectVariableDTO> mainList;
+        int count;
         if (isProjectBasicFilter(query)){
             mainList = projectDao.listProjectBasic(query);
             count = projectDao.getLastQueryCount();

@@ -98,6 +98,17 @@ public class ProjectQueryDTO extends CoreQueryDTO {
     /** 目前没有定义此筛选条件 **/
     @Deprecated
     private String projectName;
+    
+    /** 我的项目还是项目总览：0-项目总览，1-我的项目 **/
+    private Integer type;
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
 
     public Integer getProjectCreateDateOrder() {
         return projectCreateDateOrder;
