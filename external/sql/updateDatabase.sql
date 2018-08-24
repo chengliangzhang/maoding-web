@@ -1607,8 +1607,8 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,3,':status;项目状态','1000000;0,1;1;2;1');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,10,':buildName;功能分类','1000010;0,1;1;3;1');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,11,':address;项目地点','1010000;0,1;1;5;1');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,5,':partyA;甲方','1000000;0,1;1;2;1');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,6,':partyB;乙方','1010000;0,1;1;2;1');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,5,':partA;甲方','1000000;0,1;1;2;1');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,6,':partB;乙方','1010000;0,1;1;2;1');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,12,':relationCompany;合作组织','1000001;0,1;1;2;1');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,8,':projectType;项目类型','1010000;0,1;1;2;1');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,13,':busPersonInCharge;经营负责人','1001000;0,1;2;2;1');

@@ -2766,6 +2766,10 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             mainList = projectDao.listProjectMember(query);
             count = projectDao.getLastQueryCount();
             needFill.setNeedFillMember(false);
+        } else {
+            mainList = projectDao.listProjectBasic(query);
+            count = projectDao.getLastQueryCount();
+            needFill.setNeedFillBasic(false);
         }
 
         //生成idList
@@ -2836,8 +2840,8 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         return (query.getProjectCreateDateStart() != null)
                 || (query.getProjectCreateDateEnd() != null)
                 || (StringUtils.isNotEmpty(query.getStatus()))
-                || (StringUtils.isNotEmpty(query.getPartyA()))
-                || (StringUtils.isNotEmpty(query.getPartyB()))
+                || (StringUtils.isNotEmpty(query.getPartA()))
+                || (StringUtils.isNotEmpty(query.getPartB()))
                 || (query.getSignDateStart() != null)
                 || (query.getSignDateEnd() != null)
                 || (StringUtils.isNotEmpty(query.getCreateCompany()))

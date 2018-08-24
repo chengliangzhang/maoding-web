@@ -31,10 +31,10 @@ public class ProjectQueryDTO extends CoreQueryDTO {
     private String status;
 
     /** 甲方 **/
-    private String partyA;
+    private String partA;
 
     /** 乙方 **/
-    private String partyB;
+    private String partB;
 
     /** 合同签订 **/
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
@@ -147,20 +147,20 @@ public class ProjectQueryDTO extends CoreQueryDTO {
         this.status = status;
     }
 
-    public String getPartyA() {
-        return partyA;
+    public String getPartA() {
+        return partA;
     }
 
-    public void setPartyA(String partyA) {
-        this.partyA = partyA;
+    public void setPartA(String partA) {
+        this.partA = partA;
     }
 
-    public String getPartyB() {
-        return partyB;
+    public String getPartB() {
+        return partB;
     }
 
-    public void setPartyB(String partyB) {
-        this.partyB = partyB;
+    public void setPartB(String partB) {
+        this.partB = partB;
     }
 
     public String getSignDateStart() {
