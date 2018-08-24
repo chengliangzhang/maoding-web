@@ -8,6 +8,7 @@ import com.maoding.commonModule.service.ConstService;
 import com.maoding.conllaboration.SyncCmd;
 import com.maoding.conllaboration.service.CollaborationService;
 import com.maoding.core.base.dto.BaseDTO;
+import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.base.entity.BaseEntity;
 import com.maoding.core.base.service.GenericService;
@@ -2718,5 +2719,144 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             m.setUserId(orgManager.getUserId());
             this.messageService.sendMessage(m);
         }
+    }
+
+    /**
+     * 描述       查询项目列表
+     * 日期       2018/8/24
+     *
+     * @param query
+     * @author 张成亮
+     */
+    @Override
+    public List<ProjectVariableDTO> listProject(ProjectQueryDTO query) {
+        query.setPageIndex(null);
+        query.setPageSize(null);
+        CorePageDTO<ProjectVariableDTO> page = listPageProject(query);
+        return (page != null) ? page.getData() : null;
+    }
+
+    /**
+     * 描述       分页查询项目列表
+     * 日期       2018/8/24
+     *
+     * @param query
+     * @author 张成亮
+     */
+    @Override
+    public CorePageDTO<ProjectVariableDTO> listPageProject(ProjectQueryDTO query) {
+        TitleQueryDTO titleQuery = BeanUtils.createFrom(query,TitleQueryDTO.class);
+        titleQuery.setType(0);
+        List<TitleColumnDTO> titleList = projectConditionService.listTitle(titleQuery);
+
+        ProjectNeedInfoDTO needFill = getNeedFillInfo(titleList);
+
+        //查询主列表，包括projectId、过滤、排序、总数信息
+        List<ProjectVariableDTO> mainList = null;
+        int count = 0;
+        if (isProjectBasicFilter(query)){
+            mainList = projectDao.listProjectBasic(query);
+            count = projectDao.getLastQueryCount();
+            needFill.setNeedFillBasic(false);
+        } else if (isProjectFunctionFilter(query)) {
+            mainList = projectDao.listProjectFunction(query);
+            count = projectDao.getLastQueryCount();
+            needFill.setNeedFillFunction(false);
+        } else if (isProjectMemberFilter(query)) {
+            mainList = projectDao.listProjectMember(query);
+            count = projectDao.getLastQueryCount();
+            needFill.setNeedFillMember(false);
+        }
+
+        //生成idList
+        if (ObjectUtils.isNotEmpty(mainList)){
+            //生成补充查询条件
+            List<String> projectIdList = new ArrayList<>();
+            mainList.forEach(project->projectIdList.add(project.getId()));
+            ProjectQueryDTO fillQuery = new ProjectQueryDTO();
+            fillQuery.setIdList(projectIdList);
+
+            //补充其他信息
+            if (needFill.isNeedFillBasic()){
+                List<ProjectVariableDTO> list = projectDao.listProjectBasic(fillQuery);
+                updateProjectVariableList(mainList,list);
+            }
+            if (needFill.isNeedFillFunction()){
+                List<ProjectVariableDTO> list = projectDao.listProjectFunction(fillQuery);
+                updateProjectVariableList(mainList,list);
+            }
+            if (needFill.isNeedFillMember()){
+                List<ProjectVariableDTO> list = projectDao.listProjectMember(fillQuery);
+                updateProjectVariableList(mainList,list);
+            }
+            if (needFill.isNeedFillFee()){
+                List<ProjectVariableDTO> list = projectDao.listProjectFee(fillQuery);
+                updateProjectVariableList(mainList,list);
+            }
+        }
+
+        //创建并返回结果
+        CorePageDTO<ProjectVariableDTO> page = new CorePageDTO<>();
+        page.setTotal(count);
+        page.setPageIndex(DigitUtils.parseInt(query.getPageIndex()));
+        page.setPageSize(DigitUtils.parseInt(query.getPageSize()));
+        page.setData(mainList);
+        return page;
+    }
+
+    //填充其他信息
+    private void updateProjectVariableList(List<ProjectVariableDTO> mainList, List<ProjectVariableDTO> list){
+        for (ProjectVariableDTO info : list) {
+            for (ProjectVariableDTO project : mainList) {
+                if (StringUtils.isSame(info.getId(),project.getId())){
+                    BeanUtils.copyCleanProperties(info,project);
+                    break;
+                }
+            }
+        }
+    }
+
+    //需要填充项目基本信息
+    private ProjectNeedInfoDTO getNeedFillInfo(List<TitleColumnDTO> titleList){
+        ProjectNeedInfoDTO needInfo = new ProjectNeedInfoDTO();
+        for (TitleColumnDTO title : titleList) {
+            if (title.getIsProjectBasic() == 1){
+                needInfo.setNeedFillBasic(true);
+            } else if (title.getIsProjectMember() == 1) {
+                needInfo.setNeedFillMember(true);
+            } else if (title.getIsProjectFee() == 1) {
+                needInfo.setNeedFillFee(true);
+            }
+        }
+        return needInfo;
+    }
+
+    //是项目基本信息过滤条件
+    private boolean isProjectBasicFilter(ProjectQueryDTO query){
+        return (query.getProjectCreateDateStart() != null)
+                || (query.getProjectCreateDateEnd() != null)
+                || (StringUtils.isNotEmpty(query.getStatus()))
+                || (StringUtils.isNotEmpty(query.getPartyA()))
+                || (StringUtils.isNotEmpty(query.getPartyB()))
+                || (query.getSignDateStart() != null)
+                || (query.getSignDateEnd() != null)
+                || (StringUtils.isNotEmpty(query.getCreateCompany()))
+                || (StringUtils.isNotEmpty(query.getAddress()));
+    }
+
+    private boolean isProjectFunctionFilter(ProjectQueryDTO query){
+        return ObjectUtils.isNotEmpty(query.getBuildNameList());
+    }
+
+    private boolean isProjectMemberFilter(ProjectQueryDTO query){
+        return StringUtils.isNotEmpty(query.getRelationCompany())
+                || StringUtils.isNotEmpty(query.getBusPersonInCharge())
+                || StringUtils.isNotEmpty(query.getBusPersonInChargeAssistant())
+                || StringUtils.isNotEmpty(query.getDesignPersonInCharge())
+                || StringUtils.isNotEmpty(query.getDesignPersonInChargeAssistant())
+                || StringUtils.isNotEmpty(query.getTaskLeader())
+                || StringUtils.isNotEmpty(query.getDesigner())
+                || StringUtils.isNotEmpty(query.getChecker())
+                || StringUtils.isNotEmpty(query.getAuditor());
     }
 }

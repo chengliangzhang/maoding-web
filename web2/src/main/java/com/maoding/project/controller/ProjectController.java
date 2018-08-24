@@ -4,9 +4,11 @@ import com.maoding.commonModule.dto.ContentDTO;
 import com.maoding.commonModule.dto.TemplateQueryDTO;
 import com.maoding.commonModule.service.ConstService;
 import com.maoding.core.base.controller.BaseController;
+import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.core.constant.SystemParameters;
+import com.maoding.core.util.BeanUtils;
 import com.maoding.core.util.ObjectUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
@@ -1155,8 +1157,8 @@ public class ProjectController extends BaseController {
     @ResponseBody
     public AjaxMessage listTitle(@RequestBody TitleQueryDTO query) throws Exception {
         updateCurrentUserInfo(query);
-        List<TitleSimpleDTO> list = projectConditionService.listTitle(query);
-        return AjaxMessage.succeed(list);
+        List<TitleColumnDTO> list = projectConditionService.listTitle(query);
+        return AjaxMessage.succeed(BeanUtils.createListFrom(list,TitleSimpleDTO.class));
     }
 
     /**
@@ -1181,7 +1183,14 @@ public class ProjectController extends BaseController {
     @RequestMapping(value = "/listProject", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage listProject(@RequestBody ProjectQueryDTO query) throws Exception {
-        return AjaxMessage.failed("尚未实现");
+        updateCurrentUserInfo(query);
+        if (query.getPageSize() != null){
+            CorePageDTO<ProjectVariableDTO> page = projectService.listPageProject(query);
+            return AjaxMessage.succeed(page);
+        } else {
+            List<ProjectVariableDTO> list = projectService.listProject(query);
+            return AjaxMessage.succeed(list);
+        }
     }
 
 }

@@ -189,7 +189,7 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
      * @author 张成亮
      */
     @Override
-    public List<TitleSimpleDTO> listTitle(TitleQueryDTO query) {
+    public List<TitleColumnDTO> listTitle(TitleQueryDTO query) {
         TraceUtils.check(query.getType() != null,log,"!type不能为空");
 
         List<TitleColumnDTO> titleList = projectConditionDao.listTitle(query);
@@ -205,7 +205,7 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
             });
         }
 
-        return BeanUtils.createListFrom(titleList,TitleSimpleDTO.class);
+        return titleList;
     }
 
 }

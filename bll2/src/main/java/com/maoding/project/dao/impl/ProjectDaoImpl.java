@@ -213,6 +213,52 @@ public class ProjectDaoImpl extends GenericDao<ProjectEntity> implements Project
     public List<CoreShowDTO> getProjectFilterList(ProjectFilterQueryDTO query) {
         return sqlSession.selectList("ProjectMapper.getProjectFilterList", query);
     }
+
+    /**
+     * 描述       查询项目基本信息
+     * 日期       2018/8/24
+     * @author   张成亮
+     **/
+    @Override
+    public List<ProjectVariableDTO> listProjectBasic(ProjectQueryDTO query) {
+        return sqlSession.selectList("ProjectMapper.listProjectBasic", query);
+    }
+
+    /**
+     * 描述       查询项目功能分类信息
+     * 日期       2018/8/24
+     *
+     * @param query
+     * @author 张成亮
+     */
+    @Override
+    public List<ProjectVariableDTO> listProjectFunction(ProjectQueryDTO query) {
+        return null;
+    }
+
+    /**
+     * 描述       查询项目合作者信息
+     * 日期       2018/8/24
+     *
+     * @param query
+     * @author 张成亮
+     */
+    @Override
+    public List<ProjectVariableDTO> listProjectMember(ProjectQueryDTO query) {
+        return null;
+    }
+
+    /**
+     * 描述       查询项目费用信息
+     * 日期       2018/8/24
+     *
+     * @param query
+     * @author 张成亮
+     */
+    @Override
+    public List<ProjectVariableDTO> listProjectFee(ProjectQueryDTO query) {
+        return null;
+    }
 }
 
 

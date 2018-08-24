@@ -1,6 +1,7 @@
 package com.maoding.project.service;
 
 import com.maoding.commonModule.dto.ContentDTO;
+import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.service.BaseService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.project.dto.*;
@@ -283,4 +284,17 @@ public interface ProjectService extends BaseService<ProjectEntity> {
      */
     boolean isEditProject(String projectId,String currentCompanyId,String account) throws Exception;
 
+    /**
+     * 描述       查询项目列表
+     * 日期       2018/8/24
+     * @author   张成亮
+     **/
+    List<ProjectVariableDTO> listProject(ProjectQueryDTO query);
+
+    /**
+     * 描述       分页查询项目列表
+     * 日期       2018/8/24
+     * @author   张成亮
+     **/
+    CorePageDTO<ProjectVariableDTO> listPageProject(ProjectQueryDTO query);
 }

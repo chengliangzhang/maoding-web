@@ -1605,7 +1605,7 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,1,':projectCreateDate;立项时间','1110000;0,1;1;4;2');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,7,':signDate;合同签订','1110000;0,1;1;4;2');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,3,':status;项目状态','1000000;0,1;1;2;1');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,10,':buildName;功能分类','1000010;0,1;1;1;3');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,10,':buildName;功能分类','1000010;0,1;1;3;1');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,11,':address;项目地点','1010000;0,1;1;5;1');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,5,':partyA;甲方','1000000;0,1;1;2;1');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,6,':partyB;乙方','1010000;0,1;1;2;1');
@@ -2977,29 +2977,6 @@ CREATE OR REPLACE VIEW `md_title` AS
     inner join md_type_filter filter_type on (filter_type.id = optional_title.filter_type)
   where user_title.status = '0';
 
--- 项目基本信息
-CREATE OR REPLACE VIEW `md_project` AS
-  select
-    project_list.id,
-    project_list.project_name as name,
-    project_list.company_id,
-    project_list.company_bid,
-    project_list.project_type,
-    project_list.project_no,
-    project_list.status,
-    ifnull(project_list.project_create_date,project_list.create_date) as create_date,
-    project_list.contract_date,
-    concat(project_list.province,project_list.city) as address,
-    create_company.company_name as create_company_name,
-    create_company_user.user_name as create_company_user_name,
-    concat(create_company.company_name,'/',create_company_user.user_name) as creator
-  from maoding_web_project project_list
-    inner join maoding_web_company create_company on (create_company.status = '0' and create_company.id = project_list.company_id)
-    inner join maoding_web_company_user create_company_user on (
-      create_company_user.company_id = project_list.company_id
-      and create_company_user.user_id = project_list.create_by)
-  where project_list.pstatus = '0';
-
 -- 项目参与人
 CREATE OR REPLACE VIEW `md_project_member` AS
   select
@@ -3027,19 +3004,5 @@ CREATE OR REPLACE VIEW `md_project_member` AS
     inner join maoding_web_company_user company_user on (company_user.id = task_role.company_user_id)
   where
     task_role.deleted = 0;
-
--- 任务参与人（md_web_role_task)
-
--- 项目功能分类
-
--- 项目参与组织
-
--- 项目收付款计划
-
--- 项目实际收付款
-
--- 项目自定义属性
-
--- 程序内计算：甲方、状态
 
 -- -- -- 创建及更改视图 -- 结束 -- -- --

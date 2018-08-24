@@ -47,5 +47,5 @@ public interface ProjectConditionService extends BaseService<ProjectConditionEnt
      * 日期       2018/8/23
      * @author   张成亮
      **/
-    List<TitleSimpleDTO> listTitle(TitleQueryDTO query);
+    List<TitleColumnDTO> listTitle(TitleQueryDTO query);
 }
