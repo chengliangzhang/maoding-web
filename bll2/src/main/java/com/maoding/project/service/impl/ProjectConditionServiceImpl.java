@@ -1,8 +1,10 @@
 package com.maoding.project.service.impl;
 
+import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.util.*;
 import com.maoding.project.dao.ProjectConditionDao;
+import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.dto.*;
 import com.maoding.project.entity.ProjectConditionEntity;
 import com.maoding.project.service.ProjectConditionService;
@@ -22,6 +24,9 @@ import java.util.Map;
 public class ProjectConditionServiceImpl extends GenericService<ProjectConditionEntity> implements ProjectConditionService {
     @Autowired
     private ProjectConditionDao projectConditionDao;
+
+    @Autowired
+    private ProjectDao projectDao;
 
     private String notReturnString = "busPersonInCharge,busPersonInChargeAssistant,designPersonInCharge,designPersonInChargeAssistant";
     @Override
@@ -137,8 +142,8 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
             }
             TitleQueryDTO query = BeanUtils.createFrom(request,TitleQueryDTO.class);
             List<TitleColumnDTO> list = projectConditionDao.listTitle(query);
-            if (ObjectUtils.isNotEmpty(list)){
-                String id = StringUtils.left(ObjectUtils.getFirst(list).getId(),32);
+            String id = getTitleId(list);
+            if (StringUtils.isNotEmpty(id)){
                 ProjectConditionEntity entity = new ProjectConditionEntity();
                 entity.setId(id);
                 entity.resetUpdateDate();
@@ -163,6 +168,19 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
         }
     }
 
+    //获取原有标题栏设置的编号
+    private String getTitleId(List<TitleColumnDTO> list){
+        String id = null;
+        if (ObjectUtils.isNotEmpty(list)){
+            for (TitleColumnDTO title : list) {
+                if (title.getCanBeHide() == 1){
+                    id = StringUtils.left(title.getId(),32);
+                }
+            }
+        }
+        return id;
+    }
+
     /**
      * 描述       查询标题设置
      * 日期       2018/8/23
@@ -171,11 +189,23 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
      * @author 张成亮
      */
     @Override
-    public List<TitleColumnDTO> listTitle(TitleQueryDTO query) {
+    public List<TitleSimpleDTO> listTitle(TitleQueryDTO query) {
         TraceUtils.check(query.getType() != null,log,"!type不能为空");
 
         List<TitleColumnDTO> titleList = projectConditionDao.listTitle(query);
 
-        return titleList;
+        if (ObjectUtils.isNotEmpty(titleList)){
+            titleList.forEach(title->{
+                if (title.getHasList() == 1){
+                    ProjectFilterQueryDTO filterQuery = BeanUtils.createFrom(query,ProjectFilterQueryDTO.class);
+                    filterQuery.setTitleCode(title.getCode());
+                    List<CoreShowDTO> filterList = projectDao.getProjectFilterList(filterQuery);
+                    title.setFilterList(filterList);
+                }
+            });
+        }
+
+        return BeanUtils.createListFrom(titleList,TitleSimpleDTO.class);
     }
+
 }

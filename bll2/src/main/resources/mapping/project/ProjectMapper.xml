@@ -144,4 +144,94 @@
         order by ifnull(project_list.project_create_date,project_list.create_date) desc
         <include refid="CommonMapper.limitSQL"/>
     </select>
+
+    <select id="getProjectFilterList" resultType="com.maoding.core.base.dto.CoreShowDTO" parameterType="com.maoding.project.dto.ProjectFilterQueryDTO">
+        select distinct
+            <choose>
+                <when test="titleCode == 'partB'.toString()">
+                    project_list.company_bid as id,
+                    part_b_company.company_name as name
+                </when>
+                <when test="titleCode == 'projectType'.toString()">
+                    project_list.project_type as id,
+                    project_list.project_type as name
+                </when>
+                <when test="titleCode == 'createCompany'.toString()">
+                    project_list.company_id as id,
+                    create_company.company_name as name
+                </when>
+                <when test="titleCode == 'relationCompany'.toString()">
+                    relation_company.id as id,
+                    relation_company.company_name as name
+                </when>
+                <when test="titleCode == 'busPersonInCharge'
+                        or titleCode == 'busPersonInChargeAssistant'
+                        or titleCode == 'designPersonInCharge'
+                        or titleCode == 'designPersonInChargeAssistant'
+                        or titleCode == 'taskLeader'
+                        or titleCode == 'designer'
+                        or titleCode == 'checker'
+                        or titleCode == 'auditor'">
+                    member_list.company_user_id as id,
+                    member_list.user_name as name
+                </when>
+                <otherwise>
+                    null as id,
+                    null as name
+                </otherwise>
+            </choose>
+        from maoding_web_project project_list
+            inner join md_project_member member_list on (
+                member_list.project_id = project_list.id
+                <choose>
+                    <when test="titleCode == 'busPersonInCharge'">
+                        and member_list.member_type = 1
+                    </when>
+                    <when test="titleCode == 'busPersonInChargeAssistant'">
+                        and member_list.member_type = 7
+                    </when>
+                    <when test="titleCode == 'designPersonInCharge'">
+                        and member_list.member_type = 2
+                    </when>
+                    <when test="titleCode == 'designPersonInChargeAssistant'">
+                        and member_list.member_type = 8
+                    </when>
+                    <when test="titleCode == 'taskLeader'">
+                        and member_list.is_task_leader = 1
+                    </when>
+                    <when test="titleCode == 'designer'">
+                        and member_list.is_task_designer = 1
+                    </when>
+                    <when test="titleCode == 'checker'">
+                        and member_list.is_task_checker = 1
+                    </when>
+                    <when test="titleCode == 'auditor'">
+                        and member_list.is_task_auditor = 1
+                    </when>
+                    <otherwise/>
+                </choose>
+                <if test="currentCompanyId != null">
+                    and member_list.company_id = #{currentCompanyId}
+                </if>
+                <if test="accountId != null">
+                    and member_list.user_id = #{accountId}
+                </if>
+            )
+            <if test="titleCode == 'partB'">
+                inner join maoding_web_company part_b_company on (part_b_company.status = '0' and part_b_company.id = project_list.company_bid)
+            </if>
+            <if test="titleCode == 'createCompany'">
+                inner join maoding_web_company create_company on (create_company.status = '0' and create_company.id = project_list.company_id)
+            </if>
+            <if test="titleCode == 'relationCompany'">
+                inner join maoding_web_project_task issue_task ON (
+                    issue_task.task_status = '0'
+                    and issue_task.is_operater_task = 1
+                    and issue_task.from_company_id = member_list.company_id
+                )
+                inner join maoding_web_company relation_company on (relation_company.status = '0' and relation_company.id = issue_task.company_id)
+            </if>
+        where project_list.pstatus = '0'
+    </select>
+
 </mapper>

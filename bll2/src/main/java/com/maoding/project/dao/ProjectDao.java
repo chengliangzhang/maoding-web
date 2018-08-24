@@ -2,6 +2,7 @@ package com.maoding.project.dao;
 
 import com.maoding.commonModule.dto.ContentDTO;
 import com.maoding.core.base.dao.BaseDao;
+import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.project.dto.*;
 import com.maoding.project.entity.ProjectEntity;
 
@@ -143,4 +144,11 @@ public interface ProjectDao extends BaseDao<ProjectEntity> {
      * 获取记录总数
      */
     int getLastQueryCount();
+
+    /**
+     * 描述       查询项目基本信息标题栏过滤列表
+     * 日期       2018/8/24
+     * @author   张成亮
+     **/
+    List<CoreShowDTO> getProjectFilterList(ProjectFilterQueryDTO query);
 }

@@ -1,7 +1,7 @@
 package com.maoding.project.dto;
 
 
-import com.maoding.core.base.dto.BaseQueryDTO;
+import com.maoding.core.base.dto.CoreQueryDTO;
 
 import java.util.Date;
 
@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * Created by Chengliang.zhang on 2017/7/20.
  */
-public class ProjectQueryDTO extends BaseQueryDTO {
+public class ProjectQueryDTO extends CoreQueryDTO {
     /** 项目编号 */
     private String projectNo;
     /** 项目名称 */

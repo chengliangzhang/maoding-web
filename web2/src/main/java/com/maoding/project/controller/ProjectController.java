@@ -1155,8 +1155,8 @@ public class ProjectController extends BaseController {
     @ResponseBody
     public AjaxMessage listTitle(@RequestBody TitleQueryDTO query) throws Exception {
         updateCurrentUserInfo(query);
-        List<TitleColumnDTO> list = projectConditionService.listTitle(query);
-        return AjaxMessage.failed(list);
+        List<TitleSimpleDTO> list = projectConditionService.listTitle(query);
+        return AjaxMessage.succeed(list);
     }
 
     /**

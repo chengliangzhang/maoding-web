@@ -2,6 +2,7 @@ package com.maoding.project.dao.impl;
 
 import com.maoding.commonModule.dto.ContentDTO;
 import com.maoding.core.base.dao.GenericDao;
+import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.dto.*;
 import com.maoding.project.entity.ProjectEntity;
@@ -199,6 +200,18 @@ public class ProjectDaoImpl extends GenericDao<ProjectEntity> implements Project
     @Override
     public List<ProjectSimpleDTO> listProject(QueryProjectDTO query) {
         return sqlSession.selectList("ProjectMapper.listProject", query);
+    }
+
+    /**
+     * 描述       查询项目基本信息标题栏过滤列表
+     * 日期       2018/8/24
+     *
+     * @param query
+     * @author 张成亮
+     */
+    @Override
+    public List<CoreShowDTO> getProjectFilterList(ProjectFilterQueryDTO query) {
+        return sqlSession.selectList("ProjectMapper.getProjectFilterList", query);
     }
 }
 
