@@ -270,13 +270,15 @@
 
     <sql id="OrderForProjectQuery">
         <if test="projectCreateDateOrder != null or signDateOrder != null">
-            <order>
+            order by
                 <if test="projectCreateDateOrder != null">
                     ifnull(project_list.project_create_date,project_list.create_date)
                     <if test="projectCreateDateOrder == 1">
                         desc
                     </if>
-                    ,
+                    <if test="signDateOrder != null">
+                        ,
+                    </if>
                 </if>
                 <if test="signDateOrder != null">
                     project_list.contract_date
@@ -284,7 +286,6 @@
                         desc
                     </if>
                 </if>
-            </order>
         </if>
     </sql>
 
