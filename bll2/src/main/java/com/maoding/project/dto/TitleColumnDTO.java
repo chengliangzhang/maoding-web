@@ -36,14 +36,38 @@ public class TitleColumnDTO extends CoreDTO {
     /** 过滤器是列表型：0-不是,1-是 **/
     private short hasList;
 
-    /** 是项目基本信息标题栏：0-不是，1-是 **/
-    private short isProjectBasic;
+    /** 合作组织：0-不是，1-是 **/
+    private short isRelationCompany;
 
-    /** 是项目成员标题栏：0-不是，1-是 **/
-    private short isProjectMember;
+    /** 任务负责人：0-不是，1-是 **/
+    private short isTaskLeader;
 
-    /** 是项目费用标题栏：0-不是，1-是 **/
-    private short isProjectFee;
+    /** 设计：0-不是，1-是 **/
+    private short isDesigner;
+
+    /** 校验：0-不是，1-是 **/
+    private short isChecker;
+
+    /** 审核：0-不是，1-是 **/
+    private short isAuditor;
+
+    /** 合同款：0-不是，1-是 **/
+    private short isContractFee;
+
+    /** 技术审查费：0-不是，1-是 **/
+    private short isTechnicalFee;
+
+    /** 合作设计费收款：0-不是，1-是 **/
+    private short isCooperateGainFee;
+
+    /** 其他收款：0-不是，1-是 **/
+    private short isOtherGainFee;
+
+    /** 合作设计费付款：0-不是，1-是 **/
+    private short isCooperatePayFee;
+
+    /** 其他付款：0-不是，1-是 **/
+    private short isOtherPayFee;
 
     /** 过滤器，仅对列表型过滤器有效 **/
     private List<CoreShowDTO> filterList;
@@ -72,28 +96,92 @@ public class TitleColumnDTO extends CoreDTO {
         this.hasList = hasList;
     }
 
-    public short getIsProjectBasic() {
-        return isProjectBasic;
+    public short getIsRelationCompany() {
+        return isRelationCompany;
     }
 
-    public void setIsProjectBasic(short isProjectBasic) {
-        this.isProjectBasic = isProjectBasic;
+    public void setIsRelationCompany(short isRelationCompany) {
+        this.isRelationCompany = isRelationCompany;
     }
 
-    public short getIsProjectMember() {
-        return isProjectMember;
+    public short getIsTaskLeader() {
+        return isTaskLeader;
     }
 
-    public void setIsProjectMember(short isProjectMember) {
-        this.isProjectMember = isProjectMember;
+    public void setIsTaskLeader(short isTaskLeader) {
+        this.isTaskLeader = isTaskLeader;
     }
 
-    public short getIsProjectFee() {
-        return isProjectFee;
+    public short getIsDesigner() {
+        return isDesigner;
     }
 
-    public void setIsProjectFee(short isProjectFee) {
-        this.isProjectFee = isProjectFee;
+    public void setIsDesigner(short isDesigner) {
+        this.isDesigner = isDesigner;
+    }
+
+    public short getIsChecker() {
+        return isChecker;
+    }
+
+    public void setIsChecker(short isChecker) {
+        this.isChecker = isChecker;
+    }
+
+    public short getIsAuditor() {
+        return isAuditor;
+    }
+
+    public void setIsAuditor(short isAuditor) {
+        this.isAuditor = isAuditor;
+    }
+
+    public short getIsContractFee() {
+        return isContractFee;
+    }
+
+    public void setIsContractFee(short isContractFee) {
+        this.isContractFee = isContractFee;
+    }
+
+    public short getIsTechnicalFee() {
+        return isTechnicalFee;
+    }
+
+    public void setIsTechnicalFee(short isTechnicalFee) {
+        this.isTechnicalFee = isTechnicalFee;
+    }
+
+    public short getIsCooperateGainFee() {
+        return isCooperateGainFee;
+    }
+
+    public void setIsCooperateGainFee(short isCooperateGainFee) {
+        this.isCooperateGainFee = isCooperateGainFee;
+    }
+
+    public short getIsOtherGainFee() {
+        return isOtherGainFee;
+    }
+
+    public void setIsOtherGainFee(short isOtherGainFee) {
+        this.isOtherGainFee = isOtherGainFee;
+    }
+
+    public short getIsCooperatePayFee() {
+        return isCooperatePayFee;
+    }
+
+    public void setIsCooperatePayFee(short isCooperatePayFee) {
+        this.isCooperatePayFee = isCooperatePayFee;
+    }
+
+    public short getIsOtherPayFee() {
+        return isOtherPayFee;
+    }
+
+    public void setIsOtherPayFee(short isOtherPayFee) {
+        this.isOtherPayFee = isOtherPayFee;
     }
 
     public String getCode() {

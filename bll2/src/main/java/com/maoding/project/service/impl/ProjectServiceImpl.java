@@ -2745,6 +2745,10 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
      */
     @Override
     public CorePageDTO<ProjectVariableDTO> listPageProject(ProjectQueryDTO query) {
+        if (StringUtils.isEmpty(query.getCompanyId())){
+            query.setCompanyId(query.getCurrentCompanyId());
+        }
+
         TitleQueryDTO titleQuery = BeanUtils.createFrom(query,TitleQueryDTO.class);
         titleQuery.setType(0);
         List<TitleColumnDTO> titleList = projectConditionService.listTitle(titleQuery);
@@ -2757,67 +2761,143 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         if (isProjectBasicFilter(query)){
             mainList = projectDao.listProjectBasic(query);
             count = projectDao.getLastQueryCount();
-            needFill.setNeedFillBasic(false);
         } else if (isProjectFunctionFilter(query)) {
             mainList = projectDao.listProjectFunction(query);
             count = projectDao.getLastQueryCount();
-            needFill.setNeedFillFunction(false);
+            needFill.setNeedBuildType(false);
         } else if (isProjectMemberFilter(query)) {
             mainList = projectDao.listProjectMember(query);
             count = projectDao.getLastQueryCount();
-            needFill.setNeedFillMember(false);
+            needFill.setNeedTaskLeader(false);
+            needFill.setNeedDesigner(false);
+            needFill.setNeedChecker(false);
+            needFill.setNeedAuditor(false);
         } else {
             mainList = projectDao.listProjectBasic(query);
             count = projectDao.getLastQueryCount();
-            needFill.setNeedFillBasic(false);
         }
 
-        //生成idList
         if (ObjectUtils.isNotEmpty(mainList)){
-            //生成补充查询条件
-            List<String> projectIdList = new ArrayList<>();
-            mainList.forEach(project->projectIdList.add(project.getId()));
-            ProjectQueryDTO fillQuery = new ProjectQueryDTO();
-            fillQuery.setIdList(projectIdList);
+            //补充查询出的项目的其他信息
+            mainList.forEach(project->{
+                //合作组织信息
+                if (needFill.isNeedRelationCompany()){
+                    project.setRelationCompany(getProjectCooperate(project.getId(),query.getCurrentCompanyId()));
+                }
 
-            //补充其他信息
-            if (needFill.isNeedFillBasic()){
-                List<ProjectVariableDTO> list = projectDao.listProjectBasic(fillQuery);
-                updateProjectVariableList(mainList,list);
-            }
-            if (needFill.isNeedFillFunction()){
-                List<ProjectVariableDTO> list = projectDao.listProjectFunction(fillQuery);
-                updateProjectVariableList(mainList,list);
-            }
-            if (needFill.isNeedFillMember()){
-                List<ProjectVariableDTO> list = projectDao.listProjectMember(fillQuery);
-                updateProjectVariableList(mainList,list);
-            }
-            if (needFill.isNeedFillFee()){
-                List<ProjectVariableDTO> list = projectDao.listProjectFee(fillQuery);
-                updateProjectVariableList(mainList,list);
-            }
+                //添加人员信息，如任务负责人、设计人员、校对人员、审核人员
+                //任务负责人
+                if (needFill.isNeedTaskLeader()){
+                    project.setTaskLeader(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_TASK_LEADER));
+                }
+                //设计人员
+                if (needFill.isNeedDesigner()){
+                    project.setDesigner(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_TASK_DESIGN));
+                }
+                //校对人员
+                if (needFill.isNeedChecker()){
+                    project.setChecker(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_TASK_CHECK));
+                }
+                //审核人员
+                if (needFill.isNeedAuditor()){
+                    project.setAuditor(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_TASK_AUDIT));
+                }
+
+                //添加费用信息，如合同回款、合同到款等
+                //合同回款，合同到款
+                if (needFill.isNeedContractFee()){
+                    ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_CONTRACT);
+                    if (cost != null) {
+                        project.setContract(cost.getPlan());
+                        project.setContractReal(cost.getReal());
+                    }
+                }
+
+                //技术审查费（支出）及到款，技术审查费（收入）及付款
+                if (needFill.isNeedTechnicalFee()){
+                    //如果是项目乙方，则设置技术审查费（收入），如果不是项目乙方，则设置技术审查费（支出），否则无需设置
+                    ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_TECHNICAL);
+                    if (cost != null) {
+                        if (StringUtils.isSame(project.getCompanyBid(),query.getCompanyId())) {
+                            project.setTechnicalGain(cost.getPlan());
+                            project.setTechnicalGainReal(cost.getReal());
+                        } else {
+                            project.setTechnicalPay(cost.getPlan());
+                            project.setTechnicalPayReal(cost.getReal());
+                        }
+                    }
+                }
+
+                //合作设计费（收款）及到款
+                if (needFill.isNeedCooperateGainFee()){
+                    ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_COOPERATE_GAIN);
+                    if (cost != null) {
+                        project.setCooperateGain(cost.getPlan());
+                        project.setCooperateGainReal(cost.getReal());
+                    }
+                }
+
+                //其他费用（收入）及到款
+                if (needFill.isNeedOtherGainFee()){
+                    ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_IN);
+                    if (cost != null) {
+                        project.setOtherGain(cost.getPlan());
+                        project.setOtherGainReal(cost.getReal());
+                    }
+                }
+                //合作设计费（支出）及付款
+                if (needFill.isNeedCooperatePayFee()){
+                    ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_COOPERATE_PAY);
+                    if (cost != null) {
+                        project.setCooperatePay(cost.getPlan());
+                        project.setCooperatePayReal(cost.getReal());
+                    }
+                }
+                //其他费用（支出）及付款
+                if (needFill.isNeedOtherPayFee()){
+                    ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_OUT);
+                    if (cost != null) {
+                        project.setOtherPay(cost.getPlan());
+                        project.setOtherPayReal(cost.getReal());
+                    }
+                }
+            });
         }
+
+        //添加项目是否可编辑信息
+        Map<String, Object> para = setProjectUserPermissionParam(query.getCompanyId(),query.getCurrentCompanyUserId());
+        List<PermissionDTO> permissionDTOS = permissionService.getProjectUserPermission(para);
+        boolean flag = (permissionDTOS != null) && (permissionDTOS.size() > 0);
 
         //创建并返回结果
-        CorePageDTO<ProjectVariableDTO> page = new CorePageDTO<>();
+        ProjectListPageDTO page = new ProjectListPageDTO();
         page.setTotal(count);
         page.setPageIndex(DigitUtils.parseInt(query.getPageIndex()));
         page.setPageSize(DigitUtils.parseInt(query.getPageSize()));
         page.setData(mainList);
+        page.setFlag((flag) ? "1" : "0");
         return page;
     }
 
-    //填充其他信息
-    private void updateProjectVariableList(List<ProjectVariableDTO> mainList, List<ProjectVariableDTO> list){
-        for (ProjectVariableDTO info : list) {
-            for (ProjectVariableDTO project : mainList) {
-                if (StringUtils.isSame(info.getId(),project.getId())){
-                    BeanUtils.copyCleanProperties(info,project);
-                    break;
+    //获取项目的合作组织信息
+    private String getProjectCooperate(String projectId, String companyId){
+        CompanyQueryDTO cooperatorCompanyQuery = new CompanyQueryDTO();
+        cooperatorCompanyQuery.setProjectId(projectId);
+        cooperatorCompanyQuery.setCurrentCompanyId(companyId);
+        //只查询外发的组织
+        cooperatorCompanyQuery.setIsPay("1");
+        List<CompanyDTO> cooperatorCompanyList = companyDao.listCompanyCooperate(cooperatorCompanyQuery);
+        StringBuilder sb = new StringBuilder();
+        if (ObjectUtils.isNotEmpty(cooperatorCompanyList)){
+            //合并组织名称
+            cooperatorCompanyList.forEach(company->{
+                if (sb.length() > 0){
+                    sb.append(",");
                 }
-            }
+                sb.append(company.getCompanyName());
+            });
         }
+        return sb.toString();
     }
 
     //需要填充项目基本信息

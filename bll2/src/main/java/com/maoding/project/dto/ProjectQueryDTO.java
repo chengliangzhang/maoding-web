@@ -102,6 +102,39 @@ public class ProjectQueryDTO extends CoreQueryDTO {
     /** 我的项目还是项目总览：0-项目总览，1-我的项目 **/
     private Integer type;
 
+    /** 要查询的费用类别 **/
+    private Integer costType;
+
+    /** 要查询的成员类别 **/
+    private Integer memberType;
+
+    /** 是否查询收付款实际到账 **/
+    private Integer isDetail;
+
+    public Integer getIsDetail() {
+        return isDetail;
+    }
+
+    public void setIsDetail(Integer isDetail) {
+        this.isDetail = isDetail;
+    }
+
+    public Integer getCostType() {
+        return costType;
+    }
+
+    public void setCostType(Integer costType) {
+        this.costType = costType;
+    }
+
+    public Integer getMemberType() {
+        return memberType;
+    }
+
+    public void setMemberType(Integer memberType) {
+        this.memberType = memberType;
+    }
+
     public Integer getType() {
         return type;
     }

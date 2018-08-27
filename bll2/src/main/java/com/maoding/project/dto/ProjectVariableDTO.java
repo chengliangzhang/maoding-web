@@ -42,10 +42,13 @@ public class ProjectVariableDTO extends CoreDTO {
     private String address;
 
     /** 甲方 **/
-    private String partyA;
+    private String partA;
 
     /** 乙方 **/
-    private String partyB;
+    private String partB;
+
+    /** 乙方组织编号 **/
+    private String companyBid;
 
     /** 合作组织 **/
     private String relationCompany;
@@ -184,20 +187,28 @@ public class ProjectVariableDTO extends CoreDTO {
         this.address = address;
     }
 
-    public String getPartyA() {
-        return partyA;
+    public String getPartA() {
+        return partA;
     }
 
-    public void setPartyA(String partyA) {
-        this.partyA = partyA;
+    public void setPartA(String partA) {
+        this.partA = partA;
     }
 
-    public String getPartyB() {
-        return partyB;
+    public String getPartB() {
+        return partB;
     }
 
-    public void setPartyB(String partyB) {
-        this.partyB = partyB;
+    public void setPartB(String partB) {
+        this.partB = partB;
+    }
+
+    public String getCompanyBid() {
+        return companyBid;
+    }
+
+    public void setCompanyBid(String companyBid) {
+        this.companyBid = companyBid;
     }
 
     public String getRelationCompany() {
