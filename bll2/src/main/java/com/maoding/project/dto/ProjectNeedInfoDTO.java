@@ -11,6 +11,27 @@ public class ProjectNeedInfoDTO {
     /** 合作组织信息 **/
     private boolean isNeedRelationCompany;
 
+    /** 项目状态 **/
+    private boolean isNeedStatus;
+
+    /** 甲方 **/
+    private boolean isNeedPartA;
+    
+    /** 乙方 **/
+    private boolean isNeedPartB;
+
+    /** 经营负责人 **/
+    private boolean isNeedBusInCharge;
+
+    /** 经营助理 **/
+    private boolean isNeedBusAssistant;
+
+    /** 设计负责人 **/
+    private boolean isNeedDesignInCharge;
+
+    /** 设计助理 **/
+    private boolean isNeedDesignAssistant;
+
     /** 任务负责人 **/
     private boolean isNeedTaskLeader;
 
@@ -192,5 +213,61 @@ public class ProjectNeedInfoDTO {
 
     public void setNeedFillFee(boolean needFillFee) {
         this.needFillFee = needFillFee;
+    }
+
+    public boolean isNeedStatus() {
+        return isNeedStatus;
+    }
+
+    public void setNeedStatus(boolean needStatus) {
+        isNeedStatus = needStatus;
+    }
+
+    public boolean isNeedPartA() {
+        return isNeedPartA;
+    }
+
+    public void setNeedPartA(boolean needPartA) {
+        isNeedPartA = needPartA;
+    }
+
+    public boolean isNeedPartB() {
+        return isNeedPartB;
+    }
+
+    public void setNeedPartB(boolean needPartB) {
+        isNeedPartB = needPartB;
+    }
+
+    public boolean isNeedBusInCharge() {
+        return isNeedBusInCharge;
+    }
+
+    public void setNeedBusInCharge(boolean needBusInCharge) {
+        isNeedBusInCharge = needBusInCharge;
+    }
+
+    public boolean isNeedBusAssistant() {
+        return isNeedBusAssistant;
+    }
+
+    public void setNeedBusAssistant(boolean needBusAssistant) {
+        isNeedBusAssistant = needBusAssistant;
+    }
+
+    public boolean isNeedDesignInCharge() {
+        return isNeedDesignInCharge;
+    }
+
+    public void setNeedDesignInCharge(boolean needDesignInCharge) {
+        isNeedDesignInCharge = needDesignInCharge;
+    }
+
+    public boolean isNeedDesignAssistant() {
+        return isNeedDesignAssistant;
+    }
+
+    public void setNeedDesignAssistant(boolean needDesignAssistant) {
+        isNeedDesignAssistant = needDesignAssistant;
     }
 }

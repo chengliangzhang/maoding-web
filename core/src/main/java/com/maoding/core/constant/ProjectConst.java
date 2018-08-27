@@ -69,6 +69,8 @@ public interface ProjectConst {
     final Integer MEMBER_TYPE_TASK_DESIGN = 4;
     final Integer MEMBER_TYPE_TASK_CHECK = 5;
     final Integer MEMBER_TYPE_TASK_AUDIT = 6;
+    final Integer MEMBER_TYPE_MANAGER_ASSISTANT = 7;
+    final Integer MEMBER_TYPE_DESIGN_ASSISTANT = 8;
 
     /** 项目负责人类型 */
     final Map<Integer,String> PERMISSION_MAPPER = new HashMap<Integer,String>(){

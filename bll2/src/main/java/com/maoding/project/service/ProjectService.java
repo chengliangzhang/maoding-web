@@ -1,7 +1,6 @@
 package com.maoding.project.service;
 
 import com.maoding.commonModule.dto.ContentDTO;
-import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.service.BaseService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.project.dto.*;
@@ -296,5 +295,7 @@ public interface ProjectService extends BaseService<ProjectEntity> {
      * 日期       2018/8/24
      * @author   张成亮
      **/
-    CorePageDTO<ProjectVariableDTO> listPageProject(ProjectQueryDTO query);
+    ProjectListPageDTO listPageProject(ProjectQueryDTO query);
+
+
 }

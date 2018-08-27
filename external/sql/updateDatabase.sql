@@ -2909,124 +2909,26 @@ CREATE OR REPLACE VIEW `act_id_group` AS
 -- 可选择标题
 CREATE OR REPLACE VIEW `md_optional_title` AS
   select
-    concat(title_classic.id,'-',optional_group.id,'-',optional_title.id) as id,
+    concat(title_classic.id,'-',optional_group.id,'-',optional_title.id) as optional_title_id,
     title_classic.type_id as classic_type,
     title_classic.type_title as classic,
     optional_group.type_title as group_name,
     optional_title.type_code as code,
     optional_title.type_name as name,
-    optional_title.can_be_hide,
-    optional_title.can_be_order,
-    optional_title.is_relation_company,
-    optional_title.is_task_leader,
-    optional_title.is_task_designer,
-    optional_title.is_task_checker,
-    optional_title.is_task_auditor,
-    optional_title.is_contract_fee,
-    optional_title.is_technical_fee,
-    optional_title.is_cooperate_gain_fee,
-    optional_title.is_other_gain_fee,
-    optional_title.is_cooperate_pay_fee,
-    optional_title.is_other_pay_fee,
-    optional_title.filter_type,
-    optional_title.field_type
+    optional_title.*
   from
     md_type_web_title_classic title_classic
     inner join md_type_optional_group optional_group on (find_in_set(title_classic.id,optional_group.web_classic) and optional_group.id != '0')
     inner join md_type_optional_title optional_title on (optional_title.group_type = optional_group.id and optional_title.id != '0')
   where title_classic.is_group = 1;
 
-CREATE OR REPLACE VIEW `md_title` AS
-  select
-    concat(optional_title.id) as id,
-    null as company_id,
-    null as user_id,
-    optional_title.classic_type,
-    optional_title.classic,
-    optional_title.group_name,
-    optional_title.code,
-    optional_title.name,
-    optional_title.can_be_hide,
-    optional_title.can_be_order,
-    optional_title.is_relation_company,
-    optional_title.is_task_leader,
-    optional_title.is_task_designer,
-    optional_title.is_task_checker,
-    optional_title.is_task_auditor,
-    optional_title.is_contract_fee,
-    optional_title.is_technical_fee,
-    optional_title.is_cooperate_gain_fee,
-    optional_title.is_other_gain_fee,
-    optional_title.is_cooperate_pay_fee,
-    optional_title.is_other_pay_fee,
-    optional_title.filter_type,
-    optional_title.field_type,
-    filter_type.has_list
-  from
-    md_optional_title optional_title
-    inner join md_type_filter filter_type on (filter_type.id = optional_title.filter_type)
-  where optional_title.can_be_hide = 0
-
-  union all
-
-  select
-    concat(user_title.id,'-',optional_title.id) as id,
-    user_title.company_id,
-    user_title.user_id,
-    optional_title.classic_type,
-    optional_title.classic,
-    optional_title.group_name,
-    optional_title.code,
-    optional_title.name,
-    optional_title.can_be_hide,
-    optional_title.can_be_order,
-    optional_title.is_relation_company,
-    optional_title.is_task_leader,
-    optional_title.is_task_designer,
-    optional_title.is_task_checker,
-    optional_title.is_task_auditor,
-    optional_title.is_contract_fee,
-    optional_title.is_technical_fee,
-    optional_title.is_cooperate_gain_fee,
-    optional_title.is_other_gain_fee,
-    optional_title.is_cooperate_pay_fee,
-    optional_title.is_other_pay_fee,
-    optional_title.filter_type,
-    optional_title.field_type,
-    filter_type.has_list
-  from
-    maoding_web_project_condition user_title
-    inner join md_optional_title optional_title on (find_in_set(optional_title.code,user_title.code) and optional_title.can_be_hide = 1)
-    inner join md_type_filter filter_type on (filter_type.id = optional_title.filter_type)
-  where user_title.status = '0';
-
-
 -- 用户已选择项目标题栏
 CREATE OR REPLACE VIEW `md_title` AS
   select
-    concat(optional_title.id) as id,
+    concat(optional_title.optional_title_id) as title_id,
     null as company_id,
     null as user_id,
-    optional_title.classic_type,
-    optional_title.classic,
-    optional_title.group_name,
-    optional_title.code,
-    optional_title.name,
-    optional_title.can_be_hide,
-    optional_title.can_be_order,
-    optional_title.is_relation_company,
-    optional_title.is_task_leader,
-    optional_title.is_task_designer,
-    optional_title.is_task_checker,
-    optional_title.is_task_auditor,
-    optional_title.is_contract_fee,
-    optional_title.is_technical_fee,
-    optional_title.is_cooperate_gain_fee,
-    optional_title.is_other_gain_fee,
-    optional_title.is_cooperate_pay_fee,
-    optional_title.is_other_pay_fee,
-    optional_title.filter_type,
-    optional_title.field_type,
+    optional_title.*,
     filter_type.has_list
   from
     md_optional_title optional_title
@@ -3036,29 +2938,10 @@ CREATE OR REPLACE VIEW `md_title` AS
   union all
 
   select
-    concat(user_title.id,'-',optional_title.id) as id,
+    concat(user_title.id,'-',optional_title.optional_title_id) as title_id,
     user_title.company_id,
     user_title.user_id,
-    optional_title.classic_type,
-    optional_title.classic,
-    optional_title.group_name,
-    optional_title.code,
-    optional_title.name,
-    optional_title.can_be_hide,
-    optional_title.can_be_order,
-    optional_title.is_relation_company,
-    optional_title.is_task_leader,
-    optional_title.is_task_designer,
-    optional_title.is_task_checker,
-    optional_title.is_task_auditor,
-    optional_title.is_contract_fee,
-    optional_title.is_technical_fee,
-    optional_title.is_cooperate_gain_fee,
-    optional_title.is_other_gain_fee,
-    optional_title.is_cooperate_pay_fee,
-    optional_title.is_other_pay_fee,
-    optional_title.filter_type,
-    optional_title.field_type,
+    optional_title.*,
     filter_type.has_list
   from
     maoding_web_project_condition user_title

@@ -2747,7 +2747,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
      * @author 张成亮
      */
     @Override
-    public CorePageDTO<ProjectVariableDTO> listPageProject(ProjectQueryDTO query) {
+    public ProjectListPageDTO listPageProject(ProjectQueryDTO query) {
         if (StringUtils.isEmpty(query.getCompanyId())){
             query.setCompanyId(query.getCurrentCompanyId());
         }
@@ -2771,6 +2771,11 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         } else if (isProjectMemberFilter(query)) {
             mainList = projectDao.listProjectMember(query);
             count = projectDao.getLastQueryCount();
+
+            needFill.setNeedBusInCharge(false);
+            needFill.setNeedBusAssistant(false);
+            needFill.setNeedDesignInCharge(false);
+            needFill.setNeedDesignAssistant(false);
             needFill.setNeedTaskLeader(false);
             needFill.setNeedDesigner(false);
             needFill.setNeedChecker(false);
@@ -2783,12 +2788,49 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         if (ObjectUtils.isNotEmpty(mainList)){
             //补充查询出的项目的其他信息
             mainList.forEach(project->{
+                //添加项目基本信息
                 //合作组织信息
                 if (needFill.isNeedRelationCompany()){
                     project.setRelationCompany(getProjectCooperate(project.getId(),query.getCurrentCompanyId()));
                 }
 
+                //项目状态信息
+                if (needFill.isNeedStatus()){
+                    project.setStatus(getProjectStatus(project.getStatus()));
+                }
+
+                //甲方信息
+                if (needFill.isNeedPartA()){
+                    project.setPartA(getProjectPartA(project.getId()));
+                }
+
+                //乙方信息
+                if (needFill.isNeedPartB()){
+                    project.setPartB(getProjectPartB(project.getId()));
+                }
+
+                //功能分类信息
+                if (needFill.isNeedBuildType()){
+                    project.setBuildName(getProjectBuildName(project.getId()));
+                }
+
                 //添加人员信息，如任务负责人、设计人员、校对人员、审核人员
+                //经营负责人
+                if (needFill.isNeedBusInCharge()){
+                    project.setBusPersonInCharge(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_MANAGER));
+                }
+                //经营助理
+                if (needFill.isNeedBusAssistant()){
+                    project.setBusPersonInChargeAssistant(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_MANAGER_ASSISTANT));
+                }
+                //设计负责人
+                if (needFill.isNeedDesignInCharge()){
+                    project.setDesignPersonInCharge(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_DESIGN));
+                }
+                //设计助理
+                if (needFill.isNeedDesignAssistant()){
+                    project.setDesignPersonInChargeAssistant(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_DESIGN_ASSISTANT));
+                }
                 //任务负责人
                 if (needFill.isNeedTaskLeader()){
                     project.setTaskLeader(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_TASK_LEADER));
@@ -2882,6 +2924,30 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         return page;
     }
 
+    //获取项目状态字符串
+    private String getProjectStatus(String status){
+        return SystemParameters.PROJECT_STATUS.get(status);
+    }
+
+    //获取甲方信息
+    private String getProjectPartA(String projectId){
+        ProjectQueryDTO query = new ProjectQueryDTO();
+        query.setId(projectId);
+        List<CoreShowDTO> partAList = projectDao.listPartA(query);
+        CoreShowDTO partA = ObjectUtils.getFirst(partAList);
+        return (partA != null) ? partA.getName() : null;
+    }
+
+    //获取乙方信息
+    private String getProjectPartB(String projectId){
+        ProjectQueryDTO query = new ProjectQueryDTO();
+        query.setId(projectId);
+        List<CoreShowDTO> partBList = projectDao.listPartB(query);
+        CoreShowDTO partB = ObjectUtils.getFirst(partBList);
+        return (partB != null) ? partB.getName() : null;
+    }
+
+
     //获取项目的合作组织信息
     private String getProjectCooperate(String projectId, String companyId){
         CompanyQueryDTO cooperatorCompanyQuery = new CompanyQueryDTO();
@@ -2930,6 +2996,14 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             } else if (title.getIsOtherPayFee() == 1) {
                 needInfo.setNeedOtherPayFee(true);
             }
+
+            needInfo.setNeedBusInCharge(true);
+            needInfo.setNeedBusAssistant(true);
+            needInfo.setNeedDesignInCharge(true);
+            needInfo.setNeedDesignAssistant(true);
+            needInfo.setNeedPartA(true);
+            needInfo.setNeedPartB(true);
+            needInfo.setNeedBuildType(true);
         }
         return needInfo;
     }

@@ -475,4 +475,34 @@
         <include refid="CommonMapper.limitSQL"/>
     </select>
 
+    <select id="listPartA" resultType="com.maoding.core.base.dto.CoreShowDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
+        select
+            part_a_list.corpname as name,
+            part_a_list.*
+        from maoding_web_enterprise part_a_list
+            inner join maoding_web_project project_list on (
+                project_list.pstatus = '0'
+                and (project_list.construct_company = part_a_list.id)
+                <if test="id != null">
+                    and (project_list.id = #{id})
+                </if>
+            )
+        limit 1
+    </select>
+
+
+    <select id="listPartB" resultType="com.maoding.core.base.dto.CoreShowDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
+        select
+            company_list.company_name as name,
+            company_list.*
+        from maoding_web_company company_list
+            inner join maoding_web_project project_list on (
+                project_list.pstatus = '0'
+                and (project_list.company_bid = company_list.id)
+                <if test="id != null">
+                    and (project_list.id = #{id})
+                </if>
+            )
+        limit 1
+    </select>
 </mapper>

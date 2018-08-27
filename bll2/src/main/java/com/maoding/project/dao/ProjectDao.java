@@ -179,4 +179,18 @@ public interface ProjectDao extends BaseDao<ProjectEntity> {
      * @author   张成亮
      **/
     List<ProjectVariableDTO> listProjectFee(ProjectQueryDTO query);
+
+    /**
+     * 描述       查询项目的甲方
+     * 日期       2018/8/27
+     * @author   张成亮
+     **/
+    List<CoreShowDTO> listPartA(ProjectQueryDTO query);
+
+    /**
+     * 描述       查询项目的乙方
+     * 日期       2018/8/27
+     * @author   张成亮
+     **/
+    List<CoreShowDTO> listPartB(ProjectQueryDTO query);
 }
