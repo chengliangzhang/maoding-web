@@ -257,7 +257,7 @@ public class ProjectDaoImpl extends GenericDao<ProjectEntity> implements Project
      */
     @Override
     public List<ProjectVariableDTO> listProjectFee(ProjectQueryDTO query) {
-        return null;
+        return sqlSession.selectList("ProjectMapper.listProjectFee", query);
     }
 }
 
