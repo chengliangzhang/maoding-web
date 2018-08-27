@@ -24,10 +24,7 @@
         this._selectedArr = this.settings.selectedArr;
         this._selectedStr = '';
 
-        if(this._selectedArr!=null && this._selectedArr.length>0){
-            this._selectedStr = this._selectedArr.join(',');　　//转为字符串
-            this._selectedStr += this._selectedStr+','
-        }
+
         this.init();
     }
 
@@ -38,38 +35,21 @@
         }
         , render: function () {
             var that = this;
-            var selectList = [];
-            selectList.push({name:'全部',id:''});
-            /*if(that.settings.selectArr!=null && Object.getOwnPropertyNames(that.settings.selectArr).length>0){
-                $.each(that.settings.selectArr, function (key, value) {
-                    var isSelected = false;
-                    if(that._selectedStr.indexOf(key)>-1){
-                        isSelected = true;
-                    }
-                    selectList.push({fieldValue: key, fieldName: value,isSelected:isSelected});
-                });
-            }*/
-            if(that.settings.selectArr!=null && that.settings.selectArr.length>0){
-                $.each(that.settings.selectArr, function (i, item) {
-                    var isSelected = false;
-                    if(that._selectedStr.indexOf(item.id+',')>-1){
-                        isSelected = true;
-                    }
-                    selectList.push({id: item.id, name: item.name,isSelected:isSelected});
-                });
-            }
+
             if(that.settings.selectedArr!=null && that.settings.selectedArr.length>0){
                 $(that.element).find('i').addClass('fc-v1-blue');
             }
 
-            var iHtml = template('m_filterableField/m_filter_select1',{
-                selectList:selectList,
-                isMultiple:that.settings.isMultiple
-            });
-            var iTextObj = iHtml.getTextWH();
-            var iWHObj = setDialogWH(iTextObj.width,iTextObj.height);
-
             $(that.element).on('click',function (e) {
+
+                var selectList = that.dealSelectedList();
+                var iHtml = template('m_filterableField/m_filter_select1',{
+                    selectList:selectList,
+                    isMultiple:that.settings.isMultiple
+                });
+                var iTextObj = iHtml.getTextWH();
+                var iWHObj = setDialogWH(iTextObj.width,iTextObj.height);
+
                 S_dialog.dialog({
                     contentEle: 'dialogOBox',
                     ele:that.settings.eleId,
@@ -94,12 +74,17 @@
                     $(dialogEle).find('.dropdown-menu a').on('click',function () {
 
                         var val = $(this).attr('data-state-no');
-                        var selectedArr = [];
+                        that._selectedArr = [];
                         if(val!='')
-                            selectedArr.push(val);
+                            that._selectedArr.push(val);
 
+                        if(that._selectedArr!=null && that._selectedArr.length>0){
+                            $(that.element).find('i').addClass('fc-v1-blue');
+                        }else{
+                            $(that.element).find('i').removeClass('fc-v1-blue');
+                        }
                         if(that.settings.selectedCallBack)
-                            that.settings.selectedCallBack(selectedArr);
+                            that.settings.selectedCallBack(that._selectedArr);
 
                         S_dialog.close($(dialogEle));
                     });
@@ -108,6 +93,41 @@
                 e.stopPropagation();
                 return false;
             });
+        }
+        //过滤list,标上选中标识
+        ,dealSelectedList:function () {
+            var that =this;
+            var selectList = [];
+            if(that._selectedArr!=null && that._selectedArr.length>0){
+                that._selectedStr = that._selectedArr.join(',');　　//转为字符串
+                that._selectedStr += that._selectedStr+','
+            }
+
+            selectList.push({name:'全部',id:''});
+
+            /*if(that.settings.selectArr!=null && Object.getOwnPropertyNames(that.settings.selectArr).length>0){
+                $.each(that.settings.selectArr, function (key, value) {
+                    var isSelected = false;
+                    if(that._selectedStr.indexOf(key)>-1){
+                        isSelected = true;
+                    }
+                    selectList.push({fieldValue: key, fieldName: value,isSelected:isSelected});
+                });
+            }*/
+
+            if(that.settings.selectArr!=null && that.settings.selectArr.length>0){
+                $.each(that.settings.selectArr, function (i, item) {
+                    var isSelected = false;
+                    if(item==null)
+                        return true;
+
+                    if(that._selectedStr.indexOf(item.id+',')>-1){
+                        isSelected = true;
+                    }
+                    selectList.push({id: item.id, name: item.name,isSelected:isSelected});
+                });
+            }
+            return selectList;
         }
         //初始化iCheck
         ,initICheck:function ($ele) {
@@ -156,6 +176,7 @@
             $ele.find('input[name="itemCk"][value!=""]:checked').each(function () {
                 selectedArr.push($(this).val());
             });
+            that._selectedArr = selectedArr;
             if(that.settings.selectedCallBack)
                 that.settings.selectedCallBack(selectedArr);
 

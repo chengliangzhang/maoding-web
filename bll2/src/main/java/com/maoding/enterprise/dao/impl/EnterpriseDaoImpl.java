@@ -21,4 +21,9 @@ public class EnterpriseDaoImpl implements EnterpriseDao {
     public EnterpriseDTO getEnterpriseById(String id) {
         return this.sqlSession.selectOne("EnterpriseMapper.getEnterpriseById",id);
     }
+
+    @Override
+    public String getEnterpriseNameByProjectId(String projectId) {
+        return sqlSession.selectOne("EnterpriseMapper.getEnterpriseNameByProjectId", projectId);
+    }
 }

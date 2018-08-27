@@ -1,0 +1,12 @@
+<tr>
+{{each fieldList as f i}}
+
+<th class="{{f.canBeOrder==1?'sorting':''}}" data-action="{{f.canBeOrder==1?'sort':''}}" data-code="{{f.code}}" data-type="{{f.filterType}}">
+    {{f.name}}
+    {{if f.filterType && f.filterType!=0}}
+    <a class="icon-filter pull-right" id="filter_{{f.code}}_{{f.id}}"><i class="icon iconfont icon-shaixuan"></i></a>
+    {{/if}}
+</th>
+
+{{/each}}
+</tr>

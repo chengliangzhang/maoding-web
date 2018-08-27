@@ -33,9 +33,14 @@ public class ProjectCostPointDetailDataDTO {
     private String pointId;
 
     /**
-     * 费用状态
+     * 费用状态(付款方)
      */
     private String feeStatus;
+
+    /**
+     * 费用状态(收款方)
+     */
+    private String paidFeeStatus;
 
     /**
      * 审批状态
@@ -191,10 +196,14 @@ public class ProjectCostPointDetailDataDTO {
     }
 
     public BigDecimal getNotReceiveFee() {
-        if(fee!=null && paidFee!=null){
+        if(fee!=null && paidFee!=null && paidFee.doubleValue()>0){
             notReceiveFee = fee.subtract(paidFee);
         }else {
-            notReceiveFee = fee;
+            if( "1".equals(paidFeeStatus)){
+                notReceiveFee = fee;
+            }else {
+                notReceiveFee = new BigDecimal("0");//否则未付就是为0，因为审批还未审批完，不应该计入应付状态
+            }
         }
         return notReceiveFee;
     }
@@ -378,5 +387,13 @@ public class ProjectCostPointDetailDataDTO {
 
     public void setAuditStatus(String auditStatus) {
         this.auditStatus = auditStatus;
+    }
+
+    public String getPaidFeeStatus() {
+        return paidFeeStatus;
+    }
+
+    public void setPaidFeeStatus(String paidFeeStatus) {
+        this.paidFeeStatus = paidFeeStatus;
     }
 }

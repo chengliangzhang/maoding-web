@@ -1,0 +1,16 @@
+
+{{each dataList as d i}}
+<tr data-id="{{d.id}}">
+    {{each headerList as f fi}}
+        <td data-code="{{f.code}}">
+            {{if aStr && aStr.indexOf(f.code)>-1}}
+            <a href="javascript:void(0)" data-action="{{f.code}}">
+                {{d[f.code]}}
+            </a>
+            {{else}}
+                <span>{{d[f.code]}}</span>
+            {{/if}}
+        </td>
+    {{/each}}
+</tr>
+{{/each}}

@@ -4,7 +4,7 @@
 ;(function ($, window, document, undefined) {
 
     "use strict";
-    var pluginName = "m_projectList",
+    var pluginName = "m_projectList_old",
         defaults = {
             postData: null,
             renderCallback:null,//渲染页面完成后事件
@@ -17,8 +17,25 @@
         this.settings = options;
         this._defaults = defaults;
         this._name = pluginName;
-
-        this._headerList = null;
+        this._columnArr = [
+            {code:'projectNo',name:'项目编号'},
+            {code:'projectName',name:'项目名称'},
+            {code:'createBy',name:'立项组织/立项人'},
+            {code:'projectCreateDate',name:'立项时间'},
+            {code:'signDate',name:'合同签订'},
+            {code:'status',name:'项目状态'},
+            {code:'buildName',name:'功能分类'},
+            {code:'address',name:'地点'},
+            {code:'partyA',name:'甲方'},
+            {code:'partyB',name:'乙方'},
+            {code:'designCompanyName',name:'合作组织'}/*,
+            {code:'busPersonInCharge',name:'经营负责人'},
+            {code:'busPersonInChargeAssistant',name:'经营助理'},
+            {code:'designPersonInCharge',name:'设计负责人'},
+            {code:'designPersonInChargeAssistant',name:'设计助理'}*/
+        ];
+        this._columnCodes = 'projectCreateDate,signDate,status,buildName,address,partyA,partyB';
+        this._type = 0;//我的项目
         this._companyNameList = [];//筛选条件-立项组织
         this._partyANameList = [];//筛选条件-甲方
         this._partyBNameList = [];//筛选条件-乙方
@@ -30,7 +47,23 @@
 
         /******************* 筛选条件 值预存 *********************/
 
-        this._filterData = {};
+        this._filterData = {
+            keyword:null,
+            companyNames:null,
+            partyANames:null,
+            partyBNames:null,
+            startSignDate:null,
+            endSignDate:null,
+            province:null,
+            city:null,
+            county:null,
+            startTime:null,
+            endTime:null,
+            status:null,
+            designCompanyName:null,
+            orderField:null,
+            orderSign:null
+        };
 
         this.init();
     }
@@ -41,8 +74,11 @@
 
             //渲染容器
             $(that.element).html(template('m_projectList/m_projectList', {}));
+            that.renderProjectList(1);
             that.bindActionClick();
-            that.renderListHeader(0);
+            that.renderListHeader();
+            that.renderListContent();
+
         }
         //请求筛选数据
         ,getProjectConditions:function (callBack) {
@@ -67,55 +103,128 @@
                 }
             });
         }
-        //渲染列表头部
-        ,renderListHeader:function (t) {
+        ,renderListHeader:function () {
             var that = this;
             var option = {};
-            option.renderCallBack = function (data) {
-                that._headerList = data;
-                that.renderListContent(t);
+            option.url = restApi.url_listTitle;
+            option.postData = {
+                type:0
             };
-            option.filterCallBack = function (data) {
-                console.log(data);
-                that._filterData = data;
-                that.renderListContent();
-            };
-            $(that.element).find('.data-list-container table thead').m_field_list_header(option,true);
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+
+
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
         }
-        ,renderListContent:function (t) {
+        ,renderListContent:function () {
+            var that = this;
+            var option = {};
+            option.url = restApi.url_listProject;
+            option.postData = {
+                type:1
+            };
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+
+
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+        //渲染项目list
+        ,renderProjectList:function (fromType) {
             var that = this;
 
+            var option = {};
+            option.param = {};
             if(that.settings.isAllProject==false){
                 that._filterData.type = 1;
             }else{
                 that._filterData.type = null;
+                that._type = 1;
             }
 
-            var option = {};
-            option.url = restApi.url_listProject;
-            option.headerList = that._headerList;
-            option.isSetCookies = true;
-            option.dataAction = 'myProjectList';
-            option.aStr = 'projectName';
-            option.param = that._filterData;
-            option.renderCallBack = function () {
-                that.bindGotoProject();
-            };
-            console.log(option)
-            if(t==0)
-                option.isFirstLoad = true;
+            //条件查询
+            var keyword = $(that.element).find('input[name="keyword"]').val();
+            that._filterData.keyword = isNullOrBlank(keyword)?null:keyword;
 
-            $(that.element).find('.data-list-container table tbody').m_field_list_row(option,true);
+            console.log(filterParam(that._filterData));
+
+            option.param = filterParam(that._filterData);
+
+            var cookiesData = Cookies.get('projectList_cookiesData');
+
+            if(cookiesData!=undefined && fromType==1){
+                cookiesData = $.parseJSON(cookiesData);
+                //that.paramSetVal(cookiesData.param);
+                option.param = cookiesData.param;
+            }
+
+            paginationFun({
+                eleId: '#data-pagination-container',
+                loadingId: '.data-list-box',
+                url: restApi.url_getMyProjectList,
+                params: option.param
+            }, function (response) {
+
+                if (response.code == '0') {
+
+                    //通过Cookie记住项目页码
+                    option.param.pageIndex = $("#data-pagination-container").pagination('getPageIndex');
+
+                    var $cookiesData = {
+                        param:option.param,
+                        dataAction:$('#content-right').find('ul.secondary-menu-ul li.active').attr('id')
+                    };
+                    Cookies.set('projectList_cookiesData', $cookiesData);
+
+                    that._projectList = response.data.data;
+
+                    that._columnCodes = response.data.columnCodes;
+                    if(response.data.columnCodes!=null && response.data.columnCodes!=''){
+                        that._columnCodes = response.data.columnCodes;
+                    }
+                    var columnArr = that._columnCodes.split(',');
+                    var html = template('m_projectList/m_projectList_content',{
+                        projectList:response.data.data,
+                        columnCodes:that._columnCodes,
+                        columnLen:columnArr.length
+                    });
+                    $(that.element).find('.data-list-container').html(html);
+                    that.bindGotoProject();
+
+                    that.getProjectConditions(function (data) {
+                        that.filterActionClick();
+                        that.sortActionClick();
+                        if(that.settings.renderCallback!=null){
+                            that.settings.renderCallback(data);
+                        }
+                    });
+
+
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
         }
         //跳转详情
         , bindGotoProject: function () {
             var that = this;
-            $(that.element).find('a[data-action="projectName"]').off('click').on('click', function (e) {
+            $(that.element).find('a[data-action="gotoProject"]').off('click').on('click', function (e) {
                 var $btn = $(this);
-                var pId = $btn.closest('tr').attr('data-id');//项目ID
-                var pName = $btn.text();//项目名称
+                var pId = $btn.attr('data-pId');//项目ID
+                var pName = $btn.attr('data-pName');//项目名称
                 location.hash = '/projectDetails/basicInfo?id='+pId+'&projectName='+encodeURI(pName);
                 stopPropagation(e);
+                return false;
+            });
+            $(that.element).find('button[data-action="setField"]').off('click').on('click', function (e) {
+                var option = {};
+                $('body').m_field_settings(option,true);
                 return false;
             });
         }
@@ -128,19 +237,84 @@
                 switch (dataAction){
                     case 'searchProject':
 
-                        that._filterData.keyword = $(that.element).find('input[name="keyword"]').val();
-                        that.renderListContent();
+                        that.renderProjectList(2);
                         break;
-                    case 'setField'://设置字段
-                        var option = {};
-                        option.saveCallBack = function () {
-                            that.renderListHeader();
-                        };
-                        $('body').m_field_settings(option,true);
-                        return false;
+                    case 'selectColumn':
+                        S_dialog.dialog({
+                            contentEle: 'dialogOBox',
+                            ele:dataAction,
+                            lock: 4,
+                            align: 'bottom left',
+                            quickClose:false,
+                            noTriangle:true,
+                            width: '180',
+                            height:'234',
+                            tPadding: '0px',
+                            url: rootPath+'/assets/module/m_common/m_dialog.html'
+
+                        },function(d){//加载html后触发
+
+                            var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
+
+                            var iHtml = template('m_projectList/m_projectList_selectColumn',{
+                                columnArr:that._columnArr,
+                                columnCodes:that._columnCodes
+                            });
+                            $(dialogEle).html(iHtml);
+                            $(dialogEle).parents('.ui-popup-modal').prev('div.ui-popup-backdrop').off('click').on('click',function () {
+                                S_dialog.close($(dialogEle));
+                            });
+                            $(dialogEle).find('ul li a').off('click').on('click',function (e) {
+
+                                var $this = $(this);
+                                if($this.hasClass('active')){
+                                    $this.removeClass('active');
+                                }else{
+                                    $this.addClass('active');
+                                }
+                                var codeStr = '';
+                                $(dialogEle).find('ul li a.active').each(function () {
+                                    codeStr+=$(this).attr('data-code')+',';
+                                });
+                                if(codeStr.length>0){
+                                    codeStr = codeStr.substring(0,codeStr.length-1);
+                                }
+                                var option = {};
+                                option.url = restApi.url_insertProCondition;
+                                option.postData = {
+                                    type:that._type,
+                                    code:codeStr,
+                                    companyId:window.currentCompanyId
+                                };
+                                that._columnCodes = codeStr;
+                                m_ajax.postJson(option, function (response) {
+                                    if (response.code == '0') {
+
+                                        that.renderProjectListByColumn();
+
+                                    } else {
+                                        S_dialog.error(response.info);
+                                    }
+                                });
+                            });
+                        });
                         break;
                 }
             });
+        }
+        //重新渲染
+        , renderProjectListByColumn:function () {
+            var that = this;
+            var columnArr = that._columnCodes.split(',');
+            var html = template('m_projectList/m_projectList_content',{
+                projectList:that._projectList,
+                columnCodes:that._columnCodes,
+                columnLen:columnArr.length
+            });
+            $(that.element).find('.data-list-container').html(html);
+            that.filterActionClick();
+            that.sortActionClick();
+            that.bindGotoProject();
         }
         //筛选事件
         , filterActionClick:function () {

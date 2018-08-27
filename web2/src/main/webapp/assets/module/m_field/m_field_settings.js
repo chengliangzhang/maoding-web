@@ -1,5 +1,5 @@
 /**
- * 项目列表-表头字段选择
+ * 列表-表头字段选择
  * Created by wrb on 2018/8/22.
  */
 ;(function ($, window, document, undefined) {
@@ -113,7 +113,7 @@
                 var $this = $(this);
                 var code = $this.val();
                 if(code==''){//空是全选
-                    $this.closest('.field-group').find('input[name="itemCk"][value!=""]:checked').each(function () {
+                    $this.closest('.field-group').find('input[name="itemCk"][value!=""]:checked:not(:disabled)').each(function () {
                         that.delSelectedField($(this).val());
                     });
                 }else{
@@ -230,6 +230,9 @@
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
                     S_toastr.success('保存成功！');
+
+                    if(that.settings.saveCallBack)
+                        that.settings.saveCallBack();
 
                 } else {
                     S_dialog.error(response.info);

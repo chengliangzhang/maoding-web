@@ -11,4 +11,8 @@ public interface EnterpriseService {
 
     EnterpriseDTO getEnterpriseById(String id) ;
 
+    /**
+     * 获取甲方名字
+     */
+    String getEnterpriseNameByProjectId(String projectId);
 }

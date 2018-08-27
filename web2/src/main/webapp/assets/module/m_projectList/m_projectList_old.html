@@ -12,23 +12,19 @@
                 </div>
             </div>
             <div class="col-md-6 text-right">
-                <button type="button" class="btn btn-primary" data-action="setField" title="设置字段">
+                <button type="button" class="btn btn-primary" data-action="selectColumn" id="selectColumn">
                     <span><i class="fa fa-list"></i> <span class="caret m-t-n-xs"></span></span>
+                </button>
+                <button type="button" class="btn btn-primary" data-action="setField" >
+                    设置字段
                 </button>
             </div>
         </div>
     </form>
     <div class="data-list-box">
-        <div class="data-list-container">
-            <div class="project-list of-auto">
-                <table class="table table-bordered table-hover cell-border dataTable">
-                    <thead></thead>
-                    <tbody></tbody>
-                </table>
+            <div class="data-list-container"></div>
+            <div class="p-w-xs">
+                <div id="data-pagination-container" class="m-pagination pull-right "></div>
             </div>
-        </div>
-        <div class="p-w-xs">
-            <div id="data-pagination-container" class="m-pagination pull-right "></div>
-        </div>
     </div>
 </div>

@@ -24,6 +24,7 @@ import com.maoding.dynamic.dao.ZInfoDAO;
 import com.maoding.dynamic.dto.ZProjectDTO;
 import com.maoding.dynamic.service.DynamicService;
 import com.maoding.enterprise.dto.EnterpriseSearchQueryDTO;
+import com.maoding.enterprise.service.EnterpriseService;
 import com.maoding.message.dto.SendMessageDTO;
 import com.maoding.message.entity.MessageEntity;
 import com.maoding.message.service.MessageService;
@@ -210,6 +211,9 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
 
     @Autowired
     private ProjectCostDao projectCostDao;
+
+    @Autowired
+    private EnterpriseService enterpriseService;
 
     /**
      * 方法描述：保存项目（数据验证）
@@ -2931,11 +2935,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
 
     //获取甲方信息
     private String getProjectPartA(String projectId){
-        ProjectQueryDTO query = new ProjectQueryDTO();
-        query.setId(projectId);
-        List<CoreShowDTO> partAList = projectDao.listPartA(query);
-        CoreShowDTO partA = ObjectUtils.getFirst(partAList);
-        return (partA != null) ? partA.getName() : null;
+        return enterpriseService.getEnterpriseNameByProjectId(projectId);
     }
 
     //获取乙方信息

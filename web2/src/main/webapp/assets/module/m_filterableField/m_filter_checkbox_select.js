@@ -46,6 +46,10 @@
 
             if(that.settings.selectArr!=null && that.settings.selectArr.length>0){
                 $.each(that.settings.selectArr, function (i, item) {
+
+                    if(item==null)
+                        return true;
+
                     var isSelected = false;
                     if(that._selectedStr.indexOf(item.id+',')>-1){
                         isSelected = true;
@@ -53,6 +57,10 @@
                     var childList = [];
                     if(item.childList!=null && item.childList.length>0){
                         $.each(item.childList,function (subI,subItem) {
+
+                            if(item==null)
+                                return true;
+
                             var subSelected = false;
                             if(that._selectedStr.indexOf(subItem.id+',')>-1){
                                 subSelected = true;

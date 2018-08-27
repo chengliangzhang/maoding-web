@@ -7,4 +7,6 @@ public interface EnterpriseDao {
     String getEnterpriseNameById(String id);
 
     EnterpriseDTO getEnterpriseById(String id);
+
+    String getEnterpriseNameByProjectId(String projectId);
 }

@@ -9,6 +9,7 @@ import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.ObjectUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
+import com.maoding.enterprise.service.EnterpriseService;
 import com.maoding.exception.CustomException;
 import com.maoding.financial.dto.ExpCategoryDataDTO;
 import com.maoding.financial.dto.QueryExpCategoryDTO;
@@ -52,6 +53,9 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Autowired
     private CompanyBalanceService companyBalanceService;
+
+    @Autowired
+    private EnterpriseService enterpriseService;
 
     private static final String GDFY_SALESTAX = "gdfy_salestax";//主营业务税金及附加
     private static final String GDFY_CWFY = "gdfy_cwfy";//财务费用
@@ -293,11 +297,28 @@ public class StatisticServiceImpl implements StatisticService {
      * 收支总览-应收
      */
     @Override
-    public List<StatisticDetailDTO> getReceivable(StatisticDetailQueryDTO dto) throws Exception{
+    public List<StatisticDetailDTO> getReceivable(StatisticDetailQueryDTO queryDTO) throws Exception{
         //重新设置参数
-        dto.setCompanyIdList(this.getCompanyList(dto.getCurrentCompanyId(),dto.getReceivableId()));
-        dto.setPayType(1);
-        return statisticDao.getReceivable(dto);
+        queryDTO.setCompanyIdList(this.getCompanyList(queryDTO.getCurrentCompanyId(),queryDTO.getReceivableId()));
+        queryDTO.setPayType(1);
+        List<StatisticDetailDTO> list = statisticDao.getReceivable(queryDTO);
+        for (StatisticDetailDTO dto : list) {
+            //如果组织id与FromCompanyId相同并且类型为合作设计费或技术审查费的情况，金额为负数，关联组织显示toCompanyId
+            dto.setFromCompanyName(getCompanyName(dto.getFromCompanyId(),dto.getFromCompanyName()));
+        }
+        return list;
+    }
+
+    private String getCompanyName(String companyId,String companyName){
+        if(StringUtil.isNullOrEmpty(companyName)){
+            String name = enterpriseService.getEnterpriseName(companyId);
+            if(name!=null){
+                return name;
+            }else {
+                return companyId;
+            }
+        }
+        return companyName;
     }
 
     @Override
@@ -314,11 +335,16 @@ public class StatisticServiceImpl implements StatisticService {
      * 收支总览-应付
      */
     @Override
-    public List<StatisticDetailDTO> getPayment(StatisticDetailQueryDTO dto) throws Exception{
+    public List<StatisticDetailDTO> getPayment(StatisticDetailQueryDTO queryDTO) throws Exception{
         //重新设置参数
-        dto.setCompanyIdList(this.getCompanyList(dto.getCurrentCompanyId(),dto.getPaymentId()));
-        dto.setPayType(2);
-        return statisticDao.getReceivable(dto);//和已收使用同一接口
+        queryDTO.setCompanyIdList(this.getCompanyList(queryDTO.getCurrentCompanyId(),queryDTO.getPaymentId()));
+        queryDTO.setPayType(2);
+        List<StatisticDetailDTO> list = statisticDao.getReceivable(queryDTO);//和已收使用同一接口
+        for (StatisticDetailDTO dto : list) {
+            //如果组织id与FromCompanyId相同并且类型为合作设计费或技术审查费的情况，金额为负数，关联组织显示toCompanyId
+            dto.setToCompanyName(getCompanyName(dto.getToCompanyId(),dto.getToCompanyName()));
+        }
+        return list;
     }
 
     @Override

@@ -703,7 +703,14 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
             String id = StringUtil.buildUUID();
             entity.setId(id);
             entity.setCompanyId(projectCostPointDetailDTO.getCurrentCompanyId());//设置金额发起的主体方公司
-            entity.setFeeStatus(ProjectCostConst.FEE_STATUS_START);//发起的状态，还没有进入审批阶段
+            if(entity.getFeeStatus()==null){
+                entity.setFeeStatus(ProjectCostConst.FEE_STATUS_START);//发起的状态，还没有进入审批阶段
+            }
+            if("1".equals(projectCostPointDetailDTO.getIsInvoice())) { //如果开票，对应收款方而言，则不进入应收状态
+                entity.setPaidFeeStatus(ProjectCostConst.FEE_STATUS_START);
+            }else {
+                entity.setPaidFeeStatus(ProjectCostConst.FEE_STATUS_APPROVE);//如果没有开票，则直接进入应付的状态
+            }
             //todo 查询是否是内部组织
             if(isInnerCompany){
                 entity.setRelationCompanyId(costDTO.getFromCompanyId());//如果是内部组织，则发起方为收款组织，关联组织为付款方
@@ -1333,6 +1340,10 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
             //累计已经审批通过的金额
             if("1".equals(pointDetailDataDTO.getFeeStatus())){
                 totalDTO.setApproveBackMoneyApprove(totalDTO.getApproveBackMoneyApprove().add(pointDetailDataDTO.getFee()));
+            }
+            //累计财务已经发票确认过的金额
+            if("1".equals(pointDetailDataDTO.getPaidFeeStatus())){
+                totalDTO.setInvoiceConfirmFee(totalDTO.getInvoiceConfirmFee().add(pointDetailDataDTO.getFee()));
             }
 
             //累积总到款
@@ -2185,6 +2196,10 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         if(pointDetail==null || costEntity==null){
             return AjaxMessage.error("参数错误");
         }
+        //处理PaidFeeStatus = 1
+        pointDetail.setPaidFeeStatus(ProjectCostConst.FEE_STATUS_APPROVE);
+        this.projectCostPointDetailDao.updateById(pointDetail);
+        //处理发票信息
         String invoice = pointDetail.getInvoice();
         dto.setId(invoice);
         invoiceService.saveInvoice(dto);

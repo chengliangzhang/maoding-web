@@ -2,10 +2,12 @@ package com.maoding.statistic.controller;
 
 
 import com.maoding.core.base.controller.BaseController;
+import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.core.util.DateUtils;
 import com.maoding.financial.service.ExpMainService;
+import com.maoding.org.dto.CompanySimpleDTO;
 import com.maoding.projectcost.dto.ProjectCostQueryDTO;
 import com.maoding.projectcost.service.ProjectCostService;
 import com.maoding.statistic.dto.*;
@@ -280,31 +282,31 @@ public class StatisticController extends BaseController {
         String companyId = param.getReceivableId();
         param.setCurrentCompanyId(this.currentCompanyId);
         List<StatisticDetailDTO> data = statisticService.getReceivable(param);
-        for (StatisticDetailDTO dto : data) {
-            //如果组织id与FromCompanyId相同并且类型为合作设计费或技术审查费的情况，金额为负数，关联组织显示toCompanyId
-            if (1 == dto.getFeeType() || 4 == dto.getFeeType() || 5 == dto.getFeeType()) {
-                dto.setFromCompanyName(null);
-                dto.setToCompanyName(null);
-            }
-        }
+//        for (StatisticDetailDTO dto : data) {
+//            //如果组织id与FromCompanyId相同并且类型为合作设计费或技术审查费的情况，金额为负数，关联组织显示toCompanyId
+//            if (1 == dto.getFeeType() || 4 == dto.getFeeType() || 5 == dto.getFeeType()) {
+//                dto.setFromCompanyName(null);
+//                dto.setToCompanyName(null);
+//            }
+//        }
         StatisticDetailQueryDTO queryDTO = new StatisticDetailQueryDTO();
         queryDTO.setReceivableId(companyId);
         queryDTO.setCurrentCompanyId(this.currentCompanyId);
         List<StatisticDetailDTO> data1 = statisticService.getReceivable(queryDTO);
-        Map<String, String> mp = new HashMap<>();
-        for (StatisticDetailDTO dto : data1) {
-            if (null == mp.get(dto.getFromCompanyId()) && null != dto.getId() && null != dto.getFromCompanyName()) {
-                mp.put(dto.getFromCompanyId(), dto.getFromCompanyName());
-            }
-        }
+//        Map<String, String> mp = new HashMap<>();
+//        for (StatisticDetailDTO dto : data1) {
+//            if (null == mp.get(dto.getFromCompanyId()) && null != dto.getId() && null != dto.getFromCompanyName()) {
+//                mp.put(dto.getFromCompanyId(), dto.getFromCompanyName());
+//            }
+//        }
         Integer total = statisticService.getReceivableCount(param);
         //总金额
         BigDecimal receivaleSum = statisticService.getReceivableSum(param);
         para.put("data", data);
         para.put("total", total);
         para.put("receivaleSum", receivaleSum);
-        para.put("organization", mp);
-
+       // para.put("organization", mp);
+        para.putAll(this.getCompanyList(data1));
         return this.ajaxResponseSuccess().setData(para);
     }
 
@@ -323,37 +325,62 @@ public class StatisticController extends BaseController {
         try {
             param.setCurrentCompanyId(this.currentCompanyId);
             List<StatisticDetailDTO> data = statisticService.getPayment(param);
-            for (StatisticDetailDTO dto : data) {
-                //如果组织id与FromCompanyId相同并且类型为合作设计费或技术审查费的情况，金额为负数，关联组织显示toCompanyId
+//            for (StatisticDetailDTO dto : data) {
+//                //如果组织id与FromCompanyId相同并且类型为合作设计费或技术审查费的情况，金额为负数，关联组织显示toCompanyId
 //                if (1 == dto.getFeeType() || 4 == dto.getFeeType() || 5 == dto.getFeeType()) {
 //                    dto.setFromCompanyName(null);
 //                    dto.setToCompanyName(null);
 //                }else if (companyId.equals(dto.getFromCompanyId())) {
 //                    dto.setFromCompanyName(dto.getToCompanyName());
 //                }
-                dto.setFromCompanyName(dto.getToCompanyName());
-            }
+//                dto.setFromCompanyName(dto.getToCompanyName());
+//            }
             StatisticDetailQueryDTO queryDTO = new StatisticDetailQueryDTO();
             queryDTO.setPaymentId(companyId);
             queryDTO.setCurrentCompanyId(this.currentCompanyId);
             List<StatisticDetailDTO> data1 = statisticService.getPayment(queryDTO);
-            Map<String, String> mp = new HashMap<>();
-            for (StatisticDetailDTO dto : data1) {
-                if (null == mp.get(dto.getToCompanyId()) && null != dto.getId() && null != dto.getToCompanyName()) {
-                    mp.put(dto.getToCompanyId(), dto.getToCompanyName());
-                }
-            }
+//            Map<String, String> mp = new HashMap<>();
+//            for (StatisticDetailDTO dto : data1) {
+//                if (null == mp.get(dto.getToCompanyId()) && null != dto.getId() && null != dto.getToCompanyName()) {
+//                    mp.put(dto.getToCompanyId(), dto.getToCompanyName());
+//                }
+//            }
             Integer total = statisticService.getPaymentCount(param);
             BigDecimal paymentSum = statisticService.getPaymentSum(param);
             para.put("data", data);
             para.put("total", total);
             para.put("paymentSum", paymentSum);
-            para.put("organization", mp);
+          //  para.put("organization", mp);
+            para.putAll(this.getCompanyList(data1));
         } catch (Exception e) {
             log.error("getPayment" + e.getMessage());
             return this.ajaxResponseError("数据异常");
         }
         return this.ajaxResponseSuccess().setData(para);
+    }
+
+    private Map<String,Object> getCompanyList(List<StatisticDetailDTO> data1){
+        Map<String, Object> para = new HashMap<>();
+        List<String> toCompanyIdList = new ArrayList<>();
+        List<String> fromCompanyIdList = new ArrayList<>();
+        List<CoreShowDTO> toCompanyList = new ArrayList<>();
+        List<CoreShowDTO> fromCompanyList = new ArrayList<>();
+
+        for (StatisticDetailDTO dto : data1) {
+            if (!toCompanyIdList.contains(dto.getToCompanyId()) && null != dto.getId() && null != dto.getToCompanyName()) {
+                CoreShowDTO c = new CoreShowDTO(dto.getToCompanyId(), dto.getToCompanyName());
+                toCompanyIdList.add(dto.getToCompanyId());
+                toCompanyList.add(c);
+            }
+            if (!fromCompanyIdList.contains(dto.getFromCompanyId()) && null != dto.getId() && null != dto.getFromCompanyName()) {
+                CoreShowDTO c = new CoreShowDTO(dto.getFromCompanyId(), dto.getFromCompanyName());
+                fromCompanyList.add(c);
+                fromCompanyIdList.add(dto.getFromCompanyId());
+            }
+        }
+        para.put("toCompanyList", toCompanyList);
+        para.put("fromCompanyList", fromCompanyList);
+        return para;
     }
 
     /**

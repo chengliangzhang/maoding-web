@@ -21,6 +21,10 @@
         this._companyList = null;//组织列表
         this._companyListBySelect = null;//筛选组织
         this._selectedOrg = null;//当前组织筛选-选中组织对象
+        this._fromCompanyList  = [];//筛选-付款组织
+        this._toCompanyList  = [];//筛选-收款组织
+        this._feeTypeNameList  = [];//筛选-收支类型
+
         this.initParam();
         this.init();
     }
@@ -40,6 +44,7 @@
                 endDate:null,
                 paymentId:null,
                 feeType:null,
+                feeTypeList:null,
                 associatedOrg:null,
                 projectName:null
             };
@@ -53,7 +58,7 @@
             option.$selectedCallBack = function (data) {
                 that._selectedOrg = data;
                 that._filterData.paymentId = that._selectedOrg.id;
-                that.renderDataList();
+                that.renderDataList(0);
             };
             option.$renderCallBack = function () {
                 that.bindRefreshBtn();
@@ -75,7 +80,7 @@
             $(that.element).find('.time-combination').m_filter_timeCombination(timeOption,true);
         }
         //渲染台账list
-        ,renderDataList:function () {
+        ,renderDataList:function (t) {
             var that = this;
 
             var option = {};
@@ -92,7 +97,9 @@
 
                 if (response.code == '0') {
 
-                    that._companyListBySelect = response.data.organization;
+                    that._fromCompanyList = response.data.fromCompanyList;
+                    that._toCompanyList = response.data.toCompanyList;
+
                     var html = template('m_payments/m_payments_payable_list',{
                         dataList:response.data.data,
                         paymentSum:response.data.paymentSum
@@ -100,7 +107,15 @@
                     $(that.element).find('.data-list-container').html(html);
                     that.bindViewDetail();
                     that.bindGoExpensesPage();
-                    that.filterActionClick();
+
+                    if(t==0){
+                        that.getFeeType(function () {
+                            that.filterActionClick();
+                        });
+                    }else{
+                        that.filterActionClick();
+                    }
+
 
                 } else {
                     S_dialog.error(response.info);
@@ -147,23 +162,20 @@
                 var id = $this.attr('id');
                 var filterArr = id.split('_');
                 switch (id){
-                    case 'filter_feeType'://收支类型
-                    case 'filter_associatedOrg'://关联组织
+                    case 'filter_toCompanyId'://收款组织
+                    case 'filter_fromCompanyId'://付款组织
 
                         var selectedArr = [],selectList = [];
-                        if(id=='filter_feeType'){
-                            selectList = [
-                                {name:'技术审查费',id:'2'},
-                                {name:'合作设计费',id:'3'},
-                                {name:'其他收支',id:'4'}
-                            ]
-                        }
-                        else if(id=='filter_associatedOrg'){
+                        if(id=='filter_toCompanyId'){
                             
-                            if(that._companyListBySelect!=null && Object.getOwnPropertyNames(that._companyListBySelect).length>0){
-                                $.each(that._companyListBySelect, function (key, value) {
-                                    selectList.push({id: key, name: value});
-                                });
+                            if(that._toCompanyList!=null && that._toCompanyList.length>0){
+                                selectList = that._toCompanyList;
+                            }
+                        }
+                        else if(id=='filter_fromCompanyId'){
+
+                            if(that._fromCompanyList!=null && that._fromCompanyList.length>0){
+                                selectList = that._fromCompanyList;
                             }
                         }
 
@@ -198,8 +210,58 @@
                         $(that.element).find('#'+id).m_filter_input(option, true);
 
                         break;
+                    case 'filter_feeType'://收支分类子项
+
+                        var option = {};
+                        var newList = [];
+
+                        if(that._feeTypeNameList!=null && that._feeTypeNameList.length>0){
+                            $.each(that._feeTypeNameList,function (i,item) {
+                                var childList = [];
+                                if(item.childList!=null && item.childList.length>0){
+                                    $.each(item.childList,function (subI,subItem) {
+                                        childList.push({id:item.expTypeValue+'_'+subItem.expTypeValue,name:subItem.expTypeValue});
+                                    });
+                                }
+                                newList.push({id:item.expTypeValue,name:item.expTypeValue,childList:childList});
+                            })
+                        }
+                        option.selectArr = newList;
+                        option.selectedArr = that._filterData.feeTypeList;
+                        option.eleId = 'filter_feeType';
+                        option.boxStyle = 'min-width:525px;';
+                        option.dialogWidth = '525';
+                        option.selectedCallBack = function (data) {
+                            console.log(data);
+                            that._filterData.feeTypeList = data;
+                            that.renderDataList();
+
+                        };
+                        $(that.element).find('#filter_feeType').m_filter_checkbox_select(option, true);
+                        break;
                 }
 
+            });
+        }
+        /**
+         * 获取收支分类
+         * @param feeTypeParentList feeTypeParentList==null0为一级，feeTypeParentList!=null则查询此子类
+         */
+        ,getFeeType:function (callBack) {
+            var that = this;
+            var option = {};
+            option.url = restApi.url_getTitleFilter;
+            option.postData = {};
+            option.postData.feeTypeParentList  = that._filterData.feeTypeParentList;
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+                    that._feeTypeNameList  = response.data.feeTypeNameList;
+                    that._feeTypeParentNameList  = response.data.feeTypeParentNameList;
+                    if(callBack!=null)
+                        callBack();
+                } else {
+                    S_dialog.error(response.info);
+                }
             });
         }
 

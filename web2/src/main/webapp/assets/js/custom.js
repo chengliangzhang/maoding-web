@@ -1477,16 +1477,19 @@ var clickTimeIcon = function ($ele) {
  * @param arr 数组
  * @param id
  */
-var getObjectInArray = function (arr,id) {
+var getObjectInArray = function (arr,value,key) {
 
     if(isNullOrBlank(arr))
         return null;
 
-    if(isNullOrBlank(id))
+    if(isNullOrBlank(value))
         return null;
 
+    if(key==null)
+        key = 'id';
+
     var obj=arr.find(function (item) {
-        return item.id === id
+        return item[key] === value
     });
     return obj;
 };

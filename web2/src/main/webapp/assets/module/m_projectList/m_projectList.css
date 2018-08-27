@@ -8,12 +8,3 @@
     padding:8px;
     white-space:nowrap;
 }
-
-.select-column ul>li>a.active{
-    color: #fff;
-    background-color: #4765a0;
-}
-.select-column ul>li>a{
-    margin: 2px;
-    border-radius: 0;
-}

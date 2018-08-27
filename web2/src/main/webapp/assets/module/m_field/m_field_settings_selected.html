@@ -1,9 +1,11 @@
 {{each selectedTitleList as p pi}}
 <li class="list-group-item no-borders" data-sort-id="{{pi}}" data-code="{{p.code}}">
     <a href="javascript:void(0);">{{p.name}}</a>
+    {{if p.canBeHide!=0}}
     <a class="curp pull-right" href="javascript:void(0)" data-action="delSelectedField" >
         <i class="fa fa-times color-red"></i>
     </a>
+    {{/if}}
     <div class="clearfix"></div>
 </li>
 {{/each}}

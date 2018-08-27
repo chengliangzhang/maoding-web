@@ -365,17 +365,6 @@
             <if test="projectName!=null">
                 and mwp.project_name like concat('%',#{projectName},'%')
             </if>
-            <!--<if test="profitType!=null">-->
-                <!--<choose>-->
-                    <!--<when test="profitType == 0">-->
-                        <!--and mwpc.to_company_id = #{companyId}-->
-                    <!--</when>-->
-                    <!--<otherwise>-->
-                        <!--and mwpc.from_company_id = #{companyId}-->
-                        <!--and (mwpc.type=2 or mwpc.type=3 or mwpc.type=4 or mwpc.type=5)-->
-                    <!--</otherwise>-->
-                <!--</choose>-->
-            <!--</if>-->
             <if test="feeType!=null">
                 <choose>
                     <when test="feeType ==4">
@@ -387,22 +376,24 @@
                 </choose>
             </if>
             <if test="payType!=null and payType==1">
+                and mwpcpd.paid_fee_status = 1
                 and mwpc.to_company_id in
                 <foreach collection="companyIdList" item="id" index="i" open="(" separator="," close=")">
                     #{id}
                 </foreach>
-                <if test="associatedOrg!=null" >
-                    and mwpc.from_company_id = #{associatedOrg}
-                </if>
             </if>
             <if test="payType!=null and payType==2">
+                and mwpcpd.fee_status = 1
                 and mwpc.from_company_id in
                 <foreach collection="companyIdList" item="id" index="i" open="(" separator="," close=")">
                     #{id}
                 </foreach>
-                <if test="associatedOrg!=null" >
-                    and mwpc.to_company_id = #{associatedOrg}
-                </if>
+            </if>
+            <if test="toCompanyId!=null">
+                and mwpc.to_company_id = #{toCompanyId}
+            </if>
+            <if test="fromCompanyId!=null">
+                and mwpc.from_company_id = #{fromCompanyId}
             </if>
         </where>
     </sql>

@@ -44,9 +44,14 @@ public class ProjectCostPointDetailEntity extends BaseEntity{
     private String status;
 
     /**
-     * 费用的状态
+     * 费用的状态（1：已经审批通过，0：待审批），用于付款方的状态描述
      */
     private Integer feeStatus;
+
+    /**
+     * 发票的状态（0：发票待确认，1：已经确认，该状态为应收的状态），用于收款方的状态描述
+     */
+    private Integer paidFeeStatus;
 
     /**
      * 发起组织的id(如果是付款方，则对应 cost 中的 fromCompanyId,如果是收款方则是：toCompanyId)，使用companyId，代表记录的主体方是谁处理
@@ -128,5 +133,13 @@ public class ProjectCostPointDetailEntity extends BaseEntity{
 
     public void setRelationCompanyId(String relationCompanyId) {
         this.relationCompanyId = relationCompanyId;
+    }
+
+    public Integer getPaidFeeStatus() {
+        return paidFeeStatus;
+    }
+
+    public void setPaidFeeStatus(Integer paidFeeStatus) {
+        this.paidFeeStatus = paidFeeStatus;
     }
 }

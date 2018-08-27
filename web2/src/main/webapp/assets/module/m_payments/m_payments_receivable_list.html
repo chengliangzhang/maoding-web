@@ -1,18 +1,22 @@
 <table class="table table-bordered table-responsive">
     <thead>
         <tr>
-            <th width="15%">日期</th>
-            <th width="15%"><span class="th-span-pr">应收（元）</span></th>
-            <th width="15%">
+            <th width="13%">日期</th>
+            <th width="13%"><span class="th-span-pr">应收（元）</span></th>
+            <th width="14%">
                 收支分类子项
                 <a class="icon-filter pull-right" id="filter_feeType" ><i class="icon iconfont icon-shaixuan"></i></a>
             </th>
-            <th width="25%">备注</th>
-            <th width="15%">
-                关联组织
-                <a class="icon-filter pull-right" id="filter_associatedOrg" ><i class="icon iconfont icon-shaixuan"></i></a>
+            <th width="20%">备注</th>
+            <th width="13%">
+                收款组织
+                <a class="icon-filter pull-right" id="filter_toCompanyId"><i class="icon iconfont icon-shaixuan"></i></a>
             </th>
-            <th width="15%">
+            <th width="13%">
+                付款组织
+                <a class="icon-filter pull-right" id="filter_fromCompanyId"><i class="icon iconfont icon-shaixuan"></i></a>
+            </th>
+            <th width="14%">
                 关联项目
                 <a class="icon-filter pull-right" id="filter_projectName" ><i class="icon iconfont icon-shaixuan"></i></a>
             </th>
@@ -28,10 +32,15 @@
             <td>{{d.feeTypeName}}</td>
             <td>{{d.feeName}}</td>
             <td>
+                {{if d.toCompanyName!=null && d.toCompanyName!=''}}
+                    {{d.toCompanyName}}
+                {{else}}
+                --
+                {{/if}}
+            </td>
+            <td>
                 {{if d.fromCompanyName!=null && d.fromCompanyName!=''}}
                 {{d.fromCompanyName}}
-                {{else if d.toCompanyName!=null && d.toCompanyName!=''}}
-                {{d.toCompanyName}}
                 {{else}}
                 --
                 {{/if}}

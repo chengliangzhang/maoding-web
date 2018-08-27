@@ -147,6 +147,15 @@ public class StatisticDetailQueryDTO extends BaseDTO{
 
     private String toCompanyName;
 
+    private String fromCompanyId;
+
+    private String toCompanyId;
+
+    /**
+     * Excel模板文件名
+     */
+    String templateFileName;
+
     public List<String> getCompanyIdList() {
         return companyIdList;
     }
@@ -450,5 +459,29 @@ public class StatisticDetailQueryDTO extends BaseDTO{
 
     public void setPayType(Integer payType) {
         this.payType = payType;
+    }
+
+    public String getTemplateFileName() {
+        return templateFileName;
+    }
+
+    public void setTemplateFileName(String templateFileName) {
+        this.templateFileName = templateFileName;
+    }
+
+    public String getFromCompanyId() {
+        return fromCompanyId;
+    }
+
+    public void setFromCompanyId(String fromCompanyId) {
+        this.fromCompanyId = fromCompanyId;
+    }
+
+    public String getToCompanyId() {
+        return toCompanyId;
+    }
+
+    public void setToCompanyId(String toCompanyId) {
+        this.toCompanyId = toCompanyId;
     }
 }

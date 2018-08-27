@@ -54,4 +54,11 @@ public class EnterpriseServiceImpl extends NewBaseService implements EnterpriseS
     public EnterpriseDTO getEnterpriseById(String id) {
         return enterpriseDao.getEnterpriseById(id);
     }
+
+    @Override
+    public String getEnterpriseNameByProjectId(String projectId) {
+        return enterpriseDao.getEnterpriseNameByProjectId(projectId);
+    }
+
+
 }

@@ -412,7 +412,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 //        query.setKey(ProcessTypeConst.PROCESS_TYPE_PROJECT);
 //        List<ProcessDefineDTO> projectList = listProcessDefine(query)
         List<ProcessDefineDTO> projectList = asList(
-                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP),"适用于公司立项审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP,1,query.getCurrentCompanyId()),
+             //   new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP),"适用于公司立项审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP,1,query.getCurrentCompanyId()),
                 new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY),"适用于公司付款审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY,1,query.getCurrentCompanyId())
         );
         updateType(projectList, query.getCurrentCompanyId());
