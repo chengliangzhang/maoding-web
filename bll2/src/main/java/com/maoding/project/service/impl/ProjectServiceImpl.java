@@ -206,6 +206,9 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
     private ProjectConditionService projectConditionService;
 
     @Autowired
+    private ProjectConditionDao projectConditionDao;
+
+    @Autowired
     private ProjectCostDao projectCostDao;
 
     /**
@@ -2751,7 +2754,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
 
         TitleQueryDTO titleQuery = BeanUtils.createFrom(query,TitleQueryDTO.class);
         titleQuery.setType(0);
-        List<TitleColumnDTO> titleList = projectConditionService.listTitle(titleQuery);
+        List<TitleColumnDTO> titleList = projectConditionDao.listTitle(titleQuery);
 
         ProjectNeedInfoDTO needFill = getNeedFillInfo(titleList);
 
