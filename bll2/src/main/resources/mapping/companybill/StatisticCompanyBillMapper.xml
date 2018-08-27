@@ -480,6 +480,7 @@
             LEFT JOIN maoding_web_company fcompany ON relation.from_company_id = fcompany.id
             LEFT JOIN maoding_web_company tocompany ON relation.to_company_id = tocompany.id
             <include refid="getStandingBillBookDetailWhere"/>
+        and exp_type_parent_name is not null
         group by detail.exp_type_parent_name,detail.exp_type_name
     </select>
 </mapper>

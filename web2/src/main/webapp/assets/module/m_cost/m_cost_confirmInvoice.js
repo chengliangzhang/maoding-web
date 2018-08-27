@@ -49,9 +49,9 @@
                         });
                         $(that.element).html(html);
                         that.renderListCompany();
-                        that.initICheck();
+                        //that.initICheck();
                         that.save_validate();
-                        clickTimeIcon($(that.element));
+                        //clickTimeIcon($(that.element));
 
                     }else {
                         S_dialog.error(response.info);
@@ -70,8 +70,8 @@
                     title: that.settings.title||'确认开票',
                     contentEle: 'dialogOBox',
                     lock: 3,
-                    width: '705',
-                    minHeight: that.settings.dialogHeight||'300',
+                    width: '600',
+                    minHeight: that.settings.dialogHeight||'200',
                     tPadding: '0px',
                     url: rootPath+'/assets/module/m_common/m_dialog.html',
                     cancel:function () {
@@ -121,7 +121,7 @@
             var ifUnchecked = function (e) {
             };
             var ifClicked = function (e) {
-                console.log($(this).val())
+
                 if($(this).val()==2){
                     $(that.element).find('.invoice-box').show();
                 }else{
@@ -166,7 +166,7 @@
                 rules: {
                     invoiceNo:{
                         required: true
-                    },
+                    }/*,
                     address:{
                         required: true
                     },
@@ -178,13 +178,13 @@
                     },
                     bankNo:{
                         required: true
-                    }
+                    }*/
                 },
                 messages: {
                     invoiceNo:{
                         required:'请输入发票号！'
 
-                    },
+                    }/*,
                     address:{
                         required: '请输入地址！'
                     },
@@ -196,7 +196,7 @@
                     },
                     bankNo:{
                         required: '请输入账号！'
-                    }
+                    }*/
 
                 },
                 errorPlacement: function (error, element) { //指定错误信息位置

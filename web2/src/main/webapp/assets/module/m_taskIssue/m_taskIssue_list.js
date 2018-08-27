@@ -712,28 +712,23 @@
         //批量删除任务
         ,batchDelTask:function (idList) {
             var that = this;
-            S_swal.confirm({
-                title:'确定删除该任务?',
-                text:'删除后将不能恢复，确定吗？',
-                callBack:function () {
-                    var option = {};
-                    option.url = restApi.url_deleteProjectTask;
-                    option.postData = {};
-                    option.postData.idList = idList;
-                    m_ajax.postJson(option, function (response) {
-                        if (response.code == '0') {
-                            S_swal.sure({
-                                title:'已删除',
-                                text:'该任务签发删除成功。',
-                                callBack:function () {
-                                    that.refreshPage();
-                                }
-                            });
-                        } else {
-                            S_dialog.error(response.info);
-                        }
-                    });
-                }
+            
+            S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+
+                var option = {};
+                option.url = restApi.url_deleteProjectTask;
+                option.postData = {};
+                option.postData.idList = idList;
+                m_ajax.postJson(option, function (response) {
+                    if (response.code == '0') {
+                        S_toastr.success('删除成功！');
+                        that.refreshPage();
+                    } else {
+                        S_dialog.error(response.info);
+                    }
+                });
+
+            }, function () {
             });
         }
         //批量发布

@@ -52,7 +52,7 @@
                     contentEle: 'dialogOBox',
                     lock: 3,
                     width: '705',
-                    minHeight: '160',
+                    minHeight: '200',
                     tPadding: '0px',
                     url: rootPath+'/assets/module/m_common/m_dialog.html',
                     cancel:function () {
@@ -84,7 +84,9 @@
             if(company!=null){
                 staffArr.push({
                     id: company.companyId,
-                    text: company.companyName
+                    text: company.companyName,
+                    taxNumber:company.taxNumber
+
                 });
             }
             $(that.element).find('select[name="invoiceName"]').select2({
@@ -94,22 +96,65 @@
                 language: "zh-CN",
                 data: staffArr
             });
+
+            //设置默认选择
+            if(company!=null){
+                $(that.element).find('select[name="invoiceName"]').val(company.companyId).trigger('change');
+                $(that.element).find('input[name="taxIdNumber"]').val(company.taxNumber==null?'':company.taxNumber);
+            }
+            //select change事件
+            $(that.element).find('select[name="invoiceName"]').on('change', function (e) {
+
+                var selectedData = $(this).select2("data")[0];
+                if(isNullOrBlank(selectedData)){
+                    $(that.element).find('input[name="taxIdNumber"]').val('');
+                }
+                else{
+                    $(that.element).find('input[name="taxIdNumber"]').val(selectedData.taxNumber==null?'':selectedData.taxNumber);
+                }
+            })
+
+
         }
         //初始化iCheck
         ,initICheck:function () {
             var that = this;
             var ifChecked = function (e) {
-                that.add_invoice_validate();
-                $(that.element).find('.invoice-box').show();
+                //that.add_invoice_validate();
+                //$(that.element).find('.invoice-box').show();
             };
             var ifUnchecked = function (e) {
-                that.remove_invoice_validate();
-                $(that.element).find('.invoice-box').hide();
+                //that.remove_invoice_validate();
+                //$(that.element).find('.invoice-box').hide();
             };
-            $(that.element).find('input[name="addInvoiceCk"]').iCheck({
+            var ifClicked = function (e) {
+                var val = $(this).val();
+                if(val==1){
+
+                    $(that.element).find('.invoice-box').show();
+                    $(that.element).find('.invoice-box1').hide();
+                    that.add_invoice_validate();
+                    that.remove_invoice_validate1();
+
+                }else if(val==2){
+
+                    $(that.element).find('.invoice-box').show();
+                    $(that.element).find('.invoice-box1').show();
+                    that.add_invoice_validate();
+                    that.add_invoice_validate1();
+
+                }else{
+
+                    $(that.element).find('.invoice-box').hide();
+                    $(that.element).find('.invoice-box1').hide();
+                    that.remove_invoice_validate();
+                    that.remove_invoice_validate1();
+                }
+            };
+            $(that.element).find('input[name="invoiceType"]').iCheck({
                 checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
-            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
+                radioClass: 'iradio_square-blue'
+            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked).on('ifClicked',ifClicked);
         }
         //保存
         ,save:function () {
@@ -123,7 +168,8 @@
             option.postData.payType = 1;
             option.postData.fee = $(that.element).find('input[name="fee"]').val();
 
-            if($(that.element).find('input[name="addInvoiceCk"]').is(':checked')) {
+            var invoiceType = $(that.element).find('input[name="invoiceType"]:checked').val();
+            if(invoiceType!=0) {
                 option.postData.isInvoice = '1';
                 option.postData.applyDate = $(that.element).find('input[name="applyDate"]').val();
 
@@ -138,6 +184,15 @@
                 option.postData.taxIdNumber = $(that.element).find('input[name="taxIdNumber"]').val();
                 option.postData.invoiceContent = $(that.element).find('input[name="invoiceContent"]').val();
                 option.postData.invoiceRemark = $(that.element).find('textarea[name="invoiceRemark"]').val();
+
+                option.postData.invoiceType = invoiceType;
+                option.postData.address = $(that.element).find('input[name="address"]').val();
+                option.postData.cellphone = $(that.element).find('input[name="cellphone"]').val();
+                option.postData.accountBank = $(that.element).find('input[name="accountBank"]').val();
+                option.postData.bankNo = $(that.element).find('input[name="bankNo"]').val();
+
+            }else{
+                option.postData.isInvoice = '0';
             }
 
             m_ajax.postJson(option,function (response) {
@@ -251,6 +306,42 @@
             $(that.element).find('form select[name="invoiceName"]').rules('remove','required');
             $(that.element).find('form input[name="taxIdNumber"]').rules('remove','required');
             $(that.element).find('form input[name="invoiceContent"]').rules('remove','required');
+        }
+        //添加发票验证
+        ,add_invoice_validate1:function () {
+            var that = this;
+            $(that.element).find('form input[name="address"]').rules('add',{
+                required:true,
+                messages:{
+                    required:'请输入地址！'
+                }
+            });
+            $(that.element).find('form select[name="cellphone"]').rules('add',{
+                required:true,
+                messages:{
+                    required:'请输入电话！'
+                }
+            });
+            $(that.element).find('form input[name="accountBank"]').rules('add',{
+                required:true,
+                messages:{
+                    required:'请输入开户行！'
+                }
+            });
+            $(that.element).find('form input[name="bankNo"]').rules('add',{
+                required:true,
+                messages:{
+                    required:'请输入账号！'
+                }
+            });
+        }
+        //删除发票验证
+        ,remove_invoice_validate1:function () {
+            var that = this;
+            $(that.element).find('form input[name="address"]').rules('remove','required');
+            $(that.element).find('form select[name="cellphone"]').rules('remove','required');
+            $(that.element).find('form input[name="accountBank"]').rules('remove','required');
+            $(that.element).find('form input[name="bankNo"]').rules('remove','required');
         }
 
     });

@@ -109,7 +109,10 @@ var restApi = {
     , url_inviteProjectParent: window.rootPath + '/iWork/org/inviteProjectParent'
 
 
+    /**设置字段**/
     , url_listOptionalTitle: window.rootPath + '/iWork/project/listOptionalTitle'
+    , url_listTitle: window.rootPath + '/iWork/project/listTitle'
+    , url_changeTitle: window.rootPath + '/iWork/project/changeTitle'
 
 
 

@@ -319,30 +319,23 @@
 
                     case 'delete'://删除交付
 
-                        S_swal.confirm({
-                            title:'确定删除该历史交付?',
-                            text:'删除后将不能恢复，确定吗？',
-                            callBack:function () {
+                        S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
 
-                                var option = {};
-                                option.url = restApi.url_deleteDeliver;
-                                option.postData = {};
-                                option.postData.id = dataId;
-                                option.postData.accountId = that._currentUserId;
-                                m_ajax.postJson(option, function (response) {
-                                    if (response.code == '0') {
-                                        S_swal.sure({
-                                            title:'已删除',
-                                            text:'该历史交付删除成功。',
-                                            callBack:function () {
-                                                that.renderListDeliver();
-                                            }
-                                        });
-                                    } else {
-                                        S_dialog.error(response.info);
-                                    }
-                                });
-                            }
+                            var option = {};
+                            option.url = restApi.url_deleteDeliver;
+                            option.postData = {};
+                            option.postData.id = dataId;
+                            option.postData.accountId = that._currentUserId;
+                            m_ajax.postJson(option, function (response) {
+                                if (response.code == '0') {
+                                    S_toastr.success('删除成功！');
+                                    that.renderListDeliver();
+                                } else {
+                                    S_dialog.error(response.info);
+                                }
+                            });
+
+                        }, function () {
                         });
                         break;
                 }

@@ -1,21 +1,17 @@
-<div class="ibox">
-    <div class="ibox-content">
-        <div class="row">
-            <div class="col-md-12 text-right">
-                {{if isManager==1}}
-                <a class="btn btn-primary" data-action="addCollectionPlan">添加付款计划</a>
-                {{/if}}
-            </div>
-        </div>
-        <div class="m-t-xs" id="collectionPlanBox" >
-            {{if dataList==null || dataList.length==0}}
-            <div class="panel panel-default no-borders m-t-xs">
-                <div class="panel-body text-center">
-                    <img src="{{_url('/assets/img/default/without_data.png')}}">
-                    <span class="fc-dark-blue dp-block">没有相关数据</span>
-                </div>
-            </div>
-            {{/if}}
+<div class="row">
+    <div class="col-md-12 text-right">
+        {{if isManager==1}}
+        <a class="btn btn-primary" data-action="addCollectionPlan">添加付款计划</a>
+        {{/if}}
+    </div>
+</div>
+<div class="m-t-xs" id="collectionPlanBox" >
+    {{if dataList==null || dataList.length==0}}
+    <div class="panel panel-default no-borders m-t-xs">
+        <div class="panel-body text-center">
+            <img src="{{_url('/assets/img/default/without_data.png')}}">
+            <span class="fc-dark-blue dp-block">没有相关数据</span>
         </div>
     </div>
+    {{/if}}
 </div>

@@ -35,7 +35,6 @@ vendor.min.js等于上述几个JS打包
 <![endif]-->
 
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/toastr/toastr.min.js"></script>
-<script type="text/javascript" src="<%=rootPath %>/assets/lib/sweetalert/sweetalert.min.js"></script>
 <%--引入的点击缩放事件--%>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/metisMenu/jquery.metisMenu.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/slimscroll/jquery.slimscroll.min.js"></script>

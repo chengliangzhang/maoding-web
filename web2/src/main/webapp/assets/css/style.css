@@ -4287,6 +4287,9 @@ a.close-canvas-menu:hover {
 .p-xl {
   padding: 40px;
 }
+.p-w-xxs {
+  padding: 0 5px;
+}
 .p-w-xs {
   padding: 0 10px;
 }

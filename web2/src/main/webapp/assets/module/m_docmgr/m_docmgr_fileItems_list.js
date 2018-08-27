@@ -289,12 +289,12 @@
             if (that._fileItems[index].type == 0 || that._fileItems[index].type == 40 || that._fileItems[index].type==30 || that._fileItems[index].type==2 || that._fileItems[index].type == 50){
                 content = '删除文件夹会移除所有子文件,' + content;
             }
-            S_swal.confirm({
-                title:'确定删除吗?',
-                text:content,
-                callBack:function () {
-                    that.ajaxDelete(that._fileItems[index]);
-                }
+
+            S_dialog.confirm(content, function () {
+
+                that.ajaxDelete(that._fileItems[index]);
+
+            }, function () {
             });
         }
         //删除文件
@@ -308,16 +308,10 @@
             };
             m_ajax.postJson(ajaxOption, function (res) {
                 if (res.code === '0') {
-
-                    S_swal.sure({
-                        title:'已删除',
-                        text:'该文件删除成功。',
-                        callBack:function () {
-                            if(that.settings.$refreshDataCallBack!=null){
-                                that.settings.$refreshDataCallBack();
-                            }
-                        }
-                    });
+                    S_toastr.success('删除成功！');
+                    if(that.settings.$refreshDataCallBack!=null){
+                        that.settings.$refreshDataCallBack();
+                    }
                 } else if (res.code === '1') {
                     S_dialog.error(res.msg);
                 }

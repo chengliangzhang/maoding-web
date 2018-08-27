@@ -319,10 +319,6 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
                 }
             }
         }
-        //主表Id
-        String id = entity.getId();
-        //保存报销明细表
-        this.saveExpDetail(dto ,id);
         return new AjaxMessage().setCode("0").setInfo("保存成功").setData(dto);
     }
 
@@ -368,6 +364,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         expMainDao.insert(entity);
 
         String targetType = ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY;
+        this.saveExpDetail(dto,entity.getId());
 //        if(entity.getType()==1){
 //            targetType = ProcessTypeConst.PROCESS_TYPE_EXPENSE;
 //        }else {
@@ -1168,5 +1165,109 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         }
         return auditList;
     }
+
+    public void sendMessageForAudit(String mainId, String companyId, String companyUserId,Integer type,String accountId,String auditId,String approveStatus) throws Exception {
+        CompanyUserEntity companyUserEntity = this.companyUserDao.selectById(companyUserId);
+        if (companyUserEntity != null) {
+            MessageEntity messageEntity = new MessageEntity();
+            messageEntity.setTargetId(mainId);
+            //报销
+            if(type==1 && "0".equals(approveStatus)){//提交
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_19);
+            }
+            if(type==1 && "1".equals(approveStatus)){//同意
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_22);
+            }
+            if(type==1 && "2".equals(approveStatus)){//拒绝
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_20);
+            }
+            if(type==1 && "3".equals(approveStatus)){//同意并转交
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_221);
+            }
+            if(type==1 && "6".equals(approveStatus)){//拨款
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_234);
+            }
+            //费用
+            if(type==2 && "0".equals(approveStatus)){//提交
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_222);
+            }
+            if(type==2 && "1".equals(approveStatus)){//同意
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_224);
+            }
+            if(type==2 && "2".equals(approveStatus)){//拒绝
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_223);
+            }
+            if(type==2 && "3".equals(approveStatus)){
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_225);
+            }
+            if(type==2 && "6".equals(approveStatus)){
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_235);//拨款
+            }
+
+            //请假
+            if(type==3 && "0".equals(approveStatus)){//提交
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_226);
+            }
+            if(type==3 && "1".equals(approveStatus)){//同意
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_228);
+            }
+            if(type==3 && "2".equals(approveStatus)){//拒绝
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_227);
+            }
+            if(type==3 && "3".equals(approveStatus)){//同意并转交
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_229);
+            }
+            //出差
+            if(type==4 && "0".equals(approveStatus)){//提交
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_230);
+            }
+            if(type==4 && "1".equals(approveStatus)){//同意
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_232);
+            }
+            if(type==4 && "2".equals(approveStatus)){//拒绝
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_231);
+            }
+            if(type==4 && "3".equals(approveStatus)){//同意并转交
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_233);
+            }
+
+            //todo 一下内容待处理
+            if(type==5 && "0".equals(approveStatus)){//提交
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_243);
+            }
+            if(type==5 && "1".equals(approveStatus)){//同意
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_244);
+            }
+            if(type==5 && "2".equals(approveStatus)){//拒绝
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_245);
+            }
+            if(type==5 && "3".equals(approveStatus)){//同意并转交
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_246);
+            }
+
+            //抄送
+            if(type==1 && "7".equals(approveStatus)){//
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_236);
+            }
+            if(type==2 && "7".equals(approveStatus)){//提交
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_237);
+            }
+            if(type==3 && "7".equals(approveStatus)){//提交
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_238);
+            }
+            if(type==4 && "7".equals(approveStatus)){//提交
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_239);
+            }
+
+            //把最新的审批记录的id关联上
+            messageEntity.setParam1(auditId);
+            messageEntity.setCompanyId(companyUserEntity.getCompanyId());
+            messageEntity.setUserId(companyUserEntity.getUserId());
+            messageEntity.setSendCompanyId(companyId);
+            messageEntity.setCreateBy(accountId);
+            this.messageService.sendMessage(messageEntity);
+        }
+    }
+
 }
 

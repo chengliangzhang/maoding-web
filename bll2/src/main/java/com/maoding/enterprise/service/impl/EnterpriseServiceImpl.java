@@ -6,6 +6,7 @@ import com.maoding.core.bean.ResponseBean;
 import com.maoding.core.util.JsonUtils;
 import com.maoding.core.util.OkHttpUtils;
 import com.maoding.enterprise.dao.EnterpriseDao;
+import com.maoding.enterprise.dto.EnterpriseDTO;
 import com.maoding.enterprise.service.EnterpriseService;
 import okhttp3.Response;
 import org.slf4j.Logger;
@@ -47,5 +48,10 @@ public class EnterpriseServiceImpl extends NewBaseService implements EnterpriseS
     @Override
     public String getEnterpriseName(String id) {
         return enterpriseDao.getEnterpriseNameById(id);
+    }
+
+    @Override
+    public EnterpriseDTO getEnterpriseById(String id) {
+        return enterpriseDao.getEnterpriseById(id);
     }
 }

@@ -155,30 +155,25 @@
             $(that.element).find('.file-span a[data-action="delFile"]').on('click',function () {
 
                 var dataId = $(this).attr('data-id');
-                S_swal.confirm({
-                    title:'您确定要删除该文件吗？',
-                    text:'该文件删除后将不能恢复，确定吗？',
-                    callBack:function () {
-                        var option = {};
-                        option.url = restApi.url_netFile_delete;
-                        option.postData = {
-                            id: dataId,
-                            accountId: window.currentUserId
-                        };
-                        m_ajax.postJson(option, function (response) {
-                            if (response.code == '0') {
-                                S_swal.sure({
-                                    title:'已删除',
-                                    text:'该文件已删除。',
-                                    callBack:function () {
-                                        that._refresh();
-                                    }
-                                });
-                            } else {
-                                S_dialog.error(response.info);
-                            }
-                        });
-                    }
+
+                S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+
+                    var option = {};
+                    option.url = restApi.url_netFile_delete;
+                    option.postData = {
+                        id: dataId,
+                        accountId: window.currentUserId
+                    };
+                    m_ajax.postJson(option, function (response) {
+                        if (response.code == '0') {
+                            S_toastr.success('删除成功！');
+                            that._refresh();
+                        } else {
+                            S_dialog.error(response.info);
+                        }
+                    });
+
+                }, function () {
                 });
             });
         },
@@ -238,29 +233,21 @@
             $(that.element).find('a[data-action="deleteProject"]').on('click',function(){
                 var $this = this;
 
-                S_swal.confirm({
-                    title:'您确定要删除该项目吗？',
-                    text:'该项目删除后将不能恢复，确定吗？',
-                    callBack:function () {
-                        var option = {};
-                        var id = $($this).attr('data-id');
-                        option.url = restApi.url_deleteProject + '/' + id;
-                        m_ajax.get(option, function (response) {
-                            if (response.code == '0') {
-                                S_swal.sure({
-                                    title:'已删除',
-                                    text:'该项目已删除。',
-                                    callBack:function () {
-                                        //window.location.href = window.rootPath + '/iWork/home/workbench'
-                                        //$('.m_metismenu a[id="projectList"]').click();
-                                        location.hash = '/';
-                                    }
-                                });
-                            } else {
-                                S_dialog.error(response.info);
-                            }
-                        });
-                    }
+                S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+
+                    var option = {};
+                    var id = $($this).attr('data-id');
+                    option.url = restApi.url_deleteProject + '/' + id;
+                    m_ajax.get(option, function (response) {
+                        if (response.code == '0') {
+                            S_toastr.success('删除成功！');
+                            location.hash = '/';
+                        } else {
+                            S_dialog.error(response.info);
+                        }
+                    });
+
+                }, function () {
                 });
             });
         },
@@ -429,21 +416,14 @@
                             return false;
                         }
 
-                        S_swal.confirm({
-                            title:'删除（更换）乙方后，相关费用信息将被删除，你确定保存吗？',
-                            text:'此操作不可恢复，确定吗？',
-                            callBack:function () {
-                                that.saveProjectData(null, data, 'partyB', function () {
-                                    S_swal.sure({
-                                        title:'已更换',
-                                        text:'该乙方已更换成功。',
-                                        callBack:function () {
-                                            that._refreshMenu();
-                                        }
-                                    });
+                        S_dialog.confirm('删除（更换）乙方后，相关费用信息将被删除，你确定保存吗？', function () {
 
-                                });
-                            }
+                            that.saveProjectData(null, data, 'partyB', function () {
+                                S_toastr.success('保存成功！');
+                                that._refreshMenu();
+                            });
+
+                        }, function () {
                         });
 
                     } else {
@@ -802,20 +782,17 @@
                 } */
                 else {
                     resetCheck($this, true);
-                    S_swal.confirm({
-                        title:'确定取消该设计内容？',
-                        text:'该设计内容取消后将不能恢复，确定吗？',
-                        callBack:function () {
-                            var id = $this.closest('.designContentDiv').attr('data-id');
-                            that.deleteProjectTask(id,function(){
-                                $this.closest('.designContentDiv').remove();
-                                S_swal.sure({
-                                    title:'已取消',
-                                    text:'该设计内容已取消。'
-                                });
-                            });
-                            resetCheck($this, false);
-                        }
+
+                    S_dialog.confirm('该设计内容取消后将不能恢复，确定吗？', function () {
+
+                        var id = $this.closest('.designContentDiv').attr('data-id');
+                        that.deleteProjectTask(id,function(){
+                            $this.closest('.designContentDiv').remove();
+                            S_toastr.success('该设计内容已取消！');
+                        });
+                        resetCheck($this, false);
+
+                    }, function () {
                     });
                 }
             };

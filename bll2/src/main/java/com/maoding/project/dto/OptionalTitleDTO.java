@@ -35,6 +35,9 @@ public class OptionalTitleDTO {
     }
 
     public String getIsSelected() {
+        if("0".equals(canBeHide)){
+            isSelected = "1";//代表被选择，不可被隐藏的一定为被选择的
+        }
         return isSelected;
     }
 

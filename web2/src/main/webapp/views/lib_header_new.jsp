@@ -30,10 +30,7 @@
 <link rel="stylesheet" href="<%=rootPath %>/assets/css/animate.min.css">
 
 <link rel="stylesheet" href="<%=rootPath %>/assets/lib/toastr/toastr.min.css">
-<link rel="stylesheet" href="<%=rootPath %>/assets/lib/sweetalert/sweetalert.css">
 
-<%--<link rel="stylesheet" href="<%=rootPath %>/assets/css/help.css?<%=v%>">
-<link rel="stylesheet" href="<%=rootPath %>/assets/css/custom.css?<%=v%>">--%>
 <link rel="stylesheet" href="<%=rootPath %>/assets/css/module.min.css?v=<%=v%>">
 
 <script type="text/javascript">

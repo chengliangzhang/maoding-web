@@ -367,7 +367,9 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
 
             Double point = null;
-            for (FlowTaskGroupDTO taskGroup : taskGroupList){
+
+            for (int i=0;i<taskGroupList.size();i++){
+                FlowTaskGroupDTO taskGroup = taskGroupList.get(i);
                 if (isRemainMin(taskGroupList,taskGroup,point)){
                     point = DigitUtils.parseDouble(taskGroup.getName());
                     String unit = ProcessTypeConst.unitMap.get(key);
@@ -381,7 +383,10 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                         prevGroup.setTitle(prevTitle + "<" + point + unit);
                     }
                     prevGroup = taskGroup;
-
+                    if(i==taskGroupList.size()-1){//最后一个
+                        title = ProcessTypeConst.titleMap.get(key)+">=" + point + unit;
+                        taskGroup.setTitle(title);
+                    }
                     dstList.add(taskGroup);
                 }
             }

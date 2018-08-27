@@ -200,6 +200,11 @@ public class CompanyDTO extends BaseDTO{
     /**是否在公司标识:1：在，0：不在*/
     private Integer isInCompanyFlag = 0;
 
+    /**
+     * 纳税识别号
+     */
+    private String taxNumber;
+
     public CompanyDTO(){}
     public CompanyDTO(Object obj){
         BeanUtilsEx.copyProperties(obj,this);
@@ -541,5 +546,13 @@ public class CompanyDTO extends BaseDTO{
 
     public void setFileGroup(String fileGroup) {
         this.fileGroup = fileGroup;
+    }
+
+    public String getTaxNumber() {
+        return taxNumber;
+    }
+
+    public void setTaxNumber(String taxNumber) {
+        this.taxNumber = taxNumber;
     }
 }

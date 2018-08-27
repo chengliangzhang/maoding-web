@@ -16,6 +16,7 @@ import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.*;
 import com.maoding.dynamic.dao.ZInfoDAO;
 import com.maoding.dynamic.service.DynamicService;
+import com.maoding.enterprise.dto.EnterpriseDTO;
 import com.maoding.enterprise.service.EnterpriseService;
 import com.maoding.exception.CustomException;
 import com.maoding.financial.dao.ExpMainDao;
@@ -1061,9 +1062,10 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
             return  relationCompany;
         }else {
             //从enterprise中查询
-            String name = enterpriseService.getEnterpriseName(relationCompanyId);
-            if(name!=null){
-                relationCompany.put("companyName",name);
+             EnterpriseDTO enterprise= enterpriseService.getEnterpriseById(relationCompanyId);
+            if(enterprise!=null){
+                relationCompany.put("companyName",enterprise.getCorpname());
+                relationCompany.put("taxNumber",enterprise.getTaxNumber());
                 return relationCompany;
             }
         }

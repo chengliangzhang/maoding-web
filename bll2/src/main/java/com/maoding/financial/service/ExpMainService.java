@@ -204,4 +204,10 @@ public interface ExpMainService extends BaseService<ExpMainEntity>{
      * @param relationId(发起付款申请的id)
      */
     Map<String,Object> getAuditInfoByRelationId(String relationId,String companyUserId) throws Exception;
+
+    /**
+     * 发送消息
+     */
+    void sendMessageForAudit(String mainId, String companyId, String companyUserId,Integer type,String accountId,String auditId,String approveStatus) throws Exception;
+
 }

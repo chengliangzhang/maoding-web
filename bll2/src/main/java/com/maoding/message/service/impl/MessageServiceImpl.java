@@ -588,8 +588,9 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
                 ProjectCostPointDetailEntity pointDetail = this.getPointDetailByMainId(targetId);
                 para.put("expUserName", getExpUserName(targetId));
                 para.put("projectName", getProjectName(pointDetail.getProjectId()));
+                para.put("feeDescription",getCostPointName(pointDetail.getPointId()));
                 para.put("expName", getExpName(pointDetail));
-                para.put("expAmount", getFee(pointDetail));
+                para.put("fee", getFee(pointDetail));
                 //查询审批原因
                 if(messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_245 ){
                     ExpAuditEntity recallAudit = this.expAuditDao.selectLastRecallAudit(messageEntity.getTargetId());
@@ -1621,6 +1622,9 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
                 .replaceAll("%remarks%", getValue(dto.getRemarks()))
                 .replaceAll("%responseName%", getValue(dto.getResponseName()))
                 .replaceAll("%deliverName%", getValue(dto.getDeliverName()))
+
+                .replaceAll("%toCompanyName%", getValue(dto.getToCompanyName()))
+                .replaceAll("%auditPersonName%", getValue(dto.getAuditPersonName()))
                 ;
 
     }

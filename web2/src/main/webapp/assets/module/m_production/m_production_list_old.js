@@ -819,29 +819,22 @@
                         e.stopPropagation();
                         break;
                     case 'delTask'://删除任务
-                        S_swal.confirm({
-                            title:'确定删除该任务?',
-                            text:'删除后将不能恢复，确定吗？',
-                            callBack:function () {
 
-                                var option = {};
-                                option.url = restApi.url_deleteProjectTask;
-                                option.postData = {};
-                                option.postData.id = $taskId;
-                                m_ajax.postJson(option, function (response) {
-                                    if (response.code == '0') {
-                                        S_swal.sure({
-                                            title:'已删除',
-                                            text:'该生产任务删除成功。',
-                                            callBack:function () {
-                                                that.refreshPage();
-                                            }
-                                        });
-                                    } else {
-                                        S_dialog.error(response.info);
-                                    }
-                                });
-                            }
+                        S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+                            var option = {};
+                            option.url = restApi.url_deleteProjectTask;
+                            option.postData = {};
+                            option.postData.id = $taskId;
+                            m_ajax.postJson(option, function (response) {
+                                if (response.code == '0') {
+                                    S_toastr.success('删除成功！');
+                                    that.refreshPage();
+                                } else {
+                                    S_dialog.error(response.info);
+                                }
+                            });
+
+                        }, function () {
                         });
                         break;
                     case 'addSubTask'://分解子任务

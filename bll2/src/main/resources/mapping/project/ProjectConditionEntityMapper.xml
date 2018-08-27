@@ -116,6 +116,7 @@
                 and (title_list.user_id = #{accountId} or title_list.user_id is null)
             </if>
         </where>
+        group by title_list.code
         order by title_list.can_be_hide
     </select>
 </mapper>

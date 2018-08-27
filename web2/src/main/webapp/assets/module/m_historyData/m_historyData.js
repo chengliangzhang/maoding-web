@@ -126,26 +126,26 @@
             $(that.element).find('.footable a[data-toggle="tooltip"]').tooltip();
 
             $(that.element).find('button[data-action="submit"]').click(function () {
-                S_swal.confirm({
-                    title: '你确定要提交吗?',
-                    closeOnConfirm: true,
-                    callBack: function () {
-                        var option = {
-                            url: restApi.url_historyData_createProjects,
-                            loadingEl: '',
-                            postData: {
-                                creatorOrgId: that._creatorOrgId,
-                                validList:data.validList
-                            }
-                        };
-                        m_ajax.postJson(option, function (res) {
-                            if (res.code === '0') {
-                                that._renderStep3();
-                            } else {
-                                S_toastr.error(res.info);
-                            }
-                        });
-                    }
+
+                S_dialog.confirm('你确定要提交吗？', function () {
+
+                    var option = {
+                        url: restApi.url_historyData_createProjects,
+                        loadingEl: '',
+                        postData: {
+                            creatorOrgId: that._creatorOrgId,
+                            validList:data.validList
+                        }
+                    };
+                    m_ajax.postJson(option, function (res) {
+                        if (res.code === '0') {
+                            that._renderStep3();
+                        } else {
+                            S_toastr.error(res.info);
+                        }
+                    });
+
+                }, function () {
                 });
             });
             $(that.element).find('a[data-action="reImport"]').click(function () {

@@ -1,0 +1,47 @@
+<div class="panel panel-default no-margins no-borders">
+    <div class="panel-heading no-margins no-padding">
+        <div class="b-r pull-left" style="width: 70%;">
+            <h4 class="m-sm">可选字段</h4>
+        </div>
+        <div class="pull-left" style="width: 30%;">
+            <h4 class="m-sm">当前选定字段</h4>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="panel-body no-margins no-padding check-box">
+        <div class="b-r pull-left" style="width: 70%;">
+            {{each optionalTitleGroupList as s}}
+            <div class="field-group">
+                <div class="col-md-12">
+                    <h4>
+                        {{s.name}}
+                        <label class="i-checks fw-normal pull-right">
+                            <input name="itemCk" type="checkbox" value=""/>
+                            <span class="i-checks-span">全选</span>
+                        </label>
+                    </h4>
+                    <div class="hr-line-dashed m-t-n-xs m-b-xs"></div>
+                </div>
+                {{each s.optionalTitleList as sub}}
+                <div class="col-md-4 no-pd-right">
+                    <label class="i-checks fw-normal">
+                        {{if sub.isSelected==1}}
+                        <input name="itemCk" type="checkbox" checked value="{{sub.code}}"/>
+                        {{else}}
+                        <input name="itemCk" type="checkbox" value="{{sub.code }}" />
+                        {{/if}}
+                        <span class="i-checks-span">{{sub.name }}</span>
+                    </label>
+                </div>
+                {{/each}}
+            </div>
+            {{/each}}
+        </div>
+        <div class="pull-left" style="width: 30%;">
+            <ul class="list-group" style="height: 450px; overflow: auto;" id="selectedFieldBox">
+
+            </ul>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

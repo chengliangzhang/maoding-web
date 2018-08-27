@@ -903,7 +903,7 @@ input.form-control[readonly] {
 }
 
 .bg-none {
-    background: none;
+    background: none !important;
 }
 
 .bg-data{
@@ -966,6 +966,47 @@ input.form-control[readonly] {
     background: #4765a0;
     padding: 2px 10px;
     vertical-align: middle;
+}
+
+/********dataTable sort*********/
+table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc{
+    cursor: pointer;
+}
+table.dataTable thead .sorting::after {
+    position: absolute;
+    bottom: 10px;
+    right: 24px;
+    display: block;
+    font-family: "iconfont" !important;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #ccc;
+    content: "\e63d";
+
+}
+table.dataTable thead .sorting_asc::after,
+table.dataTable thead .sorting_asc_disabled::after{
+    position: absolute;
+    bottom: 12px;
+    right: 24px;
+    display: block;
+    font: normal normal normal 14px/1 FontAwesome;
+    color: #1c84c6;
+    content: "\f176";
+}
+
+table.dataTable thead .sorting_desc::after,
+table.dataTable thead .sorting_desc_disabled::after{
+    position: absolute;
+    bottom: 12px;
+    right: 24px;
+    display: block;
+    font: normal normal normal 14px/1 FontAwesome;
+    color: #1c84c6;
+    content: "\f175";
 }
 
 /*重写日期图标*/

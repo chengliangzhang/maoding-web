@@ -552,56 +552,6 @@ var S_toastr = {
     }
 };
 
-var S_swal = {
-    setZIndex:function () {
-        //存在弹窗,swal弹窗z-index++
-        var $dialog = $('.ui-popup.ui-popup-modal');
-        if($dialog.length>0){
-            var t = setTimeout(function () {
-                var zIndex = $dialog.css('z-index');
-                $('.sweet-overlay,.sweet-alert').css('z-index',parseInt(zIndex)+1);
-                clearTimeout(t);
-            },50);
-        }
-    },
-    confirm: function (option) {
-        swal({
-            title: option.title || "确定此操作吗?",
-            text: option.text,
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: option.confirmButtonText || "确定",
-            cancelButtonText: option.cancelButtonText || "取消",
-            closeOnConfirm: option.closeOnConfirm || false
-        }, function () {
-
-            if (option.callBack != null) {
-                option.callBack();
-            }
-        });
-
-        this.setZIndex();
-    },
-    sure: function (option) {
-        swal({
-            title: option.title || "确定此操作吗?",
-            text: option.text,
-            type: "success",
-            confirmButtonText: option.confirmButtonText || "确定",
-            closeOnConfirm: true
-        }, function () {
-            if (option.callBack != null) {
-                option.callBack();
-            }
-        });
-        this.setZIndex();
-    },
-    clear: function () {
-
-    }
-};
-
 /******************************************** 弹窗方法 结束 *****************************************************/
 
 
@@ -1554,4 +1504,51 @@ var filterParam = function (param) {
         });
     }
     return newParam
+};
+/**
+ * list移除某项
+ * @param list
+ * @param key list删除标识
+ * @param keyValue 标识值
+ * @returns {*}
+ */
+var delItemByList = function (list,key,keyValue) {
+    if(list!=null && list.length>0){
+        $.each(list,function(index,item){
+            if(item[key]==keyValue){//已存在已选项中
+                list.splice(index,1);
+                return false;//跳出循环
+            }
+        });
+    }
+    return list;
+};
+//选中的属性定段进行排行，重新生成新的下标值
+var sortList = function (oldIndex,newIndex,list) {
+    var newList = [];
+    for(var i=0;i<list.length;i++){
+        if(newIndex>oldIndex){//向后拖拽
+
+            if(i<oldIndex){
+                newList.push(list[i]);
+            }else if(i>=oldIndex && i<newIndex){
+                newList.push(list[i+1]);
+            }else if(i==newIndex){
+                newList.push(list[oldIndex]);
+            }else{
+                newList.push(list[i]);
+            }
+        }else{
+            if(i<newIndex){
+                newList.push(list[i]);
+            }else if(i==newIndex){
+                newList.push(list[oldIndex]);
+            }else if(i>newIndex && i<=oldIndex){
+                newList.push(list[i-1]);
+            }else{
+                newList.push(list[i]);
+            }
+        }
+    }
+    return newList;
 };

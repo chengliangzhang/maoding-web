@@ -1,6 +1,7 @@
 package com.maoding.enterprise.dao.impl;
 
 import com.maoding.enterprise.dao.EnterpriseDao;
+import com.maoding.enterprise.dto.EnterpriseDTO;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,5 +15,10 @@ public class EnterpriseDaoImpl implements EnterpriseDao {
     @Override
     public String getEnterpriseNameById(String id) {
         return this.sqlSession.selectOne("EnterpriseMapper.getEnterpriseNameById",id);
+    }
+
+    @Override
+    public EnterpriseDTO getEnterpriseById(String id) {
+        return this.sqlSession.selectOne("EnterpriseMapper.getEnterpriseById",id);
     }
 }

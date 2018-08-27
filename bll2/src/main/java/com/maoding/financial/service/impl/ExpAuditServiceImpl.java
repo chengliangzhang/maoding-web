@@ -19,8 +19,10 @@ import com.maoding.process.dto.TaskDTO;
 import com.maoding.process.service.ProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 深圳市设计同道技术有限公司
@@ -160,10 +162,15 @@ public class ExpAuditServiceImpl extends GenericService<ExpAuditEntity> implemen
         String accountId = dto.getAccountId();
         String auditPerson = dto.getAuditPerson();
         ExpMainEntity entity = this.expMainDao.selectById(id);
+        List<ExpAuditEntity> lastAudit = this.expAuditDao.selectByMainId(id);
+        String approveStatus = "3";//同意并转发
+        if(CollectionUtils.isEmpty(lastAudit)){
+            approveStatus = "0";//提交
+        }
         //插入新审批人审批记录
         ExpAuditEntity audit = this.saveExpAudit(id,auditPerson,companyUserId,accountId,dto.getParentAuditId());
         //推送消息
-        //expMainService.sendMessageForAudit(id,currentCompanyId,auditPerson,entity.getType(),accountId,audit.getId(),dto.getApproveStatus());
+        expMainService.sendMessageForAudit(id,currentCompanyId,auditPerson,entity.getType(),accountId,audit.getId(),approveStatus);
         return audit.getId();
     }
 

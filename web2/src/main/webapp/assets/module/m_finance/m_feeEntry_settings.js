@@ -368,28 +368,22 @@
                         break;
                     case 'delFeeField'://删除费用类型
 
-                        S_swal.confirm({
-                            title:'确定删除该分类子项?',
-                            text:'删除后将不能恢复，确定吗？',
-                            callBack:function () {
-                                var option = {};
-                                option.url = restApi.url_deleteExpCategory;
-                                option.postData = {};
-                                option.postData.id = dataId;
-                                m_ajax.postJson(option, function (response) {
-                                    if (response.code == '0') {
-                                        S_swal.sure({
-                                            title:'已删除',
-                                            text:'该分类子项删除成功。',
-                                            callBack:function () {
-                                                that.renderContent();
-                                            }
-                                        });
-                                    } else {
-                                        S_dialog.error(response.info);
-                                    }
-                                });
-                            }
+                        S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+
+                            var option = {};
+                            option.url = restApi.url_deleteExpCategory;
+                            option.postData = {};
+                            option.postData.id = dataId;
+                            m_ajax.postJson(option, function (response) {
+                                if (response.code == '0') {
+                                    S_toastr.success('删除成功！');
+                                    that.renderContent();
+                                } else {
+                                    S_dialog.error(response.info);
+                                }
+                            });
+
+                        }, function () {
                         });
                         break;
                 }

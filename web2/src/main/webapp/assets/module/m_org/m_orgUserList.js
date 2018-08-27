@@ -158,28 +158,21 @@
                     return false;
                 }else if(dataAction=='delOrgUser'){//删除人员
 
-                    S_swal.confirm({
-                        title:'您确定要删除该工作人员吗？',
-                        text:'该工作人员删除后将不能恢复，确定吗？',
-                        callBack:function () {
-                            var option = {};
-                            var id = $(_this).attr('data-id');
-                            option.url = restApi.url_saveCompanyUser + '/' + id;
-                            m_ajax.get(option, function (response) {
-                                if (response.code == '0') {
-                                    S_swal.sure({
-                                        title:'已删除',
-                                        text:'该工作人员已删除。',
-                                        callBack:function () {
-                                            // window.location.href = window.rootPath + '/iWork/home/workbench'
-                                            that.initUserData();
-                                        }
-                                    });
-                                } else {
-                                    S_dialog.error(response.info);
-                                }
-                            });
-                        }
+                    S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+
+                        var option = {};
+                        var id = $(_this).attr('data-id');
+                        option.url = restApi.url_saveCompanyUser + '/' + id;
+                        m_ajax.get(option, function (response) {
+                            if (response.code == '0') {
+                                S_toastr.success('删除成功！');
+                                that.initUserData();
+                            } else {
+                                S_dialog.error(response.info);
+                            }
+                        });
+
+                    }, function () {
                     });
                     return false;
                 }

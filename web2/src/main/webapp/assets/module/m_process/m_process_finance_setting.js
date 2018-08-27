@@ -150,31 +150,24 @@
 
                     case 'del'://删除流程
 
-                        S_swal.confirm({
-                            title:'确定删除该流程?',
-                            text:'删除后将不能恢复，确定吗？',
-                            callBack:function () {
-                                var option = {};
-                                option.classId = '#content-right';
-                                option.url = restApi.url_deleteProcessForProjectPay;
-                                option.postData = {};
-                                option.postData.id = dataId;
-                                m_ajax.postJson(option, function (response) {
-                                    if (response.code == '0') {
-                                        S_swal.sure({
-                                            title:'已删除',
-                                            text:'该流程删除成功。',
-                                            callBack:function () {
-                                                that.renderContent();
-                                            }
-                                        });
-                                    } else {
-                                        S_dialog.error(response.info);
-                                    }
-                                });
-                            }
-                        });
+                        S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
 
+                            var option = {};
+                            option.classId = '#content-right';
+                            option.url = restApi.url_deleteProcessForProjectPay;
+                            option.postData = {};
+                            option.postData.id = dataId;
+                            m_ajax.postJson(option, function (response) {
+                                if (response.code == '0') {
+                                    S_toastr.success('删除成功！');
+                                    that.renderContent();
+                                } else {
+                                    S_dialog.error(response.info);
+                                }
+                            });
+
+                        }, function () {
+                        });
                         break;
 
                     case 'itemEdit'://编辑列表项

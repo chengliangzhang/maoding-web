@@ -188,6 +188,11 @@
                 stopPropagation(e);
                 return false;
             });
+            $(that.element).find('button[data-action="setField"]').off('click').on('click', function (e) {
+                var option = {};
+                $('body').m_field_settings(option,true);
+                return false;
+            });
         }
         //事件绑定
         , bindActionClick:function () {

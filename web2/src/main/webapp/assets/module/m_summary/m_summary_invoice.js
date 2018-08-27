@@ -111,7 +111,7 @@
                         option.invoiceId = dataId;
                         option.taskId = dataItem.myTaskId;
                         option.projectId = dataItem.projectId;
-                        option.dialogHeight = '150';
+                        option.dialogHeight = '100';
                         option.saveCallBack = function () {
                             that.renderList();
                         };

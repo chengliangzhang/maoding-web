@@ -54,7 +54,6 @@
             var that = this;
             var html = template('m_payments/m_payments_ledger',{});
             $(that.element).html(html);
-            that.getFeeType();
 
             var timeOption = {};
             timeOption.selectTimeCallBack = function (data) {
@@ -64,7 +63,6 @@
 
                 if(!isNullOrBlank(data.endTime))
                     that._filterData.endDate = data.endTime;
-
 
                 that.renderDataList();
             };
@@ -78,7 +76,7 @@
                 }else{
                     that._filterData.combineCompanyId=that._selectedOrg.id;
                 }
-                that.renderDataList();
+                that.renderDataList(0);
             };
             option.$renderCallBack = function () {
                 that.bindBtnActionClick();
@@ -86,7 +84,7 @@
             $(that.element).find('#selectOrg').m_org_chose_byTree(option);
         }
         //渲染台账list
-        , renderDataList:function () {
+        , renderDataList:function (t) {
             var that = this;
 
             var option = {};
@@ -123,12 +121,24 @@
                         $(that.element).find('input[name="endTime"]').val(endDateStr);
                     }
 
-                    that.renderFeeTypeFilter();
-                    that.renderSubFeeTypeFilter();
-                    that.renderProfitTypeFilter();
-                    that.renderFromCompanyFilter('filterFromCompany');
-                    that.renderFromCompanyFilter('filterToCompany');
-                    that.renderProjectNameFilter();
+                    if(t==0){
+                        that.getFeeType(function () {
+                            that.renderFeeTypeFilter();
+                            that.renderSubFeeTypeFilter();
+                            that.renderProfitTypeFilter();
+                            that.renderFromCompanyFilter('filterFromCompany');
+                            that.renderFromCompanyFilter('filterToCompany');
+                            that.renderProjectNameFilter();
+                        });
+                    }else{
+                        that.renderFeeTypeFilter();
+                        that.renderSubFeeTypeFilter();
+                        that.renderProfitTypeFilter();
+                        that.renderFromCompanyFilter('filterFromCompany');
+                        that.renderFromCompanyFilter('filterToCompany');
+                        that.renderProjectNameFilter();
+                    }
+
 
                 } else {
                     S_dialog.error(response.info);

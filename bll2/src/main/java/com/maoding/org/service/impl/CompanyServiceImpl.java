@@ -12,6 +12,8 @@ import com.maoding.core.constant.NetFileType;
 import com.maoding.core.constant.ProjectCostConst;
 import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.*;
+import com.maoding.enterprise.dto.EnterpriseDTO;
+import com.maoding.enterprise.service.EnterpriseService;
 import com.maoding.exception.CustomException;
 import com.maoding.hxIm.constDefine.ImGroupType;
 import com.maoding.hxIm.service.ImService;
@@ -154,6 +156,9 @@ public class CompanyServiceImpl extends GenericService<CompanyEntity> implements
 
     @Autowired
     private ImService imService;
+
+    @Autowired
+    private EnterpriseService enterpriseService;
 
     /**
      * 方法描述：验证公司信息
@@ -2251,18 +2256,18 @@ public class CompanyServiceImpl extends GenericService<CompanyEntity> implements
     //获取甲方信息
     private List<CompanyDTO> listCompanyA(ProjectEntity project){
         TraceUtils.check(project != null);
-
         List<CompanyDTO> result = new ArrayList<>();
-
         //如果甲方不为空返回甲方
         String id = project.getConstructCompany();
         if (StringUtils.isNotEmpty(id)) {
-            String name = projectDao.getEnterpriseName(id);
-            CompanyDTO company = new CompanyDTO();
-            company.setId(id);
-            company.setCompanyName(name);
-
-            result.add(company);
+            EnterpriseDTO partA = enterpriseService.getEnterpriseById(id);
+            if(partA!=null){
+                CompanyDTO company = new CompanyDTO();
+                company.setId(id);
+                company.setCompanyName(partA.getCorpname());
+                company.setTaxNumber(partA.getTaxNumber());
+                result.add(company);
+            }
         }
 
         return result;

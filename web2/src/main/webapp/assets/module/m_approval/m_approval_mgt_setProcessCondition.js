@@ -75,7 +75,7 @@
             option.classId = '#content-right';
             option.url = restApi.url_prepareProcessDefine;
             option.postData = {};
-            option.postData.key = that.settings.$key;
+            option.postData.key = that.settings.$processData.key;
             option.postData.type = that.settings.$type;
 
             var list = [];

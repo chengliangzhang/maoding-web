@@ -20,5 +20,8 @@
     where a.id = #{id}
   </select>
 
-
+  <select id="getEnterpriseById" parameterType="java.lang.String" resultType="com.maoding.enterprise.dto.EnterpriseDTO">
+    select a.corpname,a.id,a.tax_number as taxNumber from maoding_web_enterprise a
+    where a.id = #{id}
+  </select>
 </mapper>

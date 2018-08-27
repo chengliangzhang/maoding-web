@@ -94,18 +94,11 @@
             };
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
-                    /*S_toastr.success('发送成功！');
-                    var url = '/iWork/sys/logout';
-                    if (data != null && data != '')
-                        url = data;
-                    window.location.href = window.rootPath + url;*/
-                    S_swal.sure({
-                        title:'已更改',
-                        text:'更改手机号成功。',
-                        callBack:function () {
-                            window.location.href = window.rootPath + '/iWork/sys/logout';
-                        }
-                    });
+
+                    S_dialog.success('更改手机号成功，系统将跳转至登录界面','提示',function(){
+                        window.location.href = window.rootPath + '/iWork/sys/logout';
+                    })
+
                 } else {
                     S_dialog.error(response.info);
                     return false;

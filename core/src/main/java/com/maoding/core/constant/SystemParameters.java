@@ -594,11 +594,12 @@ public interface SystemParameters {
             put(String.format("%d", MESSAGE_TYPE_301),new MessageTemplate("%sendUserName% 创建了%projectName%的项目，请你担任该项目的经营负责人，点击查看详情。" ,1));
             /*******合作组织消息********2017-12-27 修改两条信息相同*/
             //hi,xxx组织，经营负责人XXX发布了“卯丁科技大厦一期”的设计任务，请你担任该项目的经营负责人，请在任务中查看并进行［任务签发］，
-            put(String.format("%d", MESSAGE_TYPE_302),new MessageTemplate("hi,%sendCompanyName%组织，%sendUserName% 增加了“%projectName%”的设计任务，点击查看详情。" ,1));
+            put(String.format("%d", MESSAGE_TYPE_302),new MessageTemplate("%sendCompanyName%组织，%sendUserName% 增加了“%projectName%”的设计任务，点击查看详情。" ,1));
             //hi,xxx组织，经营负责人XXX发布了“卯丁科技大厦一期”的设计任务，请在任务中查看并进行［任务签发］，
-            put(String.format("%d", MESSAGE_TYPE_303),new MessageTemplate("hi,%sendCompanyName%组织，经营负责人%sendUserName%发布了“%projectName%”的设计任务，请你担任该项目的经营负责人,点击查看详情。" ,1));
-            put(String.format("%d", MESSAGE_TYPE_306), new MessageTemplate("hi,%sendCompanyName%组织，%sendUserName% 发布了“%projectName%”的设计任务，点击查看详情。",1));//ok
-            put(String.format("%d", MESSAGE_TYPE_307), new MessageTemplate("hi,%sendCompanyName%组织，%sendUserName% 发布了“%projectName%”的设计任务，点击查看详情。",1));//ok
+            put(String.format("%d", MESSAGE_TYPE_303),new MessageTemplate("%sendCompanyName%组织，经营负责人%sendUserName%发布了“%projectName%”的设计任务，请你担任该项目的经营负责人,点击查看详情。" ,1));
+            put(String.format("%d", MESSAGE_TYPE_306), new MessageTemplate("%sendCompanyName%组织，%sendUserName% 发布了“%projectName%”的设计任务，点击查看详情。",1));//ok
+            //许佳迪，发起了“卯丁科技大厦：定金支付10%。”的合作设计费收款16.88万元，请你跟进并确认付款。
+            put(String.format("%d", MESSAGE_TYPE_307), new MessageTemplate("%sendUserName% 发起了“%projectName%：%feeDescription%”的合作设计费收款%fee%万元，请你跟进并确认付款。",1));//ok
 
             /****************/
             //“卯丁科技大厦一期-方案设计”的设计任务已完成，请你跟进相关项目收支的经营工作，

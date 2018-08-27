@@ -208,24 +208,15 @@
 
                 m_ajax.postJson(option, function (response) {
                     if (response.code == 0) {
-                        /*S_toastr.success('修改成功！确定跳转请重新登录。');
-                        setTimeout(function(){
+
+                        S_dialog.success('修改成功！确定跳转请重新登录。','提示',function(){
+
                             var url = that.settings.toSuccessUrl||'/iWork/sys/login';
                             if (response.data != null && response.data != '')
                                 url = response.data;
                             window.location.href = window.rootPath + url;
-                        },1500);*/
-                        S_swal.sure({
-                            title:'修改成功！',
-                            text:'确定跳转请重新登录。',
-                            callBack:function () {
-                                var url = that.settings.toSuccessUrl||'/iWork/sys/login';
-                                if (response.data != null && response.data != '')
-                                    url = response.data;
-                                window.location.href = window.rootPath + url;
-                                return false;
-                            }
-                        });
+                            return false;
+                        })
                     }
                     else {
                         S_dialog.error(response.info);

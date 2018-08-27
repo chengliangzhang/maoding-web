@@ -11,4 +11,17 @@ import com.maoding.core.base.dto.CoreShowDTO;
  **/
 public class CompanySimpleDTO extends CoreShowDTO {
     /** id: 组织编号 */
+
+    /**
+     * 纳税识别号
+     */
+    private String taxNumber;
+
+    public String getTaxNumber() {
+        return taxNumber;
+    }
+
+    public void setTaxNumber(String taxNumber) {
+        this.taxNumber = taxNumber;
+    }
 }

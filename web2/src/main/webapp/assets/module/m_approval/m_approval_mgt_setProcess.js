@@ -124,17 +124,40 @@
             var that =this;
             var type = $(that.element).find('input[type="radio"]:checked').attr('data-type');
 
+            var isError = false;
+
             if(type==2){
+
+                if(that._editFixedProcess==null)
+                    isError = true;
+                if(that._editFixedProcess && (that._editFixedProcess[0].flowTaskList==null || that._editFixedProcess[0].flowTaskList.length==0))
+                    isError = true;
 
                 that._processDetail.flowTaskGroupList = that._editFixedProcess;
 
             }else if(type==3){
+
+                if(that._editCondProcess==null )
+                    isError = true;
+                if(that._editFixedProcess){
+                    $.each(that._editCondProcess,function (i,item) {
+                        if(item.flowTaskList==null || item.flowTaskList.length==0){
+                            isError = true;
+                            return false;
+                        }
+                    })
+                }
 
                 that._processDetail.flowTaskGroupList = that._editCondProcess;
 
             }else{
 
                 that._processDetail.flowTaskGroupList = [];
+            }
+
+            if(isError){
+                S_toastr.error('请设置审批人！');
+                return false;
             }
 
             var option = {};

@@ -11,13 +11,20 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">是否开票：</label>
+                <label class="col-sm-2 control-label">开票：</label>
                 <div class="col-sm-10 m-t-xs">
                     <label class="i-checks">
-                        <input class="ck"  type="checkbox" name="addInvoiceCk"/>
-                        <span class="v-middle fw-normal">开票信息</span>
+                        <input class="ck"  type="radio" name="invoiceType" value="0" checked/>
+                        <span class="v-middle fw-normal">不开票</span>
                     </label>
-                    <span class="text-muted f-s-12">(若需要开票，请勾选并填写相关信息)</span>
+                    <label class="i-checks">
+                        <input class="ck"  type="radio" name="invoiceType" value="1"/>
+                        <span class="v-middle fw-normal">普票</span>
+                    </label>
+                    <label class="i-checks">
+                        <input class="ck"  type="radio" name="invoiceType" value="2"/>
+                        <span class="v-middle fw-normal">专票</span>
+                    </label>
                 </div>
             </div>
             <div class="hr-line-dashed m-t-none"></div>
@@ -56,6 +63,32 @@
                     <label class="col-sm-2 control-label">备注：</label>
                     <div class="col-sm-10">
                         <textarea placeholder="请输入备注" class="form-control" type="text" name="invoiceRemark"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="invoice-box1" style="display: none;">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">地址：</label>
+                    <div class="col-sm-10">
+                        <input placeholder="请输入地址" class="form-control" type="text" name="address">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">电话：</label>
+                    <div class="col-sm-10">
+                        <input placeholder="请输入电话" class="form-control" type="text" name="cellphone">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">开户行：</label>
+                    <div class="col-sm-10">
+                        <input placeholder="请输入开户行" class="form-control" type="text" name="accountBank" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">账号：</label>
+                    <div class="col-sm-10">
+                        <input placeholder="请输入账号" class="form-control" type="text" name="bankNo" />
                     </div>
                 </div>
             </div>
