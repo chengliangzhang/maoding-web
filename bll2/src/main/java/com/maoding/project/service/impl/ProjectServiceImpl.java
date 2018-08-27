@@ -2904,12 +2904,28 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
     private ProjectNeedInfoDTO getNeedFillInfo(List<TitleColumnDTO> titleList){
         ProjectNeedInfoDTO needInfo = new ProjectNeedInfoDTO();
         for (TitleColumnDTO title : titleList) {
-            if (title.getIsProjectBasic() == 1){
-                needInfo.setNeedFillBasic(true);
-            } else if (title.getIsProjectMember() == 1) {
-                needInfo.setNeedFillMember(true);
-            } else if (title.getIsProjectFee() == 1) {
-                needInfo.setNeedFillFee(true);
+            if (title.getIsRelationCompany() == 1){
+                needInfo.setNeedRelationCompany(true);
+            } else if (title.getIsTaskLeader() == 1) {
+                needInfo.setNeedTaskLeader(true);
+            } else if (title.getIsDesigner() == 1) {
+                needInfo.setNeedDesigner(true);
+            } else if (title.getIsChecker() == 1) {
+                needInfo.setNeedChecker(true);
+            } else if (title.getIsAuditor() == 1) {
+                needInfo.setNeedAuditor(true);
+            } else if (title.getIsContractFee() == 1) {
+                needInfo.setNeedContractFee(true);
+            } else if (title.getIsTechnicalFee() == 1) {
+                needInfo.setNeedTechnicalFee(true);
+            } else if (title.getIsCooperateGainFee() == 1) {
+                needInfo.setNeedCooperateGainFee(true);
+            } else if (title.getIsOtherGainFee() == 1) {
+                needInfo.setNeedOtherGainFee(true);
+            } else if (title.getIsCooperatePayFee() == 1) {
+                needInfo.setNeedCooperatePayFee(true);
+            } else if (title.getIsOtherPayFee() == 1) {
+                needInfo.setNeedOtherPayFee(true);
             }
         }
         return needInfo;
