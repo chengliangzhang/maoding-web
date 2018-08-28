@@ -1301,15 +1301,6 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (31,2,'审核','');
 
     -- -- -- -- --
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,30,'web member角色类型','1.类型布尔属性，1-项目角色,2-任务角色,3-任务负责人,4-设计,5-校对,6-审核；2.对应的角色;3.对应的mytask内task_type;4.对应的process内的名称');
-    delete from md_list_const where classic_id = 30;
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,0,'立项人','100000;23;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,1,'经营负责人','100000;20;1;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,2,'设计负责人','100000;30;2;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,3,'任务负责人','111000;40;12,13;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,4,'设计','110100;41;3;设计');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,5,'校对','110010;42;3;校对');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,6,'审核','110001;43;3;审核');
 
     -- -- -- -- --
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,29,'web权限类型','1.类型布尔属性，1-转换需加偏移量;2.权限标识;3.对应的基准角色;4.设置所需权限');
@@ -1592,6 +1583,69 @@ CREATE PROCEDURE `initConst`()
   END;
 call initConst();
 
+-- web member角色类型
+DROP PROCEDURE IF EXISTS `initConst`;
+CREATE PROCEDURE `initConst`()
+  BEGIN
+    -- -- 常量
+    delete from md_list_const where classic_id = 30;
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,-1,'web member角色类型','000000:1-任务角色,2-负责人,3-设计,4-校对,5-审核,6-助理;2.对应的角色;3.对应的mytask内task_type;4.对应的process内的名称');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,0,'立项人','000000;23;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,1,'经营负责人','010000;20;1;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,2,'设计负责人','011000;30;2;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,3,'任务负责人','110000;40;12,13;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,4,'设计','101000;41;3;设计');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,5,'校对','100100;42;3;校对');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,6,'审核','100010;43;3;审核');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,7,'经营助理','000001;20;1;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (30,8,'设计助理','001001;30;2;');
+
+    -- -- 类型
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,30,'web member角色类型','md_type_web_member');
+
+    -- 视图
+    CREATE OR REPLACE VIEW `md_type_web_member` AS
+      select
+        member_type.code_id                as id,
+        member_type.code_id                as type_id,
+        member_type.title                  as type_title,
+        member_type.title                  as type_name,
+        member_type.extra                  as type_extra,
+        substring(member_type.extra,
+                  1,
+                  char_length(substring_index(member_type.extra, ';', 1)))
+                                           as type_attr,
+        substring(member_type.extra,1,1)   as is_task_role,
+        substring(member_type.extra,2,1)   as is_leader,
+        substring(member_type.extra,3,1)   as is_designer,
+        substring(member_type.extra,4,1)   as is_checker,
+        substring(member_type.extra,5,1)   as is_auditor,
+        substring(member_type.extra,6,1)   as is_assistant,
+
+        (substring(member_type.extra, 1, 1) != 1) as is_project_role,
+        (substring(member_type.extra, 1, 1) and substring(member_type.extra, 2, 1)) as is_task_leader,
+        (substring(member_type.extra, 1, 1) and substring(member_type.extra, 3, 1)) as is_task_designer,
+        (substring(member_type.extra, 1, 1) and substring(member_type.extra, 4, 1)) as is_task_checker,
+        (substring(member_type.extra, 1, 1) and substring(member_type.extra, 5, 1)) as is_task_auditor,
+        substring(member_type.extra,
+                  char_length(substring_index(member_type.extra, ';', 1)) + 2,
+                  char_length(substring_index(member_type.extra, ';', 2)) - char_length(substring_index(member_type.extra, ';', 1)) - 1)
+                                           as role_type,
+        substring(member_type.extra,
+                  char_length(substring_index(member_type.extra, ';', 2)) + 2,
+                  char_length(substring_index(member_type.extra, ';', 3)) - char_length(substring_index(member_type.extra, ';', 2)) - 1)
+                                           as mytask_task_type,
+        substring(member_type.extra,
+                  char_length(substring_index(member_type.extra, ';', 3)) + 2,
+                  char_length(substring_index(member_type.extra, ';', 4)) - char_length(substring_index(member_type.extra, ';', 3)) - 1)
+                                           as process_name
+      from
+        md_list_const member_type
+      where
+        member_type.classic_id = 30;
+  END;
+call initConst();
+
 -- 可选标题栏
 DROP PROCEDURE IF EXISTS `initConst`;
 CREATE PROCEDURE `initConst`()
@@ -1638,7 +1692,7 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,32,':cooperatePayReal;合作设计费付款金额','1000000000010;0,1;4;0;3');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,33,':otherPay;其他支出计划付款','1000000000001;0,1;4;0;4');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,34,':otherPayReal;其他支出付款金额','1000000000001;0,1;4;0;4');
-    
+
     -- 发票汇总标题栏
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,35,':applyDate;申请日期','0000000000001;2;5;4;2');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,36,':companyUserName;申请人','0000000000001;2;5;2;1');
