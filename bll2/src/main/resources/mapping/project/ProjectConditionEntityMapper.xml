@@ -118,6 +118,6 @@
             </if>
         </where>
         group by title_list.code
-        order by title_list.can_be_hide
+        order by title_list.can_be_hide,title_list.seq
     </select>
 </mapper>

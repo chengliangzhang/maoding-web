@@ -30,6 +30,9 @@ public class ProjectQueryDTO extends CoreQueryDTO {
     /** 项目状态 **/
     private String status;
 
+    /** 项目类型 **/
+    private String projectType;
+
     /** 甲方 **/
     private String partA;
 
@@ -341,6 +344,14 @@ public class ProjectQueryDTO extends CoreQueryDTO {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public String getProjectType() {
+        return projectType;
+    }
+
+    public void setProjectType(String projectType) {
+        this.projectType = projectType;
     }
 
     public ProjectQueryDTO(){}

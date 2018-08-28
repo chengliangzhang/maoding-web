@@ -1845,8 +1845,8 @@ CREATE PROCEDURE `initConst`()
       select
         project_status.code_id as id,
         project_status.code_id as type_id,
-        project_status.title as type_title,
-        project_status.extra as type_extra
+        project_status.title   as type_title,
+        project_status.extra   as type_extra
       from
         md_list_const project_status
       where
@@ -2961,6 +2961,7 @@ CREATE OR REPLACE VIEW `md_title` AS
     null as company_id,
     null as user_id,
     optional_title.*,
+    0 as seq,
     filter_type.has_list
   from
     md_optional_title optional_title
@@ -2974,6 +2975,7 @@ CREATE OR REPLACE VIEW `md_title` AS
     user_title.company_id,
     user_title.user_id,
     optional_title.*,
+    find_in_set(optional_title.code,user_title.code) as seq,
     filter_type.has_list
   from
     maoding_web_project_condition user_title

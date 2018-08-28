@@ -329,6 +329,14 @@
         status_type.type_title as status,
     </sql>
 
+    <sql id="ExtraProjectBasicTableExcludeMemberList">
+        inner join md_type_project_status status_type on (status_type.type_id = project_list.status)
+        inner join maoding_web_company create_company on (create_company.status = '0' and create_company.id =
+            project_list.company_id)
+        left join maoding_web_company_user create_company_user on (create_company_user.company_id =
+            project_list.company_id and create_company_user.user_id = project_list.create_by)
+    </sql>
+
     <sql id="ExtraProjectBasicTable">
         inner join md_project_member member_list on (
             member_list.project_id = project_list.id
@@ -339,11 +347,7 @@
                 and member_list.company_id = #{currentCompanyId}
             </if>
         )
-        inner join md_type_project_status status_type on (status_type.type_id = project_list.status)
-        inner join maoding_web_company create_company on (create_company.status = '0' and create_company.id =
-            project_list.company_id)
-        left join maoding_web_company_user create_company_user on (create_company_user.company_id =
-            project_list.company_id and create_company_user.user_id = project_list.create_by)
+        <include refid="ExtraProjectBasicTableExcludeMemberList"/>
     </sql>
 
     <select id="listProjectBasic" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
@@ -362,17 +366,18 @@
 
     <select id="listProjectMember" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
         select <include refid="CommonMapper.countSQL"/>
-            group_concat(distinct if(team_member.member_type=1,concat(team_member.user_name,','),'') separator '') as busPersonInCharge,
-            group_concat(distinct if(team_member.member_type=7,concat(team_member.user_name,','),'') separator '') as busPersonInChargeAssistant,
-            group_concat(distinct if(team_member.member_type=2,concat(team_member.user_name,','),'') separator '') as designPersonInCharge,
-            group_concat(distinct if(team_member.member_type=8,concat(team_member.user_name,','),'') separator '') as designPersonInChargeAssistant,
-            group_concat(distinct if(team_member.is_task_leader,concat(team_member.user_name,','),'') separator '') as taskLeader,
-            group_concat(distinct if(team_member.is_task_designer,concat(team_member.user_name,','),'') separator '') as designer,
-            group_concat(distinct if(team_member.is_task_checker,concat(team_member.user_name,','),'') separator '') as checker,
-            group_concat(distinct if(team_member.is_task_auditor,concat(team_member.user_name,','),'') separator '') as auditor,
+            group_concat(distinct if(member_list.member_type=1,concat(member_list.user_name,','),'') separator '') as busPersonInCharge,
+            group_concat(distinct if(member_list.member_type=7,concat(member_list.user_name,','),'') separator '') as busPersonInChargeAssistant,
+            group_concat(distinct if(member_list.member_type=2,concat(member_list.user_name,','),'') separator '') as designPersonInCharge,
+            group_concat(distinct if(member_list.member_type=8,concat(member_list.user_name,','),'') separator '') as designPersonInChargeAssistant,
+            group_concat(distinct if(member_list.is_task_leader,concat(member_list.user_name,','),'') separator '') as taskLeader,
+            group_concat(distinct if(member_list.is_task_designer,concat(member_list.user_name,','),'') separator '') as designer,
+            group_concat(distinct if(member_list.is_task_checker,concat(member_list.user_name,','),'') separator '') as checker,
+            group_concat(distinct if(member_list.is_task_auditor,concat(member_list.user_name,','),'') separator '') as auditor,
             <include refid="ExtraProjectBasicField"/>
             project_list.*
         from maoding_web_project project_list
+            <include refid="ExtraProjectBasicTableExcludeMemberList"/>
             inner join md_project_member member_list on (
                 member_list.project_id = project_list.id
                 <if test="accountId != null">
@@ -382,31 +387,30 @@
                     and member_list.company_id = #{currentCompanyId}
                 </if>
                 <if test="busPersonInCharge != null">
-                    and ((team_member.member_type = 1 and team_member.company_user_id != #{busPersonInCharge}) or (team_member.member_type != 1))
+                    and ((member_list.member_type = 1 and member_list.company_user_id != #{busPersonInCharge}) or (member_list.member_type != 1))
                 </if>
                 <if test="busPersonInChargeAssistant != null">
-                    and ((team_member.member_type = 7 and team_member.company_user_id != #{busPersonInChargeAssistant}) or (team_member.member_type != 7))
+                    and ((member_list.member_type = 7 and member_list.company_user_id != #{busPersonInChargeAssistant}) or (member_list.member_type != 7))
                 </if>
                 <if test="designPersonInCharge != null">
-                    and ((team_member.member_type = 2 and team_member.company_user_id != #{designPersonInCharge}) or (team_member.member_type != 2))
+                    and ((member_list.member_type = 2 and member_list.company_user_id != #{designPersonInCharge}) or (member_list.member_type != 2))
                 </if>
                 <if test="designPersonInChargeAssistant != null">
-                    and ((team_member.member_type = 8 and team_member.company_user_id != #{designPersonInChargeAssistant}) or (team_member.member_type != 8))
+                    and ((member_list.member_type = 8 and member_list.company_user_id != #{designPersonInChargeAssistant}) or (member_list.member_type != 8))
                 </if>
                 <if test="taskLeader != null">
-                    and ((team_member.is_task_leader and team_member.company_user_id != #{taskLeader}) or (!team_member.is_task_leader))
+                    and ((member_list.is_task_leader and member_list.company_user_id != #{taskLeader}) or (!member_list.is_task_leader))
                 </if>
                 <if test="designer != null">
-                    and ((team_member.is_task_designer and team_member.company_user_id != #{designer}) or (!team_member.is_task_designer))
+                    and ((member_list.is_task_designer and member_list.company_user_id != #{designer}) or (!member_list.is_task_designer))
                 </if>
                 <if test="checker != null">
-                    and ((team_member.is_task_checker and team_member.company_user_id != #{checker}) or (!team_member.is_task_checker))
+                    and ((member_list.is_task_checker and member_list.company_user_id != #{checker}) or (!member_list.is_task_checker))
                 </if>
                 <if test="auditor != null">
-                    and ((team_member.is_task_auditor and team_member.company_user_id != #{auditor}) or (!team_member.is_task_auditor))
+                    and ((member_list.is_task_auditor and member_list.company_user_id != #{auditor}) or (!member_list.is_task_auditor))
                 </if>
             )
-            <include refid="ExtraProjectBasicTable"/>
         <where>
             <include refid="BasicFilterForProjectQuery"/>
         </where>
@@ -421,15 +425,6 @@
             <include refid="ExtraProjectBasicField"/>
             project_list.*
         from maoding_web_project project_list
-            inner join md_project_member member_list on (
-                member_list.project_id = project_list.id
-                <if test="accountId != null">
-                    and member_list.user_id = #{accountId}
-                </if>
-                <if test="currentCompanyId != null">
-                    and member_list.company_id = #{currentCompanyId}
-                </if>
-            )
             <include refid="ExtraProjectBasicTable"/>
             left join maoding_web_project_task issue_task ON (
                 issue_task.task_status = '0'
@@ -440,7 +435,7 @@
                 relation_company.status = '0'
                 and relation_company.id = issue_task.company_id
                 <if test="relationCompany != null">
-                    and relation_company = #{relationCompany}
+                    and relation_company.id = #{relationCompany}
                 </if>
             )
         <where>
@@ -457,15 +452,6 @@
             <include refid="ExtraProjectBasicField"/>
             project_list.*
         from maoding_web_project project_list
-            inner join md_project_member member_list on (
-                member_list.project_id = project_list.id
-                <if test="accountId != null">
-                    and member_list.user_id = #{accountId}
-                </if>
-                <if test="currentCompanyId != null">
-                    and member_list.company_id = #{currentCompanyId}
-                </if>
-            )
             <include refid="ExtraProjectBasicTable"/>
             left join md_type_built_const default_built_type on (
                 find_in_set(default_built_type.id,project_list.built_type)
@@ -483,66 +469,6 @@
                     <foreach collection="buildNameList" item="aBuildTypeId" open="(" close=")" separator=",">
                         #{aBuildTypeId}
                     </foreach>
-                </if>
-            )
-        <where>
-            <include refid="BasicFilterForProjectQuery"/>
-        </where>
-        group by project_list.id
-        <include refid="OrderForProjectQuery"/>
-        <include refid="CommonMapper.limitSQL"/>
-    </select>
-
-    <!-- deprecate: 使用listProjectBasic替换 -->
-    <select id="listProjectPartA" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
-        select
-            part_a_list.corpname as partA,
-            <include refid="ExtraProjectBasicField"/>
-            project_list.*
-        from maoding_web_project project_list
-            inner join md_project_member member_list on (
-                member_list.project_id = project_list.id
-                <if test="accountId != null">
-                    and member_list.user_id = #{accountId}
-                </if>
-                <if test="currentCompanyId != null">
-                    and member_list.company_id = #{currentCompanyId}
-                </if>
-            )
-            left join maoding_web_enterprise part_a_list on (
-                part_a_list.id = project_list.construct_company
-                <if test="partA != null">
-                    and part_a_list.id = #{partA}
-                </if>
-            )
-        <where>
-            <include refid="BasicFilterForProjectQuery"/>
-        </where>
-        group by project_list.id
-        <include refid="OrderForProjectQuery"/>
-        <include refid="CommonMapper.limitSQL"/>
-    </select>
-
-    <!-- deprecate: 使用listProjectBasic替换 -->
-    <select id="listProjectPartB" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
-        select
-            part_b_list.company_name as partB,
-            <include refid="ExtraProjectBasicField"/>
-            project_list.*
-        from maoding_web_project project_list
-            inner join md_project_member member_list on (
-                member_list.project_id = project_list.id
-                <if test="accountId != null">
-                    and member_list.user_id = #{accountId}
-                </if>
-                <if test="currentCompanyId != null">
-                    and member_list.company_id = #{currentCompanyId}
-                </if>
-            )
-            left join maoding_web_company part_b_list on (
-                part_b_list.id = project_list.company_bid
-                <if test="partB != null">
-                    and part_b_list.id = #{partB}
                 </if>
             )
         <where>
