@@ -295,6 +295,9 @@
         <if test="status != null">
             and project_list.status = #{status}
         </if>
+        <if test="projectType != null">
+            and project_list.project_type = #{projectType}
+        </if>
     </sql>
 
     <sql id="OrderForProjectQuery">
