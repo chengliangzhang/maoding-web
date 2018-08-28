@@ -2764,11 +2764,11 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         //查询主列表，包括projectId、过滤、排序、总数信息
         List<ProjectVariableDTO> mainList;
         int count;
-        if (isProjectBasicFilter(query)){
+        if (isProjectBasicFilter(query)) {
             mainList = projectDao.listProjectBasic(query);
             count = projectDao.getLastQueryCount();
-        } else if (isProjectFunctionFilter(query)) {
-            mainList = projectDao.listProjectFunction(query);
+        } else if (isProjectBuildTypeFilter(query)) {
+            mainList = projectDao.listProjectBuildType(query);
             count = projectDao.getLastQueryCount();
             needFill.setNeedBuildType(false);
         } else if (isProjectMemberFilter(query)) {
@@ -2783,6 +2783,11 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             needFill.setNeedDesigner(false);
             needFill.setNeedChecker(false);
             needFill.setNeedAuditor(false);
+        } else if (isRelationCompanyFilter(query)) {
+            mainList = projectDao.listProjectRelation(query);
+            count = projectDao.getLastQueryCount();
+
+            needFill.setNeedRelationCompany(false);
         } else {
             mainList = projectDao.listProjectBasic(query);
             count = projectDao.getLastQueryCount();
@@ -2797,11 +2802,6 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                     project.setRelationCompany(getProjectCooperate(project.getId(),query.getCurrentCompanyId()));
                 }
 
-                //项目状态信息
-                if (needFill.isNeedStatus()){
-                    project.setStatus(getProjectStatus(project.getStatus()));
-                }
-
                 //甲方信息
                 if (needFill.isNeedPartA()){
                     project.setPartA(getProjectPartA(project.getId()));
@@ -2809,7 +2809,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
 
                 //乙方信息
                 if (needFill.isNeedPartB()){
-                    project.setPartB(getProjectPartB(project.getId()));
+                    project.setPartB(getProjectPartB(project.getCompanyBid()));
                 }
 
                 //功能分类信息
@@ -2927,23 +2927,14 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         return page;
     }
 
-    //获取项目状态字符串
-    private String getProjectStatus(String status){
-        return SystemParameters.PROJECT_STATUS.get(status);
-    }
-
     //获取甲方信息
     private String getProjectPartA(String projectId){
         return enterpriseService.getEnterpriseNameByProjectId(projectId);
     }
 
     //获取乙方信息
-    private String getProjectPartB(String projectId){
-        ProjectQueryDTO query = new ProjectQueryDTO();
-        query.setId(projectId);
-        List<CoreShowDTO> partBList = projectDao.listPartB(query);
-        CoreShowDTO partB = ObjectUtils.getFirst(partBList);
-        return (partB != null) ? partB.getName() : null;
+    private String getProjectPartB(String companyId){
+        return companyDao.getCompanyName(companyId);
     }
 
 
@@ -3003,7 +2994,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             needInfo.setNeedPartA(true);
             needInfo.setNeedPartB(true);
             needInfo.setNeedBuildType(true);
-            needInfo.setNeedStatus(true);
+            needInfo.setNeedStatus(false);
         }
         return needInfo;
     }
@@ -3018,16 +3009,23 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                 || (query.getSignDateStart() != null)
                 || (query.getSignDateEnd() != null)
                 || (StringUtils.isNotEmpty(query.getCreateCompany()))
-                || (StringUtils.isNotEmpty(query.getAddress()));
+                || (StringUtils.isNotEmpty(query.getAddress()))
+                ;
     }
 
-    private boolean isProjectFunctionFilter(ProjectQueryDTO query){
+    //是功能分类过滤条件
+    private boolean isProjectBuildTypeFilter(ProjectQueryDTO query){
         return ObjectUtils.isNotEmpty(query.getBuildNameList());
     }
 
+    //是合作组织过滤条件
+    private boolean isRelationCompanyFilter(ProjectQueryDTO query){
+        return StringUtils.isNotEmpty(query.getRelationCompany());
+    }
+
+    //是人员过滤条件
     private boolean isProjectMemberFilter(ProjectQueryDTO query){
-        return StringUtils.isNotEmpty(query.getRelationCompany())
-                || StringUtils.isNotEmpty(query.getBusPersonInCharge())
+        return StringUtils.isNotEmpty(query.getBusPersonInCharge())
                 || StringUtils.isNotEmpty(query.getBusPersonInChargeAssistant())
                 || StringUtils.isNotEmpty(query.getDesignPersonInCharge())
                 || StringUtils.isNotEmpty(query.getDesignPersonInChargeAssistant())

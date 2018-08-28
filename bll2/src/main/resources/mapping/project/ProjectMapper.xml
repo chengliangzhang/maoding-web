@@ -148,19 +148,23 @@
     <select id="getProjectFilterList" resultType="com.maoding.core.base.dto.CoreShowDTO" parameterType="com.maoding.project.dto.ProjectFilterQueryDTO">
         select distinct
             <choose>
-                <when test="titleCode == 'partB'.toString()">
+                <when test="titleCode == 'status'">
+                    project_list.status as id,
+                    project_status.type_title as name
+                </when>
+                <when test="titleCode == 'partB'">
                     project_list.company_bid as id,
                     part_b_company.company_name as name
                 </when>
-                <when test="titleCode == 'projectType'.toString()">
+                <when test="titleCode == 'projectType'">
                     project_list.project_type as id,
                     project_list.project_type as name
                 </when>
-                <when test="titleCode == 'createCompany'.toString()">
+                <when test="titleCode == 'createCompany'">
                     project_list.company_id as id,
                     create_company.company_name as name
                 </when>
-                <when test="titleCode == 'relationCompany'.toString()">
+                <when test="titleCode == 'relationCompany'">
                     relation_company.id as id,
                     relation_company.company_name as name
                 </when>
@@ -175,6 +179,10 @@
                     member_list.company_user_id as id,
                     member_list.user_name as name
                 </when>
+                <when test="titleCode == 'buildName'">
+                    if(custom_built_type.id is null,default_built_type.id,custom_built_type.id) as id,
+                    if(custom_built_type.id is null,default_built_type.type_name,custom_built_type.type_name) as name
+                </when>
                 <otherwise>
                     null as id,
                     null as name
@@ -183,6 +191,13 @@
         from maoding_web_project project_list
             inner join md_project_member member_list on (
                 member_list.project_id = project_list.id
+                <if test="currentCompanyId != null">
+                    and member_list.company_id = #{currentCompanyId}
+                </if>
+                <if test="accountId != null">
+                    and member_list.user_id = #{accountId}
+                </if>
+
                 <choose>
                     <when test="titleCode == 'busPersonInCharge'">
                         and member_list.member_type = 1
@@ -210,27 +225,35 @@
                     </when>
                     <otherwise/>
                 </choose>
-                <if test="currentCompanyId != null">
-                    and member_list.company_id = #{currentCompanyId}
-                </if>
-                <if test="accountId != null">
-                    and member_list.user_id = #{accountId}
-                </if>
             )
-            <if test="titleCode == 'partB'">
-                inner join maoding_web_company part_b_company on (part_b_company.status = '0' and part_b_company.id = project_list.company_bid)
-            </if>
-            <if test="titleCode == 'createCompany'">
-                inner join maoding_web_company create_company on (create_company.status = '0' and create_company.id = project_list.company_id)
-            </if>
-            <if test="titleCode == 'relationCompany'">
-                inner join maoding_web_project_task issue_task ON (
-                    issue_task.task_status = '0'
-                    and issue_task.is_operater_task = 1
-                    and issue_task.from_company_id = member_list.company_id
-                )
-                inner join maoding_web_company relation_company on (relation_company.status = '0' and relation_company.id = issue_task.company_id)
-            </if>
+            <choose>
+                <when test="titleCode == 'status'">
+                    inner join md_type_project_status project_status on (project_list.status = project_status.type_id)
+                </when>
+                <when test="titleCode == 'partB'">
+                    inner join maoding_web_company part_b_company on (part_b_company.status = '0' and part_b_company.id = project_list.company_bid)
+                </when>
+                <when test="titleCode == 'createCompany'">
+                    inner join maoding_web_company create_company on (create_company.status = '0' and create_company.id = project_list.company_id)
+                </when>
+                <when test="titleCode == 'relationCompany'">
+                    left join maoding_web_project_task issue_task ON (
+                        issue_task.task_status = '0'
+                        and issue_task.is_operater_task = 1
+                        and issue_task.from_company_id = member_list.company_id
+                    )
+                    inner join maoding_web_company relation_company on (relation_company.status = '0' and relation_company.id = issue_task.company_id)
+                </when>
+                <when test="titleCode == 'buildName'">
+                    left join md_type_built_const default_built_type on (
+                        find_in_set(default_built_type.id,project_list.built_type)
+                    )
+                    left join md_type_built_custom custom_built_type on (
+                        find_in_set(custom_built_type.id,project_list.built_type)
+                    )
+                </when>
+                <otherwise/>
+            </choose>
         where project_list.pstatus = '0'
     </select>
 
@@ -257,6 +280,9 @@
         <if test="signDateEnd != null">
             and addDate(#{signDateEnd,jdbcType=TIMESTAMP},1) > project_list.contract_date
         </if>
+        <if test="partA != null">
+            and project_list.construct_company = #{partA}
+        </if>
         <if test="partB != null">
             and project_list.company_bid = #{partB}
         </if>
@@ -265,6 +291,9 @@
         </if>
         <if test="address != null">
             and concat(project_list.province,project_list.city) = #{address}
+        </if>
+        <if test="status != null">
+            and project_list.status = #{status}
         </if>
     </sql>
 
@@ -289,30 +318,37 @@
         </if>
     </sql>
 
+    <sql id="ExtraProjectBasicField">
+        ifnull(project_list.project_create_date,project_list.create_date) as projectCreateDate,
+        project_list.contract_date as signDate,
+        concat(project_list.province,project_list.city) as address,
+        concat(create_company.company_name,'/',create_company_user.user_name) as createCompany,
+        status_type.type_title as status,
+    </sql>
+
+    <sql id="ExtraProjectBasicTable">
+        inner join md_project_member member_list on (
+            member_list.project_id = project_list.id
+            <if test="accountId != null">
+                and member_list.user_id = #{accountId}
+            </if>
+            <if test="currentCompanyId != null">
+                and member_list.company_id = #{currentCompanyId}
+            </if>
+        )
+        inner join md_type_project_status status_type on (status_type.type_id = project_list.status)
+        inner join maoding_web_company create_company on (create_company.status = '0' and create_company.id =
+            project_list.company_id)
+        left join maoding_web_company_user create_company_user on (create_company_user.company_id =
+            project_list.company_id and create_company_user.user_id = project_list.create_by)
+    </sql>
+
     <select id="listProjectBasic" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
         select <include refid="CommonMapper.countSQL"/>
-            ifnull(project_list.project_create_date,project_list.create_date) as projectCreateDate,
-            project_list.contract_date as signDate,
-            concat(project_list.province,project_list.city) as address,
-            concat(create_company.company_name,'/',create_company_user.user_name) as createCompany,
-            part_b_company.company_name as partB,
+            <include refid="ExtraProjectBasicField"/>
             project_list.*
         from maoding_web_project project_list
-            inner join md_project_member member_list on (
-                member_list.project_id = project_list.id
-                <if test="accountId != null">
-                    and member_list.user_id = #{accountId}
-                </if>
-                <if test="currentCompanyId != null">
-                    and member_list.company_id = #{currentCompanyId}
-                </if>
-            )
-            inner join maoding_web_company create_company on (create_company.status = '0' and create_company.id =
-                project_list.company_id)
-            left join maoding_web_company_user create_company_user on (create_company_user.company_id =
-                project_list.company_id and create_company_user.user_id = project_list.create_by)
-            left join maoding_web_company part_b_company on (part_b_company.status = '0' and part_b_company.id =
-                project_list.company_bid)
+            <include refid="ExtraProjectBasicTable"/>
         <where>
             <include refid="BasicFilterForProjectQuery"/>
         </where>
@@ -331,7 +367,7 @@
             group_concat(distinct if(team_member.is_task_designer,concat(team_member.user_name,','),'') separator '') as designer,
             group_concat(distinct if(team_member.is_task_checker,concat(team_member.user_name,','),'') separator '') as checker,
             group_concat(distinct if(team_member.is_task_auditor,concat(team_member.user_name,','),'') separator '') as auditor,
-            group_concat(distinct if(relation_company.id is not null,concat(relation_company.company_name,','),'') separator '') as relationCompany,
+            <include refid="ExtraProjectBasicField"/>
             project_list.*
         from maoding_web_project project_list
             inner join md_project_member member_list on (
@@ -342,9 +378,6 @@
                 <if test="currentCompanyId != null">
                     and member_list.company_id = #{currentCompanyId}
                 </if>
-            )
-            inner join md_project_member team_member on (
-                team_member.project_id = project_list.id
                 <if test="busPersonInCharge != null">
                     and ((team_member.member_type = 1 and team_member.company_user_id != #{busPersonInCharge}) or (team_member.member_type != 1))
                 </if>
@@ -370,13 +403,7 @@
                     and ((team_member.is_task_auditor and team_member.company_user_id != #{auditor}) or (!team_member.is_task_auditor))
                 </if>
             )
-            left join maoding_web_project_task issue_task ON (
-                issue_task.task_status = '0'
-                and issue_task.is_operater_task = 1
-                and issue_task.from_company_id = member_list.company_id
-            )
-            inner join maoding_web_company relation_company on (relation_company.status = '0' and relation_company.id = issue_task.company_id)
-
+            <include refid="ExtraProjectBasicTable"/>
         <where>
             <include refid="BasicFilterForProjectQuery"/>
         </where>
@@ -385,27 +412,73 @@
         <include refid="CommonMapper.limitSQL"/>
     </select>
 
-    <select id="listProjectFunction" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
+    <select id="listProjectRelation" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
         select <include refid="CommonMapper.countSQL"/>
-            if(default_built_type.id is null,null,1) as is_default,
-            group_concat(distinct ifnull(custom_built_type.type_name,default_built_type.type_name) as built_type,
+            group_concat(distinct if(relation_company.id is not null,concat(relation_company.company_name,','),'') separator '') as relationCompany,
+            <include refid="ExtraProjectBasicField"/>
             project_list.*
         from maoding_web_project project_list
+            inner join md_project_member member_list on (
+                member_list.project_id = project_list.id
+                <if test="accountId != null">
+                    and member_list.user_id = #{accountId}
+                </if>
+                <if test="currentCompanyId != null">
+                    and member_list.company_id = #{currentCompanyId}
+                </if>
+            )
+            <include refid="ExtraProjectBasicTable"/>
+            left join maoding_web_project_task issue_task ON (
+                issue_task.task_status = '0'
+                and issue_task.is_operater_task = 1
+                and issue_task.from_company_id = member_list.company_id
+            )
+            inner join maoding_web_company relation_company on (
+                relation_company.status = '0'
+                and relation_company.id = issue_task.company_id
+                <if test="relationCompany != null">
+                    and relation_company = #{relationCompany}
+                </if>
+            )
+        <where>
+            <include refid="BasicFilterForProjectQuery"/>
+        </where>
+        group by project_list.id
+        <include refid="OrderForProjectQuery"/>
+        <include refid="CommonMapper.limitSQL"/>
+    </select>
+
+    <select id="listProjectBuildType" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
+        select <include refid="CommonMapper.countSQL"/>
+            group_concat(distinct ifnull(custom_built_type.type_name,default_built_type.type_name) as built_type,
+            <include refid="ExtraProjectBasicField"/>
+            project_list.*
+        from maoding_web_project project_list
+            inner join md_project_member member_list on (
+                member_list.project_id = project_list.id
+                <if test="accountId != null">
+                    and member_list.user_id = #{accountId}
+                </if>
+                <if test="currentCompanyId != null">
+                    and member_list.company_id = #{currentCompanyId}
+                </if>
+            )
+            <include refid="ExtraProjectBasicTable"/>
             left join md_type_built_const default_built_type on (
                 find_in_set(default_built_type.id,project_list.built_type)
                 <if test="buildNameList != null and buildNameList.size() > 0">
-                    and default_built_type.type_name in
-                    <foreach collection="buildNameList" item="aBuildName" open="(" close=")" separator=",">
-                        #{aBuildName}
+                    and default_built_type.id in
+                    <foreach collection="buildNameList" item="aBuildTypeId" open="(" close=")" separator=",">
+                        #{aBuildTypeId}
                     </foreach>
                 </if>
             )
             left join md_type_built_custom custom_built_type on (
                 find_in_set(custom_built_type.id,project_list.built_type)
                 <if test="buildNameList != null and buildNameList.size() > 0">
-                    and custom_built_type.type_name in
-                    <foreach collection="buildNameList" item="aBuildName" open="(" close=")" separator=",">
-                        #{aBuildName}
+                    and custom_built_type.id in
+                    <foreach collection="buildNameList" item="aBuildTypeId" open="(" close=")" separator=",">
+                        #{aBuildTypeId}
                     </foreach>
                 </if>
             )
@@ -417,56 +490,28 @@
         <include refid="CommonMapper.limitSQL"/>
     </select>
 
-    <select id="listProjectFee" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
-        select <include refid="CommonMapper.countSQL"/>
-        cost_type.fee as plan,
-        <if test="isDetail == '1'.toString()">
-            sum(if(cost_pay.paid_date is not null,ifnull(cost_pay.fee,0),0)) as `real`,
-        </if>
-        project_list.id
+    <!-- deprecate: 使用listProjectBasic替换 -->
+    <select id="listProjectPartA" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
+        select
+            part_a_list.corpname as partA,
+            <include refid="ExtraProjectBasicField"/>
+            project_list.*
         from maoding_web_project project_list
-        inner join maoding_web_project_cost cost_type on (cost_type.project_id = project_list.id
-        <choose>
-            <!-- 合同回款 -->
-            <when test="costType == 1">
-                and (cost_type.type = 1)
-                <if test="companyId != null">
-                    and (cost_type.to_company_id = #{companyId})
+            inner join md_project_member member_list on (
+                member_list.project_id = project_list.id
+                <if test="accountId != null">
+                    and member_list.user_id = #{accountId}
                 </if>
-            </when>
-            <!-- 技术审查费 -->
-            <when test="costType == 2">
-                and (cost_type.type = 2)
-                <if test="companyId != null">
-                    and (cost_type.to_company_id = #{companyId})
+                <if test="currentCompanyId != null">
+                    and member_list.company_id = #{currentCompanyId}
                 </if>
-            </when>
-            <!-- 合作设计费收款 -->
-            <when test="costType == 10">
-                and (cost_type.type = 3)
-                <if test="companyId != null">
-                    and (cost_type.to_company_id = #{companyId})
+            )
+            left join maoding_web_enterprise part_a_list on (
+                part_a_list.id = project_list.construct_company
+                <if test="partA != null">
+                    and part_a_list.id = #{partA}
                 </if>
-            </when>
-            <!-- 合作设计费付款 -->
-            <when test="costType == 11">
-                and (cost_type.type = 3)
-                <if test="companyId != null">
-                    and (cost_type.from_company_id = #{companyId})
-                </if>
-            </when>
-            <otherwise>
-                <if test="companyId != null">
-                    and ((cost_type.from_company_id = #{companyId}) or (cost_type.to_company_id = #{companyId}))
-                </if>
-            </otherwise>
-        </choose>
-        )
-        <if test="isDetail == '1'.toString()">
-            inner join maoding_web_project_cost_point cost_point on (cost_point.cost_id = cost_type.id)
-            inner join maoding_web_project_cost_point_detail cost_detail on (cost_detail.point_id = cost_point.id)
-            inner join maoding_web_project_cost_payment_detail cost_pay on (cost_pay.point_detail_id = cost_detail.id)
-        </if>
+            )
         <where>
             <include refid="BasicFilterForProjectQuery"/>
         </where>
@@ -475,34 +520,33 @@
         <include refid="CommonMapper.limitSQL"/>
     </select>
 
-    <select id="listPartA" resultType="com.maoding.core.base.dto.CoreShowDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
+    <!-- deprecate: 使用listProjectBasic替换 -->
+    <select id="listProjectPartB" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
         select
-            part_a_list.corpname as name,
-            part_a_list.*
-        from maoding_web_enterprise part_a_list
-            inner join maoding_web_project project_list on (
-                project_list.pstatus = '0'
-                and (project_list.construct_company = part_a_list.id)
-                <if test="id != null">
-                    and (project_list.id = #{id})
+            part_b_list.company_name as partB,
+            <include refid="ExtraProjectBasicField"/>
+            project_list.*
+        from maoding_web_project project_list
+            inner join md_project_member member_list on (
+                member_list.project_id = project_list.id
+                <if test="accountId != null">
+                    and member_list.user_id = #{accountId}
+                </if>
+                <if test="currentCompanyId != null">
+                    and member_list.company_id = #{currentCompanyId}
                 </if>
             )
-        limit 1
-    </select>
-
-
-    <select id="listPartB" resultType="com.maoding.core.base.dto.CoreShowDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
-        select
-            company_list.company_name as name,
-            company_list.*
-        from maoding_web_company company_list
-            inner join maoding_web_project project_list on (
-                project_list.pstatus = '0'
-                and (project_list.company_bid = company_list.id)
-                <if test="id != null">
-                    and (project_list.id = #{id})
+            left join maoding_web_company part_b_list on (
+                part_b_list.id = project_list.company_bid
+                <if test="partB != null">
+                    and part_b_list.id = #{partB}
                 </if>
             )
-        limit 1
+        <where>
+            <include refid="BasicFilterForProjectQuery"/>
+        </where>
+        group by project_list.id
+        <include refid="OrderForProjectQuery"/>
+        <include refid="CommonMapper.limitSQL"/>
     </select>
 </mapper>

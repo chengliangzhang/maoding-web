@@ -232,12 +232,12 @@ public class ProjectDaoImpl extends GenericDao<ProjectEntity> implements Project
      * @author 张成亮
      */
     @Override
-    public List<ProjectVariableDTO> listProjectFunction(ProjectQueryDTO query) {
-        return sqlSession.selectList("ProjectMapper.listProjectFunction", query);
+    public List<ProjectVariableDTO> listProjectBuildType(ProjectQueryDTO query) {
+        return sqlSession.selectList("ProjectMapper.listProjectBuildType", query);
     }
 
     /**
-     * 描述       查询项目合作者信息
+     * 描述       查询项目参与人信息
      * 日期       2018/8/24
      *
      * @param query
@@ -249,35 +249,15 @@ public class ProjectDaoImpl extends GenericDao<ProjectEntity> implements Project
     }
 
     /**
-     * 描述       查询项目费用信息
+     * 描述       通过项目合作组织信息查询项目列表
      * 日期       2018/8/24
      *
      * @param query
      * @author 张成亮
      */
     @Override
-    public List<ProjectVariableDTO> listProjectFee(ProjectQueryDTO query) {
-        return sqlSession.selectList("ProjectMapper.listProjectFee", query);
-    }
-
-    /**
-     * 描述       查询项目的甲方
-     * 日期       2018/8/27
-     * @author   张成亮
-     **/
-    @Override
-    public List<CoreShowDTO> listPartA(ProjectQueryDTO query){
-        return sqlSession.selectList("ProjectMapper.listPartA", query);
-    }
-
-    /**
-     * 描述       查询项目的甲方
-     * 日期       2018/8/27
-     * @author   张成亮
-     **/
-    @Override
-    public List<CoreShowDTO> listPartB(ProjectQueryDTO query){
-        return sqlSession.selectList("ProjectMapper.listPartB", query);
+    public List<ProjectVariableDTO> listProjectRelation(ProjectQueryDTO query) {
+        return sqlSession.selectList("ProjectMapper.listProjectRelation", query);
     }
 }
 

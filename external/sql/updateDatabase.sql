@@ -1821,6 +1821,38 @@ CREATE PROCEDURE `initConst`()
         filter_type.classic_id = 43;
   END;
 call initConst();
+
+-- 项目状态
+DROP PROCEDURE IF EXISTS `initConst`;
+CREATE PROCEDURE `initConst`()
+  BEGIN
+    -- -- 常量
+    delete from md_list_const where classic_id = 44;
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (44,-1,'项目状态','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (44,0,'进行中','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (44,1,'已暂停-未结清','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (44,2,'已完成-未结清','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (44,3,'已终止-未结清','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (44,4,'已完成-已结清','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (44,5,'已暂停-已结清','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (44,6,'已终止-已结清','');
+
+    -- -- 类型
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,44,'项目状态','md_type_project_status');
+
+    -- 视图
+    CREATE OR REPLACE VIEW `md_type_project_status` AS
+      select
+        project_status.code_id as id,
+        project_status.code_id as type_id,
+        project_status.title as type_title,
+        project_status.extra as type_extra
+      from
+        md_list_const project_status
+      where
+        project_status.classic_id = 44;
+  END;
+call initConst();
 -- -- -- 创建及更改常量 -- 结束 -- -- --
 
 -- -- -- 创建及更改视图 -- 开始 -- -- --

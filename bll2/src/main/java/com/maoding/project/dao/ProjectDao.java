@@ -153,44 +153,30 @@ public interface ProjectDao extends BaseDao<ProjectEntity> {
     List<CoreShowDTO> getProjectFilterList(ProjectFilterQueryDTO query);
 
     /**
-     * 描述       查询项目基本信息
+     * 描述       通过项目基本信息查询项目列表
      * 日期       2018/8/24
      * @author   张成亮
      **/
     List<ProjectVariableDTO> listProjectBasic(ProjectQueryDTO query);
 
     /**
-     * 描述       查询项目功能分类信息
+     * 描述       通过项目功能分类信息查询项目列表
      * 日期       2018/8/24
      * @author   张成亮
      **/
-    List<ProjectVariableDTO> listProjectFunction(ProjectQueryDTO query);
+    List<ProjectVariableDTO> listProjectBuildType(ProjectQueryDTO query);
 
     /**
-     * 描述       查询项目合作者信息
+     * 描述       通过项目参与人信息查询项目列表
      * 日期       2018/8/24
      * @author   张成亮
      **/
     List<ProjectVariableDTO> listProjectMember(ProjectQueryDTO query);
 
     /**
-     * 描述       查询项目费用信息
+     * 描述       通过项目合作组织信息查询项目列表
      * 日期       2018/8/24
      * @author   张成亮
      **/
-    List<ProjectVariableDTO> listProjectFee(ProjectQueryDTO query);
-
-    /**
-     * 描述       查询项目的甲方
-     * 日期       2018/8/27
-     * @author   张成亮
-     **/
-    List<CoreShowDTO> listPartA(ProjectQueryDTO query);
-
-    /**
-     * 描述       查询项目的乙方
-     * 日期       2018/8/27
-     * @author   张成亮
-     **/
-    List<CoreShowDTO> listPartB(ProjectQueryDTO query);
+    List<ProjectVariableDTO> listProjectRelation(ProjectQueryDTO query);
 }
