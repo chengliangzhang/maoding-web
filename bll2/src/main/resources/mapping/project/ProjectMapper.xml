@@ -315,6 +315,15 @@
         <if test="address != null">
             and concat(project_list.province,project_list.city) = #{address}
         </if>
+        <if test="province != null">
+            and project_list.province = #{province}
+        </if>
+        <if test="city != null">
+            and project_list.city = #{city}
+        </if>
+        <if test="county != null">
+            and project_list.county = #{county}
+        </if>
         <if test="status != null">
             and project_list.status = #{status}
         </if>

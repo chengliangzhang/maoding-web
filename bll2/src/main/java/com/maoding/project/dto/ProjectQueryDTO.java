@@ -56,6 +56,15 @@ public class ProjectQueryDTO extends CoreQueryDTO {
     /** 项目地点 **/
     private String address;
 
+    /** 省/直辖市 **/
+    private String province;
+
+    /** 市/区 **/
+    private String city;
+
+    /** 区/县 **/
+    private String county;
+
     /** 功能分类 **/
     private List<String> buildNameList;
 
@@ -106,13 +115,43 @@ public class ProjectQueryDTO extends CoreQueryDTO {
     private Integer type;
 
     /** 要查询的费用类别 **/
+    /** 取消 **/
+    @Deprecated
     private Integer costType;
 
     /** 要查询的成员类别 **/
+    /** 取消 **/
+    @Deprecated
     private Integer memberType;
 
     /** 是否查询收付款实际到账 **/
+    /** 取消 **/
+    @Deprecated
     private Integer isDetail;
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCounty() {
+        return county;
+    }
+
+    public void setCounty(String county) {
+        this.county = county;
+    }
 
     public Integer getIsDetail() {
         return isDetail;
