@@ -26,6 +26,7 @@
                         <list>
                             <value>application/json</value>
                             <value>text/json</value> <!-- firefox上传图片需要 -->
+                            <value>application/x-www-form-urlencoded</value>
                         </list>
                     </property>
                 </bean>

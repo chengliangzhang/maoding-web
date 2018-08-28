@@ -521,12 +521,19 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
             case SystemParameters.MESSAGE_TYPE_225: //"hi，?转交了?申请的“?”报销金额?元，请你审批，谢谢！"
             case SystemParameters.MESSAGE_TYPE_236:
             case SystemParameters.MESSAGE_TYPE_237:
+                //财务审核不通过（报销，费用）
+                // put("247","你申请的报销“%expName%”共计%expAmount%元，审批未通过，原因：%reason%。");
+                // put("248","你申请的费用“%expName%”共计%expAmount%元，审批未通过，原因：%reason%。");
+            case SystemParameters.MESSAGE_TYPE_247:
+            case SystemParameters.MESSAGE_TYPE_248:
                 ExpMainDTO dto4 = expMainDao.getExpMainDetail(targetId);
                 para.put("expUserName", getExpUserName(targetId));
                 para.put("expName", getExpName(targetId));
                 para.put("expAmount", getExpAmount(dto4));
                 //查询审批原因
-                if(messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_20 || messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_223){
+                if(messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_20 || messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_223
+                        || messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_247 || messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_248){
+
                     ExpAuditEntity recallAudit = this.expAuditDao.selectLastRecallAudit(messageEntity.getTargetId());
                     if(recallAudit!=null){
                         para.put("reason",recallAudit.getAuditMessage());
@@ -581,6 +588,10 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
                 para.put("expName", expMainDTO.getExpName());
                 para.put("expAmount", getExpAmount(expMainDTO));
                 break;
+
+
+
+
             case SystemParameters.MESSAGE_TYPE_243: //"hi，?转交了?申请的“?”报销金额?元，请你审批，谢谢！"
             case SystemParameters.MESSAGE_TYPE_244:
             case SystemParameters.MESSAGE_TYPE_245:

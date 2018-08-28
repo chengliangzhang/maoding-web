@@ -151,6 +151,20 @@ function getNowDate() {
         nowDate = year + "-" + mon + "-" + day;
     return nowDate;
 }
+function getLastDay(year,month){
+
+    var new_year = year;    //取当前的年份
+    var new_month = month++;//取下一个月的第一天，方便计算（最后一天不固定）
+    if(month>12)            //如果当前大于12月，则年份转到下一年
+    {
+        new_month -=12;        //月份减
+        new_year++;            //年份增
+    }
+    var new_date = new Date(new_year,new_month,1);                //取当年当月中的第一天
+    var date_count =   (new Date(new_date.getTime()-1000*60*60*24)).getDate();//获取当月的天数
+    var last_date =   new Date(new_date.getTime()-1000*60*60*24);//获得当月最后一天的日期
+    return date_count;
+}
 /**
  * 时间差
  * @param stime
@@ -1338,13 +1352,6 @@ var regularExpressions = {
     ,
     numberWithPoints_2: /^[+-]?\d+(([.]\d{1,2})?)$/  //实数，小数点2位
 };
-/**
- *
- * @param t
- */
-var validateNumber = function (t) {
-
-}
 
 //精准计算
 var doMath = {
@@ -1566,18 +1573,33 @@ var downLoadFile = function (options) {
     if(options.type==1){//post请求
         var config = $.extend(true, { method: 'post' }, options);
         var $iframe = $('<iframe id="down-file-iframe" />');
-        var $form = $('<form target="down-file-iframe" method="' + config.method + '" />');
+        var $form = $('<form target="down-file-iframe" method="' + config.method + '" accept-charset="UTF-8" enctype="application/x-www-form-urlencoded" />');
         $form.attr('action', config.url);
         for (var key in config.data) {
             $form.append('<input type="hidden" name="' + key + '" value="' + config.data[key] + '" />');
         }
         $iframe.append($form);
         $(document.body).append($iframe);
+
+        /*var $data = $('form[target="down-file-iframe"]').serializeObject();
+        var option = {};
+        option.url = config.url;
+        option.postData = $data;
+        m_ajax.postJson(option, function (response) {
+            if (response.code == '0') {
+                //S_toastr.success("保存成功!");
+
+            } else {
+                S_dialog.error(response.info);
+            }
+        });*/
         $form[0].submit();
-        $iframe.remove();
+        //console.log($iframe.html())
+        //$iframe.remove();
     }else{
         var $iframe = $('<iframe id="down-file-iframe" />');
         $(document.body).append($iframe);
         $iframe.attr('src',options.url);
     }
+
 };

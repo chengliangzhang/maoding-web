@@ -48,7 +48,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -705,6 +707,55 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
     }
 
     @Override
+    public int financialRecallExpMain2(FinancialAllocationDTO dto) throws Exception {
+        String userId = dto.getAccountId();
+        //查询当前用户bean  company_user表
+        CompanyUserEntity currentUser = this.companyUserDao.getCompanyUserByUserIdAndCompanyId(dto.getAccountId(),dto.getCurrentCompanyId());
+        if(currentUser==null){
+            return 0;
+        }
+        //ExpMainEntityMapper.xml  maoding_web_exp_main表
+        ExpMainEntity main = this.expMainDao.selectById(dto.getId());
+        if(main==null){
+            return 0;
+        }
+
+        //获取要推送消息的人员的id（companyUserId）
+        List<String> receiveMessageUserId = new ArrayList<>();
+        receiveMessageUserId.add(main.getCompanyUserId());
+        //1.找到要推送消息的人
+       List<ExpAuditEntity> auditList =  expAuditDao.selectByMainId(dto.getId());
+        for (ExpAuditEntity audit: auditList) {
+            if (!receiveMessageUserId.contains(audit.getAuditPerson())){
+                receiveMessageUserId.add(audit.getAuditPerson());
+            }
+        }
+
+
+        //2.添加财务拒绝拨款的记录,保存报销审核表
+        ExpAuditEntity auditEntity = new ExpAuditEntity();
+        auditEntity.setId(StringUtil.buildUUID());
+        auditEntity.setMainId(dto.getId());
+        auditEntity.setAuditPerson(currentUser.getId());
+        auditEntity.set4Base(userId, userId, new Date(), new Date());
+        auditEntity.setIsNew("N");
+        auditEntity.setApproveStatus("8");
+        auditEntity.setAuditMessage(dto.getReason());
+        auditEntity.setApproveDate(DateUtils.getDate());
+        this.expAuditDao.insert(auditEntity);
+
+        String mainId = dto.getId();//报销单ID
+        String companyId = dto.getCurrentCompanyId();//公司ID
+
+        for (String companyUserId : receiveMessageUserId){
+            sendMessageForAudit(mainId,companyId,companyUserId,main.getType(),userId,null,"8");//报销单ID，公司ID，接受消息者ID，类型（报销or费用），当前用户ID，审核表ID，类型（处理类型）
+
+        }
+        main.setApproveStatus("8");//审批状态(0:待审核，1:同意，2，退回,3:撤回,4:删除,5.审批中）,6:财务已拨款'
+
+        return this.expMainDao.updateById(main);
+    }
+    @Override
     public int financialRecallExpMain(FinancialAllocationDTO dto) throws Exception {
         String userId = dto.getAccountId();
         CompanyUserEntity currentUser = this.companyUserDao.getCompanyUserByUserIdAndCompanyId(dto.getAccountId(),dto.getCurrentCompanyId());
@@ -715,6 +766,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         if(main==null){
             return 0;
         }
+
         //获取最新的那条记录
         ExpAuditEntity lastAudit = this.expAuditDao.getLastAuditByMainId(dto.getId());
         //首先增加一条审批记录
@@ -778,10 +830,9 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
     public Map<String, Object> getExpMainDetail(String id) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
         List<ExpDetailDTO> detailList = expDetailDao.selectDetailDTOByMainId(id);
-
         map.put("detailList", detailList);
         List<ExpMainDTO> auditList = new ArrayList<>();
-        ExpMainDTO expMainDTO = expMainDao.selectByIdWithUserName(id);
+        ExpMainDTO expMainDTO = expMainDao.selectByIdWithUserName(id);//guo
         expMainDTO.setApproveStatusName("发起申请");
         auditList.add(expMainDTO);
         List<ExpMainDTO> list = expAuditDao.selectAuditDetailByMainId(id);
@@ -1202,6 +1253,14 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
             }
             if(type==2 && "6".equals(approveStatus)){
                 messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_235);//拨款
+            }
+            //财务审批不通过（报销）
+            if(type==1 && "8".equals(approveStatus)){
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_247);
+            }
+            //财务审批不通过（费用）
+            if(type==2 && "8".equals(approveStatus)){
+                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_248);
             }
 
             //请假

@@ -66,7 +66,7 @@
 
                 that.renderDataList();
             };
-            $(that.element).find('.time-combination').m_filter_timeCombination(timeOption,true);
+            $(that.element).find('.time-combination').m_filter_timeGroup(timeOption,true);
 
             var option = {};
             option.$selectedCallBack = function (data) {
@@ -110,33 +110,13 @@
                     });
                     $(that.element).find('.data-list-container').html(html);
 
-                    var startDateStr = response.data.startDateStr;
-                    var endDateStr = response.data.endDateStr;
-                    if(startDateStr!=null && startDateStr!=''){
-
-                        $(that.element).find('input[name="startTime"]').val(startDateStr);
-                    }
-                    if(endDateStr!=null && endDateStr!=''){
-
-                        $(that.element).find('input[name="endTime"]').val(endDateStr);
-                    }
-
                     if(t==0){
+                        that.setTimeInput(response.data.startDateStr,response.data.endDateStr);
                         that.getFeeType(function () {
-                            that.renderFeeTypeFilter();
-                            that.renderSubFeeTypeFilter();
-                            that.renderProfitTypeFilter();
-                            that.renderFromCompanyFilter('filterFromCompany');
-                            that.renderFromCompanyFilter('filterToCompany');
-                            that.renderProjectNameFilter();
+                            that.filterActionClick();
                         });
                     }else{
-                        that.renderFeeTypeFilter();
-                        that.renderSubFeeTypeFilter();
-                        that.renderProfitTypeFilter();
-                        that.renderFromCompanyFilter('filterFromCompany');
-                        that.renderFromCompanyFilter('filterToCompany');
-                        that.renderProjectNameFilter();
+                        that.filterActionClick();
                     }
 
 
@@ -144,6 +124,35 @@
                     S_dialog.error(response.info);
                 }
             });
+        }
+        //查询list返回时间设置
+        ,setTimeInput:function (startDateStr,endDateStr) {
+            var that = this;
+            var dataType = $(that.element).find('a.btn-primary[data-action="setTime"]').attr('data-type');
+
+            if(dataType=='month'){
+
+                if(!isNullOrBlank(startDateStr))
+                    startDateStr = startDateStr.substring(0,7);
+
+                if(!isNullOrBlank(endDateStr)){
+                    endDateStr = endDateStr.substring(0,7);
+                }
+
+            }else if(dataType=='year'){
+
+                if(!isNullOrBlank(startDateStr))
+                    startDateStr = startDateStr.substring(0,4);
+
+                if(!isNullOrBlank(endDateStr)){
+                    endDateStr = endDateStr.substring(0,4);
+                }
+            }
+            if(!isNullOrBlank(startDateStr))
+                $(that.element).find('input[name="startTime"]').val(startDateStr);
+
+            if(!isNullOrBlank(endDateStr))
+                $(that.element).find('input[name="endTime"]').val(endDateStr);
         }
         /**
          * 获取收支分类
@@ -166,139 +175,7 @@
                 }
             });
         }
-        //渲染收支类型筛选
-        ,renderFeeTypeFilter:function () {
-            var that  = this;
-            var option = {};
-            var newList = [];
 
-            if(that._feeTypeParentNameList!=null && that._feeTypeParentNameList.length>0){
-                $.each(that._feeTypeParentNameList,function (i,item) {
-                    newList.push({id:item.expTypeValue,name:item.expTypeValue});
-                })
-            }
-            option.selectArr = newList;
-            option.selectedArr = that._filterData.feeTypeParentList;
-            option.eleId = 'filterFeeType';
-            option.selectedCallBack = function (data) {
-                console.log(data);
-                that._filterData.feeTypeParentList = data;
-                that.getFeeType(function () {
-                    that.renderSubFeeTypeFilter(1);
-                });
-                that.renderDataList();
-            };
-            $(that.element).find('#filterFeeType').m_filter_select(option, true);
-        }
-        /**
-         * 渲染收支子类筛选
-         */
-        ,renderSubFeeTypeFilter:function () {
-            var that  = this;
-            var option = {};
-            var newList = [];
-
-            if(that._feeTypeNameList!=null && that._feeTypeNameList.length>0){
-                $.each(that._feeTypeNameList,function (i,item) {
-                    var childList = [];
-                    if(item.childList!=null && item.childList.length>0){
-                        $.each(item.childList,function (subI,subItem) {
-                            childList.push({id:item.expTypeValue+'_'+subItem.expTypeValue,name:subItem.expTypeValue});
-                        });
-                    }
-                    newList.push({id:item.expTypeValue,name:item.expTypeValue,childList:childList});
-                })
-            }
-            option.selectArr = newList;
-            option.selectedArr = that._filterData.feeTypeList;
-            option.eleId = 'filterSubFeeType';
-            option.boxStyle = 'min-width:525px;';
-            option.dialogWidth = '525';
-            option.selectedCallBack = function (data) {
-                console.log(data);
-                that._filterData.feeTypeList = data;
-                that.renderDataList();
-
-            };
-            $(that.element).find('#filterSubFeeType').m_filter_checkbox_select(option, true);
-        }
-        //渲染金额类型筛选
-        ,renderProfitTypeFilter:function () {
-            var that  = this;
-            var option = {};
-            var newList = [
-                {name:'项目收支',id:'3'},
-                {name:'非项目收支',id:'4'}
-            ];
-            option.selectArr = newList;
-            option.selectedArr = [];
-            if(!isNullOrBlank(that._filterData.profitType))
-                option.selectedArr.push(that._filterData.profitType);
-
-            option.eleId = 'filterProfitType';
-            option.selectedCallBack = function (data) {
-                if(data && data.length>0){
-                    that._filterData.profitType = data[0];
-                }else{
-                    that._filterData.profitType = null;
-                }
-                that.renderDataList();
-            };
-            $(that.element).find('#filterProfitType').m_filter_select(option, true);
-        }
-        //渲染付款组织筛选
-        ,renderFromCompanyFilter:function (id) {
-            var that  = this;
-            var option = {};
-            var newList = [],list=[],selectStr='',key='';
-
-            if(id=='filterFromCompany'){
-
-                list = that._fromCompanyList;
-                key = 'fromCompanyName';
-
-            }else if(id=='filterToCompany'){
-                list = that._toCompanyList;
-                key = 'toCompanyName';
-            }
-            selectStr = that._filterData[key];
-
-            if(list!=null && list.length>0){
-                $.each(list,function (i,item) {
-                    newList.push({id:item.companyName,name:item.companyName});
-                })
-            }
-            option.selectArr = newList;
-            option.selectedArr = [];
-            if(!isNullOrBlank(selectStr))
-                option.selectedArr.push(selectStr);
-
-            option.eleId = id;
-            option.selectedCallBack = function (data) {
-                if(data && data.length>0){
-                    that._filterData[key] = data[0];
-                }else{
-                    that._filterData[key] = null;
-                }
-                that.renderDataList();
-            };
-            console.log(option)
-            $(that.element).find('#'+id).m_filter_select(option, true);
-        }
-        //渲染关联项目筛选
-        ,renderProjectNameFilter:function () {
-            var that  = this;
-            var option = {};
-
-            option.inputValue = that._filterData.projectName;
-            option.eleId = 'filterProjectName';
-            option.oKCallBack = function (data) {
-
-                that._filterData.projectName = data;
-                that.renderDataList();
-            };
-            $(that.element).find('#filterProjectName').m_filter_input(option, true);
-        }
         //按钮事件绑定
         , bindBtnActionClick:function () {
             var that = this;
@@ -325,13 +202,147 @@
                         break;
                     case 'exportDetails'://导出
                         downLoadFile({
-                            url:restApi.url_getTitleFilter,
-                            data:filterParam(that._filterData)
+                            url:restApi.url_exportBalanceDetail,
+                            data:filterParam(that._filterData),
+                            type:1
                         });
                         return false;
                         break;
                 }
             });
+        }
+        //筛选事件
+        ,filterActionClick:function () {
+            var that = this;
+            $(that.element).find('a.icon-filter').each(function () {
+
+                var $this = $(this);
+                var id = $this.attr('id');
+                var filterArr = id.split('_');
+                switch (id){
+                    case 'filter_profitType':
+                    case 'filter_toCompanyName'://收款组织
+                    case 'filter_fromCompanyName'://付款组织
+
+                        var newList = [],list=[],selectStr='';
+
+                        if(id=='filter_fromCompanyName'){
+
+                            list = that._fromCompanyList;
+
+                        }else if(id=='filter_toCompanyName'){
+
+                            list = that._toCompanyList;
+
+                        }else if(id=='filter_profitType'){
+
+                            newList = [
+                                {name:'项目收支',id:'3'},
+                                {name:'非项目收支',id:'4'}
+                            ];
+                        }
+                        selectStr = that._filterData[filterArr[1]];
+
+                        if(list!=null && list.length>0){
+                            $.each(list,function (i,item) {
+                                newList.push({id:item.companyName,name:item.companyName});
+                            })
+                        }
+
+                        var option = {};
+                        option.selectArr = newList;
+                        option.selectedArr = [];
+                        if(!isNullOrBlank(selectStr))
+                            option.selectedArr.push(selectStr);
+
+                        option.eleId = id;
+                        option.selectedCallBack = function (data) {
+                            if(data && data.length>0){
+                                that._filterData[filterArr[1]] = data[0];
+                            }else{
+                                that._filterData[filterArr[1]] = null;
+                            }
+                            that.renderDataList();
+                        };
+                        $this.m_filter_select(option, true);
+
+                        break;
+                    case 'filter_projectName': //项目
+
+                        var option = {};
+
+                        option.inputValue = that._filterData[filterArr[1]];
+                        option.eleId = id;
+                        option.oKCallBack = function (data) {
+
+                            that._filterData[filterArr[1]] = data;
+                            that.renderDataList();
+                        };
+                        $this.m_filter_input(option, true);
+
+                        break;
+                    case 'filter_feeTypeParentList'://收支分类子项
+
+                        var option = {};
+                        var newList = [];
+
+                        if(that._feeTypeParentNameList!=null && that._feeTypeParentNameList.length>0){
+                            $.each(that._feeTypeParentNameList,function (i,item) {
+                                newList.push({id:item.expTypeValue,name:item.expTypeValue});
+                            })
+                        }
+                        option.selectArr = newList;
+                        option.selectedArr = that._filterData.feeTypeParentList;
+                        option.eleId = id;
+                        option.selectedCallBack = function (data) {
+                            that._filterData.feeTypeParentList = data;
+                            that._filterData.feeTypeList = [];
+                            that.getFeeType(function () {
+                                that.renderSubFeeTypeFilter();
+                            });
+                            that.renderDataList();
+                        };
+                        $this.m_filter_select(option, true);
+                        break;
+
+                    case 'filter_feeType'://收支分类子项
+                        that.renderSubFeeTypeFilter();
+                        break;
+                }
+
+            });
+        }
+        /**
+         * 渲染收支子类筛选
+         */
+        ,renderSubFeeTypeFilter:function () {
+            var that  = this;
+            var option = {};
+            var newList = [];
+
+            if(that._feeTypeNameList!=null && that._feeTypeNameList.length>0){
+                $.each(that._feeTypeNameList,function (i,item) {
+                    var childList = [];
+                    if(item.childList!=null && item.childList.length>0){
+                        $.each(item.childList,function (subI,subItem) {
+                            childList.push({id:item.expTypeValue+'_'+subItem.expTypeValue,name:subItem.expTypeValue});
+                        });
+                    }
+                    newList.push({id:item.expTypeValue,name:item.expTypeValue,childList:childList});
+                })
+            }
+            option.selectArr = newList;
+            option.selectedArr = that._filterData.feeTypeList;
+            option.eleId = 'filter_feeType';
+            option.boxStyle = 'min-width:525px;';
+            option.dialogWidth = '525';
+            option.selectedCallBack = function (data) {
+                console.log(data);
+                that._filterData.feeTypeList = data;
+                that.renderDataList();
+
+            };
+            $(that.element).find('#filter_feeType').m_filter_checkbox_select(option, true);
         }
 
     });

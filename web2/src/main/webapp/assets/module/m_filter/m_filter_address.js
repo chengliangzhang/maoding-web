@@ -1,16 +1,16 @@
 /**
- * 时间筛选
+ * 地址筛选
  * Created by wrb on 2018/8/15.
  */
 ;(function ($, window, document, undefined) {
 
     "use strict";
-    var pluginName = "m_filter_time",
+    var pluginName = "m_filter_address",
         defaults = {
             eleId:null,//元素ID
             align:null,//浮窗位置
             isEndTime:true,//是否显示结束时间
-            timeData:null,//时间缓存值{startTime,endTime}
+            addressData:{},//时间缓存值{startTime,endTime}
             okCallBack:null//选择回调
         };
 
@@ -20,7 +20,6 @@
         this.settings = options;
         this._defaults = defaults;
         this._name = pluginName;
-        this._timeData = {};
         this.init();
     }
 
@@ -32,10 +31,11 @@
         , render: function () {
             var that = this;
 
-            if(that.settings.timeData && (!isNullOrBlank(that.settings.timeData.startTime) || !isNullOrBlank(that.settings.timeData.endTime))){
+            if(that.settings.addressData && (!isNullOrBlank(that.settings.addressData.province) || !isNullOrBlank(that.settings.addressData.city) || !isNullOrBlank(that.settings.addressData.county))){
                 $(that.element).find('i').addClass('fc-v1-blue');
             }
             $(that.element).on('click',function (e) {
+
                 S_dialog.dialog({
                     contentEle: 'dialogOBox',
                     ele:that.settings.eleId,
@@ -43,45 +43,41 @@
                     align: that.settings.align || 'bottom right',
                     quickClose:true,
                     noTriangle:true,
-                    width: '220',
-                    minHeight:'100',
+                    width: '350',
+                    minHeight:'110',
                     tPadding: '0px',
                     url: rootPath+'/assets/module/m_common/m_dialog.html'
-
 
                 },function(d){//加载html后触发
 
                     var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-
-                    var iHtml = template('m_filterableField/m_filter_time1',{
-                        isEndTime:that.settings.isEndTime,
-                        timeData:that.settings.timeData
-                    });
-
+                    var iHtml = template('m_filter/m_filter_address',{});
                     $(dialogEle).html(iHtml);
-                    $(dialogEle).find('button[data-action="sureTimeFilter"]').off('click').on('click',function () {
 
-                        var startTime = $(dialogEle).find('input[name="startTime"]').val();
-                        var endTime = $(dialogEle).find('input[name="endTime"]').val();
-
-                        if(!isNullOrBlank(startTime) || !isNullOrBlank(endTime)){
-                            $(that.element).find('i').addClass('fc-v1-blue');
-                        }else{
-                            $(that.element).find('i').removeClass('fc-v1-blue');
-                        }
-                        that.settings.timeData.startTime = startTime;
-                        that.settings.timeData.endTime = endTime;
-
-                        if(that.settings.okCallBack)
-                            that.settings.okCallBack({startTime:startTime,endTime:endTime});
-
+                    $(dialogEle).find("#selectRegion").citySelect({
+                        prov:isNullOrBlank(that.settings.addressData.province)?'':that.settings.addressData.province,
+                        city:isNullOrBlank(that.settings.addressData.city)?'':that.settings.addressData.city,
+                        dist:isNullOrBlank(that.settings.addressData.county)?'':that.settings.addressData.county,
+                        nodata:"none",
+                        required:false
+                    });
+                    $(dialogEle).find('button[data-action="cancel"]').on('click',function () {
                         S_dialog.close($(dialogEle));
                     });
-                    $(dialogEle).find('button[data-action="clearTimeInput"]').off('click').on('click',function () {
-                        $(dialogEle).find('input').val('');
-                    });
-                    $(dialogEle).find('i.fa-calendar').off('click').on('click',function () {
-                        $(this).closest('.input-group').find('input').focus();
+                    $(dialogEle).find('button[data-action="confirm"]').on('click',function () {
+
+                        var province = $(dialogEle).find('select[name="province"]').val();
+                        var city = $(dialogEle).find('select[name="city"]').val();
+                        var county = $(dialogEle).find('select[name="county"]').val();
+
+                        province = province==undefined?'':province;
+                        city = city==undefined?'':city;
+                        county = county==undefined?'':county;
+
+                        if(that.settings.okCallBack)
+                            that.settings.okCallBack({province:province,city:city,county:county});
+
+                        S_dialog.close($(dialogEle));
                     });
 
                 });

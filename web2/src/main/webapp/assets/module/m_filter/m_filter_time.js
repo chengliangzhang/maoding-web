@@ -1,18 +1,17 @@
 /**
- * input输入筛选
+ * 时间筛选
  * Created by wrb on 2018/8/15.
  */
 ;(function ($, window, document, undefined) {
 
     "use strict";
-    var pluginName = "m_filter_input",
+    var pluginName = "m_filter_time",
         defaults = {
             eleId:null,//元素ID
             align:null,//浮窗位置
-            isClear:false,//是否显示清空按钮
-            inputValue:null,//文本框值
-            placeholder:null,
-            oKCallBack:null//选择回调
+            isEndTime:true,//是否显示结束时间
+            timeData:null,//时间缓存值{startTime,endTime}
+            okCallBack:null//选择回调
         };
 
     function Plugin(element, options) {
@@ -21,6 +20,7 @@
         this.settings = options;
         this._defaults = defaults;
         this._name = pluginName;
+        this._timeData = {};
         this.init();
     }
 
@@ -32,22 +32,15 @@
         , render: function () {
             var that = this;
 
-            if(!isNullOrBlank(that.settings.inputValue)){
+            if(that.settings.timeData && (!isNullOrBlank(that.settings.timeData.startTime) || !isNullOrBlank(that.settings.timeData.endTime))){
                 $(that.element).find('i').addClass('fc-v1-blue');
             }
-
-            var iHtml = template('m_filterableField/m_filter_input1',{
-                isClear:that.settings.isClear,
-                inputValue:that.settings.inputValue,
-                placeholder:that.settings.placeholder
-            });
-
             $(that.element).on('click',function (e) {
                 S_dialog.dialog({
                     contentEle: 'dialogOBox',
                     ele:that.settings.eleId,
                     lock: 2,
-                    align: that.settings.align||'bottom right',
+                    align: that.settings.align || 'bottom right',
                     quickClose:true,
                     noTriangle:true,
                     width: '220',
@@ -55,32 +48,45 @@
                     tPadding: '0px',
                     url: rootPath+'/assets/module/m_common/m_dialog.html'
 
+
                 },function(d){//加载html后触发
 
                     var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    $(dialogEle).html(iHtml);
-                    $(dialogEle).css('overflow-x','hidden');
 
-                    that.bindBtnAction($(dialogEle));
+                    var iHtml = template('m_filter/m_filter_time',{
+                        isEndTime:that.settings.isEndTime,
+                        timeData:that.settings.timeData
+                    });
+
+                    $(dialogEle).html(iHtml);
+                    $(dialogEle).find('button[data-action="sureTimeFilter"]').off('click').on('click',function () {
+
+                        var startTime = $(dialogEle).find('input[name="startTime"]').val();
+                        var endTime = $(dialogEle).find('input[name="endTime"]').val();
+
+                        if(!isNullOrBlank(startTime) || !isNullOrBlank(endTime)){
+                            $(that.element).find('i').addClass('fc-v1-blue');
+                        }else{
+                            $(that.element).find('i').removeClass('fc-v1-blue');
+                        }
+                        that.settings.timeData.startTime = startTime;
+                        that.settings.timeData.endTime = endTime;
+
+                        if(that.settings.okCallBack)
+                            that.settings.okCallBack({startTime:startTime,endTime:endTime});
+
+                        S_dialog.close($(dialogEle));
+                    });
+                    $(dialogEle).find('button[data-action="clearTimeInput"]').off('click').on('click',function () {
+                        $(dialogEle).find('input').val('');
+                    });
+                    $(dialogEle).find('i.fa-calendar').off('click').on('click',function () {
+                        $(this).closest('.input-group').find('input').focus();
+                    });
 
                 });
-                e.stopPropagation();
+                stopPropagation(e);
                 return false;
-            });
-        }
-
-        //获取选中的数据
-        ,bindBtnAction :function ($ele) {
-            var that = this;
-
-            $ele.find('button[data-action="sureFilter"]').off('click').on('click',function () {
-                var textVal = $ele.find('input[name="txtVal"]').val();
-                S_dialog.close($ele);
-                if(that.settings.oKCallBack)
-                    that.settings.oKCallBack(textVal);
-            });
-            $ele.find('button[data-action="clearInput"]').off('click').on('click',function () {
-                $ele.find('input[name="txtVal"]').val('');
             });
         }
 

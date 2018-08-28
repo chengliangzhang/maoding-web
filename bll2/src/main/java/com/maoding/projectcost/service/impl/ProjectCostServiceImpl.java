@@ -2303,6 +2303,9 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
     private void financialAccount(ProjectCostPointEntity costPoint,ProjectCostPaymentDetailDTO dto,boolean isReceive,String paymentDetailId,BigDecimal fee) throws Exception{
         SaveCompanyBillDTO billDTO = new SaveCompanyBillDTO();
         String paymentDate = StringUtil.isNullOrEmpty(dto.getPaidDate())?dto.getPayDate():dto.getPaidDate();
+        if(dto.getDateStr()!=null){
+            paymentDate = dto.getDateStr();
+        }
         ProjectCostEntity cost = projectCostDao.selectById(costPoint.getCostId());
         billDTO.setFromCompanyId(cost.getFromCompanyId());
         billDTO.setToCompanyId(cost.getToCompanyId());

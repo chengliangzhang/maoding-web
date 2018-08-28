@@ -1,17 +1,18 @@
 /**
- * 地址筛选
+ * input输入筛选
  * Created by wrb on 2018/8/15.
  */
 ;(function ($, window, document, undefined) {
 
     "use strict";
-    var pluginName = "m_filter_address",
+    var pluginName = "m_filter_input",
         defaults = {
             eleId:null,//元素ID
             align:null,//浮窗位置
-            isEndTime:true,//是否显示结束时间
-            addressData:{},//时间缓存值{startTime,endTime}
-            okCallBack:null//选择回调
+            isClear:false,//是否显示清空按钮
+            inputValue:null,//文本框值
+            placeholder:null,
+            oKCallBack:null//选择回调
         };
 
     function Plugin(element, options) {
@@ -31,58 +32,55 @@
         , render: function () {
             var that = this;
 
-            if(that.settings.addressData && (!isNullOrBlank(that.settings.addressData.province) || !isNullOrBlank(that.settings.addressData.city) || !isNullOrBlank(that.settings.addressData.county))){
+            if(!isNullOrBlank(that.settings.inputValue)){
                 $(that.element).find('i').addClass('fc-v1-blue');
             }
-            $(that.element).on('click',function (e) {
 
+            var iHtml = template('m_filter/m_filter_input',{
+                isClear:that.settings.isClear,
+                inputValue:that.settings.inputValue,
+                placeholder:that.settings.placeholder
+            });
+
+            $(that.element).on('click',function (e) {
                 S_dialog.dialog({
                     contentEle: 'dialogOBox',
                     ele:that.settings.eleId,
                     lock: 2,
-                    align: that.settings.align || 'bottom right',
+                    align: that.settings.align||'bottom right',
                     quickClose:true,
                     noTriangle:true,
-                    width: '350',
-                    minHeight:'110',
+                    width: '220',
+                    minHeight:'100',
                     tPadding: '0px',
                     url: rootPath+'/assets/module/m_common/m_dialog.html'
 
                 },function(d){//加载html后触发
 
                     var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    var iHtml = template('m_filterableField/m_filter_address',{});
                     $(dialogEle).html(iHtml);
+                    $(dialogEle).css('overflow-x','hidden');
 
-                    $(dialogEle).find("#selectRegion").citySelect({
-                        prov:isNullOrBlank(that.settings.addressData.province)?'':that.settings.addressData.province,
-                        city:isNullOrBlank(that.settings.addressData.city)?'':that.settings.addressData.city,
-                        dist:isNullOrBlank(that.settings.addressData.county)?'':that.settings.addressData.county,
-                        nodata:"none",
-                        required:false
-                    });
-                    $(dialogEle).find('button[data-action="cancel"]').on('click',function () {
-                        S_dialog.close($(dialogEle));
-                    });
-                    $(dialogEle).find('button[data-action="confirm"]').on('click',function () {
-
-                        var province = $(dialogEle).find('select[name="province"]').val();
-                        var city = $(dialogEle).find('select[name="city"]').val();
-                        var county = $(dialogEle).find('select[name="county"]').val();
-
-                        province = province==undefined?'':province;
-                        city = city==undefined?'':city;
-                        county = county==undefined?'':county;
-
-                        if(that.settings.okCallBack)
-                            that.settings.okCallBack({province:province,city:city,county:county});
-
-                        S_dialog.close($(dialogEle));
-                    });
+                    that.bindBtnAction($(dialogEle));
 
                 });
-                stopPropagation(e);
+                e.stopPropagation();
                 return false;
+            });
+        }
+
+        //获取选中的数据
+        ,bindBtnAction :function ($ele) {
+            var that = this;
+
+            $ele.find('button[data-action="sureFilter"]').off('click').on('click',function () {
+                var textVal = $ele.find('input[name="txtVal"]').val();
+                S_dialog.close($ele);
+                if(that.settings.oKCallBack)
+                    that.settings.oKCallBack(textVal);
+            });
+            $ele.find('button[data-action="clearInput"]').off('click').on('click',function () {
+                $ele.find('input[name="txtVal"]').val('');
             });
         }
 

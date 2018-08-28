@@ -30,7 +30,7 @@
         }
         ,render:function () {
             var that = this;
-            var html = template('m_filterableField/m_filter_timeCombination',{});
+            var html = template('m_filter/m_filter_timeCombination',{});
             $(that.element).html(html);
             that.bindSetTime();
             that.bindChoseTime();
@@ -139,7 +139,7 @@
             });
 
         }
-        //渲染收票方
+        //月份选择
         ,initMonthSelect:function () {
             var that = this;
             var currYear = new Date().getFullYear();

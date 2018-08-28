@@ -420,6 +420,9 @@ public interface SystemParameters {
             put("238","%expUserName% 提交的请假申请，请假类型：%leaveTypeName%，请假时间：%startTime1% - %endTime1%，已完成审批，请知晓");//ok
             put("239","%expUserName% 提交的出差申请，出差地：%address%，出差时间：%startTime1% - %endTime1%，已完成审批，请知晓");
 
+            //财务审核不通过（报销，费用）
+            put("247","%expUserName% 你申请的报销,“%expName%”,共计%expAmount%元，审批未通过，原因：%reason%。");
+            put("248","%expUserName% 你申请的费用,“%expName%”,共计%expAmount%元，审批未通过，原因：%reason%。");
             /******************项目费用******************/
             //技术审查费
             //? - 技术审查费 - ?” 金额：?万，需要你确认付款 ----->hi，XXX发起了“卯丁科技大厦一期：技术审查费节点”的技术审查费30万元，请确认付款金额，谢谢！
@@ -707,6 +710,9 @@ public interface SystemParameters {
             //财务拨款（报销，费用）
             put("234",new MessageTemplate("你申请的报销“%expName%”共计%expAmount%元，财务已拨款。",1));
             put("235",new MessageTemplate("你申请的费用“%expName%”共计%expAmount%元，财务已拨款。",1));
+            //财务审核不通过（报销，费用）
+            put("247",new MessageTemplate("你申请的报销“%expName%”共计%expAmount%元，审批未通过，原因：%reason%。",1));
+            put("248",new MessageTemplate("你申请的费用“%expName%”共计%expAmount%元，审批未通过，原因：%reason%。",1));
             /******************项目费用******************/
             //技术审查费
             //? - 技术审查费 - ?” 金额：?万，需要你确认付款 ----->XXX发起了“卯丁科技大厦一期：技术审查费节点”的技术审查费30万元，请确认付款金额，
@@ -926,7 +932,10 @@ public interface SystemParameters {
 
     //财务拨款
     int MESSAGE_TYPE_234 = 234;//您申请的报销“办公费用”共计1200元，财务已拨款。
-    int MESSAGE_TYPE_235 = 235;//您申请的报销“办公费用”共计1200元，财务已拨款。
+    int MESSAGE_TYPE_235 = 235;//您申请的报销“办公费用”共计1200元，财务已拨款
+    //财务审核未通过
+    int MESSAGE_TYPE_247 = 247;//您申请的报销“办公费用”共计1200元，审批未通过，原因：%reason%。
+    int MESSAGE_TYPE_248 = 248;//您申请的费用“办公费用”共计1200元，审批未通过，原因：%reason%。
 
     //发送归档通知（已被交付确认和上传任务取代）
     int MESSAGE_TYPE_FILING_NOTICE = 240;

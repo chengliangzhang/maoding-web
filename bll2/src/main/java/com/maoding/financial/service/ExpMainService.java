@@ -110,6 +110,10 @@ public interface ExpMainService extends BaseService<ExpMainEntity>{
     int financialRecallExpMain(FinancialAllocationDTO dto) throws Exception;
 
     /**
+     * 财务退回2
+     */
+    int financialRecallExpMain2(FinancialAllocationDTO dto) throws Exception;
+    /**
      * 方法描述：报销详情与审批记录
      * 作   者：LY
      * 日   期：2016/8/2 14:13

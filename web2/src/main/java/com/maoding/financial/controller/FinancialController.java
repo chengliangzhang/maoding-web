@@ -567,7 +567,7 @@ public class FinancialController extends BaseController {
     public AjaxMessage financialRecallExpMain(@RequestBody FinancialAllocationDTO dto) throws Exception {
         dto.setAccountId(this.currentUserId);
         dto.setCurrentCompanyId(this.currentCompanyId);
-        int i = expMainService.financialRecallExpMain(dto);
+        int i = expMainService.financialRecallExpMain2(dto);
         if (i == 1) {
             return AjaxMessage.succeed("操作成功");
         } else {

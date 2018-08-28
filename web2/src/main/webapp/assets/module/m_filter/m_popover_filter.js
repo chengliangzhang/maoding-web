@@ -10,7 +10,7 @@
             onShown: null,
             onSave: null,
             onClear: null,
-            template: 'm_filterableField/m_popover_filter'
+            template: 'm_filter/m_popover_filter'
         };
 
     // The actual plugin constructor
