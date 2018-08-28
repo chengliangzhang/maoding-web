@@ -1580,22 +1580,8 @@ var downLoadFile = function (options) {
         }
         $iframe.append($form);
         $(document.body).append($iframe);
-
-        /*var $data = $('form[target="down-file-iframe"]').serializeObject();
-        var option = {};
-        option.url = config.url;
-        option.postData = $data;
-        m_ajax.postJson(option, function (response) {
-            if (response.code == '0') {
-                //S_toastr.success("保存成功!");
-
-            } else {
-                S_dialog.error(response.info);
-            }
-        });*/
         $form[0].submit();
-        //console.log($iframe.html())
-        //$iframe.remove();
+        $iframe.remove();
     }else{
         var $iframe = $('<iframe id="down-file-iframe" />');
         $(document.body).append($iframe);

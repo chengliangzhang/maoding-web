@@ -355,6 +355,6 @@ var restApi = {
 
     /**导出**/
     , url_exportBalanceDetail:window.rootPath+'/iWork/excel/exportBalanceDetail'
-
+    , url_exportProductTaskList:window.rootPath+'/iWork/excel/exportProductTaskList'
 
 };

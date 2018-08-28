@@ -55,12 +55,12 @@
 
             var timeOption = {};
             timeOption.selectTimeCallBack = function (data) {
-                console.log(data);
+
                 that._filterData.startTime = data.startTime;
                 that._filterData.endTime = data.endTime;
                 that.renderList();
             };
-            $(that.element).find('.time-combination').m_filter_timeCombination(timeOption,true);
+            $(that.element).find('.time-combination').m_filter_timeGroup(timeOption,true);
 
         }
 

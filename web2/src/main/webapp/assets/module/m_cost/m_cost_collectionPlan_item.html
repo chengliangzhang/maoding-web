@@ -54,8 +54,8 @@
             <th width="9%"  class="text-center">发起人</th>
             <th width="9%"  class="text-center">金额（万元）</th>
 
-            <th width="8%"  class="text-center">发票号码</th>
             <th width="6%"  class="text-center">发票类型</th>
+            <th width="8%"  class="text-center">发票号码</th>
 
             <th width="13%"  class="text-center">到账金额（万元）</th>
             <th width="9%"  class="text-center">到账日期</th>
@@ -130,6 +130,13 @@
             </td>
             <!-- 发票信息 -->
             <td class="text-center {{ p.pointDetailList!=null && p.pointDetailList[0] && (!_isNullOrBlank(p.pointDetailList[0].invoiceNo) || !_isNullOrBlank(p.pointDetailList[0].roleMap.invoiceConfirm))?'':'bg-muted'}}">
+                {{if p.pointDetailList!=null && p.pointDetailList.length>0 && p.pointDetailList[0].invoiceType==1}}
+                普票
+                {{else if p.pointDetailList!=null && p.pointDetailList.length>0 && p.pointDetailList[0].invoiceType==2}}
+                专票
+                {{/if}}
+            </td>
+            <td class="text-center {{ p.pointDetailList!=null && p.pointDetailList[0] && (!_isNullOrBlank(p.pointDetailList[0].invoiceNo) || !_isNullOrBlank(p.pointDetailList[0].roleMap.invoiceConfirm))?'':'bg-muted'}}">
                 {{if p.pointDetailList!=null && p.pointDetailList.length>0 && !_isNullOrBlank(p.pointDetailList[0].invoice) && !_isNullOrBlank(p.pointDetailList[0].roleMap.invoiceConfirm)}}
 
                     <a href="javascript:void(0)" class="btn btn-primary btn-xs" data-action="confirmInvoice" data-id="{{p.pointDetailList[0].id}}" data-invoice="{{p.pointDetailList[0].invoice}}">确认开票</a>
@@ -138,13 +145,6 @@
 
                     {{p.pointDetailList[0].invoiceNo}}
 
-                {{/if}}
-            </td>
-            <td class="text-center {{ p.pointDetailList!=null && p.pointDetailList[0] && (!_isNullOrBlank(p.pointDetailList[0].invoiceNo) || !_isNullOrBlank(p.pointDetailList[0].roleMap.invoiceConfirm))?'':'bg-muted'}}">
-                {{if p.pointDetailList!=null && p.pointDetailList.length>0 && p.pointDetailList[0].invoiceType==1}}
-                    普票
-                {{else if p.pointDetailList!=null && p.pointDetailList.length>0 && p.pointDetailList[0].invoiceType==2}}
-                    专票
                 {{/if}}
             </td>
             <!--以下是到账节点-->
@@ -207,17 +207,17 @@
 
             <!-- 发票信息 -->
             <td class="text-center {{!_isNullOrBlank(c.invoiceNo) || !_isNullOrBlank(c.roleMap.invoiceConfirm)?'':'bg-muted'}}">
+                {{if c.invoiceType==1}}
+                普票
+                {{else if c.invoiceType==2}}
+                专票
+                {{/if}}
+            </td>
+            <td class="text-center {{!_isNullOrBlank(c.invoiceNo) || !_isNullOrBlank(c.roleMap.invoiceConfirm)?'':'bg-muted'}}">
                 {{if !_isNullOrBlank(c.invoice) && !_isNullOrBlank(c.roleMap.invoiceConfirm)}}
                     <a href="javascript:void(0)" class="btn btn-primary btn-xs" data-action="confirmInvoice" data-id="{{c.id}}" data-invoice="{{c.invoice}}">确认开票</a>
                 {{else}}
                     {{c.invoiceNo}}
-                {{/if}}
-            </td>
-            <td class="text-center {{!_isNullOrBlank(c.invoiceNo) || !_isNullOrBlank(c.roleMap.invoiceConfirm)?'':'bg-muted'}}">
-                {{if c.invoiceType==1}}
-                    普票
-                {{else if c.invoiceType==2}}
-                    专票
                 {{/if}}
             </td>
 

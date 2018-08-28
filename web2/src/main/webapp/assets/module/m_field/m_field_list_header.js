@@ -134,8 +134,11 @@
                         option.dialogWidth = '420';
                         option.selectedCallBack = function (data) {
                             console.log(data);
-                            if(data && data.length>0)
-                                that._filterData[newCode] = data.join(',');
+                            if(data && data.length>0){
+                                that._filterData[newCode] = data;
+                            }else{
+                                that._filterData[newCode] = null;
+                            }
 
                             if(that.settings.filterCallBack)
                                 that.settings.filterCallBack(that._filterData);

@@ -336,6 +336,20 @@
                     that.renderTaskList($i);
                 }
             });
+            $(that.element).find('button[data-action="exportDetails"]').off('click').on('click',function () {
+
+                var $data = {};
+                $data.projectId = that.settings.$projectId;
+                $data.$projectName = that.settings.$projectName;
+                $data.issueTaskId = $(that.element).find('.tabs-container .nav-tabs li.active').attr('data-id');
+                $data.companyId = $(that.element).find('select[name="viewByOrg"]').val();
+                downLoadFile({
+                    url:restApi.url_exportProductTaskList,
+                    data:filterParam($data),
+                    type:1
+                });
+                return false;
+            });
         }
 
 

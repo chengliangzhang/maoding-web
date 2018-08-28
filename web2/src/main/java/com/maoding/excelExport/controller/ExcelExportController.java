@@ -2,9 +2,12 @@ package com.maoding.excelExport.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.maoding.core.base.controller.BaseController;
+import com.maoding.core.util.BeanUtils;
 import com.maoding.core.util.TxtFileUtil;
 import com.maoding.excelExport.service.BalanceDetailExportService;
 import com.maoding.statistic.dto.StatisticDetailQueryDTO;
+import com.maoding.task.dto.ProjectTaskExportDTO;
+import com.maoding.task.service.ProjectTaskExportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,6 +26,9 @@ public class ExcelExportController extends BaseController {
     @Autowired
     private BalanceDetailExportService balanceDetailExportService;
 
+    @Autowired
+    private ProjectTaskExportService projectTaskExportService;
+
     @ModelAttribute
     public void before() throws Exception {
         this.currentUserId = this.getFromSession("userId", String.class);
@@ -38,13 +44,31 @@ public class ExcelExportController extends BaseController {
     @RequestMapping(value = "/exportBalanceDetail", method = RequestMethod.POST)
     public void exportMyTaskList(HttpServletResponse response, HttpServletRequest request) throws Exception {
        // dto.setDestFileName("export_" + DateUtils.date2Str(DateUtils.yyyyMMdd) + ".xls");
-        System.out.println(request.getParameterMap());
-        System.out.print(this.readjson(request));
+//        System.out.println(request.getParameterMap());
+//        System.out.print(this.readjson(request));
+
         StatisticDetailQueryDTO query = new StatisticDetailQueryDTO();
-        query.setCombineCompanyId("root");
+        BeanUtils.copyProperties(this.readjson(request),query);
+        //query.setCombineCompanyId("root");
         query.setCurrentCompanyId(this.currentCompanyId);
         query.setTemplateFileName(new TxtFileUtil().getWebRoot() + "assets/template/statistic/balanceDetail.xlsx");
         balanceDetailExportService.exportDownloadResource(response, query);
+    }
+
+
+    /**
+     * 方法描述：收支明细导出
+     * 作   者： ZhangChengliang
+     * 日   期：2017/4/24
+     * param  （projectId)
+     */
+    @RequestMapping(value = "/exportProductTaskList", method = RequestMethod.POST)
+    public void exportProductTaskList(HttpServletResponse response, HttpServletRequest request) throws Exception {
+        ProjectTaskExportDTO query = new ProjectTaskExportDTO();
+        BeanUtils.copyProperties(this.readjson(request),query);
+        query.setCurrentCompanyId(this.currentCompanyId);
+        query.setTemplateFileName(new TxtFileUtil().getWebRoot() + "assets/template/task/template.xls");
+        projectTaskExportService.exportDownloadResource(response, query);
     }
 
     public static JSONObject readjson(HttpServletRequest request){

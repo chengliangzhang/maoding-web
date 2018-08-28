@@ -68,7 +68,7 @@
 
             var timeOption = {};
             timeOption.selectTimeCallBack = function (data) {
-                console.log(data);
+
                 if(!isNullOrBlank(data.startTime))
                     that._filterData.startDate = data.startTime;
 
@@ -77,7 +77,7 @@
 
                 that.renderDataList();
             };
-            $(that.element).find('.time-combination').m_filter_timeCombination(timeOption,true);
+            $(that.element).find('.time-combination').m_filter_timeGroup(timeOption,true);
         }
         //渲染台账list
         ,renderDataList:function (t) {
