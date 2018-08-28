@@ -329,5 +329,8 @@ public abstract class BaseController {
 		if (StringUtils.isEmpty(editDTO.getAccountId())){
 			editDTO.setAccountId(currentUserId);
 		}
+		if (StringUtils.isEmpty(editDTO.getCurrentCompanyUserId())){
+			editDTO.setCurrentCompanyUserId(currentCompanyUserId);
+		}
 	}
 }
