@@ -1999,11 +1999,41 @@ CREATE OR REPLACE VIEW `md_type_built_custom` AS
     built_type.company_id,
     built_type.project_id,
     built_type.task_id,
-    built_type.code_id as type_id,
+    built_type.id as type_id,
     built_type.title as type_name
   from
     md_list_const_custom built_type
   where deleted = 0 and built_type.classic_id = 33;
+
+-- 功能分类
+CREATE OR REPLACE VIEW `md_build_type` AS
+  select
+    build_type.id,
+    null            as company_id,
+    null            as project_id,
+    null            as task_id,
+    build_type.id   as type_id,
+    build_type.name as type_name
+  from
+    maoding_data_dictionary build_type
+  where
+    build_type.deleted = 0 and pid = (
+      select id from maoding_data_dictionary
+      where code='zp-jzgn')
+
+  union all
+
+  select
+    build_type.id,
+    build_type.company_id,
+    build_type.project_id,
+    build_type.task_id,
+    build_type.id as type_id,
+    build_type.title as type_name
+  from
+    md_list_const_custom build_type
+  where build_type.deleted = 0 and build_type.classic_id = 33;
+
 
 -- 交付视图
 CREATE OR REPLACE VIEW `md_deliver` AS

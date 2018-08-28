@@ -477,7 +477,7 @@
 
     <select id="listProjectRelation" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
         select <include refid="CommonMapper.countSQL"/>
-            group_concat(distinct if(relation_company.id is not null,concat(relation_company.company_name,','),'') separator '') as relationCompany,
+            group_concat(distinct ifnull(concat(relation_company.company_name,','),'') separator '') as relationCompany,
             <include refid="ExtraProjectBasicField"/>
             project_list.*
         from maoding_web_project project_list
@@ -504,24 +504,15 @@
 
     <select id="listProjectBuildType" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
         select <include refid="CommonMapper.countSQL"/>
-            group_concat(distinct ifnull(custom_built_type.type_name,default_built_type.type_name) as built_type,
+            group_concat(distinct ifnull(concat(build_type.type_name,','),'') separator '') as buildName,
             <include refid="ExtraProjectBasicField"/>
             project_list.*
         from maoding_web_project project_list
             <include refid="ExtraProjectBasicTable"/>
-            left join md_type_built_const default_built_type on (
-                find_in_set(default_built_type.id,project_list.built_type)
+            inner join md_build_type build_type on (
+                find_in_set(build_type.id,project_list.built_type)
                 <if test="buildNameList != null and buildNameList.size() > 0">
-                    and default_built_type.id in
-                    <foreach collection="buildNameList" item="aBuildTypeId" open="(" close=")" separator=",">
-                        #{aBuildTypeId}
-                    </foreach>
-                </if>
-            )
-            left join md_type_built_custom custom_built_type on (
-                find_in_set(custom_built_type.id,project_list.built_type)
-                <if test="buildNameList != null and buildNameList.size() > 0">
-                    and custom_built_type.id in
+                    and build_type.id in
                     <foreach collection="buildNameList" item="aBuildTypeId" open="(" close=")" separator=",">
                         #{aBuildTypeId}
                     </foreach>
