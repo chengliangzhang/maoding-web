@@ -2796,7 +2796,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                 //添加项目基本信息
                 //合作组织信息
                 if (needFill.isNeedRelationCompany()){
-                    project.setRelationCompany(getProjectCooperate(project.getId(),query.getCurrentCompanyId()));
+                    project.setRelationCompany(getRelationCompany(project.getId(),query.getCurrentCompanyId()));
                 }
 
                 //甲方信息
@@ -2936,7 +2936,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
 
 
     //获取项目的合作组织信息
-    private String getProjectCooperate(String projectId, String companyId){
+    private String getRelationCompany(String projectId, String companyId){
         CompanyQueryDTO cooperatorCompanyQuery = new CompanyQueryDTO();
         cooperatorCompanyQuery.setProjectId(projectId);
         cooperatorCompanyQuery.setCurrentCompanyId(companyId);

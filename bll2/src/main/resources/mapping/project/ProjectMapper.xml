@@ -152,6 +152,10 @@
                     project_list.status as id,
                     project_status.type_title as name
                 </when>
+                <when test="titleCode == 'partA'">
+                    project_list.construct_company as id,
+                    part_a_company.corpname as name
+                </when>
                 <when test="titleCode == 'partB'">
                     project_list.company_bid as id,
                     part_b_company.company_name as name
@@ -243,6 +247,9 @@
                 <when test="titleCode == 'status'">
                     inner join md_type_project_status project_status on (project_list.status = project_status.type_id)
                 </when>
+                <when test="titleCode == 'partA'">
+                    inner join maoding_web_enterprise part_a_company on (part_a_company.id = project_list.construct_company)
+                </when>
                 <when test="titleCode == 'partB'">
                     inner join maoding_web_company part_b_company on (part_b_company.status = '0' and part_b_company.id = project_list.company_bid)
                 </when>
@@ -250,12 +257,15 @@
                     inner join maoding_web_company create_company on (create_company.status = '0' and create_company.id = project_list.company_id)
                 </when>
                 <when test="titleCode == 'relationCompany'">
-                    left join maoding_web_project_task issue_task ON (
-                        issue_task.task_status = '0'
-                        and issue_task.is_operater_task = 1
-                        and issue_task.from_company_id = member_list.company_id
+                    inner join maoding_web_project_task_relation task_relation on (
+                        task_relation.relation_status = '0'
+                        and task_relation.project_id = project_list.id
+                        and task_relation.from_company_id = member_list.company_id
                     )
-                    inner join maoding_web_company relation_company on (relation_company.status = '0' and relation_company.id = issue_task.company_id)
+                    inner join maoding_web_company relation_company on (
+                        relation_company.status = '0'
+                        and relation_company.id = task_relation.to_company_id
+                    )
                 </when>
                 <when test="titleCode == 'buildName'">
                     left join md_type_built_const default_built_type on (
@@ -342,14 +352,6 @@
         status_type.type_title as status,
     </sql>
 
-    <sql id="ExtraProjectBasicTableExcludeMemberList">
-        inner join md_type_project_status status_type on (status_type.type_id = project_list.status)
-        inner join maoding_web_company create_company on (create_company.status = '0' and create_company.id =
-            project_list.company_id)
-        inner join maoding_web_company_user create_company_user on (create_company_user.company_id =
-            project_list.company_id and create_company_user.user_id = project_list.create_by)
-    </sql>
-
     <sql id="ExtraProjectBasicTable">
         inner join md_project_member member_list on (
             member_list.project_id = project_list.id
@@ -360,7 +362,13 @@
                 and member_list.company_id = #{currentCompanyId}
             </if>
         )
-        <include refid="ExtraProjectBasicTableExcludeMemberList"/>
+        inner join md_type_project_status status_type on (status_type.type_id = project_list.status)
+        inner join maoding_web_company create_company on (create_company.status = '0' and create_company.id =
+            project_list.company_id
+        )
+        inner join maoding_web_company_user create_company_user on (create_company_user.company_id =
+            project_list.company_id and create_company_user.user_id = project_list.create_by
+        )
     </sql>
 
     <select id="listProjectBasic" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
@@ -474,14 +482,14 @@
             project_list.*
         from maoding_web_project project_list
             <include refid="ExtraProjectBasicTable"/>
-            left join maoding_web_project_task issue_task ON (
-                issue_task.task_status = '0'
-                and issue_task.is_operater_task = 1
-                and issue_task.from_company_id = member_list.company_id
+            inner join maoding_web_project_task_relation task_relation on (
+                task_relation.relation_status = '0'
+                and task_relation.project_id = project_list.id
+                and task_relation.from_company_id = member_list.company_id
             )
             inner join maoding_web_company relation_company on (
                 relation_company.status = '0'
-                and relation_company.id = issue_task.company_id
+                and relation_company.id = task_relation.to_company_id
                 <if test="relationCompany != null">
                     and relation_company.id = #{relationCompany}
                 </if>
