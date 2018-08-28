@@ -2961,7 +2961,7 @@ CREATE OR REPLACE VIEW `md_title` AS
     null as company_id,
     null as user_id,
     optional_title.*,
-    0 as seq,
+    (optional_title.type_id - 10) as seq,
     filter_type.has_list
   from
     md_optional_title optional_title

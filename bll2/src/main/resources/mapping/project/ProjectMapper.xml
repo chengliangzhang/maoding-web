@@ -176,8 +176,8 @@
                         or titleCode == 'designer'
                         or titleCode == 'checker'
                         or titleCode == 'auditor'">
-                    member_list.company_user_id as id,
-                    member_list.user_name as name
+                    team_member.company_user_id as id,
+                    team_member.user_name as name
                 </when>
                 <when test="titleCode == 'buildName'">
                     if(custom_built_type.id is null,default_built_type.id,custom_built_type.id) as id,
@@ -197,35 +197,48 @@
                 <if test="accountId != null">
                     and member_list.user_id = #{accountId}
                 </if>
-
-                <choose>
-                    <when test="titleCode == 'busPersonInCharge'">
-                        and member_list.member_type = 1
-                    </when>
-                    <when test="titleCode == 'busPersonInChargeAssistant'">
-                        and member_list.member_type = 7
-                    </when>
-                    <when test="titleCode == 'designPersonInCharge'">
-                        and member_list.member_type = 2
-                    </when>
-                    <when test="titleCode == 'designPersonInChargeAssistant'">
-                        and member_list.member_type = 8
-                    </when>
-                    <when test="titleCode == 'taskLeader'">
-                        and member_list.is_task_leader = 1
-                    </when>
-                    <when test="titleCode == 'designer'">
-                        and member_list.is_task_designer = 1
-                    </when>
-                    <when test="titleCode == 'checker'">
-                        and member_list.is_task_checker = 1
-                    </when>
-                    <when test="titleCode == 'auditor'">
-                        and member_list.is_task_auditor = 1
-                    </when>
-                    <otherwise/>
-                </choose>
             )
+            <if test="titleCode == 'busPersonInCharge'
+                    or titleCode == 'busPersonInChargeAssistant'
+                    or titleCode == 'designPersonInCharge'
+                    or titleCode == 'designPersonInChargeAssistant'
+                    or titleCode == 'taskLeader'
+                    or titleCode == 'designer'
+                    or titleCode == 'checker'
+                    or titleCode == 'auditor'
+                    ">
+                inner join md_project_member team_member on (
+                    team_member.project_id = project_list.id
+                    and team_member.company_id = member_list.company_id
+                    <choose>
+                        <when test="titleCode == 'busPersonInCharge'">
+                            and team_member.member_type = 1
+                        </when>
+                        <when test="titleCode == 'busPersonInChargeAssistant'">
+                            and team_member.member_type = 7
+                        </when>
+                        <when test="titleCode == 'designPersonInCharge'">
+                            and team_member.member_type = 2
+                        </when>
+                        <when test="titleCode == 'designPersonInChargeAssistant'">
+                            and team_member.member_type = 8
+                        </when>
+                        <when test="titleCode == 'taskLeader'">
+                            and team_member.is_task_leader = 1
+                        </when>
+                        <when test="titleCode == 'designer'">
+                            and team_member.is_task_designer = 1
+                        </when>
+                        <when test="titleCode == 'checker'">
+                            and team_member.is_task_checker = 1
+                        </when>
+                        <when test="titleCode == 'auditor'">
+                            and team_member.is_task_auditor = 1
+                        </when>
+                        <otherwise/>
+                    </choose>
+                )
+            </if>
             <choose>
                 <when test="titleCode == 'status'">
                     inner join md_type_project_status project_status on (project_list.status = project_status.type_id)
@@ -333,7 +346,7 @@
         inner join md_type_project_status status_type on (status_type.type_id = project_list.status)
         inner join maoding_web_company create_company on (create_company.status = '0' and create_company.id =
             project_list.company_id)
-        left join maoding_web_company_user create_company_user on (create_company_user.company_id =
+        inner join maoding_web_company_user create_company_user on (create_company_user.company_id =
             project_list.company_id and create_company_user.user_id = project_list.create_by)
     </sql>
 
@@ -366,50 +379,85 @@
 
     <select id="listProjectMember" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
         select <include refid="CommonMapper.countSQL"/>
-            group_concat(distinct if(member_list.member_type=1,concat(member_list.user_name,','),'') separator '') as busPersonInCharge,
-            group_concat(distinct if(member_list.member_type=7,concat(member_list.user_name,','),'') separator '') as busPersonInChargeAssistant,
-            group_concat(distinct if(member_list.member_type=2,concat(member_list.user_name,','),'') separator '') as designPersonInCharge,
-            group_concat(distinct if(member_list.member_type=8,concat(member_list.user_name,','),'') separator '') as designPersonInChargeAssistant,
-            group_concat(distinct if(member_list.is_task_leader,concat(member_list.user_name,','),'') separator '') as taskLeader,
-            group_concat(distinct if(member_list.is_task_designer,concat(member_list.user_name,','),'') separator '') as designer,
-            group_concat(distinct if(member_list.is_task_checker,concat(member_list.user_name,','),'') separator '') as checker,
-            group_concat(distinct if(member_list.is_task_auditor,concat(member_list.user_name,','),'') separator '') as auditor,
+            group_concat(distinct if(team_member.member_type=1,concat(team_member.user_name,','),'') separator '') as busPersonInCharge,
+            group_concat(distinct if(team_member.member_type=7,concat(team_member.user_name,','),'') separator '') as busPersonInChargeAssistant,
+            group_concat(distinct if(team_member.member_type=2,concat(team_member.user_name,','),'') separator '') as designPersonInCharge,
+            group_concat(distinct if(team_member.member_type=8,concat(team_member.user_name,','),'') separator '') as designPersonInChargeAssistant,
+            group_concat(distinct if(team_member.is_task_leader,concat(team_member.user_name,','),'') separator '') as taskLeader,
+            group_concat(distinct if(team_member.is_task_designer,concat(team_member.user_name,','),'') separator '') as designer,
+            group_concat(distinct if(team_member.is_task_checker,concat(team_member.user_name,','),'') separator '') as checker,
+            group_concat(distinct if(team_member.is_task_auditor,concat(team_member.user_name,','),'') separator '') as auditor,
             <include refid="ExtraProjectBasicField"/>
             project_list.*
         from maoding_web_project project_list
-            <include refid="ExtraProjectBasicTableExcludeMemberList"/>
-            inner join md_project_member member_list on (
-                member_list.project_id = project_list.id
-                <if test="accountId != null">
-                    and member_list.user_id = #{accountId}
-                </if>
-                <if test="currentCompanyId != null">
-                    and member_list.company_id = #{currentCompanyId}
-                </if>
-                <if test="busPersonInCharge != null">
-                    and ((member_list.member_type = 1 and member_list.company_user_id != #{busPersonInCharge}) or (member_list.member_type != 1))
-                </if>
-                <if test="busPersonInChargeAssistant != null">
-                    and ((member_list.member_type = 7 and member_list.company_user_id != #{busPersonInChargeAssistant}) or (member_list.member_type != 7))
-                </if>
-                <if test="designPersonInCharge != null">
-                    and ((member_list.member_type = 2 and member_list.company_user_id != #{designPersonInCharge}) or (member_list.member_type != 2))
-                </if>
-                <if test="designPersonInChargeAssistant != null">
-                    and ((member_list.member_type = 8 and member_list.company_user_id != #{designPersonInChargeAssistant}) or (member_list.member_type != 8))
-                </if>
-                <if test="taskLeader != null">
-                    and ((member_list.is_task_leader and member_list.company_user_id != #{taskLeader}) or (!member_list.is_task_leader))
-                </if>
-                <if test="designer != null">
-                    and ((member_list.is_task_designer and member_list.company_user_id != #{designer}) or (!member_list.is_task_designer))
-                </if>
-                <if test="checker != null">
-                    and ((member_list.is_task_checker and member_list.company_user_id != #{checker}) or (!member_list.is_task_checker))
-                </if>
-                <if test="auditor != null">
-                    and ((member_list.is_task_auditor and member_list.company_user_id != #{auditor}) or (!member_list.is_task_auditor))
-                </if>
+            <include refid="ExtraProjectBasicTable"/>
+            <if test="busPersonInCharge != null">
+                inner join md_project_member member_filter_bus on (
+                    member_filter_bus.project_id = project_list.id
+                    and member_filter_bus.company_id = member_list.company_id
+                    and member_filter_bus.company_user_id = #{busPersonInCharge}
+                    and member_filter_bus.member_type = 1
+                )
+            </if>
+            <if test="busPersonInChargeAssistant != null">
+                inner join md_project_member member_filter_bus_assistant on (
+                    member_filter_bus_assistant.project_id = project_list.id
+                    and member_filter_bus_assistant.company_id = member_list.company_id
+                    and member_filter_bus_assistant.company_user_id = #{busPersonInChargeAssistant}
+                    and member_filter_bus_assistant.member_type = 7
+                )
+            </if>
+            <if test="designPersonInCharge != null">
+                inner join md_project_member member_filter_design on (
+                    member_filter_design.project_id = project_list.id
+                    and member_filter_design.company_id = member_list.company_id
+                    and member_filter_design.company_user_id = #{designPersonInCharge}
+                    and member_filter_design.member_type = 2
+                )
+            </if>
+            <if test="designPersonInChargeAssistant != null">
+                inner join md_project_member member_filter_design_assistant on (
+                    member_filter_design_assistant.project_id = project_list.id
+                    and member_filter_design_assistant.company_id = member_list.company_id
+                    and member_filter_design_assistant.company_user_id = #{designPersonInChargeAssistant}
+                    and member_filter_design_assistant.member_type = 8
+                )
+            </if>
+            <if test="taskLeader != null">
+                inner join md_project_member member_filter_task_leader on (
+                    member_filter_task_leader.project_id = project_list.id
+                    and member_filter_task_leader.company_id = member_list.company_id
+                    and member_filter_task_leader.company_user_id = #{taskLeader}
+                    and member_filter_task_leader.is_task_leader
+                )
+            </if>
+            <if test="designer != null">
+                inner join md_project_member member_filter_task_designer on (
+                    member_filter_task_designer.project_id = project_list.id
+                    and member_filter_task_designer.company_id = member_list.company_id
+                    and member_filter_task_designer.company_user_id = #{designer}
+                    and member_filter_task_designer.is_task_designer
+                )
+            </if>
+            <if test="checker != null">
+                inner join md_project_member member_filter_task_checker on (
+                    member_filter_task_checker.project_id = project_list.id
+                    and member_filter_task_checker.company_id = member_list.company_id
+                    and member_filter_task_checker.company_user_id = #{checker}
+                    and member_filter_task_checker.is_task_checker
+                )
+            </if>
+            <if test="auditor != null">
+                inner join md_project_member member_filter_task_auditor on (
+                    member_filter_task_auditor.project_id = project_list.id
+                    and member_filter_task_auditor.company_id = member_list.company_id
+                    and member_filter_task_auditor.company_user_id = #{auditor}
+                    and member_filter_task_auditor.is_task_auditor
+                )
+            </if>
+            inner join md_project_member team_member on (
+                team_member.project_id = project_list.id
+                and team_member.company_id = member_list.company_id
             )
         <where>
             <include refid="BasicFilterForProjectQuery"/>
