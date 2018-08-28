@@ -2759,7 +2759,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         TitleQueryDTO titleQuery = BeanUtils.createFrom(query,TitleQueryDTO.class);
         List<TitleColumnDTO> titleList = projectConditionDao.listTitle(titleQuery);
 
-        ProjectNeedInfoDTO needFill = getNeedFillInfo(titleList);
+        DynamicQueryDTO needFill = getNeedFillInfo(titleList);
 
         //查询主列表，包括projectId、过滤、排序、总数信息
         List<ProjectVariableDTO> mainList;
@@ -2957,8 +2957,8 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
     }
 
     //需要填充项目基本信息
-    private ProjectNeedInfoDTO getNeedFillInfo(List<TitleColumnDTO> titleList){
-        ProjectNeedInfoDTO needInfo = new ProjectNeedInfoDTO();
+    private DynamicQueryDTO getNeedFillInfo(List<TitleColumnDTO> titleList){
+        DynamicQueryDTO needInfo = new DynamicQueryDTO();
         for (TitleColumnDTO title : titleList) {
             if (title.getIsRelationCompany() == 1){
                 needInfo.setNeedRelationCompany(true);

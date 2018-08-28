@@ -1,5 +1,7 @@
 package com.maoding.project.dto;
 
+import com.maoding.core.base.dto.CoreQueryDTO;
+
 /**
  * 深圳市卯丁技术有限公司
  * 日期: 2018/8/24
@@ -7,7 +9,25 @@ package com.maoding.project.dto;
  * 作者: 张成亮
  * 描述: 需要填充的信息
  **/
-public class ProjectNeedInfoDTO {
+public class DynamicQueryDTO extends CoreQueryDTO {
+    /** 发票类型 **/
+    private int needInvoiceType;
+
+    /** 分类子项 **/
+    private int needCostTypeName;
+
+    /** 收票方名称 **/
+    private int needRelationCompanyName;
+
+    /** 纳税识别号 **/
+    private int needTaxIdNumber;
+
+    /** 开票内容 **/
+    private int needInvoiceContent;
+
+    /** 关联项目 **/
+    private int needProjectName;
+
     /** 合作组织信息 **/
     private boolean isNeedRelationCompany;
 
@@ -86,6 +106,54 @@ public class ProjectNeedInfoDTO {
     /** 由isNeedOtherPayFee等代替 **/
     @Deprecated
     private boolean needFillFee;
+
+    public int getNeedCostTypeName() {
+        return needCostTypeName;
+    }
+
+    public void setNeedCostTypeName(int needCostTypeName) {
+        this.needCostTypeName = needCostTypeName;
+    }
+
+    public int getNeedRelationCompanyName() {
+        return needRelationCompanyName;
+    }
+
+    public void setNeedRelationCompanyName(int needRelationCompanyName) {
+        this.needRelationCompanyName = needRelationCompanyName;
+    }
+
+    public int getNeedTaxIdNumber() {
+        return needTaxIdNumber;
+    }
+
+    public void setNeedTaxIdNumber(int needTaxIdNumber) {
+        this.needTaxIdNumber = needTaxIdNumber;
+    }
+
+    public int getNeedInvoiceContent() {
+        return needInvoiceContent;
+    }
+
+    public void setNeedInvoiceContent(int needInvoiceContent) {
+        this.needInvoiceContent = needInvoiceContent;
+    }
+
+    public int getNeedProjectName() {
+        return needProjectName;
+    }
+
+    public void setNeedProjectName(int needProjectName) {
+        this.needProjectName = needProjectName;
+    }
+
+    public int getNeedInvoiceType() {
+        return needInvoiceType;
+    }
+
+    public void setNeedInvoiceType(int needInvoiceType) {
+        this.needInvoiceType = needInvoiceType;
+    }
 
     public boolean isNeedRelationCompany() {
         return isNeedRelationCompany;

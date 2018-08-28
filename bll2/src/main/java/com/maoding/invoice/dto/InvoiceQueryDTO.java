@@ -1,7 +1,7 @@
 package com.maoding.invoice.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.maoding.core.base.dto.CoreQueryDTO;
+import com.maoding.project.dto.DynamicQueryDTO;
 
 import java.util.Date;
 
@@ -12,7 +12,7 @@ import java.util.Date;
  * 作者: 张成亮
  * 描述:
  **/
-public class InvoiceQueryDTO extends CoreQueryDTO {
+public class InvoiceQueryDTO extends DynamicQueryDTO {
     /** id: 发票编号 */
 
     /** 查询的公司编号 **/

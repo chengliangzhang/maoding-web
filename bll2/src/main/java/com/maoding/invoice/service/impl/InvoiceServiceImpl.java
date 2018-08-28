@@ -15,6 +15,10 @@ import com.maoding.invoice.entity.InvoiceEntity;
 import com.maoding.invoice.service.InvoiceService;
 import com.maoding.org.dao.CompanyDao;
 import com.maoding.org.entity.CompanyEntity;
+import com.maoding.project.dao.ProjectConditionDao;
+import com.maoding.project.dto.DynamicQueryDTO;
+import com.maoding.project.dto.TitleColumnDTO;
+import com.maoding.project.dto.TitleQueryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +35,10 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
 
     @Autowired
     private EnterpriseService enterpriseService;
+
+    @Autowired
+    private ProjectConditionDao projectConditionDao;
+
 
     @Override
     public String saveInvoice(InvoiceEditDTO dto) {
@@ -133,6 +141,11 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
      **/
     @Override
     public CorePageDTO<InvoiceDTO> listPageInvoice(InvoiceQueryDTO query) {
+        TitleQueryDTO titleQuery = BeanUtils.createFrom(query,TitleQueryDTO.class);
+        titleQuery.setType(2);
+        List<TitleColumnDTO> titleList = projectConditionDao.listTitle(titleQuery);
+        getNeedFillColumn(titleList,query);
+
         List<InvoiceDTO> invoiceList = invoiceDao.listInvoice(query);
         int total = invoiceDao.getLastQueryCount();
 
@@ -143,5 +156,35 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
         page.setPageIndex(DigitUtils.parseInt(query.getPageIndex()));
         page.setData(updateInvoiceList(invoiceList));
         return page;
+    }
+
+    //获取需要填充的动态内容
+    private DynamicQueryDTO getNeedFillColumn(List<TitleColumnDTO> titleList, DynamicQueryDTO query){
+        final int TITLE_TYPE_INVOICE_APPLY_DATE = 35;
+        final int TITLE_TYPE_INVOICE_APPLY_USER = 36;
+        final int TITLE_TYPE_INVOICE_FEE = 37;
+        final int TITLE_TYPE_INVOICE_INVOICE_TYPE = 38;
+        final int TITLE_TYPE_INVOICE_COST_TYPE = 39;
+        final int TITLE_TYPE_INVOICE_RELATION_COMPANY = 40;
+        final int TITLE_TYPE_INVOICE_TAX_ID = 41;
+        final int TITLE_TYPE_INVOICE_FEE_DESCRIPTION = 42;
+        final int TITLE_TYPE_INVOICE_PROJECT_NAME = 43;
+        final int TITLE_TYPE_INVOICE_NO = 44;
+        for (TitleColumnDTO title : titleList) {
+            if (title.getTypeId() == TITLE_TYPE_INVOICE_INVOICE_TYPE){
+                query.setNeedInvoiceType(1);
+            } else if (title.getTypeId() == TITLE_TYPE_INVOICE_COST_TYPE){
+                query.setNeedCostTypeName(1);
+            } else if (title.getTypeId() == TITLE_TYPE_INVOICE_RELATION_COMPANY){
+                query.setNeedRelationCompanyName(1);
+            } else if (title.getTypeId() == TITLE_TYPE_INVOICE_TAX_ID){
+                query.setNeedTaxIdNumber(1);
+            } else if (title.getTypeId() == TITLE_TYPE_INVOICE_FEE_DESCRIPTION){
+                query.setNeedInvoiceContent(1);
+            } else if (title.getTypeId() == TITLE_TYPE_INVOICE_PROJECT_NAME) {
+                query.setNeedProjectName(1);
+            }
+        }
+        return query;
     }
 }

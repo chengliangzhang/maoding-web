@@ -22,6 +22,9 @@ public class TitleColumnDTO extends CoreDTO {
     /** 标题名称 **/
     private String name;
 
+    /** 标题类型 **/
+    private int typeId;
+
     /** 字段类型：1-字符串,2-日期,3-金额（万元）,4-金额（元） **/
     private int type;
 
@@ -72,6 +75,14 @@ public class TitleColumnDTO extends CoreDTO {
 
     /** 过滤器，仅对列表型过滤器有效 **/
     private List<CoreShowDTO> filterList;
+
+    public int getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
 
     public String getTitleId() {
         return titleId;
