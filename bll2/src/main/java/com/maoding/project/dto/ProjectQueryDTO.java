@@ -68,7 +68,7 @@ public class ProjectQueryDTO extends CoreQueryDTO {
     /** 功能分类 **/
     private List<String> buildNameList;
 
-    /** 合作组织 **/
+    /** 合作组织名称 **/
     private String relationCompany;
 
     /** 经营负责人 **/
