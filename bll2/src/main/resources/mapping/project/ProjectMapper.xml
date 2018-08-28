@@ -518,14 +518,17 @@
             project_list.*
         from maoding_web_project project_list
             <include refid="ExtraProjectBasicTable"/>
+            <if test="buildNameList != null and buildNameList.size() > 0">
+                inner join md_build_type build_type_filter on (
+                    find_in_set(build_type_filter.id,project_list.built_type)
+                    and build_type_filter.id in
+                        <foreach collection="buildNameList" item="aBuildTypeId" open="(" close=")" separator=",">
+                            #{aBuildTypeId}
+                        </foreach>
+                )
+            </if>
             inner join md_build_type build_type on (
                 find_in_set(build_type.id,project_list.built_type)
-                <if test="buildNameList != null and buildNameList.size() > 0">
-                    and build_type.id in
-                    <foreach collection="buildNameList" item="aBuildTypeId" open="(" close=")" separator=",">
-                        #{aBuildTypeId}
-                    </foreach>
-                </if>
             )
         <where>
             <include refid="BasicFilterForProjectQuery"/>
