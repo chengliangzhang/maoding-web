@@ -351,4 +351,10 @@ var restApi = {
     /** 历史数据 **/
     , url_historyData_importProjects: window.rootPath + '/iWork/historyData/importProjects'
     , url_historyData_createProjects:window.rootPath+'/iWork/historyData/createProjects'
+
+
+    /**导出**/
+    , url_exportBalanceDetail:window.rootPath+'/iWork/excel/exportBalanceDetail'
+
+
 };

@@ -10,6 +10,8 @@
             isDialog:true,
             type:0,//标题栏类型：0-我的项目标题栏，1-项目总览标题栏，2-发票汇总标题栏
             filterData:null,//请求后台的参数
+            dataAction:null,//菜单路径
+            isFirstLoad:false,//是否第一次进来
             filterCallBack:null,//筛选回滚事件
             renderCallBack:null//渲染回滚事件
         };
@@ -24,6 +26,16 @@
 
         this._fieldList = [];//字段列表
         this._filterData = this.settings.filterData || {};
+
+        this._currentCompanyUserId = window.currentCompanyUserId;
+        this._cookiesMark = 'cookiesData_'+this.settings.dataAction+'_'+this._currentCompanyUserId;
+
+        var cookiesData = Cookies.get(this._cookiesMark);
+
+        if(cookiesData!=undefined && this.settings.isFirstLoad){
+            cookiesData = $.parseJSON(cookiesData);
+            this._filterData = cookiesData.param;
+        }
         this.init();
     }
 
@@ -49,6 +61,7 @@
                         that.settings.renderCallBack(that._fieldList);
 
                     that.filterActionClick();
+                    that.sortActionClick();
 
                 }else {
                     S_dialog.error(response.info);
@@ -143,9 +156,28 @@
 
                             that._filterData[newCode1] = data.startTime;
                             that._filterData[newCode2] = data.endTime;
-                            that.getData();
+                            if(that.settings.filterCallBack)
+                                that.settings.filterCallBack(that._filterData);
                         };
                         $this.m_filter_time(option, true);
+
+                        break;
+                    case 5:
+                        var option = {};
+                        option.addressData = {
+                            province:that._filterData.province,
+                            city:that._filterData.city,
+                            county:that._filterData.county
+                        };
+                        option.eleId = id;
+                        option.okCallBack = function (data) {
+                            that._filterData.province = data.province;
+                            that._filterData.city = data.city;
+                            that._filterData.county = data.county;
+                            if(that.settings.filterCallBack)
+                                that.settings.filterCallBack(that._filterData);
+                        };
+                        $this.m_filter_address(option, true);
 
                         break;
 
@@ -153,7 +185,52 @@
 
             });
         }
+        ,sortActionClick:function () {
+            var that = this;
+            $(that.element).find('th[data-action="sort"]').each(function () {
+                var $this = $(this),code = $this.attr('data-code');
+                code = code+'Order';
+                var sortField = that._filterData[code];
+                var sortClass = '';
+                if(sortField=='0'){
+                    sortClass = 'sorting_asc';
+                }else if(sortField=='1'){
+                    sortClass = 'sorting_desc';
+                }else{
+                    sortClass = 'sorting';
+                }
+                $this.removeClass().addClass(sortClass);
+                $this.off('click').on('click',function (e) {
 
+                    $(that.element).find('th[data-action="sort"]').each(function () {
+                        var iCode =  $(this).attr('data-code') + 'Order';
+                        if(code!=iCode){
+                            that._filterData[iCode] = null;
+                            $(this).removeClass().addClass('sorting');
+                        }
+                    });
+                    if($this.hasClass('sorting')||$this.hasClass('sorting_asc')){
+                        that._filterData[code] = '1';
+                        sortClass = 'sorting_desc';
+                    }
+                    else if($this.hasClass('sorting_desc')){
+                        that._filterData[code] = '0';
+                        sortClass = 'sorting_asc';
+                    }else{
+                        sortClass = 'sorting';
+                    }
+
+                    $this.removeClass().addClass(sortClass);
+
+                    if(that.settings.filterCallBack)
+                        that.settings.filterCallBack(that._filterData);
+
+                    e.stopPropagation();
+                    return false;
+                });
+            });
+
+        }
 
 
     });

@@ -20,6 +20,7 @@
         this.settings = options;
         this._defaults = defaults;
         this._name = pluginName;
+        this._timeData = {};
         this.init();
     }
 
@@ -62,6 +63,14 @@
 
                         var startTime = $(dialogEle).find('input[name="startTime"]').val();
                         var endTime = $(dialogEle).find('input[name="endTime"]').val();
+
+                        if(!isNullOrBlank(startTime) || !isNullOrBlank(endTime)){
+                            $(that.element).find('i').addClass('fc-v1-blue');
+                        }else{
+                            $(that.element).find('i').removeClass('fc-v1-blue');
+                        }
+                        that.settings.timeData.startTime = startTime;
+                        that.settings.timeData.endTime = endTime;
 
                         if(that.settings.okCallBack)
                             that.settings.okCallBack({startTime:startTime,endTime:endTime});

@@ -13,7 +13,8 @@ import java.util.List;
  * 描述:
  **/
 public class TitleColumnDTO extends CoreDTO {
-    /** id: 标题编号 **/
+    /** 标题编号 */
+    private String titleId;
     
     /** 标题关键字 **/
     private String code;
@@ -71,6 +72,14 @@ public class TitleColumnDTO extends CoreDTO {
 
     /** 过滤器，仅对列表型过滤器有效 **/
     private List<CoreShowDTO> filterList;
+
+    public String getTitleId() {
+        return titleId;
+    }
+
+    public void setTitleId(String titleId) {
+        this.titleId = titleId;
+    }
 
     public short getCanBeHide() {
         return canBeHide;

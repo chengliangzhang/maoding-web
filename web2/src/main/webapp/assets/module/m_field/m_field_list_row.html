@@ -1,16 +1,42 @@
-
+{{if dataList!=null && dataList.length>0}}
 {{each dataList as d i}}
 <tr data-id="{{d.id}}">
     {{each headerList as f fi}}
         <td data-code="{{f.code}}">
             {{if aStr && aStr.indexOf(f.code)>-1}}
             <a href="javascript:void(0)" data-action="{{f.code}}">
-                {{d[f.code]}}
+                <!-- /** 字段类型：1-字符串,2-日期,3-金额（万元）,4-金额（元） **/ -->
+                {{if f.type==2}}
+                    {{_momentFormat(d[f.code],'YYYY/MM/DD')}}
+                {{else if f.type==3 || f.type==4}}
+                    {{_expNumberFilter(d[f.code])}}
+                {{else}}
+                    {{d[f.code]}}
+                {{/if}}
             </a>
             {{else}}
-                <span>{{d[f.code]}}</span>
+                <span>
+                    {{if f.type==2}}
+                        {{_momentFormat(d[f.code],'YYYY/MM/DD')}}
+                    {{else if f.type==3 || f.type==4}}
+                        {{_expNumberFilter(d[f.code])}}
+                    {{else}}
+                        {{d[f.code]}}
+                    {{/if}}
+                </span>
             {{/if}}
         </td>
     {{/each}}
 </tr>
 {{/each}}
+{{else}}
+<tr class="no-data">
+    <td colspan="{{headerList.length}}" class="text-center v-middle">
+        <div class="m-b-xl m-t-md">
+            <img src="{{_url('/assets/img/default/without_data.png')}}">
+            <span class="fc-dark-blue dp-block">没有相关数据</span>
+        </div>
+    </td>
+</tr>
+{{/if}}
+

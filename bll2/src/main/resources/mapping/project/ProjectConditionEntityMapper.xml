@@ -102,8 +102,9 @@
 
     <!-- 查找项目列表标题栏 -->
     <select id="listTitle" resultType="com.maoding.project.dto.TitleColumnDTO" parameterType="com.maoding.project.dto.TitleQueryDTO">
-        select title_list.*
-            ,title_list.field_type as type
+        select
+            title_list.field_type as type,
+            title_list.*
         from md_title title_list
         <where>
             <if test="type != null">

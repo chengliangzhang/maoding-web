@@ -2757,7 +2757,6 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         }
 
         TitleQueryDTO titleQuery = BeanUtils.createFrom(query,TitleQueryDTO.class);
-        titleQuery.setType(0);
         List<TitleColumnDTO> titleList = projectConditionDao.listTitle(titleQuery);
 
         ProjectNeedInfoDTO needFill = getNeedFillInfo(titleList);
@@ -3004,6 +3003,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             needInfo.setNeedPartA(true);
             needInfo.setNeedPartB(true);
             needInfo.setNeedBuildType(true);
+            needInfo.setNeedStatus(true);
         }
         return needInfo;
     }

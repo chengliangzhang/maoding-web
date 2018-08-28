@@ -46,8 +46,6 @@
 
 </div>
 <%--<!--底部信息-->--%>
-<%--<div id="m_bottom" class="footer fixed"></div>--%>
-<iframe id="iframeDown" style="display: none"></iframe>
 <script type="text/javascript">
     var currentNav = 'workbench';
 </script>

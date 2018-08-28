@@ -71,6 +71,10 @@
         ,renderListHeader:function (t) {
             var that = this;
             var option = {};
+            option.dataAction = 'myProjectList';
+            if(t==0)
+                option.isFirstLoad = true;
+
             option.renderCallBack = function (data) {
                 that._headerList = data;
                 that.renderListContent(t);
@@ -101,7 +105,6 @@
             option.renderCallBack = function () {
                 that.bindGotoProject();
             };
-            console.log(option)
             if(t==0)
                 option.isFirstLoad = true;
 

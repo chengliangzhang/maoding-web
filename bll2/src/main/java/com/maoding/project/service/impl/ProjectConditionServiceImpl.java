@@ -174,7 +174,7 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
         if (ObjectUtils.isNotEmpty(list)){
             for (TitleColumnDTO title : list) {
                 if (title.getCanBeHide() == 1){
-                    id = StringUtils.left(title.getId(),32);
+                    id = StringUtils.left(title.getTitleId(),32);
                 }
             }
         }

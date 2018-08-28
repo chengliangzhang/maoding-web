@@ -323,6 +323,13 @@
                         that.initHtmlData();
                         return false;
                         break;
+                    case 'exportDetails'://导出
+                        downLoadFile({
+                            url:restApi.url_getTitleFilter,
+                            data:filterParam(that._filterData)
+                        });
+                        return false;
+                        break;
                 }
             });
         }

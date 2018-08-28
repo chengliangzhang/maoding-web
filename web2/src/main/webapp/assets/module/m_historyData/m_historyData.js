@@ -51,7 +51,10 @@
             that._renderSelectOrg($(that.element).find('#selectOrg'));
 
             $(that.element).find('button[data-action="downloadTemplate"]').click(function () {
-                $('#iframeDown').attr('src', window.cdnUrl+'/cs/tpl/importProject.xlsx');
+                downLoadFile({
+                    url:window.cdnUrl+'/cs/tpl/importProject.xlsx'
+                });
+                return false;
             });
 
             /*$(that.element).find('button[data-action="uploadFile"]').click(function () {

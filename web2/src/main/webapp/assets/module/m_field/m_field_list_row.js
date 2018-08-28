@@ -104,8 +104,6 @@
                 option.param = cookiesData.param;
             }
 
-            console.log(option)
-
             paginationFun({
                 eleId: '#data-pagination-container',
                 loadingId: '.data-list-box',
