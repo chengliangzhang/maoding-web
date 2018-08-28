@@ -501,7 +501,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             }
             workflowService.completeWorkTask(workAction);
             //保存我的任务（当前任务完成，如果下一个节点不是结束节点，系统会自动为下一个节点产生一个任务，系统需要保存一条相应的审核记录中）
-            this.saveAudit(dto.getBusinessKey(),dto, ProcessTypeConst.PASS.equals(workAction.getIsPass()));
+            this.saveAudit(dto.getBusinessKey(),dto, ProcessTypeConst.PASS.equals(dto.getApproveStatus()));
         }
     }
 

@@ -81,7 +81,7 @@
                     $(that.element).html(html);
 
                     if(that.settings.renderCallBack)
-                        that.settings.renderCallBack();
+                        that.settings.renderCallBack(response.data);
 
                 }else {
                     S_dialog.error(response.info);
@@ -131,7 +131,7 @@
                     $(that.element).html(html);
 
                     if(that.settings.renderCallBack)
-                        that.settings.renderCallBack();
+                        that.settings.renderCallBack(response.data);
 
                 } else {
                     S_dialog.error(response.info);

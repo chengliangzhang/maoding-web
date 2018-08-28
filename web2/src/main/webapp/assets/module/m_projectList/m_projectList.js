@@ -8,7 +8,7 @@
         defaults = {
             postData: null,
             renderCallback:null,//渲染页面完成后事件
-            isAllProject: false//true=项目总览,false=我的项目
+            dataAction: 'myProjectList'//{myProjectList,projectOverview}
         };
 
     function Plugin(element, options) {
@@ -26,7 +26,7 @@
         this._designCompanyNameList = [];//筛选条件-合作组织
 
         this._projectList = [];//项目列表
-
+        this._type = this.settings.dataAction=='myProjectList'?0:1;
 
         /******************* 筛选条件 值预存 *********************/
 
@@ -44,34 +44,12 @@
             that.bindActionClick();
             that.renderListHeader(0);
         }
-        //请求筛选数据
-        ,getProjectConditions:function (callBack) {
-            var that = this;
-            var option = {};
-            option.url = restApi.url_getProjectConditions;
-            option.postData = {
-
-            };
-            m_ajax.postJson(option, function (response) {
-                if (response.code == '0') {
-
-                    that._companyNameList = response.data.companyNameList;
-                    that._partyANameList = response.data.partyANameList;
-                    that._partyBNameList = response.data.partyBNameList;
-                    that._buildTypeNameList = response.data.buildTypeNameList;
-                    that._designCompanyNameList = response.data.designCompanyNameList;
-
-                    return callBack(response.data);
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
         //渲染列表头部
         ,renderListHeader:function (t) {
             var that = this;
             var option = {};
-            option.dataAction = 'myProjectList';
+            option.dataAction = that.settings.dataAction;
+            option.type = that._type;
             if(t==0)
                 option.isFirstLoad = true;
 
@@ -89,7 +67,7 @@
         ,renderListContent:function (t) {
             var that = this;
 
-            if(that.settings.isAllProject==false){
+            if(that.settings.dataAction=='projectOverview'){
                 that._filterData.type = 1;
             }else{
                 that._filterData.type = null;
@@ -99,11 +77,13 @@
             option.url = restApi.url_listProject;
             option.headerList = that._headerList;
             option.isSetCookies = true;
-            option.dataAction = 'myProjectList';
+            option.dataAction = that.settings.dataAction;
             option.aStr = 'projectName';
             option.param = that._filterData;
-            option.renderCallBack = function () {
+            option.renderCallBack = function (data) {
                 that.bindGotoProject();
+                if(that.settings.renderCallback)
+                    that.settings.renderCallback(data)
             };
             if(t==0)
                 option.isFirstLoad = true;
@@ -140,6 +120,14 @@
                             that.renderListHeader();
                         };
                         $('body').m_field_settings(option,true);
+                        return false;
+                        break;
+                    case 'exportDetails'://导出
+                        downLoadFile({
+                            url:restApi.url_exportProjectList,
+                            data:filterParam(that._filterData),
+                            type:1
+                        });
                         return false;
                         break;
                 }

@@ -18,6 +18,7 @@
         this.settings = $.extend({}, defaults, options);
         this._defaults = defaults;
         this._name = pluginName;
+
         this.init();
     }
 
@@ -35,7 +36,10 @@
             $(that.element).html(html);
 
             var dataAction = $(that.element).find('li:eq(0)').attr('id');
-            var cookiesData = Cookies.get('projectList_cookiesData');
+
+            var cookiesMark = 'cookiesData_'+dataAction+'_'+window.currentCompanyUserId;
+
+            var cookiesData = Cookies.get(cookiesMark);
             if(cookiesData!=undefined){
                 cookiesData = $.parseJSON(cookiesData);
                 dataAction = cookiesData.dataAction;
@@ -73,8 +77,9 @@
         //我的项目
         , myProjectList: function () {
             var options = {}, that = this;
-            options.isAllProject = false;
+            options.dataAction = 'myProjectList';
             options.renderCallback = function (data) {
+
                 if(data.flag!=null && data.flag==1){
                     $(that.element).find('.secondary-menu-ul').show();
                 }else{
@@ -87,8 +92,9 @@
         //项目总览
         , projectOverview:function () {
             var options = {}, that = this;
-            options.isAllProject = true;
+            options.dataAction = 'projectOverview';
             options.renderCallback = function (data) {
+
                 if(data.flag!=null && data.flag==1){
                     $(that.element).find('.secondary-menu-ul').show();
                 }else{

@@ -1589,3 +1589,16 @@ var downLoadFile = function (options) {
     }
 
 };
+/**
+ * 根据 action清除cookies
+ * @param dataActionList
+ */
+var removeParamCookies = function (dataActionList) {
+
+    if(dataActionList!=null && dataActionList.length>0){
+        $.each(dataActionList,function (i,item) {
+            var key = 'cookiesData_'+item+'_'+window.currentCompanyUserId;
+            Cookies.remove(key);
+        });
+    }
+}

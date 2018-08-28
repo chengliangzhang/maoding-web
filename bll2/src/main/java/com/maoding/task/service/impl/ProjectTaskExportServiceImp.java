@@ -77,16 +77,16 @@ public class ProjectTaskExportServiceImp implements ProjectTaskExportService {
         Workbook wb = null;
         ServletOutputStream out = null;
         try {
-            List<ProjectDesignTaskShow> list = null;
-            if(dto.getType()==1){
-                list = projectTaskService.getProjectDesignTaskShowList(
-                        dto.getCompanyId(),dto.getProjectId(),dto.getCompanyUserId());
-            } else{
-                QueryProjectTaskDTO query = new QueryProjectTaskDTO();
-                query.setProjectId(dto.getProjectId());
-                List<ProjectProductTaskDTO> productList = projectTaskService.getProductTaskOverview(query);
-                list = this.convertProjectProductList(productList);
-            }
+            List<ProjectDesignTaskShow> list = projectTaskService.getProjectDesignTaskList(dto.getCompanyId(),dto.getProjectId(),dto.getCompanyUserId());
+//            if(dto.getType()==1){
+//                list = projectTaskService.getProjectDesignTaskShowList(
+//                        dto.getCompanyId(),dto.getProjectId(),dto.getCompanyUserId());
+//            } else{
+//                QueryProjectTaskDTO query = new QueryProjectTaskDTO();
+//                query.setProjectId(dto.getProjectId());
+//                List<ProjectProductTaskDTO> productList = projectTaskService.getProductTaskOverview(query);
+//                list = this.convertProjectProductList(productList);
+//            }
             out = response.getOutputStream();
             wb = getExportedResource(list,dto);
             if (wb != null) {

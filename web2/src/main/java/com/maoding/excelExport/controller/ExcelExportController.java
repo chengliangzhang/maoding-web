@@ -3,6 +3,8 @@ package com.maoding.excelExport.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.util.BeanUtils;
+import com.maoding.core.util.DateUtils;
+import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.TxtFileUtil;
 import com.maoding.excelExport.service.BalanceDetailExportService;
 import com.maoding.statistic.dto.StatisticDetailQueryDTO;
@@ -35,26 +37,34 @@ public class ExcelExportController extends BaseController {
         this.currentCompanyId = this.getFromSession("companyId", String.class);
         this.currentCompanyUserId = this.getFromSession("companyUserId", String.class);
     }
+
     /**
      * 方法描述：收支明细导出
-     * 作   者： ZhangChengliang
-     * 日   期：2017/4/24
-     * param  （projectId)
+     * 作   者： MaoSF
+     * 日   期：2018/8/28
      */
     @RequestMapping(value = "/exportBalanceDetail", method = RequestMethod.POST)
     public void exportMyTaskList(HttpServletResponse response, HttpServletRequest request) throws Exception {
-       // dto.setDestFileName("export_" + DateUtils.date2Str(DateUtils.yyyyMMdd) + ".xls");
-//        System.out.println(request.getParameterMap());
-//        System.out.print(this.readjson(request));
-
         StatisticDetailQueryDTO query = new StatisticDetailQueryDTO();
         BeanUtils.copyProperties(this.readjson(request),query);
-        //query.setCombineCompanyId("root");
         query.setCurrentCompanyId(this.currentCompanyId);
         query.setTemplateFileName(new TxtFileUtil().getWebRoot() + "assets/template/statistic/balanceDetail.xlsx");
         balanceDetailExportService.exportDownloadResource(response, query);
     }
 
+    /**
+     * 方法描述：项目列表导出
+     * 作   者： MaoSF
+     * 日   期：2018/8/28
+     */
+    @RequestMapping(value = "/exportProjectList", method = RequestMethod.POST)
+    public void exportProjectList(HttpServletResponse response, HttpServletRequest request) throws Exception {
+        StatisticDetailQueryDTO query = new StatisticDetailQueryDTO();
+        BeanUtils.copyProperties(this.readjson(request),query);
+        query.setCurrentCompanyId(this.currentCompanyId);
+        query.setTemplateFileName(new TxtFileUtil().getWebRoot() + "assets/template/statistic/balanceDetail.xlsx");
+        balanceDetailExportService.exportDownloadResource(response, query);
+    }
 
     /**
      * 方法描述：收支明细导出
@@ -67,6 +77,11 @@ public class ExcelExportController extends BaseController {
         ProjectTaskExportDTO query = new ProjectTaskExportDTO();
         BeanUtils.copyProperties(this.readjson(request),query);
         query.setCurrentCompanyId(this.currentCompanyId);
+        query.setType(0);
+        if(StringUtil.isNullOrEmpty(query.getCompanyId())){
+            query.setCompanyId(this.currentCompanyId);
+        }
+        query.setDestFileName("export_" + DateUtils.date2Str(DateUtils.yyyyMMdd) + ".xls");
         query.setTemplateFileName(new TxtFileUtil().getWebRoot() + "assets/template/task/template.xls");
         projectTaskExportService.exportDownloadResource(response, query);
     }

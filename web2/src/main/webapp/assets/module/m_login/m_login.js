@@ -62,7 +62,7 @@
                 m_ajax.postJson(option, function (response) {
                     if (response.code == 0) {
 
-                        Cookies.remove('projectList_cookiesData');
+                        removeParamCookies(['myProjectList','projectOverview']);
 
                         var url = '/iWork/home/workbench/1';
                         window.location.href = window.rootPath + url;

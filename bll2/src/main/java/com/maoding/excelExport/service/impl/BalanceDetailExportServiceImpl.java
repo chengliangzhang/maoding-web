@@ -12,10 +12,7 @@ import com.maoding.statistic.dto.StatisticDetailDTO;
 import com.maoding.statistic.dto.StatisticDetailQueryDTO;
 import com.maoding.statistic.dto.StatisticDetailSummaryDTO;
 import com.maoding.statistic.service.StatisticService;
-import com.maoding.task.dto.ProjectDesignTaskShow;
-import com.maoding.task.dto.ProjectProductTaskDTO;
-import com.maoding.task.dto.ProjectTaskExportDTO;
-import com.maoding.task.dto.QueryProjectTaskDTO;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -28,8 +25,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.*;
-
-import static com.maoding.core.util.DateUtils.date_sdf2;
 
 @Service("balanceDetailExportService")
 public class BalanceDetailExportServiceImpl  extends NewBaseService implements BalanceDetailExportService {
@@ -93,14 +88,16 @@ public class BalanceDetailExportServiceImpl  extends NewBaseService implements B
 
     private void exportToSheet(List<StatisticDetailDTO> dataList, StatisticDetailSummaryDTO statisticSum, StatisticDetailQueryDTO dto,Workbook wb) throws Exception{
         Sheet sheet = wb.getSheetAt(0);
+        //sheet.setColumnWidth(0,4000);
+        sheet.setDefaultColumnWidth(4000);
         //处理参数
         List<String> titleList = this.getTitleList();
-        int firstRow = exportTitle(titleList,statisticSum,dto, sheet);
+        int firstRow = exportTitle(titleList,statisticSum,dto, sheet,wb);
         firstRow ++;
         List<Map<String,ExcelDataDTO>> excelDataList = this.getExcelDataList(dataList);
         for(int r=0;r<excelDataList.size();r++,firstRow++){
             Map<String,ExcelDataDTO> data = excelDataList.get(r);
-            Row row = sheet.createRow(firstRow);
+            Row row = this.getRow(sheet,firstRow);
             for(int col=0;col<titleList.size();col++){
                 Cell c = row.createCell(col);
                 c.setCellValue(getCelText(data.get(titleList.get(col)),wb));
@@ -128,7 +125,22 @@ public class BalanceDetailExportServiceImpl  extends NewBaseService implements B
         return str;
     }
 
-    int exportTitle(List<String> titleList,StatisticDetailSummaryDTO statisticSum, StatisticDetailQueryDTO dto,Sheet sheet){
+    void setCellStyle(Cell cell,Workbook wb){
+        CellStyle cellStyle = wb.createCellStyle();
+        cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 居中
+        Font font = wb.createFont();
+        font.setBold(true);
+        cellStyle.setFont(font);
+        cell.setCellStyle(cellStyle);
+    }
+
+    private Row getRow(Sheet sheet,int i){
+        Row r = sheet.createRow(i);
+        r.setHeight((short) 500);
+        return r;
+    }
+
+    int exportTitle(List<String> titleList,StatisticDetailSummaryDTO statisticSum, StatisticDetailQueryDTO dto,Sheet sheet,Workbook wb){
 
         //创建合并单元格
         CellRangeAddress cel1 = new CellRangeAddress(0,0,0,1);
@@ -148,30 +160,41 @@ public class BalanceDetailExportServiceImpl  extends NewBaseService implements B
         sheet.addMergedRegion(cel6);
         sheet.addMergedRegion(cel7);
         //填充第一行的数据
-        Row rowOne = sheet.createRow(0);
+        Row rowOne =getRow(sheet,0);
         Cell currentCompanyCell = rowOne.createCell(0);
         currentCompanyCell.setCellValue("当前组织："+ getCompanyName(dto));
-        Cell timeCell = rowOne.createCell(1);
-        timeCell.setCellValue("导出时间段："+ dto.getStartDateStr() +"~"+dto.getEndDateStr());
-        Cell operateTimeCell = rowOne.createCell(2);
+        Cell timeCell = rowOne.createCell(2);
+        String startDateStr = dto.getStartDateStr();
+        if(startDateStr==null){
+            startDateStr = "";
+        }else {
+            startDateStr = startDateStr.replaceAll("-","/");
+        }
+        String endDateStr = dto.getEndDateStr();
+        if(endDateStr==null){
+            endDateStr = DateUtils.date2Str(DateUtils.getDate(),DateUtils.date_sdf2);
+        }
+        timeCell.setCellValue("导出时间段："+ startDateStr +"~"+endDateStr);
+        Cell operateTimeCell = rowOne.createCell(4);
         operateTimeCell.setCellValue("导出时间："+ DateUtils.date2Str(DateUtils.getDate(),DateUtils.date_sdf2));
 
         //填充第二行的数据
-        Row rowTwo = sheet.createRow(1);
+        Row rowTwo = getRow(sheet,1);
         Cell currentBalanceAmount = rowTwo.createCell(0);
-        currentBalanceAmount.setCellValue("当前余额："+ statisticSum.getBalance());
-        Cell totalAmount = rowTwo.createCell(1);
+        currentBalanceAmount.setCellValue("当前余额："+ statisticSum.getSumBalance());
+        Cell totalAmount = rowTwo.createCell(2);
         totalAmount.setCellValue("合计金额："+ statisticSum.getAmount());
-        Cell receiveAmount = rowTwo.createCell(2);
+        Cell receiveAmount = rowTwo.createCell(4);
         receiveAmount.setCellValue("累计收入："+ statisticSum.getGain());
-        Cell payAmount = rowTwo.createCell(2);
+        Cell payAmount = rowTwo.createCell(6);
         payAmount.setCellValue("累计支出："+ statisticSum.getPay());
 
         int rowNum = 2;
-        Row row = sheet.createRow(rowNum);
+        Row row = getRow(sheet,rowNum);
         for(int col=0;col<titleList.size();col++){
             Cell c = row.createCell(col);
             c.setCellValue(titleList.get(col));
+            this.setCellStyle(c,wb);
         }
         return rowNum;
     }
@@ -205,16 +228,17 @@ public class BalanceDetailExportServiceImpl  extends NewBaseService implements B
         List<Map<String,ExcelDataDTO>> excelDataList = new ArrayList<>();
         dataList.stream().forEach(d->{
             Map<String,ExcelDataDTO> map = new HashMap<>();
-            map.put("日期",new ExcelDataDTO(d.getCreateDate(),1));
+            map.put("日期",new ExcelDataDTO(d.getProfitDate().replaceAll("-","/"),1));
             if(d.getProfitFee()!=null && d.getProfitFee().doubleValue()<0){
-                map.put(amountStr,new ExcelDataDTO(d.getProfitFee().doubleValue(),2));
+                double amount = 0 - d.getProfitFee().doubleValue();
+                map.put(amountStr,new ExcelDataDTO(amount,2));
             }else {
                 map.put(amountStr,new ExcelDataDTO(d.getProfitFee().doubleValue(),3));
             }
             map.put("收支分类",new ExcelDataDTO(d.getFeeTypeParentName(),1));
             map.put("收支分类子项",new ExcelDataDTO(d.getFeeTypeName(),1));
             map.put("备注",new ExcelDataDTO("",1));
-            map.put("收款组织",new ExcelDataDTO(d.getToCompanyId(),1));
+            map.put("收款组织",new ExcelDataDTO(d.getToCompanyName(),1));
             map.put("付款组织",new ExcelDataDTO(d.getFromCompanyName(),1));
             map.put("关联项目",new ExcelDataDTO(d.getProjectName(),1));
             excelDataList.add(map);
