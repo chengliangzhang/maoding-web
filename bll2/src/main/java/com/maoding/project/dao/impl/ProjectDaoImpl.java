@@ -215,7 +215,7 @@ public class ProjectDaoImpl extends GenericDao<ProjectEntity> implements Project
     }
 
     /**
-     * 描述       查询项目基本信息
+     * 描述       查询项目列表
      * 日期       2018/8/24
      * @author   张成亮
      **/
@@ -225,40 +225,17 @@ public class ProjectDaoImpl extends GenericDao<ProjectEntity> implements Project
     }
 
     /**
-     * 描述       查询项目功能分类信息
-     * 日期       2018/8/24
+     * 描述       查询项目个数
+     * 日期       2018/8/29
      *
      * @param query
      * @author 张成亮
      */
     @Override
-    public List<ProjectVariableDTO> listProjectBuildType(ProjectQueryDTO query) {
-        return sqlSession.selectList("ProjectMapper.listProjectBuildType", query);
+    public int countProject(ProjectQueryDTO query) {
+        return sqlSession.selectOne("ProjectMapper.countProject", query);
     }
 
-    /**
-     * 描述       查询项目参与人信息
-     * 日期       2018/8/24
-     *
-     * @param query
-     * @author 张成亮
-     */
-    @Override
-    public List<ProjectVariableDTO> listProjectMember(ProjectQueryDTO query) {
-        return sqlSession.selectList("ProjectMapper.listProjectMember", query);
-    }
-
-    /**
-     * 描述       通过项目合作组织信息查询项目列表
-     * 日期       2018/8/24
-     *
-     * @param query
-     * @author 张成亮
-     */
-    @Override
-    public List<ProjectVariableDTO> listProjectRelation(ProjectQueryDTO query) {
-        return sqlSession.selectList("ProjectMapper.listProjectRelation", query);
-    }
 }
 
 

@@ -388,61 +388,7 @@
         )
     </sql>
 
-    <select id="listProjectBasic" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
-        select <include refid="CommonMapper.countSQL"/>
-            <!-- 项目状态 -->
-            <if test="needStatus == 1">
-                status_type.type_title as status,
-            </if>
-            <!-- 经营负责人 -->
-            <if test="needBusInCharge == 1">
-                group_concat(distinct if(team_member.member_type=1,concat(team_member_name.user_name,','),'') separator '') as busPersonInCharge,
-            </if>
-            <!-- 经营助理 -->
-            <if test="needBusAssistant == 1">
-                group_concat(distinct if(team_member.member_type=7,concat(team_member_name.user_name,','),'') separator '') as busPersonInChargeAssistant,
-            </if>
-            <!-- 设计负责人 -->
-            <if test="needDesignInCharge == 1">
-                group_concat(distinct if(team_member.member_type=2,concat(team_member_name.user_name,','),'') separator '') as designPersonInCharge,
-            </if>
-            <!-- 设计助理 -->
-            <if test="needDesignAssistant == 1">
-                group_concat(distinct if(team_member.member_type=8,concat(team_member_name.user_name,','),'') separator '') as designPersonInChargeAssistant,
-            </if>
-            <!-- 任务负责人 -->
-            <if test="needTaskLeader == 1">
-                group_concat(distinct if(team_member.member_type=3,concat(team_member_name.user_name,','),'') separator '') as taskLeader,
-            </if>
-            <!-- 设计 -->
-            <if test="needDesigner == 1">
-                group_concat(distinct if(team_member.member_type=4,concat(team_member_name.user_name,','),'') separator '') as designer,
-            </if>
-            <!-- 校验 -->
-            <if test="needChecker == 1">
-                group_concat(distinct if(team_member.member_type=5,concat(team_member_name.user_name,','),'') separator '') as checker,
-            </if>
-            <!-- 审核 -->
-            <if test="needAuditor == 1">
-                group_concat(distinct if(team_member.member_type=6,concat(team_member_name.user_name,','),'') separator '') as auditor,
-            </if>
-            <!-- 合作组织 -->
-            <if test="needRelationCompany == 1">
-                group_concat(distinct ifnull(concat(relation_company.company_name,','),'') separator '') as relationCompany,
-            </if>
-            <!-- 功能分类 -->
-            <if test="needBuildType == 1">
-                group_concat(distinct ifnull(concat(build_type.type_name,','),'') separator '') as buildName,
-            </if>
-            <!-- 项目立项日期 -->
-            ifnull(project_list.project_create_date,project_list.create_date) as projectCreateDate,
-            <!-- 合同签订日期 -->
-            project_list.contract_date as signDate,
-            <!-- 项目地址 -->
-            concat(project_list.province,project_list.city) as address,
-            <!-- 项目方 -->
-            concat(create_company.company_name,'/',create_company_user.user_name) as createCompany,
-            project_list.*
+    <sql id="TableAndFilterOfProjectQuery">
         from maoding_web_project project_list
             <!-- 过滤出相应的项目 -->
             inner join maoding_web_project_member member_list on (
@@ -600,152 +546,71 @@
         <where>
             <include refid="BasicFilterForProjectQuery"/>
         </where>
+    </sql>
+
+    <select id="listProjectBasic" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
+        select
+            <!-- 项目状态 -->
+            <if test="needStatus == 1">
+                status_type.type_title as status,
+            </if>
+            <!-- 经营负责人 -->
+            <if test="needBusInCharge == 1">
+                group_concat(distinct if(team_member.member_type=1,concat(team_member_name.user_name,','),'') separator '') as busPersonInCharge,
+            </if>
+            <!-- 经营助理 -->
+            <if test="needBusAssistant == 1">
+                group_concat(distinct if(team_member.member_type=7,concat(team_member_name.user_name,','),'') separator '') as busPersonInChargeAssistant,
+            </if>
+            <!-- 设计负责人 -->
+            <if test="needDesignInCharge == 1">
+                group_concat(distinct if(team_member.member_type=2,concat(team_member_name.user_name,','),'') separator '') as designPersonInCharge,
+            </if>
+            <!-- 设计助理 -->
+            <if test="needDesignAssistant == 1">
+                group_concat(distinct if(team_member.member_type=8,concat(team_member_name.user_name,','),'') separator '') as designPersonInChargeAssistant,
+            </if>
+            <!-- 任务负责人 -->
+            <if test="needTaskLeader == 1">
+                group_concat(distinct if(team_member.member_type=3,concat(team_member_name.user_name,','),'') separator '') as taskLeader,
+            </if>
+            <!-- 设计 -->
+            <if test="needDesigner == 1">
+                group_concat(distinct if(team_member.member_type=4,concat(team_member_name.user_name,','),'') separator '') as designer,
+            </if>
+            <!-- 校验 -->
+            <if test="needChecker == 1">
+                group_concat(distinct if(team_member.member_type=5,concat(team_member_name.user_name,','),'') separator '') as checker,
+            </if>
+            <!-- 审核 -->
+            <if test="needAuditor == 1">
+                group_concat(distinct if(team_member.member_type=6,concat(team_member_name.user_name,','),'') separator '') as auditor,
+            </if>
+            <!-- 合作组织 -->
+            <if test="needRelationCompany == 1">
+                group_concat(distinct ifnull(concat(relation_company.company_name,','),'') separator '') as relationCompany,
+            </if>
+            <!-- 功能分类 -->
+            <if test="needBuildType == 1">
+                group_concat(distinct ifnull(concat(build_type.type_name,','),'') separator '') as buildName,
+            </if>
+            <!-- 项目立项日期 -->
+            ifnull(project_list.project_create_date,project_list.create_date) as projectCreateDate,
+            <!-- 合同签订日期 -->
+            project_list.contract_date as signDate,
+            <!-- 项目地址 -->
+            concat(project_list.province,project_list.city) as address,
+            <!-- 立项方 -->
+            concat(create_company.company_name,'/',create_company_user.user_name) as createCompany,
+            project_list.*
+        <include refid="TableAndFilterOfProjectQuery"/>
         group by project_list.id
         <include refid="OrderForProjectQuery"/>
         <include refid="CommonMapper.limitSQL"/>
     </select>
 
-    <select id="listProjectMember" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
-        select <include refid="CommonMapper.countSQL"/>
-            group_concat(distinct if(team_member.member_type=1,concat(team_member.user_name,','),'') separator '') as busPersonInCharge,
-            group_concat(distinct if(team_member.member_type=7,concat(team_member.user_name,','),'') separator '') as busPersonInChargeAssistant,
-            group_concat(distinct if(team_member.member_type=2,concat(team_member.user_name,','),'') separator '') as designPersonInCharge,
-            group_concat(distinct if(team_member.member_type=8,concat(team_member.user_name,','),'') separator '') as designPersonInChargeAssistant,
-            group_concat(distinct if(team_member.is_task_leader,concat(team_member.user_name,','),'') separator '') as taskLeader,
-            group_concat(distinct if(team_member.is_task_designer,concat(team_member.user_name,','),'') separator '') as designer,
-            group_concat(distinct if(team_member.is_task_checker,concat(team_member.user_name,','),'') separator '') as checker,
-            group_concat(distinct if(team_member.is_task_auditor,concat(team_member.user_name,','),'') separator '') as auditor,
-            <include refid="ExtraProjectBasicField"/>
-            project_list.*
-        from maoding_web_project project_list
-            <include refid="ExtraProjectBasicTable"/>
-            <if test="busPersonInCharge != null">
-                inner join md_project_member member_filter_bus on (
-                    member_filter_bus.project_id = project_list.id
-                    and member_filter_bus.company_id = member_list.company_id
-                    and member_filter_bus.company_user_id = #{busPersonInCharge}
-                    and member_filter_bus.member_type = 1
-                )
-            </if>
-            <if test="busPersonInChargeAssistant != null">
-                inner join md_project_member member_filter_bus_assistant on (
-                    member_filter_bus_assistant.project_id = project_list.id
-                    and member_filter_bus_assistant.company_id = member_list.company_id
-                    and member_filter_bus_assistant.company_user_id = #{busPersonInChargeAssistant}
-                    and member_filter_bus_assistant.member_type = 7
-                )
-            </if>
-            <if test="designPersonInCharge != null">
-                inner join md_project_member member_filter_design on (
-                    member_filter_design.project_id = project_list.id
-                    and member_filter_design.company_id = member_list.company_id
-                    and member_filter_design.company_user_id = #{designPersonInCharge}
-                    and member_filter_design.member_type = 2
-                )
-            </if>
-            <if test="designPersonInChargeAssistant != null">
-                inner join md_project_member member_filter_design_assistant on (
-                    member_filter_design_assistant.project_id = project_list.id
-                    and member_filter_design_assistant.company_id = member_list.company_id
-                    and member_filter_design_assistant.company_user_id = #{designPersonInChargeAssistant}
-                    and member_filter_design_assistant.member_type = 8
-                )
-            </if>
-            <if test="taskLeader != null">
-                inner join md_project_member member_filter_task_leader on (
-                    member_filter_task_leader.project_id = project_list.id
-                    and member_filter_task_leader.company_id = member_list.company_id
-                    and member_filter_task_leader.company_user_id = #{taskLeader}
-                    and member_filter_task_leader.is_task_leader
-                )
-            </if>
-            <if test="designer != null">
-                inner join md_project_member member_filter_task_designer on (
-                    member_filter_task_designer.project_id = project_list.id
-                    and member_filter_task_designer.company_id = member_list.company_id
-                    and member_filter_task_designer.company_user_id = #{designer}
-                    and member_filter_task_designer.is_task_designer
-                )
-            </if>
-            <if test="checker != null">
-                inner join md_project_member member_filter_task_checker on (
-                    member_filter_task_checker.project_id = project_list.id
-                    and member_filter_task_checker.company_id = member_list.company_id
-                    and member_filter_task_checker.company_user_id = #{checker}
-                    and member_filter_task_checker.is_task_checker
-                )
-            </if>
-            <if test="auditor != null">
-                inner join md_project_member member_filter_task_auditor on (
-                    member_filter_task_auditor.project_id = project_list.id
-                    and member_filter_task_auditor.company_id = member_list.company_id
-                    and member_filter_task_auditor.company_user_id = #{auditor}
-                    and member_filter_task_auditor.is_task_auditor
-                )
-            </if>
-            inner join md_project_member team_member on (
-                team_member.project_id = project_list.id
-                and team_member.company_id = member_list.company_id
-            )
-        <where>
-            <include refid="BasicFilterForProjectQuery"/>
-        </where>
-        group by project_list.id
-        <include refid="OrderForProjectQuery"/>
-        <include refid="CommonMapper.limitSQL"/>
-    </select>
-
-    <select id="listProjectRelation" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
-        select <include refid="CommonMapper.countSQL"/>
-            group_concat(distinct ifnull(concat(relation_company.company_name,','),'') separator '') as relationCompany,
-            <include refid="ExtraProjectBasicField"/>
-            project_list.*
-        from maoding_web_project project_list
-            <include refid="ExtraProjectBasicTable"/>
-            inner join maoding_web_project_task_relation task_relation on (
-                task_relation.relation_status = '0'
-                and task_relation.project_id = project_list.id
-                and task_relation.from_company_id = member_list.company_id
-            )
-            inner join maoding_web_company relation_company on (
-                relation_company.status = '0'
-                and relation_company.id = task_relation.to_company_id
-                <if test="relationCompany != null">
-                    and relation_company.id = #{relationCompany}
-                </if>
-            )
-        <where>
-            <include refid="BasicFilterForProjectQuery"/>
-        </where>
-        group by project_list.id
-        <include refid="OrderForProjectQuery"/>
-        <include refid="CommonMapper.limitSQL"/>
-    </select>
-
-    <select id="listProjectBuildType" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
-        select <include refid="CommonMapper.countSQL"/>
-            group_concat(distinct ifnull(concat(build_type.type_name,','),'') separator '') as buildName,
-            <include refid="ExtraProjectBasicField"/>
-            project_list.*
-        from maoding_web_project project_list
-            <include refid="ExtraProjectBasicTable"/>
-            <if test="buildNameList != null and buildNameList.size() > 0">
-                inner join md_build_type build_type_filter on (
-                    find_in_set(build_type_filter.id,project_list.built_type)
-                    and build_type_filter.id in
-                        <foreach collection="buildNameList" item="aBuildTypeId" open="(" close=")" separator=",">
-                            #{aBuildTypeId}
-                        </foreach>
-                )
-            </if>
-            inner join md_build_type build_type on (
-                find_in_set(build_type.id,project_list.built_type)
-            )
-        <where>
-            <include refid="BasicFilterForProjectQuery"/>
-        </where>
-        group by project_list.id
-        <include refid="OrderForProjectQuery"/>
-        <include refid="CommonMapper.limitSQL"/>
+    <select id="countProject" resultType="java.lang.Integer" parameterType="com.maoding.project.dto.ProjectQueryDTO">
+        select count(distinct project_list.id)
+        <include refid="TableAndFilterOfProjectQuery"/>
     </select>
 </mapper>

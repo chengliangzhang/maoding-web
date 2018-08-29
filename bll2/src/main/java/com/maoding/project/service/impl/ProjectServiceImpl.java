@@ -2753,7 +2753,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
 
         //查询主列表，包括projectId、过滤、排序、总数信息
         List<ProjectVariableDTO> mainList = projectDao.listProjectBasic(query);
-        int count = projectDao.getLastQueryCount();
+        int count = projectDao.countProject(query);
 
         //添加项目是否可编辑信息
         Map<String, Object> para = setProjectUserPermissionParam(query.getCompanyId(),query.getCurrentCompanyUserId());
