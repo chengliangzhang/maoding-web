@@ -379,6 +379,14 @@
 
     <select id="listProjectBasic" resultType="com.maoding.project.dto.ProjectVariableDTO" parameterType="com.maoding.project.dto.ProjectQueryDTO">
         select <include refid="CommonMapper.countSQL"/>
+        group_concat(distinct if(team_member.member_type=1,concat(team_member.user_name,','),'') separator '') as busPersonInCharge,
+        group_concat(distinct if(team_member.member_type=7,concat(team_member.user_name,','),'') separator '') as busPersonInChargeAssistant,
+        group_concat(distinct if(team_member.member_type=2,concat(team_member.user_name,','),'') separator '') as designPersonInCharge,
+        group_concat(distinct if(team_member.member_type=8,concat(team_member.user_name,','),'') separator '') as designPersonInChargeAssistant,
+        group_concat(distinct if(team_member.is_task_leader,concat(team_member.user_name,','),'') separator '') as taskLeader,
+        group_concat(distinct if(team_member.is_task_designer,concat(team_member.user_name,','),'') separator '') as designer,
+        group_concat(distinct if(team_member.is_task_checker,concat(team_member.user_name,','),'') separator '') as checker,
+        group_concat(distinct if(team_member.is_task_auditor,concat(team_member.user_name,','),'') separator '') as auditor,
             <include refid="ExtraProjectBasicField"/>
             project_list.*
         from maoding_web_project project_list

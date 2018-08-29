@@ -4,6 +4,7 @@ import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.util.BeanUtils;
+import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.DigitUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.enterprise.service.EnterpriseService;
@@ -153,17 +154,17 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
         final int TITLE_TYPE_INVOICE_PROJECT_NAME = 43;
         final int TITLE_TYPE_INVOICE_NO = 44;
         for (TitleColumnDTO title : titleList) {
-            if (title.getTypeId() == TITLE_TYPE_INVOICE_INVOICE_TYPE){
+            if (title.getTypeId() == SystemParameters.TITLE_TYPE_INVOICE_INVOICE_TYPE){
                 query.setNeedInvoiceType(1);
-            } else if (title.getTypeId() == TITLE_TYPE_INVOICE_COST_TYPE){
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_INVOICE_COST_TYPE){
                 query.setNeedCostTypeName(1);
-            } else if (title.getTypeId() == TITLE_TYPE_INVOICE_RELATION_COMPANY){
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_INVOICE_RELATION_COMPANY){
                 query.setNeedRelationCompanyName(1);
-            } else if (title.getTypeId() == TITLE_TYPE_INVOICE_TAX_ID){
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_INVOICE_TAX_ID){
                 query.setNeedTaxIdNumber(1);
-            } else if (title.getTypeId() == TITLE_TYPE_INVOICE_FEE_DESCRIPTION){
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_INVOICE_FEE_DESCRIPTION){
                 query.setNeedInvoiceContent(1);
-            } else if (title.getTypeId() == TITLE_TYPE_INVOICE_PROJECT_NAME) {
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_INVOICE_PROJECT_NAME) {
                 query.setNeedProjectName(1);
             }
         }

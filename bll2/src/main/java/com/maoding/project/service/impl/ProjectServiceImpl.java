@@ -8,7 +8,6 @@ import com.maoding.commonModule.service.ConstService;
 import com.maoding.conllaboration.SyncCmd;
 import com.maoding.conllaboration.service.CollaborationService;
 import com.maoding.core.base.dto.BaseDTO;
-import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.base.entity.BaseEntity;
 import com.maoding.core.base.service.GenericService;
@@ -2734,10 +2733,18 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
      */
     @Override
     public List<ProjectVariableDTO> listProject(ProjectQueryDTO query) {
-        query.setPageIndex(null);
-        query.setPageSize(null);
-        CorePageDTO<ProjectVariableDTO> page = listPageProject(query);
-        return (page != null) ? page.getData() : null;
+        if (StringUtils.isEmpty(query.getCompanyId())){
+            query.setCompanyId(query.getCurrentCompanyId());
+        }
+
+        TitleQueryDTO titleQuery = BeanUtils.createFrom(query,TitleQueryDTO.class);
+        List<TitleColumnDTO> titleList = projectConditionDao.listTitle(titleQuery);
+
+        getNeedFillColumn(titleList,query);
+
+        List<ProjectVariableDTO> mainList =  projectDao.listProjectBasic(query);
+
+        return updateProjectList(mainList,query);
     }
 
     /**
@@ -2757,98 +2764,89 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         titleQuery.setWithList(0);
         List<TitleColumnDTO> titleList = projectConditionService.listTitle(titleQuery);
 
-        DynamicQueryDTO needFill = getNeedFillInfo(titleList);
+        getNeedFillColumn(titleList,query);
 
         //查询主列表，包括projectId、过滤、排序、总数信息
-        List<ProjectVariableDTO> mainList;
-        int count;
-        if (isRelationCompanyFilter(query)) {
-            mainList = projectDao.listProjectRelation(query);
-            count = projectDao.getLastQueryCount();
+        List<ProjectVariableDTO> mainList = projectDao.listProjectBasic(query);
+        int count = projectDao.getLastQueryCount();
 
-            needFill.setNeedRelationCompany(false);
-        } else if (isProjectBuildTypeFilter(query)) {
-            mainList = projectDao.listProjectBuildType(query);
-            count = projectDao.getLastQueryCount();
-            needFill.setNeedBuildType(false);
-        } else if (isProjectMemberFilter(query)) {
-            mainList = projectDao.listProjectMember(query);
-            count = projectDao.getLastQueryCount();
+        //添加项目是否可编辑信息
+        Map<String, Object> para = setProjectUserPermissionParam(query.getCompanyId(),query.getCurrentCompanyUserId());
+        List<PermissionDTO> permissionDTOS = permissionService.getProjectUserPermission(para);
+        boolean flag = (permissionDTOS != null) && (permissionDTOS.size() > 0);
 
-            needFill.setNeedBusInCharge(false);
-            needFill.setNeedBusAssistant(false);
-            needFill.setNeedDesignInCharge(false);
-            needFill.setNeedDesignAssistant(false);
-            needFill.setNeedTaskLeader(false);
-            needFill.setNeedDesigner(false);
-            needFill.setNeedChecker(false);
-            needFill.setNeedAuditor(false);
-        } else {
-            mainList = projectDao.listProjectBasic(query);
-            count = projectDao.getLastQueryCount();
-        }
+        //创建并返回结果
+        ProjectListPageDTO page = new ProjectListPageDTO();
+        page.setTotal(count);
+        page.setPageIndex(DigitUtils.parseInt(query.getPageIndex()));
+        page.setPageSize(DigitUtils.parseInt(query.getPageSize()));
+        page.setData(updateProjectList(mainList,query));
+        page.setFlag((flag) ? "1" : "0");
+        return page;
+    }
 
+    //补充未用于过滤但需要显示的项目信息
+    private List<ProjectVariableDTO> updateProjectList(List<ProjectVariableDTO> mainList,ProjectQueryDTO query){
         if (ObjectUtils.isNotEmpty(mainList)){
-            //补充查询出的项目的其他信息
             mainList.forEach(project->{
                 //添加项目基本信息
                 //合作组织信息
-                if (needFill.isNeedRelationCompany()){
+                if (query.getNeedRelationCompany() == 1){
                     project.setRelationCompany(getRelationCompany(project.getId(),query.getCurrentCompanyId()));
                 }
 
                 //甲方信息
-                if (needFill.isNeedPartA()){
+                if (query.getNeedPartA() == 1){
                     project.setPartA(getProjectPartA(project.getId()));
                 }
 
                 //乙方信息
-                if (needFill.isNeedPartB()){
+                if (query.getNeedPartB() == 1){
                     project.setPartB(getProjectPartB(project.getCompanyBid()));
                 }
 
                 //功能分类信息
-                if (needFill.isNeedBuildType()){
+                if (query.getNeedBuildType() == 1){
                     project.setBuildName(getProjectBuildName(project.getId()));
                 }
 
                 //添加人员信息，如任务负责人、设计人员、校对人员、审核人员
                 //经营负责人
-                if (needFill.isNeedBusInCharge()){
+                if (query.getNeedBusInCharge() == 1){
                     project.setBusPersonInCharge(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_MANAGER));
                 }
                 //经营助理
-                if (needFill.isNeedBusAssistant()){
+                if (query.getNeedBusAssistant() == 1){
                     project.setBusPersonInChargeAssistant(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_MANAGER_ASSISTANT));
                 }
                 //设计负责人
-                if (needFill.isNeedDesignInCharge()){
+                if (query.getNeedDesignInCharge() == 1){
                     project.setDesignPersonInCharge(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_DESIGN));
                 }
                 //设计助理
-                if (needFill.isNeedDesignAssistant()){
+                if (query.getNeedDesignAssistant() == 1){
                     project.setDesignPersonInChargeAssistant(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_DESIGN_ASSISTANT));
                 }
                 //任务负责人
-                if (needFill.isNeedTaskLeader()){
+                if (query.getNeedTaskLeader() == 1){
                     project.setTaskLeader(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_TASK_LEADER));
                 }
                 //设计人员
-                if (needFill.isNeedDesigner()){
+                if (query.getNeedDesigner() == 1){
                     project.setDesigner(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_TASK_DESIGN));
                 }
                 //校对人员
-                if (needFill.isNeedChecker()){
+                if (query.getNeedChecker() == 1){
                     project.setChecker(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_TASK_CHECK));
                 }
                 //审核人员
-                if (needFill.isNeedAuditor()){
+                if (query.getNeedAuditor() == 1){
                     project.setAuditor(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_TASK_AUDIT));
                 }
 
                 //添加费用信息，如合同回款、合同到款等
                 //合同回款，合同到款
-                if (needFill.isNeedContractFee()){
+                if (query.getNeedContractFee() == 1){
                     ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_CONTRACT);
                     if (cost != null) {
                         project.setContract(cost.getPlan());
@@ -2857,7 +2855,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                 }
 
                 //技术审查费（支出）及到款，技术审查费（收入）及付款
-                if (needFill.isNeedTechnicalFee()){
+                if (query.getNeedTechnicalFee() == 1){
                     //如果是项目乙方，则设置技术审查费（收入），如果不是项目乙方，则设置技术审查费（支出），否则无需设置
                     ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_TECHNICAL);
                     if (cost != null) {
@@ -2872,7 +2870,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                 }
 
                 //合作设计费（收款）及到款
-                if (needFill.isNeedCooperateGainFee()){
+                if (query.getNeedCooperateGainFee() == 1){
                     ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_COOPERATE_GAIN);
                     if (cost != null) {
                         project.setCooperateGain(cost.getPlan());
@@ -2881,7 +2879,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                 }
 
                 //其他费用（收入）及到款
-                if (needFill.isNeedOtherGainFee()){
+                if (query.getNeedOtherGainFee() == 1){
                     ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_IN);
                     if (cost != null) {
                         project.setOtherGain(cost.getPlan());
@@ -2889,7 +2887,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                     }
                 }
                 //合作设计费（支出）及付款
-                if (needFill.isNeedCooperatePayFee()){
+                if (query.getNeedCooperatePayFee() == 1){
                     ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_COOPERATE_PAY);
                     if (cost != null) {
                         project.setCooperatePay(cost.getPlan());
@@ -2897,7 +2895,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                     }
                 }
                 //其他费用（支出）及付款
-                if (needFill.isNeedOtherPayFee()){
+                if (query.getNeedOtherPayFee() == 1){
                     ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_OUT);
                     if (cost != null) {
                         project.setOtherPay(cost.getPlan());
@@ -2907,19 +2905,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             });
         }
 
-        //添加项目是否可编辑信息
-        Map<String, Object> para = setProjectUserPermissionParam(query.getCompanyId(),query.getCurrentCompanyUserId());
-        List<PermissionDTO> permissionDTOS = permissionService.getProjectUserPermission(para);
-        boolean flag = (permissionDTOS != null) && (permissionDTOS.size() > 0);
-
-        //创建并返回结果
-        ProjectListPageDTO page = new ProjectListPageDTO();
-        page.setTotal(count);
-        page.setPageIndex(DigitUtils.parseInt(query.getPageIndex()));
-        page.setPageSize(DigitUtils.parseInt(query.getPageSize()));
-        page.setData(mainList);
-        page.setFlag((flag) ? "1" : "0");
-        return page;
+        return mainList;
     }
 
     //获取甲方信息
@@ -2955,43 +2941,70 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
     }
 
     //需要填充项目基本信息
-    private DynamicQueryDTO getNeedFillInfo(List<TitleColumnDTO> titleList){
-        DynamicQueryDTO needInfo = new DynamicQueryDTO();
+    private ProjectQueryDTO getNeedFillColumn(List<TitleColumnDTO> titleList, ProjectQueryDTO query){
         for (TitleColumnDTO title : titleList) {
-            if (title.getIsRelationCompany() == 1){
-                needInfo.setNeedRelationCompany(true);
-            } else if (title.getIsTaskLeader() == 1) {
-                needInfo.setNeedTaskLeader(true);
-            } else if (title.getIsDesigner() == 1) {
-                needInfo.setNeedDesigner(true);
-            } else if (title.getIsChecker() == 1) {
-                needInfo.setNeedChecker(true);
-            } else if (title.getIsAuditor() == 1) {
-                needInfo.setNeedAuditor(true);
-            } else if (title.getIsContractFee() == 1) {
-                needInfo.setNeedContractFee(true);
-            } else if (title.getIsTechnicalFee() == 1) {
-                needInfo.setNeedTechnicalFee(true);
-            } else if (title.getIsCooperateGainFee() == 1) {
-                needInfo.setNeedCooperateGainFee(true);
-            } else if (title.getIsOtherGainFee() == 1) {
-                needInfo.setNeedOtherGainFee(true);
-            } else if (title.getIsCooperatePayFee() == 1) {
-                needInfo.setNeedCooperatePayFee(true);
-            } else if (title.getIsOtherPayFee() == 1) {
-                needInfo.setNeedOtherPayFee(true);
+            if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_RELATION_COMPANY) 
+                    && (query.getRelationCompany() == null)){
+                query.setNeedRelationCompany(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_PART_A)
+                    && (query.getPartA() == null)) {
+                query.setNeedPartA(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_PART_B)
+                    && (query.getPartB() == null)) {
+                query.setNeedPartB(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_BUILD_TYPE)
+                    && (query.getBuildNameList() == null)) {
+                query.setNeedBuildType(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_STATUS)
+                    && (query.getStatus() == null)) {
+                query.setNeedStatus(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_LEADER)
+                    && (query.getBusPersonInCharge() == null)) {
+                query.setNeedBusInCharge(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_ASSITANT)
+                    && (query.getBusPersonInChargeAssistant() == null)) {
+                query.setNeedBusAssistant(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_DESIGN)
+                    && (query.getDesignPersonInCharge() == null)) {
+                query.setNeedDesignInCharge(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_DESIGN_ASSISTANT)
+                    && (query.getDesignPersonInChargeAssistant() == null)) {
+                query.setNeedDesignAssistant(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TASK_LEADER)
+                    && (query.getTaskLeader() == null)) {
+                query.setNeedTaskLeader(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TASK_DESIGNER)
+                    && (query.getDesigner() == null)) {
+                query.setNeedDesigner(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TASK_CHECKER)
+                    && (query.getChecker() == null)) {
+                query.setNeedChecker(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TASK_AUDITOR)
+                    && (query.getAuditor() == null)) {
+                query.setNeedAuditor(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_CONTRACT)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_CONTRACT_REAL)) {
+                query.setNeedContractFee(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TECHNICAL_GAIN)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TECHNICAL_GAIN_REAL)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TECHNICAL_PAY)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TECHNICAL_PAY_REAL)) {
+                query.setNeedTechnicalFee(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_COOPERATE_GAIN)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_COOPERATE_GAIN_REAL)) {
+                query.setNeedCooperateGainFee(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_OTHER_GAIN)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_OTHER_GAIN_REAL)) {
+                query.setNeedOtherGainFee(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_COOPERATE_PAY)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_COOPERATE_PAY_REAL)) {
+                query.setNeedCooperatePayFee(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_OTHER_PAY)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_OTHER_PAY_REAL)) {
+                query.setNeedOtherPayFee(1);
             }
-
-            needInfo.setNeedBusInCharge(true);
-            needInfo.setNeedBusAssistant(true);
-            needInfo.setNeedDesignInCharge(true);
-            needInfo.setNeedDesignAssistant(true);
-            needInfo.setNeedPartA(true);
-            needInfo.setNeedPartB(true);
-            needInfo.setNeedBuildType(true);
-            needInfo.setNeedStatus(false);
         }
-        return needInfo;
+        return query;
     }
 
     //是功能分类过滤条件

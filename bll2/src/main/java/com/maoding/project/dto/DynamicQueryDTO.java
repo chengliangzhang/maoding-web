@@ -29,83 +29,61 @@ public class DynamicQueryDTO extends CoreQueryDTO {
     private int needProjectName;
 
     /** 合作组织信息 **/
-    private boolean isNeedRelationCompany;
+    private int needRelationCompany;
 
     /** 项目状态 **/
-    private boolean isNeedStatus;
+    private int needStatus;
 
     /** 甲方 **/
-    private boolean isNeedPartA;
-    
+    private int needPartA;
+
     /** 乙方 **/
-    private boolean isNeedPartB;
+    private int needPartB;
 
     /** 经营负责人 **/
-    private boolean isNeedBusInCharge;
+    private int needBusInCharge;
 
     /** 经营助理 **/
-    private boolean isNeedBusAssistant;
+    private int needBusAssistant;
 
     /** 设计负责人 **/
-    private boolean isNeedDesignInCharge;
+    private int needDesignInCharge;
 
     /** 设计助理 **/
-    private boolean isNeedDesignAssistant;
+    private int needDesignAssistant;
 
     /** 任务负责人 **/
-    private boolean isNeedTaskLeader;
+    private int needTaskLeader;
 
     /** 设计人员 **/
-    private boolean isNeedDesigner;
+    private int needDesigner;
 
     /** 校对人员 **/
-    private boolean isNeedChecker;
+    private int needChecker;
 
     /** 审核人员 **/
-    private boolean isNeedAuditor;
+    private int needAuditor;
 
     /** 合同回款、合同到款 **/
-    private boolean isNeedContractFee;
+    private int needContractFee;
 
     /** 技术审查费（支出）及到款、技术审查费（收入)及付款 **/
-    private boolean isNeedTechnicalFee;
+    private int needTechnicalFee;
 
     /** 合作设计费（收款）及到款 **/
-    private boolean isNeedCooperateGainFee;
+    private int needCooperateGainFee;
 
     /** 其他费油（收入）及到款 **/
-    private boolean isNeedOtherGainFee;
+    private int needOtherGainFee;
 
     /** 合作设计费支出及付款 **/
-    private boolean isNeedCooperatePayFee;
+    private int needCooperatePayFee;
 
     /** 其他费用（支出）及付款 **/
-    private boolean isNeedOtherPayFee;
+    private int needOtherPayFee;
 
     /** 功能分类 **/
-    private boolean isNeedBuildType;
-
-
-
-    /** 需要填充基本信息 **/
-    /** 由合作组织信息代替 **/
-    @Deprecated
-    private boolean needFillBasic;
-
-    /** 需要填充功能分类信息 **/
-    /** 由isNeedBuildType代替 **/
-    @Deprecated
-    private boolean needFillFunction;
-
-    /** 需要填充合作者信息 **/
-    /** 由isNeedTaskLeader等代替 **/
-    @Deprecated
-    private boolean needFillMember;
-
-    /** 需要填充费用信息 **/
-    /** 由isNeedOtherPayFee等代替 **/
-    @Deprecated
-    private boolean needFillFee;
+    private int needBuildType;
 
     public int getNeedCostTypeName() {
         return needCostTypeName;
@@ -155,187 +133,155 @@ public class DynamicQueryDTO extends CoreQueryDTO {
         this.needInvoiceType = needInvoiceType;
     }
 
-    public boolean isNeedRelationCompany() {
-        return isNeedRelationCompany;
+    public int getNeedRelationCompany() {
+        return needRelationCompany;
     }
 
-    public void setNeedRelationCompany(boolean needRelationCompany) {
-        isNeedRelationCompany = needRelationCompany;
+    public void setNeedRelationCompany(int needRelationCompany) {
+        this.needRelationCompany = needRelationCompany;
     }
 
-    public boolean isNeedTaskLeader() {
-        return isNeedTaskLeader;
+    public int getNeedStatus() {
+        return needStatus;
     }
 
-    public void setNeedTaskLeader(boolean needTaskLeader) {
-        isNeedTaskLeader = needTaskLeader;
+    public void setNeedStatus(int needStatus) {
+        this.needStatus = needStatus;
     }
 
-    public boolean isNeedDesigner() {
-        return isNeedDesigner;
+    public int getNeedPartA() {
+        return needPartA;
     }
 
-    public void setNeedDesigner(boolean needDesigner) {
-        isNeedDesigner = needDesigner;
+    public void setNeedPartA(int needPartA) {
+        this.needPartA = needPartA;
     }
 
-    public boolean isNeedChecker() {
-        return isNeedChecker;
+    public int getNeedPartB() {
+        return needPartB;
     }
 
-    public void setNeedChecker(boolean needChecker) {
-        isNeedChecker = needChecker;
+    public void setNeedPartB(int needPartB) {
+        this.needPartB = needPartB;
     }
 
-    public boolean isNeedAuditor() {
-        return isNeedAuditor;
+    public int getNeedBusInCharge() {
+        return needBusInCharge;
     }
 
-    public void setNeedAuditor(boolean needAuditor) {
-        isNeedAuditor = needAuditor;
+    public void setNeedBusInCharge(int needBusInCharge) {
+        this.needBusInCharge = needBusInCharge;
     }
 
-    public boolean isNeedContractFee() {
-        return isNeedContractFee;
+    public int getNeedBusAssistant() {
+        return needBusAssistant;
     }
 
-    public void setNeedContractFee(boolean needContractFee) {
-        isNeedContractFee = needContractFee;
+    public void setNeedBusAssistant(int needBusAssistant) {
+        this.needBusAssistant = needBusAssistant;
     }
 
-    public boolean isNeedTechnicalFee() {
-        return isNeedTechnicalFee;
+    public int getNeedDesignInCharge() {
+        return needDesignInCharge;
     }
 
-    public void setNeedTechnicalFee(boolean needTechnicalFee) {
-        isNeedTechnicalFee = needTechnicalFee;
+    public void setNeedDesignInCharge(int needDesignInCharge) {
+        this.needDesignInCharge = needDesignInCharge;
     }
 
-    public boolean isNeedCooperateGainFee() {
-        return isNeedCooperateGainFee;
+    public int getNeedDesignAssistant() {
+        return needDesignAssistant;
     }
 
-    public void setNeedCooperateGainFee(boolean needCooperateGainFee) {
-        isNeedCooperateGainFee = needCooperateGainFee;
+    public void setNeedDesignAssistant(int needDesignAssistant) {
+        this.needDesignAssistant = needDesignAssistant;
     }
 
-    public boolean isNeedOtherGainFee() {
-        return isNeedOtherGainFee;
+    public int getNeedTaskLeader() {
+        return needTaskLeader;
     }
 
-    public void setNeedOtherGainFee(boolean needOtherGainFee) {
-        isNeedOtherGainFee = needOtherGainFee;
+    public void setNeedTaskLeader(int needTaskLeader) {
+        this.needTaskLeader = needTaskLeader;
     }
 
-    public boolean isNeedCooperatePayFee() {
-        return isNeedCooperatePayFee;
+    public int getNeedDesigner() {
+        return needDesigner;
     }
 
-    public void setNeedCooperatePayFee(boolean needCooperatePayFee) {
-        isNeedCooperatePayFee = needCooperatePayFee;
+    public void setNeedDesigner(int needDesigner) {
+        this.needDesigner = needDesigner;
     }
 
-    public boolean isNeedOtherPayFee() {
-        return isNeedOtherPayFee;
+    public int getNeedChecker() {
+        return needChecker;
     }
 
-    public void setNeedOtherPayFee(boolean needOtherPayFee) {
-        isNeedOtherPayFee = needOtherPayFee;
+    public void setNeedChecker(int needChecker) {
+        this.needChecker = needChecker;
     }
 
-    public boolean isNeedBuildType() {
-        return isNeedBuildType;
+    public int getNeedAuditor() {
+        return needAuditor;
     }
 
-    public void setNeedBuildType(boolean needBuildType) {
-        isNeedBuildType = needBuildType;
+    public void setNeedAuditor(int needAuditor) {
+        this.needAuditor = needAuditor;
     }
 
-    public boolean isNeedFillBasic() {
-        return needFillBasic;
+    public int getNeedContractFee() {
+        return needContractFee;
     }
 
-    public void setNeedFillBasic(boolean needFillBasic) {
-        this.needFillBasic = needFillBasic;
+    public void setNeedContractFee(int needContractFee) {
+        this.needContractFee = needContractFee;
     }
 
-    public boolean isNeedFillFunction() {
-        return needFillFunction;
+    public int getNeedTechnicalFee() {
+        return needTechnicalFee;
     }
 
-    public void setNeedFillFunction(boolean needFillFunction) {
-        this.needFillFunction = needFillFunction;
+    public void setNeedTechnicalFee(int needTechnicalFee) {
+        this.needTechnicalFee = needTechnicalFee;
     }
 
-    public boolean isNeedFillMember() {
-        return needFillMember;
+    public int getNeedCooperateGainFee() {
+        return needCooperateGainFee;
     }
 
-    public void setNeedFillMember(boolean needFillMember) {
-        this.needFillMember = needFillMember;
+    public void setNeedCooperateGainFee(int needCooperateGainFee) {
+        this.needCooperateGainFee = needCooperateGainFee;
     }
 
-    public boolean isNeedFillFee() {
-        return needFillFee;
+    public int getNeedOtherGainFee() {
+        return needOtherGainFee;
     }
 
-    public void setNeedFillFee(boolean needFillFee) {
-        this.needFillFee = needFillFee;
+    public void setNeedOtherGainFee(int needOtherGainFee) {
+        this.needOtherGainFee = needOtherGainFee;
     }
 
-    public boolean isNeedStatus() {
-        return isNeedStatus;
+    public int getNeedCooperatePayFee() {
+        return needCooperatePayFee;
     }
 
-    public void setNeedStatus(boolean needStatus) {
-        isNeedStatus = needStatus;
+    public void setNeedCooperatePayFee(int needCooperatePayFee) {
+        this.needCooperatePayFee = needCooperatePayFee;
     }
 
-    public boolean isNeedPartA() {
-        return isNeedPartA;
+    public int getNeedOtherPayFee() {
+        return needOtherPayFee;
     }
 
-    public void setNeedPartA(boolean needPartA) {
-        isNeedPartA = needPartA;
+    public void setNeedOtherPayFee(int needOtherPayFee) {
+        this.needOtherPayFee = needOtherPayFee;
     }
 
-    public boolean isNeedPartB() {
-        return isNeedPartB;
+    public int getNeedBuildType() {
+        return needBuildType;
     }
 
-    public void setNeedPartB(boolean needPartB) {
-        isNeedPartB = needPartB;
-    }
-
-    public boolean isNeedBusInCharge() {
-        return isNeedBusInCharge;
-    }
-
-    public void setNeedBusInCharge(boolean needBusInCharge) {
-        isNeedBusInCharge = needBusInCharge;
-    }
-
-    public boolean isNeedBusAssistant() {
-        return isNeedBusAssistant;
-    }
-
-    public void setNeedBusAssistant(boolean needBusAssistant) {
-        isNeedBusAssistant = needBusAssistant;
-    }
-
-    public boolean isNeedDesignInCharge() {
-        return isNeedDesignInCharge;
-    }
-
-    public void setNeedDesignInCharge(boolean needDesignInCharge) {
-        isNeedDesignInCharge = needDesignInCharge;
-    }
-
-    public boolean isNeedDesignAssistant() {
-        return isNeedDesignAssistant;
-    }
-
-    public void setNeedDesignAssistant(boolean needDesignAssistant) {
-        isNeedDesignAssistant = needDesignAssistant;
+    public void setNeedBuildType(int needBuildType) {
+        this.needBuildType = needBuildType;
     }
 }

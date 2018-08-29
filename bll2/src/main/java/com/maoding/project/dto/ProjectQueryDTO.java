@@ -15,7 +15,7 @@ import java.util.List;
  * 作者: 张成亮
  * 描述:
  **/
-public class ProjectQueryDTO extends CoreQueryDTO {
+public class ProjectQueryDTO extends DynamicQueryDTO {
     /** 立项时间 **/
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date projectCreateDateStart;
