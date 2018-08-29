@@ -3,8 +3,9 @@ package com.maoding.invoice.service.impl;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.service.NewBaseService;
-import com.maoding.core.constant.ProjectCostConst;
-import com.maoding.core.util.*;
+import com.maoding.core.util.BeanUtils;
+import com.maoding.core.util.DigitUtils;
+import com.maoding.core.util.StringUtil;
 import com.maoding.enterprise.service.EnterpriseService;
 import com.maoding.invoice.dao.InvoiceDao;
 import com.maoding.invoice.dto.InvoiceDTO;
@@ -15,10 +16,9 @@ import com.maoding.invoice.entity.InvoiceEntity;
 import com.maoding.invoice.service.InvoiceService;
 import com.maoding.org.dao.CompanyDao;
 import com.maoding.org.entity.CompanyEntity;
-import com.maoding.project.dao.ProjectConditionDao;
-import com.maoding.project.dto.DynamicQueryDTO;
 import com.maoding.project.dto.TitleColumnDTO;
 import com.maoding.project.dto.TitleQueryDTO;
+import com.maoding.project.service.ProjectConditionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +37,7 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
     private EnterpriseService enterpriseService;
 
     @Autowired
-    private ProjectConditionDao projectConditionDao;
+    private ProjectConditionService projectConditionService;
 
 
     @Override
@@ -102,32 +102,9 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
      **/
     @Override
     public List<InvoiceDTO> listInvoice(InvoiceQueryDTO query) {
+        updateQuery(query);
+
         return invoiceDao.listInvoice(query);
-    }
-
-    //填充公司名称
-    private List<InvoiceDTO> updateInvoiceList(List<InvoiceDTO> list){
-        if (ObjectUtils.isNotEmpty(list)){
-            list.forEach(invoice->{
-                invoice.setCostTypeName(getCostTypeName(invoice.getCostType()));
-                invoice.setInvoiceTypeName(getInvoiceTypeName(invoice.getInvoiceType()));
-                if (StringUtils.isEmpty(invoice.getRelationCompanyName()) && StringUtils.isNotEmpty(invoice.getRelationCompanyId())){
-                    String companyName = getRelationCompanyName(invoice.getRelationCompanyId(),invoice.getRelationCompanyName());
-                    invoice.setRelationCompanyName(companyName);
-                }
-            });
-        }
-        return list;
-    }
-
-    //获取收支分类子项名称
-    private String getCostTypeName(int costType){
-        return ProjectCostConst.COST_TYPE_MAP.get(costType+"");
-    }
-
-    //获取收支分类子项名称
-    private String getInvoiceTypeName(int invoiceType){
-        return (invoiceType == 1) ? "普票" : "专票";
     }
 
     /**
@@ -140,10 +117,7 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
      **/
     @Override
     public CorePageDTO<InvoiceDTO> listPageInvoice(InvoiceQueryDTO query) {
-        TitleQueryDTO titleQuery = BeanUtils.createFrom(query,TitleQueryDTO.class);
-        titleQuery.setType(2);
-        List<TitleColumnDTO> titleList = projectConditionDao.listTitle(titleQuery);
-        getNeedFillColumn(titleList,query);
+        updateQuery(query);
 
         List<InvoiceDTO> invoiceList = invoiceDao.listInvoice(query);
         int total = invoiceDao.getLastQueryCount();
@@ -157,8 +131,17 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
         return page;
     }
 
+    //更新查询条件内要查询的属性
+    private InvoiceQueryDTO updateQuery(InvoiceQueryDTO query){
+        TitleQueryDTO titleQuery = BeanUtils.createFrom(query,TitleQueryDTO.class);
+        titleQuery.setType(2);
+        titleQuery.setWithList(0);
+        List<TitleColumnDTO> titleList = projectConditionService.listTitle(titleQuery);
+        return getNeedFillColumn(titleList,query);
+    }
+
     //获取需要填充的动态内容
-    private DynamicQueryDTO getNeedFillColumn(List<TitleColumnDTO> titleList, DynamicQueryDTO query){
+    private InvoiceQueryDTO getNeedFillColumn(List<TitleColumnDTO> titleList, InvoiceQueryDTO query){
         final int TITLE_TYPE_INVOICE_APPLY_DATE = 35;
         final int TITLE_TYPE_INVOICE_APPLY_USER = 36;
         final int TITLE_TYPE_INVOICE_FEE = 37;

@@ -100,7 +100,7 @@
         </where>
     </select>
 
-    <!-- 查找项目列表标题栏 -->
+    <!-- 查找用户已选择标题栏 -->
     <select id="listTitle" resultType="com.maoding.project.dto.TitleColumnDTO" parameterType="com.maoding.project.dto.TitleQueryDTO">
         select
             title_list.field_type as type,
@@ -111,13 +111,32 @@
                 and title_list.classic_type = #{type}
             </if>
             <if test="currentCompanyId != null">
-                and (title_list.company_id = #{currentCompanyId} or title_list.company_id is null)
+                and title_list.company_id = #{currentCompanyId}
             </if>
             <if test="accountId != null">
-                and (title_list.user_id = #{accountId} or title_list.user_id is null)
+                and title_list.user_id = #{accountId}
             </if>
         </where>
         group by title_list.code
         order by title_list.can_be_hide,title_list.seq
     </select>
+
+    <!-- 查找默认标题栏 -->
+    <select id="listDefaultTitle" resultType="com.maoding.project.dto.TitleColumnDTO" parameterType="com.maoding.project.dto.TitleQueryDTO">
+        select
+            title_list.field_type as type,
+            title_list.*
+        from md_title_default title_list
+        <where>
+            <if test="type != null">
+                and title_list.classic_type = #{type}
+            </if>
+        </where>
+        group by title_list.code
+        order by title_list.seq
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.String">
+        delete from maoding_web_project_condition where id=#{id}
+    </delete>
 </mapper>

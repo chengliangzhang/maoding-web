@@ -15,6 +15,17 @@ public class TitleQueryDTO extends CoreQueryDTO {
     /** 标题栏类型: 0-我的项目标题栏，1-项目总览标题栏，2-发票汇总标题栏 **/
     private Integer type;
 
+    /** 是否获取过滤列表: 1/null-查询过滤器列表,0-不查询过滤器列表 **/
+    private Integer withList;
+
+    public Integer getWithList() {
+        return withList;
+    }
+
+    public void setWithList(Integer withList) {
+        this.withList = withList;
+    }
+
     public Integer getType() {
         return type;
     }

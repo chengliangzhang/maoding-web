@@ -95,7 +95,7 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
         //从数据库内读取所有的可选标题栏
         List<OptionalTitleGroupDTO> optionalTitleGroupList = projectConditionDao.listOptionalTitleGroup(query);
 
-        List<TitleColumnDTO> list = projectConditionDao.listTitle(query);
+        List<TitleColumnDTO> list = listTitle(query);
 
         //更新被选中状态，并生成已选择列表
         List<OptionalTitleDTO> selectedTitleList = new ArrayList<>();
@@ -146,7 +146,7 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
                 sb.append(code);
             }
             TitleQueryDTO query = BeanUtils.createFrom(request,TitleQueryDTO.class);
-            List<TitleColumnDTO> list = projectConditionDao.listTitle(query);
+            List<TitleColumnDTO> list = listTitle(query);
             String id = getTitleId(list);
             if (StringUtils.isNotEmpty(id)){
                 ProjectConditionEntity entity = new ProjectConditionEntity();
@@ -169,6 +169,13 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
                 entity.setType(request.getType());
                 entity.setCode(sb.toString());
                 projectConditionDao.insert(entity);
+            }
+        } else {
+            TitleQueryDTO query = BeanUtils.createFrom(request,TitleQueryDTO.class);
+            List<TitleColumnDTO> list = listTitle(query);
+            String id = getTitleId(list);
+            if (StringUtils.isNotEmpty(id)){
+                projectConditionDao.deleteById(id);
             }
         }
     }
@@ -204,8 +211,11 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
         }
         int type = DigitUtils.parseInt(query.getType());
         List<TitleColumnDTO> titleList = projectConditionDao.listTitle(query);
+        if (ObjectUtils.isEmpty(titleList)){
+            titleList = projectConditionDao.listDefaultTitle(query);
+        }
 
-        if (ObjectUtils.isNotEmpty(titleList)){
+        if (isNeedGetFilterList(titleList,query)){
             titleList.forEach(title->{
                 if (title.getHasList() == 1){
                     List<CoreShowDTO> filterList = null;
@@ -226,6 +236,12 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
         }
 
         return titleList;
+    }
+
+    //判断是否需要读取列表过滤器
+    private boolean isNeedGetFilterList(List<TitleColumnDTO> titleList, TitleQueryDTO query){
+        return ObjectUtils.isNotEmpty(titleList)
+                && ((query.getWithList() == null) || (query.getWithList() == 1));
     }
 
     //判断查询出的列表是否有效

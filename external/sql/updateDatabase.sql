@@ -3115,23 +3115,20 @@ CREATE OR REPLACE VIEW `md_optional_title` AS
     inner join md_type_optional_title optional_title on (optional_title.group_type = optional_group.id and optional_title.id != '0')
   where title_classic.is_group = 1;
 
--- 用户已选择项目标题栏
-CREATE OR REPLACE VIEW `md_title` AS
+-- 固定标题栏
+CREATE OR REPLACE VIEW `md_title_default` AS
   select
-    ifnull(concat(user_title.id,'-',optional_title.optional_title_id),optional_title.optional_title_id) as title_id,
-    user_title.company_id,
-    user_title.user_id,
+    optional_title.optional_title_id as title_id,
     optional_title.*,
-    ifnull(find_in_set(optional_title.code,user_title.code),optional_title.type_id - 50) as seq,
+    optional_title.type_id as seq,
     filter_type.has_list
   from
     md_optional_title optional_title
     inner join md_type_filter filter_type on (filter_type.id = optional_title.filter_type)
-    left join maoding_web_project_condition user_title on (find_in_set(optional_title.code,user_title.code))
-  where optional_title.can_be_hide = 0
+  where optional_title.can_be_hide = 0;
 
-  union all
-
+-- 用户已选择标题栏
+CREATE OR REPLACE VIEW `md_title` AS
   select
     concat(user_title.id,'-',optional_title.optional_title_id) as title_id,
     user_title.company_id,
@@ -3141,9 +3138,8 @@ CREATE OR REPLACE VIEW `md_title` AS
     filter_type.has_list
   from
     maoding_web_project_condition user_title
-    inner join md_optional_title optional_title on (find_in_set(optional_title.code,user_title.code) and optional_title.can_be_hide = 1)
-    inner join md_type_filter filter_type on (filter_type.id = optional_title.filter_type)
-  where user_title.status = '0';
+    inner join md_optional_title optional_title on (find_in_set(optional_title.code,user_title.code))
+    inner join md_type_filter filter_type on (filter_type.id = optional_title.filter_type);
 
 -- 项目参与人
 CREATE OR REPLACE VIEW `md_project_member` AS

@@ -29,9 +29,16 @@ public interface ProjectConditionDao extends BaseDao<ProjectConditionEntity> {
     List<OptionalTitleGroupDTO> listOptionalTitleGroup(TitleQueryDTO query);
 
     /**
-     * 描述       查找显示的项目标题栏
+     * 描述       查找用户已选择的标题栏
      * 日期       2018/8/23
      * @author   张成亮
      **/
     List<TitleColumnDTO> listTitle(TitleQueryDTO query);
+
+    /**
+     * 描述       查找默认的标题栏
+     * 日期       2018/8/23
+     * @author   张成亮
+     **/
+    List<TitleColumnDTO> listDefaultTitle(TitleQueryDTO query);
 }

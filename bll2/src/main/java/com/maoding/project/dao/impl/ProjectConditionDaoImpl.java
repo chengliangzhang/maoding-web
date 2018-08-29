@@ -47,4 +47,16 @@ public class ProjectConditionDaoImpl extends GenericDao<ProjectConditionEntity> 
     public List<TitleColumnDTO> listTitle(TitleQueryDTO query) {
         return sqlSession.selectList("ProjectConditionEntityMapper.listTitle", query);
     }
+
+    /**
+     * 描述       查找默认的标题栏
+     * 日期       2018/8/23
+     *
+     * @param query
+     * @author 张成亮
+     */
+    @Override
+    public List<TitleColumnDTO> listDefaultTitle(TitleQueryDTO query) {
+        return sqlSession.selectList("ProjectConditionEntityMapper.listDefaultTitle", query);
+    }
 }
