@@ -2738,7 +2738,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         }
 
         TitleQueryDTO titleQuery = BeanUtils.createFrom(query,TitleQueryDTO.class);
-        List<TitleColumnDTO> titleList = projectConditionDao.listTitle(titleQuery);
+        List<TitleColumnDTO> titleList = projectConditionService.listTitle(titleQuery);
 
         getNeedFillColumn(titleList,query);
 
