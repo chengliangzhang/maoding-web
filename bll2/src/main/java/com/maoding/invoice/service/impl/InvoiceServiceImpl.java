@@ -135,7 +135,7 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
     //更新查询条件内要查询的属性
     private InvoiceQueryDTO updateQuery(InvoiceQueryDTO query){
         TitleQueryDTO titleQuery = BeanUtils.createFrom(query,TitleQueryDTO.class);
-        titleQuery.setType(2);
+        titleQuery.setType(SystemParameters.TITLE_TYPE_INVOICE);
         titleQuery.setWithList(0);
         List<TitleColumnDTO> titleList = projectConditionService.listTitle(titleQuery);
         return getNeedFillColumn(titleList,query);
@@ -143,16 +143,6 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
 
     //获取需要填充的动态内容
     private InvoiceQueryDTO getNeedFillColumn(List<TitleColumnDTO> titleList, InvoiceQueryDTO query){
-        final int TITLE_TYPE_INVOICE_APPLY_DATE = 35;
-        final int TITLE_TYPE_INVOICE_APPLY_USER = 36;
-        final int TITLE_TYPE_INVOICE_FEE = 37;
-        final int TITLE_TYPE_INVOICE_INVOICE_TYPE = 38;
-        final int TITLE_TYPE_INVOICE_COST_TYPE = 39;
-        final int TITLE_TYPE_INVOICE_RELATION_COMPANY = 40;
-        final int TITLE_TYPE_INVOICE_TAX_ID = 41;
-        final int TITLE_TYPE_INVOICE_FEE_DESCRIPTION = 42;
-        final int TITLE_TYPE_INVOICE_PROJECT_NAME = 43;
-        final int TITLE_TYPE_INVOICE_NO = 44;
         for (TitleColumnDTO title : titleList) {
             if (title.getTypeId() == SystemParameters.TITLE_TYPE_INVOICE_INVOICE_TYPE){
                 query.setNeedInvoiceType(1);

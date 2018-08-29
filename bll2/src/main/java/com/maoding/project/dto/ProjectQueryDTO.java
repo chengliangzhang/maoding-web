@@ -2,7 +2,6 @@ package com.maoding.project.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.maoding.core.base.dto.CoreQueryDTO;
 
 import java.util.Date;
 import java.util.List;

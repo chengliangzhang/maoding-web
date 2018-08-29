@@ -1166,4 +1166,9 @@ public interface SystemParameters {
     int TITLE_TYPE_INVOICE_FEE_DESCRIPTION = 42;
     int TITLE_TYPE_INVOICE_PROJECT_NAME = 43;
     int TITLE_TYPE_INVOICE_NO = 44;
+
+    /** 标题栏类别 **/
+    int TITLE_TYPE_PROJECT = 0;
+    int TITLE_TYPE_PROJECT_OVERVIEW = 1;
+    int TITLE_TYPE_INVOICE = 2;
 }

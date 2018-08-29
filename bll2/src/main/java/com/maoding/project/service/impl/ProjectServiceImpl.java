@@ -2733,14 +2733,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
      */
     @Override
     public List<ProjectVariableDTO> listProject(ProjectQueryDTO query) {
-        if (StringUtils.isEmpty(query.getCompanyId())){
-            query.setCompanyId(query.getCurrentCompanyId());
-        }
-
-        TitleQueryDTO titleQuery = BeanUtils.createFrom(query,TitleQueryDTO.class);
-        List<TitleColumnDTO> titleList = projectConditionService.listTitle(titleQuery);
-
-        getNeedFillColumn(titleList,query);
+        updateQuery(query);
 
         List<ProjectVariableDTO> mainList =  projectDao.listProjectBasic(query);
 
@@ -2756,15 +2749,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
      */
     @Override
     public ProjectListPageDTO listPageProject(ProjectQueryDTO query) {
-        if (StringUtils.isEmpty(query.getCompanyId())){
-            query.setCompanyId(query.getCurrentCompanyId());
-        }
-
-        TitleQueryDTO titleQuery = BeanUtils.createFrom(query,TitleQueryDTO.class);
-        titleQuery.setWithList(0);
-        List<TitleColumnDTO> titleList = projectConditionService.listTitle(titleQuery);
-
-        getNeedFillColumn(titleList,query);
+        updateQuery(query);
 
         //查询主列表，包括projectId、过滤、排序、总数信息
         List<ProjectVariableDTO> mainList = projectDao.listProjectBasic(query);
@@ -2785,16 +2770,26 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         return page;
     }
 
-    //补充未用于过滤但需要显示的项目信息
+    //更新查询条件
+    private ProjectQueryDTO updateQuery(ProjectQueryDTO query){
+        //设定要查询的公司编号
+        if (StringUtils.isEmpty(query.getCompanyId())){
+            query.setCompanyId(query.getCurrentCompanyId());
+        }
+
+        //设定要查询的属性
+        TitleQueryDTO titleQuery = BeanUtils.createFrom(query,TitleQueryDTO.class);
+        titleQuery.setType(DigitUtils.parseInt(query.getType()));
+        titleQuery.setWithList(0);
+        List<TitleColumnDTO> titleList = projectConditionService.listTitle(titleQuery);
+        return getNeedFillColumn(titleList,query);
+    }
+
+
+    //补充在查询中没有填充但需要显示的项目信息
     private List<ProjectVariableDTO> updateProjectList(List<ProjectVariableDTO> mainList,ProjectQueryDTO query){
         if (ObjectUtils.isNotEmpty(mainList)){
             mainList.forEach(project->{
-                //添加项目基本信息
-                //合作组织信息
-                if (query.getNeedRelationCompany() == 1){
-                    project.setRelationCompany(getRelationCompany(project.getId(),query.getCurrentCompanyId()));
-                }
-
                 //甲方信息
                 if (query.getNeedPartA() == 1){
                     project.setPartA(getProjectPartA(project.getId()));
@@ -2803,45 +2798,6 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                 //乙方信息
                 if (query.getNeedPartB() == 1){
                     project.setPartB(getProjectPartB(project.getCompanyBid()));
-                }
-
-                //功能分类信息
-                if (query.getNeedBuildType() == 1){
-                    project.setBuildName(getProjectBuildName(project.getId()));
-                }
-
-                //添加人员信息，如任务负责人、设计人员、校对人员、审核人员
-                //经营负责人
-                if (query.getNeedBusInCharge() == 1){
-                    project.setBusPersonInCharge(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_MANAGER));
-                }
-                //经营助理
-                if (query.getNeedBusAssistant() == 1){
-                    project.setBusPersonInChargeAssistant(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_MANAGER_ASSISTANT));
-                }
-                //设计负责人
-                if (query.getNeedDesignInCharge() == 1){
-                    project.setDesignPersonInCharge(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_DESIGN));
-                }
-                //设计助理
-                if (query.getNeedDesignAssistant() == 1){
-                    project.setDesignPersonInChargeAssistant(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_DESIGN_ASSISTANT));
-                }
-                //任务负责人
-                if (query.getNeedTaskLeader() == 1){
-                    project.setTaskLeader(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_TASK_LEADER));
-                }
-                //设计人员
-                if (query.getNeedDesigner() == 1){
-                    project.setDesigner(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_TASK_DESIGN));
-                }
-                //校对人员
-                if (query.getNeedChecker() == 1){
-                    project.setChecker(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_TASK_CHECK));
-                }
-                //审核人员
-                if (query.getNeedAuditor() == 1){
-                    project.setAuditor(getProjectMembers(query.getCompanyId(), project.getId(), ProjectConst.MEMBER_TYPE_TASK_AUDIT));
                 }
 
                 //添加费用信息，如合同回款、合同到款等

@@ -2,6 +2,7 @@ package com.maoding.project.service.impl;
 
 import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.base.service.GenericService;
+import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.*;
 import com.maoding.invoice.dao.InvoiceDao;
 import com.maoding.invoice.dto.InvoiceFilterQueryDTO;
@@ -202,12 +203,8 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
      */
     @Override
     public List<TitleColumnDTO> listTitle(TitleQueryDTO query) {
-        final int TITLE_TYPE_PROJECT = 0;
-        final int TITLE_TYPE_PROJECT_OVERVIEW = 1;
-        final int TITLE_TYPE_INVOICE = 2;
-
         if (query.getType() == null){
-            query.setType(TITLE_TYPE_PROJECT);
+            query.setType(SystemParameters.TITLE_TYPE_PROJECT);
         }
         int type = DigitUtils.parseInt(query.getType());
         List<TitleColumnDTO> titleList = projectConditionDao.listTitle(query);
@@ -219,11 +216,11 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
             titleList.forEach(title->{
                 if (title.getHasList() == 1){
                     List<CoreShowDTO> filterList = null;
-                    if ((type == TITLE_TYPE_PROJECT) || (type == TITLE_TYPE_PROJECT_OVERVIEW)) {
+                    if ((type == SystemParameters.TITLE_TYPE_PROJECT) || (type == SystemParameters.TITLE_TYPE_PROJECT_OVERVIEW)) {
                         ProjectFilterQueryDTO filterQuery = BeanUtils.createFrom(query,ProjectFilterQueryDTO.class);
                         filterQuery.setTitleCode(title.getCode());
                         filterList = projectDao.getProjectFilterList(filterQuery);
-                    } else if (type == TITLE_TYPE_INVOICE) {
+                    } else if (type == SystemParameters.TITLE_TYPE_INVOICE) {
                         InvoiceFilterQueryDTO filterQuery = BeanUtils.createFrom(query,InvoiceFilterQueryDTO.class);
                         filterQuery.setTitleCode(title.getCode());
                         filterList = invoiceDao.getInvoiceFilterList(filterQuery);
