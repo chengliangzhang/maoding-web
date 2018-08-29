@@ -184,8 +184,8 @@
                     team_member.user_name as name
                 </when>
                 <when test="titleCode == 'buildName'">
-                    if(custom_built_type.id is null,default_built_type.id,custom_built_type.id) as id,
-                    if(custom_built_type.id is null,default_built_type.type_name,custom_built_type.type_name) as name
+                    build_type.id as id,
+                    build_type.type_name as name
                 </when>
                 <otherwise>
                     null as id,
@@ -268,11 +268,8 @@
                     )
                 </when>
                 <when test="titleCode == 'buildName'">
-                    left join md_type_built_const default_built_type on (
-                        find_in_set(default_built_type.id,project_list.built_type)
-                    )
-                    left join md_type_built_custom custom_built_type on (
-                        find_in_set(custom_built_type.id,project_list.built_type)
+                    inner join md_build_type build_type on (
+                        find_in_set(build_type.id,project_list.built_type)
                     )
                 </when>
                 <otherwise/>
