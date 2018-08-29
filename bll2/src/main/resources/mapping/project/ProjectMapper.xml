@@ -437,7 +437,7 @@
             inner join maoding_web_project_member member_list on (
                 member_list.project_id = project_list.id
                 <if test="accountId != null and type != 1">
-                    and member_list.user_id = #{accountId}
+                    and member_list.account_id = #{accountId}
                 </if>
                 <if test="currentCompanyId != null">
                     and member_list.company_id = #{currentCompanyId}
@@ -499,7 +499,7 @@
                     member_filter_task_leader.project_id = project_list.id
                     and member_filter_task_leader.company_id = member_list.company_id
                     and member_filter_task_leader.company_user_id = #{taskLeader}
-                    and member_filter_task_leader.is_task_leader
+                    and member_filter_task_leader.member_type = 3
                 )
             </if>
             <!-- 设计人员筛选 -->
@@ -508,7 +508,7 @@
                 member_filter_task_designer.project_id = project_list.id
                 and member_filter_task_designer.company_id = member_list.company_id
                 and member_filter_task_designer.company_user_id = #{designer}
-                and member_filter_task_designer.is_task_designer
+                and member_filter_task_designer.member_type = 4
                 )
             </if>
             <!-- 校验人员筛选 -->
@@ -517,7 +517,7 @@
                     member_filter_task_checker.project_id = project_list.id
                     and member_filter_task_checker.company_id = member_list.company_id
                     and member_filter_task_checker.company_user_id = #{checker}
-                    and member_filter_task_checker.is_task_checker
+                    and member_filter_task_checker.member_type = 5
                 )
             </if>
             <!-- 审核人员筛选 -->
@@ -526,7 +526,7 @@
                     member_filter_task_auditor.project_id = project_list.id
                     and member_filter_task_auditor.company_id = member_list.company_id
                     and member_filter_task_auditor.company_user_id = #{auditor}
-                    and member_filter_task_auditor.is_task_auditor
+                    and member_filter_task_auditor.member_type = 6
                 )
             </if>
             <!-- 项目成员显示 -->
