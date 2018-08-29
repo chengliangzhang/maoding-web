@@ -1695,15 +1695,15 @@ CREATE PROCEDURE `initConst`()
 
     -- 发票汇总标题栏
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,35,':applyDate;申请日期','0000000000001;2;5;4;2');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,36,':companyUserName;申请人','0000000000001;2;5;2;1');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,36,':companyUserName;申请人','0000000000001;2;5;1;1');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,37,':fee;金额','0000000000001;2;5;0;3');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,38,':invoiceTypeName;发票类型','1000000000001;2;5;2;1');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,39,':costTypeName;分类子项','1000000000001;2;5;3;1');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,40,':relationCompanyName;收票方名称','1000000000001;2;5;3;1');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,41,':taxIdNumber;纳税识别号','1000000000001;2;5;2;1');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,40,':relationCompanyName;收票方名称','1000000000001;2;5;1;1');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,41,':taxIdNumber;纳税识别号','1000000000001;2;5;0;1');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,42,':feeDescription;开票内容','1000000000001;2;5;0;1');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,43,':projectName;关联项目','1000000000001;2;5;2;1');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,44,':invoiceNo;发票号码','0000000000001;2;5;2;1');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,43,':projectName;关联项目','1000000000001;2;5;1;1');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (39,44,':invoiceNo;发票号码','0000000000001;2;5;1;1');
 
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,39,'可选标题栏','md_type_optional_title');

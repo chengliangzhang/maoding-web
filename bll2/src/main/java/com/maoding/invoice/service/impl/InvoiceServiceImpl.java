@@ -102,8 +102,7 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
      **/
     @Override
     public List<InvoiceDTO> listInvoice(InvoiceQueryDTO query) {
-        List<InvoiceDTO> list = invoiceDao.listInvoice(query);
-        return updateInvoiceList(list);
+        return invoiceDao.listInvoice(query);
     }
 
     //填充公司名称
@@ -154,7 +153,7 @@ public class InvoiceServiceImpl extends NewBaseService implements InvoiceService
         page.setTotal(total);
         page.setPageSize(DigitUtils.parseInt(query.getPageSize()));
         page.setPageIndex(DigitUtils.parseInt(query.getPageIndex()));
-        page.setData(updateInvoiceList(invoiceList));
+        page.setData(invoiceList);
         return page;
     }
 

@@ -32,9 +32,11 @@ public class InvoiceQueryDTO extends DynamicQueryDTO {
 
     /** 收票方名称 **/
     private List<String> relationCompanyNameList;
+    private String relationCompanyNameLike;
 
     /** 申请人 **/
     private String companyUserName;
+    private String companyUserNameLike;
     
     /** 发票类型 **/
     private String invoiceTypeName;
@@ -44,9 +46,43 @@ public class InvoiceQueryDTO extends DynamicQueryDTO {
     
     /** 关联项目 **/
     private String projectName;
+    private String projectNameLike;
 
     /** 发票号码 **/
     private String invoiceNo;
+    private String invoiceNoLike;
+
+    public String getRelationCompanyNameLike() {
+        return relationCompanyNameLike;
+    }
+
+    public void setRelationCompanyNameLike(String relationCompanyNameLike) {
+        this.relationCompanyNameLike = relationCompanyNameLike;
+    }
+
+    public String getCompanyUserNameLike() {
+        return companyUserNameLike;
+    }
+
+    public void setCompanyUserNameLike(String companyUserNameLike) {
+        this.companyUserNameLike = companyUserNameLike;
+    }
+
+    public String getProjectNameLike() {
+        return projectNameLike;
+    }
+
+    public void setProjectNameLike(String projectNameLike) {
+        this.projectNameLike = projectNameLike;
+    }
+
+    public String getInvoiceNoLike() {
+        return invoiceNoLike;
+    }
+
+    public void setInvoiceNoLike(String invoiceNoLike) {
+        this.invoiceNoLike = invoiceNoLike;
+    }
 
     public List<String> getCostTypeNameList() {
         return costTypeNameList;

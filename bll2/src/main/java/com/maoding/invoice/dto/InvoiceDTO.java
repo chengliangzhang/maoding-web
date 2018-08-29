@@ -81,11 +81,22 @@ public class InvoiceDTO extends CoreDTO {
      */
     private String invoiceNo;
 
+    /** 纳税识别号 **/
+    private String taxIdNumber;
+
     /** 个人任务编号 **/
     private String myTaskId;
 
     /** 个人任务状态 **/
     private String myTaskStatus;
+
+    public String getTaxIdNumber() {
+        return taxIdNumber;
+    }
+
+    public void setTaxIdNumber(String taxIdNumber) {
+        this.taxIdNumber = taxIdNumber;
+    }
 
     public String getMyTaskStatus() {
         return myTaskStatus;

@@ -188,12 +188,15 @@
     <result column="apply_date" property="applyDate" jdbcType="DATE"/>
     <result column="company_user_name" property="companyUserName" jdbcType="VARCHAR"/>
     <result column="fee" property="fee" jdbcType="DECIMAL"/>
-    <result column="cost_type" property="costType" jdbcType="VARCHAR"/>
+    <result column="cost_type_name" property="costTypeName" jdbcType="VARCHAR"/>
     <result column="fee" property="fee" jdbcType="DECIMAL"/>
     <result column="fee_description" property="feeDescription" jdbcType="VARCHAR"/>
     <result column="project_id" property="projectId" jdbcType="VARCHAR"/>
     <result column="invoice_type" property="invoiceType" jdbcType="INTEGER"/>
+    <result column="invoice_type_name" property="invoiceTypeName" jdbcType="INTEGER"/>
     <result column="invoice_no" property="invoiceNo" jdbcType="VARCHAR"/>
+    <result column="tax_id_number" property="taxIdNumber" jdbcType="VARCHAR"/>
+    <result column="relation_company_name" property="relationCompanyName" jdbcType="VARCHAR"/>
     <result column="my_task_id" property="myTaskId" jdbcType="VARCHAR"/>
     <result column="my_task_status" property="myTaskStatus" jdbcType="VARCHAR"/>
   </resultMap>
@@ -215,12 +218,15 @@
       select <include refid="CommonMapper.countSQL"/>
           cost_detail.fee,
           cost_type.type as cost_type,
+          fee_type.type_name as cost_type_name,
+          invoice_type.type_name as invoice_type_name,
           cost_point.fee_description,
           company_user.user_name as company_user_name,
           project_list.id as project_id,
           project_list.project_name,
           work_list.id as my_task_id,
           work_list.status as my_task_status,
+          ifnull(invoice_list.relation_company_name,company_list.company_name) as relation_company_name,
           invoice_list.*
       from maoding_invoice invoice_list
           <!-- 发票类型 -->
@@ -244,6 +250,9 @@
               company_user.id = operater_list.company_user_id
               <if test="companyUserName != null">
                   and company_user.id = #{companyUserName}
+              </if>
+              <if test="companyUserNameLike != null">
+                  and company_user.user_name like concat('%',#{companyUserNameLike},'%')
               </if>
           )
           <!-- 分类子项 -->
@@ -271,6 +280,9 @@
               <if test="projectName != null">
                   and project_list.id = #{projectName}
               </if>
+              <if test="projectNameLike != null">
+                  and project_list.project_name like concat('%',#{projectNameLike},'%')
+              </if>
           )
           <!-- 收款方公司名称 -->
           left join maoding_web_company company_list on (
@@ -282,6 +294,9 @@
                       #{relationCompanyName}
                   </foreach>
               </if>
+              <if test="relationCompanyNameLike != null">
+                  and ifnull(invoice_list.relation_company_name,company_list.company_name) like concat('%',#{relationCompanyNameLike},'%')
+              </if>
           )
           <!-- 关联个人任务 -->
           left join maoding_web_my_task work_list on (
@@ -292,11 +307,14 @@
       where <include refid="FilterForInvoiceList"/>
           <!-- 纳税识别号 -->
           <if test="taxIdNumber != null">
-              invoice_list.tax_id_number = #{taxIdNumber}
+              and invoice_list.tax_id_number = #{taxIdNumber}
           </if>
           <!-- 发票号码 -->
           <if test="invoiceNo != null">
-              invoice_list.invoice_no = #{invoiceNo}
+              and invoice_list.invoice_no = #{invoiceNo}
+          </if>
+          <if test="invoiceNoLike != null">
+              and invoice_list.invoice_no like concat('%',#{invoiceNoLike},'%')
           </if>
       group by invoice_list.id
       order by invoice_list.apply_date desc
