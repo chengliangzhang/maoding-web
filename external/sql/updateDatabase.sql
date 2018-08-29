@@ -3138,7 +3138,10 @@ CREATE OR REPLACE VIEW `md_title` AS
     filter_type.has_list
   from
     maoding_web_project_condition user_title
-    inner join md_optional_title optional_title on (find_in_set(optional_title.code,user_title.code))
+    inner join md_optional_title optional_title on (
+        optional_title.classic_type = user_title.type
+        and find_in_set(optional_title.code,user_title.code)
+    )
     inner join md_type_filter filter_type on (filter_type.id = optional_title.filter_type);
 
 -- 项目参与人

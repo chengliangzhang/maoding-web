@@ -118,7 +118,7 @@
             </if>
         </where>
         group by title_list.code
-        order by title_list.can_be_hide,title_list.seq
+        order by title_list.seq
     </select>
 
     <!-- 查找默认标题栏 -->

@@ -2899,44 +2899,31 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
     //需要填充项目基本信息
     private ProjectQueryDTO getNeedFillColumn(List<TitleColumnDTO> titleList, ProjectQueryDTO query){
         for (TitleColumnDTO title : titleList) {
-            if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_RELATION_COMPANY) 
-                    && (query.getRelationCompany() == null)){
+            if (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_RELATION_COMPANY) {
                 query.setNeedRelationCompany(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_PART_A)
-                    && (query.getPartA() == null)) {
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_PART_A) {
                 query.setNeedPartA(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_PART_B)
-                    && (query.getPartB() == null)) {
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_PART_B) {
                 query.setNeedPartB(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_BUILD_TYPE)
-                    && (query.getBuildNameList() == null)) {
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_BUILD_TYPE) {
                 query.setNeedBuildType(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_STATUS)
-                    && (query.getStatus() == null)) {
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_STATUS) {
                 query.setNeedStatus(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_LEADER)
-                    && (query.getBusPersonInCharge() == null)) {
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_LEADER) {
                 query.setNeedBusInCharge(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_ASSITANT)
-                    && (query.getBusPersonInChargeAssistant() == null)) {
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_ASSITANT) {
                 query.setNeedBusAssistant(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_DESIGN)
-                    && (query.getDesignPersonInCharge() == null)) {
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_DESIGN) {
                 query.setNeedDesignInCharge(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_DESIGN_ASSISTANT)
-                    && (query.getDesignPersonInChargeAssistant() == null)) {
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_DESIGN_ASSISTANT) {
                 query.setNeedDesignAssistant(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TASK_LEADER)
-                    && (query.getTaskLeader() == null)) {
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TASK_LEADER) {
                 query.setNeedTaskLeader(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TASK_DESIGNER)
-                    && (query.getDesigner() == null)) {
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TASK_DESIGNER) {
                 query.setNeedDesigner(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TASK_CHECKER)
-                    && (query.getChecker() == null)) {
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TASK_CHECKER) {
                 query.setNeedChecker(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TASK_AUDITOR)
-                    && (query.getAuditor() == null)) {
+            } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TASK_AUDITOR) {
                 query.setNeedAuditor(1);
             } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_CONTRACT)
                     || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_CONTRACT_REAL)) {

@@ -146,6 +146,21 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
                 }
                 sb.append(code);
             }
+
+            //数据库内有一些错误数据，没有包含所有的不可选择的标题栏，使用此代码进行修正
+            TitleQueryDTO titleQuery = BeanUtils.createFrom(request,TitleQueryDTO.class);
+            List<TitleColumnDTO> defaultTitleList = projectConditionDao.listDefaultTitle(titleQuery);
+            if (ObjectUtils.isNotEmpty(defaultTitleList)){
+                defaultTitleList.forEach(title->{
+                    if (!sb.toString().contains(title.getCode())){
+                        if (sb.length() > 0){
+                            sb.append(",");
+                        }
+                        sb.append(title.getCode());
+                    }
+                });
+            }
+
             TitleQueryDTO query = BeanUtils.createFrom(request,TitleQueryDTO.class);
             List<TitleColumnDTO> list = listTitle(query);
             String id = getTitleId(list);
