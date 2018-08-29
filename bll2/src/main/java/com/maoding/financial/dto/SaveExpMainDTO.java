@@ -5,7 +5,7 @@ import com.maoding.core.base.dto.BaseDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SaveExpMainDTO extends BaseDTO {
+public class SaveExpMainDTO extends AuditBaseDTO {
 
     /**
      * 当前处理人

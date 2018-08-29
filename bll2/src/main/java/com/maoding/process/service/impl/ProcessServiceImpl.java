@@ -10,6 +10,7 @@ import com.maoding.core.util.ObjectUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
 import com.maoding.core.util.TraceUtils;
+import com.maoding.financial.dto.AuditBaseDTO;
 import com.maoding.financial.dto.AuditDTO;
 import com.maoding.financial.dto.AuditEditDTO;
 import com.maoding.financial.dto.SaveExpMainDTO;
@@ -241,10 +242,14 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             typeEntity.setTargetType(key);
             //设置类型
             if (isNotInvalid(type)){
-                if (isConditionType) {
-                    typeEntity.setType(ProcessTypeConst.PROCESS_TYPE_CONDITION);
-                } else {
-                    typeEntity.setType(ProcessTypeConst.TYPE_FREE);
+                if(ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY.equals(key)){//对于付款申请，如果没有流程，则默认为无流程，其他的默认为自由流程
+                    typeEntity.setType(ProcessTypeConst.TYPE_NOT_PROCESS);
+                }else {
+                    if (isConditionType) {
+                        typeEntity.setType(ProcessTypeConst.PROCESS_TYPE_CONDITION);
+                    } else {
+                        typeEntity.setType(ProcessTypeConst.TYPE_FREE);
+                    }
                 }
             } else {
                 typeEntity.setType(type);
@@ -261,7 +266,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
     }
     private boolean isNotInvalid(Integer type){
         return (type == null)
-                || (type < ProcessTypeConst.TYPE_FREE)
+                || (type < ProcessTypeConst.TYPE_NOT_PROCESS)
                 || (type > ProcessTypeConst.PROCESS_TYPE_CONDITION);
     }
 
@@ -307,7 +312,8 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
      * 如果审核通过，并且已经结束流程，则把审批的主记录设置为审批通过状态
      * 如果没有审批通过，则把当前记录设置为退回状态
      */
-    private void saveAudit(String businessKey, BaseDTO dto, boolean isPass) throws Exception{
+    private boolean saveAudit(String businessKey, AuditBaseDTO dto, boolean isPass) throws Exception{
+        boolean isContinueAudit = false;
         List<FlowTaskDTO> taskList = null;
         if(isPass){
             taskList = workflowService.listWorkTask(businessKey);
@@ -324,6 +330,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
                 Map<String,Object> map = new HashMap<>();
                 map.put(auditIdKey,auditId);
                 workflowService.setTaskVariables(task.getId(),map);
+                isContinueAudit = true;
             }
         }
 
@@ -354,6 +361,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
                 projectCostService.completeProjectFeeApply(projectCostPointDetailDTO);
             }
         }
+        return isContinueAudit;
     }
 
     /**
@@ -476,7 +484,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
      * 完成任务
      */
     @Override
-    public void completeTask2(TaskDTO dto) throws Exception {
+    public boolean completeTask2(TaskDTO dto) throws Exception {
         //  claimTask(dto);
 
         List<FlowTaskDTO> list = workflowService.listWorkTaskVariableValueEquals(auditIdKey,dto.getId());
@@ -501,8 +509,9 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             }
             workflowService.completeWorkTask(workAction);
             //保存我的任务（当前任务完成，如果下一个节点不是结束节点，系统会自动为下一个节点产生一个任务，系统需要保存一条相应的审核记录中）
-            this.saveAudit(dto.getBusinessKey(),dto, ProcessTypeConst.PASS.equals(dto.getApproveStatus()));
+            return this.saveAudit(dto.getBusinessKey(),dto, ProcessTypeConst.PASS.equals(dto.getApproveStatus()));
         }
+        return false;
     }
 
     /**
@@ -583,22 +592,22 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
        return null;
    }
 
-   private boolean isCurrentBrunchProcess(UserTaskNodeDTO t,String value){
-       double v = Double.parseDouble(value);
-       double max = StringUtil.isNullOrEmpty(t.getMax())?-1:Double.parseDouble(t.getMax());
-       double min = StringUtil.isNullOrEmpty(t.getMin())?0:Double.parseDouble(t.getMin());
-       if (max == -1) {
-           //这里处理最大的值的情况下
-           if (v >= min) {
-               return true;
-           }
-       } else {
-           if (v >= min && v < max) {
-               return true;
-           }
-       }
-       return false;
-   }
+    private boolean isCurrentBrunchProcess(UserTaskNodeDTO t,String value){
+        double v = Double.parseDouble(value);
+        double max = (StringUtil.isNullOrEmpty(t.getMax()) || "null".equals(t.getMax()))?-1:Double.parseDouble(t.getMax());
+        double min = (StringUtil.isNullOrEmpty(t.getMin()) || "null".equals(t.getMin()))?0:Double.parseDouble(t.getMin());
+        if (max == -1) {
+            //这里处理最大的值的情况下
+            if (v >= min) {
+                return true;
+            }
+        } else {
+            if (v >= min && v < max) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     public List<UserTaskNodeDTO> getUserListForAudit(AuditEditDTO dto) {

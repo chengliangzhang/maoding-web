@@ -2042,7 +2042,7 @@ public class MyTaskServiceImpl extends GenericService<MyTaskEntity> implements M
         if(taskType == 1){
             ProjectEntity projectEntity = this.projectDao.selectById(dto.getProjectId());
             if (projectEntity.getCompanyId().equals(dto.getCompanyId())) {//立项方
-                dto.setDescription("进行"+dto.getProjectName()+"的“"+this.projectTaskDao.getIssueTaskName(dto.getProjectId(), dto.getCompanyId(), 1,null)+"”等的签发工作");
+                dto.setDescription("进行"+dto.getProjectName()+"的签发工作");
             } else {//合作方
                 dto.setDescription("进行"+dto.getProjectName()+"的“"+this.projectTaskDao.getIssueTaskName(dto.getProjectId(), dto.getCompanyId(), 2,null)+"”等的签发工作");
             }

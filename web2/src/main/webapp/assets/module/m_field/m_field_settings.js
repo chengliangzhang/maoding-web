@@ -8,6 +8,7 @@
     var pluginName = "m_field_settings",
         defaults = {
             isDialog:true,
+            dialogMinHeight:null,
             type:0,//标题栏类型：0-我的项目标题栏，1-项目总览标题栏，2-发票汇总标题栏
             saveCallBack:null
         };
@@ -41,7 +42,11 @@
                     if(response.code=='0'){
 
                         that._selectedTitleList = response.data.selectedTitleList;
-                        var html = template('m_field/m_field_settings',response.data);
+                        var $data = response.data;
+                        if(that.settings.dialogMinHeight)
+                            $data.dialogMinHeight = 'min-height:'+that.settings.dialogMinHeight+'px';
+
+                        var html = template('m_field/m_field_settings',$data);
                         $(that.element).html(html);
 
                         that.initICheck();
@@ -63,7 +68,7 @@
                     contentEle: 'dialogOBox',
                     lock: 3,
                     width: '705',
-                    minHeight: '450',
+                    minHeight: that.settings.dialogMinHeight || '460',
                     tPadding: '0px',
                     url: rootPath+'/assets/module/m_common/m_dialog.html',
                     cancel:function () {
@@ -198,6 +203,9 @@
                     $(this).iCheck('update');
                 }
             });
+        }
+        ,dealHeight:function () {
+            
         }
         //事件绑定
         ,bindActionClick:function () {

@@ -8,12 +8,15 @@
     var pluginName = "m_field_list_row",
         defaults = {
             isPagination:true,//是否分页
+            pageIndex:null,//当前页
+            isRefreshCurrentPage:false,//是否刷新当前页
             headerList:null,//表头列表
             param:null,//参数
             url:null,//请求地址
             isSetCookies:false,//是否请求参数保存Cookies
             dataAction:null,//菜单路径
             aStr:null,//需要用a元素展示的字段code,例：{code1,code2}
+            buttonMap:null,//按钮列表map对象，{key=value}， key是code,value是按钮文字_条件code,存在条件code(是列表的某字段),加判断 条件code 0-展示，1-不展示
             isFirstLoad:false,//是否第一次进来
             renderCallBack:null
         };
@@ -28,6 +31,7 @@
 
         this._currentCompanyUserId = window.currentCompanyUserId;
         this._cookiesMark = 'cookiesData_'+this.settings.dataAction+'_'+this._currentCompanyUserId;
+
         this.init();
     }
 
@@ -104,6 +108,12 @@
                 option.param = cookiesData.param;
             }
 
+            if(that.settings.pageIndex)
+                option.param.pageIndex = that.settings.pageIndex;
+
+            if(that.settings.isRefreshCurrentPage && $("#data-pagination-container").pagination() && typeof($("#data-pagination-container").pagination('getPageIndex'))==='number' && $("#data-pagination-container").pagination('getPageIndex')!=0)
+                option.param.pageIndex = $("#data-pagination-container").pagination('getPageIndex');
+
             paginationFun({
                 eleId: '#data-pagination-container',
                 loadingId: '.data-list-box',
@@ -125,7 +135,7 @@
 
                     var html = template('m_field/m_field_list_row',{
                         dataList:response.data.data,
-                        headerList:that.settings.headerList,
+                        headerList:that.reSetHeaderList(that.settings.headerList),
                         aStr:that.settings.aStr
                     });
                     $(that.element).html(html);
@@ -137,6 +147,45 @@
                     S_dialog.error(response.info);
                 }
             });
+        }
+
+        //重新遍历headerList
+        ,reSetHeaderList:function (headerList) {
+
+            var that = this;
+
+            //indexOf(','+aStr+',');避免重复
+            if(!isNullOrBlank(this.settings.aStr))
+                that.settings.aStr = ','+this.settings.aStr+',';
+
+            if(headerList!=null && headerList.length>0){
+                $.each(headerList,function (i,item) {
+
+                    //以A标签展示
+                    if(that.settings.aStr && that.settings.aStr.indexOf(','+item.code+',')>-1){
+                        item.showByATag = true;
+                        return true;
+                    }
+
+                    //以button标签展示
+                    if(that.settings.buttonMap!=null && that.settings.buttonMap.get(item.code)!=undefined){
+
+                        var value = that.settings.buttonMap.get(item.code);
+                        var valueArr = [];
+                        if(value.indexOf('_')){
+                            valueArr = value.split('_');
+                            item.showByButtonTag = valueArr[0];
+                            item.showByButtonTagCode = valueArr[1];
+                        }else{
+                            item.showByButtonTag = value;
+                        }
+                        return true;
+                    }
+
+                })
+            }
+
+            return headerList;
         }
 
 

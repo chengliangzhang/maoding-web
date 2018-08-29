@@ -1,3 +1,32 @@
 .m_field_projectList .list-group-item{
     padding: 5px 15px;
 }
+
+.m_field_settings.panel>.panel-heading>.left-title,
+.m_field_settings.panel>.panel-body>.left-body{
+    width: 70%;
+}
+.m_field_settings.panel>.panel-heading>.right-title,
+.m_field_settings.panel>.panel-body>.right-body{
+    width: 30%;
+}
+.m_field_settings.panel>.panel-body{
+    height: auto;
+    position: relative;
+    min-height: 460px;
+    overflow: hidden;
+}
+.m_field_settings.panel>.panel-body>.left-body{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: inline-block;
+}
+.m_field_settings.panel>.panel-body>.right-body{
+    float: right;
+    height: auto;
+}
+.m_field_settings.panel>.panel-body>.right-body>.list-group{
+    max-height: 450px;
+    overflow: auto;
+}

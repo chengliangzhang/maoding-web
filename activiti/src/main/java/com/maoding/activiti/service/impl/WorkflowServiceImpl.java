@@ -98,7 +98,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         } else if (!isFreeType(prepareRequest)){
             //否则如果不是自由流程，读取流程或生成新流程
             //查找已有流程
-            Process process = getProcessByKey(getProcessDefineKey(prepareRequest));
+            Process process = getProcessByKey(getProcessDefineKey(prepareRequest),prepareRequest.getCurrentCompanyId());
             //如果是已有流程，转换已有流程
             if (process != null){
                 processDefineDetail = toProcessDefineDetailDTO(process);
@@ -106,7 +106,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                 //如果是新流程
                 //如果指定流程模板，复制流程
                 if (StringUtils.isNotEmpty(prepareRequest.getSrcProcessDefineId())) {
-                    process = getProcessByKey(prepareRequest.getSrcProcessDefineId());
+                    process = getProcessByKey(prepareRequest.getSrcProcessDefineId(),prepareRequest.getCurrentCompanyId());
                 }
                 //如果找到模板，设定模板参数，否则创建流程
                 if (process != null) {
@@ -162,13 +162,6 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
 
 
-    private boolean isNotInvalid(Integer type){
-        return (type == null)
-                || (type < ProcessTypeConst.TYPE_FREE)
-                || (type > ProcessTypeConst.PROCESS_TYPE_CONDITION);
-    }
-
-
     //判断是否是设置条件分支
     private boolean isEditConditionType(ProcessDetailPrepareDTO prepareRequest){
         return (prepareRequest != null)
@@ -221,10 +214,11 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //查找已有流程
-    private Process getProcessByKey(String processDefineKey){
+    private Process getProcessByKey(String processDefineKey,String currentCompanyId){
         //查找最后发布的流程版本
         ProcessDefinitionQuery pdQuery = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionKey(processDefineKey)
+                .processDefinitionTenantId(currentCompanyId)
                 .latestVersion()
                 .orderByProcessDefinitionVersion().desc();
         List<ProcessDefinition> pdList = pdQuery.list();
@@ -274,7 +268,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                     .tenantId(editRequest.getCurrentCompanyId())
                     .deploy();
 
-            process = getProcessByKey(getProcessDefineKey(editRequest));
+            process = getProcessByKey(getProcessDefineKey(editRequest),editRequest.getCurrentCompanyId());
 
             processDefineDetail = toProcessDefineDetailDTO(process);
         } else {
@@ -725,7 +719,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
     //是否自由流程类型
     private boolean isFreeType(Integer type){
-        return ProcessTypeConst.TYPE_FREE.equals(type);
+        return ProcessTypeConst.TYPE_FREE.equals(type) || ProcessTypeConst.TYPE_NOT_PROCESS.equals(type);
     }
 
 

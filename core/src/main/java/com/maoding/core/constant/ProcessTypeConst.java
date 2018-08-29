@@ -59,6 +59,11 @@ public interface ProcessTypeConst {
     String PROCESS_TYPE_PROJECT_COST_APPLY = PROCESS_TYPE_COST_APPLY;
 
     /**
+     * 无流程
+     */
+    Integer TYPE_NOT_PROCESS = 0;
+
+    /**
      * 自由流程
      */
       Integer TYPE_FREE = 1;

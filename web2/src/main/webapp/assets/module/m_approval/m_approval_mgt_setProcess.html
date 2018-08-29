@@ -8,6 +8,14 @@
         <div class="row m-t-sm">
             <div class="col-md-2 text-right">审批流程：</div>
             <div class="col-md-10">
+                {{if key=='projectPayApply'}}
+                <div class="m-b-xs">
+                    <label class="i-checks">
+                        <input class="ck"  name="iCheck" type="radio" data-type="0" />
+                        无需审批
+                    </label>
+                </div>
+                {{/if}}
                 <div>
                     <label class="i-checks">
                         <input class="ck"  name="iCheck" type="radio" data-type="1" />

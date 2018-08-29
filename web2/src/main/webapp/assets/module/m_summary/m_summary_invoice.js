@@ -7,7 +7,6 @@
     "use strict";
     var pluginName = "m_summary_invoice",
         defaults = {
-            projectId:null//项目ID
         };
 
     // The actual plugin constructor
@@ -23,11 +22,7 @@
         this._dataList = [];//分页数据
 
         /*********** 筛选字段 ***********/
-        this._filterData = {
-            companyId:null,
-            startTime:null,
-            endTime:null
-        };
+        this._filterData = {};
         this.init();
     }
 
@@ -35,66 +30,78 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.renderPage();
-        }
-        //初始化数据,生成html
-        ,renderPage:function () {
-            var that = this;
             var html = template('m_summary/m_summary_invoice',{});
             $(that.element).html(html);
+            that.renderOrgTree();
+            that.renderTimeSelectControl();
+            that.bindActionClick();
+        }
 
+        //渲染组织树选择
+        ,renderOrgTree:function () {
+            var that = this;
             var option = {};
             option.$selectedCallBack = function (data) {
                 that._filterData.companyId = data.id;
-                that.renderList();
-            };
-            option.$renderCallBack = function () {
-
+                that.renderListHeader();
             };
             $(that.element).find('#selectOrg').m_org_chose_byTree(option);
-
-            var timeOption = {};
-            timeOption.selectTimeCallBack = function (data) {
+        }
+        //渲染时间筛选控件
+        ,renderTimeSelectControl:function () {
+            var that = this;
+            var option = {};
+            option.selectTimeCallBack = function (data) {
 
                 that._filterData.startTime = data.startTime;
                 that._filterData.endTime = data.endTime;
-                that.renderList();
+                that.renderListContent();
             };
-            $(that.element).find('.time-combination').m_filter_timeGroup(timeOption,true);
-
+            $(that.element).find('.time-combination').m_filter_timeGroup(option,true);
         }
-
-        ,renderList:function () {
+        //渲染列表头部
+        ,renderListHeader:function () {
             var that = this;
             var option = {};
-            option.param = {};
-            option.param = filterParam(that._filterData);
-            paginationFun({
-                eleId: '#data-pagination-container',
-                loadingId: '.data-list-box',
-                url: restApi.url_listInvoice,
-                params: option.param
-            }, function (response) {
+            option.type = 2;
+            option.renderCallBack = function (data) {
+                that._headerList = data;
+                that.renderListContent();
+            };
+            option.filterCallBack = function (data) {
+                console.log(data);
+                that._filterData = data;
+                that.renderListContent();
+            };
+            $(that.element).find('.data-list-container table thead').m_field_list_header(option,true);
+        }
+        /**
+         * 渲染list
+         * @param t t==1刷新当前页
+         */
+        ,renderListContent:function (t) {
+            var that = this;
+            var option = {};
+            option.url = restApi.url_listInvoice;
+            option.headerList = that._headerList;
+            option.param = that._filterData;
 
-                if (response.code == '0') {
-                    that._dataList = response.data.data;
-                    var html = template('m_summary/m_summary_invoice_list',{
-                        dataList:response.data.data
-                    });
-                    $(that.element).find('.data-list-container').html(html);
+            var buttonMap = new Map();
+            buttonMap.set('invoiceNo','确认开票_myTaskStatus');
+            option.buttonMap = buttonMap;
+            if(t==1)
+                option.isRefreshCurrentPage = true;
 
-                    that.bindActionClick();
-
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-
+            option.renderCallBack = function (data) {
+                that._dataList = data.data;
+                that.bindListActionClick();
+            };
+            $(that.element).find('.data-list-container table tbody').m_field_list_row(option,true);
         }
         //按钮事件绑定
-        , bindActionClick:function () {
+        , bindListActionClick:function () {
             var that = this;
-            $(that.element).find('button[data-action]').on('click',function () {
+            $(that.element).find('.data-list-container button[data-action]').on('click',function () {
                 var $this = $(this);
                 var dataAction = $this.attr('data-action');
                 var dataId = $this.closest('tr').attr('data-id');//当前元素赋予的ID
@@ -102,20 +109,40 @@
                 var dataItem = getObjectInArray(that._dataList,dataId);
                 switch (dataAction){
 
-                    case 'refreshBtn':
-                        that.renderPage();
-                        return false;
-                        break;
-                    case 'confirmInvoice'://确认开票
+                    case 'invoiceNo_myTaskStatus'://确认开票
                         var option = {};
                         option.invoiceId = dataId;
                         option.taskId = dataItem.myTaskId;
                         option.projectId = dataItem.projectId;
                         option.dialogHeight = '100';
                         option.saveCallBack = function () {
-                            that.renderList();
+                            that.renderListContent(1);
                         };
                         $('body').m_cost_confirmInvoice(option,true);
+                        break;
+                }
+            });
+        }
+        ,bindActionClick:function () {
+            var that = this;
+            $(that.element).find('form button[data-action]').off('click').on('click',function () {
+                var $this = $(this);
+                var dataAction = $this.attr('data-action');
+                switch (dataAction){
+
+                    case 'refreshBtn'://刷新
+                        that.init();
+                        return false;
+                        break;
+                    case 'setField'://设置字段
+                        var option = {};
+                        option.type = 2;
+                        option.dialogMinHeight = '250';
+                        option.saveCallBack = function () {
+                            that.renderListHeader();
+                        };
+                        $('body').m_field_settings(option,true);
+                        return false;
                         break;
                 }
             });

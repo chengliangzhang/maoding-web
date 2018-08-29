@@ -73,7 +73,7 @@ public interface ProcessService {
     /**
      * 任务完成(直接完成审核表中的任务（audit），id 为exp_audit 中的id)
      */
-    void completeTask2(TaskDTO dto) throws Exception;
+    boolean completeTask2(TaskDTO dto) throws Exception;
 
     /**
      * id:审批记录的id

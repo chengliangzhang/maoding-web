@@ -1,11 +1,12 @@
 package com.maoding.process.dto;
 
 import com.maoding.core.base.dto.BaseDTO;
+import com.maoding.financial.dto.AuditBaseDTO;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ActivitiDTO extends BaseDTO {
+public class ActivitiDTO extends AuditBaseDTO {
 
     private String businessKey;
 

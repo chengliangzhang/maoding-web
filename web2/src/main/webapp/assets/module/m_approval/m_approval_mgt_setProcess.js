@@ -82,6 +82,7 @@
 
                     var html = template('m_approval/m_approval_mgt_setProcess',{
                         name:response.data.name,
+                        key:response.data.key,
                         fixedProcess:that._editFixedProcess,
                         condProcess:that._editCondProcess
                     });

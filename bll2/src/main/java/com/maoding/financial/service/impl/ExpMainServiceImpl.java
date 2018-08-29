@@ -739,7 +739,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         auditEntity.setAuditPerson(currentUser.getId());
         auditEntity.set4Base(userId, userId, new Date(), new Date());
         auditEntity.setIsNew("N");
-        auditEntity.setApproveStatus("8");
+        auditEntity.setApproveStatus("2");
         auditEntity.setAuditMessage(dto.getReason());
         auditEntity.setApproveDate(DateUtils.getDate());
         this.expAuditDao.insert(auditEntity);
@@ -751,7 +751,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
             sendMessageForAudit(mainId,companyId,companyUserId,main.getType(),userId,null,"8");//报销单ID，公司ID，接受消息者ID，类型（报销or费用），当前用户ID，审核表ID，类型（处理类型）
 
         }
-        main.setApproveStatus("8");//审批状态(0:待审核，1:同意，2，退回,3:撤回,4:删除,5.审批中）,6:财务已拨款'
+        main.setApproveStatus("7");//审批状态(0:待审核，1:同意，2，退回,3:撤回,4:删除,5.审批中）,6:财务已拨款',7：财务拒绝拨款
 
         return this.expMainDao.updateById(main);
     }

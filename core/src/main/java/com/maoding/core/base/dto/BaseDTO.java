@@ -58,6 +58,7 @@ public class BaseDTO implements Serializable {
     @JsonProperty(value = "IMEI") //大写无效，需要赋值给小写
     private String imei;
 
+    private String excelFileName;
 
     /** 字符串和布尔值互转 */
     public static Boolean toBoolean(String s){
@@ -232,5 +233,13 @@ public class BaseDTO implements Serializable {
 
     public void setCurrentCompanyUserId(String currentCompanyUserId) {
         this.currentCompanyUserId = currentCompanyUserId;
+    }
+
+    public String getExcelFileName() {
+        return excelFileName;
+    }
+
+    public void setExcelFileName(String excelFileName) {
+        this.excelFileName = excelFileName;
     }
 }
