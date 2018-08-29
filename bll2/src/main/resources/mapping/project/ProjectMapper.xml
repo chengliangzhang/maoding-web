@@ -148,40 +148,47 @@
     <select id="getProjectFilterList" resultType="com.maoding.core.base.dto.CoreShowDTO" parameterType="com.maoding.project.dto.ProjectFilterQueryDTO">
         select distinct
             <choose>
+                <!-- 项目成员 -->
+                <when test="titleCode == 'busPersonInCharge'
+                            or titleCode == 'busPersonInChargeAssistant'
+                            or titleCode == 'designPersonInCharge'
+                            or titleCode == 'designPersonInChargeAssistant'
+                            or titleCode == 'taskLeader'
+                            or titleCode == 'designer'
+                            or titleCode == 'checker'
+                            or titleCode == 'auditor'">
+                    team_member.company_user_id as id,
+                    team_member_name.user_name as name
+                </when>
+                <!-- 项目状态 -->
                 <when test="titleCode == 'status'">
                     project_list.status as id,
                     project_status.type_title as name
                 </when>
+                <!-- 甲方 -->
                 <when test="titleCode == 'partA'">
                     project_list.construct_company as id,
                     part_a_company.corpname as name
                 </when>
+                <!-- 乙方 -->
                 <when test="titleCode == 'partB'">
                     project_list.company_bid as id,
                     part_b_company.company_name as name
                 </when>
+                <!-- 项目类型 -->
                 <when test="titleCode == 'projectType'">
                     project_list.project_type as id,
                     project_list.project_type as name
                 </when>
+                <!-- 立项组织 -->
                 <when test="titleCode == 'createCompany'">
                     project_list.company_id as id,
                     create_company.company_name as name
                 </when>
+                <!-- 合作组织 -->
                 <when test="titleCode == 'relationCompany'">
                     relation_company.id as id,
                     relation_company.company_name as name
-                </when>
-                <when test="titleCode == 'busPersonInCharge'
-                        or titleCode == 'busPersonInChargeAssistant'
-                        or titleCode == 'designPersonInCharge'
-                        or titleCode == 'designPersonInChargeAssistant'
-                        or titleCode == 'taskLeader'
-                        or titleCode == 'designer'
-                        or titleCode == 'checker'
-                        or titleCode == 'auditor'">
-                    team_member.company_user_id as id,
-                    team_member.user_name as name
                 </when>
                 <when test="titleCode == 'buildName'">
                     build_type.id as id,
@@ -193,13 +200,14 @@
                 </otherwise>
             </choose>
         from maoding_web_project project_list
-            inner join md_project_member member_list on (
+            <!-- 过滤出相应的项目 -->
+            inner join maoding_web_project_member member_list on (
                 member_list.project_id = project_list.id
+                <if test="accountId != null and type != 1">
+                    and member_list.account_id = #{accountId}
+                </if>
                 <if test="currentCompanyId != null">
                     and member_list.company_id = #{currentCompanyId}
-                </if>
-                <if test="accountId != null">
-                    and member_list.user_id = #{accountId}
                 </if>
             )
             <if test="titleCode == 'busPersonInCharge'
@@ -211,7 +219,7 @@
                     or titleCode == 'checker'
                     or titleCode == 'auditor'
                     ">
-                inner join md_project_member team_member on (
+                inner join maoding_web_project_member team_member on (
                     team_member.project_id = project_list.id
                     and team_member.company_id = member_list.company_id
                     <choose>
@@ -228,19 +236,22 @@
                             and team_member.member_type = 8
                         </when>
                         <when test="titleCode == 'taskLeader'">
-                            and team_member.is_task_leader = 1
+                            and team_member.member_type = 3
                         </when>
                         <when test="titleCode == 'designer'">
-                            and team_member.is_task_designer = 1
+                            and team_member.member_type = 4
                         </when>
                         <when test="titleCode == 'checker'">
-                            and team_member.is_task_checker = 1
+                            and team_member.member_type = 5
                         </when>
                         <when test="titleCode == 'auditor'">
-                            and team_member.is_task_auditor = 1
+                            and team_member.member_type = 6
                         </when>
                         <otherwise/>
                     </choose>
+                )
+                inner join maoding_web_company_user team_member_name on (
+                    team_member_name.id = team_member.company_user_id
                 )
             </if>
             <choose>
