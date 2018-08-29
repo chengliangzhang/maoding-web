@@ -539,28 +539,36 @@
                 or needChecker == 1
                 or needAuditor == 1
             ">
-                inner join maoding_web_project_member team_member on (
+                left join maoding_web_project_member team_member on (
                     team_member.project_id = project_list.id
                     and team_member.company_id = member_list.company_id
                 )
-                inner join maoding_web_company_user team_member_name on (
+                left join maoding_web_company_user team_member_name on (
                     team_member_name.id = team_member.company_user_id
                 )
             </if>
             <!-- 合作组织筛选或显示 -->
             <if test="needRelationCompany == 1 or relationCompany != null">
-                inner join maoding_web_project_task_relation task_relation on (
+                left join maoding_web_project_task_relation task_relation on (
                     task_relation.relation_status = '0'
                     and task_relation.project_id = project_list.id
                     and task_relation.from_company_id = member_list.company_id
                 )
-                inner join maoding_web_company relation_company on (
-                    relation_company.status = '0'
-                    and relation_company.id = task_relation.to_company_id
-                    <if test="relationCompany != null">
-                        and relation_company.id = #{relationCompany}
-                    </if>
-                )
+                <!-- 合作组织筛选 -->
+                <if test="relationCompany != null">
+                    inner join maoding_web_company relation_company_filter on (
+                        relation_company_filter.status = '0'
+                        and relation_company_filter.id = task_relation.to_company_id
+                        and relation_company_filter.id = #{relationCompany}
+                    )
+                </if>
+                <!-- 合作组织显示 -->
+                <if test="needRelationCompany == 1 or relationCompany != null">
+                    left join maoding_web_company relation_company on (
+                        relation_company.status = '0'
+                        and relation_company.id = task_relation.to_company_id
+                    )
+                </if>
             </if>
             <!-- 功能分类筛选 -->
             <if test="buildNameList != null and buildNameList.size() > 0">
@@ -574,7 +582,7 @@
             </if>
             <!-- 功能分类显示 -->
             <if test="needBuildType == 1">
-                inner join md_build_type build_type on (
+                left join md_build_type build_type on (
                     find_in_set(build_type.id,project_list.built_type)
                 )
             </if>
