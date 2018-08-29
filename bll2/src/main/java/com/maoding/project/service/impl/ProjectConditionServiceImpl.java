@@ -3,6 +3,8 @@ package com.maoding.project.service.impl;
 import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.util.*;
+import com.maoding.invoice.dao.InvoiceDao;
+import com.maoding.invoice.dto.InvoiceFilterQueryDTO;
 import com.maoding.project.dao.ProjectConditionDao;
 import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.dto.*;
@@ -27,6 +29,9 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
 
     @Autowired
     private ProjectDao projectDao;
+
+    @Autowired
+    private InvoiceDao invoiceDao;
 
     private String notReturnString = "busPersonInCharge,busPersonInChargeAssistant,designPersonInCharge,designPersonInChargeAssistant";
     @Override
@@ -190,17 +195,32 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
      */
     @Override
     public List<TitleColumnDTO> listTitle(TitleQueryDTO query) {
-        TraceUtils.check(query.getType() != null,log,"!type不能为空");
+        final int TITLE_TYPE_PROJECT = 0;
+        final int TITLE_TYPE_PROJECT_OVERVIEW = 1;
+        final int TITLE_TYPE_INVOICE = 2;
 
+        if (query.getType() == null){
+            query.setType(TITLE_TYPE_PROJECT);
+        }
+        int type = DigitUtils.parseInt(query.getType());
         List<TitleColumnDTO> titleList = projectConditionDao.listTitle(query);
 
         if (ObjectUtils.isNotEmpty(titleList)){
             titleList.forEach(title->{
                 if (title.getHasList() == 1){
-                    ProjectFilterQueryDTO filterQuery = BeanUtils.createFrom(query,ProjectFilterQueryDTO.class);
-                    filterQuery.setTitleCode(title.getCode());
-                    List<CoreShowDTO> filterList = projectDao.getProjectFilterList(filterQuery);
-                    title.setFilterList(filterList);
+                    List<CoreShowDTO> filterList = null;
+                    if ((type == TITLE_TYPE_PROJECT) || (type == TITLE_TYPE_PROJECT_OVERVIEW)) {
+                        ProjectFilterQueryDTO filterQuery = BeanUtils.createFrom(query,ProjectFilterQueryDTO.class);
+                        filterQuery.setTitleCode(title.getCode());
+                        filterList = projectDao.getProjectFilterList(filterQuery);
+                    } else if (type == TITLE_TYPE_INVOICE) {
+                        InvoiceFilterQueryDTO filterQuery = BeanUtils.createFrom(query,InvoiceFilterQueryDTO.class);
+                        filterQuery.setTitleCode(title.getCode());
+                        filterList = invoiceDao.getInvoiceFilterList(filterQuery);
+                    }
+                    if (isValid(filterList)) {
+                        title.setFilterList(filterList);
+                    }
                 }
             });
         }
@@ -208,4 +228,9 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
         return titleList;
     }
 
+    //判断查询出的列表是否有效
+    private boolean isValid(List<CoreShowDTO> filterList){
+        return ObjectUtils.isNotEmpty(filterList)
+                && (ObjectUtils.getFirst(filterList) != null);
+    }
 }

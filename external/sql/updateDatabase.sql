@@ -1925,6 +1925,65 @@ CREATE PROCEDURE `initConst`()
         project_status.classic_id = 44;
   END;
 call initConst();
+
+-- 发票类型
+DROP PROCEDURE IF EXISTS `initConst`;
+CREATE PROCEDURE `initConst`()
+  BEGIN
+    -- -- 常量
+    delete from md_list_const where classic_id = 45;
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (45,0,'发票类型','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (45,1,'普票','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (45,2,'专票','');
+
+    -- -- 类型
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,45,'发票类型','md_type_invoice');
+
+    -- 视图
+    CREATE OR REPLACE VIEW `md_type_invoice` AS
+      select
+        invoice_type.code_id as id,
+        invoice_type.code_id as type_id,
+        invoice_type.title   as type_title,
+        invoice_type.title   as type_name,
+        invoice_type.extra   as type_extra
+      from
+        md_list_const invoice_type
+      where
+        invoice_type.classic_id = 45;
+  END;
+call initConst();
+
+-- 款项分类子项
+DROP PROCEDURE IF EXISTS `initConst`;
+CREATE PROCEDURE `initConst`()
+  BEGIN
+    -- -- 常量
+    delete from md_list_const where classic_id = 46;
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (46,0,'款项分类子项','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (46,1,'合同回款','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (46,2,'技术审查费','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (46,3,'合作设计费','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (46,4,'其他付款','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (46,5,'其他收款','');
+
+    -- -- 类型
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,46,'发票类型','md_type_fee');
+
+    -- 视图
+    CREATE OR REPLACE VIEW `md_type_fee` AS
+      select
+        invoice_type.code_id as id,
+        invoice_type.code_id as type_id,
+        invoice_type.title   as type_title,
+        invoice_type.title   as type_name,
+        invoice_type.extra   as type_extra
+      from
+        md_list_const invoice_type
+      where
+        invoice_type.classic_id = 46;
+  END;
+call initConst();
 -- -- -- 创建及更改常量 -- 结束 -- -- --
 
 -- -- -- 创建及更改视图 -- 开始 -- -- --

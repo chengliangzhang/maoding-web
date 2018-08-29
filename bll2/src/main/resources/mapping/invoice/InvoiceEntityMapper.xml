@@ -198,6 +198,19 @@
     <result column="my_task_status" property="myTaskStatus" jdbcType="VARCHAR"/>
   </resultMap>
 
+    <sql id="FilterForInvoiceList">
+        (invoice_list.deleted = 0)
+        <if test="companyId != null">
+            and (invoice_list.company_id = #{companyId})
+        </if>
+        <if test="startTime != null">
+            and (ifnull(invoice_list.apply_date,invoice_list.create_date) >= #{startTime,jdbcType=TIMESTAMP})
+        </if>
+        <if test="endTime != null">
+            and (addDate(#{endTime,jdbcType=TIMESTAMP},1) > ifnull(invoice_list.apply_date,invoice_list.create_date))
+        </if>
+    </sql>
+
   <select id="listInvoice" resultMap="InvoiceMap" parameterType="com.maoding.invoice.dto.InvoiceQueryDTO">
       select <include refid="CommonMapper.countSQL"/>
           cost_detail.fee,
@@ -210,11 +223,30 @@
           work_list.status as my_task_status,
           invoice_list.*
       from maoding_invoice invoice_list
-          <!-- 金额、分类、备注 -->
+          <!-- 发票类型 -->
+          inner join md_type_invoice invoice_type on (
+              invoice_type.id = invoice_list.invoice_type
+              <if test="invoiceTypeName != null">
+                  and invoice_type.id = #{invoiceTypeName}
+              </if>
+          )
+          <!-- 分类子项、项目名称、申请人 -->
           inner join maoding_web_project_cost_point_detail cost_detail on (
               cost_detail.status = '0'
               and cost_detail.invoice = invoice_list.id
           )
+          <!-- 申请人 -->
+          inner join maoding_web_project_cost_operater operater_list on (
+              operater_list.type = 1
+              and operater_list.cost_detail_id = cost_detail.id
+          )
+          inner join maoding_web_company_user company_user on (
+              company_user.id = operater_list.company_user_id
+              <if test="companyUserName != null">
+                  and company_user.id = #{companyUserName}
+              </if>
+          )
+          <!-- 分类子项 -->
           inner join maoding_web_project_cost_point cost_point on (
               cost_point.status = '0'
               and cost_point.id = cost_detail.point_id
@@ -223,37 +255,164 @@
               cost_type.status = '0'
               and cost_type.id = cost_point.cost_id
           )
-          <!-- 申请人名称 -->
-          inner join maoding_web_project_cost_operater operater_list on (
-              operater_list.type = 1
-              and operater_list.cost_detail_id = cost_detail.id
+          inner join md_type_fee fee_type on (
+              fee_type.id = cost_type.type
+              <if test="costTypeNameList != null and costTypeNameList.size() > 0">
+                  and fee_type.id in
+                  <foreach collection="costTypeNameList" item="costTypeName" open="(" separator="," close=")" >
+                      #{costTypeName}
+                  </foreach>
+              </if>
           )
-          inner join maoding_web_company_user company_user on (
-              company_user.id = operater_list.company_user_id
-          )
-          <!-- 关联项目名称 -->
+          <!-- 关联项目 -->
           inner join maoding_web_project project_list on (
               project_list.pstatus = '0'
               and project_list.id = cost_detail.project_id
+              <if test="projectName != null">
+                  and project_list.id = #{projectName}
+              </if>
+          )
+          <!-- 收款方公司名称 -->
+          left join maoding_web_company company_list on (
+              company_list.status = '0'
+              and company_list.id = invoice_list.relation_company_id
+              <if test="relationCompanyNameList != null and relationCompanyNameList.size() > 0">
+                  and ifnull(invoice_list.relation_company_name,company_list.company_name) in
+                  <foreach collection="relationCompanyNameList" item="relationCompanyName" open="(" separator="," close=")">
+                      #{relationCompanyName}
+                  </foreach>
+              </if>
           )
           <!-- 关联个人任务 -->
-          inner join maoding_web_my_task work_list on (
+          left join maoding_web_my_task work_list on (
               work_list.task_type = 29
               and work_list.company_id = cost_detail.company_id
               and work_list.target_id = cost_detail.id
           )
-      where (invoice_list.deleted = 0)
-          <if test="companyId != null">
-              and (invoice_list.company_id = #{companyId})
+      where <include refid="FilterForInvoiceList"/>
+          <!-- 纳税识别号 -->
+          <if test="taxIdNumber != null">
+              invoice_list.tax_id_number = #{taxIdNumber}
           </if>
-          <if test="startTime != null">
-              and (ifnull(invoice_list.apply_date,invoice_list.create_date) >= #{startTime,jdbcType=TIMESTAMP})
-          </if>
-          <if test="endTime != null">
-              and (addDate(#{endTime,jdbcType=TIMESTAMP},1) > ifnull(invoice_list.apply_date,invoice_list.create_date))
+          <!-- 发票号码 -->
+          <if test="invoiceNo != null">
+              invoice_list.invoice_no = #{invoiceNo}
           </if>
       group by invoice_list.id
       order by invoice_list.apply_date desc
       <include refid="CommonMapper.limitSQL"/>
   </select>
+
+    <select id="getInvoiceFilterList" resultType="com.maoding.core.base.dto.CoreShowDTO" parameterType="com.maoding.invoice.dto.InvoiceFilterQueryDTO">
+        select distinct
+        <choose>
+            <!-- 申请人 -->
+            <when test="titleCode == 'companyUserName'">
+                company_user.id as id,
+                company_user.user_name as name
+            </when>
+            <!-- 发票类型 -->
+            <when test="titleCode == 'invoiceTypeName'">
+                invoice_type.id as id,
+                invoice_type.type_name as name
+            </when>
+            <!-- 分类子项 -->
+            <when test="titleCode == 'costTypeName'">
+                fee_type.id as id,
+                fee_type.type_name as name
+            </when>
+            <!-- 收款方公司名称 -->
+            <when test="titleCode == 'relationCompanyName'">
+                ifnull(invoice_list.relation_company_name,company_list.company_name) as id,
+                ifnull(invoice_list.relation_company_name,company_list.company_name) as name
+            </when>
+            <!-- 纳税识别号 -->
+            <when test="titleCode == 'taxIdNumber'">
+                invoice_list.tax_id_number as id,
+                invoice_list.tax_id_number as name
+            </when>
+            <!-- 关联项目 -->
+            <when test="titleCode == 'projectName'">
+                project_list.id as id,
+                project_list.project_name as name
+            </when>
+            <!-- 发票号码 -->
+            <when test="titleCode == 'invoiceNo'">
+                invoice_list.invoice_no as id,
+                invoice_list.invoice_no as name
+            </when>
+            <otherwise>
+                null as id,
+                null as name
+            </otherwise>
+        </choose>
+        from maoding_invoice invoice_list
+        <choose>
+            <!-- 发票类型 -->
+            <when test="titleCode == 'invoiceTypeName'">
+                inner join md_type_invoice invoice_type on (invoice_type.id = invoice_list.invoice_type)
+            </when>
+            <!-- 分类子项、项目名称、申请人 -->
+            <when test="titleCode == 'costTypeName' or titleCode == 'projectName' or titleCode == 'companyUserName'">
+                inner join maoding_web_project_cost_point_detail cost_detail on (
+                    cost_detail.status = '0'
+                    and cost_detail.invoice = invoice_list.id
+                )
+                <choose>
+                    <!-- 申请人 -->
+                    <when test="titleCode == 'companyUserName'">
+                        inner join maoding_web_project_cost_operater operater_list on (
+                            operater_list.type = 1
+                            and operater_list.cost_detail_id = cost_detail.id
+                        )
+                        inner join maoding_web_company_user company_user on (
+                            company_user.id = operater_list.company_user_id
+                        )
+                    </when>
+                    <!-- 分类子项 -->
+                    <when test="titleCode == 'costTypeName'">
+                        inner join maoding_web_project_cost_point cost_point on (
+                            cost_point.status = '0'
+                            and cost_point.id = cost_detail.point_id
+                        )
+                        inner join maoding_web_project_cost cost_type on (
+                            cost_type.status = '0'
+                            and cost_type.id = cost_point.cost_id
+                        )
+                        inner join md_type_fee fee_type on (fee_type.id = cost_type.type)
+                    </when>
+                    <!-- 关联项目 -->
+                    <when test="titleCode == 'projectName'">
+                        inner join maoding_web_project project_list on (
+                            project_list.pstatus = '0'
+                            and project_list.id = cost_detail.project_id
+                        )
+                    </when>
+                </choose>
+            </when>
+            <!-- 收款方公司名称 -->
+            <when test="titleCode == 'relationCompanyName'">
+                left join maoding_web_company company_list on (
+                    company_list.status = '0'
+                    and company_list.id = invoice_list.relation_company_id
+                )
+            </when>
+            <!-- 纳税识别号 -->
+            <when test="titleCode == 'taxIdNumber'"/>
+            <!-- 发票号码 -->
+            <when test="titleCode == 'invoiceNo'"/>
+            <otherwise/>
+        </choose>
+        where <include refid="FilterForInvoiceList"/>
+            <choose>
+                <!-- 纳税识别号 -->
+                <when test="titleCode == 'taxIdNumber'">
+                    and invoice_list.tax_id_number is not null
+                </when>
+                <!-- 发票号码 -->
+                <when test="titleCode == 'invoiceNo'">
+                    and invoice_list.invoice_no is not null
+                </when>
+            </choose>
+    </select>
 </mapper>
