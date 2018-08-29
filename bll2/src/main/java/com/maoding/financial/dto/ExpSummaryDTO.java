@@ -16,7 +16,24 @@ public class ExpSummaryDTO {
     private BigDecimal expSumAmount;
     private BigDecimal financialAllocationSumAmount;
     private List<CompanyRelationDTO> companyList;
+    private BigDecimal waitingAllocationSumAmount;
+    private BigDecimal repulseAllocationSumAmount;
 
+    public BigDecimal getWaitingAllocationSumAmount() {
+        return waitingAllocationSumAmount;
+    }
+
+    public void setWaitingAllocationSumAmount(BigDecimal waitingAllocationSumAmount) {
+        this.waitingAllocationSumAmount = waitingAllocationSumAmount;
+    }
+
+    public BigDecimal getRepulseAllocationSumAmount() {
+        return repulseAllocationSumAmount;
+    }
+
+    public void setRepulseAllocationSumAmount(BigDecimal repulseAllocationSumAmount) {
+        this.repulseAllocationSumAmount = repulseAllocationSumAmount;
+    }
 
     public List<CompanyRelationDTO> getCompanyList() {
         return companyList;

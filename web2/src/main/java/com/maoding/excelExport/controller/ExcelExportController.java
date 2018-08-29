@@ -79,7 +79,7 @@ public class ExcelExportController extends BaseController {
     }
 
     /**
-     * 方法描述：收支明细导出
+     * 方法描述：生产安排的导出
      * 作   者： ZhangChengliang
      * 日   期：2017/4/24
      * param  （projectId)

@@ -85,12 +85,13 @@
                 //过滤器类型：0-无过滤器，1-字符串，2-单选列表，3-多选列表，4-时间，5-地址
                 switch (dataItem.filterType){
                     case 1://文本
+                        var newCode = code+'Like';
                         var option = {};
-                        option.inputValue = that._filterData[code];
+                        option.inputValue = that._filterData[newCode];
                         option.eleId = id;
                         option.oKCallBack = function (data) {
 
-                            that._filterData[code] = data;
+                            that._filterData[newCode] = data;
 
                             if(that.settings.filterCallBack)
                                 that.settings.filterCallBack(that._filterData);

@@ -27,10 +27,7 @@
         this._selectedArr = this.settings.selectedArr;
         this._selectedStr = '';
 
-        if(this._selectedArr!=null && this._selectedArr.length>0){
-            this._selectedStr = this._selectedArr.join(',');　　//转为字符串
-            this._selectedStr = ','+this._selectedStr+','
-        }
+
 
         this.init();
     }
@@ -42,49 +39,55 @@
         }
         , render: function () {
             var that = this;
-            var selectList = [];
 
-            if(that.settings.selectArr!=null && that.settings.selectArr.length>0){
-                $.each(that.settings.selectArr, function (i, item) {
-
-                    if(item==null)
-                        return true;
-
-                    var isSelected = false;
-                    if(that._selectedStr.indexOf(','+item.id+',')>-1){
-                        isSelected = true;
-                    }
-                    var childList = [];
-                    if(item.childList!=null && item.childList.length>0){
-                        $.each(item.childList,function (subI,subItem) {
-
-                            if(item==null)
-                                return true;
-
-                            var subSelected = false;
-                            if(that._selectedStr.indexOf(','+subItem.id+',')>-1){
-                                subSelected = true;
-                            }
-                            childList.push({id:subItem.id,name:subItem.name,isSelected:subSelected});
-                        });
-                    }
-                    selectList.push({id: item.id, name: item.name,isSelected:isSelected,childList:childList});
-                });
-            }
             if(that.settings.selectedArr!=null && that.settings.selectedArr.length>0){
                 $(that.element).find('i').addClass('fc-v1-blue');
             }
 
-            var iHtml = template('m_filter/m_filter_checkbox_select',{
-                selectList:selectList,
-                colClass:that.settings.colClass,
-                boxStyle:that.settings.boxStyle,
-                isParentCheck:that.settings.isParentCheck
-            });
-            var iTextObj = iHtml.getTextWH();
-            var iWHObj = setDialogWH(iTextObj.width,iTextObj.height);
-
             $(that.element).off('click').on('click',function (e) {
+
+                var selectList = [];
+                if(that._selectedArr!=null && that._selectedArr.length>0){
+                    that._selectedStr = that._selectedArr.join(',');　　//转为字符串
+                    that._selectedStr = ','+that._selectedStr+','
+                }
+
+                if(that.settings.selectArr!=null && that.settings.selectArr.length>0){
+                    $.each(that.settings.selectArr, function (i, item) {
+
+                        if(item==null)
+                            return true;
+
+                        var isSelected = false;
+                        if(that._selectedStr.indexOf(','+item.id+',')>-1){
+                            isSelected = true;
+                        }
+                        var childList = [];
+                        if(item.childList!=null && item.childList.length>0){
+                            $.each(item.childList,function (subI,subItem) {
+
+                                if(item==null)
+                                    return true;
+
+                                var subSelected = false;
+                                if(that._selectedStr.indexOf(','+subItem.id+',')>-1){
+                                    subSelected = true;
+                                }
+                                childList.push({id:subItem.id,name:subItem.name,isSelected:subSelected});
+                            });
+                        }
+                        selectList.push({id: item.id, name: item.name,isSelected:isSelected,childList:childList});
+                    });
+                }
+                var iHtml = template('m_filter/m_filter_checkbox_select',{
+                    selectList:selectList,
+                    colClass:that.settings.colClass,
+                    boxStyle:that.settings.boxStyle,
+                    isParentCheck:that.settings.isParentCheck
+                });
+                var iTextObj = iHtml.getTextWH();
+                var iWHObj = setDialogWH(iTextObj.width,iTextObj.height);
+
                 S_dialog.dialog({
                     contentEle: 'dialogOBox',
                     ele:that.settings.eleId,
@@ -142,6 +145,8 @@
                 checkboxClass: 'icheckbox_minimal-green',
                 radioClass: 'iradio_minimal-green'
             }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
+
+            that.dealAllCheck($ele);
         }
         //判断是否全选
         ,dealAllCheck:function ($ele) {
@@ -164,8 +169,17 @@
             $ele.find('input[name="itemCk"][value!=""]:checked').each(function () {
                 selectedArr.push($(this).val());
             });
+
+            that._selectedArr = selectedArr;
+
+            if(that._selectedArr!=null && that._selectedArr.length>0){
+                $(that.element).find('i').addClass('fc-v1-blue');
+            }else{
+                $(that.element).find('i').removeClass('fc-v1-blue');
+            }
+
             if(that.settings.selectedCallBack)
-                that.settings.selectedCallBack(selectedArr);
+                that.settings.selectedCallBack(that._selectedArr);
         }
 
     });

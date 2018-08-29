@@ -190,9 +190,9 @@
     <select id="summaryExpMain" resultMap="ExpSummaryDTOMap" parameterType="java.util.Map">
         SELECT
         sum(d.exp_amount) as exp_sum_amount,
-        sum(if(a.approve_status =='6',d.exp_amount,0)) as financial_allocation_sum_amount,
-        sum(IF(a.approve_status == '1',d.exp_amount,0)) AS waiting_allocation_sum_amount,
-        sum(IF(a.approve_status == '7',d.exp_amount,0)) AS repulse_allocation_sum_amount,
+        sum(if(a.approve_status ='6',d.exp_amount,0)) as financial_allocation_sum_amount,
+        sum(IF(a.approve_status = '1',d.exp_amount,0)) AS waiting_allocation_sum_amount,
+        sum(IF(a.approve_status = '7',d.exp_amount,0)) AS repulse_allocation_sum_amount,
         ifnull(depart_name,company_name) as company_name,
         ifnull(a.depart_id,a.company_id) as company_id
         from maoding_web_exp_main a
