@@ -42,7 +42,7 @@
 
             $(that.element).on('click',function (e) {
 
-                var selectList = that.dealSelectedList();
+                var selectList = that.reSetSelectedList();
                 var iHtml = template('m_filter/m_filter_select',{
                     selectList:selectList,
                     isMultiple:that.settings.isMultiple
@@ -95,12 +95,14 @@
             });
         }
         //过滤list,标上选中标识
-        ,dealSelectedList:function () {
+        ,reSetSelectedList:function () {
             var that =this;
             var selectList = [];
             if(that._selectedArr!=null && that._selectedArr.length>0){
                 that._selectedStr = that._selectedArr.join(',');　　//转为字符串
                 that._selectedStr = ','+that._selectedStr+','
+            }else{
+                that._selectedStr = '';
             }
             selectList.push({name:'全部',id:''});
 

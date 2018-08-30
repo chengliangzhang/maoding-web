@@ -73,7 +73,6 @@ public class ExcelExportController extends BaseController {
         query.setCurrentCompanyId(this.currentCompanyId);
         query.setAccountId(this.currentUserId);
         query.setCurrentCompanyUserId(this.currentCompanyUserId);
-        query.setType(1);
         query.setExcelFileName("项目列表.xlsx");
         projectExportService.exportDownloadResource(response, query);
     }

@@ -13,18 +13,14 @@
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/icheck-1.x/skins/square/blue.min.css">
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.min.css">
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/select2/css/select2.min.css">
-    <link rel="stylesheet" href="<%=rootPath %>/assets/css/select2Fixed.css?v2">
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/x-editable/bootstrap3-editable/css/bootstrap-editable.min.css">
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/x-editable/inputs-ext/typeaheadjs/lib/typeahead.js-bootstrap.min.css">
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/jquery-treegrid/css/jquery.treegrid.css">
 
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/webuploader/webuploader.min.css">
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/cropper/cropper.min.css">
-    <link rel="stylesheet" href="<%=rootPath %>/assets/lib/cube-portfolio/cubeportfolio/css/cubeportfolio.min.css">
-    <link rel="stylesheet" href="<%=rootPath %>/assets/lib/cube-portfolio/cubeportfolio/custom/custom-cubeportfolio.css">
 
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/icon/iconfont.min.css">
-    <link rel="stylesheet" href="<%=rootPath %>/assets/lib/chosen/chosen.css">
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/footable/footable.core.css">
 
 </head>

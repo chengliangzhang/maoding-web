@@ -46,39 +46,7 @@
 
             $(that.element).off('click').on('click',function (e) {
 
-                var selectList = [];
-                if(that._selectedArr!=null && that._selectedArr.length>0){
-                    that._selectedStr = that._selectedArr.join(',');　　//转为字符串
-                    that._selectedStr = ','+that._selectedStr+','
-                }
-
-                if(that.settings.selectArr!=null && that.settings.selectArr.length>0){
-                    $.each(that.settings.selectArr, function (i, item) {
-
-                        if(item==null)
-                            return true;
-
-                        var isSelected = false;
-                        if(that._selectedStr.indexOf(','+item.id+',')>-1){
-                            isSelected = true;
-                        }
-                        var childList = [];
-                        if(item.childList!=null && item.childList.length>0){
-                            $.each(item.childList,function (subI,subItem) {
-
-                                if(item==null)
-                                    return true;
-
-                                var subSelected = false;
-                                if(that._selectedStr.indexOf(','+subItem.id+',')>-1){
-                                    subSelected = true;
-                                }
-                                childList.push({id:subItem.id,name:subItem.name,isSelected:subSelected});
-                            });
-                        }
-                        selectList.push({id: item.id, name: item.name,isSelected:isSelected,childList:childList});
-                    });
-                }
+                var selectList = that.reSetSelectedList();
                 var iHtml = template('m_filter/m_filter_checkbox_select',{
                     selectList:selectList,
                     colClass:that.settings.colClass,
@@ -119,6 +87,46 @@
                 e.stopPropagation();
                 return false;
             });
+        }
+        //过滤list,标上选中标识
+        ,reSetSelectedList:function () {
+            var that = this;
+            var selectList = [];
+            if(that._selectedArr!=null && that._selectedArr.length>0){
+                that._selectedStr = that._selectedArr.join(',');　　//转为字符串
+                that._selectedStr = ','+that._selectedStr+','
+            }else{
+                that._selectedStr = '';
+            }
+
+            if(that.settings.selectArr!=null && that.settings.selectArr.length>0){
+                $.each(that.settings.selectArr, function (i, item) {
+
+                    if(item==null)
+                        return true;
+
+                    var isSelected = false;
+                    if(that._selectedStr.indexOf(','+item.id+',')>-1){
+                        isSelected = true;
+                    }
+                    var childList = [];
+                    if(item.childList!=null && item.childList.length>0){
+                        $.each(item.childList,function (subI,subItem) {
+
+                            if(item==null)
+                                return true;
+
+                            var subSelected = false;
+                            if(that._selectedStr.indexOf(','+subItem.id+',')>-1){
+                                subSelected = true;
+                            }
+                            childList.push({id:subItem.id,name:subItem.name,isSelected:subSelected});
+                        });
+                    }
+                    selectList.push({id: item.id, name: item.name,isSelected:isSelected,childList:childList});
+                });
+            }
+            return selectList;
         }
         //初始化iCheck
         ,initICheck:function ($ele) {
