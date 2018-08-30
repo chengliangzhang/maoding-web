@@ -35,7 +35,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     /** json转换器 */
     private static ObjectMapper objectMapper = null;
-    private static ObjectMapper getObjectMapper() {
+    public static ObjectMapper getObjectMapper() {
         if (objectMapper == null){
             objectMapper = new ObjectMapper();
             objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -144,27 +144,23 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     /**
      * 转换为字节数组
-     * @param str
-     * @return
      */
-    public static byte[] getBytes(String str){
-        if (str != null){
+    public static byte[] getBytes(String str) {
+        if (str != null) {
             try {
                 return str.getBytes(CHARSET_NAME);
             } catch (UnsupportedEncodingException e) {
                 return null;
             }
-        }else{
+        } else {
             return null;
         }
     }
 
     /**
      * 转换为字符串
-     * @param bytes
-     * @return
      */
-    public static String toString(byte[] bytes){
+    public static String toString(byte[] bytes) {
         try {
             return new String(bytes, CHARSET_NAME);
         } catch (UnsupportedEncodingException e) {
@@ -259,5 +255,13 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
             n = arr.length + n + 1;
         }
         return (0 < n && n <= arr.length) ? arr[n-1] : EMPTY;
+    }
+
+    /**
+     * 生成UUID
+     */
+    public static final String buildUUID() {
+        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+        return uuid;
     }
 }

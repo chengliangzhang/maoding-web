@@ -2193,7 +2193,7 @@ public class CompanyServiceImpl extends GenericService<CompanyEntity> implements
         }
 
         //获取项目信息用于判断是否立项方，及获取甲方名称
-        TraceUtils.check(StringUtils.isNotEmpty(query.getProjectId()),log,"!projectId不能为空");
+        TraceUtils.check(StringUtils.isNotEmpty(query.getProjectId()),"!projectId不能为空");
         ProjectEntity project = getProjectInfo(query.getProjectId());
 
         List<CompanyDTO> result = null;

@@ -82,7 +82,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         ProcessDefineDetailDTO processDefineDetail;
 
         //补充未填写字段
-        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),log,"!key不可以为空");
+        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),"!key不可以为空");
         //name字段
         if (StringUtils.isEmpty(prepareRequest.getName())){
             prepareRequest.setName(ProcessTypeConst.nameMap.get(prepareRequest.getKey()));
@@ -565,7 +565,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
             //添加条件及条件内的用户任务和连线
             for (int i=0; i<=pointList.size(); i++){
                 //获取此数字条件节点判断字符串
-                TraceUtils.check(StringUtils.isNotEmpty(editRequest.getKey()),log,"!key不能为空");
+                TraceUtils.check(StringUtils.isNotEmpty(editRequest.getKey()),"!key不能为空");
                 String condition = getCondition(pointList,editRequest.getKey(),i);
 
                 //添加从起点开始的用户任务和连接线
@@ -879,7 +879,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         TraceUtils.check(deleteRequest != null);
         //删除已定义流程
         TraceUtils.check(StringUtils.isNotEmpty(deleteRequest.getCurrentCompanyId()),log,"!currentCompanyId不能为空");
-        TraceUtils.check(StringUtils.isNotEmpty(deleteRequest.getKey()),log,"!key不能为空");
+        TraceUtils.check(StringUtils.isNotEmpty(deleteRequest.getKey()),"!key不能为空");
         List<Deployment> list = repositoryService.createDeploymentQuery()
                 .processDefinitionKeyLike(ProcessTypeConst.ID_PREFIX_PROCESS
                         + deleteRequest.getCurrentCompanyId()

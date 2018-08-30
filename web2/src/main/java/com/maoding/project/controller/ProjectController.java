@@ -8,10 +8,7 @@ import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.core.constant.SystemParameters;
-import com.maoding.core.util.BeanUtils;
-import com.maoding.core.util.ObjectUtils;
-import com.maoding.core.util.StringUtil;
-import com.maoding.core.util.StringUtils;
+import com.maoding.core.util.*;
 import com.maoding.mytask.entity.MyTaskEntity;
 import com.maoding.mytask.service.MyTaskService;
 import com.maoding.org.dao.CompanyDao;
@@ -1112,6 +1109,8 @@ public class ProjectController extends BaseController {
      */
     @RequestMapping(value = "/insertProCondition", method = RequestMethod.POST)
     @ResponseBody
+    @Deprecated
+    /** 由changeTitle代替 **/
     public AjaxMessage insertProCondition(@RequestBody Map<String, Object> param) throws Exception {
         //判断是否存在
         param.put("userId", this.currentUserId);
@@ -1142,8 +1141,10 @@ public class ProjectController extends BaseController {
     @RequestMapping(value ={"/listOptionalTitle"} , method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage listOptionalTitle(@RequestBody TitleQueryDTO query) throws Exception {
+        long t = TraceUtils.enter(query);
         updateCurrentUserInfo(query);
         OptionalTitleSelectedDTO result = projectConditionService.listOptionalTitle(query);
+        TraceUtils.exit(t);
         return AjaxMessage.succeed(result);
     }
 
@@ -1156,8 +1157,10 @@ public class ProjectController extends BaseController {
     @RequestMapping(value = "/listTitle", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage listTitle(@RequestBody TitleQueryDTO query) throws Exception {
+        long t = TraceUtils.enter(query);
         updateCurrentUserInfo(query);
         List<TitleColumnDTO> list = projectConditionService.listTitle(query);
+        TraceUtils.exit(t);
         return AjaxMessage.succeed(BeanUtils.createListFrom(list,TitleSimpleDTO.class));
     }
 
@@ -1170,8 +1173,10 @@ public class ProjectController extends BaseController {
     @RequestMapping(value = "/changeTitle", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage changeOptionalTitle(@RequestBody TitleEditDTO request) throws Exception {
+        long t = TraceUtils.enter(request);
         updateCurrentUserInfo(request);
         projectConditionService.changeOptionalTitle(request);
+        TraceUtils.exit(t);
         return AjaxMessage.succeed("保存成功");
     }
 
@@ -1183,14 +1188,18 @@ public class ProjectController extends BaseController {
     @RequestMapping(value = "/listProject", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage listProject(@RequestBody ProjectQueryDTO query) throws Exception {
+        long t = TraceUtils.enter(query);
         updateCurrentUserInfo(query);
+        AjaxMessage ajaxMessage;
         if (query.getPageSize() != null){
             CorePageDTO<ProjectVariableDTO> page = projectService.listPageProject(query);
-            return AjaxMessage.succeed(page);
+            ajaxMessage = AjaxMessage.succeed(page);
         } else {
             List<ProjectVariableDTO> list = projectService.listProject(query);
-            return AjaxMessage.succeed(list);
+            ajaxMessage = AjaxMessage.succeed(list);
         }
+        TraceUtils.exit(t);
+        return ajaxMessage;
     }
 
 }

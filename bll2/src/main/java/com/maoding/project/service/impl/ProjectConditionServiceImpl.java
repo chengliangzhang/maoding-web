@@ -91,7 +91,7 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
      **/
     @Override
     public OptionalTitleSelectedDTO listOptionalTitle(TitleQueryDTO query) {
-        TraceUtils.check(query.getType() != null,log,"!type不能为空");
+        TraceUtils.check(query.getType() != null,"!type不能为空");
 
         //从数据库内读取所有的可选标题栏
         List<OptionalTitleGroupDTO> optionalTitleGroupList = projectConditionDao.listOptionalTitleGroup(query);
@@ -136,7 +136,7 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
      **/
     @Override
     public void changeOptionalTitle(TitleEditDTO request) {
-        TraceUtils.check(request.getType() != null,log,"!type不能为空");
+        TraceUtils.check(request.getType() != null,"!type不能为空");
 
         if (ObjectUtils.isNotEmpty(request.getTitleCodeList())){
             StringBuilder sb = new StringBuilder();
