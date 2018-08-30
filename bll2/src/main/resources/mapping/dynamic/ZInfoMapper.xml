@@ -586,20 +586,24 @@
   </select>
    <select id="getCostByDetail" resultType="com.maoding.dynamic.dto.ZCostDTO" parameterType="com.maoding.projectcost.entity.ProjectCostPointDetailEntity">
     SELECT
-      a.id as id,
-      b.fee_description as point_name,
-      b.type as point_type,
-      (case b.type when '1' then '合同回款' when '2' then '技术审查费' when '3' then '合作设计费' else '其他' end) as point_type_name,
-      convert(b.fee_proportion,decimal(5,2)) as point_rate,
-      b.fee as point_cost,
+      cost_detail.id as id,
+      cost_point.fee_description as point_name,
+      cost_type.type as point_type,
+      (case cost_type.type when '1' then '合同回款' when '2' then '技术审查费' when '3' then '合作设计费' else '其他' end) as point_type_name,
+      convert(cost_point.fee_proportion,decimal(5,2)) as point_rate,
+      cost_point.fee as point_cost,
       #{fee} as detail_cost
     FROM
-      ( SELECT id,fee,point_id
-        FROM maoding_web_project_cost_point_detail
-        WHERE status='0' and id=#{id}
-        LIMIT 1
-      ) a
-      INNER JOIN maoding_web_project_cost_point b on (b.status='0' and a.point_id=b.id)
+      maoding_web_project_cost_point_detail cost_detail
+      inner join maoding_web_project_cost_point cost_point on (
+          cost_point.status = '0'
+          and cost_point.id = cost_detail.point_id
+      )
+      inner join maoding_web_project_cost cost_type on (
+          cost_type.status = '0'
+          and cost_type.id = cost_point.cost_id
+      )
+    where cost_detail.status = '0' and cost_detail.id = #{id}
     LIMIT 1
   </select>
   <select id="getCostByPay" resultType="com.maoding.dynamic.dto.ZCostDTO" parameterType="com.maoding.projectcost.entity.ProjectCostPaymentDetailEntity">

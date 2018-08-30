@@ -24,9 +24,7 @@ import com.maoding.financial.dao.ExpMainDao;
 import com.maoding.financial.dto.ExpMainDTO;
 import com.maoding.financial.entity.ExpAuditEntity;
 import com.maoding.financial.entity.ExpMainEntity;
-import com.maoding.financial.service.ExpMainService;
 import com.maoding.hxIm.dto.ImSendMessageDTO;
-import com.maoding.hxIm.service.ImQueueProducer;
 import com.maoding.invoice.service.InvoiceService;
 import com.maoding.message.dao.MessageDao;
 import com.maoding.message.dto.*;
@@ -416,6 +414,7 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
             case SystemParameters.MESSAGE_TYPE_303: //"hi,?组织，经营负责人?发布了“?”的设计任务，请在任务中查看并进行<a href=\"?\"［任务签发］</a>，谢谢！"
             case SystemParameters.MESSAGE_TYPE_305:
             case SystemParameters.MESSAGE_TYPE_306:
+
             case SystemParameters.MESSAGE_TYPE_410:
                 para.put("projectName", getProjectName(messageEntity.getProjectId()));
                 para.put("url", "/iWork/project/projectInformation/" + messageEntity.getProjectId() + "/2");
@@ -631,6 +630,7 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
             case SystemParameters.MESSAGE_TYPE_114:
             case SystemParameters.MESSAGE_TYPE_115:
             case SystemParameters.MESSAGE_TYPE_116:
+            case SystemParameters.MESSAGE_TYPE_307:
                 ProjectCostPointDetailEntity detail6 = projectCostPointDetailDao.selectById(targetId);
                 para.put("projectName", getProjectName(projectId));
                 para.put("feeDescription",getFeeDescription(detail6));
