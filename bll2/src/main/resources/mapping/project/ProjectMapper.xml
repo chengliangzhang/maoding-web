@@ -340,6 +340,50 @@
         <if test="projectType != null">
             and project_list.project_type = #{projectType}
         </if>
+
+        <!-- 经营负责人筛选 -->
+        <if test="busPersonInCharge != null">
+            and project_list.id in (select DISTINCT project_id from maoding_web_project_member
+            where  company_user_id = #{busPersonInCharge} and member_type = 1)
+        </if>
+        <!-- 经营助理筛选 -->
+        <if test="busPersonInChargeAssistant != null">
+            and project_list.id in (select DISTINCT project_id from maoding_web_project_member
+            where  company_user_id = #{busPersonInChargeAssistant} and member_type = 7)
+        </if>
+        <!-- 设计负责人筛选 -->
+        <if test="designPersonInCharge != null">
+            and project_list.id in (select DISTINCT project_id from maoding_web_project_member
+            where  company_user_id = #{designPersonInCharge} and member_type = 2)
+        </if>
+        <!-- 设计助理筛选 -->
+        <if test="designPersonInChargeAssistant != null">
+            and project_list.id in (select DISTINCT project_id from maoding_web_project_member
+            where  company_user_id = #{designPersonInChargeAssistant} and member_type = 8)
+            )
+        </if>
+        <!-- 任务负责人筛选 -->
+        <if test="taskLeader != null">
+            and project_list.id in (select DISTINCT project_id from maoding_web_project_member
+            where  company_user_id = #{taskLeader} and member_type = 3)
+        </if>
+        <!-- 设计人员筛选 -->
+        <if test="designer != null">
+            and project_list.id in (select DISTINCT project_id from maoding_web_project_member
+            where  company_user_id = #{designer} and member_type = 4)
+            )
+        </if>
+        <!-- 校验人员筛选 -->
+        <if test="checker != null">
+            and project_list.id in (select DISTINCT project_id from maoding_web_project_member
+            where  company_user_id = #{checker} and member_type = 5)
+        </if>
+        <!-- 审核人员筛选 -->
+        <if test="auditor != null">
+            and project_list.id in (select DISTINCT project_id from maoding_web_project_member
+            where  company_user_id = #{auditor} and member_type = 6)
+        </if>
+
     </sql>
 
     <sql id="OrderForProjectQuery">
@@ -389,6 +433,7 @@
             <if test="needStatus == 1">
                 inner join md_type_project_status status_type on (status_type.type_id = project_list.status)
             </if>
+<<<<<<< .mine
             <!-- 经营负责人筛选 -->
             <if test="busPersonInCharge != null">
                 inner join maoding_web_project_member member_filter_bus on (
@@ -461,24 +506,27 @@
                     and member_filter_task_auditor.member_type = 6
                 )
             </if>
+=======
+
+>>>>>>> .r28420
             <!-- 项目成员显示 -->
-            <if test="needBusInCharge == 1
-                or needBusAssistant == 1
-                or needDesignInCharge == 1
-                or needDesignAssistant == 1
-                or needTaskLeader == 1
-                or needDesigner == 1
-                or needChecker == 1
-                or needAuditor == 1
-            ">
-                left join maoding_web_project_member team_member on (
-                    team_member.project_id = project_list.id
-                    and team_member.company_id = member_list.company_id
-                )
-                left join maoding_web_company_user team_member_name on (
-                    team_member_name.id = team_member.company_user_id
-                )
-            </if>
+            <!--<if test="needBusInCharge == 1-->
+                <!--or needBusAssistant == 1-->
+                <!--or needDesignInCharge == 1-->
+                <!--or needDesignAssistant == 1-->
+                <!--or needTaskLeader == 1-->
+                <!--or needDesigner == 1-->
+                <!--or needChecker == 1-->
+                <!--or needAuditor == 1-->
+            <!--">-->
+                <!--left join maoding_web_project_member team_member on (-->
+                    <!-- team_member.project_id = project_list.id -->
+                    <!--and team_member.company_id = member_list.company_id-->
+                <!--)-->
+                <!--left join maoding_web_company_user team_member_name on (-->
+                    <!--team_member_name.id = team_member.company_user_id-->
+                <!--)-->
+            <!--</if>-->
             <!-- 合作组织筛选或显示 -->
             <if test="needRelationCompany == 1 or relationCompany != null">
                 left join maoding_web_project_task_relation task_relation on (
@@ -530,37 +578,37 @@
                 status_type.type_title as status,
             </if>
             <!-- 经营负责人 -->
-            <if test="needBusInCharge == 1">
-                group_concat(distinct if(team_member.member_type=1,team_member_name.user_name,null) separator '、') as busPersonInCharge,
-            </if>
-            <!-- 经营助理 -->
-            <if test="needBusAssistant == 1">
-                group_concat(distinct if(team_member.member_type=7,team_member_name.user_name,null) separator '、') as busPersonInChargeAssistant,
-            </if>
-            <!-- 设计负责人 -->
-            <if test="needDesignInCharge == 1">
-                group_concat(distinct if(team_member.member_type=2,team_member_name.user_name,null) separator '、') as designPersonInCharge,
-            </if>
-            <!-- 设计助理 -->
-            <if test="needDesignAssistant == 1">
-                group_concat(distinct if(team_member.member_type=8,team_member_name.user_name,null) separator '、') as designPersonInChargeAssistant,
-            </if>
-            <!-- 任务负责人 -->
-            <if test="needTaskLeader == 1">
-                group_concat(distinct if(team_member.member_type=3,team_member_name.user_name,null) separator '、') as taskLeader,
-            </if>
-            <!-- 设计 -->
-            <if test="needDesigner == 1">
-                group_concat(distinct if(team_member.member_type=4,team_member_name.user_name,null) separator '、') as designer,
-            </if>
-            <!-- 校验 -->
-            <if test="needChecker == 1">
-                group_concat(distinct if(team_member.member_type=5,team_member_name.user_name,null) separator '、') as checker,
-            </if>
-            <!-- 审核 -->
-            <if test="needAuditor == 1">
-                group_concat(distinct if(team_member.member_type=6,team_member_name.user_name,null) separator '、') as auditor,
-            </if>
+            <!--<if test="needBusInCharge == 1">-->
+                <!--group_concat(distinct if(team_member.member_type=1,team_member_name.user_name,null) separator '、') as busPersonInCharge,-->
+            <!--</if>-->
+            <!--&lt;!&ndash; 经营助理 &ndash;&gt;-->
+            <!--<if test="needBusAssistant == 1">-->
+                <!--group_concat(distinct if(team_member.member_type=7,team_member_name.user_name,null) separator '、') as busPersonInChargeAssistant,-->
+            <!--</if>-->
+            <!--&lt;!&ndash; 设计负责人 &ndash;&gt;-->
+            <!--<if test="needDesignInCharge == 1">-->
+                <!--group_concat(distinct if(team_member.member_type=2,team_member_name.user_name,null) separator '、') as designPersonInCharge,-->
+            <!--</if>-->
+            <!--&lt;!&ndash; 设计助理 &ndash;&gt;-->
+            <!--<if test="needDesignAssistant == 1">-->
+                <!--group_concat(distinct if(team_member.member_type=8,team_member_name.user_name,null) separator '、') as designPersonInChargeAssistant,-->
+            <!--</if>-->
+            <!--&lt;!&ndash; 任务负责人 &ndash;&gt;-->
+            <!--<if test="needTaskLeader == 1">-->
+                <!--group_concat(distinct if(team_member.member_type=3,team_member_name.user_name,null) separator '、') as taskLeader,-->
+            <!--</if>-->
+            <!--&lt;!&ndash; 设计 &ndash;&gt;-->
+            <!--<if test="needDesigner == 1">-->
+                <!--group_concat(distinct if(team_member.member_type=4,team_member_name.user_name,null) separator '、') as designer,-->
+            <!--</if>-->
+            <!--&lt;!&ndash; 校验 &ndash;&gt;-->
+            <!--<if test="needChecker == 1">-->
+                <!--group_concat(distinct if(team_member.member_type=5,team_member_name.user_name,null) separator '、') as checker,-->
+            <!--</if>-->
+            <!--&lt;!&ndash; 审核 &ndash;&gt;-->
+            <!--<if test="needAuditor == 1">-->
+                <!--group_concat(distinct if(team_member.member_type=6,team_member_name.user_name,null) separator '、') as auditor,-->
+            <!--</if>-->
             <!-- 合作组织 -->
             <if test="needRelationCompany == 1">
                 group_concat(distinct relation_company.company_name separator '、') as relationCompany,

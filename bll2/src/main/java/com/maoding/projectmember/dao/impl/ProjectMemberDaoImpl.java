@@ -6,6 +6,7 @@ import com.maoding.project.dto.ProjectWorkingHoursDTO;
 import com.maoding.projectmember.dao.ProjectMemberDao;
 import com.maoding.projectmember.dto.MemberQueryDTO;
 import com.maoding.projectmember.dto.ProjectMemberDTO;
+import com.maoding.projectmember.dto.ProjectMemberGroupDTO;
 import com.maoding.projectmember.entity.ProjectMemberEntity;
 import org.springframework.stereotype.Service;
 
@@ -149,5 +150,10 @@ public class ProjectMemberDaoImpl extends GenericDao<ProjectMemberEntity> implem
     @Override
     public List<ProjectMemberDTO> listByQuery(MemberQueryDTO query) {
         return sqlSession.selectList("ProjectMemberEntityMapper.listByQuery",query);
+    }
+
+    @Override
+    public List<ProjectMemberGroupDTO> getMemberForProjectList(MemberQueryDTO query) {
+        return sqlSession.selectList("GetProjectMemberMapper.getMemberForProjectList",query);
     }
 }

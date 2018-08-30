@@ -5,6 +5,7 @@ import com.maoding.project.dto.ProjectTaskProcessNodeDTO;
 import com.maoding.project.dto.ProjectWorkingHoursDTO;
 import com.maoding.projectmember.dto.MemberQueryDTO;
 import com.maoding.projectmember.dto.ProjectMemberDTO;
+import com.maoding.projectmember.dto.ProjectMemberGroupDTO;
 import com.maoding.projectmember.entity.ProjectMemberEntity;
 
 import java.util.List;
@@ -113,4 +114,9 @@ public interface ProjectMemberDao extends BaseDao<ProjectMemberEntity> {
      * @return  项目成员列表
      **/
     List<ProjectMemberDTO> listByQuery(MemberQueryDTO query);
+
+    /**
+     * 项目成员列表 查询人员
+     */
+    List<ProjectMemberGroupDTO> getMemberForProjectList(MemberQueryDTO query);
 }

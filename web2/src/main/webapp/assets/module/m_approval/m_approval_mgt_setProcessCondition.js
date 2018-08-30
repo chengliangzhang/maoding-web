@@ -54,7 +54,7 @@
                 },function(d){//加载html后触发
 
                     that.element = $('div[id="content:'+d.id+'"] .dialogOBox');
-                    $(that.element).closest('table').find('.ui-dialog-header .ui-dialog-title').append('<span class="fc-ccc">（审批条件仅能指定一个，且为必填字段）</span>');
+                    $(that.element).closest('table').find('.ui-dialog-header .ui-dialog-title').append('<span class="fc-v1-grey">（审批条件仅能指定一个，且为必填字段）</span>');
 
                     that.initHtmlData();
                 });

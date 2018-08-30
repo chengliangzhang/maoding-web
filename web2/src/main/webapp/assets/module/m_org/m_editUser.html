@@ -7,11 +7,11 @@
                 <section>
                     <div class="row">
                         <div class="col-24-md-11 form-group">
-                            <label>姓名<span class="color-red">*</span></label>
+                            <label>姓名<span class="fc-red">*</span></label>
                             <input type="text" class="form-control" id="userName" name="userName" value="{{memberObj.userName}}">
                         </div>
                         <div class="col-24-md-11 form-group ">
-                            <label>手机号码<span class="color-red">*</span></label>
+                            <label>手机号码<span class="fc-red">*</span></label>
                             {{if memberObj.cellphone!='' && memberObj.cellphone!=null}}
                                 <input type="text" class="form-control" id="cellphone" disabled="disabled" style="cursor: not-allowed;" name="cellphone" value="{{memberObj.cellphone}}" maxlength="11">
                             {{/if}}

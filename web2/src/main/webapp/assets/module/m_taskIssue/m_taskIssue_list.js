@@ -118,10 +118,10 @@
                         var len = $this.next('.editable-container').find('.editable-input input').val().length;
                         $this.next('.editable-container').find('.wordCount').text(len);
                         if(len>50){
-                            $this.next('.editable-container').find('.wordCount').addClass('color-red');
+                            $this.next('.editable-container').find('.wordCount').addClass('fc-red');
                         }else{
-                            if($this.next('.editable-container').find('.wordCount').hasClass('color-red')){
-                                $this.next('.editable-container').find('.wordCount').removeClass('color-red');
+                            if($this.next('.editable-container').find('.wordCount').hasClass('fc-red')){
+                                $this.next('.editable-container').find('.wordCount').removeClass('fc-red');
                             }
                         }
                     });
@@ -463,10 +463,10 @@
                         var len = $(that.element).find('input[name="taskName"]').val().length;
                         $(that.element).find('.wordCount').text(len);
                         if(len>50){
-                            $(that.element).find('.wordCount').addClass('color-red');
+                            $(that.element).find('.wordCount').addClass('fc-red');
                         }else{
-                            if($(that.element).find('.wordCount').hasClass('color-red')){
-                                $(that.element).find('.wordCount').removeClass('color-red');
+                            if($(that.element).find('.wordCount').hasClass('fc-red')){
+                                $(that.element).find('.wordCount').removeClass('fc-red');
                             }
                         }
                     });

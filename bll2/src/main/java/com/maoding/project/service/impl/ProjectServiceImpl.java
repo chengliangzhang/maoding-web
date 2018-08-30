@@ -56,6 +56,7 @@ import com.maoding.projectcost.dto.ProjectCostSummaryQueryDTO;
 import com.maoding.projectcost.service.ProjectCostService;
 import com.maoding.projectmember.dto.MemberQueryDTO;
 import com.maoding.projectmember.dto.ProjectMemberDTO;
+import com.maoding.projectmember.dto.ProjectMemberGroupDTO;
 import com.maoding.projectmember.entity.ProjectMemberEntity;
 import com.maoding.projectmember.service.ProjectMemberService;
 import com.maoding.role.dto.PermissionDTO;
@@ -2752,9 +2753,10 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         updateQuery(query);
 
         //查询主列表，包括projectId、过滤、排序、总数信息
+        long time1 = System.currentTimeMillis();
         List<ProjectVariableDTO> mainList = projectDao.listProjectBasic(query);
         int count = projectDao.countProject(query);
-
+        long time2 = System.currentTimeMillis();
         //添加项目是否可编辑信息
         Map<String, Object> para = setProjectUserPermissionParam(query.getCompanyId(),query.getCurrentCompanyUserId());
         List<PermissionDTO> permissionDTOS = permissionService.getProjectUserPermission(para);
@@ -2765,8 +2767,13 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         page.setTotal(count);
         page.setPageIndex(DigitUtils.parseInt(query.getPageIndex()));
         page.setPageSize(DigitUtils.parseInt(query.getPageSize()));
+        long time3 = System.currentTimeMillis();
         page.setData(updateProjectList(mainList,query));
+        long time4 = System.currentTimeMillis();
         page.setFlag((flag) ? "1" : "0");
+
+        System.out.println("主查询："+ (time2 - time1));
+        System.out.println("其他查询："+ (time4 - time3));
         return page;
     }
 
@@ -2788,8 +2795,10 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
 
     //补充在查询中没有填充但需要显示的项目信息
     private List<ProjectVariableDTO> updateProjectList(List<ProjectVariableDTO> mainList,ProjectQueryDTO query){
+        List<String> projectList = new ArrayList<>();
         if (ObjectUtils.isNotEmpty(mainList)){
             mainList.forEach(project->{
+                projectList.add(project.getId());
                 //甲方信息
                 if (query.getNeedPartA() == 1){
                     project.setPartA(getProjectPartA(project.getId()));
@@ -2861,7 +2870,80 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             });
         }
 
+        List<Integer> memberTypeList = this.getProjectMemberType(query);
+        if(!CollectionUtils.isEmpty(projectList) && !CollectionUtils.isEmpty(mainList)){
+            MemberQueryDTO memberQueryDTO = new MemberQueryDTO();
+            memberQueryDTO.setCompanyId(query.getCompanyId());
+            memberQueryDTO.setMemberTypeList(memberTypeList);
+            memberQueryDTO.setProjectList(projectList);
+            List<ProjectMemberGroupDTO> memberList = this.projectMemberService.getMemberForProjectList(memberQueryDTO);
+            getProjectMemberType(query,mainList,memberList);
+        }
+
         return mainList;
+    }
+
+    private void getProjectMemberType(ProjectQueryDTO query,List<ProjectVariableDTO> mainList,List<ProjectMemberGroupDTO> memberList){
+        Map<String,String> memberMap = new HashMap<>();
+        memberList.stream().forEach(m->{
+            memberMap.put(m.getProjectId()+"_"+m.getMemberType(),m.getMemberName());
+        });
+        mainList.stream().forEach(p->{
+            if(query.getNeedBusInCharge()==1){
+                p.setBusPersonInCharge(memberMap.get(p.getId()+"_"+"1"));
+            }
+            if(query.getNeedBusAssistant()==1){
+                p.setBusPersonInChargeAssistant(memberMap.get(p.getId()+"_"+"7"));
+            }
+            if(query.getNeedDesignInCharge()==1){
+                p.setDesignPersonInCharge(memberMap.get(p.getId()+"_"+"2"));
+            }
+            if(query.getNeedDesignAssistant()==1){
+                p.setDesignPersonInChargeAssistant(memberMap.get(p.getId()+"_"+"8"));
+            }
+            if(query.getNeedTaskLeader()==1){
+                p.setTaskLeader(memberMap.get(p.getId()+"_"+"3"));
+            }
+            if(query.getNeedDesigner()==1){
+                p.setDesigner(memberMap.get(p.getId()+"_"+"4"));
+            }
+            if(query.getNeedChecker()==1){
+                p.setChecker(memberMap.get(p.getId()+"_"+"5"));
+            }
+            if(query.getNeedAuditor()==1){
+                p.setAuditor(memberMap.get(p.getId()+"_"+"6"));
+            }
+        });
+
+    }
+
+    private List<Integer> getProjectMemberType(ProjectQueryDTO query){
+        List<Integer> memberTypeList = new ArrayList<>();
+        if(query.getNeedBusInCharge()==1){
+            memberTypeList.add(1);
+        }
+        if(query.getNeedBusAssistant()==1){
+            memberTypeList.add(7);
+        }
+        if(query.getNeedDesignInCharge()==1){
+            memberTypeList.add(2);
+        }
+        if(query.getNeedDesignAssistant()==1){
+            memberTypeList.add(8);
+        }
+        if(query.getNeedTaskLeader()==1){
+            memberTypeList.add(3);
+        }
+        if(query.getNeedDesigner()==1){
+            memberTypeList.add(4);
+        }
+        if(query.getNeedChecker()==1){
+            memberTypeList.add(5);
+        }
+        if(query.getNeedAuditor()==1){
+            memberTypeList.add(6);
+        }
+        return memberTypeList;
     }
 
     //获取甲方信息

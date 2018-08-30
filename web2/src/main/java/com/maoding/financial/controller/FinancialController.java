@@ -630,6 +630,8 @@ public class FinancialController extends BaseController {
         param.clear();
         param.put("expSumAmount", expSummary.getExpSumAmount());
         param.put("financialAllocationSumAmount", expSummary.getFinancialAllocationSumAmount());
+        param.put("waitingAllocationSumAmount", expSummary.getWaitingAllocationSumAmount());
+        param.put("repulseAllocationSumAmount", expSummary.getRepulseAllocationSumAmount());
         param.put("data", data);
         param.put("total", totalNumber);
         param.put("companyList",expSummary.getCompanyList());

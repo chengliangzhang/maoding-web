@@ -1,6 +1,6 @@
 <!--面包屑-->
 <div class="no-margin p-sm breadcrumb-box" >
-    <div class="col-md-6 text-left f-s-14 p-w-md">
+    <div class="col-md-6 text-left f-s-m p-w-md">
         <span>系统管理员：</span>
         {{ if rolePermissions.systemManager!=null && rolePermissions.systemManager.id==currentCompanyUserId}}
             <a id="sysManagerA" data-action="transferSysManager">{{rolePermissions.systemManager==null?'':rolePermissions.systemManager.userName}}</a>
@@ -52,7 +52,7 @@
                         <span class="user-span pt-relative p-4"userId="{{user.userId}}" roleId="{{role.permissionList[0].id}}">
                             <span class="user-name curp btn-link" data-action="chooseRoleByDialog">{{user.userName}}</span>
                             <span>{{j==role.permissionList[0].companyUserList.length-1?'&nbsp;&nbsp;':'&nbsp;'}}</span>
-                            <span class="user-del hide pt-absolute" style="top: -2px;right: 2px;" data-action="deleteRoleUser"><i class="fa fa-times color-red curp "></i></span>
+                            <span class="user-del hide pt-absolute" style="top: -2px;right: 2px;" data-action="deleteRoleUser"><i class="fa fa-times fc-red curp "></i></span>
                         </span>
                         {{else}}
                         <span class="p-4" >
@@ -85,7 +85,7 @@
                                 <span class="user-name curp btn-link" data-action="chooseRoleByDialog">{{user.userName}}</span>
                                 <span>{{b==mem.companyUserList.length-1?'&nbsp;&nbsp;':'&nbsp;'}}</span>
                                 <span class="user-del hide" style="position:absolute;top: -2px;right: 2px;" data-action="deleteRoleUser">
-                                    <i class="fa fa-times color-red curp "></i>
+                                    <i class="fa fa-times fc-red curp "></i>
                                 </span>
                             </span>
                             {{else}}

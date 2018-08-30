@@ -1,10 +1,10 @@
 <div class="ibox">
     <div class="ibox-title border-fff">
-        <span class="f-s-16 l-h-16 dp-inline-block">组织选择</span>
+        <span class="f-s-md l-h-16 dp-inline-block">组织选择</span>
     </div>
     <div class="ibox-content no-pd">
         <ul class="todo-list small-list m-invite-group">
-            <li><p class="f-s-14 l-h-14 m-t-sm">
+            <li><p class="f-s-m l-h-14 m-t-sm">
                 请选择&nbsp;<span class="fc-v1-yellow">你已创建的组织</span>&nbsp;或&nbsp;<span class="fc-v1-yellow">新创建一个组织</span>&nbsp;成为&nbsp;<span class="fc-v1-yellow">“{{a_companyName}}”</span>&nbsp;的分支机构</p></li>
             {{each companyList as c i}}
             {{if c.flag===1}}
@@ -12,8 +12,8 @@
                 <div class="ibox-content box-shadow border"
                      style="padding: 10px 20px 5px;height:90px;">
                     <div class="dp-inline-block p-h-sm">
-                        <p class="f-s-16 l-h-16 fc-aaa">{{c.companyName}}</p>
-                        <p class="f-s-12 l-h-12 fc-aaa">{{c.memo}}</p>
+                        <p class="f-s-md l-h-16 fc-v1-grey">{{c.companyName}}</p>
+                        <p class="f-s-xs l-h-12 fc-v1-grey">{{c.memo}}</p>
                     </div>
                     {{if c.filePath!=null && c.filePath!=''}}
                     <img alt="image" class="img-circle pull-right img-responsive hidden-xs" width="90"
@@ -29,8 +29,8 @@
                 <div class="ibox-content box-shadow border"
                      style="padding: 10px 20px 5px;height:90px;">
                     <div class="dp-inline-block p-h-sm">
-                        <p class="f-s-16 l-h-16">{{c.companyName}}</p>
-                        <p class="f-s-12 l-h-12 fc-aaa">企业负责人:{{c.systemManager}}</p>
+                        <p class="f-s-md l-h-16">{{c.companyName}}</p>
+                        <p class="f-s-xs l-h-12 fc-v1-grey">企业负责人:{{c.systemManager}}</p>
                     </div>
                     {{if c.filePath!=null && c.filePath!=''}}
                     <img alt="image" class="img-circle pull-right img-responsive hidden-xs" width="90"
@@ -46,7 +46,7 @@
             <li class="selectable">
                 <a href="javascript:void(0)">
                     <div class="ibox-content box-shadow border" style="padding: 0;">
-                        <p class="f-s-16 l-h-16">
+                        <p class="f-s-md l-h-16">
                             <a href="javascript:void(0)" data-action="createOrg" style="padding: 20px 20px 15px;display: inline-block;width: 100%;">创建新组织</a>
                         </p>
                     </div>

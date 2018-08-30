@@ -116,6 +116,7 @@
                         break;
                     case 'setField'://设置字段
                         var option = {};
+                        option.type = that._type;
                         option.saveCallBack = function () {
                             that.renderListHeader();
                         };

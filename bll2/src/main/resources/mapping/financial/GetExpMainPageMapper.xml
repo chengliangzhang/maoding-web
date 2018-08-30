@@ -182,6 +182,8 @@
     <resultMap id="ExpSummaryDTOMap" type="com.maoding.financial.dto.ExpSummaryDTO">
         <id column="exp_sum_amount" property="expSumAmount" jdbcType="DECIMAL"/>
         <result column="financial_allocation_sum_amount" property="financialAllocationSumAmount" jdbcType="DECIMAL"/>
+        <result column="waiting_allocation_sum_amount" property="waitingAllocationSumAmount" jdbcType="DECIMAL"/>
+        <result column="repulse_allocation_sum_amount" property="repulseAllocationSumAmount" jdbcType="DECIMAL"/>
         <collection property="companyList" ofType="java.util.Map" fetchType="eager">
             <result column="company_name" property="companyName" jdbcType="DECIMAL"/>
             <result column="depart_id" property="companyId" jdbcType="DECIMAL"/>
@@ -189,10 +191,10 @@
     </resultMap>
     <select id="summaryExpMain" resultMap="ExpSummaryDTOMap" parameterType="java.util.Map">
         SELECT
-        sum(d.exp_amount) as exp_sum_amount,
-        sum(if(a.approve_status ='6',d.exp_amount,0)) as financial_allocation_sum_amount,
-        sum(IF(a.approve_status = '1',d.exp_amount,0)) AS waiting_allocation_sum_amount,
-        sum(IF(a.approve_status = '7',d.exp_amount,0)) AS repulse_allocation_sum_amount,
+        ifnull(sum(d.exp_amount),0) as exp_sum_amount,
+        ifnull(sum(if(a.approve_status ='6',d.exp_amount,0)),0) as financial_allocation_sum_amount,
+        ifnull(sum(IF(a.approve_status = '1',d.exp_amount,0)),0) AS waiting_allocation_sum_amount,
+        ifnull(sum(IF(a.approve_status = '7',d.exp_amount,0)),0) AS repulse_allocation_sum_amount,
         ifnull(depart_name,company_name) as company_name,
         ifnull(a.depart_id,a.company_id) as company_id
         from maoding_web_exp_main a

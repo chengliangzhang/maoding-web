@@ -38,13 +38,13 @@
                     操作
                     <i class="fa fa-angle-down btnReturnFalse"></i>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-v1" role="menu">
+                <ul class="dropdown-menu " role="menu">
                     <li>
-                        <a href="javascript:void(0)" data-i="{{$index}}" data-action="editOrgUser">编辑</a>
+                        <a class="no-margins" href="javascript:void(0)" data-i="{{$index}}" data-action="editOrgUser">编辑</a>
                     </li>
                     {{if u.adminFlag==null||u.adminFlag==''}}
                     <li>
-                        <a href="javascript:void(0)" data-id="{{u.id}}" data-action="delOrgUser">删除</a>
+                        <a class="no-margins" href="javascript:void(0)" data-id="{{u.id}}" data-action="delOrgUser">删除</a>
                     </li>
                     {{/if}}
                 </ul>

@@ -139,10 +139,10 @@
                 that._userSelectedList = data.selectedUserList;
                 $(that.element).find('span.span-box').remove();//删除原人员html
                 $.each(data.selectedUserList,function (i,item) {//循环写入添加人员html
-                    var iHtml = '<span class="span-box m-r-xs bg-muted p-xxs f-s-12">' +
+                    var iHtml = '<span class="span-box m-r-xs bg-muted p-xxs f-s-xs">' +
                         '<span>'+item.userName+'</span>' +
                         '<a class="curp" href="javascript:void(0)" data-id="'+item.id+'" data-i="'+i+'" data-action="delPersonInCharge" >' +
-                        '<i class="fa fa-times color-red"></i>' +
+                        '<i class="fa fa-times fc-red"></i>' +
                         '</a></span>';
 
                     $(that.element).find('a[data-action="addPersonInCharge"]').before(iHtml);

@@ -29,7 +29,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-8 m-t-xs">
-                                    <h3 class="p-t-15 currentCompanyName f-s-20 fc-dark-blue">
+                                    <h3 class="p-t-15 currentCompanyName f-s-xl fc-dark-blue">
                                         <a href="javascript:void(0);" class="m-l-xs" data-action="text_userName">
                                             {{userDto.userName==null || userDto.userName==''?'未设置':userDto.userName}}
                                         </a>
@@ -37,14 +37,14 @@
                                     <div class="editableInfo m-t-lg m-l-xs">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <p class="f-s-16">
+                                                <p class="f-s-md">
                                                     <span class="title-span">绑定手机:</span>
                                                     <span data-show name="cellphone">{{userDto.cellphone}}</span>
                                                     <a href="JavaScript:void(0);" data-action="bindPhone">修改</a>
                                                 </p>
                                             </div>
                                             <div class="col-md-12">
-                                                <p class="f-s-16">
+                                                <p class="f-s-md">
                                                     <span class="title-span">用户密码:</span>
                                                     <a href="JavaScript:void(0);" data-action="changePwd">修改</a>
                                                 </p>
@@ -63,7 +63,7 @@
                                         <div class="clearfix">
                                             <p>
                                             <h4 class="dp-inline-block col1" >{{p.companyName}}</h4>
-                                            <span class="text-muted f-s-14">
+                                            <span class="text-muted f-s-m">
                                                 {{if p.departList && p.departList.length>0}}
                                                     (
                                                         {{each p.departList as d di}}
@@ -81,8 +81,8 @@
                                             <ul class="authority-list">
                                                 {{each p.roleList as r}}
                                                 <li class="m-b-xs">
-                                                    <span class="font-bold f-s-14 role-name" >{{r.name}}：</span>
-                                                    <span class="text-muted f-s-14">
+                                                    <span class="font-bold f-s-m role-name" >{{r.name}}：</span>
+                                                    <span class="text-muted f-s-m">
                                                     {{if r.permissionList && r.permissionList.length>0}}
                                                         {{each r.permissionList as m mi}}
                                                             {{if mi==r.permissionList.length-1}}

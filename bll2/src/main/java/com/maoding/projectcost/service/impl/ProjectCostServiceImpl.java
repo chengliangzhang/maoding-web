@@ -782,7 +782,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
                     && (
                     (StringUtil.isNullOrEmpty(fromRootCompany.getTypeId()) && "3".equals(toRootCompany.getTypeId()))
                             || (StringUtil.isNullOrEmpty(toRootCompany.getTypeId()) && "3".equals(fromRootCompany.getTypeId()))
-                            || ("3".equals(fromRootCompany.getTypeId()) && "3".equals(fromRootCompany.getTypeId()))
+                            || ("3".equals(fromRootCompany.getTypeId()) && "3".equals(toRootCompany.getTypeId()))
             )
                     ) {
                 return true;

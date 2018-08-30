@@ -1,10 +1,10 @@
-<div class="text-center f-s-20 border-bottom date-chose-box">
+<div class="text-center f-s-xl border-bottom date-chose-box">
     <a class="m-r-md" data-action="prevYear"><i class="fa fa-angle-left"></i></a>
     <span data-type="selectedYear">{{selectedYear}}</span>
     {{if selectedYear<currentYear}}
         <a class="m-l-md" data-action="nextYear"><i class="fa fa-angle-right"></i></a>
     {{else}}
-        <span class="m-l-md fc-ccc"><i class="fa fa-angle-right"></i></span>
+        <span class="m-l-md fc-v1-grey"><i class="fa fa-angle-right"></i></span>
     {{/if}}
 </div>
 {{each monthList as m mi}}

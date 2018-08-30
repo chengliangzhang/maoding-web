@@ -22,6 +22,7 @@ import com.maoding.project.service.ProjectProcessService;
 import com.maoding.projectmember.dao.ProjectMemberDao;
 import com.maoding.projectmember.dto.MemberQueryDTO;
 import com.maoding.projectmember.dto.ProjectMemberDTO;
+import com.maoding.projectmember.dto.ProjectMemberGroupDTO;
 import com.maoding.projectmember.entity.ProjectMemberEntity;
 import com.maoding.projectmember.service.ProjectMemberService;
 import com.maoding.task.dao.ProjectTaskDao;
@@ -1108,5 +1109,10 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     @Override
     public List<ProjectMemberDTO> listByQuery(MemberQueryDTO query) {
         return projectMemberDao.listByQuery(query);
+    }
+
+    @Override
+    public List<ProjectMemberGroupDTO> getMemberForProjectList(MemberQueryDTO query) {
+        return projectMemberDao.getMemberForProjectList(query);
     }
 }

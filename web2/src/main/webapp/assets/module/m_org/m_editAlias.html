@@ -2,10 +2,10 @@
     <form class="editAliasForm" style="font-size: 12px;">
         <!--<div class="form-group">
             <label class="col-24-sm-5 control-label" for="companyOriginalName">原名：</label>
-            <label name="companyOriginalName" id="companyOriginalName" class="col-sm-9 form-control no-pd-left f-s-14 fw-400 border-none" style="width:270px;">{{companyOriginalName}}</label>
+            <label name="companyOriginalName" id="companyOriginalName" class="col-sm-9 form-control no-pd-left f-s-m fw-400 border-none" style="width:270px;">{{companyOriginalName}}</label>
         </div>-->
         <div class="row form-group">
-            <label class="col-md-3 text-right m-t-xs">组织名称： <span class="color-red">*</span></label>
+            <label class="col-md-3 text-right m-t-xs">组织名称： <span class="fc-red">*</span></label>
             <div class="col-md-9">
                 <input type="text" class="form-control input-sm" name="companyName" value="{{companyOriginalName}}">
             </div>
@@ -17,7 +17,7 @@
             </div>
         </div>-->
         <div class="row">
-            <label class="col-md-3 text-right m-t-xs">类型标示： <span class="color-red">*</span></label>
+            <label class="col-md-3 text-right m-t-xs">类型标示： <span class="fc-red">*</span></label>
             <div class="col-md-9 m-t-xs">
                 <div class="radio radio-inline m-t-none ">
                     {{if relationTypeId==null || relationTypeId==1}}

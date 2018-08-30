@@ -100,8 +100,10 @@
 {{if myDataList!=null && myDataList.length!=0}}
 <div class="row">
     <div class="col-md-6">
-        &nbsp;&nbsp;总申请金额：<span style="color:#ff756d;">{{_expNumberFilter(expSumAmount)}}</span>元
-        &nbsp;&nbsp;总拨款金额：<span style="color:#ff756d;">{{_expNumberFilter(financialAllocationSumAmount)}}</span>元
+        &nbsp;&nbsp;总申请金额：<span class="fc-v2-green">{{_expNumberFilter(expSumAmount)}}</span>元
+        &nbsp;&nbsp;总拨款金额：<span class="fc-v2-green">{{_expNumberFilter(financialAllocationSumAmount)}}</span>元
+        &nbsp;&nbsp;待拨款金额：<span class="fc-v2-green">{{_expNumberFilter(waitingAllocationSumAmount)}}</span>元
+        &nbsp;&nbsp;拒绝拨款金额：<span class="fc-v2-green">{{_expNumberFilter(repulseAllocationSumAmount)}}</span>元
     </div>
 </div>
 {{/if}}

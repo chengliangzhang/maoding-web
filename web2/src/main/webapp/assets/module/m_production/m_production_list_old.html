@@ -85,9 +85,9 @@
 
                 {{if t.taskRemark==null || t.taskRemark==''}}
                     {{if t.roleFlag!=null && t.roleFlag.flag5!=null }}
-                        <span class="fc-ccc show-span">未设置</span>
+                        <span class="fc-v1-grey show-span">未设置</span>
                     {{else}}
-                        <span class="fc-ccc">--</span>
+                        <span class="fc-v1-grey">--</span>
                     {{/if}}
                 {{else}}
                     <span class="edit-span-box wh-16" >
@@ -142,9 +142,9 @@
                         {{/each}}
                     {{else}}
                         {{if t.roleFlag!=null && t.roleFlag.flag3!=null && !(t.taskState=='3'||t.taskState=='4') && t.saveExtent!=1 }}
-                            <span class="fc-ccc">未设置</span>
+                            <span class="fc-v1-grey">未设置</span>
                         {{else}}
-                            <span class="fc-ccc">--</span>
+                            <span class="fc-v1-grey">--</span>
                         {{/if}}
                     {{/if}}
                 </span>
@@ -171,9 +171,9 @@
                         {{/each}}
                     {{else}}
                         {{if t.roleFlag!=null && t.roleFlag.flag3!=null && !(t.taskState=='3'||t.taskState=='4') && t.saveExtent!=1 }}
-                            <span class="fc-ccc">未设置</span>
+                            <span class="fc-v1-grey">未设置</span>
                         {{else}}
-                            <span class="fc-ccc">--</span>
+                            <span class="fc-v1-grey">--</span>
                         {{/if}}
                     {{/if}}
                 </span>
@@ -200,9 +200,9 @@
                         {{/each}}
                     {{else}}
                         {{if t.roleFlag!=null && t.roleFlag.flag3!=null && !(t.taskState=='3'||t.taskState=='4') && t.saveExtent!=1 }}
-                            <span class="fc-ccc">未设置</span>
+                            <span class="fc-v1-grey">未设置</span>
                         {{else}}
-                            <span class="fc-ccc">--</span>
+                            <span class="fc-v1-grey">--</span>
                         {{/if}}
                     {{/if}}
                 </span>
@@ -218,7 +218,7 @@
 
                 <span class="show-span" data-type="planTime" data-start-time="{{t.planStartTime}}" data-end-time="{{t.planEndTime}}">
                     {{if (t.planStartTime==null || t.planStartTime=='') && (t.planEndTime==null || t.planEndTime=='')  && (t.roleFlag!=null && t.roleFlag.flag5!=null)}}
-                        <span class="fc-ccc">未设置</span>
+                        <span class="fc-v1-grey">未设置</span>
                     {{else}}
 
                         {{if _isNullOrBlank(t.planStartTime) && _isNullOrBlank(t.planEndTime)}}

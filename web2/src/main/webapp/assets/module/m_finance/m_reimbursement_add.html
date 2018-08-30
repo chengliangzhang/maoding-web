@@ -30,14 +30,14 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-md-12">
-                            <label for="receiptType">单据类型<span class="color-red">*</span></label>
+                            <label for="receiptType">单据类型<span class="fc-red">*</span></label>
                             <select id="receiptType" name="" class="form-control curp p-r-24">
                                 <option value="1">报销申请</option>
                                 <option value="2">费用申请</option>
                             </select>
                         </div>
                         <div class="form-group col-md-12">
-                            <label for="auditPerson">审批人<span class="color-red">*</span></label>
+                            <label for="auditPerson">审批人<span class="fc-red">*</span></label>
                             <input id='auditPerson' type="text" class="getClickFun form-control" value="{{reimburseObj.auditPersonName}}"
                                    data-action="auditPerson" userid="{{reimburseObj.auditPerson}}" id="auditPerson"
                                    readonly="readonly" placeholder="选择审批人" style="background-color: #fff;">
@@ -67,9 +67,9 @@
                     <table class="table table-responsive m-b-none" id="reimburseTable">
                         <thead>
                         <tr>
-                            <th width="18%">报销金额<span class="color-red">*</span>（元）</th>
-                            <th width="24%">报销类别<span class="color-red">*</span></th>
-                            <th width="30%">用途说明<span class="color-red">*</span></th>
+                            <th width="18%">报销金额<span class="fc-red">*</span>（元）</th>
+                            <th width="24%">报销类别<span class="fc-red">*</span></th>
+                            <th width="30%">用途说明<span class="fc-red">*</span></th>
                             <th width="20%">关联项目</th>
                             <th width="8%">操作</th>
                         </tr>

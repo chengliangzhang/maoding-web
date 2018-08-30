@@ -133,9 +133,9 @@
 
                 {{if t.taskRemark==null || t.taskRemark==''}}
                     {{if t.canBeEdit && (isOrgManager==1 || isAssistant==1)}}
-                        <span class="fc-ccc show-span">未设置</span>
+                        <span class="fc-v1-grey show-span">未设置</span>
                     {{else}}
-                        <span class="fc-ccc">--</span>
+                        <span class="fc-v1-grey">--</span>
                     {{/if}}
                 {{else}}
                     <span class="edit-span-box wh-16" >
@@ -169,7 +169,7 @@
             <td class="v-middle b-r-none ">
                 <span class="show-span" data-type="planTime" data-start-time="{{t.planStartTime}}" data-end-time="{{t.planEndTime}}">
                     {{if (t.planStartTime==null || t.planStartTime=='') && (t.planEndTime==null || t.planEndTime=='')}}
-                        <span class="fc-ccc">未设置</span>
+                        <span class="fc-v1-grey">未设置</span>
                     {{else}}
                         {{_momentFormat(t.planStartTime,'YYYY/MM/DD')}} - {{_momentFormat(t.planEndTime,'YYYY/MM/DD')}}
                         {{if _isNullOrBlank(t.planStartTime) || _isNullOrBlank(t.planEndTime)}}

@@ -18,12 +18,28 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ *
+ * @param <T>:导出list列表的数据的类型
+ * @param <B>:导出excel列表中，散列数据的类型，比如excel的头部数据
+ * @param <C>：导出excel列表数据，需要请求参数的类型
+ */
 public abstract class BaseExportServiceImpl<T,B,C extends BaseDTO>  extends NewBaseService implements BaseExportService<T,B,C> {
 
+    /**
+     * 把要导出的list列表，重新封装成 Map<String,ExcelDataDTO>对象。T：导出list列表的数据的类型。
+     * 每个excel导出的数据类型不一样，所有需要重写，把数据都转化成一样的格式
+     */
     abstract List<Map<String,ExcelDataDTO>> getExcelDataList(List<T> dataList,List<CoreShowDTO> titleList);
 
+    /**
+     * 获取excel列表的标题（每个excel的标题不一样，所有需要重写该方法）
+     */
     abstract List<CoreShowDTO> getTitleList(C queryDTO);
 
+    /**
+     * 处理excel的散列数据和标题栏目
+     */
     abstract int exportTitle(List<CoreShowDTO> titleList,B statisticSum, C dto,Sheet sheet,Workbook wb);
 
     @Override
@@ -67,13 +83,19 @@ public abstract class BaseExportServiceImpl<T,B,C extends BaseDTO>  extends NewB
         return AjaxMessage.succeed("获取成功");
     }
 
+    /**
+     * 数据填充到excel中
+     */
     public void exportToSheet(List<T> dataList, B statisticSum, C dto,Workbook wb) throws Exception{
         Sheet sheet = wb.getSheetAt(0);
-        //处理参数
+        //获取标题
         List<CoreShowDTO> titleList = this.getTitleList(dto);
+        //处理标题和统计数据（或许其他的散列数据）
         int firstRow = this.exportTitle(titleList,statisticSum,dto, sheet,wb);
         firstRow ++;
+        //获取列表数
         List<Map<String,ExcelDataDTO>> excelDataList = this.getExcelDataList(dataList,titleList);
+        //填充列表数据到excel中
         for(int r=0;r<excelDataList.size();r++,firstRow++){
             Map<String,ExcelDataDTO> data = excelDataList.get(r);
             Row row = this.getRow(sheet,firstRow);
@@ -85,6 +107,9 @@ public abstract class BaseExportServiceImpl<T,B,C extends BaseDTO>  extends NewB
         }
     }
 
+    /**
+     * 处理每个单元格的样式
+     */
     void setCellStyle(Cell cell,Workbook wb){
         CellStyle cellStyle = wb.createCellStyle();
         cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 居中
@@ -94,6 +119,9 @@ public abstract class BaseExportServiceImpl<T,B,C extends BaseDTO>  extends NewB
         cell.setCellStyle(cellStyle);
     }
 
+    /**
+     * 获取每一行，并且设置高度为500
+     */
     public Row getRow(Sheet sheet,int i){
         Row r = sheet.createRow(i);
         r.setHeight((short) 500);
@@ -101,7 +129,7 @@ public abstract class BaseExportServiceImpl<T,B,C extends BaseDTO>  extends NewB
     }
 
     /**
-     * 设置单元格数据
+     * 设置单元格数据和字体颜色
      */
     RichTextString getCelText(ExcelDataDTO data,Workbook wb){
         CreationHelper helper = wb.getCreationHelper();
@@ -120,6 +148,9 @@ public abstract class BaseExportServiceImpl<T,B,C extends BaseDTO>  extends NewB
         return str;
     }
 
+    /**
+     * 设置标题栏目的数据，填充到excel中
+     */
     public void setExcelTitle(List<CoreShowDTO> titleList,Sheet sheet,Workbook wb,int rowNum){
         Row row = getRow(sheet,rowNum);
         for(int col=0;col<titleList.size();col++){

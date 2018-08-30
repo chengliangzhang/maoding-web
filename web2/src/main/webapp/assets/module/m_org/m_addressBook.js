@@ -157,7 +157,7 @@
                 }else if(relationType==2){
                     $this.find('a.jstree-anchor i.jstree-icon').addClass('color-green');
                 }else if(relationType==3){
-                    $this.find('a.jstree-anchor i.jstree-icon').addClass('color-red');
+                    $this.find('a.jstree-anchor i.jstree-icon').addClass('fc-red');
                 }
             });
         }

@@ -24,8 +24,8 @@
             <div class="col-md-12 " id="content-box">
                 <div class="mail-box no-border m-r-xl m-l-xl m-t" style="min-height: 500px;">
                     <div class="p-m">
-                        <p><h3 class="noticeTitle fc-333" data-string="{{notice.noticeTitle}}" >{{notice.noticeTitle}}</h3></p>
-                        <p class="fc-999">
+                        <p><h3 class="noticeTitle fc-dark-grey" data-string="{{notice.noticeTitle}}" >{{notice.noticeTitle}}</h3></p>
+                        <p class="fc-v1-green">
                             <span class="pull-left">发送人：<span title="{{notice.companyName}}">{{notice.noticePublisherName}}</span></span>
                             <span class="pull-right">发送日期：{{notice.noticePublishdate}}</span>
                         </p>
@@ -33,13 +33,13 @@
                     <div>
 
                     </div>
-                    <div class="mail-body border-no-t fc-666 ">
+                    <div class="mail-body border-no-t fc-v2-grey ">
 
                     </div>
                     <div class="border-bottom"></div>
                     <div class="m-t-md p-w-m">
                         {{if notice.attachList!=null && notice.attachList.length>0}}
-                            <span class="fc-999">{{notice.attachList.length}}个附件：</span>
+                            <span class="fc-v1-green">{{notice.attachList.length}}个附件：</span>
                             {{each notice.attachList as p}}
                                 <span class="bg-muted b-r-sm p-xxs m-xs">
                                     <a class="fc-dark-blue m-r-sm " href="{{_fastdfsUrl(p.fileGroup+'/'+p.filePath)}}" target="_blank">{{p.fileName}}</a>

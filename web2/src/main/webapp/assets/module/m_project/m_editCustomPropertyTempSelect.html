@@ -1,14 +1,14 @@
 {{if selectedPropertyList!=null && selectedPropertyList.length>0 }}
     {{each selectedPropertyList as s si}}
         <div class="col-md-6 no-pd-right m-b list-group-item" data-sortId="{{si}}">
-            <span class=" property-span m-r-xs bg-muted p-xxs f-s-12" >
+            <span class=" property-span m-r-xs bg-muted p-xxs f-s-xs" >
                 <span class="field-name" data-string="{{s.fieldName}} {{s.unitName!=null&& s.unitName!=''?'('+s.unitName+')':''}}">
                     {{s.fieldName}}&nbsp;
                     {{s.unitName!=null&& s.unitName!=''?'('+s.unitName+')':''}}
                 </span>
                 <a class="curp" href="javascript:void(0)" data-id="{{s.id}}" data-field-name="{{s.fieldName}}" data-unit-name="{{s.unitName}}"
                    data-action="delSelectedProperty">
-                    <i class="fa fa-times color-red"></i></a>
+                    <i class="fa fa-times fc-red"></i></a>
             </span>
         </div>
     {{/each}}

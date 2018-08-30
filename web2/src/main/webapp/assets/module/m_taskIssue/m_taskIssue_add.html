@@ -10,14 +10,14 @@
     <div class="add-issue-box ">
         {{if doType==null}}
         <div class="form-group m-b-xs clearfix">
-            <label class="col-24-sm-6 control-label no-pd-left m-t-xs">设计任务<span class="color-red">*</span></label>
+            <label class="col-24-sm-6 control-label no-pd-left m-t-xs">设计任务<span class="fc-red">*</span></label>
             <div class="col-24-sm-18 no-pd-right">
                 <input placeholder="设计任务" class="form-control" type="text" name="taskName" maxlength="100">
             </div>
         </div>
         {{/if}}
         <div class="form-group m-b-xs clearfix">
-            <label class="col-24-sm-6 control-label no-pd-left m-t-xs">设计组织<span class="color-red">*</span></label>
+            <label class="col-24-sm-6 control-label no-pd-left m-t-xs">设计组织<span class="fc-red">*</span></label>
             <div class="col-24-sm-18 no-pd-right">
                 <select class="form-control" name="designOrg">
                     {{each allCompanyList as s}}
@@ -69,7 +69,7 @@
         </div>-->
         <div class="form-group time-box m-b-xs clearfix">
             <!--col-24-sm-5 过短，星号会换行-->
-            <label class="col-24-sm-6 control-label no-pd-left no-pd-right m-t-xs">计划开始时间<span class="color-red">*</span></label>
+            <label class="col-24-sm-6 control-label no-pd-left no-pd-right m-t-xs">计划开始时间<span class="fc-red">*</span></label>
             <div class="col-24-sm-18 no-pd-right">
                 <div class="input-group">
                     <input type="text" class="form-control timeInput startTime input-sm" id="ipt_startTime" name="startTime" data-appointmentStartTime = "{{appointmentStartTime}}"
@@ -82,7 +82,7 @@
         </div>
         <div class="form-group time-box m-b-xs clearfix">
             <!--col-24-sm-5 过短，星号会换行-->
-            <label class="col-24-sm-6 control-label no-pd-left no-pd-right m-t-xs">计划结束时间<span class="color-red">*</span></label>
+            <label class="col-24-sm-6 control-label no-pd-left no-pd-right m-t-xs">计划结束时间<span class="fc-red">*</span></label>
             <div class="col-24-sm-18 no-pd-right">
                 <div class="input-group">
                     <input type="text" class="form-control timeInput endTime input-sm" id="ipt_endTime" name="endTime" data-appointmentEndTime = "{{appointmentEndTime}}"

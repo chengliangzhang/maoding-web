@@ -7,7 +7,6 @@
 .headContent i.iconfont{font-size: 20px;}
 .headContent a.dropdown-toggle{padding-left: 5px;padding-right: 31px;}
 .headContent i.fa-caret-down{position: absolute;top:7px;font-size: 20px}
-.headContent ul.dropdown-menu.dropdown-menu-v1{position: absolute;left: 92px;top: 34px;}
 .ibox .ibox-content .treeSwitch{display: flex;float: right;padding-right:15px;min-height: 30px;align-items: center;justify-content: center;}
 
 .orgUserOBox.table{

@@ -325,4 +325,26 @@
         AND hour1.deleted = 0
         <include refid="getProjectWorkingHoursCondition"/>
     </select>
+
+
+    <select id="getMemberForProjectList" parameterType="com.maoding.projectmember.dto.MemberQueryDTO" resultType="com.maoding.projectmember.dto.ProjectMemberGroupDTO">
+        SELECT a.project_id, GROUP_CONCAT(DISTINCT b.user_name) as member_name,a.member_type
+        from maoding_web_project_member a
+        INNER JOIN maoding_web_company_user b on a.company_user_id = b.id
+        where 1=1
+        and a.project_id in
+        <foreach collection="projectList" index="i" item="mProjectId" open="(" separator="," close=")">
+            #{mProjectId}
+        </foreach>
+        <if test="memberTypeList!=null and memberTypeList.size()>0">
+            and a.member_type in
+            <foreach collection="memberTypeList" index="i" item="mMemberType" open="(" separator="," close=")">
+                #{mMemberType}
+            </foreach>
+        </if>
+        <if test="companyId!=null">
+            and a.company_id = #{companyId}
+        </if>
+        GROUP BY a.project_id,a.member_type
+    </select>
 </mapper>

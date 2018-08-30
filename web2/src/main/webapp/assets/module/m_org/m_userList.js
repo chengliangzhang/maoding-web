@@ -92,7 +92,7 @@
                     _iHtml += '<span class=" m-r-xs" style="background-color: rgb(245, 245, 245);padding: 2px 0px;">' +
                         '<span class="label label-light m-r-xs" style="display: inline-block;padding-right: 0;background: transparent">' + data.userName + '' +
                         '<a class="curp" href="javascript:void(0)" data-id="' + data.companyUserId + '" data-userId="'+data.userId+'" data-action="delChosedUser">' +
-                        '<i class="fa fa-times color-red"></i></a></span></span>';
+                        '<i class="fa fa-times fc-red"></i></a></span></span>';
 
                     if(that.settings.isASingleSelectUser){//单选
                         $('.chosedUserBox').html(_iHtml);

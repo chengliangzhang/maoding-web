@@ -21,10 +21,10 @@
                         <span class="pull-left">合同附件：</span>
                         {{if attachList!=null && attachList.length>0}}
                             {{each attachList as a}}
-                            <span class="bg-v1-grey b-r-sm p-xxs m-r-xs f-s-12 pull-left" style="padding: 3px 5px;">
+                            <span class="bg-v1-grey b-r-sm p-xxs m-r-xs f-s-xs pull-left" style="padding: 3px 5px;">
                                         <a href="{{a.fileFullPath}}" target="_blank">{{a.fileName}}</a>
                                         <a class="curp" href="javascript:void(0)" data-id="{{a.id}}" data-action="delAttach">
-                                            <i class="fa fa-times color-red"></i>
+                                            <i class="fa fa-times fc-red"></i>
                                         </a>
                                     </span>
                             {{/each}}
@@ -169,7 +169,7 @@
                     <span data-toggle="tooltip" data-placement="top" title="添加付款金额" class="l-h-38">
                         <a class="btn btn-outline full-width no-padding" href="javascript:void(0)" data-id="{{p.pointDetailList[0].roleMap.financialForFee}}"
                            data-limit="{{p.pointDetailList.length>0?p.pointDetailList[0].notPayFee2:''}}" data-action="costConfirm" type="button" >
-                            <i class="fa fa-plus color-dark-blue f-s-20" ></i>
+                            <i class="fa fa-plus color-dark-blue f-s-xl" ></i>
                         </a>
                     </span>
                 {{/if}}
@@ -242,7 +242,7 @@
                 {{if c.roleMap!=null && c.roleMap.financialForFee!=null }}
                     <span data-toggle="tooltip" data-placement="top" title="添加付款金额" class="l-h-38">
                         <a class="btn btn-outline full-width no-padding" data-id="{{c.roleMap.financialForFee}}" data-limit="{{c.notPayFee2}}" href="javascript:void(0)" data-action="costConfirm" type="button" >
-                            <i class="fa fa-plus color-dark-blue f-s-20" ></i>
+                            <i class="fa fa-plus color-dark-blue f-s-xl" ></i>
                         </a>
                     </span>
                 {{/if}}
@@ -259,7 +259,7 @@
             <td colspan="10" align="center">
                 <span data-toggle="tooltip" data-placement="top" title="添加付款节点">
                     <a class="btn btn-outline full-width border-dashed" href="javascript:void(0)" data-action="addContract" type="button" >
-                        <i class="fa fa-plus color-dark-blue f-s-20" ></i>
+                        <i class="fa fa-plus color-dark-blue f-s-xl" ></i>
                     </a>
                 </span>
             </td>

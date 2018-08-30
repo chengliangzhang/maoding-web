@@ -20,7 +20,8 @@ public class ExpSummaryDTO {
     private BigDecimal repulseAllocationSumAmount;
 
     public BigDecimal getWaitingAllocationSumAmount() {
-        return waitingAllocationSumAmount;
+
+        return waitingAllocationSumAmount.setScale(6,BigDecimal.ROUND_HALF_UP);
     }
 
     public void setWaitingAllocationSumAmount(BigDecimal waitingAllocationSumAmount) {
@@ -28,7 +29,7 @@ public class ExpSummaryDTO {
     }
 
     public BigDecimal getRepulseAllocationSumAmount() {
-        return repulseAllocationSumAmount;
+        return repulseAllocationSumAmount.setScale(6,BigDecimal.ROUND_HALF_UP);
     }
 
     public void setRepulseAllocationSumAmount(BigDecimal repulseAllocationSumAmount) {

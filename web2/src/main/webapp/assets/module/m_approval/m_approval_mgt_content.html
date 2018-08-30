@@ -11,7 +11,7 @@
     {{each approvalList as a i}}
     <tr>
         <td colspan="4">
-            <h5 class="f-s-13">{{a.name}}</h5>
+            <h5 class="f-s-sm">{{a.name}}</h5>
             <!--<button class="btn btn-link" data-action="add" data-action-type="0" title="添加行政审批"><i class="fa fa-plus"></i></button>-->
         </td>
     </tr>
@@ -27,7 +27,7 @@
             <td>{{p.documentation}}</td>
             <td>
                 <a class="btn btn-link text-navy no-padding pull-left" data-action="setProcess" data-key="{{p.key}}" data-type="{{p.type}}">审批人</a>
-                <span class="fc-ccc">（已设置）</span>
+                <span class="fc-v1-grey">（已设置）</span>
             </td>
             <td>
                <!-- <button  class="btn btn-primary btn-xs " data-action="edit" data-action-type="0">编辑</button>

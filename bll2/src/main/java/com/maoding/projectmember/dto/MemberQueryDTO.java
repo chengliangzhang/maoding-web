@@ -3,6 +3,9 @@ package com.maoding.projectmember.dto;
 
 import com.maoding.core.base.dto.BaseQueryDTO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Chengliang.zhang on 2017/7/20.
  */
@@ -41,6 +44,10 @@ public class MemberQueryDTO extends BaseQueryDTO {
 
     /** 相关父任务 */
     private String parentTaskId;
+
+    private List<String> projectList = new ArrayList<>();
+
+    private List<Integer> memberTypeList = new ArrayList<>();
 
     public String getParentTaskId() {
         return parentTaskId;
@@ -168,5 +175,21 @@ public class MemberQueryDTO extends BaseQueryDTO {
 
     public void setParam2(String param2) {
         this.param2 = param2;
+    }
+
+    public List<String> getProjectList() {
+        return projectList;
+    }
+
+    public void setProjectList(List<String> projectList) {
+        this.projectList = projectList;
+    }
+
+    public List<Integer> getMemberTypeList() {
+        return memberTypeList;
+    }
+
+    public void setMemberTypeList(List<Integer> memberTypeList) {
+        this.memberTypeList = memberTypeList;
     }
 }
