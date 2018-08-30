@@ -285,7 +285,9 @@
                 </when>
                 <otherwise/>
             </choose>
-        where project_list.pstatus = '0'
+        <where>
+            <include refid="BasicFilterForProjectQuery"/>
+        </where>
     </select>
 
     <sql id="BasicFilterForProjectQuery">
@@ -321,7 +323,7 @@
             and project_list.company_id = #{createCompany}
         </if>
         <if test="address != null">
-            and concat(project_list.province,project_list.city) = #{address}
+            and concat_ws('',project_list.province,project_list.city,project_list.county) = #{address}
         </if>
         <if test="province != null">
             and project_list.province = #{province}
@@ -359,33 +361,6 @@
                     </if>
                 </if>
         </if>
-    </sql>
-
-    <sql id="ExtraProjectBasicField">
-        ifnull(project_list.project_create_date,project_list.create_date) as projectCreateDate,
-        project_list.contract_date as signDate,
-        concat(project_list.province,project_list.city) as address,
-        concat(create_company.company_name,'/',create_company_user.user_name) as createCompany,
-        status_type.type_title as status,
-    </sql>
-
-    <sql id="ExtraProjectBasicTable">
-        inner join md_project_member member_list on (
-            member_list.project_id = project_list.id
-            <if test="accountId != null">
-                and member_list.user_id = #{accountId}
-            </if>
-            <if test="currentCompanyId != null">
-                and member_list.company_id = #{currentCompanyId}
-            </if>
-        )
-        inner join md_type_project_status status_type on (status_type.type_id = project_list.status)
-        inner join maoding_web_company create_company on (create_company.status = '0' and create_company.id =
-            project_list.company_id
-        )
-        inner join maoding_web_company_user create_company_user on (create_company_user.company_id =
-            project_list.company_id and create_company_user.user_id = project_list.create_by
-        )
     </sql>
 
     <sql id="TableAndFilterOfProjectQuery">
@@ -462,10 +437,10 @@
             <!-- 设计人员筛选 -->
             <if test="designer != null">
                 inner join maoding_web_project_member member_filter_task_designer on (
-                member_filter_task_designer.project_id = project_list.id
-                and member_filter_task_designer.company_id = member_list.company_id
-                and member_filter_task_designer.company_user_id = #{designer}
-                and member_filter_task_designer.member_type = 4
+                    member_filter_task_designer.project_id = project_list.id
+                    and member_filter_task_designer.company_id = member_list.company_id
+                    and member_filter_task_designer.company_user_id = #{designer}
+                    and member_filter_task_designer.member_type = 4
                 )
             </if>
             <!-- 校验人员筛选 -->
@@ -556,50 +531,50 @@
             </if>
             <!-- 经营负责人 -->
             <if test="needBusInCharge == 1">
-                group_concat(distinct if(team_member.member_type=1,concat(team_member_name.user_name,','),'') separator '') as busPersonInCharge,
+                group_concat(distinct if(team_member.member_type=1,team_member_name.user_name,null) separator '、') as busPersonInCharge,
             </if>
             <!-- 经营助理 -->
             <if test="needBusAssistant == 1">
-                group_concat(distinct if(team_member.member_type=7,concat(team_member_name.user_name,','),'') separator '') as busPersonInChargeAssistant,
+                group_concat(distinct if(team_member.member_type=7,team_member_name.user_name,null) separator '、') as busPersonInChargeAssistant,
             </if>
             <!-- 设计负责人 -->
             <if test="needDesignInCharge == 1">
-                group_concat(distinct if(team_member.member_type=2,concat(team_member_name.user_name,','),'') separator '') as designPersonInCharge,
+                group_concat(distinct if(team_member.member_type=2,team_member_name.user_name,null) separator '、') as designPersonInCharge,
             </if>
             <!-- 设计助理 -->
             <if test="needDesignAssistant == 1">
-                group_concat(distinct if(team_member.member_type=8,concat(team_member_name.user_name,','),'') separator '') as designPersonInChargeAssistant,
+                group_concat(distinct if(team_member.member_type=8,team_member_name.user_name,null) separator '、') as designPersonInChargeAssistant,
             </if>
             <!-- 任务负责人 -->
             <if test="needTaskLeader == 1">
-                group_concat(distinct if(team_member.member_type=3,concat(team_member_name.user_name,','),'') separator '') as taskLeader,
+                group_concat(distinct if(team_member.member_type=3,team_member_name.user_name,null) separator '、') as taskLeader,
             </if>
             <!-- 设计 -->
             <if test="needDesigner == 1">
-                group_concat(distinct if(team_member.member_type=4,concat(team_member_name.user_name,','),'') separator '') as designer,
+                group_concat(distinct if(team_member.member_type=4,team_member_name.user_name,null) separator '、') as designer,
             </if>
             <!-- 校验 -->
             <if test="needChecker == 1">
-                group_concat(distinct if(team_member.member_type=5,concat(team_member_name.user_name,','),'') separator '') as checker,
+                group_concat(distinct if(team_member.member_type=5,team_member_name.user_name,null) separator '、') as checker,
             </if>
             <!-- 审核 -->
             <if test="needAuditor == 1">
-                group_concat(distinct if(team_member.member_type=6,concat(team_member_name.user_name,','),'') separator '') as auditor,
+                group_concat(distinct if(team_member.member_type=6,team_member_name.user_name,null) separator '、') as auditor,
             </if>
             <!-- 合作组织 -->
             <if test="needRelationCompany == 1">
-                group_concat(distinct ifnull(concat(relation_company.company_name,','),'') separator '') as relationCompany,
+                group_concat(distinct relation_company.company_name separator '、') as relationCompany,
             </if>
             <!-- 功能分类 -->
             <if test="needBuildType == 1">
-                group_concat(distinct ifnull(concat(build_type.type_name,','),'') separator '') as buildName,
+                group_concat(distinct build_type.type_name separator '、') as buildName,
             </if>
             <!-- 项目立项日期 -->
             ifnull(project_list.project_create_date,project_list.create_date) as projectCreateDate,
             <!-- 合同签订日期 -->
             project_list.contract_date as signDate,
             <!-- 项目地址 -->
-            concat(project_list.province,project_list.city) as address,
+            concat_ws('',project_list.province,project_list.city,project_list.county) as address,
             <!-- 立项方 -->
             concat(create_company.company_name,'/',create_company_user.user_name) as createCompany,
             project_list.*
