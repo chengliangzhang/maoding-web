@@ -192,5 +192,13 @@
     width: 14px;
     display: inline-block;
 }
-
+.m_projectBasicInfo .todo-list.small-list.bg-white > li {
+    background: #fff;
+    border-left: none;
+    border-right: none;
+    border-radius: 4px;
+    color: inherit;
+    margin-bottom: 2px;
+    padding: 6px 6px 6px 12px;
+}
 

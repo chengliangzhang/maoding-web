@@ -210,87 +210,91 @@
             </div>
             <table class="table table-bordered">
                 {{if project.projectPropertyList!=null && project.projectPropertyList.length>0}}
-                {{each project.projectPropertyList as p pi}}
-                {{if pi%2==0}}
-                <tr>
-                    <td width="12%"><b>{{p.fieldName}}</b></td>
-                    <td width="37%">
-                        {{if p.fieldName=='建筑层数' && p.unitName=='层'}}
-                        <div>
-                            地下：
-                            <span class="dp-inline-block" style="min-width: 10%;">
-                                <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{_subStr(p.fieldValue,';',0)}}"
-                                   data-action="text_propertyFieldDown{{pi}}">{{_subStr(p.fieldValue,';',0)}}</a>
-                            </span>
-                            {{if _subStr(p.fieldValue,';',0)!=''}}
-                            <span class="unit-span">&nbsp;层</span>
-                            {{/if}}
-                            ；地上：
-                            <span class="dp-inline-block" style="min-width: 10%;">
-                                <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{_subStr(p.fieldValue,';',1)}}"
-                                   data-action="text_propertyFieldUp{{pi}}">{{_subStr(p.fieldValue,';',1)}}</a>
-                            </span>
-                            {{if _subStr(p.fieldValue,';',1)!=''}}
-                            <span class="unit-span">&nbsp;层</span>
-                            {{/if}}
-                        </div>
+                    {{each project.projectPropertyList as p pi}}
+                        {{if pi%2==0}}
+                        <tr>
+                            <td width="12%"><b>{{p.fieldName}}</b></td>
+                            <td width="37%">
+                                {{if p.fieldName=='建筑层数' && p.unitName=='层'}}
+                                <div>
+                                    地下：
+                                    <span class="dp-inline-block" style="min-width: 10%;">
+                                        <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{_subStr(p.fieldValue,';',0)}}"
+                                           data-action="text_propertyFieldDown{{pi}}">{{_subStr(p.fieldValue,';',0)}}</a>
+                                    </span>
+                                    {{if _subStr(p.fieldValue,';',0)!=''}}
+                                    <span class="unit-span">&nbsp;层</span>
+                                    {{/if}}
+                                    ；地上：
+                                    <span class="dp-inline-block" style="min-width: 10%;">
+                                        <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{_subStr(p.fieldValue,';',1)}}"
+                                           data-action="text_propertyFieldUp{{pi}}">{{_subStr(p.fieldValue,';',1)}}</a>
+                                    </span>
+                                    {{if _subStr(p.fieldValue,';',1)!=''}}
+                                    <span class="unit-span">&nbsp;层</span>
+                                    {{/if}}
+                                </div>
 
-                        {{else}}
-                        <span>
-                            {{if p.unitName!=null && p.unitName!=''}}
-                                <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{p.fieldValue}}"
-                                   data-action="text_propertyField{{pi}}">{{p.fieldValue}}</a>
-                                <span class="unit-span">{{p.unitName}}</span>
+                                {{else}}
+                                <span>
+                                    {{if p.unitName!=null && p.unitName!=''}}
+                                        <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{p.fieldValue}}"
+                                           data-action="text_propertyField{{pi}}">{{p.fieldValue}}</a>
+                                        <span class="unit-span">{{p.unitName}}</span>
+                                    {{else}}
+                                        <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{p.fieldValue}}"
+                                           data-action="text_propertyField{{pi}}">{{p.fieldValue}}</a>
+                                    {{/if}}
+                                </span>
+                                {{/if}}
+                            </td>
                             {{else}}
-                                <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{p.fieldValue}}"
-                                   data-action="text_propertyField{{pi}}">{{p.fieldValue}}</a>
-                            {{/if}}
-                        </span>
+                            <td width="12%"><b>{{p.fieldName}}</b></td>
+                            <td>
+                                {{if p.fieldName=='建筑层数' && p.unitName=='层'}}
+                                <div>
+                                    地下：
+                                    <span class="dp-inline-block" style="min-width: 10%;">
+                                        <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{_subStr(p.fieldValue,';',0)}}"
+                                           data-action="text_propertyFieldDown{{pi}}">{{_subStr(p.fieldValue,';',0)}}</a>
+                                    </span>
+                                    {{if _subStr(p.fieldValue,';',0)!=''}}
+                                    <span class="unit-span">&nbsp;层</span>
+                                    {{/if}}
+                                    ；地上：
+                                    <span class="dp-inline-block" style="min-width: 10%;">
+                                        <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{_subStr(p.fieldValue,';',1)}}"
+                                           data-action="text_propertyFieldUp{{pi}}">{{_subStr(p.fieldValue,';',1)}}</a>
+                                    </span>
+                                    {{if _subStr(p.fieldValue,';',1)!=''}}
+                                    <span class="unit-span">&nbsp;层</span>
+                                    {{/if}}
+                                </div>
+                                {{else}}
+                                <span>
+                                    {{if p.unitName!=null && p.unitName!=''}}
+                                        <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{p.fieldValue}}"
+                                           data-action="text_propertyField{{pi}}">{{p.fieldValue}}</a>
+                                        <span class="unit-span">{{p.unitName}}</span>
+                                    {{else}}
+                                         <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{p.fieldValue}}"
+                                            data-action="text_propertyField{{pi}}">{{p.fieldValue}}</a>
+                                    {{/if}}
+                                </span>
+                                {{/if}}
+                            </td>
+                        </tr>
                         {{/if}}
-                    </td>
-                    {{else}}
-                    <td width="12%"><b>{{p.fieldName}}</b></td>
-                    <td>
-                        {{if p.fieldName=='建筑层数' && p.unitName=='层'}}
-                        <div>
-                            地下：
-                            <span class="dp-inline-block" style="min-width: 10%;">
-                                <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{_subStr(p.fieldValue,';',0)}}"
-                                   data-action="text_propertyFieldDown{{pi}}">{{_subStr(p.fieldValue,';',0)}}</a>
-                            </span>
-                            {{if _subStr(p.fieldValue,';',0)!=''}}
-                            <span class="unit-span">&nbsp;层</span>
-                            {{/if}}
-                            ；地上：
-                            <span class="dp-inline-block" style="min-width: 10%;">
-                                <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{_subStr(p.fieldValue,';',1)}}"
-                                   data-action="text_propertyFieldUp{{pi}}">{{_subStr(p.fieldValue,';',1)}}</a>
-                            </span>
-                            {{if _subStr(p.fieldValue,';',1)!=''}}
-                            <span class="unit-span">&nbsp;层</span>
-                            {{/if}}
-                        </div>
-                        {{else}}
-                        <span>
-                            {{if p.unitName!=null && p.unitName!=''}}
-                                <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{p.fieldValue}}"
-                                   data-action="text_propertyField{{pi}}">{{p.fieldValue}}</a>
-                                <span class="unit-span">{{p.unitName}}</span>
-                            {{else}}
-                                 <a href="javascript:void(0);" data-field-id="{{p.id}}" data-field-unit="{{p.unitName}}" data-field-value="{{p.fieldValue}}"
-                                    data-action="text_propertyField{{pi}}">{{p.fieldValue}}</a>
-                            {{/if}}
-                        </span>
-                        {{/if}}
-                    </td>
+                    {{/each}}
+                    {{if (project.projectPropertyList.length+1)%2==0}}
+                        <td width="12%"></td>
+                        <td></td>
+                        </tr>
+                    {{/if}}
+                {{else}}
+                <tr>
+                    <td style="text-align: left;">暂无设置专业信息</td>
                 </tr>
-                {{/if}}
-                {{/each}}
-                {{if (project.projectPropertyList.length+1)%2==0}}
-                <td width="12%"></td>
-                <td></td>
-                </tr>
-                {{/if}}
                 {{/if}}
             </table>
             <div class="row">
