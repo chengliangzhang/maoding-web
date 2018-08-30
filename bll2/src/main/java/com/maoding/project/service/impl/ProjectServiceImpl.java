@@ -2870,13 +2870,16 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             });
         }
 
+        //填充项目成员列数据
         List<Integer> memberTypeList = this.getProjectMemberType(query);
         if(!CollectionUtils.isEmpty(projectList) && !CollectionUtils.isEmpty(mainList)){
+            //读取所有所需成员
             MemberQueryDTO memberQueryDTO = new MemberQueryDTO();
             memberQueryDTO.setCompanyId(query.getCompanyId());
             memberQueryDTO.setMemberTypeList(memberTypeList);
             memberQueryDTO.setProjectList(projectList);
             List<ProjectMemberGroupDTO> memberList = this.projectMemberService.getMemberForProjectList(memberQueryDTO);
+            //分配到相应列
             getProjectMemberType(query,mainList,memberList);
         }
 
