@@ -1,7 +1,7 @@
 package com.maoding.invoice.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.maoding.core.base.dto.CoreDTO;
+import com.maoding.core.base.dto.BaseIdObject;
 
 import java.util.Date;
 
@@ -12,7 +12,7 @@ import java.util.Date;
  * 作者: 张成亮
  * 描述:
  **/
-public class InvoiceDTO extends CoreDTO {
+public class InvoiceDTO extends BaseIdObject {
     /** id: 发票编号 */
 
     /**

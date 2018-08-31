@@ -1,6 +1,6 @@
 package com.maoding.project.dto;
 
-import com.maoding.core.base.dto.CoreDTO;
+import com.maoding.core.base.dto.BaseIdObject;
 import com.maoding.core.base.dto.CoreShowDTO;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
  * 作者: 张成亮
  * 描述:
  **/
-public class TitleSimpleDTO extends CoreDTO {
+public class TitleSimpleDTO extends BaseIdObject {
     /** id: 标题编号 **/
 
     /** 标题关键字 **/

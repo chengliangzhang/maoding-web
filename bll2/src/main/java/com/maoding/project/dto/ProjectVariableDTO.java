@@ -1,7 +1,7 @@
 package com.maoding.project.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.maoding.core.base.dto.CoreDTO;
+import com.maoding.core.base.dto.BaseIdObject;
 
 import java.util.Date;
 
@@ -12,7 +12,7 @@ import java.util.Date;
  * 作者: 张成亮
  * 描述:
  **/
-public class ProjectVariableDTO extends CoreDTO {
+public class ProjectVariableDTO extends BaseIdObject {
     /** id:项目编号 **/
 
     /** 项目编号 */

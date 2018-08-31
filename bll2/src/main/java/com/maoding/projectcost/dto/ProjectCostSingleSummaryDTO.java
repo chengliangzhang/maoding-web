@@ -1,6 +1,6 @@
 package com.maoding.projectcost.dto;
 
-import com.maoding.core.base.dto.CoreDTO;
+import com.maoding.core.base.dto.BaseIdObject;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -9,7 +9,7 @@ import com.maoding.core.base.dto.CoreDTO;
  * 作者: 张成亮
  * 描述:
  **/
-public class ProjectCostSingleSummaryDTO extends CoreDTO {
+public class ProjectCostSingleSummaryDTO extends BaseIdObject {
     /** id: 项目编号 */
 
     /** 计划金额 */

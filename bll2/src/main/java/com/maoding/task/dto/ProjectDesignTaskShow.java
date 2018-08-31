@@ -57,6 +57,7 @@ public class ProjectDesignTaskShow  extends TaskBaseDTO{
     /**
      * 任务负责人员工id（companyUserId）
      */
+
     private String personInChargeId;
 
     private String designOrgId;

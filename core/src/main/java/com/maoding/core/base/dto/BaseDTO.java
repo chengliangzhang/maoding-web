@@ -19,11 +19,9 @@ import java.util.Map;
  * 日    期：2016年7月7日-下午3:18:22
  */
 @SuppressWarnings("serial")
-public class BaseDTO implements Serializable {
+public class BaseDTO extends BaseIdObject implements Serializable {
 
-    private String id;
-
-       /**
+     /**
      * app使用的token标示
      */
     private String token;
@@ -154,15 +152,6 @@ public class BaseDTO implements Serializable {
             destList.add(dest);
         }
         return destList;
-    }
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getAccountId() {

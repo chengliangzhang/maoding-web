@@ -10,6 +10,7 @@ import com.maoding.excelExport.service.BaseExportService;
 import com.maoding.project.dto.ProjectQueryDTO;
 import com.maoding.statistic.dto.StatisticDetailQueryDTO;
 import com.maoding.task.dto.ProjectTaskExportDTO;
+import com.maoding.task.dto.QueryProjectTaskDTO;
 import com.maoding.task.service.ProjectTaskExportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,8 +37,8 @@ public class ExcelExportController extends BaseController {
     private BaseExportService balanceDetailExportService;
 
     @Autowired
-    private ProjectTaskExportService projectTaskExportService;
-
+    @Qualifier("taskExportService")
+    private BaseExportService taskExportService;
 
     @ModelAttribute
     public void before() throws Exception {
@@ -85,16 +86,15 @@ public class ExcelExportController extends BaseController {
      */
     @RequestMapping(value = "/exportProductTaskList", method = RequestMethod.POST)
     public void exportProductTaskList(HttpServletResponse response, HttpServletRequest request) throws Exception {
-        ProjectTaskExportDTO query = new ProjectTaskExportDTO();
+        QueryProjectTaskDTO query = new QueryProjectTaskDTO();
         BeanUtils.copyProperties(this.getParam(request),query);
         query.setCurrentCompanyId(this.currentCompanyId);
-        query.setType(0);
         if(StringUtil.isNullOrEmpty(query.getCompanyId())){
             query.setCompanyId(this.currentCompanyId);
         }
-        query.setDestFileName("export_" + DateUtils.date2Str(DateUtils.yyyyMMdd) + ".xls");
-        query.setTemplateFileName(new TxtFileUtil().getWebRoot() + "assets/template/task/template.xls");
-        projectTaskExportService.exportDownloadResource(response, query);
+        query.setCurrentCompanyUserId(this.currentCompanyUserId);
+        query.setExcelFileName("生产安排列表.xlsx");
+        taskExportService.exportDownloadResource(response, query);
     }
 
     public static JSONObject getParam(HttpServletRequest request){

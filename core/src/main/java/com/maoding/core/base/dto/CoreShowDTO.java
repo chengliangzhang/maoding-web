@@ -7,7 +7,7 @@ package com.maoding.core.base.dto;
  * 作者: 张成亮
  * 描述: 后台传递给前端用于显示的信息的基类
  **/
-public class CoreShowDTO extends CoreDTO {
+public class CoreShowDTO extends BaseIdObject {
     /** 显示元素内容（名称） */
     private String name;
 

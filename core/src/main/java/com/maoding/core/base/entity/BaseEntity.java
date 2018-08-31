@@ -1,22 +1,24 @@
 package com.maoding.core.base.entity;
 
+import com.maoding.core.base.dto.BaseIdObject;
+
 import java.util.Date;
 import java.util.UUID;
 
-public abstract class BaseEntity implements java.io.Serializable  {
+public abstract class BaseEntity extends BaseIdObject implements java.io.Serializable  {
 
-	private String id;
+//	private String id;
 	private String 	createBy;
 	private String 	updateBy;
 	private Date 	createDate;
 	private Date 	updateDate;
 	
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
+//	public String getId() {
+//		return id;
+//	}
+//	public void setId(String id) {
+//		this.id = id;
+//	}
 	public String getCreateBy() {
 		return createBy;
 	}
@@ -66,7 +68,7 @@ public abstract class BaseEntity implements java.io.Serializable  {
 
 	/** 重置主键Id为新的UUID */
 	public void resetId() {
-		this.id = UUID.randomUUID().toString().replaceAll("-", "");
+		setId(UUID.randomUUID().toString().replaceAll("-", ""));
 	}
 
 	/** 重置创建时间为当前时间 */

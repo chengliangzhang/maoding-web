@@ -39,79 +39,79 @@ public class TraceUtils {
      * @author  张成亮
      * @date    2018/7/31
      * @description     进入方法时打印日志
-     * @param   log 调用日志的类所使用的日志对象
      * @param   obs 进入方法时要打印的变量
      * @return  当前时间
      **/
-    public static long enter(Logger log, Object... obs){
+    public static long enter(Object... obs){
         if (isLogEnterAndExitInfo) {
-            log.info("\t===>>>\t进入" + getCaller()
+            getLogger().info("\t===>>>\t进入" + getCaller()
                     + ":" + getJsonString(obs));
         }
         return System.currentTimeMillis();
     }
 
-    public static long enter(Object... obs){
-        return enter(getLogger(),obs);
-    }
-
     public static long enter(){
-        return enter(getLogger(),(Object[]) null);
+        return enter((Object[]) null);
     }
 
     /**
      * @author  张成亮
      * @date    2018/7/31
      * @description     退出方法时打印日志
-     * @param   log 调用日志的类所使用的日志对象
      * @param   t   系统当前时间
      * @param   obs 退出方法时要打印的变量
      **/
-    public static void exit(long t, Logger log, Object... obs){
+    public static void exit(long t, Object... obs){
         if (isLogEnterAndExitInfo) {
-            log.info("\t===>>>\t退出" + getCaller()
+            getLogger().info("\t===>>>\t退出" + getCaller()
                     + ":" + ((t > 0) ? (System.currentTimeMillis() - t) + "ms," : "") + getJsonString(obs));
         }
     }
 
-    public static void exit(long t, Object... obs){
-        exit(t,getLogger(),obs);
-    }
-
     public static void exit(Object... obs){
-        exit(0,getLogger(),obs);
+        exit(0,obs);
     }
 
     public static void exit(long t){
-        exit(t,getLogger(),(Object[]) null);
+        exit(t,(Object[]) null);
     }
 
     /**
      * @author  张成亮
      * @date    2018/7/31
      * @description     打印一行日志信息
-     * @param   log 调用日志的类所使用的日志对象
      * @param   t   系统当前时间
      * @param   obs 要打印的变量
      * @return  系统当前时间
      **/
-    public static long info(Logger log, String message, long t, Object... obs){
+    public static long info(String message, long t, Object... obs){
         if (isLogDebugInfo) {
-            log.info("\t===>>>\t" + message + ":" + ((t > 0) ? (System.currentTimeMillis() - t) + "ms," : "") + getJsonString(obs));
+            getLogger().info("\t===>>>\t" + getCaller() + ":" + message + "," + ((t > 0) ? (System.currentTimeMillis() - t) + "ms," : "") + getJsonString(obs));
         }
         return System.currentTimeMillis();
     }
 
-    public static long info(String message, long t, Object... obs){
-        return info(getLogger(),message,t,obs);
-    }
-
     public static long info(String message, Object... obs){
-        return info(getLogger(),message,0,obs);
+        return info(message,0,obs);
     }
 
     public static long info(String message){
-        return info(getLogger(),message,0, (Object[]) null);
+        return info(message,0, (Object[]) null);
+    }
+
+    /**
+     * @author  张成亮
+     * @date    2018/7/31
+     * @description     打印一行错误信息
+     * @param   obs 要打印的变量
+     * @return  系统当前时间
+     **/
+    public static void error(String message, Object... obs){
+        getLogger().error("\t===>>>\t" + System.currentTimeMillis() + ":" + getCaller() + "发生错误:" + message + "," + getJsonString(obs));
+    }
+
+    public static void error(String message){
+        error(message,(Object[]) null);
     }
 
     /**
@@ -119,14 +119,14 @@ public class TraceUtils {
      * @date    2018/7/31
      * @description     检查断言条件，如果断言条件为假则打印日志，并且抛出异常
      * @param   condition   断言条件
-     * @param   log 调用日志的类所使用的日志对象
      * @param   eClass 要抛出的异常的类型
      * @param   message 异常信息
      **/
-    public static void check(boolean condition, Logger log, Class<? extends RuntimeException> eClass, String message) {
+    public static void check(boolean condition, Class<? extends RuntimeException> eClass, String message) {
         if (isCheckCondition && !(condition)) {
-            //生成调用位置
+            //生成调用位置和日志对象
             String caller = getCaller();
+            Logger log = getLogger();
 
             //生成异常
             RuntimeException e = null;
@@ -151,12 +151,7 @@ public class TraceUtils {
                         e = eClass.newInstance();
                     }
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
-                    if (log != null){
-                        String prefixInternalError = "\t!!!!!\t";
-                        log.error(prefixInternalError + ex.getMessage());
-                    } else {
-                        ex.printStackTrace();
-                    }
+                    log.error("\t!!!!!\t" + ex.getMessage());
                 }
             }
 
@@ -181,30 +176,21 @@ public class TraceUtils {
      * @date    2018/7/31
      * @description     检查断言条件，如果断言条件为假则打印日志，并且抛出异常
      * @param   condition   断言条件
-     * @param   log 调用日志的类所使用的日志对象
      * @param   message 异常信息，如果以“!”起始，产生参数异常，否则如果不为空产生未知类型异常，为空不产生异常
      **/
-    public static void check(boolean condition, Logger log, String message) {
+    public static void check(boolean condition, String message) {
         if (isCheckCondition) {
             String prefixIgnoreException = "~";
             if (StringUtils.startsWith(message, prefixIllegalArgumentMessage)) {
-                check(condition, log, IllegalArgumentException.class, message);
+                check(condition, IllegalArgumentException.class, message);
             } else if (StringUtils.startsWith(message, prefixIgnoreException)) {
-                check(condition, log, null, message);
+                check(condition, null, message);
             } else if (isThrowAuto) {
-                check(condition, log, IllegalStateException.class, message);
+                check(condition, IllegalStateException.class, message);
             } else {
-                check(condition, log, null, message);
+                check(condition, null, message);
             }
         }
-    }
-
-    public static void check(boolean condition, String message){
-        check(condition,getLogger(),message);
-    }
-
-    public static void check(boolean condition, Logger log) {
-        check(condition,log,null,null);
     }
 
     public static void check(boolean condition) {
@@ -270,10 +256,8 @@ public class TraceUtils {
             return null;
         }
 
-
         //参数个数
         int pCnt = (lookForParamClassArray == null) ? 0 : lookForParamClassArray.length;
-
 
         //查找构造函数
         Constructor<?> result = null;
@@ -323,6 +307,7 @@ public class TraceUtils {
         }
         return log;
     }
+
     public static Logger getLogger() {
         return getLogger(getCallerClass());
     }
@@ -369,5 +354,4 @@ public class TraceUtils {
         }
         return callerClass;
     }
-
 }

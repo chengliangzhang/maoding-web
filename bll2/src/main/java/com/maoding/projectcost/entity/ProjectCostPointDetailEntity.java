@@ -44,7 +44,7 @@ public class ProjectCostPointDetailEntity extends BaseEntity{
     private String status;
 
     /**
-     * 费用的状态（1：已经审批通过，0：待审批），用于付款方的状态描述
+     * 费用的状态（1：已经审批通过:可以统计到应付里面了，0：待审批），用于付款方的状态描述
      */
     private Integer feeStatus;
 

@@ -96,6 +96,9 @@
         <mybatis.version>3.4.4</mybatis.version>
         <!--mybatis通用Mapper-->
         <mapper.version>3.4.0</mapper.version>
+        <tkmapper.version>1.1.2</tkmapper.version>
+
+
 
         <!-- servlet -->
         <servlet-api.version>3.1.0</servlet-api.version>
@@ -144,6 +147,8 @@
 
         <javax.version>1.1.1</javax.version>
         <javaxm.version>1.4.7</javaxm.version>
+        <javax.persistence.version>1.0.2</javax.persistence.version>
+        <javax.validation.version>1.1.0.Final</javax.validation.version>
 
         <ueditor.version>1.1.2-offical</ueditor.version>
 
@@ -163,19 +168,16 @@
         <kryo.version>2.24.0</kryo.version>
     </properties>
 
-    <!-- 子模块必然用到的依赖库 -->
-    <dependencies>
-        <!-- kryo -->
-        <dependency>
-            <groupId>com.esotericsoftware.kryo</groupId>
-            <artifactId>kryo</artifactId>
-            <version>${kryo.version}</version>
-        </dependency>
-    </dependencies>
-
     <!-- 子模块可能用到的依赖库 -->
     <dependencyManagement>
         <dependencies>
+            <!-- kryo -->
+            <dependency>
+                <groupId>com.esotericsoftware.kryo</groupId>
+                <artifactId>kryo</artifactId>
+                <version>${kryo.version}</version>
+            </dependency>
+
             <!-- junit -->
             <dependency>
                 <groupId>junit</groupId>
@@ -259,11 +261,25 @@
                 <version>${mybatis.version}</version>
             </dependency>
             <!--mybatis通用Mapper-->
-  <!--          <dependency>
+            <dependency>
                 <groupId>tk.mybatis</groupId>
-                <artifactId>mapper</artifactId>
-                <version>${mapper.version}</version>
-            </dependency>-->
+                <artifactId>mapper-spring-boot-starter</artifactId>
+                <version>${tkmapper.version}</version>
+            </dependency>
+
+            <!-- 参数检查 -->
+            <dependency>
+                <groupId>javax.persistence</groupId>
+                <artifactId>persistence-api</artifactId>
+                <version>${javax.persistence.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${javax.validation.version}</version>
+            </dependency>
+
+
 
             <!-- servlet -->
             <dependency>

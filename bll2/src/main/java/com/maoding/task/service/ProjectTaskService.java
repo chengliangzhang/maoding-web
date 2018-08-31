@@ -24,6 +24,7 @@ import java.util.Map;
      */
      List<ProjectDesignTaskShow> getProjectDesignTaskShowList(String companyId,String projectId,String companyUserId) throws Exception;
 
+    List<ProjectDesignTaskShow> getProjectDesignTaskList(String companyId, String projectId, String companyUserId, String parentTaskId) throws Exception;
     /**
      * 生产查询任务列表
      * @param projectId

@@ -10,7 +10,7 @@ import java.util.List;
  * @package: CorePageDTO
  * @description : 后台传递给前端用于分页显示的信息的基类
  */
-public class CorePageDTO<T extends CoreDTO> implements Serializable,Cloneable {
+public class CorePageDTO<T extends BaseIdObject> implements Serializable,Cloneable {
     /** 查询出的信息总数 */
     private int total;
     /** 当前页编号 */

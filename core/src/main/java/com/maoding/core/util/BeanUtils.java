@@ -810,4 +810,12 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
             return ptyClass.cast(objMethodAccess.invoke(obj, getIndex));
         }
     }
+
+    public static <T,K> K getProperty(T obj,String ptyName,Class<? extends K> ptyClass){
+        return getProperty(obj,ptyName,ptyClass,false);
+    }
+
+    public static <T> Object getProperty(T obj,String ptyName){
+        return getProperty(obj,ptyName,Object.class);
+    }
 }

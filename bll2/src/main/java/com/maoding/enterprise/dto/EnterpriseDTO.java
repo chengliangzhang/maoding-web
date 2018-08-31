@@ -1,8 +1,8 @@
 package com.maoding.enterprise.dto;
 
-import com.maoding.core.base.dto.CoreDTO;
+import com.maoding.core.base.dto.BaseIdObject;
 
-public class EnterpriseDTO extends CoreDTO{
+public class EnterpriseDTO extends BaseIdObject{
 
     private String corpname;
 

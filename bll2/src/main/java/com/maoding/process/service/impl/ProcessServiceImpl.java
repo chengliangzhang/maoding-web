@@ -177,17 +177,17 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
     //同步流程类型数据表内的流程类型，如果指定类型，更新数据库，如果没有指定，返回数据库内的类型
     private int syncProcessType(ProcessDetailPrepareDTO prepareRequest){
-        TraceUtils.check(prepareRequest != null,log);
-        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getCurrentCompanyId()),log);
-        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),log);
+        TraceUtils.check(prepareRequest != null,"!参数错误");
+        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getCurrentCompanyId()),"!参数错误");
+        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),"!参数错误");
         return syncProcessType(prepareRequest.getType(),prepareRequest.getCurrentCompanyId(),
                 prepareRequest.getKey(),prepareRequest.getAccountId(),isConditionType(prepareRequest));
     }
 
     private int syncProcessType(ProcessDefineDetailEditDTO editRequest){
-        TraceUtils.check(editRequest != null,log);
-        TraceUtils.check(StringUtils.isNotEmpty(editRequest.getCurrentCompanyId()),log);
-        TraceUtils.check(StringUtils.isNotEmpty(editRequest.getKey()),log);
+        TraceUtils.check(editRequest != null,"!参数错误");
+        TraceUtils.check(StringUtils.isNotEmpty(editRequest.getCurrentCompanyId()),"!参数错误");
+        TraceUtils.check(StringUtils.isNotEmpty(editRequest.getKey()),"!参数错误");
         return syncProcessType(editRequest.getType(),editRequest.getCurrentCompanyId(),
                 editRequest.getKey(),editRequest.getAccountId(),isConditionType(editRequest));
     }
@@ -196,7 +196,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
     //判断是否条件流程，其他类型参数
     private boolean isConditionType(ProcessDetailPrepareDTO deploymentPrepareRequest){
         //检查参数
-        TraceUtils.check(ObjectUtils.isNotEmpty(deploymentPrepareRequest),log);
+        TraceUtils.check(ObjectUtils.isNotEmpty(deploymentPrepareRequest),"!参数错误");
 
         return (deploymentPrepareRequest.getStartDigitCondition() != null)
                 && (ObjectUtils.isNotEmpty(deploymentPrepareRequest.getStartDigitCondition().getPointList()));
@@ -206,7 +206,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
     //是否条件流程，其他类型参数
     private boolean isConditionType(ProcessDefineDetailEditDTO deploymentEditRequest){
         //检查参数
-        TraceUtils.check(ObjectUtils.isNotEmpty(deploymentEditRequest),log);
+        TraceUtils.check(ObjectUtils.isNotEmpty(deploymentEditRequest),"!参数错误");
 
         return isConditionType(deploymentEditRequest.getType());
     }
@@ -293,7 +293,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             try {
                 url = userAttachService.getHeadImgUrl(companyUser.getUserId());
             } catch (Exception e) {
-                TraceUtils.check(false,log);
+                TraceUtils.check(false,"!参数错误");
             }
         }
         return url;

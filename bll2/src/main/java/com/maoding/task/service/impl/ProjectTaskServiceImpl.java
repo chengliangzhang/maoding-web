@@ -1390,18 +1390,20 @@ class ProjectTaskServiceImpl extends GenericService<ProjectTaskEntity> implement
     /**
      * 增加父任务后的生产安排查询
      */
-    private List<ProjectDesignTaskShow> getProjectDesignTaskList(String companyId, String projectId, String companyUserId, String parentTaskId) throws Exception {
+    public List<ProjectDesignTaskShow> getProjectDesignTaskList(String companyId, String projectId, String companyUserId, String parentTaskId) throws Exception {
         ProjectEntity projectEntity = this.projectDao.selectById(projectId);
         List<ProjectDesignTaskShow> list = new ArrayList<>();
         if (projectEntity == null) {
             return list;
         }
+
         //查询生产数据
         QueryProjectTaskDTO query = new QueryProjectTaskDTO();
         query.setCompanyId(companyId);
         query.setProjectId(projectId);
         query.setIssueTaskId(parentTaskId);
         List<ProjectDesignTaskShow> projectTaskDTOList = projectTaskDao.getProductTaskList(query);
+
         //排序
         if (!CollectionUtils.isEmpty(projectTaskDTOList)) {
             list = orderDesignTaskList(projectTaskDTOList, "", parentTaskId);
