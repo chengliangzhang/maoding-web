@@ -1601,4 +1601,10 @@ var removeParamCookies = function (dataActionList) {
             Cookies.remove(key);
         });
     }
-}
+};
+var removeCookiesOnLoginOut = function () {
+
+    var dataActionList = ['myProjectList','projectOverview','metismenu'];
+
+    removeParamCookies(dataActionList);
+};

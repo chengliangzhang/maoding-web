@@ -20,7 +20,7 @@
         this.settings = $.extend({}, defaults, options);
         this._defaults = defaults;
         this._name = pluginName;
-        this.cookieStr = 'home_workbench_dataAction';
+        this._cookiesMark = 'cookiesData_metismenu_'+window._currentCompanyUserId;
         this.init();
     }
 
@@ -34,19 +34,56 @@
         }
         , initHtmlTemplate:function () {
             var that = this;
+            var isMiniNav = false;
+
             var html = template('m_home/m_metismenu',{});
             $(that.element).html(html);
-            // Minimalize menu
-            /*$('.navbar-minimalize').on('click', function () {
-                $("body").toggleClass("mini-navbar");
-                SmoothlyMenu();
-            });*/
+
             rolesControl();
             that.menuClickFun();
             that.menuHoverFun();
             that.initRoute();
             that.removeNoMenuUl();
 
+            var cookiesData = Cookies.get(that._cookiesMark);
+            if(cookiesData!=undefined){
+                cookiesData = $.parseJSON(cookiesData);
+                if(cookiesData.param.isMiniNav)
+                    $('body').toggleClass('mini-navbar');
+            }
+            // Minimalize menu
+            $('.navbar-minimalize').on('click', function () {
+
+                $('body').toggleClass('mini-navbar');
+                var $cookiesData = {};
+                if($('body').hasClass('mini-navbar')){
+                    $cookiesData.param = {isMiniNav:true};
+                }else{
+                    $cookiesData.param = {isMiniNav:false};
+                }
+                Cookies.set(that._cookiesMark, $cookiesData);
+                that.smoothlyMenu();
+            });
+        }
+        ,smoothlyMenu:function() {
+            if (!$('body').hasClass('mini-navbar') || $('body').hasClass('body-small')) {
+                // Hide menu in order to smoothly turn on when maximize menu
+                $('#side-menu').hide();
+                // For smoothly turn on menu
+                setTimeout(
+                    function () {
+                        $('#side-menu').fadeIn(400);
+                    }, 200);
+            } else if ($('body').hasClass('fixed-sidebar')) {
+                $('#side-menu').hide();
+                setTimeout(
+                    function () {
+                        $('#side-menu').fadeIn(400);
+                    }, 100);
+            } else {
+                // Remove all inline style from jquery fadeIn function to reset menu state
+                $('#side-menu').removeAttr('style');
+            }
         }
         //路由
         , initRoute:function () {
@@ -240,25 +277,26 @@
         //菜单点击事件
         , menuClickFun:function () {
             var that = this;
-            $(that.element).find('.metismenu li a').on('click',function () {
+            $(that.element).find('.metismenu li:not(.navbar-minimalize) a').on('click',function () {
 
                 var $this = $(this);
                 var id = $this.attr('id');
 
                 if($this.parent().find('ul').length>0 && !$this.parent().hasClass('project-menu-box')){
 
-                    if($this.parent().hasClass('chosed')){
-                        $this.parent().removeClass('chosed');
-                    }else{
-                        $this.parent().addClass('chosed');//.siblings().removeClass('chosed');
-                    }
+                    $this.parent().toggleClass('selected');
+                    $this.parent().find('ul').toggleClass('in');
+
                 }else{
-                    $(that.element).find('ul.nav-second-level>li').removeClass('active');
+
+                    $this.parent().toggleClass('active').siblings().removeClass('active selected').find('li').removeClass('active selected');
+                    $this.parent().siblings().find('ul').removeClass('in');
+
                     if($this.parents('.nav-second-level').length>0){
-                        $(that.element).find('ul.metismenu>li').removeClass('active');
-                        $this.parents('.nav-second-level').parent().siblings().removeClass('chosed');
+                        $this.parents('.selected').siblings().removeClass('active selected').find('li').removeClass('active selected');
+                        $this.parents('.selected').siblings().find('ul').removeClass('in');
                     }
-                    $this.parent().addClass('active').siblings().removeClass('active chosed');
+
                     if($(that.element).find('.project-menu-box ul').length>0){
                         $(that.element).find('.project-menu-box ul').remove();//清除最近浏览的项目详情
                     }
@@ -284,14 +322,15 @@
             }
             if(currentEle.length>0){
                 if(currentEle.parents('.nav-second-level').length>0){//定位在子菜单中
-                    currentEle.parents('.nav-second-level').parent().addClass('chosed');
+                    currentEle.parents('.nav-second-level').addClass('in').parent().addClass('selected');
                 }
                 currentEle.parent().addClass('active').siblings().removeClass('active');
             }
             if(!(dataAction.indexOf('/projectDetails/')>-1)){//当前不是项目详情
+
+                //清除最近浏览的项目详情
                 if($(that.element).find('.project-menu-box ul').length>0){
-                    $(that.element).find('.project-menu-box ul').remove();//清除最近浏览的项目详情
-                    $(that.element).find('.project-menu-box').removeClass('chosed');
+                    $(that.element).find('.project-menu-box').removeClass('selected').find('ul').remove();
                 }
             }
         }
@@ -299,12 +338,11 @@
         , menuShowOrHide:function (t) {
             if(t==1){
                 $('#page-wrapper').addClass('m-l-none');
-                $('#left-menu-box').hide();
             }else{
                 $('#page-wrapper').removeClass('m-l-none');
-                $('#left-menu-box').show();
                 //折叠左菜单
-                $('#left-menu-box').find('li').removeClass('active chosed');
+                $('#left-menu-box').find('ul').removeClass('in');
+                $('#left-menu-box').find('li').removeClass('active selected');
             }
         }
         //二级菜单没有就删除父菜单

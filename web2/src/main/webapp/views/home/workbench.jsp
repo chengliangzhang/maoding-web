@@ -16,10 +16,8 @@
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/x-editable/bootstrap3-editable/css/bootstrap-editable.min.css">
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/x-editable/inputs-ext/typeaheadjs/lib/typeahead.js-bootstrap.min.css">
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/jquery-treegrid/css/jquery.treegrid.css">
-
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/webuploader/webuploader.min.css">
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/cropper/cropper.min.css">
-
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/icon/iconfont.min.css">
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/footable/footable.core.css">
 
@@ -55,14 +53,10 @@
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/x-editable/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/x-editable/inputs-ext/typeaheadjs/lib/typeahead.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/x-editable/inputs-ext/typeaheadjs/typeaheadjs.js"></script>
-
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/jsTree/jstree.min.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/jquery-treegrid/js/jquery.treegrid.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/jquery-treegrid/js/jquery.treegrid.bootstrap3.js"></script>
-
-
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/cropper/cropper.js"></script>
-
 <!-- include summernote css/js-->
 <link href="<%=rootPath %>/assets/lib/summernote/summernote.css" rel="stylesheet"/>
 <script src="<%=rootPath %>/assets/lib/summernote/summernote.js"></script>
@@ -70,15 +64,11 @@
 
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/webuploader/webuploader.nolog.min.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/sortable/sortable.min.js"></script>
-
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/chartJs/Chart.bundle.js"></script>
-
 
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/footable/footable.all.min.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/js/router.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/context-menu/context-menu.js"></script>
-
-
 
 <script type="text/javascript">
     $(function () {

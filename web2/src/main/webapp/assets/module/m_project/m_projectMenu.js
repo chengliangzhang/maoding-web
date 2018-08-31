@@ -51,7 +51,7 @@
                 //rolesControl();
                 $(that.element).find('ul.nav-second-level').remove();
                 $(that.element).append(html);
-                $(that.element).addClass('chosed');//添加选中标识
+                $(that.element).addClass('selected');//添加选中标识
 
                 if(that.settings.$dataAction!=null){
                     that.switchPage(that.settings.$dataAction);

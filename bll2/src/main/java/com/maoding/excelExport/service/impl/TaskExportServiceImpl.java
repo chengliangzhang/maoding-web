@@ -14,7 +14,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 作者：fyt
@@ -31,7 +33,7 @@ public class TaskExportServiceImpl extends BaseExportServiceImpl<ProjectDesignTa
     List<Map<String, ExcelDataDTO>> getExcelDataList(List<ProjectDesignTaskShow> dataList, List<CoreShowDTO> titleList) {
 
         List<Map<String,ExcelDataDTO>> excelDataList = new ArrayList<>();
-        dataList.stream().forEach(d->{
+        dataList.stream().forEach((ProjectDesignTaskShow d) ->{
             Map<String,ExcelDataDTO> map = new HashMap<>();
             map.put("任务名称",new ExcelDataDTO(d.getTaskName(),1));
             map.put("任务描述",new ExcelDataDTO(d.getTaskRemark(),1));
@@ -39,13 +41,14 @@ public class TaskExportServiceImpl extends BaseExportServiceImpl<ProjectDesignTa
             map.put("设计人员",new ExcelDataDTO(getUserNames(d.getDesignUser()),1));
             map.put("校对人员",new ExcelDataDTO(getUserNames(d.getCheckUser()),1));
             map.put("审核人员",new ExcelDataDTO(getUserNames(d.getExamineUser()),1));
-            map.put("计划进度",new ExcelDataDTO(d.getPlanStartTime()+"~"+d.getPlanEndTime(),1));
+            map.put("计划进度",new ExcelDataDTO(d.getPlanStartTime()==null || d.getPlanEndTime()==null?"":(formatDate(d.getPlanStartTime()+"")+"~"+formatDate(d.getPlanEndTime()+"")+" "+"|"+" 共"+transformDate(formatDate(d.getPlanStartTime()+""),formatDate(d.getPlanEndTime()+""))+"天"),1));
             map.put("进度提示",new ExcelDataDTO(d.getStatusText(),1));
             map.put("完成时间",new ExcelDataDTO(d.getCompleteDate(),1));
             map.put("完成情况",new ExcelDataDTO(d.getCompletion(),1));
             map.put("任务状态",new ExcelDataDTO(d.getStateHtml(),1));
             map.put("优先级",new ExcelDataDTO(d.getPriority(),1));
             excelDataList.add(map);
+
         });
         return excelDataList;
     }
@@ -100,5 +103,84 @@ public class TaskExportServiceImpl extends BaseExportServiceImpl<ProjectDesignTa
         String companyId = query.getCompanyId();//此句必须在getSelectOrg后面。因为在getSelectOrg中可能改变了companyId
         List<ProjectDesignTaskShow> dataList = projectTaskService.getProjectDesignTaskList(companyId, query.getProjectId(), currentCompanyUserId,query.getIssueTaskId());
         return this.exportDownloadResource(response,dataList,null,query);
+    }
+
+    /**
+     * 标准化时间显示
+     * 对页面：计划进度显示时间格式调整输出到Excel
+     * yyyy-MM-dd HH:mm:ss
+     * @param dateStr
+     * @return
+     */
+    private String formatDate(String dateStr) {
+        String[] aStrings = dateStr.split(" ");
+        // 5
+        if (aStrings[1].equals("Jan")) {
+            aStrings[1] = "01";
+        }
+        if (aStrings[1].equals("Feb")) {
+            aStrings[1] = "02";
+        }
+        if (aStrings[1].equals("Mar")) {
+            aStrings[1] = "03";
+        }
+        if (aStrings[1].equals("Apr")) {
+            aStrings[1] = "04";
+        }
+        if (aStrings[1].equals("May")) {
+            aStrings[1] = "05";
+        }
+        if (aStrings[1].equals("Jun")) {
+            aStrings[1] = "06";
+        }
+        if (aStrings[1].equals("Jul")) {
+            aStrings[1] = "07";
+        }
+        if (aStrings[1].equals("Aug")) {
+            aStrings[1] = "08";
+        }
+        if (aStrings[1].equals("Sep")) {
+            aStrings[1] = "09";
+        }
+        if (aStrings[1].equals("Oct")) {
+            aStrings[1] = "10";
+        }
+        if (aStrings[1].equals("Nov")) {
+            aStrings[1] = "11";
+        }
+        if (aStrings[1].equals("Dec")) {
+            aStrings[1] = "12";
+        }
+        return aStrings[5] + "-" + aStrings[1] + "-" + aStrings[2];
+    }
+
+    //两个日期相减获得（页面：计划进度  共*天）
+    private String transformDate(String startTime,String endTime){
+        String dateStart = startTime;
+        String dateStop = endTime;
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+        Date d1 = null;
+        Date d2 = null;
+
+        try {
+            d1 = format.parse(dateStart);
+            d2 = format.parse(dateStop);
+            //毫秒ms
+            long diff = d2.getTime() - d1.getTime();
+
+            long diffSeconds = diff / 1000 % 60;//秒
+            long diffMinutes = diff / (60 * 1000) % 60;//分钟
+            long diffHours = diff / (60 * 60 * 1000) % 24;//小时
+            long diffDays = diff / (24 * 60 * 60 * 1000);//天
+
+            //当天也算一天
+        return (1+diffDays)+"";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

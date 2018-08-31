@@ -9,24 +9,16 @@ vendor.min.js等于上述几个JS打包
 <script type="text/javascript" src="<%=rootPath %>/assets/js/vendor.min.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/jquery-resize/jquery.resize.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/bootstrap/js/bootstrap.min.js"></script>
-<%--<script type="text/javascript" src="<%=rootPath %>/assets/lib/jasny-bootstrap/js/jasny-bootstrap.min.js"></script>--%>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/jquery.spinner/js/jquery.spinner.min.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/jquery.validate.min.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/additional-methods.min.js?v=<%=v%>"></script>
-<%--<script type="text/javascript" src="<%=rootPath %>/assets/lib/metisMenu/jquery.metisMenu.js"></script>--%>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/slimscroll/jquery.slimscroll.min.js"></script>
-<script type="text/javascript" src="<%=rootPath %>/assets/js/app.min.js"></script>
-<%--<script type="text/javascript" src="<%=rootPath %>/assets/js/inspinia.js"></script>--%>
-
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/jquery.blockUI.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/art-dialog/dist/dialog-plus.min.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/layer-2x/layer.min.js"></script>
-
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/mricodePagination/mricode.pagination.min.js"></script>
-
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/sockjs/sockjs.min.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/vertx-eventbus/vertx-eventbus.min.js"></script>
-
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/bowser/bowser.min.js"></script>
 <!--[if lt IE 9]>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/respond.min.js"></script>
@@ -36,8 +28,7 @@ vendor.min.js等于上述几个JS打包
 
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/toastr/toastr.min.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/pace/pace.min.js"></script>
-
-
+<script type="text/javascript" src="<%=rootPath %>/assets/js/app.min.js?v=1"></script>
 
 <script type="text/javascript">
     $(function () {

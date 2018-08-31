@@ -1,43 +1,4 @@
-ul.secondary-menu-ul{
-    list-style: none;
-
-}
-ul.secondary-menu-ul li{
-    float: left;
-    padding: 0px 40px;
-}
-ul.secondary-menu-ul li a{
-    color: #999;
-    font-size: 14px;
-    font-weight: bold;
-    display: block;
-    line-height: 46px;
-}
-ul.secondary-menu-ul li.active a{
-    color: #4765a1;
-    border-bottom: solid;
-}
-.secondary-menu-outbox{
-    padding: 0 15px;
-    min-height: 50px;
-    height: 50px;
-    background: #e3e3e3;
-    border-bottom: solid 1px #c7c7c7;
-}
-.secondary-menu-outbox h3{
-    line-height: 34px;
-}
-.secondary-menu-outbox .breadcrumb>li+li:before,
-.secondary-menu-outbox .breadcrumb>li.fa-angle-right:before{
-    content:"\f105";
-}
-.secondary-menu-outbox .breadcrumb-box{
-    margin-top: 0px;
-    background: #e3e3e3;
-}
-.secondary-menu-outbox .breadcrumb-box .breadcrumb{
-    background: #e3e3e3;
-}
+/*
 
 .m_metismenu.navbar-default{
     background-color: #e3e3e3;
@@ -80,7 +41,8 @@ ul.secondary-menu-ul li.active a{
     background: #f3f3f3;
 }
 .m_metismenu ul.nav-second-level>li>a{
-    padding: 9px 20px 8px 49px;
+    padding: 9px 20px 8px 89px;
+    font-size: 16px;
 }
 .m_metismenu .nav-second-level li:last-child{
     margin-bottom: 0px;
@@ -89,7 +51,7 @@ ul.secondary-menu-ul li.active a{
     border-left:4px solid #44619a;
 }
 .m_metismenu ul.nav-second-level > li.active > a{
-    padding: 9px 20px 8px 43px;
+    padding: 9px 20px 8px 85px;
 }
 .m_metismenu li.chosed .fa.arrow:before{
     content: "\f107";
@@ -108,12 +70,99 @@ ul.secondary-menu-ul li.active a{
 .m_metismenu li.chosed .collapse.in{
     display: block;
 }
-
-
+.m_metismenu ul li object{
+    height: 24px;
+    width: 24px;
+}*/
 .m_metismenu ul li object{
     height: 24px;
     width: 24px;
 }
+.m_metismenu ul.metismenu>li:first-child{
+    height: 50px;
+    background-color: #fff;
+    border-bottom: none;
+}
+.m_metismenu ul.nav>li,
+.m_metismenu ul.nav-second-level>li{
+    border-bottom: solid 1px #d5d5d5 !important;
+
+}
+.m_metismenu ul.nav>li .nav-label{
+    display: block;
+    margin: 0px 0px 0px 40px;
+    font-size: 16px;
+    color: #666;
+}
+.m_metismenu ul.nav-second-level>li>a{
+    display: block;
+    padding-left: 89px;
+    font-size: 16px;
+    color: #666;
+}
+.m_metismenu ul.metismenu>li:first-child a{
+    padding: 13px 20px 12px 25px;
+}
+
+.m_metismenu li.selected .fa.arrow:before{
+    content: "\f107";
+}
+.m_metismenu ul>li.selected>a,
+.m_metismenu ul>li.selected>a:focus,
+.m_metismenu ul>li.selected>a:active{
+    border-bottom: solid 1px #d5d5d5;
+    background: #f3f3f3;
+    color: #666;
+}
+
+.mini-navbar .m_metismenu ul.nav-second-level>li{
+    min-width: 120px;
+}
+.mini-navbar .m_metismenu ul.nav-second-level>li a{
+    padding-left: 10px;
+}
+
+
+ul.secondary-menu-ul{
+    list-style: none;
+}
+ul.secondary-menu-ul li{
+    float: left;
+    padding: 0px 40px;
+}
+ul.secondary-menu-ul li a{
+    color: #999;
+    font-size: 14px;
+    font-weight: bold;
+    display: block;
+    line-height: 46px;
+}
+ul.secondary-menu-ul li.active a{
+    color: #4765a1;
+    border-bottom: solid;
+}
+.secondary-menu-outbox{
+    padding: 0 15px;
+    min-height: 50px;
+    height: 50px;
+    background: #e3e3e3;
+    border-bottom: solid 1px #c7c7c7;
+}
+.secondary-menu-outbox h3{
+    line-height: 34px;
+}
+.secondary-menu-outbox .breadcrumb>li+li:before,
+.secondary-menu-outbox .breadcrumb>li.fa-angle-right:before{
+    content:"\f105";
+}
+.secondary-menu-outbox .breadcrumb-box{
+    margin-top: 0px;
+    background: #e3e3e3;
+}
+.secondary-menu-outbox .breadcrumb-box .breadcrumb{
+    background: #e3e3e3;
+}
+
 
 .ibox-content-shadow{
     -moz-box-shadow:2px 1px 5px #e6e8ee inset;               /* For Firefox3.6+ */

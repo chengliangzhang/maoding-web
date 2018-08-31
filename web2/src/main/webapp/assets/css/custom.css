@@ -3,9 +3,12 @@ html, body{
 }
 #page-wrapper{
     background: rgb(255, 255, 255); border-left: 1px solid #d5d5d5;
+    z-index: 10;
 }
-#page-wrapper.m-l-none{
+#page-wrapper.m-l-none,
+body.mini-navbar #page-wrapper.m-l-none{
     margin-left:0px;
+    z-index: 102;
 }
 
 .ibox-content-title {
@@ -958,12 +961,7 @@ body div label.error, div.popover.m-popover label.error {
     cursor: pointer;
 }
 
-/** metismenu **/
-.metismenu li{
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
+
 /** 重写table高度 **/
 #content-right .table>thead>tr>th{
     height: 38px;
