@@ -7,7 +7,6 @@ import com.maoding.core.constant.NetFileType;
 import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.StringUtil;
 import com.maoding.financial.dto.ExpAttachDTO;
-import com.maoding.hxIm.dto.ImSendMessageDTO;
 import com.maoding.hxIm.service.ImQueueProducer;
 import com.maoding.message.dto.SendMessageDataDTO;
 import com.maoding.notice.constDefine.NotifyDestination;
@@ -26,9 +25,9 @@ import com.maoding.org.entity.CompanyEntity;
 import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.org.service.CompanyUserService;
 import com.maoding.project.dao.ProjectDao;
+import com.maoding.project.dto.NetFileDTO;
 import com.maoding.project.dto.ProjectDesignContentDTO;
 import com.maoding.project.entity.ProjectEntity;
-import com.maoding.project.entity.ProjectSkyDriveEntity;
 import com.maoding.project.service.ProjectSkyDriverService;
 import com.maoding.task.dao.ProjectTaskDao;
 import com.maoding.task.entity.ProjectTaskEntity;
@@ -298,7 +297,7 @@ public class NoticeServiceImpl extends GenericService<NoticeEntity> implements N
             Map<String, Object> param = new HashMap<>();
             param.put("targetId", id);
             param.put("type", NetFileType.NOTICE_ATTACH);
-            List<ProjectSkyDriveEntity> expAttachEntityList = projectSkyDriverService.getNetFileByParam(param);
+            List<NetFileDTO> expAttachEntityList = projectSkyDriverService.getNetFileByParam(param);
             List<ExpAttachDTO> attachList = BaseDTO.copyFields(expAttachEntityList, ExpAttachDTO.class);
             dto.setAttachList(attachList);
         }

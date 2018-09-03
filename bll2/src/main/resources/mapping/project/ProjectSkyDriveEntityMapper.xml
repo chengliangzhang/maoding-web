@@ -30,6 +30,9 @@
         <result column="sky_drive_path" property="skyDrivePath" jdbcType="VARCHAR"/>
         <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
     </resultMap>
+    <resultMap id="NetFileMap" type="com.maoding.project.dto.NetFileDTO" extends="BaseResultMap">
+        <result column="crt_file_path" property="crtFilePath" jdbcType="VARCHAR" />
+    </resultMap>
 
     <sql id="Base_Column_List">
         id, project_id, pid, sky_drive_path, file_name, file_path, company_id, type, file_size,
@@ -44,39 +47,40 @@
         where id = #{id,jdbcType=VARCHAR}
     </select>
 
-    <select id="getNetFileByParam" resultMap="BaseResultMap" parameterType="java.util.Map">
+    <select id="getNetFileByParam" resultMap="NetFileMap" parameterType="java.util.Map">
         select
-        <include refid="Base_Column_List"/>
-        from maoding_web_project_sky_drive
-        WHERE status='0'
+        a.*,b.crt_file_path
+        from maoding_web_project_sky_drive a
+        LEFT JOIN maoding_web_net_file_crt b on a.id = b.id
+        WHERE a.status='0'
         <if test="projectId != null">
-            AND project_id = #{projectId,jdbcType=VARCHAR}
+            AND a.project_id = #{projectId}
         </if>
         <if test="companyId != null">
-            AND company_id = #{companyId,jdbcType=VARCHAR}
+            AND a.company_id = #{companyId}
         </if>
         <if test="targetId != null">
-            AND target_id = #{targetId,jdbcType=VARCHAR}
+            AND a.target_id = #{targetId}
         </if>
         <if test="type != null">
-            AND type = #{type,jdbcType=VARCHAR}
+            AND a.type = #{type}
         </if>
         <if test="param4 != null">
-            AND param4 = #{param4,jdbcType=VARCHAR}
+            AND a.param4 = #{param4}
         </if>
         <if test="pid != null">
-            <choose>
-                <when test="pid == '-'.toString()">
-                    AND pid is null
-                </when>
-                <otherwise>
-                    AND pid = #{pid,jdbcType=VARCHAR}
-                </otherwise>
-            </choose>
+            AND a.pid = #{pid}
         </if>
-        <if test="fileName != null">
-            AND file_name = #{fileName,jdbcType=VARCHAR}
+        <if test="personalFile!=null">
+            AND (type = 100 or type = 101)
+            <if test="pid==null">
+                AND a.pid is NULL
+            </if>
+            <if test="createBy!=null">
+                AND a.create_by = #{createBy}
+            </if>
         </if>
+        ORDER BY a.param4,a.create_date
     </select>
 
     <select id="getSkyDriveByPidAndFileName" resultMap="BaseResultMap" parameterType="java.util.Map">

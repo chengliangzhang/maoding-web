@@ -224,4 +224,15 @@ public interface ExpMainService extends BaseService<ExpMainEntity>{
      */
     void sendMessageForAudit(String mainId, String companyId, String companyUserId,Integer type,String accountId,String auditId,String approveStatus) throws Exception;
 
+    /**
+     * 出差审核通过的（不包含退回的）
+     */
+    List<AuditDataDTO> getPassAuditData(QueryAuditDTO query) throws Exception;
+
+    /**
+     * 待审批的,我提交的(type=1:我提交的，type=2：待审核的,type=3:我已经审核的)
+     */
+    List<AuditDataDTO> getAuditDataDTO(QueryAuditDTO query) throws Exception;
+
+
 }

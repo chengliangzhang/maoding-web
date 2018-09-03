@@ -207,4 +207,7 @@ public interface ProjectCostService extends BaseService<ProjectCostEntity>{
      * 发起付款界面详情，财务付款确认详情，审批人审批界面
      */
     Map<String, Object> getProjectCostPaymentDetailByPointDetailIdForPay(ProjectCostQueryDTO queryDTO) throws Exception;
+
+
+    ProjectCostDataDTO getProjectCostByMainId(String mainId) throws Exception;
 }

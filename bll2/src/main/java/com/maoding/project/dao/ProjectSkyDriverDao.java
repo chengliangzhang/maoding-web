@@ -2,6 +2,7 @@ package com.maoding.project.dao;
 
 
 import com.maoding.core.base.dao.BaseDao;
+import com.maoding.project.dto.NetFileDTO;
 import com.maoding.project.dto.ProjectSkyDriveRenameDTO;
 import com.maoding.project.dto.ProjectSkyDriverQueryDTO;
 import com.maoding.project.dto.SkyDriveUpdateDTO;
@@ -113,7 +114,7 @@ public interface ProjectSkyDriverDao extends BaseDao<ProjectSkyDriveEntity> {
      * @param:
      * @return:
      */
-    List<ProjectSkyDriveEntity> getNetFileByParam(Map<String, Object> map);
+    List<NetFileDTO> getNetFileByParam(Map<String, Object> map);
 
     /**
      * 方法描述：获取项目文档，第二层目录例如（设计依据，归档文件），根据组织id和项目id获取

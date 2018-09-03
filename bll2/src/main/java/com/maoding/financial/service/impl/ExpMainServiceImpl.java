@@ -15,6 +15,7 @@ import com.maoding.core.base.service.GenericService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.bean.ResponseBean;
 import com.maoding.core.constant.*;
+import com.maoding.core.util.BeanUtils;
 import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
@@ -44,10 +45,12 @@ import com.maoding.process.dto.ActivitiDTO;
 import com.maoding.process.service.ProcessService;
 import com.maoding.project.constDefine.EnterpriseServer;
 import com.maoding.project.dao.ProjectSkyDriverDao;
+import com.maoding.project.dto.NetFileDTO;
 import com.maoding.project.dto.ProjectDTO;
-import com.maoding.project.entity.ProjectSkyDriveEntity;
 import com.maoding.project.service.ProjectService;
 import com.maoding.project.service.ProjectSkyDriverService;
+import com.maoding.projectcost.dto.ProjectCostDataDTO;
+import com.maoding.projectcost.service.ProjectCostService;
 import com.maoding.role.service.PermissionService;
 import com.maoding.statistic.dto.StatisticDetailQueryDTO;
 import com.maoding.statistic.dto.StatisticDetailSummaryDTO;
@@ -134,6 +137,9 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
     @Autowired
     private EnterpriseServer enterpriseServer;
 
+    @Autowired
+    private ProjectCostService projectCostService;
+
     /**
      * 方法描述：报销增加或者修改
      * 作   者：LY
@@ -174,8 +180,9 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         ExpMainEntity entity = new ExpMainEntity();
         BaseDTO.copyFields(dto, entity);
         entity.setApproveStatus("0");
+        ApplyProjectCostDTO costDto = BeanUtils.createFrom(dto,ApplyProjectCostDTO.class);
         if (StringUtil.isNullOrEmpty(dto.getId())) {//插入
-            saveExpMain(entity,dto,userId,companyId);
+            saveExpMain(entity,costDto,userId,companyId);
             flag= true;
         }  else {//保存
             int result = 0;
@@ -190,7 +197,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
                 expMainDao.updateById(exp);
                 //dto.setTargetId(null); //此处为了防止前端 更新的时候传递了targetId过来(前端生成)
                 //新开一个新的报销单
-                saveExpMain(entity,dto,userId,companyId);
+                saveExpMain(entity,costDto,userId,companyId);
                 //复制原来的附件记录
                 projectSkyDriverService.copyFileToNewObject(entity.getId(),dto.getId(),NetFileType.EXPENSE_ATTACH,dto.getDeleteAttachList());
                 flag = true;
@@ -219,6 +226,40 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         return new AjaxMessage().setCode("0").setInfo("保存成功").setData(dto);
 
     }
+
+    //保存报销明细表
+    private void saveExpDetail(ExpMainDTO dto,String id,String userId,String currentCompanyUserId) throws Exception{
+        //按照MainId先删除原来明细
+        expDetailDao.deleteByMainId(id);
+        ExpDetailEntity detailEntity = null;
+        SaveRelationRecordDTO relation = new SaveRelationRecordDTO();
+        relation.setAccountId(userId);
+        relation.setTargetId(id);
+        int seq = 1;
+        for (ExpDetailDTO detailDTO : dto.getDetailList()) {
+            detailEntity = new ExpDetailEntity();
+            BaseDTO.copyFields(detailDTO, detailEntity);
+            detailDTO.setId(StringUtil.buildUUID());
+            detailEntity.setId(detailDTO.getId());
+            detailEntity.setMainId(id);
+            detailEntity.setSeq(seq++);
+            if (detailEntity.getExpAllName() != null) {
+                String[] allName = detailEntity.getExpAllName().split("-");
+                detailEntity.setExpPName(allName[0]);
+                detailEntity.setExpName(allName[1]);
+            }
+            detailEntity.set4Base(userId, userId, new Date(), new Date());
+            expDetailDao.insert(detailEntity);
+
+            if(detailDTO.getRelationRecord()!=null && !StringUtil.isNullOrEmpty(detailDTO.getRelationRecord().getRelationId())){
+                detailDTO.getRelationRecord().setOperateRecordId(detailEntity.getId());
+                relation.getRelationList().add(detailDTO.getRelationRecord());
+            }
+        }
+        //处理关联项
+        this.relationRecordService.saveRelationRecord(relation);
+    }
+
 
     private AjaxMessage validateExpMainAndDetail(ExpMainDTO dto){
         List<ExpDetailDTO> detailList = dto.getDetailList();
@@ -295,8 +336,10 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         detailEntity.setProjectId(dto.getProjectId());
         detailEntity.setMainId(mainId);
         detailEntity.setSeq(1);
-        BigDecimal expAmount = dto.getApplyAmount().multiply(new BigDecimal("10000"));//换成元
-        detailEntity.setExpAmount(expAmount);
+        if (dto.getApplyAmount() != null){
+            BigDecimal expAmount = dto.getApplyAmount().multiply(new BigDecimal("10000"));//换成元
+            detailEntity.setExpAmount(expAmount);
+        }
         detailEntity.set4Base(userId, userId, new Date(), new Date());
         expDetailDao.insert(detailEntity);
 
@@ -500,7 +543,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         Map<String, Object> map = new HashMap<>();
         map.put("targetId", id);
         map.put("type", NetFileType.EXPENSE_ATTACH);
-        List<ProjectSkyDriveEntity> expAttachEntityList = projectSkyDriverService.getNetFileByParam(map);
+        List<NetFileDTO> expAttachEntityList = projectSkyDriverService.getNetFileByParam(map);
         dto.setExpAttachDTOList(BaseDTO.copyFields(expAttachEntityList, ExpAttachDTO.class));
         return dto;
     }
@@ -817,7 +860,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         Map<String, Object> param = new HashMap<>();
         param.put("targetId", id);
         param.put("type", NetFileType.EXPENSE_ATTACH);
-        List<ProjectSkyDriveEntity> expAttachEntityList = projectSkyDriverService.getNetFileByParam(param);
+        List<NetFileDTO> expAttachEntityList = projectSkyDriverService.getNetFileByParam(param);
         map.put("expAttachEntityList", BaseDTO.copyFields(expAttachEntityList, ExpAttachDTO.class));
         auditList.addAll(list);
         map.put("auditList", auditList);
@@ -1308,5 +1351,69 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         param.put("companyUserId",userEntity.getId());
         return projectService.getProjectListByCompanyId(query);
     }
+
+    @Override
+    public List<AuditDataDTO> getPassAuditData(QueryAuditDTO query) throws Exception {
+        query.setIgnoreRecall("1");//忽略 退回的记录
+        return getAuditDataDTO(query);
+    }
+
+
+    /**
+     * type: (type=1:我提交的，type=2：待审核的,type=3:我已经审核的 type=4:我提交并审批完成的,type=5:我提交的正处于审核中的,type=6:我提交未审核的,7:抄送列表，8：我提交并已退回，9：我提交并已撤销)
+     *
+     * expTypes（1：报销数据，2：费用申请数据，3：请假数据，4：出差数据，5：项目费用申请数据），如果是查询多个：比如报销+费用申请，传递的参数为 "1,2",用逗号隔开
+     */
+    @Override
+    public List<AuditDataDTO> getAuditDataDTO(QueryAuditDTO query) throws Exception {
+        String type = query.getType();
+        query.setCompanyId(query.getCurrentCompanyId());
+        query.setIgnoreRecall("1");//type=4的，也不包含已经退回的
+        CompanyUserEntity user = this.companyUserDao.getCompanyUserByUserIdAndCompanyId(query.getAccountId(),query.getAppOrgId());
+        if(user==null){
+            return new ArrayList<>();
+        }
+
+        if(isMySubmitAudit(type)){
+            query.setCompanyUserId(user.getId());
+        }
+        if ("2".equals(type) || "3".equals(type)){
+            query.setAuditPerson(user.getId());
+        }
+        if ("7".equals(type)){//抄送
+            query.setCcCompanyUserId(user.getId());
+        }
+        List<AuditDataDTO> list = expMainDao.getAuditData(query);
+        if (isMySubmitAudit(type)){
+            for(AuditDataDTO dto:list){
+                if(1==dto.getType() || 2==dto.getType()){
+                    List<ExpDetailEntity> detailList = expDetailDao.selectByMainId(dto.getId());
+                    dto.setCostList(BaseDTO.copyFields(detailList,CostDetailDTO.class));
+                }
+            }
+        }
+        for(AuditDataDTO audit:list){
+            if(audit.getType()==5){
+                ProjectCostDataDTO cost = projectCostService.getProjectCostByMainId(audit.getId());
+                if(cost!=null){
+                    audit.setToCompanyName(cost.getRelationCompanyName());
+                    audit.setProjectName(cost.getProjectName());
+                    audit.setProjectFeeTypeName(cost.getTypeName());
+                    audit.setAmount(cost.getDetailFee());
+                }
+            }
+        }
+        return list;
+    }
+
+
+    private boolean isMySubmitAudit(String  type){
+        if(StringUtil.isNullOrEmpty(type) || "1".equals(type)  || "4".equals(type)
+                || "5".equals(type) || "6".equals(type) || "8".equals(type) || "9".equals(type)){
+            return true;
+        }
+        return false;
+    }
+
 }
 

@@ -1,9 +1,12 @@
 package com.maoding.financial.dto;
 
 
-import com.maoding.core.base.dto.QueryDTO;
+import com.maoding.core.base.dto.CoreQueryDTO;
 
-public class QueryAuditDTO extends QueryDTO {
+public class QueryAuditDTO extends CoreQueryDTO {
+
+    /** 审批组织编号 **/
+    private String companyId;
 
     /**我申请的条目数（报销，费用申请，请假，出差）用到的参数**/
     private String month;
@@ -35,6 +38,14 @@ public class QueryAuditDTO extends QueryDTO {
     private String ccCompanyUserId;
 
     private String ignoreRecall;//忽略退回的记录
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
 
     public String getMonth() {
         return month;

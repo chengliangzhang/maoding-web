@@ -178,6 +178,16 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         return projectSkyDriverDao.deleteSysDriveByIds(ids);
     }
 
+    @Override
+    public AjaxMessage deleteSysDrive(List<String> attachIdList, String accountId, String targetId) throws Exception {
+        Map<String ,Object> map = new HashMap<>();
+        map.put("accountId",accountId);
+        map.put("targetId",targetId);
+        map.put("attachIds", org.springframework.util.StringUtils.collectionToDelimitedString(attachIdList, ",") );
+        this.projectSkyDriverDao.updateSkyDriveStatus(map);
+        return AjaxMessage.succeed(null);
+    }
+
     /**
      * 方法描述：查询文件
      * 作者：MaoSF
@@ -524,7 +534,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
      * @return:
      */
     @Override
-    public List<ProjectSkyDriveEntity> getNetFileByParam(Map<String, Object> map) throws Exception {
+    public List<NetFileDTO> getNetFileByParam(Map<String, Object> map) throws Exception {
         return this.projectSkyDriverDao.getNetFileByParam(map);
     }
 
@@ -1098,7 +1108,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         query.put("fileName","交付文件");
         query.put("pid","-");
         query.put("companyId",companyId);
-        List<ProjectSkyDriveEntity> resultList = projectSkyDriverDao.getNetFileByParam(query);
+        List<NetFileDTO> resultList = projectSkyDriverDao.getNetFileByParam(query);
         if ((resultList != null) && (resultList.size() > 0)) {
             result = resultList.get(0);
             List<ProjectSkyDriveEntity> archList = new ArrayList<>();
@@ -1389,7 +1399,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
      */
     @Override
     public ProjectSkyDriveEntity getProjectContractAttach(String projectId) throws Exception {
-        List<ProjectSkyDriveEntity> attachEntityList = listProjectContractAttach(projectId);
+        List<NetFileDTO> attachEntityList = listProjectContractAttach(projectId);
         if (!CollectionUtils.isEmpty(attachEntityList)) {
             return attachEntityList.get(0);
         }
@@ -1402,7 +1412,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
      * 日期：2017/9/12
      */
     @Override
-    public List<ProjectSkyDriveEntity> listProjectContractAttach(String projectId) throws Exception {
+    public List<NetFileDTO> listProjectContractAttach(String projectId) throws Exception {
         Map<String, Object> map = new HashMap<>();
         map.put("projectId", projectId);
         map.put("type", NetFileType.PROJECT_CONTRACT_ATTACH);
@@ -1420,7 +1430,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
      * 日期：2017/6/2
      */
     private String getFileUrl(Map<String, Object> map, boolean isHasFastdfsUrl) {
-        List<ProjectSkyDriveEntity> attachEntityList = this.projectSkyDriverDao.getNetFileByParam(map);
+        List<NetFileDTO> attachEntityList = this.projectSkyDriverDao.getNetFileByParam(map);
         if (!CollectionUtils.isEmpty(attachEntityList)) {
             ProjectSkyDriveEntity logoAttach = attachEntityList.get(0);
             String filePath = logoAttach.getFileGroup() + "/" + logoAttach.getFilePath();
@@ -1550,7 +1560,7 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
 
     @Override
     public List<FileDataDTO> getAttachDataList(Map<String, Object> map) throws Exception {
-        List<ProjectSkyDriveEntity> list = this.getNetFileByParam(map);
+        List<NetFileDTO> list = this.getNetFileByParam(map);
         List<FileDataDTO> fileList = new ArrayList<>();
         list.stream().forEach(c->{
             FileDataDTO dto = new FileDataDTO();
@@ -1568,5 +1578,27 @@ public class ProjectSkyDriverServiceImpl extends GenericService<ProjectSkyDriveE
         Map<String, Object> map = new HashMap<>();
         map.put("targetId",targetId);
         return getAttachDataList(map);
+    }
+
+    @Override
+    public void copyFileToNewObject(String targetId, String oldTarget, Integer type) throws Exception {
+        this.copyFileToNewObject(targetId,oldTarget,type,null);
+    }
+
+    @Override
+    public void copyFileToNewObject(String targetId, String oldTarget, Integer type, List<String> deleteAttachList) throws Exception {
+        //复制原来的附件记录
+        Map<String, Object> param = new HashMap<>();
+        param.put("targetId", oldTarget);
+        param.put("type", type);
+        List<NetFileDTO> attachList = this.getNetFileByParam(param);
+        for (ProjectSkyDriveEntity attach : attachList) {
+            if(!CollectionUtils.isEmpty(deleteAttachList) && deleteAttachList.contains(attach.getId())){
+                continue;
+            }
+            attach.setId(StringUtil.buildUUID());
+            attach.setTargetId(targetId);
+            projectSkyDriverDao.insert(attach);
+        }
     }
 }

@@ -2817,4 +2817,30 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         return result;
     }
 
+
+    @Override
+    public ProjectCostDataDTO getProjectCostByMainId(String mainId) throws Exception {
+        ProjectCostDataDTO result = new ProjectCostDataDTO();
+        RelationRecordEntity relationRecord = relationRecordService.getRelationRecord(mainId);
+        if(relationRecord!=null){
+            String pointDetailId = relationRecord.getRelationId();
+            ProjectCostPointDetailEntity pointDetailEntity = this.projectCostPointDetailDao.selectById(pointDetailId);
+            ProjectCostEntity costEntity = this.projectCostDao.getProjectCostByPointId(pointDetailEntity.getPointId());
+            ProjectCostDTO cost = new ProjectCostDTO();
+            BeanUtils.copyProperties(costEntity,cost);
+
+            BeanUtils.copyProperties(costEntity,result);
+            result.setCostId(cost.getId());
+            result.setPlanFee(cost.getFee());
+            result.setOperateCompanyId(cost.getOperateCompanyId());
+            result.setToCompanyId(cost.getToCompanyId());
+            result.setFromCompanyId(cost.getFromCompanyId());
+            result.setType(cost.getType());
+            result.setRelationCompanyName(this.getRelationCompanyName(cost,costEntity.getFromCompanyId()));
+            result.setProjectName(this.projectDao.getProjectName(cost.getProjectId()));
+            result.setTypeName(ProjectCostConst.COST_TYPE_MAP.get(cost.getType()));
+            result.setDetailFee(pointDetailEntity.getFee());
+        }
+        return result;
+    }
 }

@@ -4,10 +4,7 @@ import com.maoding.attach.dto.FileDataDTO;
 import com.maoding.core.base.dto.BaseShowDTO;
 import com.maoding.core.base.service.BaseService;
 import com.maoding.core.bean.AjaxMessage;
-import com.maoding.project.dto.DeliverEditDTO;
-import com.maoding.project.dto.ProjectSkyDriveDTO;
-import com.maoding.project.dto.ProjectSkyDriveRenameDTO;
-import com.maoding.project.dto.ProjectSkyDriverQueryDTO;
+import com.maoding.project.dto.*;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.entity.ProjectSkyDriveEntity;
 import com.maoding.projectcost.dto.ProjectCostEditDTO;
@@ -46,6 +43,13 @@ public interface ProjectSkyDriverService extends BaseService<ProjectSkyDriveEnti
      * @return:
      */
     AjaxMessage deleteSysDrive(String id, String accountId) throws Exception;
+
+    /**
+     * 方法描述：批量删除
+     * 作者：MaoSF
+     * 日期：2016/12/18
+     */
+    AjaxMessage deleteSysDrive(List<String> attachIdList, String accountId, String targetId) throws Exception;
 
     /**
      * 方法描述：批量删除文件夹
@@ -91,7 +95,7 @@ public interface ProjectSkyDriverService extends BaseService<ProjectSkyDriveEnti
      * @param:
      * @return:
      */
-    List<ProjectSkyDriveEntity> getNetFileByParam(Map<String, Object> map) throws Exception;
+    List<NetFileDTO> getNetFileByParam(Map<String, Object> map) throws Exception;
 
     void initProjectFile();
 
@@ -226,7 +230,7 @@ public interface ProjectSkyDriverService extends BaseService<ProjectSkyDriveEnti
      * @param:
      * @return:
      */
-    List<ProjectSkyDriveEntity> listProjectContractAttach(String projectId) throws Exception;
+    List<NetFileDTO> listProjectContractAttach(String projectId) throws Exception;
 
     /**
      * 方法描述：获取项目文档，第二层目录例如（设计依据，归档文件），根据组织id和项目id获取
@@ -344,4 +348,12 @@ public interface ProjectSkyDriverService extends BaseService<ProjectSkyDriveEnti
      * @param targetId 根据关联对象的id查询相应的附近
      */
     List<FileDataDTO> getAttachListByTargetId(String targetId) throws Exception;
+
+    /**
+     * 复制文件数据
+     */
+    void copyFileToNewObject(String targetId,String oldTarget,Integer type) throws Exception;
+    void copyFileToNewObject(String targetId,String oldTarget,Integer type,List<String> deleteAttachList) throws Exception;
+
+
 }

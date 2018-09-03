@@ -24,6 +24,7 @@ import com.maoding.org.service.CompanyService;
 import com.maoding.org.service.TeamOperaterService;
 import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.dao.ProjectSkyDriverDao;
+import com.maoding.project.dto.NetFileDTO;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.entity.ProjectSkyDriveEntity;
 import com.maoding.project.service.ProjectSkyDriverService;
@@ -730,7 +731,7 @@ public class CompanyServiceImpl extends GenericService<CompanyEntity> implements
         param.put("companyId", id);
         param.put("type", NetFileType.COMPANY_LOGO_ATTACH);
         param.put("status", "0");
-        List<ProjectSkyDriveEntity> list = projectSkyDriverDao.getNetFileByParam(param);
+        List<NetFileDTO> list = projectSkyDriverDao.getNetFileByParam(param);
         if (!list.isEmpty()) {
             dto.setFilePath(list.get(0).getFileGroup() + "/" + list.get(0).getFilePath());
         }
@@ -738,7 +739,7 @@ public class CompanyServiceImpl extends GenericService<CompanyEntity> implements
         //查询公司二维码
         param.put("type", NetFileType.COMPANY_QR_CODE_ATTACH);
         param.put("status", "0");
-        List<ProjectSkyDriveEntity> list2 = projectSkyDriverDao.getNetFileByParam(param);
+        List<NetFileDTO> list2 = projectSkyDriverDao.getNetFileByParam(param);
         if (!list2.isEmpty()) {
             dto.setQrcodePath(list2.get(0).getFilePath());
         } else {//若无，则生成二维码

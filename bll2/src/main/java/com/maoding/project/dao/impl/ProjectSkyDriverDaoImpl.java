@@ -2,6 +2,7 @@ package com.maoding.project.dao.impl;
 
 import com.maoding.core.base.dao.GenericDao;
 import com.maoding.project.dao.ProjectSkyDriverDao;
+import com.maoding.project.dto.NetFileDTO;
 import com.maoding.project.dto.ProjectSkyDriveRenameDTO;
 import com.maoding.project.dto.ProjectSkyDriverQueryDTO;
 import com.maoding.project.dto.SkyDriveUpdateDTO;
@@ -159,7 +160,7 @@ public class ProjectSkyDriverDaoImpl extends GenericDao<ProjectSkyDriveEntity> i
      * @return:
      */
     @Override
-    public List<ProjectSkyDriveEntity> getNetFileByParam(Map<String, Object> map) {
+    public List<NetFileDTO> getNetFileByParam(Map<String, Object> map) {
         return this.sqlSession.selectList("ProjectSkyDriveEntityMapper.getNetFileByParam", map);
     }
 

@@ -637,7 +637,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
 
         }
         //填充合同文件
-        List<ProjectSkyDriveEntity> attachList = projectSkyDriverService.listProjectContractAttach(id);
+        List<NetFileDTO> attachList = projectSkyDriverService.listProjectContractAttach(id);
         if (!CollectionUtils.isEmpty(attachList)) {
             List<Map<String, String>> fileList = new ArrayList<>();
             Map<String, String> lastFile = null;

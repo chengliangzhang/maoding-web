@@ -233,6 +233,18 @@ public class FinancialController extends BaseController {
     }
 
     /**
+     * 方法描述：审核通过的记录（不包含退回的）
+     * 作   者：MaoSF
+     * 日   期：2016/12/22
+     */
+    @RequestMapping(value = "/getPassAuditData", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage getPassAuditData(@RequestBody QueryAuditDTO query) throws Exception{
+        updateCurrentUserInfo(query);
+        return AjaxMessage.succeed(expMainService.getPassAuditData(query));
+    }
+
+    /**
      * 方法描述：报销类型基础数据
      * 作   者：LY
      * 日   期：2016/7/27 17:59
