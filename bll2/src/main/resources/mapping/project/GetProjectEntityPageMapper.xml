@@ -294,16 +294,25 @@
     <select id="getProjectListByCompanyId" parameterType="com.maoding.project.dto.ProjectDTO"
             resultType="com.maoding.project.dto.ProjectDTO">
         SELECT a.id,
-        a.company_id,
-        a.project_no,
-        a.project_name as projectName
+            a.company_id,
+            a.project_no,
+            a.project_name as projectName,
+            (select company_name from maoding_web_company c1 WHERE c1.id=a.company_id) as companyName
         FROM maoding_web_project a
-        left join maoding_web_project_task b on a.id=b.project_id and b.task_status='0'
+            left join maoding_web_project_task_relation c on a.id=c.project_id and c.relation_status='0'
+            LEFT JOIN maoding_web_project_member d on a.id = d.project_id and d.deleted=0
+            <if test="currentCompanyUserId != null">
+                and d.company_user_id=#{currentCompanyUserId}
+            </if>
         WHERE a.pstatus='0'
-        and (a.company_id = #{companyId,jdbcType=VARCHAR} or b.company_id = #{companyId,jdbcType=VARCHAR})
-        <if test="projectName!=null">
-            and a.project_name like '%' #{projectName} '%'
-        </if>
+            and (a.company_id = #{companyId} or a.company_bid = #{companyId}
+            or c.to_company_id = #{companyId} or c.from_company_id = #{companyId})
+                <if test="projectName!=null">
+                    and a.project_name like '%' #{projectName} '%'
+                </if>
+            <if test="type!=null and type==1">
+              and (d.id is not null)
+            </if>
         group by a.id
         ORDER BY a.project_create_date DESC
     </select>

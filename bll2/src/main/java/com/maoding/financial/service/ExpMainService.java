@@ -5,6 +5,7 @@ import com.maoding.core.bean.AjaxMessage;
 import com.maoding.financial.dto.*;
 import com.maoding.financial.entity.ExpMainEntity;
 import com.maoding.org.dto.CompanyUserTableDTO;
+import com.maoding.project.dto.ProjectDTO;
 import com.maoding.statistic.dto.StatisticDetailQueryDTO;
 import com.maoding.statistic.dto.StatisticDetailSummaryDTO;
 
@@ -35,6 +36,15 @@ public interface ExpMainService extends BaseService<ExpMainEntity>{
      */
     AjaxMessage applyProjectCost(ApplyProjectCostDTO dto) throws Exception;
 
+
+    /**
+     * 方法描述：根据companyId查询所有有效项目(我要报销 选择项目下拉框 )app
+     * 作   者：LY
+     * 日   期：2016/7/27 17:39
+     * @return
+     *
+     */
+    List<ProjectDTO> getProjectListWS(String companyId,String userId);
 
     /**
      * 方法描述：得到当前公司和当前组织下面人员

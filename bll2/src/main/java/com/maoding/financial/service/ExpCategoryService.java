@@ -59,12 +59,30 @@ public interface ExpCategoryService extends BaseService<ExpCategoryEntity> {
     List<ExpTypeDTO> getExpTypeList(String companyId);
 
     /**
+     * 方法描述：查询报销类型
+     * 用于我要报销界面，报销类型选择
+     * 作        者：MaoSF
+     * 日        期：2015年12月7日-上午11:21:49
+     * @return
+     */
+    List<ExpTypeDTO> getExpCategoryTypeList(String companyId,String userId)  throws Exception;
+
+    /**
      * 方法描述：查询组织的所有费用类型
      * 用于我要报销界面，报销类型选择
      * 作        者：MaoSF
      * 日        期：2015年12月7日-上午11:21:49
      */
     List<ExpCategoryDataDTO> getExpTypeList(QueryExpCategoryDTO query) throws Exception;
+
+    /**
+     * 方法描述：查询报销类型
+     * 用于我要报销界面，报销类型选择
+     * 作        者：MaoSF
+     * 日        期：2015年12月7日-上午11:21:49
+     * @return
+     */
+    List<ExpTypeDTO> getExpTypeList(String rootCompanyId,String companyId) throws Exception;
 
     /**
      * 费用分摊

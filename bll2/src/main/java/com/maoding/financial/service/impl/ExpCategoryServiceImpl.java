@@ -11,6 +11,8 @@ import com.maoding.financial.dto.*;
 import com.maoding.financial.entity.ExpCategoryEntity;
 import com.maoding.financial.entity.ExpCategoryRelationEntity;
 import com.maoding.financial.service.ExpCategoryService;
+import com.maoding.financial.service.ExpMainService;
+import com.maoding.org.dao.CompanyUserDao;
 import com.maoding.org.dto.CompanyDTO;
 import com.maoding.org.dto.DepartDTO;
 import com.maoding.org.service.CompanyService;
@@ -44,6 +46,9 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
     private CompanyService companyService;
 
     @Autowired
+    private CompanyUserDao companyUserDao;
+
+    @Autowired
     private DepartService departService;
 
     @Autowired
@@ -58,6 +63,9 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
     @Autowired
     private ExpCategoryRelationDao expCategoryRelationDao;
 
+    @Autowired
+    private ExpMainService expMainService;
+
     private String otherIncome = "gdfy_qtywsr";
     private String directCost = "bx_ywfy";
     private String directCost2 = "zjxmcb";
@@ -71,10 +79,10 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
      */
     @Override
     public AjaxMessage getExpBaseData(String companyId, String userId) throws Exception {
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("expTypeList", getExpTypeList(companyId));
-        map.put("projectList", getProjectList(companyId));
-        Map<String, Object> mapParams = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
+        map.put("expTypeList", getExpCategoryTypeList(companyId,userId));
+        map.put("projectList", expMainService.getProjectListWS(companyId,userId));
+        Map<String, Object> mapParams = new HashMap<>();
         mapParams.put("companyId", companyId);
         mapParams.put("userId", userId);
         map.put("departList", departService.getDepartByUserIdContentCompany(mapParams));
@@ -203,17 +211,6 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
             //如果该公司的报销类别尚未初始化数据。则初始化
             initDefaultData(companyId,null,3);
         }
-    }
-
-    /**
-     * 方法描述：查询报销类型
-     * 用于我要报销界面，报销类型选择
-     * 作        者：MaoSF
-     * 日        期：2015年12月7日-上午11:21:49
-     */
-    @Override
-    public List<ExpTypeDTO> getExpTypeList(String companyId) {
-        return getExpTypeList(companyId,1);
     }
 
     public void insertCategoryFromRootCompany(QueryExpCategoryDTO query){
@@ -389,9 +386,27 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
         return 0;
     }
 
+
+
+    /**
+     * 方法描述：查询报销类型
+     * 用于我要报销界面，报销类型选择
+     * 作        者：MaoSF
+     * 日        期：2015年12月7日-上午11:21:49
+     */
+    @Override
+    @Deprecated
+    /** 更改为getExpTypeList(String rootCompanyId,String companyId) **/
+    public List<ExpTypeDTO> getExpTypeList(String companyId) {
+        return getExpTypeList(companyId,1);
+    }
+
+
     /**
      * 费用类型查询统一接口
      */
+    @Deprecated
+    /** 更改为getExpTypeList(String rootCompanyId,String companyId) **/
     private List<ExpTypeDTO> getExpTypeList(String companyId, Integer categoryType){
         QueryExpCategoryDTO query = new QueryExpCategoryDTO();
         query.setCompanyId(companyId);
@@ -408,6 +423,51 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
             }
         }catch (Exception e){
             e.printStackTrace();
+        }
+        return expTypes;
+    }
+
+    /**
+     * 方法描述：查询报销类型
+     * 用于我要报销界面，报销类型选择
+     * 作        者：MaoSF
+     * 日        期：2015年12月7日-上午11:21:49
+     * @return
+     */
+    @Override
+    public List<ExpTypeDTO> getExpTypeList(String rootCompanyId,String companyId) throws Exception{
+        if(rootCompanyId==null){
+            rootCompanyId = companyService.getRootCompanyId(companyId);
+        }
+        setDefaultExp(rootCompanyId);
+        List<ExpTypeDTO> expTypes = new ArrayList<ExpTypeDTO>();
+        QueryExpCategoryDTO query = new QueryExpCategoryDTO();
+        query.setRootCompanyId(rootCompanyId);
+        query.setCompanyId(companyId);
+        query.setCategoryType(1);
+        insertCategoryFromRootCompany(query);
+        List<ExpCategoryDataDTO> list = this.expCategoryDao.getExpCategoryListByType(query);
+        if (!CollectionUtils.isEmpty(list)) {
+            list.stream().forEach(exp->{
+                ExpTypeDTO typeBean = new ExpTypeDTO();
+                ExpCategoryEntity parent = new ExpCategoryEntity();
+                parent.setId(exp.getId());
+                parent.setExpTypeMemo(exp.getExpTypeMemo());
+                parent.setName(exp.getName());
+                parent.setCode(exp.getCode());
+                parent.setPid(exp.getPid());
+                typeBean.setParent(parent);
+                exp.getChildList().stream().forEach(c->{
+                    ExpCategoryEntity child = new ExpCategoryEntity();
+                    child.setId(c.getId());
+                    child.setExpTypeMemo(c.getExpTypeMemo());
+                    child.setName(c.getName());
+                    child.setCode(c.getCode());
+                    child.setPid(c.getPid());
+                    typeBean.getChild().add((child));
+                });
+                expTypes.add(typeBean);
+            });
         }
         return expTypes;
     }
@@ -573,5 +633,19 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
         dto.setCompanyId(companyId);
 
         return projectService.getProjectListByCompanyId(dto);
+    }
+
+
+    /**
+     * 方法描述：查询报销类型
+     * 用于我要报销界面，报销类型选择
+     * 作        者：MaoSF
+     * 日        期：2015年12月7日-上午11:21:49
+     * @return
+     */
+    @Override
+    public List<ExpTypeDTO> getExpCategoryTypeList(String companyId,String userId)  throws Exception{
+        String rootCompanyId = companyService.getRootCompanyId(companyId);
+        return this.getExpTypeList(rootCompanyId,companyId);
     }
 }

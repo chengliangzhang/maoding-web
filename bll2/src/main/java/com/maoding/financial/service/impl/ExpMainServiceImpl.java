@@ -1,7 +1,10 @@
 package com.maoding.financial.service.impl;
 
 import com.maoding.attach.dto.FileDataDTO;
-import com.maoding.commonModule.dto.*;
+import com.maoding.commonModule.dto.QueryCopyRecordDTO;
+import com.maoding.commonModule.dto.RelationTypeDTO;
+import com.maoding.commonModule.dto.SaveCopyRecordDTO;
+import com.maoding.commonModule.dto.SaveRelationRecordDTO;
 import com.maoding.commonModule.service.CopyRecordService;
 import com.maoding.commonModule.service.RelationRecordService;
 import com.maoding.companybill.dto.SaveCompanyBillDTO;
@@ -31,14 +34,15 @@ import com.maoding.mytask.service.MyTaskService;
 import com.maoding.org.dao.CompanyDao;
 import com.maoding.org.dao.CompanyUserDao;
 import com.maoding.org.dto.CompanyRelationDTO;
-import com.maoding.org.dto.CompanyUserDetailDTO;
 import com.maoding.org.dto.CompanyUserTableDTO;
 import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.org.service.CompanyUserService;
 import com.maoding.process.dto.ActivitiDTO;
 import com.maoding.process.service.ProcessService;
 import com.maoding.project.dao.ProjectSkyDriverDao;
+import com.maoding.project.dto.ProjectDTO;
 import com.maoding.project.entity.ProjectSkyDriveEntity;
+import com.maoding.project.service.ProjectService;
 import com.maoding.project.service.ProjectSkyDriverService;
 import com.maoding.role.service.PermissionService;
 import com.maoding.statistic.dto.StatisticDetailQueryDTO;
@@ -48,9 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -121,6 +123,9 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
 
     @Autowired
     private LeaveDetailDao leaveDetailDao;
+
+    @Autowired
+    private ProjectService projectService;
 
     /**
      * 方法描述：报销增加或者修改
@@ -1328,5 +1333,25 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         }
     }
 
+    /**
+     * 方法描述：根据companyId查询所有有效项目(我要报销 选择项目下拉框 )app
+     * 作   者：LY
+     * 日   期：2016/7/27 17:39
+     */
+    @Override
+    public List<ProjectDTO> getProjectListWS(String companyId, String accountId) {
+
+        CompanyUserEntity userEntity = companyUserDao.getCompanyUserByUserIdAndCompanyId(accountId,companyId);
+        if(userEntity==null){
+            return new ArrayList<>();
+        }
+        ProjectDTO query = new ProjectDTO();
+        query.setCompanyId(companyId);
+        query.setCurrentCompanyUserId(userEntity.getId());
+        Map<String,Object> param = new HashMap<>();
+        param.put("companyId",companyId);
+        param.put("companyUserId",userEntity.getId());
+        return projectService.getProjectListByCompanyId(query);
+    }
 }
 
