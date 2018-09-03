@@ -358,4 +358,8 @@ var restApi = {
     , url_exportProductTaskList:window.rootPath+'/iWork/excel/exportProductTaskList'
     , url_exportProjectList:window.rootPath+'/iWork/excel/exportProjectList'
 
+
+    /**审批管理**/
+    , url_getAuditData:window.rootPath+'/iWork/finance/getAuditData'
+
 };

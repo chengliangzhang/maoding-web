@@ -1,12 +1,13 @@
 /**
- * 添加报销
+ * 添加报销申请
  * Created by wrb on 2016/12/7.
  */
 ;(function ($, window, document, undefined) {
 
     "use strict";
-    var pluginName = "m_reimbursement_add",
+    var pluginName = "m_approval_reimbursement_add",
         defaults = {
+            isDialog:true,
             buttonType: 0,
             reimburseObj: {}
         };
@@ -30,10 +31,55 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.getData();
-            $('body').bind('click', function (event) {
-                that.closeExpTypeSquare(event);
+
+            that.renderDialog(function () {
+                var option = {};
+                option.url = restApi.url_getExpBaseData;
+                m_ajax.get(option, function (response) {
+                    if (response.code == '0') {
+
+                        var html = template('m_approval/m_approval_reimbursement_add', {data: response.data});
+                        $(that.element).html(html);
+
+                    } else {
+                        S_dialog.error(response.info);
+                    }
+                });
+                $('body').bind('click', function (event) {
+                    that.closeExpTypeSquare(event);
+                });
             });
+
+        }
+        //初始化数据,生成html
+        ,renderDialog:function (callBack) {
+
+            var that = this;
+            if(that.settings.isDialog){//以弹窗编辑
+                S_dialog.dialog({
+                    title: that.settings.title||'报销申请',
+                    contentEle: 'dialogOBox',
+                    lock: 3,
+                    width: '705',
+                    tPadding: '0',
+                    minHeight: that.settings.dialogMinHeight || '460',
+                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    cancel:function () {
+
+                    },
+                    ok:function () {
+                        that.save();
+                    }
+                },function(d){//加载html后触发
+                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
+                    if(callBack!=null)
+                        callBack();
+
+                });
+            }else{//不以弹窗编辑
+                if(callBack!=null)
+                    callBack();
+            }
         }
         //进入页面获取报销编号
         , getMaxExpNo: function (callback) {
@@ -55,7 +101,7 @@
         , getData: function () {
             var that = this;
             var expTypeData = {};
-            var html = template('m_finance/m_reimbursement_add', {reimburseObj: that.settings.reimburseObj});
+            var html = template('m_approval/m_approval_reimbursement_add', {reimburseObj: that.settings.reimburseObj});
             $(that.element).html(html);
 
             /************首次打开，添加一条报销明细************/
@@ -73,11 +119,11 @@
             $('#reimburseTable').m_addExpDetailTr(options);
 
             /************是否添加返回，保存按钮************/
-            if (that.settings.buttonType == 0) {
+            /*if (that.settings.buttonType == 0) {
                 var bHtml = '<a type="button" class="btn btn-white getClickFun rounded m-r-xs" data-action="backToLast" >返回</a>';
                 bHtml += '<a type="button" class="btn btn-primary getClickFun rounded" data-action="saveApplyExp" >保存</a>';
                 $('#toExpApplication').find('div.footTools').prepend(bHtml).css('text-align', 'right');
-            }
+            }*/
             that.addActionClick(expTypeData);
             that.updateAmount();
         }
@@ -307,19 +353,6 @@
 
                     $(this).closest('span').remove();
                 })
-            });
-        }
-        //获取部门,项目列表
-        , getBaseDetail: function (list) {
-            var that = this;
-            var option = {};
-            option.url = restApi.url_getExpBaseData;
-            m_ajax.get(option, function (response) {
-                if (response.code == '0') {
-                    list = response.data.projectList;
-                } else {
-                    S_dialog.error(response.info);
-                }
             });
         }
         //刷新总计数据

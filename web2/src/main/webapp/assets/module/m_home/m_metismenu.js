@@ -171,23 +171,7 @@
             Router.route('/invoiceSummary', function() {//发票汇总
                 that.invoiceSummary();
             });
-            Router.route('/reimbursementSummary', function() {//报销汇总
-                that.reimbursementSummary();
-            });
-            Router.route('/costSummary', function() {//费用汇总
-                that.costSummary();
-            });
 
-            Router.route('/leaveSummary', function() {//请假汇总
-                that.leaveSummary();
-            });
-
-            Router.route('/businessSummary', function() {//出差汇总
-                that.businessSummary();
-            });
-            Router.route('/workingHoursSummary', function() {//工时汇总
-                that.workingHoursSummary();
-            });
             Router.route('/workingHoursSummary/detail', function(query) {//工时汇总详情
                 that.workingHoursSummaryDetail(query);
             });
@@ -200,6 +184,56 @@
             Router.route('/projectArchiving', function() {//项目文档
                 that.projectArchiving();
             });
+
+
+            /**********************************审批管理--开始*****************************/
+            Router.route('/initiateApproval', function() {//发起审批
+                that.initiateApproval();
+            });
+            Router.route('/applied', function() {//我申请的
+                that.approveDataList(1);
+            });
+            Router.route('/waitingMeApprove', function() {//待我审批
+                that.approveDataList(2);
+            });
+            Router.route('/haveApproved', function() {//我已审批
+                that.approveDataList(3);
+            });
+            Router.route('/ccMy', function() {//我已审批
+                that.approveDataList(4);
+            });
+
+            Router.route('/approvalReport', function() {//审批报表
+                that.approvalReport();
+            });
+            Router.route('/approvalReport/reimbursement', function() {//报销汇总
+                that.approvalReport('reimbursement');
+                that.menuShowOrHide(0);
+            });
+            Router.route('/approvalReport/cost', function() {//费用汇总
+                that.approvalReport('cost');
+                that.menuShowOrHide(0);
+            });
+
+            Router.route('/approvalReport/leave', function() {//请假汇总
+                that.approvalReport('leave');
+                that.menuShowOrHide(0);
+            });
+
+            Router.route('/approvalReport/business', function() {//出差汇总
+                that.approvalReport('business');
+                that.menuShowOrHide(0);
+            });
+            Router.route('/approvalReport/workingHours', function() {//工时汇总
+                that.approvalReport('workingHours');
+                that.menuShowOrHide(0);
+            });
+            Router.route('/approvalReport/workingHoursDetail', function(query) {//工时汇总详情
+                that.approvalReport('workingHoursDetail',query);
+                that.menuShowOrHide(0);
+            });
+
+            /**********************************审批管理--结束*****************************/
 
 
             /**********************************后台管理--开始*****************************/
@@ -450,11 +484,7 @@
             //$(that.settings.$contentEle).m_expTypeSetting();
             $(that.settings.$contentEle).m_finance_settings_menu();
         }
-        //报销汇总
-        , reimbursementSummary:function () {
-            var that = this;
-            $(that.settings.$contentEle).m_reimbursementSummary()
-        }
+
         //费用录入
         , feeEntry:function () {
             var that = this;
@@ -479,36 +509,6 @@
         , projectArchiving:function () {
             var that = this;
             $(that.settings.$contentEle).m_projectArchiving({},true);
-        }
-        //费用汇总
-        , costSummary:function () {
-            var that = this;
-            $(that.settings.$contentEle).m_costSummary();
-        }
-        //请假汇总
-        , leaveSummary:function () {
-            var that = this;
-            $(that.settings.$contentEle).m_leaveSummary();
-        }
-        //出差汇总
-        , businessSummary:function () {
-            var that = this;
-            var option = {};
-            option.$type = 4;
-            $(that.settings.$contentEle).m_leaveSummary(option);
-        }
-        //工时汇总
-        , workingHoursSummary:function () {
-            var that = this;
-            var option = {};
-            $(that.settings.$contentEle).m_summary_workingHours(option);
-        }
-        //工时汇总详情
-        , workingHoursSummaryDetail:function (query) {
-            var option = {};
-            option.$projectId = query.projectId;
-            option.$projectName = decodeURI(query.projectName);
-            $('#content-right').m_summary_workingHours_detail(option);
         }
         //项目总览
         , projectOverview:function () {
@@ -575,6 +575,26 @@
             var options = {}, that = this;
             $(that.settings.$contentEle).m_summary_invoice(options, true);
         }
+
+        //发起审批
+        ,initiateApproval:function () {
+            var options = {}, that = this;
+            $(that.settings.$contentEle).m_approval_initiate(options, true);
+        }
+        //审批报表
+        ,approvalReport:function (dataAction,query) {
+            var options = {}, that = this;
+            options.dataAction=dataAction;
+            options.query = query;
+            $(that.settings.$contentEle).m_approvalReport_menu(options,true);
+        }
+        //1=我申请的,2=待我审批,3=我已审批,4=抄送我的
+        ,approveDataList:function (type) {
+            var options = {}, that = this;
+            options.doType=type;
+            $(that.settings.$contentEle).m_approval_data(options, true);
+        }
+
 
     });
 

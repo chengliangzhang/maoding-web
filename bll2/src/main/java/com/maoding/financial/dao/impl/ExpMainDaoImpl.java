@@ -182,4 +182,9 @@ public class ExpMainDaoImpl extends GenericDao<ExpMainEntity> implements ExpMain
     public ExpMainDataDTO selectAllocationUser(Map<String, Object> param) {
         return this.sqlSession.selectOne("ExpMainEntityMapper.selectAllocationUser", param);
     }
+
+    @Override
+    public List<ExpMainDTO> getAuditData(ExpMainDTO dto) {
+        return this.sqlSession.selectList("GetExpMainPageMapper.getAuditData1",dto);
+    }
 }

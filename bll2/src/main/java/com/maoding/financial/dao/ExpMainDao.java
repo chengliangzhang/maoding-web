@@ -150,4 +150,12 @@ public interface ExpMainDao extends BaseDao<ExpMainEntity> {
      * 财务拨款信息
      */
     ExpMainDataDTO selectAllocationUser(Map<String, Object> param);
+
+    /**
+     * 我申请的报销/费用
+     * @param dto
+     * @return
+     */
+    List<ExpMainDTO> getAuditData(ExpMainDTO dto);
+
 }

@@ -77,7 +77,7 @@
 
                 switch (dataAction){
                     case 'viewDetail'://查看详情
-                        location.hash = '/workingHoursSummary/detail?projectId='+projectId+'&projectName='+encodeURI($this.text());
+                        location.hash = '/approvalReport/workingHoursDetail?projectId='+projectId+'&projectName='+encodeURI($this.text());
                         break;
                 }
             });

@@ -2,6 +2,7 @@ package com.maoding.financial.dao;
 
 import com.maoding.core.base.dao.BaseDao;
 import com.maoding.financial.dto.ExpDetailDTO;
+import com.maoding.financial.dto.ExpMainDTO;
 import com.maoding.financial.entity.ExpDetailEntity;
 
 import java.util.List;
@@ -44,4 +45,5 @@ public interface ExpDetailDao  extends BaseDao<ExpDetailEntity> {
      *
     */
     public List<ExpDetailDTO> selectDetailDTOByMainId(String mainId);
+
 }

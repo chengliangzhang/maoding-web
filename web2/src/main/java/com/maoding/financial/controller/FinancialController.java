@@ -776,4 +776,22 @@ public class FinancialController extends BaseController {
     public AjaxMessage getProcessType(@RequestBody AuditEditDTO dto) throws Exception{
         return AjaxMessage.succeed(processService.getCurrentProcess(dto));
     }
+
+    /**
+     * 作者：FYT
+     * 日期：2018/9/3
+     * 方法描述：审批：我的申请：报销/费用
+     * @return
+     */
+    @RequestMapping(value = "/getAuditData")
+    @ResponseBody
+    public AjaxMessage getAuditData(@RequestBody ExpMainDTO dto) throws Exception {
+        dto.setCurrentCompanyId(this.currentCompanyId);
+
+
+        List<ExpMainDTO> data = expMainService.getAuditData(dto);
+
+        return this.ajaxResponseSuccess().setData(data);
+
+    }
 }

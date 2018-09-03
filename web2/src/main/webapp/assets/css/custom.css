@@ -673,6 +673,8 @@ input.form-control[readonly] {
     z-index: 1 !important;
 }
 
+
+
 /**
     面包屑
  */
@@ -724,6 +726,12 @@ input.form-control[readonly] {
     background: #4765a0;
     padding: 2px 10px;
     vertical-align: middle;
+}
+
+/********标题 *********/
+.title-line{
+    border-left:3px solid #4765a0 ;
+    padding-left: 5px;
 }
 
 /********dataTable sort*********/

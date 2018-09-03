@@ -1331,6 +1331,13 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         }
     }
 
+    @Override
+    public List<ExpMainDTO> getAuditData(ExpMainDTO dto) throws Exception {
+        List<ExpMainDTO> list = new ArrayList<>();
+        list = expMainDao.getAuditData(dto);
+        return null;
+    }
+
     /**
      * 方法描述：根据companyId查询所有有效项目(我要报销 选择项目下拉框 )app
      * 作   者：LY
