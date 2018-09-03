@@ -17,7 +17,7 @@
         <tr class="tree-box-tr treegrid-{{t.id}} {{if t.taskPid!=null && t.taskPid!=''}} treegrid-parent-{{t.taskPid}} {{/if}}"
             data-i="{{ti}}" data-id="{{t.id}}" data-pid="{{t.taskPid}}" data-company-id="{{t.companyId}}" data-publish-id="{{t.publishId}}">
 
-            <td class="treeTd pt-relative popover-box no-pd-right b-r-none b-l-none"
+            <td class="treeTd pt-relative popover-box p-r-none b-r-none b-l-none"
                 height="40" data-task-state="{{t.taskState=='3'||t.taskState=='4'?'1':'0'}}">
 
                 {{if t.taskState=='3'||t.taskState=='4'}}

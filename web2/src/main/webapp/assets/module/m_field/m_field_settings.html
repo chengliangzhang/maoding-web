@@ -8,14 +8,14 @@
         </div>
         <div class="clearfix"></div>
     </div>
-    <div class="panel-body no-margins no-padding check-box" style="{{dialogMinHeight}}">
+    <div class="panel-body no-margins no-padding" style="{{dialogMinHeight}}">
         <div class="b-r left-body">
             {{each optionalTitleGroupList as s}}
             <div class="field-group">
                 <div class="col-md-12">
                     <h4>
                         {{s.name}}
-                        <label class="i-checks fw-normal pull-right">
+                        <label class="i-checks i-checks-label fw-normal pull-right">
                             <input name="itemCk" type="checkbox" value=""/>
                             <span class="i-checks-span">全选</span>
                         </label>
@@ -23,8 +23,8 @@
                     <div class="hr-line-dashed m-t-n-xs m-b-xs"></div>
                 </div>
                 {{each s.optionalTitleList as sub}}
-                <div class="col-md-4 no-pd-right">
-                    <label class="i-checks fw-normal">
+                <div class="col-md-4 p-r-none">
+                    <label class="i-checks i-checks-label fw-normal">
                         {{if sub.isSelected==1}}
                             {{if sub.canBeHide==0}}
                                 <input name="itemCk" type="checkbox" checked value="{{sub.code}}" disabled=""/>

@@ -94,8 +94,8 @@
                 allChoseCk = $(that.element).find('input[name="allChoseCk"]');
 
             $('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
             }).on('ifClicked.s', function (event) {
                 var name = $(event.target).attr('name');
                 if(name=='allChoseCk'){//全选或全不选触发

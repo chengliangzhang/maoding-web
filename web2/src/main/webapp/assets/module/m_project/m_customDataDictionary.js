@@ -191,8 +191,8 @@
             var ifUnchecked = function (e) {
             };
             $el.find('input[name="dataDictionary"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
             }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
 
             var ifCheckedByCustom = function (e) {
@@ -202,8 +202,8 @@
 
             };
             $el.find('input[name="customDataDictionary"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
             }).on('ifUncheckedByCustom.s', ifUnchecked).on('ifCheckedByCustom.s', ifChecked);
 
         }

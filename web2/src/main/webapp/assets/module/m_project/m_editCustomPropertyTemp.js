@@ -198,8 +198,8 @@
                 that.renderSelectProperty(that._projectPropertyEditData.selectedPropertyList);//重新渲染右边模板
             };
             $(that.element).find('#customPropertyBox .i-checks input[name="cusProjectFieldCk"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
             }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
 
             if(isLastCheck==1){
@@ -295,8 +295,8 @@
                 $(that.element).find('input[name="projectFieldCk"]').iCheck('uncheck');
             };
             $(that.element).find('input[name="allProjectFieldCK"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
             }).on('ifUnchecked.s', ifAllUnchecked).on('ifChecked.s', ifAllChecked);
             var ifChecked = function (e) {
                 that.dealAllCheck();
@@ -326,8 +326,8 @@
                 that.renderSelectProperty(that._projectPropertyEditData.selectedPropertyList);//重新渲染右边模板
             };
             $(that.element).find('input[name="projectFieldCk"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
             }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
 
             $(that.element).find('input[name="projectFieldCk"]').each(function () {

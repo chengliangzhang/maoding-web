@@ -34,7 +34,7 @@
                             </span>
                         </td>
                         {{if role.permissionList[0].code != 'sys_enterprise_logout'}}
-                        <td data-action="chooseUserPermission" class="v-middle text-align-center">
+                        <td data-action="chooseUserPermission" class="v-middle text-center">
                             <div class="i-checks checkbox-inline" style="min-height: 17px;">
                                 <input type="checkbox" id="inlineCheckbox{{role.permissionList[0].id}}" name="userPermission" permission-id="{{role.permissionList[0].id}}"
                                        isCheck="{{role.permissionList[0].type}}"/>
@@ -44,10 +44,10 @@
                         {{else}}
                         <td class="text-center">
                             {{if role.permissionList[0].type==1}}
-                            <span class="fa fa-check p-r-5" permission-id="{{role.permissionList[0].id}}"></span>
+                            <span class="fa fa-check p-r-xs" permission-id="{{role.permissionList[0].id}}"></span>
                             {{/if}}
                             {{if role.permissionList[0].type!=1}}
-                            <span class="glyphicon glyphicon-remove p-r-5"></span>
+                            <span class="glyphicon glyphicon-remove p-r-xs"></span>
                             {{/if}}
                         </td>
                         {{/if}}
@@ -61,7 +61,7 @@
                             </span>
                         </td>
                         {{if mem.code != 'sys_enterprise_logout'}}
-                        <td data-action="chooseUserPermission" class="v-middle text-align-center" isCheck="{{mem.type}}">
+                        <td data-action="chooseUserPermission" class="v-middle text-center" isCheck="{{mem.type}}">
                             <div class="i-checks checkbox-inline" style="min-height: 17px;">
                                 <input type="checkbox" id="inlineCheckbox{{mem.id}}" name="userPermission" permission-id="{{mem.id}}"
                                        isCheck="{{mem.type}}"/>
@@ -71,10 +71,10 @@
                         {{else}}
                         <td class="text-center">
                             {{if mem.type==1}}
-                            <span class="fa fa-check p-r-5" permission-id="{{mem.id}}"></span>
+                            <span class="fa fa-check p-r-xs" permission-id="{{mem.id}}"></span>
                             {{/if}}
                             {{if mem.type!=1}}
-                            <span class="glyphicon glyphicon-remove p-r-5"></span>
+                            <span class="glyphicon glyphicon-remove p-r-xs"></span>
                             {{/if}}
                         </td>
                         {{/if}}
@@ -91,7 +91,7 @@
 </form>
 <script>
     $('.i-checks').iCheck({
-        checkboxClass: 'icheckbox_minimal-green',
-        radioClass: 'iradio_minimal-green'
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue'
     });
 </script>

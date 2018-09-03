@@ -34,7 +34,7 @@
                                             <label>服务类型</label>
                                             <div class="input-group col-md-12 dp-block">
                                                 {{each serverTypeList}}
-                                                <div class="serviceType  col-24-md-8 col-24-lg-4 col-24-xs-24 no-pd-left">
+                                                <div class="serviceType  col-24-md-8 col-24-lg-4 col-24-xs-24 p-l-none">
                                                     <div class="i-checks checkbox-inline">
                                                         <input name="serverType" id="serverType-{{$value.id}}" value="{{$value.id}}" type="checkbox">
                                                         <span for="serverType-{{$value.id}}">{{$value.name }}</span>
@@ -46,7 +46,7 @@
                                     </div>
                                 </div>
                                 <div class="ibox-title p-xxs border-top-bottom" style="min-height:0;">
-                                    <div class="ibox-tools text-align-center">
+                                    <div class="ibox-tools text-center">
                                         <a class="collapse-link">
                                             <i class="fa fa-chevron-down"></i><span class="text">更多</span>
                                         </a>
@@ -64,8 +64,8 @@
     </div>
     <script type="text/javascript">
         $('.i-checks').iCheck({
-            checkboxClass: 'icheckbox_minimal-green',
-            radioClass: 'iradio_minimal-green'
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue'
         });
     </script>
 </div>

@@ -12,8 +12,8 @@
             <tr>
                 <td rowspan="{{f.childList!=null && f.childList.length>0 ?f.childList.length+1:''}}" class="gray-bg v-middle">
 
-                    <div class="check-box">
-                        <label class="i-checks pull-left">
+                    <div>
+                        <label class="i-checks i-checks-label pull-left">
                             <input name="itemCk" type="checkbox" data-code="{{f.code}}"  data-pid="{{f.pid}}" data-id="{{f.id}}"/>
                             <span class="i-checks-span">{{f.name}}</span>
                         </label>
@@ -21,8 +21,8 @@
                 </td>
                 <td>
                     {{if f.childList!=null && f.childList.length>0}}
-                    <div class="check-box">
-                        <label class="i-checks pull-left">
+                    <div>
+                        <label class="i-checks i-checks-label pull-left">
                             {{if f.childList[0].showStatus == 1}}
                                 {{if f.childList[0].disabled==true}}
                                     <input name="itemCk" type="checkbox" data-code="{{f.childList[0].code}}"  data-pid="{{f.childList[0].pid}}" data-id="{{f.childList[0].id}}" checked disabled/>
@@ -62,8 +62,8 @@
                     {{if ci>0}}
                     <tr class="">
                         <td>
-                            <div class="check-box">
-                                <label class="i-checks pull-left">
+                            <div>
+                                <label class="i-checks i-checks-label pull-left">
                                     {{if c.showStatus==1}}
                                         {{if c.disabled==true}}
                                             <input name="itemCk" type="checkbox" data-code="{{c.code}}"  data-pid="{{c.pid}}" data-id="{{c.id}}" checked disabled/>

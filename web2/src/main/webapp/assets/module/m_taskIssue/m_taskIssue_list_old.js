@@ -676,8 +676,8 @@
                 that.isTaskAllCheck();
             };
             $(that.element).find('input[name="taskCk"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
             }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
             var ifAllChecked = function (e) {
                 $(that.element).find('input[name="taskCk"]').iCheck('check');
@@ -692,8 +692,8 @@
                 $(that.element).find('tr[data-i]').removeClass('chose-operable');
             };
             $(that.element).find('input[name="taskAllCk"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
             }).on('ifUnchecked.s', ifAllUnchecked).on('ifChecked.s', ifAllChecked);
         }
         //判断全选是否该选中并给相关处理

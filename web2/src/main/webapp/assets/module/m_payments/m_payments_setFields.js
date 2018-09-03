@@ -107,8 +107,8 @@
                 that.delItemToRight($ele);
             };
             $(that.element).find('input[name="typeValueCk"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
             }).on('ifUnchecked.s', ifItemUnchecked).on('ifChecked.s', ifItemChecked);
         }
         //判断全选是否该选中并给相关处理

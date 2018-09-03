@@ -2,7 +2,7 @@
     .float_Mask{background-color: white;padding: 21px 3px;position: absolute;top: 19px;left: 124px;  }
 </style>
 <div class="ibox m-b-xs">
-    <div class="ibox-content MyExpDetailsCheckExpenseOBox no-pd-bottom" style="max-height:700px;overflow-y: auto">
+    <div class="ibox-content MyExpDetailsCheckExpenseOBox p-b-none" style="max-height:700px;overflow-y: auto">
         <fieldset style="padding-top:5px;">
             <div class="headline m-b-sm">
                 <h2>审批状态</h2>
@@ -61,7 +61,7 @@
                     <table class="table m-b-none">
                         <thead>
                         <tr>
-                            <td class="no-pd-left">
+                            <td class="p-l-none">
                                 {{if type==4}}
                                 出差地点
                                 {{else}}
@@ -77,7 +77,7 @@
                                 请假时长（小时）
                                 {{/if}}
                             </td>-->
-                            <td class="no-pd-right">
+                            <td class="p-r-none">
                                 {{typeStr}}事由
                             </td>
                             {{if type==4}}
@@ -88,7 +88,7 @@
                         <tbody>
                         {{each detailData.data as p i}}
                         <tr>
-                            <td class="no-pd-left">
+                            <td class="p-l-none">
                                 {{if type==4}}
                                 {{p.address}}
                                 {{else}}
@@ -112,7 +112,7 @@
                             <!--<td >{{p.leaveTime}}{{p.leaveTime!=null?'天':''}}</td>-->
                             <td style="word-break: break-all;">{{p.comment}}</td>
                             {{if type==4}}
-                            <td class="no-pd-right" >{{p.projectName}}</td>
+                            <td class="p-r-none" >{{p.projectName}}</td>
                             {{/if}}
                         </tr>
                         {{/each}}

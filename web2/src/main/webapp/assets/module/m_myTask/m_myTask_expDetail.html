@@ -1,5 +1,5 @@
 <div class="ibox m-b-xs">
-    <div class="ibox-content MyExpDetailsCheckExpenseOBox no-pd-bottom">
+    <div class="ibox-content MyExpDetailsCheckExpenseOBox p-b-none">
         <fieldset>
             <div class="headline m-b-sm">
                 <h2>报销状态</h2>
@@ -75,21 +75,21 @@
                     <table class="table m-b-none">
                         <thead>
                         <tr>
-                            <td class="no-pd-left">报销条目</td>
+                            <td class="p-l-none">报销条目</td>
                             <td>报销金额</td>
                             <td>报销类别</td>
                             <td>用途说明</td>
-                            <td class="no-pd-right">关联项目</td>
+                            <td class="p-r-none">关联项目</td>
                         </tr>
                         </thead>
                         <tbody>
                         {{each myExpDetails.detailList as each i}}
                         <tr>
-                            <td class="no-pd-left">{{i+1}}</td>
+                            <td class="p-l-none">{{i+1}}</td>
                             <td>{{each.expAmount}}</td>
                             <td>{{each.expTypeName}}</td>
                             <td style="word-break: break-all;">{{each.expUse}}</td>
-                            <td class="no-pd-right">{{each.projectName}}</td>
+                            <td class="p-r-none">{{each.projectName}}</td>
                         </tr>
                         {{/each}}
                         <tr>

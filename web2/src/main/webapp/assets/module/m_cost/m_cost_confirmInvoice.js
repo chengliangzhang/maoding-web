@@ -130,7 +130,7 @@
 
             };
             $(that.element).find('input[name="invoiceType"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
+                checkboxClass: 'icheckbox_square-blue',
                 radioClass: 'iradio_square-blue'
             }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked).on('ifClicked',ifClicked);
 

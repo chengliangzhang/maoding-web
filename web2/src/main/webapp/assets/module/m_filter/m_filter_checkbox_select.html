@@ -9,9 +9,9 @@
         {{each selectList as s}}
             {{if s.childList!=null && s.childList.length>0}}
 
-                <div class="col-md-12 no-pd-right no-pd-left">
+                <div class="col-md-12 p-r-none p-l-none">
                     {{if isParentCheck}}
-                        <label class="i-checks fw-normal">
+                        <label class="i-checks i-checks-label fw-normal">
                             {{if s.isSelected}}
                             <input name="itemCk" type="checkbox" checked value="{{s.id}}"/>
                             {{else}}
@@ -24,8 +24,8 @@
                     {{/if}}
                 </div>
                 {{each s.childList as sub}}
-                <div class="{{colClass?colClass:'col-md-4'}} no-pd-right no-pd-left">
-                    <label class="i-checks fw-normal">
+                <div class="{{colClass?colClass:'col-md-4'}} p-r-none p-l-none">
+                    <label class="i-checks i-checks-label fw-normal">
                         {{if sub.isSelected}}
                         <input name="itemCk" type="checkbox" checked value="{{sub.id}}"/>
                         {{else}}
@@ -37,8 +37,8 @@
                 {{/each}}
 
             {{else}}
-                <div class="{{colClass?colClass:'col-md-4'}} no-pd-right no-pd-left">
-                    <label class="i-checks fw-normal">
+                <div class="{{colClass?colClass:'col-md-4'}} p-r-none p-l-none">
+                    <label class="i-checks i-checks-label fw-normal">
                         {{if s.isSelected}}
                         <input name="itemCk" type="checkbox" checked value="{{s.id}}"/>
                         {{else}}

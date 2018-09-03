@@ -1,7 +1,7 @@
 {{if customPropertyList!=null && customPropertyList.length>0 }}
     {{each customPropertyList as s si}}
-        <div class="col-md-6 no-pd-right m-b-xs check-box">
-            <label class="i-checks fw-normal">
+        <div class="col-md-6 p-r-none m-b-xs">
+            <label class="i-checks i-checks-label fw-normal">
                 <input name="cusProjectFieldCk" type="checkbox"  value="{{s.id}}" data-field-name="{{s.fieldName}}" data-unit-name="{{s.unitName}}"/>
                 <span class="i-checks-span">
                     <span class=" property-span m-r-xs bg-muted p-xxs f-s-xs" >

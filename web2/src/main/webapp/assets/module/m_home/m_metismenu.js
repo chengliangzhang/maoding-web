@@ -266,8 +266,8 @@
             Router.afterCallback(function () {
                 console.log(Router.currentUrl);
                 if(Router.currentUrl!='/createOrg'){
-                    $('#page-wrapper').removeClass('m-l-none');
-                    $('#left-menu-box').show();
+                   /* $('#page-wrapper').removeClass('menu-l-none');
+                    $('#left-menu-box').show();*/
                 }
                 that.menuDealFun(Router.currentUrl);
             });
@@ -337,9 +337,18 @@
         //控制菜单显示与否
         , menuShowOrHide:function (t) {
             if(t==1){
-                $('#page-wrapper').addClass('m-l-none');
+                $('#page-wrapper').addClass('menu-l-none');
+
             }else{
-                $('#page-wrapper').removeClass('m-l-none');
+
+                //添加z-index-102,侧栏效果自然点,滑动完删除class(z-index-102)
+                $('#page-wrapper').addClass('z-index-102');
+                $('#page-wrapper').removeClass('menu-l-none');
+                var t = setTimeout(function () {
+                    $('#page-wrapper').removeClass('z-index-102');
+                    clearTimeout(t);
+                },500);
+
                 //折叠左菜单
                 $('#left-menu-box').find('ul').removeClass('in');
                 $('#left-menu-box').find('li').removeClass('active selected');

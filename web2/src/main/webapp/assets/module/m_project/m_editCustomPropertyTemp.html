@@ -4,8 +4,8 @@
             <div class="ibox-title border-none p-h-sm min-h-50">数据模板</div>
             <div class="ibox-content border-darker-grey box-left">
                 <h4>模板标签库</h4>
-                <div class="m-b-sm check-box">
-                    <label class="i-checks fw-normal">
+                <div class="m-b-sm">
+                    <label class="i-checks i-checks-label fw-normal">
                         <input name="allProjectFieldCK" type="checkbox" value="0"/>
                         <span class="i-checks-span">全选</span>
                     </label>
@@ -13,8 +13,8 @@
                 <div class="row">
                     {{if projectPropertyData.basicPropertyList!=null && projectPropertyData.basicPropertyList.length>0}}
                         {{each projectPropertyData.basicPropertyList as p}}
-                            <div class="col-md-6 no-pd-right  check-box">
-                                <label class="i-checks fw-normal">
+                            <div class="col-md-6 p-r-none">
+                                <label class="i-checks i-checks-label fw-normal">
                                     <input name="projectFieldCk" type="checkbox"  value="{{p.id}}" data-field-name="{{p.fieldName}}" data-unit-name="{{p.unitName}}"/>
                                     <span class="i-checks-span">
                                         {{p.fieldName}}&nbsp;
@@ -30,9 +30,9 @@
                 <div class="row">
                     <form class="addPropertyForm">
                         <div class="col-md-6">
-                            <input class="form-control no-pd-right" type="text" name="fieldName">
+                            <input class="form-control p-r-none" type="text" name="fieldName">
                         </div>
-                        <div class="col-md-4 no-pd-right no-pd-left">
+                        <div class="col-md-4 p-r-none p-l-none">
                             <!--<select class="form-control p-xxs" name="unitName">
                                 <option value="">选择单位</option>
                                 {{if projectPropertyData.unitNameList!=null && projectPropertyData.unitNameList.length>0}}

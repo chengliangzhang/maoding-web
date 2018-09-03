@@ -5,12 +5,12 @@
     a[data-action="addDesigners"]{padding-top: 2px;}
 </style>
 <div class="ibox m-b-xs">
-    <div class="ibox-content no-pd-bottom" >
+    <div class="ibox-content p-b-none" >
         <div class="col-md-6">
             {{each projectProcessNodes as p i}}
             <div class="row m-b-sm designerRow" data-node-name="{{p.nodeName}}" data-node-id="" data-node-seq="{{i+1}}">
                 <div class="col-md-12">
-                    <div class="col-md-2 no-pd-right"><span class="m-t-xs inline">{{p.nodeName}}：</span></div>
+                    <div class="col-md-2 p-r-none"><span class="m-t-xs inline">{{p.nodeName}}：</span></div>
                     <div class="col-md-10 user-list" style="padding-top: 4px;">
                         {{each p.projectProcessNodeDTOList as t }}
                         <span class="label label-default inline m-r-xs m-b-xs designerSpan" data-companyUserId="{{t.companyUserId}}" data-id="{{t.id}}">

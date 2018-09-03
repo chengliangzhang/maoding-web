@@ -7,7 +7,7 @@
     </div>
     <div>
         {{each checkList as d}}
-        <div class="col-md-4 no-pd-right no-pd-left">
+        <div class="col-md-4 p-r-none p-l-none">
             <label class="i-checks fw-normal">
                 {{if currCheckedVal.indexOf(d.id)>-1}}
                     <input name="ipt_check" type="checkbox" checked value="{{d.id}}"/>

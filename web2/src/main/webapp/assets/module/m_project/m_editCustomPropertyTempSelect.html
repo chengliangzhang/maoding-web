@@ -1,6 +1,6 @@
 {{if selectedPropertyList!=null && selectedPropertyList.length>0 }}
     {{each selectedPropertyList as s si}}
-        <div class="col-md-6 no-pd-right m-b list-group-item" data-sortId="{{si}}">
+        <div class="col-md-6 p-r-none m-b list-group-item" data-sortId="{{si}}">
             <span class=" property-span m-r-xs bg-muted p-xxs f-s-xs" >
                 <span class="field-name" data-string="{{s.fieldName}} {{s.unitName!=null&& s.unitName!=''?'('+s.unitName+')':''}}">
                     {{s.fieldName}}&nbsp;

@@ -40,6 +40,10 @@ public class ExcelExportController extends BaseController {
     @Qualifier("taskExportService")
     private BaseExportService taskExportService;
 
+    @Autowired
+    @Qualifier("expMainExportService")
+    private BaseExportService expMainExportService;
+
     @ModelAttribute
     public void before() throws Exception {
         this.currentUserId = this.getFromSession("userId", String.class);

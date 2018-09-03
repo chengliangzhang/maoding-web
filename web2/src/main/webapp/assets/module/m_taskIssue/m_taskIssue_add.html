@@ -10,15 +10,15 @@
     <div class="add-issue-box ">
         {{if doType==null}}
         <div class="form-group m-b-xs clearfix">
-            <label class="col-24-sm-6 control-label no-pd-left m-t-xs">设计任务<span class="fc-red">*</span></label>
-            <div class="col-24-sm-18 no-pd-right">
+            <label class="col-24-sm-6 control-label p-l-none m-t-xs">设计任务<span class="fc-red">*</span></label>
+            <div class="col-24-sm-18 p-r-none">
                 <input placeholder="设计任务" class="form-control" type="text" name="taskName" maxlength="100">
             </div>
         </div>
         {{/if}}
         <div class="form-group m-b-xs clearfix">
-            <label class="col-24-sm-6 control-label no-pd-left m-t-xs">设计组织<span class="fc-red">*</span></label>
-            <div class="col-24-sm-18 no-pd-right">
+            <label class="col-24-sm-6 control-label p-l-none m-t-xs">设计组织<span class="fc-red">*</span></label>
+            <div class="col-24-sm-18 p-r-none">
                 <select class="form-control" name="designOrg">
                     {{each allCompanyList as s}}
                     {{if companyId == s.id}}
@@ -32,8 +32,8 @@
             </div>
         </div>
         <div class="form-group depart-div m-b-xs clearfix">
-            <label class="col-24-sm-6 control-label no-pd-left m-t-xs">部门</label>
-            <div class="col-24-sm-18 no-pd-right">
+            <label class="col-24-sm-6 control-label p-l-none m-t-xs">部门</label>
+            <div class="col-24-sm-18 p-r-none">
                 <select class="form-control" name="orgId">
                     <option value="">请选择</option>
                     {{each orgList as d}}
@@ -50,8 +50,8 @@
             </div>
         </div>
         <div class="form-group hide operator-div m-b-xs clearfix" style="display: none;">
-            <label class="col-24-sm-6 control-label no-pd-left no-pd-right m-t-xs">经营负责人</label>
-            <div class="col-24-sm-18 no-pd-right">
+            <label class="col-24-sm-6 control-label p-l-none p-r-none m-t-xs">经营负责人</label>
+            <div class="col-24-sm-18 p-r-none">
                 <select class="js-example-disabled-results form-control" name="managerId" style="width:280px;">
 
                 </select>
@@ -69,8 +69,8 @@
         </div>-->
         <div class="form-group time-box m-b-xs clearfix">
             <!--col-24-sm-5 过短，星号会换行-->
-            <label class="col-24-sm-6 control-label no-pd-left no-pd-right m-t-xs">计划开始时间<span class="fc-red">*</span></label>
-            <div class="col-24-sm-18 no-pd-right">
+            <label class="col-24-sm-6 control-label p-l-none p-r-none m-t-xs">计划开始时间<span class="fc-red">*</span></label>
+            <div class="col-24-sm-18 p-r-none">
                 <div class="input-group">
                     <input type="text" class="form-control timeInput startTime input-sm" id="ipt_startTime" name="startTime" data-appointmentStartTime = "{{appointmentStartTime}}"
                            placeholder="开始日期" readonly onFocus="startTimeFun(this,m_inputProcessTime_onpicked)" value="{{appointmentStartTime}}">
@@ -82,8 +82,8 @@
         </div>
         <div class="form-group time-box m-b-xs clearfix">
             <!--col-24-sm-5 过短，星号会换行-->
-            <label class="col-24-sm-6 control-label no-pd-left no-pd-right m-t-xs">计划结束时间<span class="fc-red">*</span></label>
-            <div class="col-24-sm-18 no-pd-right">
+            <label class="col-24-sm-6 control-label p-l-none p-r-none m-t-xs">计划结束时间<span class="fc-red">*</span></label>
+            <div class="col-24-sm-18 p-r-none">
                 <div class="input-group">
                     <input type="text" class="form-control timeInput endTime input-sm" id="ipt_endTime" name="endTime" data-appointmentEndTime = "{{appointmentEndTime}}"
                            placeholder="结束日期" readonly onFocus="endTimeFun(this,m_inputProcessTime_onpicked)" value="{{appointmentEndTime}}">
@@ -93,7 +93,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-12 m-b-xs no-pd-right">
+        <div class="col-md-12 m-b-xs p-r-none">
             <button type="button" class="btn btn-default btn-sm m-popover-close  pull-right ">
                 <i class="glyphicon glyphicon-remove"></i>
             </button>

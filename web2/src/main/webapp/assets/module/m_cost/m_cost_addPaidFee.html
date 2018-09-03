@@ -1,6 +1,6 @@
-<form class="form feeForm wid-270">
+<form class="form feeForm width-270">
         <div class="form-group m-b-xs">
-            <label class="col-24-md-8 control-label no-pd-left m-t-xs">{{doType==2?'付款':'到账'}}金额</label>
+            <label class="col-24-md-8 control-label p-l-none m-t-xs">{{doType==2?'付款':'到账'}}金额</label>
             <div class="col-24-md-16 no-padding">
                 <div class="input-group">
                     <input placeholder="金额" class="form-control pay-input" type="text" name="fee" >
@@ -10,8 +10,8 @@
             <div class="clearfix"></div>
         </div>
         <div class="form-group m-b-xs">
-            <label class="col-24-md-8 control-label no-pd-left m-t-xs">{{doType==2?'付款':'到账'}}日期</label>
-            <div class="col-24-md-16 inpt-group no-pd-left">
+            <label class="col-24-md-8 control-label p-l-none m-t-xs">{{doType==2?'付款':'到账'}}日期</label>
+            <div class="col-24-md-16 inpt-group p-l-none">
                 <div class="input-group">
                     <input class="form-control pay-input" type="text" name="paidDate" onFocus="WdatePicker({maxDate:new Date().toLocaleDateString()})" readonly />
                     <span class="input-group-addon"><i class="icon-append fa fa-calendar"></i></span>
@@ -19,7 +19,7 @@
             </div>
             <div class="clearfix"></div>
         </div>
-        <div class="form-group m-b-xs no-pd-right col-md-12">
+        <div class="form-group m-b-xs p-r-none col-md-12">
             <button type="button" class="btn btn-default btn-sm m-popover-close  pull-right  m-b-sm">
                 <i class="glyphicon glyphicon-remove"></i>
             </button>

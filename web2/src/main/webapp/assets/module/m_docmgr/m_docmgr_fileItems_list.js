@@ -231,8 +231,8 @@
                 that.isItemAllCheck();
             };
             $(that.element).find('input[name="itemCk"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
             }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
             var ifAllChecked = function (e) {
                 $(that.element).find('.batchOperation').show();
@@ -246,8 +246,8 @@
                 $(that.element).find('.batchOperation').hide();
             };
             $(that.element).find('input[name="itemAllCk"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
             }).on('ifUnchecked.s', ifAllUnchecked).on('ifChecked.s', ifAllChecked);
         }
         //判断全选是否该选中并给相关处理

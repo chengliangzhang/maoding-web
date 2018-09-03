@@ -136,8 +136,8 @@
                 };
                 options.afterCallback = function () {
                     $('.i-checks').iCheck({
-                        checkboxClass: 'icheckbox_minimal-green',
-                        radioClass: 'iradio_minimal-green'
+                        checkboxClass: 'icheckbox_square-blue',
+                        radioClass: 'iradio_square-blue'
                     });
                 };
                 $(this).m_defineEditableContent(options);

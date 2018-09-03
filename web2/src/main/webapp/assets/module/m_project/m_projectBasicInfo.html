@@ -36,7 +36,7 @@
             </div>
         </div>
     </div>
-    <div class="ibox-content no-pd-bottom no-borders">
+    <div class="ibox-content p-b-none no-borders">
         <form class="sky-form no-margins">
             <div class="row">
                 <div class="col-md-6"><h3>基本信息</h3></div>
@@ -341,41 +341,41 @@
                         <!-- 展示部分 -->
                         <!-- 具有编辑权限 -->
                         {{if editFlag}}
-                        {{if project.contractList!=null && project.contractList.length>0}}
-                        {{each project.contractList as f fi}}
-                        <span class="file-span m-r-xs p-w-xs">
-                            <a href="{{fastdfsUrl+f.filePath}}" target="_blank" class="designIcon fa theContractFile ">
-                                {{(f.fileName==null || f.fileName=='')?project.projectName+'合同附件.pdf':f.fileName}}
-                            </a>
-                            <span class="file-del-span">
-                                <a class="curp" href="javascript:void(0)" data-id="{{f.id}}" data-action="delFile" style="display: none;">
-                                    <i class="fa fa-times fc-red"></i>
-                                </a>
-                            </span>
-                        </span>
-                        {{/each}}
-                        {{/if}}
+                            {{if project.contractList!=null && project.contractList.length>0}}
+                                {{each project.contractList as f fi}}
+                                <span class="file-span m-r-xs p-w-xs">
+                                    <a href="{{fastdfsUrl+f.filePath}}" target="_blank" class="designIcon fa theContractFile ">
+                                        {{(f.fileName==null || f.fileName=='')?project.projectName+'合同附件.pdf':f.fileName}}
+                                    </a>
+                                    <span class="file-del-span">
+                                        <a class="curp" href="javascript:void(0)" data-id="{{f.id}}" data-action="delFile" style="display: none;">
+                                            <i class="fa fa-times fc-red"></i>
+                                        </a>
+                                    </span>
+                                </span>
+                                {{/each}}
+                            {{/if}}
                         <!-- 非具有编辑权限可查看（文件不为空） -->
                         {{else if !editFlag && project.creatorCompany.id == currentCompanyId && (project.contractList!=null && project.contractList.length>0)}}
-                        {{each project.contractList as f fi}}
-                        <a href="{{fastdfsUrl+f.filePath}}" target="_blank" class="designIcon fa theContractFile m-r-xs p-w-xs roleControl"
-                           roleCode="project_view_amount,sys_enterprise_logout,project_eidt" flag="1">
+                            {{each project.contractList as f fi}}
+                            <a href="{{fastdfsUrl+f.filePath}}" target="_blank" class="designIcon fa theContractFile m-r-xs p-w-xs roleControl"
+                               roleCode="project_view_amount,sys_enterprise_logout,project_eidt" flag="1">
 
-                            {{(f.fileName==null || f.fileName=='')?project.projectName+'合同附件.pdf':f.fileName}}
-                        </a>
-                        {{/each}}
+                                {{(f.fileName==null || f.fileName=='')?project.projectName+'合同附件.pdf':f.fileName}}
+                            </a>
+                            {{/each}}
                         <!-- 非具有编辑权限可查看(文件为空) -->
                         {{else if !editFlag && project.creatorCompany.id == currentCompanyId && (project.contractList==null || project.contractList.length==0)}}
 
-                        <span class=" roleControl" roleCode="project_view_amount,sys_enterprise_logout" flag="6">暂无上传文件</span>
+                            <span class=" roleControl" roleCode="project_view_amount,sys_enterprise_logout" flag="6">暂无上传文件</span>
 
                         {{else}}
-                        ***
+                            ***
                         {{/if}}
                         <!-- 上传按钮部分 -->
                         {{if editFlag}}
-                        <a href="javascript:void(0)" id="filePicker" name="recordAttach" class="upload-icon" title="请上传PDF文件"></a>
-                        {{if project.filePath==null || project.filePath==''}}
+                            <a href="javascript:void(0)" id="filePicker" name="recordAttach" class="upload-icon" title="请上传PDF文件"></a>
+                            {{if project.filePath==null || project.filePath==''}}
                         <note class="pt-relative" style="color: #777;bottom: 3px;" >请上传pdf文件！</note>
                         {{/if}}
                         {{/if}}

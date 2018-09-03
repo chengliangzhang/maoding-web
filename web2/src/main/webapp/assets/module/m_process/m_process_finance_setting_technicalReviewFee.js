@@ -68,7 +68,7 @@
                 that.saveChangeSelectionStatus(param);
             };
             $(that.element).find('input[name="iCheck"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
+                checkboxClass: 'icheckbox_square-blue',
                 radioClass: 'iradio_square-blue'
             }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
         }

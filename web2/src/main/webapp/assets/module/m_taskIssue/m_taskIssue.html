@@ -20,7 +20,7 @@
             <div class="col-md-8 text-right" style="padding: 9px 15px;">
                 {{if orgList!=null && orgList.length>0}}
                 <strong>当前视图：</strong>
-                <select name="viewByOrg" class="wid-200">
+                <select name="viewByOrg" class="width-200">
                     {{each orgList as o}}
                     {{if dataCompanyId == o.id}}
                     <option value="{{o.id}}" selected>{{o.companyName}}</option>

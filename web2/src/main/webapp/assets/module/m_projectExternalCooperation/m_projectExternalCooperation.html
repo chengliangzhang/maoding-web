@@ -31,23 +31,23 @@
         <table class="table table-bordered">
             <thead>
             <tr>
-                <th class="text-align-center ">联系方式</th>
-                <th class="text-align-center ">合作组织</th>
-                <th class="text-align-center ">企业负责人</th>
-                <th class="text-align-center ">合作内容</th>
-                <th class="text-align-center ">经营负责人</th>
-                <th class="text-align-center ">操作</th>
+                <th class="text-center ">联系方式</th>
+                <th class="text-center ">合作组织</th>
+                <th class="text-center ">企业负责人</th>
+                <th class="text-center ">合作内容</th>
+                <th class="text-center ">经营负责人</th>
+                <th class="text-center ">操作</th>
             </tr>
             </thead>
             <tbody class="border-no-t">
             {{each projectPartnerList as p}}
             <tr class="{{p.companyId!=null && p.companyId!=''?'':'gray-bg'}}">
-                <td class="text-align-center">{{p.phone}}</td>
-                <td class="text-align-center">{{p.companyName}}</td>
-                <td class="text-align-center">{{p.companyManagerName}}</td>
-                <td class="text-align-center">{{p.taskNameSplice}}</td>
-                <td class="text-align-center">{{p.projectManagerName}}</td>
-                <td class="text-align-center">
+                <td class="text-center">{{p.phone}}</td>
+                <td class="text-center">{{p.companyName}}</td>
+                <td class="text-center">{{p.companyManagerName}}</td>
+                <td class="text-center">{{p.taskNameSplice}}</td>
+                <td class="text-center">{{p.projectManagerName}}</td>
+                <td class="text-center">
                     {{if p.companyId!=null && p.companyId!='' && isHasRoleOperate==1}}
                     <a href="javascript:void(0);" class="btn btn-primary btn-xs m-r-xs autoMargin"
                        data-action="relieveRelationship" data-id="{{p.id}}">解除合作</a>

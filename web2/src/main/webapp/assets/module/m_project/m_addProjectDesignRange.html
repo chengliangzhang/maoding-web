@@ -1,6 +1,6 @@
 <style>
     .form-group.designRangeBox label.checkbox input{position: absolute;}
-    .form-group.designRangeBox input[type="text"].form-control{    width: 100%;}
+    .form-group.designRangeBox input[type="text"].form-control{width: 100%;height: 22px;line-height: 22px;padding: 0 3px;}
     .form-group.designRangeBox form{margin: 0;}
 </style>
 <div class="form-group designRangeBox p-n m-b-xs ">
@@ -9,14 +9,14 @@
             <div class="row">
                 {{each designRangeList as d}}
                 <div class="col-md-4">
-                    <label class="i-checks fw-normal">
+                    <label class="i-checks i-checks-label fw-normal">
                         {{if d.isChecked==1}}
                         <input name="range" type="checkbox" checked value="{{d.name}}" data-id="{{d.id}}"/>
                         {{/if}}
                         {{if d.isChecked!=1}}
                         <input name="range" type="checkbox"  value="{{d.name}}" data-id="{{d.id}}"/>
                         {{/if}}
-                        {{d.name }}
+                        <span class="i-checks-span-default">{{d.name }}</span>
                     </label>
                 </div>
                 {{/each}}
@@ -29,7 +29,7 @@
                             <input name="otherRange" class="checkbox" type="checkbox" checked/>
                         </label>
                     </div>
-                    <div class="col-md-10 no-pd-left no-pd-right">
+                    <div class="col-md-10 p-l-none p-r-none">
                         <label class="input">
                             <input id="{{d.id}}" class="designRange form-control input-sm" type="text" name="designRange" placeholder="请输入名称" value="{{d.designRange}}"/>
                         </label>
@@ -46,7 +46,7 @@
             <div class="row error-box">
                 <div class="col-md-12"></div>
             </div>
-            <div class="row m-b-xs no-pd-right">
+            <div class="row m-b-xs p-r-none">
                 <div class="col-md-12">
                     <button type="button" class="btn btn-default btn-sm m-popover-close  pull-right ">
                         <i class="glyphicon glyphicon-remove"></i>

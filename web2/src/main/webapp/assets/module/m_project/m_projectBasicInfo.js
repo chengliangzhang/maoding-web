@@ -442,6 +442,7 @@
         , chosePartyAOrg: function ($btn) {
             var that = this;
             var options = {};
+            options.placement = 'bottom';
             options.titleHtml = '<h3 class="popover-title">编辑</h3>';
             options.popoverStyle = 'width:400px;min-width:400px';
             options.contentStyle = 'padding:15px 0';
@@ -454,44 +455,6 @@
                 enterpriseId:companyId
             });
             options.onShown = function ($popover) {
-
-                /*var $select_partA = $popover.find('select[name="partA"]:first').select2({
-                    placeholder: {
-                        id: '',
-                        text: ''
-                    },
-                    //allowClear: true,
-                    language: "zh-CN",
-                    minimumResultsForSearch: Infinity,
-                    ajax: {
-                        contentType: "application/json",
-                        url: restApi.url_enterpriseSearch,
-                        dataType: 'json',
-                        type:'POST',
-                        delay: 500,
-                        data: function (params) {
-                            var ret={
-                                name: params.term // search term
-                            };
-                            return JSON.stringify(ret);
-                        },
-                        processResults: function (data, params) {
-                            return {
-                                results: $.map(data.data.details,function(o,i){
-                                    return {
-                                        id:o.companyid,
-                                        text:o.corpname
-                                    }
-                                })
-                            };
-                        },
-                        cache: true
-                    }
-                });
-                if (!isNullOrBlank(that._projectInfo.partyACompany)) {//不为空，初始化select值
-                    var $companyA = $('<option selected >' + that._projectInfo.partyACompany.companyName + '</option>').val(that._projectInfo.partyACompany.id);
-                    $select_partA.append($companyA).trigger('change');
-                }*/
 
                 $popover.find('input#constructCompanyName').bind("input propertychange change focus",function(event){
                     var $this = $(this);
@@ -753,8 +716,8 @@
             var resetCheck = function ($el, checked) {
                 $el.prop('checked', checked);
                 var $icheck = $el.iCheck({
-                    checkboxClass: 'icheckbox_minimal-green',
-                    radioClass: 'iradio_minimal-green'
+                    checkboxClass: 'icheckbox_square-blue',
+                    radioClass: 'iradio_square-blue'
                 });
                 $icheck.off('ifUnchecked.s').on('ifUnchecked.s', ifUnchecked);
                 $icheck.off('ifChecked.s').on('ifChecked.s', ifChecked);
@@ -798,8 +761,8 @@
             };
 
             $('.i-checks input[name="designContent"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
             }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
         }
         //处理已选上的设计内容

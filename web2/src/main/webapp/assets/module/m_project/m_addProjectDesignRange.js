@@ -52,8 +52,8 @@
                     that.bindActionClick();
                     that.editOtherRangeValid();
                     $('.i-checks').iCheck({
-                        checkboxClass: 'icheckbox_minimal-green',
-                        radioClass: 'iradio_minimal-green'
+                        checkboxClass: 'icheckbox_square-blue',
+                        radioClass: 'iradio_square-green'
                     });
                 },
                 onSave: function ($popover) {
@@ -195,8 +195,8 @@
         ,bindIcheckbox:function($el){
             var that = this;
             $el.find('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
             });
         }
         //绑定选择自定义设计范围事件

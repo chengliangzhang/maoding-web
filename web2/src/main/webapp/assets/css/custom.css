@@ -3,10 +3,16 @@ html, body{
 }
 #page-wrapper{
     background: rgb(255, 255, 255); border-left: 1px solid #d5d5d5;
+    z-index: 102;
+}
+body.mini-navbar #page-wrapper{
     z-index: 10;
 }
-#page-wrapper.m-l-none,
-body.mini-navbar #page-wrapper.m-l-none{
+body.mini-navbar #page-wrapper.z-index-102{
+    z-index: 102;
+}
+#page-wrapper.menu-l-none,
+body.mini-navbar #page-wrapper.menu-l-none{
     margin-left:0px;
     z-index: 102;
 }
@@ -239,29 +245,6 @@ body label.error {
 }
 
 
-/*padding*/
-.padding-8 {
-    padding: 8px !important;
-}
-.p-t-7 {
-    padding-top: 7px !important;
-}
-.p-r-lg{
-    padding-right:30px ;
-}
-
-/*margin*/
-.form-horizontal .m-b-xs {
-    margin-bottom: 5px;
-}
-
-.m-t-f3 {
-    margin-top: -3px;
-}
-.m-t-f2 {
-    margin-top: -2px;
-}
-
 /*border*/
 .border-no-t {
     border-top: none;
@@ -278,7 +261,6 @@ body label.error {
 .border-no-b {
     border-bottom:none !important;
 }
-
 
 .sky-form .input input:disabled, .sky-form .select select:disabled, .sky-form .textarea textarea:disabled {
     background-color: rgb(235, 235, 228);
@@ -322,10 +304,6 @@ body label.error {
     position: fixed !important;
 }
 
-.left {
-    float: left;
-}
-
 /*cursor 设置*/
 .curp {
     cursor: pointer !important;
@@ -339,7 +317,7 @@ body label.error {
     text-decoration: none !important;
 }
 
-.text-align-center {
+.text-center {
     text-align: center;
 }
 
@@ -391,41 +369,6 @@ form.sky-form label.select i {
     overflow: auto;
 }
 
-.pd-5-20 {
-    padding: 5px 20px;
-}
-
-.no-pd {
-    padding: 0;
-}
-
-.no-pd-top {
-    padding-top: 0;
-}
-
-.no-pd-left {
-    padding-left: 0;
-}
-
-.no-pd-right,.table > tbody > tr > td.no-pd-right {
-    padding-right: 0;
-}
-
-.no-pd-bottom {
-    padding-bottom: 0;
-}
-
-.p-r-5 {
-    padding-right: 5px !important;
-}
-
-.p-l-5 {
-    padding-left: 5px;
-}
-
-.p-r-24 {
-    padding-right: 24px;
-}
 
 .navbar-static-top .nav > li > a
 {
@@ -444,114 +387,165 @@ input.form-control[readonly] {
     background-color: #fff;
 }
 
-.w-0 {
+/*padding*/
+.p-t-none,.table > tbody > tr > td.p-t-none {
+    padding-top: 0;
+}
+.p-l-none,.table > tbody > tr > td.p-l-none {
+    padding-left: 0;
+}
+.p-r-none,.table > tbody > tr > td.p-r-none {
+    padding-right: 0;
+}
+.p-b-none,.table > tbody > tr > td.p-b-none {
+    padding-bottom: 0;
+}
+.p-t-7 {
+    padding-top: 7px !important;
+}
+.p-t-xs{
+    padding-top: 5px ;
+}
+.p-t-sm{
+    padding-top: 10px ;
+}
+.p-t{
+    padding-top: 15px ;
+}
+.p-t-md{
+    padding-top: 20px ;
+}
+.p-t-l{
+    padding-top: 25px ;
+}
+.p-t-lg{
+    padding-top: 30px ;
+}
+.p-r-xs {
+    padding-right: 5px !important;
+}
+.p-r-sm{
+    padding-right: 10px ;
+}
+.p-r{
+    padding-right: 15px ;
+}
+.p-r-md{
+    padding-right: 20px ;
+}
+.p-r-xmd{
+    padding-right: 25px ;
+}
+.p-r-lg{
+    padding-right: 30px ;
+}
+.p-l-xs {
+    padding-left: 5px;
+}
+.p-l-sm{
+    padding-left: 10px ;
+}
+.p-l{
+    padding-left: 15px ;
+}
+.p-l-md{
+    padding-left: 20px ;
+}
+.p-l-xmd{
+    padding-left: 25px ;
+}
+.p-l-lg{
+    padding-left: 30px ;
+}
+.p-b-xs {
+    padding-bottom: 5px;
+}
+.p-b-sm{
+    padding-bottom: 10px ;
+}
+.p-b{
+    padding-bottom: 15px ;
+}
+.p-b-md{
+    padding-bottom: 20px ;
+}
+.p-b-xmd{
+    padding-bottom: 25px ;
+}
+.p-b-lg{
+    padding-bottom: 30px ;
+}
+/*margin*/
+.form-horizontal .m-b-xs {
+    margin-bottom: 5px;
+}
+.width-0 {
     width: 0;
 }
-.w-50 {
-    width: 50px;
-}
-
-.w-70 {
-    width: 70px;
-}
-
-.w-110 {
-    width: 110px;
-}
-
-.wid-200 {
+.width-200 {
     width: 200px;
 }
-
-.wid-225 {
+.width-225 {
     width: 225px;
 }
-
-.wid-270 {
+.width-270 {
     width: 270px;
 }
-
-.wid-500 {
-    width: 500px;
-}
-.wth-100,.form-control.wth-100 {
+.width-100,.form-control.width-100 {
     width: 100px;
 }
-
-.min-wth-100 {
-    min-width: 100px;
-}
-
-.min-wth-120 {
-    min-width: 120px;
-}
-
 .min-h-50 {
     min-height: 50px;
 }
 .min-h-300 {
     min-height: 300px;
 }
-
 .fw-400 {
     font-weight: 400;
 }
-
 .fw-600 {
     font-weight: 600;
 }
-
 .fw-normal {
     font-weight: normal;
 }
+.f-w-bold {
+    font-weight: bold;
+    font-size: 15px;
+}
 /*height*/
-.h-20 {
-    height: 20px;
-}
-
-.h-28 {
-    height: 28px;
-}
-
-.h-100 {
+.height-100 {
     height: 100px;
 }
-
 /*line-height*/
-.l-h-20 {
-    height: 20px;
-    line-height: 20px;
-}
-
-.l-h-22 {
-    line-height: 22px;
-}
-
-.l-h-38 {
-    line-height: 38px;
-}
-
-.l-h-16 {
-    line-height: 16px;
-}
-
-.l-h-50 {
-    line-height: 50px;
-}
-.l-h-60 {
-    line-height: 60px;
+.l-h-12 {
+    line-height: 12px;
 }
 
 .l-h-14 {
     line-height: 14px;
 }
-
-.l-h-12 {
-    line-height: 12px;
+.l-h-16 {
+    line-height: 16px;
 }
-
+.l-h-20 {
+    height: 20px;
+    line-height: 20px;
+}
+.l-h-22 {
+    line-height: 22px;
+}
 .l-h-28 {
     line-height: 28px;
+}
+.l-h-38 {
+    line-height: 38px;
+}
+.l-h-50 {
+    line-height: 50px;
+}
+.l-h-60 {
+    line-height: 60px;
 }
 
 /*字体大小*/
@@ -589,7 +583,6 @@ input.form-control[readonly] {
 .fc-v1-blue {
     color: #1c84c6;
 }
-
 .fc-v2-blue {
     color: #4D95D7;
 }
@@ -620,7 +613,6 @@ input.form-control[readonly] {
 .border-fff {
     border-color: #fff;
 }
-
 /*----Bg Color-----*/
 .bg-v1 {
     background-color: #f3f5f9;
@@ -680,6 +672,7 @@ input.form-control[readonly] {
 .z-index-1 .select2-container{
     z-index: 1 !important;
 }
+
 /**
     面包屑
  */
@@ -836,10 +829,7 @@ i.icon-sm{
     padding:6px 12px;
 }
 
-.f-w-bold {
-    font-weight: bold;
-    font-size: 15px;
-}
+
 
 /*tooltip样式重写*/
 .tooltip-inner {
@@ -936,11 +926,11 @@ body div label.error, div.popover.m-popover label.error {
 
 
 
-/*check-box*/
-.check-box .i-checks .icheckbox_minimal-green{
+/*icheck-box*/
+.i-checks.i-checks-label .icheckbox_square-blue{
     float:left;
 }
-.check-box .i-checks .i-checks-span{
+.i-checks.i-checks-label .i-checks-span{
     display: inline-block;
     height: 18px;
     line-height: 18px;
@@ -950,11 +940,11 @@ body div label.error, div.popover.m-popover label.error {
     margin-left: 4px;
     cursor: pointer;
 }
-.check-box .i-checks .i-checks-default{
+.i-checks.i-checks-label .i-checks-span-default{
     display: inline-block;
     height: 18px;
     line-height: 18px;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: normal;
     float: left;
     margin-left: 4px;

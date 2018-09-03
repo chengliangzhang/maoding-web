@@ -129,8 +129,8 @@
                 that.renderSelectedList();
             };
             $(that.element).find('input[name="itemCk"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
             }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked);
         }
         //that._selectedTitleList.push({})

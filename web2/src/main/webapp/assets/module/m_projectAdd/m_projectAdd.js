@@ -168,8 +168,8 @@
         , bindDesignContent: function ($obj) {
             var that = this;
             $obj.find('.i-checks input[name="designContent"]').iCheck({
-                checkboxClass: 'icheckbox_minimal-green',
-                radioClass: 'iradio_minimal-green'
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
             }).on('ifChecked', function (e) {
                 var $li = $(this).closest('span.designContentDiv');
                 var $btnSetTime = $li.find('a[data-action="edit_setDesignContentTime"]:first');

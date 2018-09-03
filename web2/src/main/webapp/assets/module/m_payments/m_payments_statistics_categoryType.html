@@ -5,8 +5,8 @@
             {{each c as t ti}}
             <td colspan="{{t.level}}" class="text-center">
                 {{if t.expTypeValue!=null && t.expTypeValue!=''}}
-                <div class="check-box">
-                    <label class="i-checks">
+                <div>
+                    <label class="i-checks i-checks-label">
                         {{if t.selected==1}}
                         <input name="itemCk" type="checkbox"  data-pid="{{t.pid}}" data-id="{{t.id}}" data-value="{{t.expTypeValue}}" checked/>
                         {{else}}

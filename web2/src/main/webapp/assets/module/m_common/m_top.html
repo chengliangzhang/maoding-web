@@ -46,7 +46,7 @@
                 {{/if}}
                 <li class="pull-left">
                     {{if companyInfo!=null && companyInfo.companyName!=null && companyInfo.companyName!=''}}
-                    <div class="dropdown l-h-60 no-pd">
+                    <div class="dropdown l-h-60 no-padding">
                         <a class="orgInfo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="javascript:void(0)">
                             {{companyInfo.companyName}}
                             {{if isAuth && isAuth==2}}
@@ -91,7 +91,7 @@
             <!--对应每个入口的位置及链接地址 end -->
             <ul class="nav navbar-top-links navbar-right">
                 <li class="pull-left">
-                    <div class="dropdown l-h-60 no-pd">
+                    <div class="dropdown l-h-60 no-padding">
                         <img alt="image" class="img-circle m-t-n-xs" src="{{userInfo.imgUrl}}" style="width: 40px;height: 40px;margin-right:5px;">
                         <a class="userInfo" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-type="textUserName" href="javascript:void(0)">
                             {{userInfo.userName}}<span class="caret"></span>

@@ -6,7 +6,7 @@
 .editUserOBox .table > tbody td {
     border-top: none;
 }
-.editUserOBox .table > tbody td.no-pd-left {
+.editUserOBox .table > tbody td.p-l-none {
     padding-left: 0px;
 }
 .editUserOBox .table > tbody td.p-l-md {
