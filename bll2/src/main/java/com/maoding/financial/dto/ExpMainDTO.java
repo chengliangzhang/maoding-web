@@ -110,16 +110,25 @@ public class ExpMainDTO extends BaseDTO {
     private String remark;
 
     /**
+     * 报销单号
+     */
+    private String expNo;
+
+    /**
+     * 报销类别：1=报销申请，2=费用申请
+     */
+    private Integer type;
+    /**
+     * 报销明细
+     */
+    private List<ExpDetailDTO> detailList = new ArrayList<>();
+
+    /**
      * 拨款日期
      */
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date allocationDate;
-
-    /**
-     * 报销明细
-     */
-    private List<ExpDetailDTO> detailList = new ArrayList<ExpDetailDTO>();
 
     /**
      * 审核人id
@@ -173,10 +182,6 @@ public class ExpMainDTO extends BaseDTO {
 
     private String projectName;
 
-    /**
-     * 报销类别：1=报销申请，2=费用申请
-     */
-    private Integer type;
 
     /**
      * 拨款人
@@ -197,10 +202,6 @@ public class ExpMainDTO extends BaseDTO {
      */
     private Integer versionNum;
 
-    /**
-     * 报销单号
-     */
-    private String expNo;
 
     /**
      * 0:没有任何操作，1:退回记录重新提交,2:新生成记录
@@ -213,6 +214,60 @@ public class ExpMainDTO extends BaseDTO {
     private String pid;
 
     private ExpFinanceRoleDTO role = new ExpFinanceRoleDTO();
+
+    /** 收款方公司id */
+    private String enterpriseId;
+
+    /** 收款方公司名称 */
+    private String enterpriseName;
+
+    private List<String> deleteAttachList = new ArrayList<>();
+
+
+    /**
+     * 需要抄送人的companyUserId
+     */
+    private List<String> ccCompanyUserList = new ArrayList<>();
+
+    public List<String> getCcCompanyUserList() {
+        return ccCompanyUserList;
+    }
+
+    public void setCcCompanyUserList(List<String> ccCompanyUserList) {
+        this.ccCompanyUserList = ccCompanyUserList;
+    }
+
+    public List<String> getDeleteAttachList() {
+        return deleteAttachList;
+    }
+
+    public void setDeleteAttachList(List<String> deleteAttachList) {
+        this.deleteAttachList = deleteAttachList;
+    }
+
+    public List<ExpDetailDTO> getDetailList() {
+        return detailList;
+    }
+
+    public void setDetailList(List<ExpDetailDTO> detailList) {
+        this.detailList = detailList;
+    }
+
+    public String getEnterpriseId() {
+        return enterpriseId;
+    }
+
+    public void setEnterpriseId(String enterpriseId) {
+        this.enterpriseId = enterpriseId;
+    }
+
+    public String getEnterpriseName() {
+        return enterpriseName;
+    }
+
+    public void setEnterpriseName(String enterpriseName) {
+        this.enterpriseName = enterpriseName;
+    }
 
     public String getPid() {
         return pid;
@@ -269,14 +324,6 @@ public class ExpMainDTO extends BaseDTO {
 
     public void setAuditPerson(String auditPerson) {
         this.auditPerson = auditPerson;
-    }
-
-    public List<ExpDetailDTO> getDetailList() {
-        return detailList;
-    }
-
-    public void setDetailList(List<ExpDetailDTO> detailList) {
-        this.detailList = detailList;
     }
 
     public String getCompanyUserId() {

@@ -13,9 +13,12 @@ import com.maoding.companybill.service.CompanyBillService;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.core.bean.ResponseBean;
 import com.maoding.core.constant.*;
 import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
+import com.maoding.core.util.StringUtils;
+import com.maoding.enterprise.dto.EnterpriseSearchQueryDTO;
 import com.maoding.enterprise.service.EnterpriseService;
 import com.maoding.exception.CustomException;
 import com.maoding.financial.dao.ExpAuditDao;
@@ -39,6 +42,7 @@ import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.org.service.CompanyUserService;
 import com.maoding.process.dto.ActivitiDTO;
 import com.maoding.process.service.ProcessService;
+import com.maoding.project.constDefine.EnterpriseServer;
 import com.maoding.project.dao.ProjectSkyDriverDao;
 import com.maoding.project.dto.ProjectDTO;
 import com.maoding.project.entity.ProjectSkyDriveEntity;
@@ -127,166 +131,117 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private EnterpriseServer enterpriseServer;
+
     /**
      * 方法描述：报销增加或者修改
      * 作   者：LY
      * 日   期：2016/7/26 17:35
      */
     public AjaxMessage saveOrUpdateExpMainAndDetail(ExpMainDTO dto, String userId, String companyId) throws Exception {
-
-        //报销明细
-        List<ExpDetailDTO> detailList = dto.getDetailList();
-        //是增加true还是修改false操作
-        boolean flag = StringUtil.isNullOrEmpty(dto.getId());
-
-        if (StringUtil.isNullOrEmpty(dto.getAuditPerson())) {
-            return new AjaxMessage().setCode("1").setInfo("审批人不能为空");
+        AjaxMessage ajaxMessage = this.validateExpMainAndDetail(dto);
+        if(ajaxMessage!=null){
+            return ajaxMessage;
         }
+//        CompanyUserEntity auditPerson = companyUserDao.selectById(dto.getAuditPerson());
+//        if(auditPerson==null){
+//            return AjaxMessage.failed("数据错误");
+//        }
+        CompanyUserEntity currentCompanyUser = companyUserDao.getCompanyUserByUserIdAndCompanyId(userId,companyId);
+        if(currentCompanyUser==null){
+            return AjaxMessage.failed("数据错误");
+        }
+        //保存收款方信息
+        if (!StringUtils.isEmpty(dto.getEnterpriseName()) && StringUtils.isEmpty(dto.getEnterpriseId())){
+            EnterpriseSearchQueryDTO query = new EnterpriseSearchQueryDTO();
+            query.setCompanyId(companyId);
+            query.setName(dto.getEnterpriseName());
+            query.setSave(true);
+            ResponseBean response = enterpriseService.getRemoteData(enterpriseServer.getQueryFull(),query);
+            if (response != null && response.getData() != null) {
+                Map<String,Object> data = response.getData();
+                Map<String,Object> enterpriseDo = (Map<String,Object>) data.get("enterpriseDO");
+                if (enterpriseDo != null) {
+                    dto.setEnterpriseId((String)enterpriseDo.get("id"));
+                }
+            }
+        }
+
+        //是增加true还是修改false操作
+        boolean flag = false;
+        //保存报销主表
+        ExpMainEntity entity = new ExpMainEntity();
+        BaseDTO.copyFields(dto, entity);
+        entity.setApproveStatus("0");
+        if (StringUtil.isNullOrEmpty(dto.getId())) {//插入
+            saveExpMain(entity,dto,userId,companyId);
+            flag= true;
+        }  else {//保存
+            int result = 0;
+            ExpMainEntity exp = expMainDao.selectById(dto.getId());
+            if(exp!=null && ("2".equals(exp.getApproveStatus()) || "3".equals(exp.getApproveStatus()))){
+                if(!StringUtil.isNullOrEmpty(dto.getTargetId()) && dto.getId().equals(dto.getTargetId())){
+                    return AjaxMessage.failed("参数错误");
+                }
+                //判断是否退回后的编辑
+                exp.setExpFlag(1);
+                entity.setExpFlag(2);
+                expMainDao.updateById(exp);
+                //dto.setTargetId(null); //此处为了防止前端 更新的时候传递了targetId过来(前端生成)
+                //新开一个新的报销单
+                saveExpMain(entity,dto,userId,companyId);
+                //复制原来的附件记录
+                projectSkyDriverService.copyFileToNewObject(entity.getId(),dto.getId(),NetFileType.EXPENSE_ATTACH,dto.getDeleteAttachList());
+                flag = true;
+            }else {
+                entity.set4Base(null, userId, null, new Date());
+                //版本控制
+                entity.setExpDate(DateUtils.getDate());
+                result = expMainDao.updateById(entity);
+                //保存报销明细表
+                this.saveExpDetail(dto,entity.getId(),userId,currentCompanyUser.getId());
+                if (result == 0) {
+                    return new AjaxMessage().setCode("0").setInfo("保存失败").setData(dto);
+                }
+            }
+        }
+        //主表Id
+        String id = entity.getId();
+        //处理图片
+        if(!CollectionUtils.isEmpty(dto.getDeleteAttachList())){
+            projectSkyDriverService.deleteSysDrive(dto.getDeleteAttachList(),dto.getAccountId(),id);
+        }
+        //处理审核记录
+        Integer myTaskType = this.getMyTaskType(entity);
+        //处理抄送
+        this.saveCopy(dto.getCcCompanyUserList(),currentCompanyUser.getId(),id,id);
+        return new AjaxMessage().setCode("0").setInfo("保存成功").setData(dto);
+
+    }
+
+    private AjaxMessage validateExpMainAndDetail(ExpMainDTO dto){
+        List<ExpDetailDTO> detailList = dto.getDetailList();
         if (CollectionUtils.isEmpty(detailList)) {
             return new AjaxMessage().setCode("1").setInfo("报销明细不能为空");
         }
         if (!StringUtil.isNullOrEmpty(dto.getRemark()) && dto.getRemark().length() > 255) {
             return new AjaxMessage().setCode("1").setInfo("备注长度过长");
         }
-//        for (ExpDetailDTO detailDTO : detailList) {
-//            if (detailDTO.getExpAmount() == null) {
-//                return new AjaxMessage().setCode("1").setInfo("报销金额不能为空");
-//            } else if (StringUtil.isNullOrEmpty(detailDTO.getExpType())) {
-//                return new AjaxMessage().setCode("1").setInfo("报销类别不能为空");
-//            } else if (StringUtil.isNullOrEmpty(detailDTO.getExpUse())) {
-//                return new AjaxMessage().setCode("1").setInfo("用途说明不能为空");
-//            }
-//        }
-        // 验证end
-
-        //保存报销主表
-        ExpMainEntity entity = new ExpMainEntity();
-        BaseDTO.copyFields(dto, entity);
-        entity.setApproveStatus("0");
-        if (StringUtil.isNullOrEmpty(dto.getId())) {//插入
-            Map<String, Object> map = new HashMap<>();
-            map.put("companyId", companyId);
-            String expNo = expMainDao.getMaxExpNo(map);
-            String yyMMdd = DateUtils.date2Str(DateUtils.yyyyMMdd);
-            if ("1001".equals(expNo)) {
-                //自动生成一个
-                expNo = yyMMdd + "0001";
-            } else if (yyMMdd.equals(expNo.substring(0, expNo.length() - 4))) {
-
-            } else {
-                expNo = yyMMdd + "0001";
-            }
-            //判断是否退回后的编辑
-            if (!StringUtil.isNullOrEmpty(dto.getPid())) {
-                ExpMainEntity exp = expMainDao.selectById(dto.getPid());
-                exp.setExpFlag(1);
-                entity.setExpFlag(2);
-                expMainDao.updateById(exp);
-                //新开
-                entity.setId(StringUtil.buildUUID());
-                //复制原来的附件记录
-                Map<String, Object> param = new HashMap<>();
-                param.put("targetId", dto.getPid());
-                param.put("type", NetFileType.EXPENSE_ATTACH);
-                List<ProjectSkyDriveEntity> attachs = projectSkyDriverService.getNetFileByParam(param);
-                for (ProjectSkyDriveEntity attach : attachs) {
-                    attach.setId(StringUtil.buildUUID());
-                    attach.setTargetId(entity.getId());
-                    projectSkyDriverDao.insert(attach);
-                }
-            } else {
-                entity.setExpFlag(0);
-                entity.setId(dto.getTargetId());
-            }
-            if (dto.getType() == null) {
-                entity.setType(1);
-            }
-            if(entity.getId()==null){
-                entity.setId(StringUtil.buildUUID());
-            }
-            dto.setExpNo(expNo);
-            entity.setExpNo(expNo);
-            entity.set4Base(userId, userId, new Date(), new Date());
-            entity.setCompanyId(companyId);
-            expMainDao.insert(entity);
-        } else {//保存
-            entity.set4Base(null, userId, null, new Date());
-            //版本控制
-            entity.setExpDate(DateUtils.getDate());
-            int result = expMainDao.updateById(entity);
-            if (result == 0) {
-                return new AjaxMessage().setCode("0").setInfo("保存失败").setData(dto);
-            }
-        }
-        Integer myTaskType = getMyTaskType(entity);
-        //主表Id
-        String id = entity.getId();
-        //保存报销明细表
-        //按照MainId先删除原来明细
-        expDetailDao.deleteByMainId(id);
-        ExpDetailEntity detailEntity = null;
-        int seq = 1;
+        dto.setExpSumAmount(new BigDecimal("0"));
         for (ExpDetailDTO detailDTO : detailList) {
-            detailEntity = new ExpDetailEntity();
-            BaseDTO.copyFields(detailDTO, detailEntity);
-            detailDTO.setId(StringUtil.buildUUID());
-            detailEntity.setId(detailDTO.getId());
-            detailEntity.setMainId(id);
-            detailEntity.setSeq(seq++);
-            if (detailEntity.getExpAllName() != null) {
-                String[] allName = detailEntity.getExpAllName().split("-");
-                detailEntity.setExpPName(allName[0]);
-                detailEntity.setExpName(allName[1]);
+            if (detailDTO.getExpAmount() == null) {
+                return new AjaxMessage().setCode("1").setInfo("报销金额不能为空");
+            } else if (StringUtil.isNullOrEmpty(detailDTO.getExpType())) {
+                return new AjaxMessage().setCode("1").setInfo("报销类别不能为空");
+            } else if (StringUtil.isNullOrEmpty(detailDTO.getExpUse())) {
+                return new AjaxMessage().setCode("1").setInfo("用途说明不能为空");
             }
-            detailEntity.set4Base(userId, userId, new Date(), new Date());
-            expDetailDao.insert(detailEntity);
+            dto.setExpSumAmount(dto.getExpSumAmount().add(detailDTO.getExpAmount()));
         }
-
-        //保存报销审核表
-        ExpAuditEntity auditEntity = new ExpAuditEntity();
-        auditEntity.setId(StringUtil.buildUUID());
-        auditEntity.setMainId(id);
-        auditEntity.setApproveStatus("0");
-        auditEntity.setAuditPerson(dto.getAuditPerson());
-        auditEntity.set4Base(userId, userId, new Date(), new Date());
-        List<ExpAuditEntity> auditEntities = expAuditDao.selectByMainId(id);
-        if (!flag) {//修改
-            //查询原来为“Y"的Id并把它插入到当前auditEntity的parentId
-            if (!CollectionUtils.isEmpty(auditEntities)) {
-                auditEntity.setParentId(auditEntities.get(0).getId());
-            }
-            //把原来所有的is_new改为“N"
-            expAuditDao.updateIsNewByMainId(id);
-        }
-        //每次都新生成记录(包括多次编辑和多次驳回)
-        if (null != auditEntities && auditEntities.size() > 0) {
-            ExpAuditEntity expAuditEntity = auditEntities.get(0);
-            if (auditEntities.get(0).getApproveStatus().equals("0")) {
-                String oldAuditPerson = expAuditEntity.getAuditPerson();
-                expAuditEntity.setAuditPerson(dto.getAuditPerson());
-                expAuditEntity.setIsNew("Y");
-                expAuditDao.updateById(expAuditEntity);
-                if (!dto.getAuditPerson().equals(oldAuditPerson)) {//如果修改的时候，改变了社会人。则发送任务
-                    //忽略原来的任务
-                    this.myTaskService.ignoreMyTask(entity.getId(), myTaskType, oldAuditPerson);
-                    //指派任务
-                    this.myTaskService.saveMyTask(entity.getId(), myTaskType, companyId, dto.getAuditPerson(), true, userId, companyId);
-                }
-            } else {
-                auditEntity.setIsNew("Y");
-                expAuditDao.insert(auditEntity);
-                //指派任务，此处为。被打回后。重新修改。启动审批
-                this.myTaskService.saveMyTask(entity.getId(), myTaskType, companyId, dto.getAuditPerson(), true, userId, companyId);
-            }
-        } else {
-            auditEntity.setIsNew("Y");
-            expAuditDao.insert(auditEntity);
-            //指派任务 ，新增报销，发送任务
-            this.myTaskService.saveMyTask(entity.getId(), myTaskType, companyId, dto.getAuditPerson(), true, userId, companyId);
-        }
-        dto.setId(entity.getId());
-        return new AjaxMessage().setCode("0").setInfo("保存成功").setData(dto);
+        return null;
     }
+
 
     @Override
     public AjaxMessage applyProjectCost(ApplyProjectCostDTO dto) throws Exception {

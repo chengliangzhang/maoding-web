@@ -8,6 +8,8 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @PropertySource(value = {"classpath:properties/system.properties"})
 public class EnterpriseServer {
+    @Value("${yongyoucloud.enterpriseUrl}")
+    public  String yongyouCloudServerUrl;
 
    // public static String URL_ENTERPRISE_HANDLE = "/enterpriseSearch";
     public static String URL_ENTERPRISE_QUERY_DETAIL = "/enterpriseSearch/queryDetail";
@@ -18,6 +20,10 @@ public class EnterpriseServer {
         URL_ENTERPRISE_QUERY_DETAIL = yongyouCloudServerUrl + "/enterpriseSearch/queryDetail";
         URL_ENTERPRISE_QUERY_FULL =  yongyouCloudServerUrl +  "/enterpriseSearch/queryFull";
         return new EnterpriseServer();
+    }
+
+    public String getQueryFull(){
+        return yongyouCloudServerUrl +URL_ENTERPRISE_QUERY_FULL;
     }
 
 

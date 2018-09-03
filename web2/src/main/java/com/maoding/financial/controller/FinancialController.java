@@ -211,9 +211,12 @@ public class FinancialController extends BaseController {
     @RequestMapping(value = "/saveOrUpdateExpMainAndDetail", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage saveOrUpdateExpMainAndDetail(@RequestBody ExpMainDTO dto) throws Exception {
-        dto.setCompanyId(this.currentCompanyId);
-        dto.setAccountId(this.currentUserId);
-        return expMainService.saveOrUpdateExpMainAndDetail(dto, getFromSession("userId", String.class), getFromSession("companyId", String.class));
+        updateCurrentUserInfo(dto);
+        String userId = dto.getAccountId();
+        String companyId = dto.getCurrentCompanyId();
+        dto.setAppOrgId(null);
+        dto.setAccountId(null);
+        return expMainService.saveOrUpdateExpMainAndDetail(dto, userId, companyId);
     }
 
     /******************财务类别设置********************/
