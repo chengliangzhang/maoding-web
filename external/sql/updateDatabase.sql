@@ -1984,6 +1984,37 @@ CREATE PROCEDURE `initConst`()
         invoice_type.classic_id = 46;
   END;
 call initConst();
+
+-- 审批类别
+DROP PROCEDURE IF EXISTS `initConst`;
+CREATE PROCEDURE `initConst`()
+  BEGIN
+    -- -- 常量
+    delete from md_list_const where classic_id = 47;
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (47,0,'审批类别','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (47,1,'报销申请','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (47,2,'费用申请','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (47,3,'请假','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (47,4,'出差','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (47,5,'项目费用申请','');
+
+    -- -- 类型
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,47,'审批类别','md_type_exp');
+
+    -- 视图
+    CREATE OR REPLACE VIEW `md_type_exp` AS
+      select
+        exp_type.code_id as id,
+        exp_type.code_id as type_id,
+        exp_type.title   as type_title,
+        exp_type.title   as type_name,
+        exp_type.extra   as type_extra
+      from
+        md_list_const exp_type
+      where
+        exp_type.classic_id = 47;
+  END;
+call initConst();
 -- -- -- 创建及更改常量 -- 结束 -- -- --
 
 -- -- -- 创建及更改视图 -- 开始 -- -- --
