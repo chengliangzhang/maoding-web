@@ -16,7 +16,6 @@ import com.maoding.core.base.service.GenericService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.bean.ResponseBean;
 import com.maoding.core.constant.*;
-import com.maoding.core.util.BeanUtils;
 import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
@@ -181,9 +180,8 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         ExpMainEntity entity = new ExpMainEntity();
         BaseDTO.copyFields(dto, entity);
         entity.setApproveStatus("0");
-        ApplyProjectCostDTO costDto = BeanUtils.createFrom(dto,ApplyProjectCostDTO.class);
         if (StringUtil.isNullOrEmpty(dto.getId())) {//插入
-            saveExpMain(entity,costDto,userId,companyId);
+            saveExpMain(entity,dto,userId,companyId);
             flag= true;
         }  else {//保存
             int result = 0;
@@ -198,7 +196,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
                 expMainDao.updateById(exp);
                 //dto.setTargetId(null); //此处为了防止前端 更新的时候传递了targetId过来(前端生成)
                 //新开一个新的报销单
-                saveExpMain(entity,costDto,userId,companyId);
+                saveExpMain(entity,dto,userId,companyId);
                 //复制原来的附件记录
                 projectSkyDriverService.copyFileToNewObject(entity.getId(),dto.getId(),NetFileType.EXPENSE_ATTACH,dto.getDeleteAttachList());
                 flag = true;
@@ -354,6 +352,37 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         relationTypeDTO.setRecordType(CopyTargetType.PROJECT_COST_POINT_DETAIL);
         relation.getRelationList().add(relationTypeDTO);
         this.relationRecordService.saveRelationRecord(relation);
+    }
+
+    private ExpMainEntity saveExpMain(ExpMainEntity entity,ExpMainDTO dto,String userId,String companyId) throws Exception{
+        String expNo = this.getExpNo(companyId);
+        entity.setExpFlag(0);
+        if(StringUtil.isNullOrEmpty(dto.getTargetId())){
+            entity.setId(StringUtil.buildUUID());
+        }else {
+            entity.setId(dto.getTargetId());
+        }
+        dto.setExpNo(expNo);
+        if(StringUtil.isNullOrEmpty(dto.getType())){
+            entity.setType(1); //默认为报销费用
+        }
+        entity.setExpNo(expNo);
+        entity.set4Base(userId, userId, new Date(), new Date());
+        entity.setCompanyId(companyId);
+        expMainDao.insert(entity);
+        //保存明细
+        this.saveExpDetail(dto,entity.getId(),userId,dto.getCurrentCompanyUserId());
+        String targetType = null;
+        if(entity.getType()==1){
+            targetType = ProcessTypeConst.PROCESS_TYPE_EXPENSE;
+        }else {
+            targetType= ProcessTypeConst.PROCESS_TYPE_COST_APPLY;
+        }
+        // 启动流程
+        ActivitiDTO activitiDTO = new ActivitiDTO(entity.getId(),entity.getCompanyUserId(),companyId,userId,dto.getExpSumAmount(),targetType);
+        activitiDTO.getParam().put("approveUser",dto.getAuditPerson());
+        this.processService.startProcessInstance(activitiDTO);
+        return entity;
     }
 
     private ExpMainEntity saveExpMain(ExpMainEntity entity,ApplyProjectCostDTO dto,String userId,String companyId) throws Exception{
