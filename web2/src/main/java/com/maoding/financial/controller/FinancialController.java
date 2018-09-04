@@ -781,17 +781,15 @@ public class FinancialController extends BaseController {
      * 作者：FYT
      * 日期：2018/9/3
      * 方法描述：审批：我的申请：报销/费用
+     * 我申请的（type=1），待我审批（type=2），我已审批（type=3），抄送我的（type=4）
      * @return
      */
     @RequestMapping(value = "/getAuditData")
     @ResponseBody
-    public AjaxMessage getAuditData(@RequestBody ExpMainDTO dto) throws Exception {
+    public AjaxMessage getAuditData(@RequestBody QueryAuditDTO dto) throws Exception {
         dto.setCurrentCompanyId(this.currentCompanyId);
-
-
-        List<ExpMainDTO> data = expMainService.getAuditData(dto);
-
-        return this.ajaxResponseSuccess().setData(data);
+        dto.setCurrentCompanyUserId(this.currentCompanyUserId);
+        return this.ajaxResponseSuccess().setData(expMainService.getAuditDataForWeb(dto));
 
     }
 }

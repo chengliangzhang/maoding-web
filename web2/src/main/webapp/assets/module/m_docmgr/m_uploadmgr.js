@@ -3,7 +3,7 @@
     var pluginName = "m_uploadmgr",
         defaults = {
             server: null,
-            auto: false,//选择文件后是否自动开始上传
+            auto: true,//选择文件后是否自动开始上传
             chunked: true,//是否分块上传，需要后台配合
             chunkSize: 5 * 1024 * 1024,
             chunkRetry: 3,

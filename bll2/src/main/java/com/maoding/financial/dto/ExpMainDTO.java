@@ -110,25 +110,16 @@ public class ExpMainDTO extends BaseDTO {
     private String remark;
 
     /**
-     * 报销单号
-     */
-    private String expNo;
-
-    /**
-     * 报销类别：1=报销申请，2=费用申请
-     */
-    private Integer type;
-    /**
-     * 报销明细
-     */
-    private List<ExpDetailDTO> detailList = new ArrayList<>();
-
-    /**
      * 拨款日期
      */
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date allocationDate;
+
+    /**
+     * 报销明细
+     */
+    private List<ExpDetailDTO> detailList = new ArrayList<ExpDetailDTO>();
 
     /**
      * 审核人id
@@ -182,6 +173,10 @@ public class ExpMainDTO extends BaseDTO {
 
     private String projectName;
 
+    /**
+     * 报销类别：1=报销申请，2=费用申请
+     */
+    private Integer type;
 
     /**
      * 拨款人
@@ -202,6 +197,10 @@ public class ExpMainDTO extends BaseDTO {
      */
     private Integer versionNum;
 
+    /**
+     * 报销单号
+     */
+    private String expNo;
 
     /**
      * 0:没有任何操作，1:退回记录重新提交,2:新生成记录

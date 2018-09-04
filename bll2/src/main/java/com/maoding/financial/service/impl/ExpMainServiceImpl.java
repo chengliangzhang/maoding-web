@@ -11,6 +11,7 @@ import com.maoding.companybill.dto.SaveCompanyBillDTO;
 import com.maoding.companybill.service.CompanyBalanceService;
 import com.maoding.companybill.service.CompanyBillService;
 import com.maoding.core.base.dto.BaseDTO;
+import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.bean.ResponseBean;
@@ -1332,11 +1333,30 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
     }
 
     @Override
-    public List<ExpMainDTO> getAuditData(ExpMainDTO dto) throws Exception {
+    public CorePageDTO<ExpMainDTO> getAuditDataForWeb(QueryAuditDTO dto) throws Exception {
+        CorePageDTO<ExpMainDTO> page = new CorePageDTO<>();
         List<ExpMainDTO> list = new ArrayList<>();
-        list = expMainDao.getAuditData(dto);
-        return null;
+        if ("1".equals(dto.getType())){
+            dto.setCompanyUserId(dto.getCurrentCompanyUserId());
+        }
+        if ("2".equals(dto.getType())){
+            dto.setAuditPerson(dto.getCurrentCompanyUserId());
+        }
+        if("3".equals(dto.getType())){
+            dto.setAuditPerson(dto.getCurrentCompanyUserId());
+        }
+        if("4".equals(dto.getType())){
+            dto.setIgnoreRecall("1");
+        }
+        list = expMainDao.getAuditDataForWeb(dto);
+        int count = expMainDao.getAuditDataForWebCount(dto);
+        page.setData(list);
+        page.setPageIndex(dto.getPageIndex());
+        page.setPageSize(dto.getPageSize());
+        page.setTotal(count);
+        return page;
     }
+
 
     /**
      * 方法描述：根据companyId查询所有有效项目(我要报销 选择项目下拉框 )app

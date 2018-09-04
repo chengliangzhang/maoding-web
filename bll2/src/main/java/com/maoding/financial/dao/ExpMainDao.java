@@ -156,6 +156,7 @@ public interface ExpMainDao extends BaseDao<ExpMainEntity> {
      * @param dto
      * @return
      */
-    List<ExpMainDTO> getAuditData(ExpMainDTO dto);
+    List<ExpMainDTO> getAuditDataForWeb(QueryAuditDTO dto);
 
+    int getAuditDataForWebCount(QueryAuditDTO dto);
 }

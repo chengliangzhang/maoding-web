@@ -37,10 +37,10 @@
                var dataAction = $this.attr('data-action');
                switch (dataAction){
                    case 'leaveApplication':
-
+                       $('body').m_approval_reimbursement_add(option,true);
                        break;
                    case 'travelApplication':
-
+                       $('body').m_approval_reimbursement_add(option,true);
                        break;
                    case 'reimbursementApplication':
                        var option = {};
@@ -48,7 +48,7 @@
 
                        break;
                    case 'feeApplication':
-
+                       $('body').m_approval_reimbursement_add(option,true);
                        break;
 
                }

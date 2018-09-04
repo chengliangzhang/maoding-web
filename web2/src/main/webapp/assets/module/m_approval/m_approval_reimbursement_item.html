@@ -1,0 +1,60 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <h4 class="title-line">
+            报销明细(<span data-action="itemIndex">{{data.itemIndex}}</span>)
+            {{if data.itemIndex>1}}
+            <a class="curp pull-right" href="javascript:void(0)"  data-action="delItem" title="删除报销明细">
+                <i class="glyphicon glyphicon-remove fc-red"></i>
+            </a>
+            {{/if}}
+        </h4>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">报销金额：</label>
+            <div class="col-sm-10">
+                <div class="input-group">
+                    <input placeholder="请输入报销金额" class="form-control" type="text" name="fee">
+                    <span class="input-group-addon">元</span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">报销类型：</label>
+            <div class="col-sm-10">
+                <select class="form-control full-width" name="expType" >
+                    {{each data.expTypeList as p }}
+                    <optgroup data-select2-id="{{p.parent.id}}" label="{{p.parent.name}}">
+                        {{if p.child!=null && p.child.length>0}}
+                        {{each p.child as c }}
+                        <option value="{{c.id}}">{{c.name}}</option>
+                        {{/each}}
+                        {{/if}}
+                    </optgroup>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">用途说明：</label>
+            <div class="col-sm-10">
+                <textarea placeholder="请输入用途说明" class="form-control" type="text" name="invoiceRemark"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">关联项目：</label>
+            <div class="col-sm-10">
+                <select class="form-control full-width" name="projectName" >
+                    {{each data.projectList as p }}
+                    <option>{{p.projectName}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">关联审批：</label>
+            <div class="col-sm-10">
+                <select class="form-control full-width" name="invoiceName" >
+                </select>
+            </div>
+        </div>
+    </div>
+</div>

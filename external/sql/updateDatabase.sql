@@ -2015,6 +2015,39 @@ CREATE PROCEDURE `initConst`()
         exp_type.classic_id = 47;
   END;
 call initConst();
+
+-- 审批状态(0:待审核，1:同意，2，退回,3:撤回,4:删除,5.审批中）,6:财务已拨款',
+DROP PROCEDURE IF EXISTS `initConst`;
+CREATE PROCEDURE `initConst`()
+  BEGIN
+    -- -- 常量
+    delete from md_list_const where classic_id = 48;
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,0,'待审核','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,1,'同意','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,2,'退回','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,3,'撤回','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,4,'删除','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,5,'审批中','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,6,'财务已拨款','');
+
+    -- -- 类型
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,48,'审批类别','md_type_exp_status');
+
+    -- 视图
+    CREATE OR REPLACE VIEW `md_type_exp_status` AS
+      select
+        exp_type_status.code_id as id,
+        exp_type_status.code_id as type_id,
+        exp_type_status.title   as type_title,
+        exp_type_status.title   as type_name,
+        exp_type_status.extra   as type_extra
+      from
+        md_list_const exp_type_status
+      where
+        exp_type_status.classic_id = 48;
+  END;
+call initConst();
+
 -- -- -- 创建及更改常量 -- 结束 -- -- --
 
 -- -- -- 创建及更改视图 -- 开始 -- -- --
