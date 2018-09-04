@@ -7,6 +7,7 @@ import com.maoding.financial.dto.*;
 import com.maoding.financial.entity.ExpCategoryEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 深圳市设计同道技术有限公司
@@ -22,7 +23,8 @@ public interface ExpCategoryService extends BaseService<ExpCategoryEntity> {
      * 作   者：LY
      * 日   期：2016/7/27 17:59
      */
-    AjaxMessage getExpBaseData(String companyId, String userId) throws Exception ;
+    AjaxMessage getExpBaseData(String companyId, String userId, String type) throws Exception ;
+    Map<String, Object> getExpBaseData(AuditQueryDTO query) throws Exception ;
 
     /**
      * 方法描述：报销类别基础数据

@@ -4,6 +4,7 @@ import com.maoding.core.base.dao.GenericDao;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.CompanyBillType;
+import com.maoding.core.util.BeanUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.financial.dao.ExpCategoryDao;
 import com.maoding.financial.dao.ExpCategoryRelationDao;
@@ -18,6 +19,7 @@ import com.maoding.org.dto.DepartDTO;
 import com.maoding.org.service.CompanyService;
 import com.maoding.org.service.CompanyUserService;
 import com.maoding.org.service.DepartService;
+import com.maoding.process.service.ProcessService;
 import com.maoding.project.dto.ProjectDTO;
 import com.maoding.project.service.ProjectService;
 import com.maoding.system.dao.DataDictionaryDao;
@@ -66,6 +68,9 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
     @Autowired
     private ExpMainService expMainService;
 
+    @Autowired
+    private ProcessService processService;
+
     private String otherIncome = "gdfy_qtywsr";
     private String directCost = "bx_ywfy";
     private String directCost2 = "zjxmcb";
@@ -78,14 +83,32 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
      * 日   期：2016/7/27 17:59
      */
     @Override
-    public AjaxMessage getExpBaseData(String companyId, String userId) throws Exception {
+    public AjaxMessage getExpBaseData(String companyId, String userId, String type) throws Exception {
+        AuditQueryDTO query = new AuditQueryDTO();
+        query.setCurrentCompanyId(companyId);
+        query.setAccountId(userId);
+        query.setAuditType(type);
+        return AjaxMessage.succeed(getExpBaseData(query));
+    }
+
+    @Override
+    public Map<String, Object> getExpBaseData(AuditQueryDTO query) throws Exception {
+        String companyId = query.getCurrentCompanyId();
+        String userId = query.getAccountId();
+
         Map<String, Object> map = new HashMap<>();
         map.put("expTypeList", getExpCategoryTypeList(companyId,userId));
         map.put("projectList", expMainService.getProjectListWS(companyId,userId));
-        QueryAuditDTO passAuditQuery = new QueryAuditDTO();
-        passAuditQuery.setCurrentCompanyId(companyId);
-        passAuditQuery.setAccountId(userId);
+
+        //合并获取关联审批接口
+        QueryAuditDTO passAuditQuery = BeanUtils.createFrom(query,QueryAuditDTO.class);
         map.put("auditList",expMainService.getPassAuditData(passAuditQuery));
+
+        //合并获取审批人接口
+        AuditEditDTO auditRequest = BeanUtils.createFrom(query,AuditEditDTO.class);
+        Map<String,Object> auditMap = processService.getCurrentProcess(auditRequest);
+        map.putAll(auditMap);
+
         Map<String, Object> mapParams = new HashMap<>();
         mapParams.put("companyId", companyId);
         mapParams.put("userId", userId);
@@ -102,7 +125,7 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
         list.add(0, dto);
         map.put("departListByCompanyId", list);
         map.put("companyUserList", companyUserService.getCompanyUserByCompanyId(companyId));
-        return new AjaxMessage().setCode("0").setData(map);
+        return map;
     }
 
     /**

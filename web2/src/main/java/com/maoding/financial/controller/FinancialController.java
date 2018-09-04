@@ -226,10 +226,24 @@ public class FinancialController extends BaseController {
      * 作   者：LY
      * 日   期：2016/7/27 17:59
      */
-    @RequestMapping(value = "/getExpBaseData", method = RequestMethod.GET)
+    @RequestMapping(value = {"/getExpBaseData","/getExpBaseData/{type}"}, method = RequestMethod.GET)
     @ResponseBody
-    public AjaxMessage getExpBaseData() throws Exception {
-        return expCategoryService.getExpBaseData(this.currentCompanyId, this.currentUserId);
+    @Deprecated
+    /** 接口改为了post **/
+    public AjaxMessage getExpBaseData(@PathVariable("type") String type) throws Exception {
+        return expCategoryService.getExpBaseData(this.currentCompanyId, this.currentUserId,type);
+    }
+
+    /**
+     * 方法描述：报销基础数据
+     * 作   者：LY
+     * 日   期：2016/7/27 17:59
+     */
+    @RequestMapping(value = "/getExpBaseData", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage getExpBaseDataByPost(@RequestBody AuditQueryDTO request) throws Exception {
+        updateCurrentUserInfo(request);
+        return AjaxMessage.succeed(expCategoryService.getExpBaseData(request));
     }
 
     /**
