@@ -578,9 +578,7 @@
         </if>
         GROUP BY exp_main.id
         order by exp_main.create_date DESC
-        <if test="startPage!=null">
-            LIMIT #{startPage},#{endPage}
-        </if>
+        <include refid="CommonMapper.limitSQL"/>
     </select>
 
     <select id="getTotalAmountByMainId" resultType="java.lang.String" parameterType="java.lang.String">
@@ -597,7 +595,7 @@
     </select>
 
 
-    <select id="getAuditData1" resultType="com.maoding.financial.dto.ExpMainDTO">
+    <select id="getAuditDataForWeb" resultType="com.maoding.financial.dto.ExpMainDTO" parameterType="com.maoding.financial.dto.QueryAuditDTO">
         SELECT
             exp_main.id,
             exp_main.company_user_id AS companyUserId,
@@ -606,18 +604,80 @@
             company_user.user_name AS userName,
             exp_main.exp_no AS expNo,
             exp_main.approve_status AS approveStatus,
-            exp_main.type
+            s.type_name AS approveStatusName,
+            exp_main.type,
+            e.type_name AS expTypeName
         FROM
             maoding_web_exp_main exp_main
         INNER JOIN maoding_web_company_user company_user ON exp_main.company_user_id = company_user.id
+        INNER JOIN md_type_exp_status AS s ON s.id = exp_main.approve_status
+        INNER JOIN md_type_exp as e ON e.id = exp_main.type
         LEFT JOIN maoding_web_exp_audit exp_audit ON exp_main.id = exp_audit.main_id
         WHERE
 	      1 = 1
         AND exp_main.approve_status != '4'
-        AND exp_main.company_user_id =#{companyUserId}
-        AND exp_audit.approve_status = 0
-        AND exp_audit.is_new = 'Y'
+        <if test="companyUserId!=null">
+            AND exp_main.company_user_id =#{companyUserId}
+        </if>
+        <if test="type=='2'.toString()">
+           and exp_audit.approve_status = 0 and exp_audit.is_new='Y'
+        </if>
+        <if test="type=='3'.toString()">
+            and exp_audit.approve_status != 0
+        </if>
+        <if test="auditPerson!=null">
+            AND exp_audit.audit_person =#{auditPerson}
+        </if>
+        <if test="type=='4'.toString()">
+            <choose>
+                <when test="ignoreRecall!=null">
+                    and (exp_main.approve_status = 1 or exp_main.approve_status = 6 )
+                </when>
+                <otherwise>
+                    and (exp_main.approve_status = 1 or exp_main.approve_status = 6 or exp_main.approve_status = 2)
+                </otherwise>
+            </choose>
+        </if>
+
         GROUP BY exp_main.id
         order by exp_main.create_date DESC
+        <include refid="CommonMapper.limitSQL"/>
+    </select>
+
+    <select id="getAuditDataForWebCount" resultType="java.lang.Integer" parameterType="com.maoding.financial.dto.QueryAuditDTO">
+        SELECT
+            count(distinct exp_main.id)
+        FROM
+            maoding_web_exp_main exp_main
+        INNER JOIN maoding_web_company_user company_user ON exp_main.company_user_id = company_user.id
+        INNER JOIN md_type_exp_status AS s ON s.id = exp_main.approve_status
+        INNER JOIN md_type_exp as e ON e.id = exp_main.type
+        LEFT JOIN maoding_web_exp_audit exp_audit ON exp_main.id = exp_audit.main_id
+        WHERE
+        1 = 1
+        AND exp_main.approve_status != '4'
+        <if test="companyUserId!=null">
+            AND exp_main.company_user_id =#{companyUserId}
+        </if>
+        <if test="type=='2'.toString()">
+            and exp_audit.approve_status = 0 and exp_audit.is_new='Y'
+        </if>
+        <if test="type=='3'.toString()">
+            and exp_audit.approve_status != 0
+        </if>
+        <if test="auditPerson!=null">
+            AND exp_audit.audit_person =#{auditPerson}
+        </if>
+        <if test="type=='4'.toString()">
+            <choose>
+                <when test="ignoreRecall!=null">
+                    and (exp_main.approve_status = 1 or exp_main.approve_status = 6 )
+                </when>
+                <otherwise>
+                    and (exp_main.approve_status = 1 or exp_main.approve_status = 6 or exp_main.approve_status = 2)
+                </otherwise>
+            </choose>
+        </if>
+
     </select>
 </mapper>

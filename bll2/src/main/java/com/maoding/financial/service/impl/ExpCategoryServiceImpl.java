@@ -82,6 +82,10 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
         Map<String, Object> map = new HashMap<>();
         map.put("expTypeList", getExpCategoryTypeList(companyId,userId));
         map.put("projectList", expMainService.getProjectListWS(companyId,userId));
+        QueryAuditDTO passAuditQuery = new QueryAuditDTO();
+        passAuditQuery.setCurrentCompanyId(companyId);
+        passAuditQuery.setAccountId(userId);
+        map.put("auditList",expMainService.getPassAuditData(passAuditQuery));
         Map<String, Object> mapParams = new HashMap<>();
         mapParams.put("companyId", companyId);
         mapParams.put("userId", userId);
