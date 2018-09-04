@@ -19,6 +19,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.*;
@@ -35,7 +36,7 @@ public class BalanceDetailExportServiceImpl  extends BaseExportServiceImpl<Stati
     String amountStr = "金额（元）";
 
     @Override
-    public AjaxMessage exportDownloadResource(HttpServletResponse response, StatisticDetailQueryDTO queryDTO) throws Exception {
+    public AjaxMessage exportDownloadResource(HttpServletRequest request, HttpServletResponse response, StatisticDetailQueryDTO queryDTO) throws Exception {
         //1.查找列表数据
         List<StatisticDetailDTO> dataList = statisticService.getExpensesDetailLedger(queryDTO);
         //2.查找统计
@@ -43,7 +44,7 @@ public class BalanceDetailExportServiceImpl  extends BaseExportServiceImpl<Stati
         if(statisticSum!=null && statisticSum.getPay()!=null){
             statisticSum.setPay(new BigDecimal("0").subtract(statisticSum.getPay()));
         }
-       return this.exportDownloadResource(response,dataList,statisticSum,queryDTO);
+       return this.exportDownloadResource(request,response,dataList,statisticSum,queryDTO);
     }
 
     int exportTitle(List<CoreShowDTO> titleList,StatisticDetailSummaryDTO statisticSum, StatisticDetailQueryDTO dto,Sheet sheet,Workbook wb){

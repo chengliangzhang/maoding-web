@@ -3,15 +3,11 @@ package com.maoding.excelExport.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.util.BeanUtils;
-import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
-import com.maoding.core.util.TxtFileUtil;
 import com.maoding.excelExport.service.BaseExportService;
 import com.maoding.project.dto.ProjectQueryDTO;
 import com.maoding.statistic.dto.StatisticDetailQueryDTO;
-import com.maoding.task.dto.ProjectTaskExportDTO;
 import com.maoding.task.dto.QueryProjectTaskDTO;
-import com.maoding.task.service.ProjectTaskExportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -61,9 +57,9 @@ public class ExcelExportController extends BaseController {
         StatisticDetailQueryDTO query = new StatisticDetailQueryDTO();
         BeanUtils.copyProperties(this.getParam(request),query);
         query.setCurrentCompanyId(this.currentCompanyId);
-        query.setExcelFileName("台账明细.xlsx");
+        query.setExcelFileName("台账明细");
         //query.setTemplateFileName(new TxtFileUtil().getWebRoot() + "assets/template/statistic/balanceDetail.xlsx");
-        balanceDetailExportService.exportDownloadResource(response, query);
+        balanceDetailExportService.exportDownloadResource(request,response, query);
     }
 
     /**
@@ -78,8 +74,8 @@ public class ExcelExportController extends BaseController {
         query.setCurrentCompanyId(this.currentCompanyId);
         query.setAccountId(this.currentUserId);
         query.setCurrentCompanyUserId(this.currentCompanyUserId);
-        query.setExcelFileName("项目列表.xlsx");
-        projectExportService.exportDownloadResource(response, query);
+        query.setExcelFileName("项目列表");
+        projectExportService.exportDownloadResource(request,response, query);
     }
 
     /**
@@ -97,8 +93,8 @@ public class ExcelExportController extends BaseController {
             query.setCompanyId(this.currentCompanyId);
         }
         query.setCurrentCompanyUserId(this.currentCompanyUserId);
-        query.setExcelFileName("生产安排列表.xlsx");
-        taskExportService.exportDownloadResource(response, query);
+        query.setExcelFileName("生产安排列表");
+        taskExportService.exportDownloadResource(request,response, query);
     }
 
     public static JSONObject getParam(HttpServletRequest request){

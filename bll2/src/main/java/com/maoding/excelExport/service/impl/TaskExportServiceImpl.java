@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -106,13 +107,13 @@ public class TaskExportServiceImpl extends BaseExportServiceImpl<ProjectDesignTa
     }
 
     @Override
-    public AjaxMessage exportDownloadResource(HttpServletResponse response, QueryProjectTaskDTO query) throws Exception {
+    public AjaxMessage exportDownloadResource(HttpServletRequest request, HttpServletResponse response, QueryProjectTaskDTO query) throws Exception {
 
         //1.查找列表数据
         String currentCompanyUserId = query.getCurrentCompanyUserId();
         String companyId = query.getCompanyId();//此句必须在getSelectOrg后面。因为在getSelectOrg中可能改变了companyId
         List<ProjectDesignTaskShow> dataList = projectTaskService.getProjectDesignTaskList(companyId, query.getProjectId(), currentCompanyUserId, query.getIssueTaskId());
-        return this.exportDownloadResource(response, dataList, null, query);
+        return this.exportDownloadResource(request,response, dataList, null, query);
     }
 
 }

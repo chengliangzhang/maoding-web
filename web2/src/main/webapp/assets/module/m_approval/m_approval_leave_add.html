@@ -1,0 +1,93 @@
+<form class="form-horizontal m">
+    <div class="panel panel-default">
+        <div class="panel-body">
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">{{data.title}}类型：</label>
+                <div class="col-sm-10">
+                    <select class="form-control full-width" name="expType" >
+
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">开始时间：</label>
+                <div class="col-sm-10">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="ipt_startTime" name="startTime" placeholder="开始时间" readonly onFocus="WdatePicker({maxDate:'#F{$dp.$D(\'ipt_endTime\')}'})" >
+                        <span class="input-group-addon ">
+                            <i class="icon-append fa fa-calendar"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">结束时间：</label>
+                <div class="col-sm-10">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="ipt_endTime" name="endTime" placeholder="开始时间" readonly onFocus="WdatePicker({maxDate:'#F{$dp.$D(\'ipt_startTime\')}'})" >
+                        <span class="input-group-addon ">
+                            <i class="icon-append fa fa-calendar"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">{{data.title}}天数：</label>
+                <div class="col-sm-10">
+                    <div class="input-group">
+                        <input placeholder="请输入报销金额" class="form-control" type="text" name="expAmount">
+                        <span class="input-group-addon">天</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">{{data.title}}事由：</label>
+                <div class="col-sm-10">
+                    <textarea placeholder="请输入{{data.title}}事由" class="form-control" type="text" name="expUse"></textarea>
+                </div>
+            </div>
+            {{if data.doType==4}}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">关联项目：</label>
+                <div class="col-sm-10">
+                    <select class="form-control full-width" name="projectName" >
+                        {{each data.projectList as p }}
+                        <option value="{{p.id}}">{{p.projectName}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">附件：</label>
+        <div class="col-sm-10">
+            <div class="row">
+                <div class="col-md-12 m-b-sm">
+                    <span id="showFileLoading"> </span>
+                </div>
+                <div class="col-md-12 m-b-sm">
+                    <span class="uploadmgrContainer"> </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group m-b-none">
+        <div class="col-md-12">
+            <span class="uploadmgrContainer"></span>
+        </div>
+    </div>
+    <div class="hr-line-dashed m-t-none m-b-sm"></div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">审批人：</label>
+        <div class="col-sm-10">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">抄送人：</label>
+        <div class="col-sm-10">
+        </div>
+    </div>
+</form>

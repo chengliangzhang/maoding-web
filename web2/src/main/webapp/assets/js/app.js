@@ -52,6 +52,7 @@ $(document).ready(function () {
         } else {
             $('body').removeClass('body-small')
         }
+        fix_height();
     });
     // Full height of sidebar
     function fix_height() {

@@ -4,7 +4,6 @@ import com.maoding.core.base.dao.GenericDao;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.CompanyBillType;
-import com.maoding.core.util.BeanUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.financial.dao.ExpCategoryDao;
 import com.maoding.financial.dao.ExpCategoryRelationDao;
@@ -125,6 +124,7 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
         list.add(0, dto);
         map.put("departListByCompanyId", list);
         map.put("companyUserList", companyUserService.getCompanyUserByCompanyId(companyId));
+        map.put("passAuditData",expMainService.getPassAuditData(passAuditQuery));
         return map;
     }
 

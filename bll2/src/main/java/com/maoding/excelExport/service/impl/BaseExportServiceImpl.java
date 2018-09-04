@@ -7,11 +7,13 @@ import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.util.ExcelUtils;
 import com.maoding.excelExport.dto.ExcelDataDTO;
 import com.maoding.excelExport.service.BaseExportService;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -53,7 +55,7 @@ public abstract class BaseExportServiceImpl<T,B,C extends BaseDTO>  extends NewB
         return wb;
     }
 
-    public AjaxMessage exportDownloadResource(HttpServletResponse response,  List<T> dataList,B statisticSum,C queryDTO) throws Exception {
+    public AjaxMessage exportDownloadResource(HttpServletRequest request, HttpServletResponse response, List<T> dataList, B statisticSum, C queryDTO) throws Exception {
         //填充excel数据
         Workbook wb = this.getExportedResource(dataList,statisticSum,queryDTO);
         ServletOutputStream out = null;
@@ -61,8 +63,7 @@ public abstract class BaseExportServiceImpl<T,B,C extends BaseDTO>  extends NewB
         response.setContentType("multipart/form-data");
         //2.设置文件头：最后一个参数是设置下载文件名，需转换为UTF-8
         try {
-            String fn = java.net.URLEncoder.encode(queryDTO.getExcelFileName(), "UTF-8");
-            response.setHeader("Content-Disposition", "attachment;fileName=" + fn);
+            setFileName(request,response,queryDTO.getExcelFileName());
             out = response.getOutputStream();
             if (wb != null) {
                 wb.write(out);
@@ -81,6 +82,18 @@ public abstract class BaseExportServiceImpl<T,B,C extends BaseDTO>  extends NewB
             }
         }
         return AjaxMessage.succeed("获取成功");
+    }
+
+    private void setFileName(HttpServletRequest request, HttpServletResponse response,String fileName) throws Exception{
+        String  browserDetails = request.getHeader("User-Agent").toLowerCase();
+        if(browserDetails != null && browserDetails.indexOf("firefox") > 0){
+            fileName = "=?UTF-8?B?" + (new String(Base64.encodeBase64(fileName.getBytes("UTF-8")))) + "?=";
+        } else{
+            fileName =  java.net.URLEncoder.encode(fileName, "UTF-8");
+        }
+        fileName += ".xlsx";
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8");
+        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
     }
 
     /**

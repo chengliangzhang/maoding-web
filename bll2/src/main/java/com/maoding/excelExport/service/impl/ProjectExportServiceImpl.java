@@ -18,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,9 +68,9 @@ public class ProjectExportServiceImpl extends BaseExportServiceImpl<ProjectVaria
 
 
     @Override
-    public AjaxMessage exportDownloadResource(HttpServletResponse response, ProjectQueryDTO queryDTO) throws Exception {
+    public AjaxMessage exportDownloadResource(HttpServletRequest request, HttpServletResponse response, ProjectQueryDTO queryDTO) throws Exception {
         //1.查找列表数据
         List<ProjectVariableDTO> dataList = projectService.listProject(queryDTO);
-        return this.exportDownloadResource(response,dataList,null,queryDTO);
+        return this.exportDownloadResource(request,response,dataList,null,queryDTO);
     }
 }

@@ -63,12 +63,34 @@
 
                     var html = template('m_approval/m_approval_data_list', {dataList:response.data.data});
                     $(that.element).find('.data-list-container').html(html);
-
+                    that.bindTrClick();
                 } else {
                     S_dialog.error(response.info);
                 }
             });
 
+        }
+        ,bindTrClick:function () {
+            var that = this;
+            $(that.element).find('tr').off('click').on('click',function () {
+                var $this = $(this);
+                var type = $this.attr('data-type');
+
+                if(type==1 || type==2 || type==5){
+
+                    var option = {};
+                    option.doType = type;
+                    $('body').m_approval_cost_details(option,true);
+
+                }else if(type==3 || type==4){
+
+                    var option = {};
+                    option.doType = type;
+                    $('body').m_approval_leave_details(option,true);
+
+                }
+
+            });
         }
 
     });

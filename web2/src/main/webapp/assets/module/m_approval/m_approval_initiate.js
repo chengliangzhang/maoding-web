@@ -37,18 +37,25 @@
                var dataAction = $this.attr('data-action');
                switch (dataAction){
                    case 'leaveApplication':
-                       $('body').m_approval_reimbursement_add(option,true);
+                       var option = {};
+                       option.doType = 3;
+                       $('body').m_approval_leave_add(option,true);
                        break;
                    case 'travelApplication':
-                       $('body').m_approval_reimbursement_add(option,true);
+                       var option = {};
+                       option.doType = 4;
+                       $('body').m_approval_leave_add(option,true);
                        break;
                    case 'reimbursementApplication':
                        var option = {};
-                       $('body').m_approval_reimbursement_add(option,true);
+                       option.doType = 1;
+                       $('body').m_approval_cost_add(option,true);
 
                        break;
                    case 'feeApplication':
-                       $('body').m_approval_reimbursement_add(option,true);
+                       var option = {};
+                       option.doType = 2;
+                       $('body').m_approval_cost_add(option,true);
                        break;
 
                }

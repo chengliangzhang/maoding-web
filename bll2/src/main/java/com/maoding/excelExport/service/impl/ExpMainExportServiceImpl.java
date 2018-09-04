@@ -14,6 +14,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
@@ -77,7 +78,7 @@ public class ExpMainExportServiceImpl extends BaseExportServiceImpl<ExpMainDTO, 
     }
 
     @Override
-    public AjaxMessage exportDownloadResource(HttpServletResponse response, ExpMainDTO query) throws Exception {
+    public AjaxMessage exportDownloadResource(HttpServletRequest request, HttpServletResponse response, ExpMainDTO query) throws Exception {
         //1.查找列表数据
         Map<String, Object> map = new HashMap<>();
         map.put("type", query.getType());
@@ -87,6 +88,6 @@ public class ExpMainExportServiceImpl extends BaseExportServiceImpl<ExpMainDTO, 
 
         List<ExpMainDTO> dataList = expMainService.getExpMainListPageForSummary(map);
 
-        return this.exportDownloadResource(response, dataList, null, query);
+        return this.exportDownloadResource(request,response, dataList, null, query);
     }
 }

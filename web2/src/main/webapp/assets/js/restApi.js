@@ -361,5 +361,6 @@ var restApi = {
 
     /**审批管理**/
     , url_getAuditData:window.rootPath+'/iWork/finance/getAuditData'
+    , url_getPassAuditData:window.rootPath+'/iWork/finance/getPassAuditData'
 
 };

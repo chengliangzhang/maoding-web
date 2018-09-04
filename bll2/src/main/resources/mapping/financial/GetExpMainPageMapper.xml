@@ -636,20 +636,22 @@
             and copy.company_user_id = #{ccCompanyUserId}
             and (exp_main.approve_status = 6 and 3> exp_main.type or exp_main.approve_status = 1 and exp_main.type >2 )
         </if>
+        <if test="type=='5'.toString()">
+            AND exp_main.approve_status = 1 and exp_main.type = 4
+        </if>
 
         GROUP BY exp_main.id
         order by exp_main.create_date DESC
         <include refid="CommonMapper.limitSQL"/>
     </select>
 
+<!--页面 审批管理 我申请的，待我审批，我已审批，抄送我的，分页功能-->
     <select id="getAuditDataForWebCount" resultType="java.lang.Integer" parameterType="com.maoding.financial.dto.QueryAuditDTO">
         SELECT
             count(distinct exp_main.id)
         FROM
             maoding_web_exp_main exp_main
---         INNER JOIN maoding_web_company_user company_user ON exp_main.company_user_id = company_user.id
---         INNER JOIN md_type_exp_status AS s ON s.id = exp_main.approve_status
---         INNER JOIN md_type_exp as e ON e.id = exp_main.type
+
         <if test="type=='4'.toString()">
             INNER JOIN maoding_copy_record copy on exp_main.id = copy.target_id
         </if>
@@ -673,6 +675,9 @@
             and copy.deleted = 0
             and copy.company_user_id = #{ccCompanyUserId}
             and (exp_main.approve_status = 6 and 3> exp_main.type or exp_main.approve_status = 1 and exp_main.type >2 )
+        </if>
+        <if test="type=='5'.toString()">
+            AND exp_main.approve_status = 1 and exp_main.type = 4
         </if>
 
     </select>

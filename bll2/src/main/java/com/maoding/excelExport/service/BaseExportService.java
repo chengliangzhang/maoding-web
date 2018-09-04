@@ -7,6 +7,7 @@ import com.maoding.statistic.dto.StatisticDetailQueryDTO;
 import com.maoding.statistic.dto.StatisticDetailSummaryDTO;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -20,5 +21,5 @@ public interface BaseExportService<T,B,C extends BaseDTO> {
     /**
      * 导出excel通用接口
      */
-    AjaxMessage exportDownloadResource(HttpServletResponse response, C queryDTO) throws Exception;
+    AjaxMessage exportDownloadResource(HttpServletRequest request, HttpServletResponse response, C queryDTO) throws Exception;
 }

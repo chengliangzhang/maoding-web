@@ -1361,19 +1361,30 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         }
     }
 
+    /**
+     * 作者：FYT
+     * 日期：2018/9/4
+     * @param dto
+     * @return
+     * @throws Exception
+     */
     @Override
     public CorePageDTO<ExpMainDTO> getAuditDataForWeb(QueryAuditDTO dto) throws Exception {
         CorePageDTO<ExpMainDTO> page = new CorePageDTO<>();
         List<ExpMainDTO> list = new ArrayList<>();
+        //页面审批管理：我申请的（type=1）
         if ("1".equals(dto.getType())){
             dto.setCompanyUserId(dto.getCurrentCompanyUserId());
         }
+        //页面审批管理：待我审批（type=2）
         if ("2".equals(dto.getType())){
             dto.setAuditPerson(dto.getCurrentCompanyUserId());
         }
+        //页面审批管理：我已审批（type=3）
         if("3".equals(dto.getType())){
             dto.setAuditPerson(dto.getCurrentCompanyUserId());
         }
+        //页面审批管理：抄送我的（type=4）
         if("4".equals(dto.getType())){
             dto.setCcCompanyUserId(dto.getCurrentCompanyUserId());
         }
@@ -1410,8 +1421,12 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
 
     @Override
     public List<AuditDataDTO> getPassAuditData(QueryAuditDTO query) throws Exception {
-        query.setIgnoreRecall("1");//忽略 退回的记录
-        return getAuditDataDTO(query);
+        query.setCompanyUserId(query.getCurrentCompanyUserId());
+        //忽略 退回的记录
+        query.setType("4");
+        query.setExpType("4");
+//       return expMainDao.getAuditDataForWeb(query);
+       return getAuditDataDTO(query);
     }
 
 
