@@ -1346,7 +1346,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
             dto.setAuditPerson(dto.getCurrentCompanyUserId());
         }
         if("4".equals(dto.getType())){
-            dto.setIgnoreRecall("1");
+            dto.setCcCompanyUserId(dto.getCurrentCompanyUserId());
         }
         list = expMainDao.getAuditDataForWeb(dto);
         int count = expMainDao.getAuditDataForWebCount(dto);

@@ -613,6 +613,9 @@
         INNER JOIN md_type_exp_status AS s ON s.id = exp_main.approve_status
         INNER JOIN md_type_exp as e ON e.id = exp_main.type
         LEFT JOIN maoding_web_exp_audit exp_audit ON exp_main.id = exp_audit.main_id
+        <if test="type=='4'.toString()">
+            INNER JOIN maoding_copy_record copy on exp_main.id = copy.target_id
+        </if>
         WHERE
 	      1 = 1
         AND exp_main.approve_status != '4'
@@ -629,14 +632,9 @@
             AND exp_audit.audit_person =#{auditPerson}
         </if>
         <if test="type=='4'.toString()">
-            <choose>
-                <when test="ignoreRecall!=null">
-                    and (exp_main.approve_status = 1 or exp_main.approve_status = 6 )
-                </when>
-                <otherwise>
-                    and (exp_main.approve_status = 1 or exp_main.approve_status = 6 or exp_main.approve_status = 2)
-                </otherwise>
-            </choose>
+            and copy.deleted = 0
+            and copy.company_user_id = #{ccCompanyUserId}
+            and (exp_main.approve_status = 6 and 3> exp_main.type or exp_main.approve_status = 1 and exp_main.type >2 )
         </if>
 
         GROUP BY exp_main.id
@@ -649,9 +647,12 @@
             count(distinct exp_main.id)
         FROM
             maoding_web_exp_main exp_main
-        INNER JOIN maoding_web_company_user company_user ON exp_main.company_user_id = company_user.id
-        INNER JOIN md_type_exp_status AS s ON s.id = exp_main.approve_status
-        INNER JOIN md_type_exp as e ON e.id = exp_main.type
+--         INNER JOIN maoding_web_company_user company_user ON exp_main.company_user_id = company_user.id
+--         INNER JOIN md_type_exp_status AS s ON s.id = exp_main.approve_status
+--         INNER JOIN md_type_exp as e ON e.id = exp_main.type
+        <if test="type=='4'.toString()">
+            INNER JOIN maoding_copy_record copy on exp_main.id = copy.target_id
+        </if>
         LEFT JOIN maoding_web_exp_audit exp_audit ON exp_main.id = exp_audit.main_id
         WHERE
         1 = 1
@@ -669,14 +670,9 @@
             AND exp_audit.audit_person =#{auditPerson}
         </if>
         <if test="type=='4'.toString()">
-            <choose>
-                <when test="ignoreRecall!=null">
-                    and (exp_main.approve_status = 1 or exp_main.approve_status = 6 )
-                </when>
-                <otherwise>
-                    and (exp_main.approve_status = 1 or exp_main.approve_status = 6 or exp_main.approve_status = 2)
-                </otherwise>
-            </choose>
+            and copy.deleted = 0
+            and copy.company_user_id = #{ccCompanyUserId}
+            and (exp_main.approve_status = 6 and 3> exp_main.type or exp_main.approve_status = 1 and exp_main.type >2 )
         </if>
 
     </select>

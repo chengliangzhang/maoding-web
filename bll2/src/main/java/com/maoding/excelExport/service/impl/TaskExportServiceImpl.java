@@ -3,6 +3,7 @@ package com.maoding.excelExport.service.impl;
 import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.util.DateUtils;
+import com.maoding.core.util.StringUtil;
 import com.maoding.excelExport.dto.ExcelDataDTO;
 import com.maoding.project.dto.ProjectDesignUser;
 import com.maoding.project.dto.ProjectTaskProcessNodeDTO;
@@ -38,9 +39,15 @@ public class TaskExportServiceImpl extends BaseExportServiceImpl<ProjectDesignTa
 
         List<Map<String, ExcelDataDTO>> excelDataList = new ArrayList<>();
         dataList.stream().forEach((ProjectDesignTaskShow d) -> {
+            String st = "";
+            String et = "";
 
-            String st = dateUtils.formatDate(d.getPlanStartTime());
-            String et = dateUtils.formatDate(d.getPlanEndTime());
+            if(!StringUtil.isNullOrEmpty(d.getPlanStartTime()) &&!StringUtil.isNullOrEmpty(d.getPlanEndTime()) ){
+
+                st = dateUtils.formatDate(d.getPlanStartTime());
+                et = dateUtils.formatDate(d.getPlanEndTime());
+            }
+
             Map<String, ExcelDataDTO> map = new HashMap<>();
 
             map.put("任务名称", new ExcelDataDTO(d.getTaskName(), 1));
@@ -49,7 +56,7 @@ public class TaskExportServiceImpl extends BaseExportServiceImpl<ProjectDesignTa
             map.put("设计人员", new ExcelDataDTO(getUserNames(d.getDesignUser()), 1));
             map.put("校对人员", new ExcelDataDTO(getUserNames(d.getCheckUser()), 1));
             map.put("审核人员", new ExcelDataDTO(getUserNames(d.getExamineUser()), 1));
-            map.put("计划进度", new ExcelDataDTO(d.getPlanStartTime() == null || d.getPlanEndTime() == null ? "" : (st + "~" + et + " |共" + transformDate(st, et) + "天"), 1));
+            map.put("计划进度", new ExcelDataDTO(d.getPlanStartTime() == null || d.getPlanEndTime() == null ? "" : (st + "~" + et + " |共" + d.getAllDay() + "天"), 1));
             map.put("进度提示", new ExcelDataDTO(d.getStatusText(), 1));
             map.put("完成时间", new ExcelDataDTO(d.getCompleteDate(), 1));
             map.put("完成情况", new ExcelDataDTO(d.getCompletion(), 1));
@@ -83,10 +90,10 @@ public class TaskExportServiceImpl extends BaseExportServiceImpl<ProjectDesignTa
                 , new CoreShowDTO("6", "审核人员")
                 , new CoreShowDTO("7", "计划进度")
                 , new CoreShowDTO("8", "进度提示")
-                , new CoreShowDTO("8", "完成时间")
-                , new CoreShowDTO("8", "完成情况")
-                , new CoreShowDTO("8", "任务状态")
-                , new CoreShowDTO("8", "优先级")
+                , new CoreShowDTO("9", "完成时间")
+                , new CoreShowDTO("10", "完成情况")
+                , new CoreShowDTO("11", "任务状态")
+                , new CoreShowDTO("12", "优先级")
         );
         return titleList;
     }
@@ -108,34 +115,4 @@ public class TaskExportServiceImpl extends BaseExportServiceImpl<ProjectDesignTa
         return this.exportDownloadResource(response, dataList, null, query);
     }
 
-
-    //两个日期相减获得（页面：计划进度  共*天）
-    private String transformDate(String startTime, String endTime) {
-        String dateStart = startTime;
-        String dateStop = endTime;
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
-        Date d1 = null;
-        Date d2 = null;
-
-        try {
-            d1 = format.parse(dateStart);
-            d2 = format.parse(dateStop);
-            //毫秒ms
-            long diff = d2.getTime() - d1.getTime();
-
-            long diffSeconds = diff / 1000 % 60;//秒
-            long diffMinutes = diff / (60 * 1000) % 60;//分钟
-            long diffHours = diff / (60 * 60 * 1000) % 24;//小时
-            long diffDays = diff / (24 * 60 * 60 * 1000);//天
-
-            //当天也算一天
-            return (1 + diffDays) + "";
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }
