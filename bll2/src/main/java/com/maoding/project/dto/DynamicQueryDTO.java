@@ -64,6 +64,12 @@ public class DynamicQueryDTO extends CoreQueryDTO {
     /** 审核人员 **/
     private int needAuditor;
 
+    /** 计划款项 **/
+    private int needPlanCost;
+
+    /** 实际款项 **/
+    private int needRealCost;
+
     /** 合同回款、合同到款 **/
     private int needContractFee;
 
@@ -84,6 +90,22 @@ public class DynamicQueryDTO extends CoreQueryDTO {
 
     /** 功能分类 **/
     private int needBuildType;
+
+    public int getNeedPlanCost() {
+        return needPlanCost;
+    }
+
+    public void setNeedPlanCost(int needPlanCost) {
+        this.needPlanCost = needPlanCost;
+    }
+
+    public int getNeedRealCost() {
+        return needRealCost;
+    }
+
+    public void setNeedRealCost(int needRealCost) {
+        this.needRealCost = needRealCost;
+    }
 
     public int getNeedCostTypeName() {
         return needCostTypeName;

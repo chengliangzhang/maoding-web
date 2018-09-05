@@ -51,6 +51,8 @@ import com.maoding.project.service.ProjectDesignContentService;
 import com.maoding.project.service.ProjectService;
 import com.maoding.project.service.ProjectSkyDriverService;
 import com.maoding.projectcost.dao.ProjectCostDao;
+import com.maoding.projectcost.dto.CostAmountDTO;
+import com.maoding.projectcost.dto.ProjectCostQueryDTO;
 import com.maoding.projectcost.dto.ProjectCostSingleSummaryDTO;
 import com.maoding.projectcost.dto.ProjectCostSummaryQueryDTO;
 import com.maoding.projectcost.service.ProjectCostService;
@@ -2814,61 +2816,33 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
                 }
 
                 //添加费用信息，如合同回款、合同到款等
-                //合同回款，合同到款
-                if (query.getNeedContractFee() == 1){
-                    ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_CONTRACT);
-                    if (cost != null) {
-                        project.setContract(cost.getPlan());
-                        project.setContractReal(cost.getReal());
+                //计划款项
+                if (query.getNeedPlanCost() == 1){
+                    ProjectCostQueryDTO costQuery = new ProjectCostQueryDTO(project.getId(),query.getCompanyId());
+                    CostAmountDTO planAmount = projectCostDao.getCostAmountPlan(costQuery);
+                    if (planAmount != null) {
+                        project.setContract(DigitUtils.parseDouble(planAmount.getContract()));
+                        project.setTechnicalGain(DigitUtils.parseDouble(planAmount.getTechnicalGain()));
+                        project.setCooperateGain(DigitUtils.parseDouble(planAmount.getCooperateGain()));
+                        project.setOtherGain(DigitUtils.parseDouble(planAmount.getOtherGain()));
+                        project.setTechnicalPay(DigitUtils.parseDouble(planAmount.getTechnicalPay()));
+                        project.setCooperatePay(DigitUtils.parseDouble(planAmount.getCooperatePay()));
+                        project.setOtherPay(DigitUtils.parseDouble(planAmount.getOtherPay()));
                     }
                 }
 
-                //技术审查费（支出）及到款，技术审查费（收入）及付款
-                if (query.getNeedTechnicalFee() == 1){
-                    //如果是项目乙方，则设置技术审查费（收入），如果不是项目乙方，则设置技术审查费（支出），否则无需设置
-                    ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_TECHNICAL);
-                    if (cost != null) {
-                        if (StringUtils.isSame(project.getCompanyBid(),query.getCompanyId())) {
-                            project.setTechnicalGain(cost.getPlan());
-                            project.setTechnicalGainReal(cost.getReal());
-                        } else {
-                            project.setTechnicalPay(cost.getPlan());
-                            project.setTechnicalPayReal(cost.getReal());
-                        }
-                    }
-                }
-
-                //合作设计费（收款）及到款
-                if (query.getNeedCooperateGainFee() == 1){
-                    ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_COOPERATE_GAIN);
-                    if (cost != null) {
-                        project.setCooperateGain(cost.getPlan());
-                        project.setCooperateGainReal(cost.getReal());
-                    }
-                }
-
-                //其他费用（收入）及到款
-                if (query.getNeedOtherGainFee() == 1){
-                    ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_IN);
-                    if (cost != null) {
-                        project.setOtherGain(cost.getPlan());
-                        project.setOtherGainReal(cost.getReal());
-                    }
-                }
-                //合作设计费（支出）及付款
-                if (query.getNeedCooperatePayFee() == 1){
-                    ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_COOPERATE_PAY);
-                    if (cost != null) {
-                        project.setCooperatePay(cost.getPlan());
-                        project.setCooperatePayReal(cost.getReal());
-                    }
-                }
-                //其他费用（支出）及付款
-                if (query.getNeedOtherPayFee() == 1){
-                    ProjectCostSingleSummaryDTO cost = getProjectFee(project.getId(),query.getCompanyId(),ProjectCostConst.FEE_TYPE_OUT);
-                    if (cost != null) {
-                        project.setOtherPay(cost.getPlan());
-                        project.setOtherPayReal(cost.getReal());
+                //实际款项
+                if (query.getNeedRealCost() == 1){
+                    ProjectCostQueryDTO costQuery = new ProjectCostQueryDTO(project.getId(),query.getCompanyId());
+                    CostAmountDTO realAmount = projectCostDao.getCostAmountReal(costQuery);
+                    if (realAmount != null) {
+                        project.setContractReal(DigitUtils.parseDouble(realAmount.getContract()));
+                        project.setTechnicalGainReal(DigitUtils.parseDouble(realAmount.getTechnicalGain()));
+                        project.setCooperateGainReal(DigitUtils.parseDouble(realAmount.getCooperateGain()));
+                        project.setOtherGainReal(DigitUtils.parseDouble(realAmount.getOtherGain()));
+                        project.setTechnicalPayReal(DigitUtils.parseDouble(realAmount.getTechnicalPay()));
+                        project.setCooperatePayReal(DigitUtils.parseDouble(realAmount.getCooperatePay()));
+                        project.setOtherPayReal(DigitUtils.parseDouble(realAmount.getOtherPay()));
                     }
                 }
             });
@@ -3015,25 +2989,21 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
             } else if (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TASK_AUDITOR) {
                 query.setNeedAuditor(1);
             } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_CONTRACT)
-                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_CONTRACT_REAL)) {
-                query.setNeedContractFee(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TECHNICAL_GAIN)
-                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TECHNICAL_GAIN_REAL)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TECHNICAL_GAIN)
                     || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TECHNICAL_PAY)
-                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TECHNICAL_PAY_REAL)) {
-                query.setNeedTechnicalFee(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_COOPERATE_GAIN)
-                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_COOPERATE_GAIN_REAL)) {
-                query.setNeedCooperateGainFee(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_OTHER_GAIN)
-                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_OTHER_GAIN_REAL)) {
-                query.setNeedOtherGainFee(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_COOPERATE_PAY)
-                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_COOPERATE_PAY_REAL)) {
-                query.setNeedCooperatePayFee(1);
-            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_OTHER_PAY)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_COOPERATE_GAIN)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_COOPERATE_PAY)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_OTHER_GAIN)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_OTHER_PAY)) {
+                query.setNeedPlanCost(1);
+            } else if ((title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_CONTRACT_REAL)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TECHNICAL_GAIN_REAL)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_TECHNICAL_PAY_REAL)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_COOPERATE_GAIN_REAL)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_COOPERATE_PAY_REAL)
+                    || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_OTHER_GAIN_REAL)
                     || (title.getTypeId() == SystemParameters.TITLE_TYPE_PROJECT_OTHER_PAY_REAL)) {
-                query.setNeedOtherPayFee(1);
+                query.setNeedRealCost(1);
             }
         }
         return query;

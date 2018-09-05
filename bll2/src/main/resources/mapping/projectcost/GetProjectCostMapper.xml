@@ -253,4 +253,89 @@
         order by c.create_date
     </select>
 
+    <sql id="FilterForCostListWithProjectCostQuery">
+        and cost_list.status = '0'
+        <if test="projectId != null">
+            and cost_list.project_id = #{projectId}
+        </if>
+        <if test="companyId != null">
+            <choose>
+                <when test="payType == '1'.toString()">
+                    and cost_list.to_company_id = #{companyId}
+                </when>
+                <when test="payType == '2'.toString()">
+                    and cost_list.from_company_id = #{companyId}
+                </when>
+                <otherwise>
+                    and (cost_list.to_company_id = #{companyId} or cost_list.from_company_id = #{companyId})
+                </otherwise>
+            </choose>
+        </if>
+        <if test="type != null">
+            and cost_list.type = #{type}
+        </if>
+    </sql>
+
+    <select id="getCostAmountPlan" resultType="com.maoding.projectcost.dto.CostAmountDTO" parameterType="com.maoding.projectcost.dto.ProjectCostQueryDTO">
+        select
+            <choose>
+                <when test="companyId != null">
+                    sum(if(cost_list.type = 1,ifnull(cost_list.fee,0),0)) as contract,
+                    sum(if(cost_list.type = 2 and cost_list.to_company_id = #{companyId},ifnull(cost_list.fee,0),0)) as technicalGain,
+                    sum(if(cost_list.type = 2 and cost_list.from_company_id = #{companyId},ifnull(cost_list.fee,0),0)) as technicalPay,
+                    sum(if(cost_list.type = 3 and cost_list.to_company_id = #{companyId},ifnull(cost_list.fee,0),0)) as cooperateGain,
+                    sum(if(cost_list.type = 3 and cost_list.from_company_id = #{companyId},ifnull(cost_list.fee,0),0)) as cooperatePay,
+                    sum(if(cost_list.type = 5 and cost_list.to_company_id = #{companyId},ifnull(cost_list.fee,0),0)) as otherGain,
+                    sum(if(cost_list.type = 4 and cost_list.from_company_id = #{companyId},ifnull(cost_list.fee,0),0)) as otherPay
+                </when>
+                <otherwise>
+                    sum(if(cost_list.type = 1,ifnull(cost_list.fee,0),0)) as contract,
+                    sum(if(cost_list.type = 2,ifnull(cost_list.fee,0),0)) as technicalGain,
+                    0 as technicalPay,
+                    sum(if(cost_list.type = 3,ifnull(cost_list.fee,0),0)) as cooperateGain,
+                    0 as cooperatePay,
+                    sum(if(cost_list.type = 5,ifnull(cost_list.fee,0),0)) as otherGain,
+                    sum(if(cost_list.type = 4,ifnull(cost_list.fee,0),0)) as otherPay
+                </otherwise>
+            </choose>
+        from maoding_web_project_cost cost_list
+        <where>
+            <include refid="FilterForCostListWithProjectCostQuery"/>
+        </where>
+    </select>
+
+    <sql id="FilterForBillListWithProjectCostQuery">
+        and bill_list.deleted = 0
+        <if test="companyId != null">
+            and bill_list.company_id = #{companyId}
+        </if>
+        <if test="payType != null">
+            and bill_list.pay_type = #{payType}
+        </if>
+        <if test="type != null">
+            and bill_list.fee_type = #{type}
+        </if>
+    </sql>
+
+    <select id="getCostAmountReal" resultType="com.maoding.projectcost.dto.CostAmountDTO" parameterType="com.maoding.projectcost.dto.ProjectCostQueryDTO">
+        select
+            sum(if(bill_list.fee_type = 1,ifnull(bill_list.fee,0),0)) as contract,
+            sum(if(bill_list.fee_type = 2 and bill_list.pay_type = 1,ifnull(bill_list.fee,0),0)) as technicalGain,
+            sum(if(bill_list.fee_type = 2 and bill_list.pay_type = 2,ifnull(bill_list.fee,0),0)) as technicalPay,
+            sum(if(bill_list.fee_type = 3 and bill_list.pay_type = 1,ifnull(bill_list.fee,0),0)) as cooperateGain,
+            sum(if(bill_list.fee_type = 3 and bill_list.pay_type = 2,ifnull(bill_list.fee,0),0)) as cooperatePay,
+            sum(if(bill_list.fee_type = 4 and bill_list.pay_type = 1,ifnull(bill_list.fee,0),0)) as otherGain,
+            sum(if(bill_list.fee_type = 4 and bill_list.pay_type = 2,ifnull(bill_list.fee,0),0)) as otherPay
+        from maoding_web_company_bill bill_list
+            <if test="projectId != null">
+                inner join maoding_web_company_bill_relation bill_relation on (
+                    bill_relation.id = bill_list.id
+                    and bill_relation.project_id = #{projectId}
+                )
+            </if>
+        <where>
+            <include refid="FilterForBillListWithProjectCostQuery"/>
+        </where>
+    </select>
+
 </mapper>

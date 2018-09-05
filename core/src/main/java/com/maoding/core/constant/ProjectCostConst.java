@@ -29,6 +29,11 @@ public interface ProjectCostConst {
     //合作设计费付款
     int FEE_TYPE_COOPERATE_PAY = 11;
 
+    //收款
+    int PAY_TYPE_IN = 1;
+    //付款
+    int PAY_TYPE_OUT = 2;
+
     Map<String,String> COST_TYPE_MAP = new HashMap<String,String>(){
         {
             put("1","合同回款");

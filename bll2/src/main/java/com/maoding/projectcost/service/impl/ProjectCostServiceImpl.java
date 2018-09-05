@@ -2647,17 +2647,39 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
      * @author   张成亮
      **/
     private List<ProjectCostSummaryDTO> updateProjectCostSummaryList(List<ProjectCostSummaryDTO> summaryList,ProjectCostSummaryQueryDTO query){
-        //添加合同及到款信息
-        updateProjectCostSummaryList(summaryList,query,ProjectCostConst.FEE_TYPE_CONTRACT);
+        summaryList.forEach(project->{
+            ProjectCostQueryDTO costQuery = new ProjectCostQueryDTO(query.getProjectId(),query.getCompanyId());
 
-        //添加技术审查费及到款信息
-        updateProjectCostSummaryList(summaryList,query,ProjectCostConst.FEE_TYPE_TECHNICAL);
+            //添加计划款项信息
+            CostAmountDTO planAmount = projectCostDao.getCostAmountPlan(costQuery);
+            if (planAmount != null) {
+                //合同回款
+                project.setContract(DigitUtils.parseDouble(planAmount.getContract()));
+                //技术审查费收入
+                project.setTechnical(DigitUtils.parseDouble(planAmount.getTechnicalGain()));
+                //技术审查费支出
+                //未定义
+                //合作设计费收入
+                project.setCooperateGain(DigitUtils.parseDouble(planAmount.getCooperateGain()));
+                //合作设计费支出
+                project.setCooperatePay(DigitUtils.parseDouble(planAmount.getCooperatePay()));
+            }
 
-        //添加合作设计费收费及到款信息
-        updateProjectCostSummaryList(summaryList,query,ProjectCostConst.FEE_TYPE_COOPERATE_GAIN);
-
-        //添加合作设计费付费及付款信息
-        updateProjectCostSummaryList(summaryList,query,ProjectCostConst.FEE_TYPE_COOPERATE_PAY);
+            //添加实际款项信息
+            CostAmountDTO realAmount = projectCostDao.getCostAmountReal(costQuery);
+            if (planAmount != null) {
+                //合同回款
+                project.setContractReal(DigitUtils.parseDouble(realAmount.getContract()));
+                //技术审查费收入
+                project.setTechnicalReal(DigitUtils.parseDouble(realAmount.getTechnicalGain()));
+                //技术审查费支出
+                //未定义
+                //合作设计费收入
+                project.setCooperateGainReal(DigitUtils.parseDouble(realAmount.getCooperateGain()));
+                //合作设计费支出
+                project.setCooperatePayReal(DigitUtils.parseDouble(realAmount.getCooperatePay()));
+            }
+        });
 
         //在exp表内查询报销及费用信息，添加报销费用信息和费用信息
         List<ProjectExpSingleSummaryDTO> singleSummaryList = projectCostDao.listProjectExpSummary(query);
@@ -2684,6 +2706,8 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
      * 日期       2018/8/13
      * @author   张成亮
      **/
+    @Deprecated
+    /** 在updateProjectCostSummaryList内实现 **/
     private List<ProjectCostSummaryDTO> updateProjectCostSummaryList(List<ProjectCostSummaryDTO> summaryList,ProjectCostSummaryQueryDTO query,int feeType){
         final String IS_DETAIL = "1";
         final String IS_NOT_DETAIL = "0";

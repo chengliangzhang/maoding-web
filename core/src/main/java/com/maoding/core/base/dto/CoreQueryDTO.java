@@ -29,7 +29,9 @@ public class CoreQueryDTO extends BaseDTO implements Serializable,Cloneable {
     private Integer startLine;
 
     public Integer getStartLine() {
-        if (pageIndex != null) {
+        if (startLine != null){
+            return startLine;
+        } else if (pageIndex != null) {
             int size = (pageSize != null) ? DigitUtils.parseInt(pageSize) : DEFAULT_PAGE_SIZE;
             return DigitUtils.parseInt(pageIndex) * size;
         } else {

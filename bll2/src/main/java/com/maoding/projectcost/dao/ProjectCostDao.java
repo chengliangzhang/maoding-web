@@ -55,4 +55,18 @@ public interface ProjectCostDao extends BaseDao<ProjectCostEntity> {
      * 根据costId 查询应收，应付，已收，已付
      */
     ProjectCooperatorCostDTO getProjectAmountFeeByCostId(ProjectCostQueryDTO queryDTO);
+
+    /**
+     * 描述       获取计划款项汇总数值
+     * 日期       2018/9/5
+     * @author   张成亮
+     **/
+    CostAmountDTO getCostAmountPlan(ProjectCostQueryDTO query);
+
+    /**
+     * 描述       获取实际款项汇总数值
+     * 日期       2018/9/5
+     * @author   张成亮
+     **/
+    CostAmountDTO getCostAmountReal(ProjectCostQueryDTO query);
 }

@@ -66,4 +66,27 @@ public class ProjectCostDaoImpl extends GenericDao<ProjectCostEntity> implements
         return this.sqlSession.selectOne("GetProjectCostMapper.getProjectAmountFeeByCostId", queryDTO);
     }
 
+    /**
+     * 描述       获取计划款项汇总数值
+     * 日期       2018/9/5
+     *
+     * @param query 查询条件
+     * @author 张成亮
+     */
+    @Override
+    public CostAmountDTO getCostAmountPlan(ProjectCostQueryDTO query) {
+        return sqlSession.selectOne("GetProjectCostMapper.getCostAmountPlan", query);
+    }
+
+    /**
+     * 描述       获取实际款项汇总数值
+     * 日期       2018/9/5
+     *
+     * @param query 查询条件
+     * @author 张成亮
+     */
+    @Override
+    public CostAmountDTO getCostAmountReal(ProjectCostQueryDTO query) {
+        return sqlSession.selectOne("GetProjectCostMapper.getCostAmountReal", query);
+    }
 }

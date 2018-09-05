@@ -24,14 +24,25 @@ public class ProjectCostSummaryQueryDTO extends CoreQueryDTO {
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date endDate;
 
-    /** 款项类型 */
+    /** 款项类型：1-合同回款，2-技术审查费，3-合作设计费，4-其他费用 */
     private Integer costType;
+
+    /** 收支类型：1-收款，2-付款 **/
+    private Integer payType;
 
     /** 查询明细 */
     private String isDetail;
 
     /** 所属项目编号 **/
     private String projectId;
+
+    public Integer getPayType() {
+        return payType;
+    }
+
+    public void setPayType(Integer payType) {
+        this.payType = payType;
+    }
 
     public String getProjectId() {
         return projectId;
