@@ -12,6 +12,7 @@ import com.maoding.core.constant.ProcessTypeConst;
 import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
+import com.maoding.core.util.StringUtils;
 import com.maoding.financial.dao.ExpAuditDao;
 import com.maoding.financial.dao.ExpMainDao;
 import com.maoding.financial.dao.LeaveDetailDao;
@@ -82,6 +83,10 @@ public class LeaveServiceImpl implements LeaveService {
 
     @Override
     public AjaxMessage saveLeave(SaveLeaveDTO dto) throws Exception {
+        if (StringUtils.isEmpty(dto.getCompanyUserId())){
+            dto.setCompanyUserId(dto.getCurrentCompanyUserId());
+        }
+
         AjaxMessage ajaxMessage = validateSaveLeave(dto);
         if(ajaxMessage!=null){
             return ajaxMessage;

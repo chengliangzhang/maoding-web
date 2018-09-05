@@ -687,11 +687,9 @@ public class FinancialController extends BaseController {
      */
     @RequestMapping(value = "/getAuditDetailForExp", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxMessage getAuditDetailForExp(@RequestBody ExpMainDTO expMainDTO) throws Exception {
-        expMainDTO.setAppOrgId(currentCompanyId);
-        Map<String, Object> map = expMainService.getAuditDetailForExp(expMainDTO);
-        return this.ajaxResponseSuccess().setData(map);
-//        return null;
+    public AjaxMessage getAuditDetailForExp(@RequestBody QueryAuditDTO query) throws Exception {
+        query.setAppOrgId(currentCompanyId);
+        return this.ajaxResponseSuccess().setData(expMainService.getAuditDetailForExp(query));
     }
 
 

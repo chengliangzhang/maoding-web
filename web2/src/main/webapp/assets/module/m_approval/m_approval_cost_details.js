@@ -24,7 +24,6 @@
         this._uuid = UUID.genV4().hexNoDelim;//targetId
 
         this._baseData = null;
-        this._passAuditData = null;//关联审批
 
         this._title = this.settings.doType==1?'报销':'费用';
         this.init();
@@ -39,14 +38,14 @@
                 option.url = restApi.url_getAuditDetailForExp;
                 option.postData = {
                     id:that.settings.id
-                }
+                };
                 m_ajax.postJson(option, function (response) {
                     if (response.code == '0') {
 
                         that._baseData = response.data;
                         that._baseData.doType = that.settings.doType;
                         that._baseData.title = that._title;
-                        var html = template('m_approval/m_approval_cost_details', {data: that._baseData});
+                        var html = template('m_approval/m_approval_cost_details', that._baseData);
                         $(that.element).html(html);
 
                     } else {

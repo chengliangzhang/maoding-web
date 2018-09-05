@@ -1485,12 +1485,12 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
     }
 
 
-    public Map<String, Object> getAuditDetailForExp(ExpMainDTO expMainDTO) throws Exception {
-        Map<String, Object> result = this.getAuditDetailForExp2(expMainDTO.getId());
+    public Map<String, Object> getAuditDetailForExp(QueryAuditDTO query) throws Exception {
+        Map<String, Object> result = this.getAuditDetailForExp2(query.getId());
         if(result!=null && result.containsKey("auditList")){
             List<AuditDTO> auditList = (List<AuditDTO>)result.get("auditList");
             for(AuditDTO audit:auditList){
-                if(expMainDTO.getAppOrgId().equals(audit.getCompanyId())){
+                if(query.getAppOrgId().equals(audit.getCompanyId())){
                     audit.setCompanyName("");
                 }
             }
@@ -1498,7 +1498,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         if(result!=null && result.containsKey("exp")){
             Map<String,String> exp = ((Map<String,String>)result.get("exp"));
             if(exp!=null){
-                if(exp.containsKey("auditCompanyId") && expMainDTO.getAppOrgId().equals(exp.get("auditCompanyId"))){
+                if(exp.containsKey("auditCompanyId") && query.getAppOrgId().equals(exp.get("auditCompanyId"))){
                     exp.put("auditCompanyName","");
                 }
             }
@@ -1506,15 +1506,6 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         return result;
     }
 
-    /**
-     * 我申请的  详情
-     * @param dto
-     * @return
-     */
-    @Override
-    public List<ExpMainDTO> getAuditDataDetail(QueryAuditDTO dto) {
-        return expMainDao.getAuditDataDetail(dto);
-    }
 
     public Map<String,Object> getAuditDetailForExp2(String id) throws Exception{
         // ExpDetailDataDTO result = new ExpDetailDataDTO();
@@ -1595,5 +1586,14 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
 //        return null;
     }
 
+    /**
+     * 我申请的  详情
+     * @param dto
+     * @return
+     */
+    @Override
+    public List<ExpMainDTO> getAuditDataDetail(QueryAuditDTO dto) {
+        return expMainDao.getAuditDataDetail(dto);
+    }
 }
 

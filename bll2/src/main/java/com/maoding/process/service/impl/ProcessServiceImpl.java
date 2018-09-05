@@ -522,14 +522,13 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
      */
     @Override
     public  Map<String,Object>  getCurrentProcess(AuditEditDTO dto) {
-        TraceUtils.check(StringUtils.isNotEmpty(dto.getAuditType()),"!auditType不能为空");
-
         String processDefineId = null;
         Map<String,Object> result = new HashMap<>();
         result.put("processFlag",1);//返回到前端的标识，1：代表是自由流程，需要前端传递审批人
         result.put("conditionList",new ArrayList<>());//首先默认返回个空数组
         result.put("processType", ProcessTypeConst.TYPE_FREE);
         if(StringUtil.isNullOrEmpty(dto.getMainId())){
+            TraceUtils.check(StringUtils.isNotEmpty(dto.getAuditType()),"!auditType不能为空");
             ProcessTypeEntity processType = this.processTypeDao.getCurrentProcessType(dto.getCurrentCompanyId(),dto.getAuditType());
             if(!(processType==null || ProcessTypeConst.TYPE_FREE == processType.getType())){
                 processDefineId = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getCurrentCompanyId()));

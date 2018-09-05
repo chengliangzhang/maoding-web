@@ -368,8 +368,9 @@ form.sky-form label.select i {
 .of-auto {
     overflow: auto;
 }
-
-
+.clearfix{
+    clear: both;
+}
 .navbar-static-top .nav > li > a
 {
     color: #fff;

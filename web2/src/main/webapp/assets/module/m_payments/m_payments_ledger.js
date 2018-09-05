@@ -164,6 +164,11 @@
             option.url = restApi.url_getTitleFilter;
             option.postData = {};
             option.postData.feeTypeParentList  = that._filterData.feeTypeParentList;
+            if(that._selectedOrg==null){
+                option.postData.combineCompanyId=that._companyList.id;
+            }else{
+                option.postData.combineCompanyId=that._selectedOrg.id;
+            }
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
                     that._feeTypeNameList  = response.data.feeTypeNameList;

@@ -52,10 +52,16 @@
                         that._baseData.title = that._title;
                         var html = template('m_approval/m_approval_leave_add', {data: that._baseData});
                         $(that.element).html(html);
-                        that.renderLeaveType();
+                        if(that.settings.doType==3){
+                            that.renderLeaveType();
+                        }
+                        if(that.settings.doType==4){
+                            that.renderProjectList();
+                        }
                         that.renderApprover();
                         that.fileUpload();
                         that.bindActionClick();
+                        that.save_validate();
 
                     } else {
                         S_dialog.error(response.info);
@@ -76,13 +82,16 @@
                     lock: 3,
                     width: '705',
                     tPadding: '0',
-                    height:'550',
+                    height: '630',
                     url: rootPath+'/assets/module/m_common/m_dialog.html',
                     cancel:function () {
 
                     },
                     ok:function () {
-                        that.save();
+                        var flag = $(that.element).find('form').valid();
+                        if (!flag || that.save()) {
+                            return false;
+                        }
                     }
                 },function(d){//加载html后触发
                     that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
@@ -95,6 +104,7 @@
                     callBack();
             }
         }
+        //渲染请假类型
         ,renderLeaveType:function () {
             var that = this;
             var option = {};
@@ -109,6 +119,36 @@
                     $(that.element).find('select[name="leaveType"]').select2({
                         width: '100%',
                         allowClear: false,
+                        language: 'zh-CN',
+                        minimumResultsForSearch: Infinity,
+                        placeholder: '请选择关联项目!',
+                        data: data
+                    });
+
+                } else {
+                    S_dialog.error(response.info);
+                }
+            });
+        }
+        //渲染项目列表
+        ,renderProjectList:function () {
+            var that = this;
+            var option = {};
+            option.url = restApi.url_getProjectList;
+            option.postData = {
+                currentCompanyId:window.currentCompanyId,
+                currentCompanyUserId:window.currentCompanyUserId
+            };
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+
+                    var data = [];
+                    $.each(response.data, function (i, o) {
+                        data.push({id: o.id, text: o.projectName});
+                    });
+                    $(that.element).find('select[name="projectName"]').select2({
+                        width: '100%',
+                        allowClear: true,
                         language: "zh-CN",
                         minimumResultsForSearch: Infinity,
                         data: data
@@ -305,12 +345,75 @@
                             that._auditList = data.selectedUserList;
                             var html = template('m_approval/m_approval_cost_add_approver', {userList: data.selectedUserList});
                             $(that.element).find('#approverBox').html(html);
+                            $(that.element).find('#approver-error.error').remove();//若有提示，删除
                         };
                         $('body').m_orgByTree(options);
                         break;
                 }
 
             })
+        }
+
+        //表单验证
+        ,save_validate:function(){
+            var that = this;
+            $(that.element).find('form.form-horizontal').validate({
+                ignore : [],
+                rules: {
+                    leaveType: {
+                        required: true
+                    },
+                    address:{
+                        required: true,
+                        maxlength: 250
+                    },
+                    leaveStartTime:{
+                        required: true
+                    },
+                    leaveEndTime:{
+                        required: true
+                    },
+                    leaveTime:{
+                        required: true
+                    },
+                    approver:{
+                        approverCk: true
+                    }
+                },
+                messages: {
+                    leaveType: {
+                        required: '请输入节点描述！'
+                    },
+                    address:{
+                        required:'请输入出差地点！',
+                        maxlength: '出差地点不超过250位！'
+                    },
+                    leaveStartTime:{
+                        required:'请选择开始时间！'
+                    },
+                    leaveEndTime:{
+                        required: '请选择结束时间！'
+                    },
+                    leaveTime:{
+                        required: '请输入出差天数！'
+                    },
+                    approver:{
+                        approverCk: '请选择审批人员！'
+                    }
+                },
+                errorPlacement: function (error, element) { //指定错误信息位置
+                    error.appendTo(element.closest('.col-sm-10'));
+                }
+            });
+            $.validator.addMethod('approverCk', function(value, element) {
+
+                var isOk = true;
+                if(that._baseData.processFlag==1 && (that._auditList==null || that._auditList.length==0)){
+                    isOk = false;
+                }
+                return  isOk;
+
+            }, '请选择审批人员!');
         }
 
     });

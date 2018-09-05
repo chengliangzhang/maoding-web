@@ -19,7 +19,12 @@
         this._defaults = defaults;
         this._name = pluginName;
         this._uploadmgrContainer = null;
-        this._maxExpNo = null;//报销编号
+
+        this._currentCompanyUserId = window.currentCompanyUserId;
+        this._currentCompanyId = window.currentCompanyId;
+        this._currentUserId = window.currentUserId;
+        this._fastdfsUrl = window.fastdfsUrl;
+
         this._uuid = UUID.genV4().hexNoDelim;//targetId
 
         this._baseData = null;
@@ -35,7 +40,6 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.getMaxExpNo();
             that.renderDialog(function () {
                 var option = {};
                 option.url = restApi.url_getExpBaseData;
@@ -54,6 +58,7 @@
                         that.renderApprover();
                         that.fileUpload();
                         that.bindActionClick();
+                        that.save_validate();
 
                     } else {
                         S_dialog.error(response.info);
@@ -79,7 +84,21 @@
 
                     },
                     ok:function () {
-                        that.save();
+
+                        var error = [];
+                        var flag = $(that.element).find('form').valid();
+
+                        $(that.element).find('.panel.panel-default form').each(function (i) {
+                            if(!$(this).valid()){
+                                error.push(i);
+                            }
+                        });
+                        if(error.length>0){
+                            flag = false;
+                        }
+                        if (!flag || that.save()) {
+                            return false;
+                        }
                     }
                 },function(d){//加载html后触发
                     that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
@@ -104,15 +123,19 @@
                 expItem.projectId = $this.find('select[name="projectName"]').val();
                 expItem.expType =  $this.find('select[name="expType"]').val();
                 expItem.expAllName = $this.find('select[name="expType"] option:selected').text()+'-'+$this.find('select[name="expType"] option:selected').parent().attr('label');
-                expItem.relationRecord = {
-                    relationId : $this.find('select[name="linkageApproval"]').val(),
-                    recordType : '13'
-                };
+
+                var linkageApproval = $this.find('select[name="linkageApproval"]').val();
+                if(!isNullOrBlank(linkageApproval)){
+                    expItem.relationRecord = {
+                        relationId : linkageApproval,
+                        recordType : '13'
+                    };
+                }
                 $data.detailList.push(expItem);
             });
             $data.type = that.settings.doType;
 
-            $data.userId = window.currentCompanyUserId;
+            $data.userId = that._currentCompanyUserId;
             //$data.expNo = that._maxExpNo;
             $data.targetId = that._uuid;
 
@@ -128,33 +151,14 @@
                 $data.remark = $(that.element).find('textarea[name="remark"]').val();
                 $data.enterpriseName = $(that.element).find('input[name="enterpriseName"]').val();
             }
-            if(!(that._baseData.processType=='2' || that._baseData.processType=='3')){//不是存在流程
-                $data.auditPerson = '';
+            if(!(that._baseData.processType=='2' || that._baseData.processType=='3')){//不存在流程
+                $data.auditPerson = that._auditList[0].id;
             }
 
             var option = {};
             option.url = restApi.url_saveOrUpdateExpMainAndDetail;
             option.postData = $data;
 
-            var errors = [];
-            $(that.element).find('.panel.panel-default').each(function () {
-                if ($(this).find('input[name="expAmount"]').val() == '') {
-                    errors.push('请输入报销金额');
-                    return;
-                }
-                if ($(this).find('select[name="expType"]').val() == '') {
-                    errors.push('请选择报销类别');
-                    return;
-                }
-                if ($(this).find('textarea[name="expUse"]').val() == '') {
-                    errors.push('请输入用途说明');
-                    return;
-                }
-            });
-            if (errors.length > 0) {
-                S_toastr.warning(errors[0]);
-                return;
-            }
             console.log(option);
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
@@ -215,6 +219,7 @@
                     that.renderApprover();
                 }
             });
+            that.save_itemValidate($ele);
         }
         ,renderApprover:function () {
             var that = this;
@@ -248,22 +253,6 @@
             $(that.element).find('#approverBox').html(html);
 
         }
-        //进入页面获取报销编号
-        , getMaxExpNo: function (callback) {
-            var that = this;
-            var options = {};
-            options.postData = {};
-            options.url = restApi.url_getMaxExpNo;
-            options.postData.companyId = window.currentCompanyId;
-            m_ajax.postJson(options, function (response) {
-                if (response.code == "0") {
-                    that._maxExpNo = response.data.maxExpNo;
-                    if (callback) return callback(response.data.maxExpNo);
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
         //上传附件
         ,fileUpload:function () {
             var that =this;
@@ -280,8 +269,8 @@
             option.boxClass = 'no-borders';
             option.isShowBtnClose = false;
             option.uploadBeforeSend = function (object, data, headers) {
-                data.companyId = window.currentCompanyId;
-                data.accountId = window.currentUserId;
+                data.companyId = that._currentCompanyId;
+                data.accountId = that._currentUserId;
                 data.targetId = that._uuid;
             };
             option.uploadSuccessCallback = function (file, response) {
@@ -289,7 +278,7 @@
                 var fileData = {
                     netFileId: response.data.netFileId,
                     fileName: response.data.fileName,
-                    fullPath: window.fastdfsUrl + response.data.fastdfsGroup + '/' + response.data.fastdfsPath
+                    fullPath: that._fastdfsUrl + response.data.fastdfsGroup + '/' + response.data.fastdfsPath
                 };
                 var $uploadItem = that._uploadmgrContainer.find('.uploadItem_' + file.id + ':eq(0)');
                 if (!isNullOrBlank(fileData.netFileId)) {
@@ -317,7 +306,7 @@
                         ajaxOption.url = restApi.url_attachment_delete;
                         ajaxOption.postData = {
                             id: netFileId,
-                            accountId: window.currentUserId
+                            accountId: that._currentUserId
                         };
                         m_ajax.postJson(ajaxOption, function (res) {
                             if (res.code === '0') {
@@ -356,7 +345,7 @@
                 var $this = $(this),dataAction = $this.attr('data-action');
 
                 switch (dataAction){
-                    case 'addItem':
+                    case 'addItem'://添加明细
                         that.addItem();
                         return false;
                         break;
@@ -388,6 +377,7 @@
                             that._auditList = data.selectedUserList;
                             var html = template('m_approval/m_approval_cost_add_approver', {userList: data.selectedUserList});
                             $(that.element).find('#approverBox').html(html);
+                            $(that.element).find('#approver-error.error').remove();//若有提示，删除
                         };
                         $('body').m_orgByTree(options);
                         break;
@@ -397,6 +387,83 @@
             })
         }
 
+        //表单验证
+        ,save_validate:function(){
+            var that = this;
+            $(that.element).find('form.form-horizontal').validate({
+                ignore : [],
+                rules: {
+                    enterpriseName: {
+                        required: true
+                    },
+                    approver:{
+                        approverCk: true
+                    }
+                },
+                messages: {
+                    enterpriseName: {
+                        required: '请输入收款方！'
+                    },
+                    approver:{
+                        approverCk: '请选择审批人员！'
+                    }
+                },
+                errorPlacement: function (error, element) { //指定错误信息位置
+                    error.appendTo(element.closest('.col-sm-10'));
+                }
+            });
+            $.validator.addMethod('approverCk', function(value, element) {
+
+                var isOk = true;
+                if(that._baseData.processFlag==1 && (that._auditList==null || that._auditList.length==0)){
+                    isOk = false;
+                }
+                return  isOk;
+
+            }, '请选择审批人员!');
+        }
+        ,save_itemValidate:function($ele){
+            var that = this;
+            $ele.find('form').validate({
+                rules: {
+                    expAmount: {
+                        required: true
+                    },
+                    expUse:{
+                        required: true
+                    },
+                    projectName:{
+                        associatedProjectCk: true
+                    }
+                },
+                messages: {
+                    expAmount: {
+                        required: '请输入金额！'
+                    },
+                    expUse:{
+                        required: '请输入用途说明！'
+                    },
+                    projectName:{
+                        associatedProjectCk: '请选择关联项目！'
+                    }
+                },
+                errorPlacement: function (error, element) { //指定错误信息位置
+                    error.appendTo(element.closest('.col-sm-10'));
+                }
+            });
+            $.validator.addMethod('associatedProjectCk', function(value, element) {
+
+                var isOk = true;
+                var $panel = $(element).closest('.panel');
+                value = $panel.find('select[name="projectName"]').val();
+                var expParentType = $panel.find('select[name="expType"] option:selected').parent().attr('label');
+                if(expParentType == '直接项目成本' && isNullOrBlank(value)){
+                    isOk = false;
+                }
+                return  isOk;
+
+            }, '请选择关联项目!');
+        }
     });
 
     $.fn[pluginName] = function (options) {

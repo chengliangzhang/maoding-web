@@ -1,85 +1,141 @@
 <form class="form-horizontal m">
     <div class="form-group">
-        <label class="col-sm-2 control-label">{{data.itemIndex}}单号：</label>
+        <label class="col-sm-2 text-right">{{title}}单号：</label>
         <div class="col-sm-10">
-            123131312312331
+            {{exp.expNo}}
         </div>
     </div>
     <div class="form-group">
-        <label class="col-sm-2 control-label">申请人：</label>
+        <label class="col-sm-2 text-right">申请人：</label>
         <div class="col-sm-10">
-            wrb
+            {{exp.submitter}}
         </div>
     </div>
     <div class="form-group">
-        <label class="col-sm-2 control-label">申请时间：</label>
+        <label class="col-sm-2 text-right">申请时间：</label>
         <div class="col-sm-10">
-            2018/08/12
+            {{_momentFormat(exp.submittime,'YYYY/MM/DD')}}
         </div>
     </div>
-
+    {{if doType == 2}}
+    <div class="form-group">
+        <label class="col-sm-2 text-right">收款方：</label>
+        <div class="col-sm-10">
+            {{exp.auditCompanyName}}
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 text-right">备注：</label>
+        <div class="col-sm-10">
+            {{exp.remark}}
+        </div>
+    </div>
+    {{/if}}
 
     <div class="hr-line-dashed m-t-none m-b-sm"></div>
+    {{each detailList as d i}}
     <div class="panel panel-default">
         <div class="panel-body">
             <h4 class="title-line">
-                {{data.title}}明细(<span data-action="itemIndex">1</span>)
+                {{title}}明细(<span data-action="itemIndex">{{i}}</span>)
             </h4>
             <div class="form-group">
-                <label class="col-sm-2 control-label">{{data.title}}金额：</label>
+                <label class="col-sm-2 text-right">{{title}}金额：</label>
                 <div class="col-sm-10">
-                    201821.00 元
+                    _expNumberFilter(d.expAmount) 元
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">{{data.title}}类型：</label>
+                <label class="col-sm-2 text-right">{{title}}类型：</label>
                 <div class="col-sm-10">
-                    差旅费用
+                    {{d.expName}}
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">用途说明：</label>
+                <label class="col-sm-2 text-right">用途说明：</label>
                 <div class="col-sm-10">
-                    于2018年7月20日因“卯丁科技大厦”项目参观实地考察
+                    {{d.expUse}}
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">关联项目：</label>
+                <label class="col-sm-2 text-right">关联项目：</label>
                 <div class="col-sm-10">
-                    卯丁科技大厦
+                    {{d.projectName}}
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">关联审批：</label>
+                <label class="col-sm-2 text-right">关联审批：</label>
                 <div class="col-sm-10">
-
+                    {{if d.relationRecordData!=null}}
+                    {{d.relationRecordData.address}}{{_momentFormat(d.relationRecordData.startTime,'YYYY/MM/DD')}}{{_momentFormat(d.relationRecordData.endTime,'YYYY/MM/DD')}}
+                    {{/if}}
                 </div>
             </div>
         </div>
     </div>
-
+    {{/each}}
     <div class="hr-line-dashed m-t-none m-b-sm"></div>
     <div class="form-group">
-        <label class="col-sm-2 control-label">{{data.title}}总金额：</label>
+        <label class="col-sm-2 text-right">{{title}}总金额：</label>
         <div class="col-sm-10 p-t-7">
-            <i class="fa fa-jpy"></i> <span id="expAmount"></span>元
+            <i class="fa fa-jpy"></i> <span id="expAmount">{{totalExpAmount}}</span>元
         </div>
     </div>
     <div class="form-group">
-        <label class="col-sm-2 control-label">附件：</label>
+        <label class="col-sm-2 text-right">附件：</label>
         <div class="col-sm-10">
-
+            {{if attachList!=null && attachList.length>0}}
+                {{each attachList as a i}}
+                     <span class="label m-r-xs" style="background: #ecf0f1;padding: 5px 10px;">
+                         <a href="javascript:void(0)" data-action="preview" data-net-file-id="{{a.id}}"  data-src="{{a.fileFullPath}}" data-name="{{a.fileName}}">
+                            {{a.fileName}}
+                         </a>
+                     </span>
+                {{/each}}
+            {{/if}}
         </div>
     </div>
     <div class="hr-line-dashed m-t-none m-b-sm"></div>
     <div class="form-group">
-        <label class="col-sm-2 control-label">审批人：</label>
+        <label class="col-sm-2 text-right">审批人：</label>
         <div class="col-sm-10">
+            {{if auditList!=null && auditList.length>0}}
+                {{each auditList as u ui}}
+                    <div class="approver-outbox">
+                        <div class="approver-box text-center pull-left m-r-sm">
+                            <div class="img-circle">
+                                <img alt="image" class="img-circle" src="{{_isNullOrBlank(u.fileFullPath)?_url('/assets/img/head_default.png'):u.fileFullPath}}" width="50" height="50">
+                            </div>
+                        </div>
+                        <div class="approver-box text-center pull-left m-r-sm">
+                            <div class="m-t-xs">{{u.userName}}</div>
+                            <p class="fc-v1-grey">{{u.approveStatusName}}</p>
+                        </div>
+                    </div>
+                    {{if ui+1 < userList.length }}
+                    <div class="arrow-icon p-h-sm pull-left m-l-sm m-r-sm">
+                        <i class="fa fa-long-arrow-right"></i>
+                    </div>
+                    {{/if}}
+                {{/each}}
+            {{/if}}
         </div>
     </div>
     <div class="form-group">
-        <label class="col-sm-2 control-label">抄送人：</label>
+        <label class="col-sm-2 text-right">抄送人：</label>
         <div class="col-sm-10">
+            {{if ccCompanyUserList!=null && ccCompanyUserList.length>0}}
+                {{each ccCompanyUserList as u ui}}
+                    <div class="approver-outbox">
+                        <div class="approver-box text-center pull-left m-r-sm">
+                            <div class="img-circle">
+                                <img alt="image" class="img-circle" src="{{_isNullOrBlank(u.fileFullPath)?_url('/assets/img/head_default.png'):u.fileFullPath}}" width="50" height="50">
+                            </div>
+                            <div class="m-t-xs">{{u.userName}}</div>
+                        </div>
+                    </div>
+                {{/each}}
+            {{/if}}
         </div>
     </div>
 </form>

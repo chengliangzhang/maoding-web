@@ -3,6 +3,7 @@ package com.maoding.excelExport.service.impl;
 import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.util.BeanUtilsEx;
+import com.maoding.core.util.DateUtils;
 import com.maoding.excelExport.dto.ExcelDataDTO;
 import com.maoding.project.dto.ProjectQueryDTO;
 import com.maoding.project.dto.ProjectVariableDTO;
@@ -36,11 +37,19 @@ public class ProjectExportServiceImpl extends BaseExportServiceImpl<ProjectVaria
 
     @Override
     List<Map<String, ExcelDataDTO>> getExcelDataList(List<ProjectVariableDTO> dataList,List<CoreShowDTO> titleList) {
+        DateUtils dateUtils = new DateUtils();
+
         List<Map<String,ExcelDataDTO>> excelDataList = new ArrayList<>();
         dataList.stream().forEach(d->{
             Map<String,ExcelDataDTO> map = new HashMap<>();
             titleList.stream().forEach(t->{
+                if("立项时间".equals(t.getName())){
+                    String s = ""+(BeanUtilsEx.getProperty(d,t.getId()));
+                    String date = dateUtils.getDate("s");
+                    map.put(t.getName(),new ExcelDataDTO(date,1));
+               }else{
                 map.put(t.getName(),new ExcelDataDTO(BeanUtilsEx.getProperty(d,t.getId()),1));
+                }
             });
             excelDataList.add(map);
         });

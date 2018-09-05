@@ -9,6 +9,7 @@ import com.maoding.financial.service.LeaveService;
 import com.maoding.system.service.DataDictionaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,6 +24,13 @@ public class LeaveController extends BaseController{
 
     @Autowired
     private LeaveService leaveService;
+
+    @ModelAttribute
+    public void before() {
+        this.currentUserId = this.getFromSession("userId", String.class);
+        this.currentCompanyId = this.getFromSession("companyId", String.class);
+        this.currentCompanyUserId = this.getFromSession("companyUserId", String.class);
+    }
 
 
     /**
