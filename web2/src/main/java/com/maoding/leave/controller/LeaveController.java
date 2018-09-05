@@ -44,6 +44,7 @@ public class LeaveController extends BaseController{
     @RequestMapping("/saveLeave")
     @ResponseBody
     public AjaxMessage saveLeave(@RequestBody SaveLeaveDTO dto) throws Exception {
+        updateCurrentUserInfo(dto);
         return leaveService.saveLeave(dto);
     }
 
@@ -55,6 +56,7 @@ public class LeaveController extends BaseController{
     @RequestMapping("/getLeaveDetail")
     @ResponseBody
     public ResponseBean getLeaveDetail(@RequestBody SaveLeaveDTO dto) throws Exception {
+        updateCurrentUserInfo(dto);
         return ResponseBean.responseSuccess().addData("leaveDetail",leaveService.getLeaveDetail(dto.getId()));
     }
 

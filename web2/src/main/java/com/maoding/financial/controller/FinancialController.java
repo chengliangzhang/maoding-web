@@ -4,6 +4,7 @@ import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.core.util.StringUtil;
+import com.maoding.core.util.StringUtils;
 import com.maoding.financial.dto.*;
 import com.maoding.financial.service.ExpCategoryService;
 import com.maoding.financial.service.ExpFixedService;
@@ -214,6 +215,9 @@ public class FinancialController extends BaseController {
         updateCurrentUserInfo(dto);
         String userId = dto.getAccountId();
         String companyId = dto.getCurrentCompanyId();
+        if (StringUtils.isEmpty(dto.getCompanyUserId())){
+            dto.setCompanyUserId(dto.getCurrentCompanyUserId());
+        }
         dto.setAppOrgId(null);
         dto.setAccountId(null);
         return expMainService.saveOrUpdateExpMainAndDetail(dto, userId, companyId);
