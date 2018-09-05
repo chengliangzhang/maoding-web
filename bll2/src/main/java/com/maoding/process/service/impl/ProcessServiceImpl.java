@@ -658,16 +658,27 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
      */
     private List<UserTaskNodeDTO> getUserList(List<UserTaskDTO> userTaskList){
         List<UserTaskNodeDTO> list = new ArrayList<>();
-        userTaskList.stream().forEach(u->{
+        for (UserTaskDTO u : userTaskList) {
             UserTaskNodeDTO taskNode = new UserTaskNodeDTO();
-            taskNode.setMax(u.getMax());
-            taskNode.setMin(u.getMin()==null?"0":u.getMin());
-            u.getAssignList().stream().forEach(assign->{
-                taskNode.getUserList().add(companyUserDao.getCompanyUserDataById(assign));
-            });
+            taskNode.setMax(getStringOrDefault(u.getMax(),null));
+            taskNode.setMin(getStringOrDefault(u.getMin(),"0"));
+            List<CompanyUserAppDTO> userList = new ArrayList<>();
+            for (String assign : u.getAssignList()) {
+                userList.add(companyUserDao.getCompanyUserDataById(assign));
+            }
+            taskNode.setUserList(userList);
             list.add(taskNode);
-        });
+        }
         return list;
+    }
+
+    //返回值或默认值
+    //由于数据有可能为字符串"null",增加了字符串"null"的判断
+    private String getStringOrDefault(String value,String defaultValue){
+        if ("null".equals(value)){
+            return defaultValue;
+        }
+        return StringUtils.getStringOrDefault(value,defaultValue);
     }
 
 }

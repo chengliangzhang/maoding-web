@@ -799,6 +799,7 @@ public class FinancialController extends BaseController {
     @RequestMapping(value = "/getProcessType", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage getProcessType(@RequestBody AuditEditDTO dto) throws Exception{
+        updateCurrentUserInfo(dto);
         return AjaxMessage.succeed(processService.getCurrentProcess(dto));
     }
 
