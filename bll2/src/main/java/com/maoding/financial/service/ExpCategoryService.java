@@ -25,7 +25,7 @@ public interface ExpCategoryService extends BaseService<ExpCategoryEntity> {
      */
     @Deprecated
     /** 替换为Map<String, Object> getExpBaseData(AuditQueryDTO query) **/
-    AjaxMessage getExpBaseData(String companyId, String userId, String type) throws Exception ;
+    AjaxMessage getExpBaseData(String companyId, String userId, String companyUserId, String type) throws Exception ;
     
     /**
      * 描述       获取报销基础数据

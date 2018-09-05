@@ -2,7 +2,6 @@ package com.maoding.financial.controller;
 
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
-import com.maoding.core.bean.ResponseBean;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.core.util.StringUtil;
 import com.maoding.financial.dto.*;

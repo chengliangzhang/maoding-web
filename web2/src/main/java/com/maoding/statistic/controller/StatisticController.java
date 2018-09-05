@@ -642,7 +642,7 @@ public class StatisticController extends BaseController {
      * @author  张成亮
      * @return  标题栏过滤条件
      * @param   query 收支明细查询条件
-     *                combineCompanyId 当前组织编号
+     *                combineCompanyId 要查询的组织编号
      **/
     @RequestMapping(value = "/getTitleFilter",method = RequestMethod.POST)
     @ResponseBody
