@@ -1,6 +1,8 @@
 package com.maoding.financial.dto;
 
+import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
+import com.maoding.core.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -84,6 +86,8 @@ public class AuditDataDTO {
      * 费用类型
      */
     private String projectFeeTypeName;
+
+    private String addressStr;//供web端使用的，把地点和时间拼接在一起的
 
     /**
      * 审批状态名称(0:待审核，1:同意，2，退回,3:撤回,4:删除,5.审批中）
@@ -286,5 +290,17 @@ public class AuditDataDTO {
 
     public void setLeaveTypeName(String leaveTypeName) {
         this.leaveTypeName = leaveTypeName;
+    }
+
+    public String getAddressStr() {
+        if(type==4){
+            if(StringUtils.isNotEmpty(address) && startTime!=null && endTime!=null)
+            addressStr = address + DateUtils.date2Str(this.startTime,DateUtils.workOutFormat) +"~"+ DateUtils.date2Str(this.endTime,DateUtils.workOutFormat);
+        }
+        return addressStr;
+    }
+
+    public void setAddressStr(String addressStr) {
+        this.addressStr = addressStr;
     }
 }

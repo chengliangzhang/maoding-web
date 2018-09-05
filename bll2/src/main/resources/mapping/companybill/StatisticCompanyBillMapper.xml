@@ -477,8 +477,12 @@
         from maoding_web_company_bill bill
             INNER JOIN maoding_web_company_bill_detail detail on bill.id = detail.bill_id
             INNER JOIN maoding_web_company_bill_relation relation ON bill.id = relation.id
-            LEFT JOIN maoding_web_company fcompany ON relation.from_company_id = fcompany.id
-            LEFT JOIN maoding_web_company tocompany ON relation.to_company_id = tocompany.id
+            <if test="fromCompanyName!=null">
+                LEFT JOIN maoding_web_company fcompany ON relation.from_company_id = fcompany.id
+            </if>
+            <if test="toCompanyName!=null">
+                LEFT JOIN maoding_web_company tocompany ON relation.to_company_id = tocompany.id
+            </if>
             <include refid="getStandingBillBookDetailWhere"/>
         and exp_type_parent_name is not null
         group by detail.exp_type_parent_name,detail.exp_type_name

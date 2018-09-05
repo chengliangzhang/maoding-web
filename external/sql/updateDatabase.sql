@@ -1968,7 +1968,7 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (46,5,'其他收款','');
 
     -- -- 类型
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,46,'发票类型','md_type_fee');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,46,'款项分类子项','md_type_fee');
 
     -- 视图
     CREATE OR REPLACE VIEW `md_type_fee` AS
@@ -2016,12 +2016,13 @@ CREATE PROCEDURE `initConst`()
   END;
 call initConst();
 
--- 审批状态(0:待审核，1:同意，2，退回,3:撤回,4:删除,5.审批中）,6:财务已拨款',
+-- 审批状态
 DROP PROCEDURE IF EXISTS `initConst`;
 CREATE PROCEDURE `initConst`()
   BEGIN
     -- -- 常量
     delete from md_list_const where classic_id = 48;
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,-1,'审批状态','');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,0,'待审核','');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,1,'同意','');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,2,'退回','');
@@ -2029,9 +2030,10 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,4,'删除','');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,5,'审批中','');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,6,'财务已拨款','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,7,'财务拒绝拨款','');
 
     -- -- 类型
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,48,'审批类别','md_type_exp_status');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,48,'审批状态','md_type_exp_status');
 
     -- 视图
     CREATE OR REPLACE VIEW `md_type_exp_status` AS

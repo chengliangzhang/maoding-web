@@ -24,8 +24,10 @@
 
         this._baseData = null;
         this._passAuditData = null;//关联审批
+        this._ccCompanyUserList = [];//抄送人
 
         this._title = this.settings.doType==1?'报销':'费用';
+        this._auditType = this.settings.doType==1?'expense':'costApply';//auditType 的取值： 请假leave 出差onBusiness 报销expense 费用costApply 付款申请projectPayApply
         this.init();
     }
 
@@ -37,7 +39,10 @@
             that.renderDialog(function () {
                 var option = {};
                 option.url = restApi.url_getExpBaseData;
-                m_ajax.get(option, function (response) {
+                option.postData = {
+                    auditType:that._auditType
+                };
+                m_ajax.postJson(option, function (response) {
                     if (response.code == '0') {
 
                         that._baseData = response.data;
@@ -46,6 +51,7 @@
                         var html = template('m_approval/m_approval_cost_add', {data: that._baseData});
                         $(that.element).html(html);
                         that.addItem();
+                        that.renderApprover();
                         that.fileUpload();
                         that.bindActionClick();
 
@@ -96,31 +102,49 @@
                 expItem.expAmount = $this.find('input[name="expAmount"]').val();
                 expItem.expUse = $this.find('textarea[name="expUse"]').val();
                 expItem.projectId = $this.find('select[name="projectName"]').val();
-                expItem.expType =  $this.find('select[name="expType"] option:selected').text();
-                expItem.expParentType = $this.find('select[name="expType"] option:selected').parent().attr('label');
+                expItem.expType =  $this.find('select[name="expType"]').val();
+                expItem.expAllName = $this.find('select[name="expType"] option:selected').text()+'-'+$this.find('select[name="expType"] option:selected').parent().attr('label');
+                //expItem.expParentType = $this.find('select[name="expType"] option:selected').parent().attr('label');
+                expItem.relationRecord = {
+                    relationId : $this.find('select[name="linkageApproval"]').val(),
+                    recordType : '13'
+                };
                 $data.detailList.push(expItem);
             });
-            $data.type = 1;
-            $data.remark = $("form.tessExpenseBox input#remark").val();
+            $data.type = that.settings.doType;
+
             $data.userId = window.currentCompanyUserId;
-            $data.expNo = that._maxExpNo;
+            //$data.expNo = that._maxExpNo;
             $data.targetId = that._uuid;
+
+            var ccUser = [] ;
+            if(that._ccCompanyUserList!=null && that._ccCompanyUserList.length>0){
+                $.each(that._ccCompanyUserList,function (i,item) {
+                    ccUser.push(item.id);
+                });
+            }
+            $data.ccCompanyUserList = ccUser;
+
+            if(that.settings.doType==2){//费用申请
+                $data.remark = $(that.element).find('textarea[name="remark"]').val();
+                $data.enterpriseName = $(that.element).find('input[name="enterpriseName"]').val();
+            }
 
             var option = {};
             option.url = restApi.url_saveOrUpdateExpMainAndDetail;
             option.postData = $data;
 
             var errors = [];
-            $('tr[target]').each(function () {
-                if ($(this).find('input#expAmount').val() == '') {
+            $(that.element).find('.panel.panel-default').each(function () {
+                if ($(this).find('input[name="expAmount"]').val() == '') {
                     errors.push('请输入报销金额');
                     return;
                 }
-                if ($(this).find('input#collectExpType').val() == '') {
+                if ($(this).find('select[name="expType"]').val() == '') {
                     errors.push('请选择报销类别');
                     return;
                 }
-                if ($(this).find('input#expUse').val() == '') {
+                if ($(this).find('textarea[name="expUse"]').val() == '') {
                     errors.push('请输入用途说明');
                     return;
                 }
@@ -129,10 +153,10 @@
                 S_toastr.warning(errors[0]);
                 return;
             }
+            console.log(option);
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
                     S_toastr.success('操作成功');
-                    that.refreshMyExpense();
                 } else {
                     S_dialog.error(response.info);
                 }
@@ -167,7 +191,62 @@
                     $(this).html(i+1);
                 });
             });
-            that.getPassAuditData($ele);
+            //that.getPassAuditData($ele);
+
+            $ele.find('select[name="linkageApproval"]').select2({
+                width: '100%',
+                allowClear: true,
+                language: "zh-CN",
+                minimumResultsForSearch: Infinity,
+                placeholder: "请选择关联审批!"
+            });
+
+            $ele.find('input[name="expAmount"]').on('keyup',function () {
+
+                var expAmout = 0;
+
+                $(that.element).find('input[name="expAmount"]').each(function () {
+
+                    expAmout = expAmout + ($(this).val()-0);
+                });
+                $(that.element).find('#expAmount').html(expAmout);
+
+                if(that._baseData.processType=='3'){
+                    that.renderApprover();
+                }
+            });
+        }
+        ,renderApprover:function () {
+            var that = this;
+            var expAmout = 0,userList = [];
+
+            $(that.element).find('input[name="expAmount"]').each(function () {
+
+                expAmout = expAmout + ($(this).val()-0);
+            });
+
+            if(that._baseData.processType=='2'  && that._baseData.conditionList!=null && that._baseData.conditionList.length>0){//固定流程
+
+                userList = that._baseData.conditionList[0].userList;
+
+            }else if(that._baseData.processType=='3'  && that._baseData.conditionList!=null && that._baseData.conditionList.length>0){//条件流程
+
+                $.each(that._baseData.conditionList,function (i,item) {
+                    if(item.min=='null' && expAmout>=0 && (item.max!='null' && expAmout<item.max-0)){
+                        userList = item.userList;
+                        return false;
+                    }else if((item.min!='null' && expAmout>=item.min-0) && (item.max!='null' && expAmout<item.max-0)){
+                        userList = item.userList;
+                        return false;
+                    }else if(item.min!='null' && expAmout>=item.min-0 && item.max=='null'){
+                        userList = item.userList;
+                        return false;
+                    }
+                });
+            }
+            var html = template('m_approval/m_approval_cost_add_approver', {userList: userList});
+            $(that.element).find('#approverBox').html(html);
+
         }
         //关联审批
         ,getPassAuditData:function ($ele) {
@@ -286,13 +365,28 @@
         //事件绑定
         ,bindActionClick:function () {
             var that = this;
-            $(that.element).find('button[data-action]').off('click').on('click',function () {
+            $(that.element).find('button[data-action],a[data-action]').off('click').on('click',function () {
                 var $this = $(this),dataAction = $this.attr('data-action');
 
                 switch (dataAction){
                     case 'addItem':
                         that.addItem();
                         return false;
+                        break;
+
+                    case 'addCcUser'://添加抄送人
+
+                        var options = {};
+                        options.title = '添加抄送人员';
+                        options.selectedUserList = [];
+                        options.url = restApi.url_getOrgTree;
+                        options.saveCallback = function (data) {
+                            console.log(data)
+                            that._ccCompanyUserList = data.selectedUserList;
+                            var html = template('m_approval/m_approval_cost_add_ccUser', {userList: data.selectedUserList});
+                            $(that.element).find('#ccUserListBox').html(html);
+                        };
+                        $('body').m_orgByTree(options);
                         break;
 
                 }

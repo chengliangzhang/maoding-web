@@ -6,8 +6,9 @@ import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.core.util.DateUtils;
+import com.maoding.core.util.StringUtils;
+import com.maoding.core.util.TraceUtils;
 import com.maoding.financial.service.ExpMainService;
-import com.maoding.org.dto.CompanySimpleDTO;
 import com.maoding.projectcost.dto.ProjectCostQueryDTO;
 import com.maoding.projectcost.service.ProjectCostService;
 import com.maoding.statistic.dto.*;
@@ -641,10 +642,13 @@ public class StatisticController extends BaseController {
      * @author  张成亮
      * @return  标题栏过滤条件
      * @param   query 收支明细查询条件
+     *                combineCompanyId 当前组织编号
      **/
     @RequestMapping(value = "/getTitleFilter",method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage getTitleFilter(@RequestBody StatisticDetailQueryDTO query) throws Exception{
+        TraceUtils.check(StringUtils.isNotEmpty(query.getCombineCompanyId()),"!combineCompanyId不能为空");
+
         updateCurrentUserInfo(query);
         StatisticTitleFilterDTO result = statisticService.getTitleFilter(query);
         return AjaxMessage.succeed(result);

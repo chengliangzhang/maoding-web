@@ -2,6 +2,7 @@ package com.maoding.financial.controller;
 
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.core.bean.ResponseBean;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.core.util.StringUtil;
 import com.maoding.financial.dto.*;
@@ -228,7 +229,9 @@ public class FinancialController extends BaseController {
      * @return  expTypeList 报销类型
      *           projectList 关联项目
      *           auditList 关联审批
-     *           passAuditData 审批流程
+     *           processType 审批流程类型
+     *           conditionList 审批人列表
+     *           processFlag 是否自由流程
      * @param   request 审批申请
      *                  auditType 审批类型，定义见ProcessTypeConst.PROCESS_TYPE_xxx
      **/
@@ -660,6 +663,20 @@ public class FinancialController extends BaseController {
         param.put("total", totalNumber);
         param.put("companyList",expSummary.getCompanyList());
         return this.ajaxResponseSuccess().setData(param);
+    }
+
+    /**
+     *作者：FYT
+     * 日期：2018/9/5
+     * 描述：审批报表，报销统计详情
+     */
+    @RequestMapping(value = "/getAuditDetailForExp", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage getAuditDetailForExp(@RequestBody ExpMainDTO expMainDTO) throws Exception {
+        expMainDTO.setAppOrgId(currentCompanyId);
+        Map<String, Object> map = expMainService.getAuditDetailForExp(expMainDTO);
+        return this.ajaxResponseSuccess().setData(map);
+//        return null;
     }
 
 

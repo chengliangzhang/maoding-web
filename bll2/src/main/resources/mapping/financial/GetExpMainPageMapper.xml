@@ -641,7 +641,7 @@
         </if>
 
         GROUP BY exp_main.id
-        order by exp_main.create_date DESC
+        order by exp_main.exp_date DESC
         <include refid="CommonMapper.limitSQL"/>
     </select>
 

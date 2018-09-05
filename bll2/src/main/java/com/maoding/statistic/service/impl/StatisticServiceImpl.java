@@ -5,10 +5,7 @@ import com.maoding.companybill.service.CompanyBalanceService;
 import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.SystemParameters;
-import com.maoding.core.util.DateUtils;
-import com.maoding.core.util.ObjectUtils;
-import com.maoding.core.util.StringUtil;
-import com.maoding.core.util.StringUtils;
+import com.maoding.core.util.*;
 import com.maoding.enterprise.service.EnterpriseService;
 import com.maoding.exception.CustomException;
 import com.maoding.financial.dto.ExpCategoryDataDTO;
@@ -237,6 +234,7 @@ public class StatisticServiceImpl implements StatisticService {
         for(String companyId:companyIds){
             query.getStatisticCompanyList().add(this.getStatisticDetailCompanyIdParam(query,companyId));
         }
+        query.getFeeType();
     }
 
     private StatisticCompanyDTO getStatisticDetailCompanyIdParam(StatisticDetailQueryDTO param,String companyId) {
@@ -274,7 +272,6 @@ public class StatisticServiceImpl implements StatisticService {
     public List<StatisticDetailDTO> getExpensesDetailLedger(StatisticDetailQueryDTO param) throws Exception{
         //重新组装参数
         setExpensesDetailLedgerParam(param);
-        param.getFeeType();
         return statisticDao.getExpensesDetailLedger(param);
     }
 
@@ -1229,6 +1226,13 @@ public class StatisticServiceImpl implements StatisticService {
      **/
     @Override
     public StatisticTitleFilterDTO getTitleFilter(StatisticDetailQueryDTO query) {
+        //重新组装参数
+        try {
+            setExpensesDetailLedgerParam(query);
+        } catch (Exception e) {
+            TraceUtils.error(e.getMessage());
+        }
+
         //查找相关的收支分类和收支分类子项过滤条件
         //保存并清理用于过滤的值
         String feeType = query.getFeeType();
