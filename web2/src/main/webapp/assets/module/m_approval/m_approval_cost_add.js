@@ -104,7 +104,6 @@
                 expItem.projectId = $this.find('select[name="projectName"]').val();
                 expItem.expType =  $this.find('select[name="expType"]').val();
                 expItem.expAllName = $this.find('select[name="expType"] option:selected').text()+'-'+$this.find('select[name="expType"] option:selected').parent().attr('label');
-                //expItem.expParentType = $this.find('select[name="expType"] option:selected').parent().attr('label');
                 expItem.relationRecord = {
                     relationId : $this.find('select[name="linkageApproval"]').val(),
                     recordType : '13'
@@ -128,6 +127,9 @@
             if(that.settings.doType==2){//费用申请
                 $data.remark = $(that.element).find('textarea[name="remark"]').val();
                 $data.enterpriseName = $(that.element).find('input[name="enterpriseName"]').val();
+            }
+            if(!(that._baseData.processType=='2' || that._baseData.processType=='3')){//不是存在流程
+                $data.auditPerson = '';
             }
 
             var option = {};
@@ -191,8 +193,6 @@
                     $(this).html(i+1);
                 });
             });
-            //that.getPassAuditData($ele);
-
             $ele.find('select[name="linkageApproval"]').select2({
                 width: '100%',
                 allowClear: true,
@@ -247,35 +247,6 @@
             var html = template('m_approval/m_approval_cost_add_approver', {userList: userList});
             $(that.element).find('#approverBox').html(html);
 
-        }
-        //关联审批
-        ,getPassAuditData:function ($ele) {
-            var that = this;
-            var option = {};
-            option.url = restApi.url_getPassAuditData;
-            m_ajax.post(option, function (response) {
-                if (response.code == '0') {
-
-                    var data = [];
-                    if(response.data!=null && response.data.length>0){
-                        $.each(response.data, function (i, o) {
-                            data.push({id: o.id, text: o.companyName});
-                        });
-                    }
-                    $ele.find('select[name="linkageApproval"]').select2({
-                        width: '100%',
-                        allowClear: true,
-                        language: "zh-CN",
-                        minimumResultsForSearch: Infinity,
-                        placeholder: "请选择关联审批!",
-                        data: data
-                    });
-
-
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
         }
         //进入页面获取报销编号
         , getMaxExpNo: function (callback) {

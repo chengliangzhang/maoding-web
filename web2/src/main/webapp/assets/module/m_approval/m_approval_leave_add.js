@@ -22,10 +22,13 @@
         this._maxExpNo = null;//报销编号
         this._uuid = UUID.genV4().hexNoDelim;//targetId
 
-        this._baseData = null;
+        this._baseData = {};
         this._passAuditData = null;//关联审批
 
         this._title = this.settings.doType==3?'请假':'出差';
+
+        this._auditType = this.settings.doType==3?'leave':'onBusiness';//auditType 的取值： 请假leave 出差onBusiness 报销expense 费用costApply 付款申请projectPayApply
+
         this.init();
     }
 
@@ -33,11 +36,14 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.getMaxExpNo();
             that.renderDialog(function () {
+
                 var option = {};
-                option.url = restApi.url_getExpBaseData;
-                m_ajax.get(option, function (response) {
+                option.url = restApi.url_getProcessType;
+                option.postData = {
+                    auditType:that._auditType
+                };
+                m_ajax.postJson(option, function (response) {
                     if (response.code == '0') {
 
                         that._baseData = response.data;
@@ -45,7 +51,8 @@
                         that._baseData.title = that._title;
                         var html = template('m_approval/m_approval_leave_add', {data: that._baseData});
                         $(that.element).html(html);
-                        that.addItem();
+                        that.renderLeaveType();
+                        that.renderApprover();
                         that.fileUpload();
                         that.bindActionClick();
 
@@ -53,6 +60,7 @@
                         S_dialog.error(response.info);
                     }
                 });
+
             });
 
         }
@@ -86,129 +94,77 @@
                     callBack();
             }
         }
-        //保存
-        ,save:function () {
-            var that = this;
-            var $data = {};
-            $data.detailList = [];
-            $(that.element).find('.panel.panel-default').each(function () {
-                var $this = $(this), expItem = {};
-                expItem.expAmount = $this.find('input[name="expAmount"]').val();
-                expItem.expUse = $this.find('textarea[name="expUse"]').val();
-                expItem.projectId = $this.find('select[name="projectName"]').val();
-                expItem.expType =  $this.find('select[name="expType"] option:selected').text();
-                expItem.expParentType = $this.find('select[name="expType"] option:selected').parent().attr('label');
-                $data.detailList.push(expItem);
-            });
-            $data.type = 1;
-            $data.remark = $("form.tessExpenseBox input#remark").val();
-            $data.userId = window.currentCompanyUserId;
-            $data.expNo = that._maxExpNo;
-            $data.targetId = that._uuid;
-
-            var option = {};
-            option.url = restApi.url_saveOrUpdateExpMainAndDetail;
-            option.postData = $data;
-
-            var errors = [];
-            $('tr[target]').each(function () {
-                if ($(this).find('input#expAmount').val() == '') {
-                    errors.push('请输入报销金额');
-                    return;
-                }
-                if ($(this).find('input#collectExpType').val() == '') {
-                    errors.push('请选择报销类别');
-                    return;
-                }
-                if ($(this).find('input#expUse').val() == '') {
-                    errors.push('请输入用途说明');
-                    return;
-                }
-            });
-            if (errors.length > 0) {
-                S_toastr.warning(errors[0]);
-                return;
-            }
-            m_ajax.postJson(option, function (response) {
-                if (response.code == '0') {
-                    S_toastr.success('操作成功');
-                    that.refreshMyExpense();
-                } else {
-                    S_dialog.error(response.info);
-                }
-            });
-        }
-        //添加明细
-        ,addItem:function () {
-            var that = this;
-            var panelBoxLen = $(that.element).find('.panel').length;
-            that._baseData.itemIndex = panelBoxLen+1;
-            var html = template('m_approval/m_approval_reimbursement_item', {data:that._baseData});
-            $(that.element).find('button[data-action="addItem"]').parents('.form-group').before(html);
-
-            var $ele = $(that.element).find('button[data-action="addItem"]').parents('.form-group').prev();
-            $ele.find('select[name="expType"]').select2({
-                tags:false,
-                allowClear: false,
-                minimumResultsForSearch: -1,
-                width:'100%',
-                language: "zh-CN"
-            });
-            $ele.find('select[name="projectName"]').select2({
-                allowClear: true,
-                //minimumResultsForSearch: -1,
-                placeholder: "请选择关联项目!",
-                width:'100%',
-                language: "zh-CN"
-            });
-            $ele.find('a[data-action="delItem"]').on('click',function () {
-                $(this).closest('.panel').remove();
-                $(that.element).find('span[data-action="itemIndex"]').each(function (i) {
-                    $(this).html(i+1);
-                });
-            });
-            that.getPassAuditData($ele);
-        }
-        //关联审批
-        ,getPassAuditData:function ($ele) {
+        ,renderLeaveType:function () {
             var that = this;
             var option = {};
-            option.url = restApi.url_getPassAuditData;
-            m_ajax.post(option, function (response) {
+            option.url = restApi.url_getLeaveType;
+            m_ajax.get(option, function (response) {
                 if (response.code == '0') {
 
                     var data = [];
-                    if(response.data!=null && response.data.length>0){
-                        $.each(response.data, function (i, o) {
-                            data.push({id: o.id, text: o.companyName});
-                        });
-                    }
-                    $ele.find('select[name="linkageApproval"]').select2({
+                    $.each(response.data, function (i, o) {
+                        data.push({id: o.id, text: o.name});
+                    });
+                    $(that.element).find('select[name="leaveType"]').select2({
                         width: '100%',
-                        allowClear: true,
+                        allowClear: false,
                         language: "zh-CN",
                         minimumResultsForSearch: Infinity,
-                        placeholder: "请选择关联审批!",
                         data: data
                     });
-
 
                 } else {
                     S_dialog.error(response.info);
                 }
             });
         }
-        //进入页面获取报销编号
-        , getMaxExpNo: function (callback) {
+        ,renderApprover:function () {
             var that = this;
-            var options = {};
-            options.postData = {};
-            options.url = restApi.url_getMaxExpNo;
-            options.postData.companyId = window.currentCompanyId;
-            m_ajax.postJson(options, function (response) {
-                if (response.code == "0") {
-                    that._maxExpNo = response.data.maxExpNo;
-                    if (callback) return callback(response.data.maxExpNo);
+            var expAmout = 0,userList = [];
+
+            $(that.element).find('input[name="expAmount"]').each(function () {
+
+                expAmout = expAmout + ($(this).val()-0);
+            });
+
+            if(that._baseData.processType=='2'  && that._baseData.conditionList!=null && that._baseData.conditionList.length>0){//固定流程
+
+                userList = that._baseData.conditionList[0].userList;
+
+            }else if(that._baseData.processType=='3'  && that._baseData.conditionList!=null && that._baseData.conditionList.length>0){//条件流程
+
+                $.each(that._baseData.conditionList,function (i,item) {
+                    if(item.min=='null' && expAmout>=0 && (item.max!='null' && expAmout<item.max-0)){
+                        userList = item.userList;
+                        return false;
+                    }else if((item.min!='null' && expAmout>=item.min-0) && (item.max!='null' && expAmout<item.max-0)){
+                        userList = item.userList;
+                        return false;
+                    }else if(item.min!='null' && expAmout>=item.min-0 && item.max=='null'){
+                        userList = item.userList;
+                        return false;
+                    }
+                });
+            }
+            var html = template('m_approval/m_approval_cost_add_approver', {userList: userList});
+            $(that.element).find('#approverBox').html(html);
+        }
+        //保存
+        ,save:function () {
+            var that = this;
+
+            var $data = $(that.element).find("form.form-horizontal").serializeObject();
+            $data.type = that.settings.doType;
+            $data.userId = window.currentCompanyUserId;
+            $data.targetId = that._uuid;
+
+            var option = {};
+            option.url = restApi.url_saveLeave;
+            option.postData = $data;
+
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+                    S_toastr.success('操作成功');
                 } else {
                     S_dialog.error(response.info);
                 }
@@ -294,7 +250,34 @@
                         that.addItem();
                         return false;
                         break;
+                    case 'addCcUser'://添加抄送人
 
+                        var options = {};
+                        options.title = '添加抄送人员';
+                        options.selectedUserList = [];
+                        options.url = restApi.url_getOrgTree;
+                        options.saveCallback = function (data) {
+                            console.log(data)
+                            that._ccCompanyUserList = data.selectedUserList;
+                            var html = template('m_approval/m_approval_cost_add_ccUser', {userList: data.selectedUserList});
+                            $(that.element).find('#ccUserListBox').html(html);
+                        };
+                        $('body').m_orgByTree(options);
+                        break;
+                    case 'addCcUser'://添加抄送人
+
+                        var options = {};
+                        options.title = '添加抄送人员';
+                        options.selectedUserList = [];
+                        options.url = restApi.url_getOrgTree;
+                        options.saveCallback = function (data) {
+                            console.log(data)
+                            that._ccCompanyUserList = data.selectedUserList;
+                            var html = template('m_approval/m_approval_cost_add_ccUser', {userList: data.selectedUserList});
+                            $(that.element).find('#ccUserListBox').html(html);
+                        };
+                        $('body').m_orgByTree(options);
+                        break;
                 }
 
             })
