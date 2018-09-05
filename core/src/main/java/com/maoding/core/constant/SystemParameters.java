@@ -71,6 +71,13 @@ public interface SystemParameters {
      * 专业
      */
     String USER_MAJOR = "zy";
+
+
+    /**
+     * 请假
+     */
+    String LEAVE = "leave";
+
     /**
      * 任务管理
      */

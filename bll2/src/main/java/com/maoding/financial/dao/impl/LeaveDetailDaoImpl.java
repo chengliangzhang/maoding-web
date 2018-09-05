@@ -4,7 +4,7 @@ import com.maoding.core.base.dao.GenericDao;
 import com.maoding.financial.dto.LeaveDTO;
 import com.maoding.financial.dto.QueryLeaveDTO;
 import com.maoding.financial.entity.LeaveDetailEntity;
-import com.maoding.financial.service.LeaveDetailDao;
+import com.maoding.financial.dao.LeaveDetailDao;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

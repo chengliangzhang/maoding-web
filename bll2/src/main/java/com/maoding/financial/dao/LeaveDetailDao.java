@@ -1,4 +1,4 @@
-package com.maoding.financial.service;
+package com.maoding.financial.dao;
 
 import com.maoding.core.base.dao.BaseDao;
 import com.maoding.financial.dto.LeaveDTO;

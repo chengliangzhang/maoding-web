@@ -222,23 +222,16 @@ public class FinancialController extends BaseController {
     /******************财务类别设置********************/
 
     /**
-     * 方法描述：报销基础数据
-     * 作   者：LY
-     * 日   期：2016/7/27 17:59
-     */
-    @RequestMapping(value = {"/getExpBaseData","/getExpBaseData/{type}"}, method = RequestMethod.GET)
-    @ResponseBody
-    @Deprecated
-    /** 接口改为了post **/
-    public AjaxMessage getExpBaseData(@PathVariable("type") String type) throws Exception {
-        return expCategoryService.getExpBaseData(this.currentCompanyId, this.currentUserId,type);
-    }
-
-    /**
-     * 方法描述：报销基础数据
-     * 作   者：LY
-     * 日   期：2016/7/27 17:59
-     */
+     * 描述     报销审批基础数据
+     * 日期     2018/9/5
+     * @author  张成亮
+     * @return  expTypeList 报销类型
+     *           projectList 关联项目
+     *           auditList 关联审批
+     *           passAuditData 审批流程
+     * @param   request 审批申请
+     *                  auditType 审批类型，定义见ProcessTypeConst.PROCESS_TYPE_xxx
+     **/
     @RequestMapping(value = "/getExpBaseData", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage getExpBaseDataByPost(@RequestBody AuditQueryDTO request) throws Exception {
@@ -250,6 +243,8 @@ public class FinancialController extends BaseController {
      * 方法描述：审核通过的记录（不包含退回的）
      * 作   者：MaoSF
      * 日   期：2016/12/22
+     * @param   query 要查询的审批类型
+     *                  auditType 审批类型，定义见ProcessTypeConst.PROCESS_TYPE_xxx
      */
     @RequestMapping(value = "/getPassAuditData", method = RequestMethod.POST)
     @ResponseBody

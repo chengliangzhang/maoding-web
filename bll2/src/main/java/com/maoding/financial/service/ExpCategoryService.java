@@ -23,7 +23,15 @@ public interface ExpCategoryService extends BaseService<ExpCategoryEntity> {
      * 作   者：LY
      * 日   期：2016/7/27 17:59
      */
+    @Deprecated
+    /** 替换为Map<String, Object> getExpBaseData(AuditQueryDTO query) **/
     AjaxMessage getExpBaseData(String companyId, String userId, String type) throws Exception ;
+    
+    /**
+     * 描述       获取报销基础数据
+     * 日期       2018/9/5
+     * @author   张成亮
+     **/
     Map<String, Object> getExpBaseData(AuditQueryDTO query) throws Exception ;
 
     /**

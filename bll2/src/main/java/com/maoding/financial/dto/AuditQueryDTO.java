@@ -6,6 +6,7 @@ public class AuditQueryDTO extends CoreQueryDTO {
 
     private String mainId;
 
+    /** 审批类型，定义见ProcessTypeConst.PROCESS_TYPE_xxx **/
     private String auditType;
 
     private String companyUserId;

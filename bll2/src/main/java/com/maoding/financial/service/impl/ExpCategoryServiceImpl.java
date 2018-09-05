@@ -83,6 +83,8 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
      * 日   期：2016/7/27 17:59
      */
     @Override
+    @Deprecated
+    /** 替换为Map<String, Object> getExpBaseData(AuditQueryDTO query) **/
     public AjaxMessage getExpBaseData(String companyId, String userId, String type) throws Exception {
         AuditQueryDTO query = new AuditQueryDTO();
         query.setCurrentCompanyId(companyId);
@@ -125,7 +127,6 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
         list.add(0, dto);
         map.put("departListByCompanyId", list);
         map.put("companyUserList", companyUserService.getCompanyUserByCompanyId(companyId));
-        map.put("passAuditData",expMainService.getPassAuditData(passAuditQuery));
         return map;
     }
 
