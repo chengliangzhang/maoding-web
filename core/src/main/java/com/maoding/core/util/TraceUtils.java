@@ -16,6 +16,14 @@ import java.util.Map;
  * @description : 跟踪日志类通用方法
  */
 public class TraceUtils {
+	/** 打印消息显示前缀 */
+	private static final String PREFIX_INFO = "\t===>>>\t";
+	/** 错误消息显示前缀 */
+	private static final String PREFIX_ERROR = "\t!!!>>>\t";
+	/** 内部错误显示前缀 */
+	private static final String PREFIX_INTERNAL_ERROR = "\t!!!!!\t";
+
+	/********* 可配置项起始 ****************/
     /** 是否打印进入退出信息 */
     private static boolean isLogEnterAndExitInfo = true;
     /** 是否打印调试信息 */
@@ -28,10 +36,8 @@ public class TraceUtils {
     private static boolean isThrowAuto = true;
     /** 是否在异常内增加调用位置 */
     private static boolean isShowCaller = true;
-
-    //参数检查错误前导字符
-    private static String prefixIllegalArgumentMessage = "!";
-
+	/********* 可配置项结束 ****************/
+	
     //内部保存的日志
     private static Map<String,Logger> loggerMap = null;
 
@@ -44,8 +50,8 @@ public class TraceUtils {
      **/
     public static long enter(Object... obs){
         if (isLogEnterAndExitInfo) {
-            getLogger().info("\t===>>>\t进入" + getCaller()
-                    + ":" + getJsonString(obs));
+            getLogger().info(PREFIX_INFO + "进入" + getCaller(null)
+                    + ((obs != null) ? ":" + getJsonString(obs) : ""));
         }
         return System.currentTimeMillis();
     }
@@ -63,8 +69,9 @@ public class TraceUtils {
      **/
     public static void exit(long t, Object... obs){
         if (isLogEnterAndExitInfo) {
-            getLogger().info("\t===>>>\t退出" + getCaller()
-                    + ":" + ((t > 0) ? (System.currentTimeMillis() - t) + "ms," : "") + getJsonString(obs));
+            getLogger().info(PREFIX_INFO + "退出" + getCaller(null)
+                    + ((t > 0) ? ":" + (System.currentTimeMillis() - t) + "ms" : "")
+                    + ((obs != null) ? "," + getJsonString(obs) : ""));
         }
     }
 
@@ -86,7 +93,10 @@ public class TraceUtils {
      **/
     public static long info(String message, long t, Object... obs){
         if (isLogDebugInfo) {
-            getLogger().info("\t===>>>\t" + getCaller() + ":" + message + "," + ((t > 0) ? (System.currentTimeMillis() - t) + "ms," : "") + getJsonString(obs));
+            getLogger().info(PREFIX_INFO + getCaller(null)
+                    + ":" + message
+                    + ((t > 0) ?  "," + (System.currentTimeMillis() - t) + "ms" : "")
+                    + ((obs != null) ? "," + getJsonString(obs) : ""));
         }
         return System.currentTimeMillis();
     }
@@ -106,12 +116,32 @@ public class TraceUtils {
      * @param   obs 要打印的变量
      * @return  系统当前时间
      **/
+    public static void error(String message, boolean isError, Object... obs){
+        if (isError) {
+            getLogger().error(PREFIX_ERROR + getCaller(null) + "出错"
+                    + ":" + message
+                    + ((obs != null) ? "," + getJsonString(obs) : ""));
+        } else {
+            getLogger().warn(PREFIX_ERROR + getCaller(null) + "出错"
+                    + ":" + message
+                    + ((obs != null) ? "," + getJsonString(obs) : ""));
+        }
+    }
+
     public static void error(String message, Object... obs){
-        getLogger().error("\t===>>>\t" + System.currentTimeMillis() + ":" + getCaller() + "发生错误:" + message + "," + getJsonString(obs));
+        error(message,true,obs);
     }
 
     public static void error(String message){
-        error(message,(Object[]) null);
+        error(message,true,(Object[]) null);
+    }
+
+    public static void warn(String message, Object... obs){
+        error(message,false,obs);
+    }
+
+    public static void warn(String message){
+        error(message,false,(Object[]) null);
     }
 
     /**
@@ -124,49 +154,29 @@ public class TraceUtils {
      **/
     public static void check(boolean condition, Class<? extends RuntimeException> eClass, String message) {
         if (isCheckCondition && !(condition)) {
-            //生成调用位置和日志对象
-            String caller = getCaller();
-            Logger log = getLogger();
-
             //生成异常
             RuntimeException e = null;
             if (eClass != null) {
                 try {
-                    StringBuilder msgBuilder = new StringBuilder();
-                    if (StringUtils.startsWith(message,prefixIllegalArgumentMessage)){
-                        msgBuilder.append(StringUtils.right(message,prefixIllegalArgumentMessage));
-                    } else {
-                        msgBuilder.append(message);
-                    }
-
-                    if (isShowCaller) {
-                        msgBuilder.append(":")
-                                .append(caller);
-                    }
-
-                    if (msgBuilder.length() > 0) {
+                    if (StringUtils.isNotEmpty(message)) {
                         Constructor<?> c = getConstructor(eClass, String.class);
-                        e = eClass.cast(c.newInstance(msgBuilder.toString()));
+                        e = eClass.cast(c.newInstance(isShowCaller ? message : message + ":" + getCaller(null)));
                     } else {
                         e = eClass.newInstance();
                     }
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
-                    log.error("\t!!!!!\t" + ex.getMessage());
+                    getLogger(TraceUtils.class).error(PREFIX_INTERNAL_ERROR + ex.getMessage(),ex);
                 }
             }
 
             //记录日志并抛出异常
-            if (log != null){
-                String msg = (message != null) ? caller + ":" + message : caller + "发现错误";
-                String prefixError = "\t!!!>>>\t";
-                if (e != null) {
-                    log.error(prefixError + msg);
-                    if (isThrow) {
-                        throw e;
-                    }
-                } else {
-                    log.warn(prefixError + msg);
+            if (e != null) {
+                error(message);
+                if (isThrow) {
+                    throw e;
                 }
+            } else {
+                warn(message);
             }
         }
     }
@@ -180,11 +190,14 @@ public class TraceUtils {
      **/
     public static void check(boolean condition, String message) {
         if (isCheckCondition) {
-            String prefixIgnoreException = "~";
+            //参数检查错误前导字符
+            final String prefixIllegalArgumentMessage = "!";
+            //警告前导字符
+            final String prefixIgnoreException = "~";
             if (StringUtils.startsWith(message, prefixIllegalArgumentMessage)) {
-                check(condition, IllegalArgumentException.class, message);
+                check(condition, IllegalArgumentException.class, StringUtils.right(message,prefixIllegalArgumentMessage));
             } else if (StringUtils.startsWith(message, prefixIgnoreException)) {
-                check(condition, null, message);
+                check(condition, null, StringUtils.right(message,prefixIgnoreException));
             } else if (isThrowAuto) {
                 check(condition, IllegalStateException.class, message);
             } else {
@@ -314,22 +327,39 @@ public class TraceUtils {
 
 
     /**
+     * 描述     获取调用者信息，即堆栈中第一个不包含指定类名的类及方法
+     * 日期     2018/8/14
+     * @author  张成亮
+     * @return  调用者信息
+     * @param   excludeClassName 查找调用者信息的类的类名
+     **/
+    public static String getCaller(String excludeClassName){
+        String caller = "";
+        StackTraceElement[] stackArray = Thread.currentThread().getStackTrace();
+        for (StackTraceElement theStack : stackArray) {
+            if (isCaller(theStack.getClassName(), excludeClassName)) {
+                caller = StringUtils.lastRight(theStack.getClassName(), ".")
+                        + "." + theStack.getMethodName();
+            }
+        }
+        return caller;
+    }
+
+    private static boolean isCaller(String className,String excludeClassName){
+        return StringUtils.isNotSame(className,Thread.class.getName())
+                && StringUtils.isNotSame(className,TraceUtils.class.getName())
+                && ((StringUtils.isEmpty(excludeClassName))
+                        || StringUtils.isNotSame(className,excludeClassName));
+    }
+
+    /**
      * 描述     获取调用者的方法名信息，即堆栈中第一个不包含指定类名的类及方法名
      * 日期     2018/8/14
      * @author  张成亮
      * @return  调用者信息
      **/
-    private static String getCaller(){
-        String caller = "";
-        StackTraceElement[] stackArray = Thread.currentThread().getStackTrace();
-        for (StackTraceElement theStack : stackArray) {
-            if (!StringUtils.contains(theStack.getClassName(), TraceUtils.class.getName())
-                    && !StringUtils.contains(theStack.getClassName(), Thread.class.getName())) {
-                caller = StringUtils.lastRight(theStack.getClassName(), ".") + "." + theStack.getMethodName();
-                break;
-            }
-        }
-        return caller;
+    public static String getCaller(){
+        return getCaller(getCallerClass().getName());
     }
 
     /**
@@ -342,13 +372,12 @@ public class TraceUtils {
         Class<?> callerClass = null;
         StackTraceElement[] stackArray = Thread.currentThread().getStackTrace();
         for (StackTraceElement theStack : stackArray) {
-            if (!StringUtils.contains(theStack.getClassName(), TraceUtils.class.getName())
-                    && !StringUtils.contains(theStack.getClassName(), Thread.class.getName())) {
+            if (isCaller(theStack.getClassName(),null)) {
                 try {
                     callerClass = Class.forName(theStack.getClassName());
                     break;
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                } catch (ClassNotFoundException ex) {
+                    getLogger(TraceUtils.class).error(PREFIX_INTERNAL_ERROR + ex.getMessage(),ex);
                 }
             }
         }
