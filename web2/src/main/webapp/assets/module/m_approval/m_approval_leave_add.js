@@ -23,7 +23,8 @@
         this._uuid = UUID.genV4().hexNoDelim;//targetId
 
         this._baseData = {};
-        this._passAuditData = null;//关联审批
+        this._auditList = [];//审批人
+        this._ccCompanyUserList = [];//抄送人
 
         this._title = this.settings.doType==3?'请假':'出差';
 
@@ -103,7 +104,7 @@
 
                     var data = [];
                     $.each(response.data, function (i, o) {
-                        data.push({id: o.id, text: o.name});
+                        data.push({id: o.vl, text: o.name});
                     });
                     $(that.element).find('select[name="leaveType"]').select2({
                         width: '100%',
@@ -157,6 +158,18 @@
             $data.type = that.settings.doType;
             $data.userId = window.currentCompanyUserId;
             $data.targetId = that._uuid;
+
+            if(that._auditList!=null && that._auditList.length>0){
+                $data.auditPerson = that._auditList[0].id;
+            }
+
+            var ccUser = [] ;
+            if(that._ccCompanyUserList!=null && that._ccCompanyUserList.length>0){
+                $.each(that._ccCompanyUserList,function (i,item) {
+                    ccUser.push(item.id);
+                });
+            }
+            $data.ccCompanyUserList = ccUser;
 
             var option = {};
             option.url = restApi.url_saveLeave;
@@ -239,10 +252,26 @@
                 })
             });
         }
+        //抄送人事件处理
+        ,ccBoxDeal:function () {
+            var that = this;
+            $(that.element).find('#ccUserListBox .approver-box').hover(function () {
+                $(this).find('.cc-remove').show();
+            },function () {
+                $(this).find('.cc-remove').hide();
+            });
+            $(that.element).find('#ccUserListBox a[data-action="removeCcUser"]').off('click').on('click',function () {
+
+                var i = $(that.element).find('#ccUserListBox .approver-outbox').index($(this).closest('.approver-outbox'));
+                that._ccCompanyUserList.splice(i,1);
+                console.log(that._ccCompanyUserList)
+                $(this).closest('.approver-outbox').remove();
+            });
+        }
         //事件绑定
         ,bindActionClick:function () {
             var that = this;
-            $(that.element).find('button[data-action]').off('click').on('click',function () {
+            $(that.element).find('button[data-action],a[data-action]').off('click').on('click',function () {
                 var $this = $(this),dataAction = $this.attr('data-action');
 
                 switch (dataAction){
@@ -254,27 +283,28 @@
 
                         var options = {};
                         options.title = '添加抄送人员';
-                        options.selectedUserList = [];
+                        options.selectedUserList = that._ccCompanyUserList;
                         options.url = restApi.url_getOrgTree;
                         options.saveCallback = function (data) {
                             console.log(data)
                             that._ccCompanyUserList = data.selectedUserList;
                             var html = template('m_approval/m_approval_cost_add_ccUser', {userList: data.selectedUserList});
                             $(that.element).find('#ccUserListBox').html(html);
+                            that.ccBoxDeal();
                         };
                         $('body').m_orgByTree(options);
                         break;
-                    case 'addCcUser'://添加抄送人
+                    case 'addApprover'://添加审批人
 
                         var options = {};
-                        options.title = '添加抄送人员';
-                        options.selectedUserList = [];
+                        options.title = '添加审批人员';
+                        options.selectedUserList = that._auditList;
+                        options.isASingleSelectUser = 2;
                         options.url = restApi.url_getOrgTree;
                         options.saveCallback = function (data) {
-                            console.log(data)
-                            that._ccCompanyUserList = data.selectedUserList;
-                            var html = template('m_approval/m_approval_cost_add_ccUser', {userList: data.selectedUserList});
-                            $(that.element).find('#ccUserListBox').html(html);
+                            that._auditList = data.selectedUserList;
+                            var html = template('m_approval/m_approval_cost_add_approver', {userList: data.selectedUserList});
+                            $(that.element).find('#approverBox').html(html);
                         };
                         $('body').m_orgByTree(options);
                         break;

@@ -1,7 +1,7 @@
 <form class="form-horizontal m">
     <div class="panel panel-default">
         <div class="panel-body">
-
+            {{if data.doType==3}}
             <div class="form-group">
                 <label class="col-sm-2 control-label">{{data.title}}类型：</label>
                 <div class="col-sm-10">
@@ -10,11 +10,20 @@
                     </select>
                 </div>
             </div>
+            {{/if}}
+            {{if data.doType==4}}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">出差地点：</label>
+                <div class="col-sm-10">
+                    <input placeholder="请输入出差地点" class="form-control" type="text" name="address">
+                </div>
+            </div>
+            {{/if}}
             <div class="form-group">
                 <label class="col-sm-2 control-label">开始时间：</label>
                 <div class="col-sm-10">
                     <div class="input-group">
-                        <input type="text" class="form-control" id="ipt_startTime" name="startTime" placeholder="开始时间" readonly onFocus="WdatePicker({maxDate:'#F{$dp.$D(\'ipt_endTime\')}'})" >
+                        <input type="text" class="form-control" id="ipt_startTime" name="leaveStartTime" placeholder="开始时间" readonly onFocus="WdatePicker({maxDate:'#F{$dp.$D(\'ipt_endTime\')}'})" >
                         <span class="input-group-addon ">
                             <i class="icon-append fa fa-calendar"></i>
                         </span>
@@ -25,7 +34,7 @@
                 <label class="col-sm-2 control-label">结束时间：</label>
                 <div class="col-sm-10">
                     <div class="input-group">
-                        <input type="text" class="form-control" id="ipt_endTime" name="endTime" placeholder="开始时间" readonly onFocus="WdatePicker({minDate:'#F{$dp.$D(\'ipt_startTime\')}'})" >
+                        <input type="text" class="form-control" id="ipt_endTime" name="leaveEndTime" placeholder="开始时间" readonly onFocus="WdatePicker({minDate:'#F{$dp.$D(\'ipt_startTime\')}'})" >
                         <span class="input-group-addon ">
                             <i class="icon-append fa fa-calendar"></i>
                         </span>
@@ -36,7 +45,7 @@
                 <label class="col-sm-2 control-label">{{data.title}}天数：</label>
                 <div class="col-sm-10">
                     <div class="input-group">
-                        <input placeholder="请输入报销金额" class="form-control" type="text" name="leaveTime">
+                        <input placeholder="请输入{{data.title}}天数" class="form-control" type="text" name="leaveTime">
                         <span class="input-group-addon">天</span>
                     </div>
                 </div>
@@ -86,12 +95,14 @@
             <div id="approverBox">
 
             </div>
+            {{if data.processFlag==1}}
             <div class="approver-box text-center pull-left">
                 <a class="btn btn-default btn-circle circle-lg" type="button" data-action="addApprover">
                     <i class="fa fa-plus"></i>
                 </a>
                 <div class="m-t-xs">添加</div>
             </div>
+            {{/if}}
         </div>
     </div>
     <div class="form-group">

@@ -1188,7 +1188,6 @@ public class ProjectController extends BaseController {
     @RequestMapping(value = "/listProject", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage listProject(@RequestBody ProjectQueryDTO query) throws Exception {
-        long t = TraceUtils.enter(query);
         updateCurrentUserInfo(query);
         AjaxMessage ajaxMessage;
         if (query.getPageSize() != null){
@@ -1198,7 +1197,6 @@ public class ProjectController extends BaseController {
             List<ProjectVariableDTO> list = projectService.listProject(query);
             ajaxMessage = AjaxMessage.succeed(list);
         }
-        TraceUtils.exit(t);
         return ajaxMessage;
     }
 

@@ -2,7 +2,6 @@ package com.maoding.dynamic.service.impl;
 
 import com.maoding.core.constant.NetFileType;
 import com.maoding.core.constant.ProjectMemberType;
-import com.maoding.core.util.BeanUtilsEx;
 import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.dynamic.dao.DynamicDAO;
@@ -12,7 +11,6 @@ import com.maoding.dynamic.entity.DynamicDO;
 import com.maoding.dynamic.entity.NetFileDO;
 import com.maoding.dynamic.service.DynamicService;
 import com.maoding.org.dao.CompanyUserDao;
-import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.project.entity.ProjectEntity;
 import com.maoding.project.entity.ProjectProcessNodeEntity;
 import com.maoding.projectcost.entity.ProjectCostEntity;
@@ -95,71 +93,71 @@ public class DynamicServiceImpl implements DynamicService {
      */
     @Override
     public <T> void addDynamic(T origin, T target, String projectId, String companyId, String userId, String companyUserId) {
-        if ((origin == null) && (target == null)) return;
-        //补填缺失参数
-        //项目编号
-        if ((projectId == null) && (target != null)) projectId = (String)BeanUtilsEx.getProperty(target,"projectId");
-        if ((projectId == null) && (origin != null)) projectId = (String)BeanUtilsEx.getProperty(origin,"projectId");
-
-        //操作者公司编号和用户编号
-        if (((companyId == null) || (userId == null)) && (companyUserId != null)) {
-            CompanyUserEntity cue = companyUserDao.selectById(companyUserId);
-            if (cue != null) {
-                companyId = cue.getCompanyId();
-                userId = cue.getUserId();
-            }
-        }
-        if ((companyId == null) && (target != null)) companyId = (String)BeanUtilsEx.getProperty(target,"currentCompanyId");
-        if ((companyId == null) && (origin != null)) companyId = (String)BeanUtilsEx.getProperty(origin,"currentCompanyId");
-        if ((companyId == null) && (target != null)) companyId = (String)BeanUtilsEx.getProperty(target,"companyId");
-        if ((companyId == null) && (origin != null)) companyId = (String)BeanUtilsEx.getProperty(origin,"companyId");
-
-        if ((userId == null) && (target != null)) userId = (String)BeanUtilsEx.getProperty(target,"accountId");
-        if ((userId == null) && (target != null)) userId = (String)BeanUtilsEx.getProperty(target,"userId");
-        if ((userId == null) && (target != null)) userId = (String)BeanUtilsEx.getProperty(target,"updateBy");
-        if ((userId == null) && (target != null)) userId = (String)BeanUtilsEx.getProperty(target,"createBy");
-        if ((userId == null) && (origin != null)) userId = (String)BeanUtilsEx.getProperty(origin,"accountId");
-        if ((userId == null) && (origin != null)) userId = (String)BeanUtilsEx.getProperty(origin,"userId");
-        if ((userId == null) && (origin != null)) userId = (String)BeanUtilsEx.getProperty(origin,"updateBy");
-        if ((userId == null) && (origin != null)) userId = (String)BeanUtilsEx.getProperty(origin,"createBy");
-
-        //操作者雇员编号
-        if ((companyUserId == null) && (companyId != null) && (userId != null)){
-            companyUserId = zInfoDAO.getCompanyUserIdByCompanyIdAndUserId(companyId,userId);
-        }
-        if ((companyUserId == null) && (target != null)) companyUserId = (String)BeanUtilsEx.getProperty(target,"currentCompanyUserId");
-        if ((companyUserId == null) && (target != null)) companyUserId = (String)BeanUtilsEx.getProperty(target,"companyUserId");
-        if ((companyUserId == null) && (origin != null)) companyUserId = (String)BeanUtilsEx.getProperty(origin,"currentCompanyUserId");
-        if ((companyUserId == null) && (origin != null)) companyUserId = (String)BeanUtilsEx.getProperty(origin,"companyUserId");
-
-        //调用相应创建日志方法
-        if ((origin instanceof TaskWithFullNameDTO) || (target instanceof TaskWithFullNameDTO)){
-            addDynamic(createDynamicFrom((TaskWithFullNameDTO)origin,(TaskWithFullNameDTO)target,projectId,companyId,userId,companyUserId));
-        } else if ((origin instanceof ZCostDTO) || (target instanceof ZCostDTO)){
-            addDynamic(createDynamicFrom((ZCostDTO)origin,(ZCostDTO)target,projectId,companyId,userId,companyUserId));
-        } else if ((origin instanceof ZProjectDTO) || (target instanceof ZProjectDTO)){
-            addDynamic(createDynamicFrom((ZProjectDTO)origin,(ZProjectDTO)target,projectId,companyId,userId,companyUserId));
-        } else if ((origin instanceof ProjectCostEntity) || (target instanceof ProjectCostEntity)){
-            addDynamic(createDynamicFrom((ProjectCostEntity)origin,(ProjectCostEntity)target,projectId,companyId,userId,companyUserId));
-        } else if ((origin instanceof ProjectCostPointEntity) || (target instanceof ProjectCostPointEntity)){
-            addDynamic(createDynamicFrom((ProjectCostPointEntity)origin,(ProjectCostPointEntity)target,projectId,companyId,userId,companyUserId));
-        } else if ((origin instanceof ProjectCostPointDetailEntity) || (target instanceof ProjectCostPointDetailEntity)){
-            addDynamic(createDynamicFrom((ProjectCostPointDetailEntity)origin,(ProjectCostPointDetailEntity)target,projectId,companyId,userId,companyUserId));
-        } else if ((origin instanceof ProjectCostPaymentDetailEntity) || (target instanceof ProjectCostPaymentDetailEntity)){
-            addDynamic(createDynamicFrom((ProjectCostPaymentDetailEntity)origin,(ProjectCostPaymentDetailEntity)target,projectId,companyId,userId,companyUserId));
-        } else if ((origin instanceof ProjectTaskEntity) || (target instanceof ProjectTaskEntity)){
-            addDynamic(createDynamicFrom((ProjectTaskEntity)origin,(ProjectTaskEntity)target,projectId,companyId,userId,companyUserId));
-        } else if ((origin instanceof ProjectEntity) || (target instanceof ProjectEntity)){
-            addDynamic(createDynamicFrom((ProjectEntity)origin,(ProjectEntity)target,projectId,companyId,userId,companyUserId));
-        } else if ((origin instanceof ProjectMemberEntity) || (target instanceof ProjectMemberEntity)){
-            addDynamic(createDynamicFrom((ProjectMemberEntity)origin,(ProjectMemberEntity)target,projectId,companyId,userId,companyUserId));
-        } else if ((origin instanceof ProjectProcessNodeEntity) || (target instanceof ProjectProcessNodeEntity)){
-            addDynamic(createDynamicFrom((ProjectProcessNodeEntity)origin,(ProjectProcessNodeEntity)target,projectId,companyId,userId,companyUserId));
-        } else if ((origin instanceof ProjectProcessTimeEntity) || (target instanceof ProjectProcessTimeEntity)){
-            addDynamic(createDynamicFrom((ProjectProcessTimeEntity)origin,(ProjectProcessTimeEntity)target,projectId,companyId,userId,companyUserId));
-        } else if ((origin instanceof NetFileDO) || (target instanceof NetFileDO)){
-            addDynamic(createDynamicFrom((NetFileDO)origin,(NetFileDO)target,projectId,companyId,userId,companyUserId));
-        }
+//        if ((origin == null) && (target == null)) return;
+//        //补填缺失参数
+//        //项目编号
+//        if ((projectId == null) && (target != null)) projectId = (String)BeanUtilsEx.getProperty(target,"projectId");
+//        if ((projectId == null) && (origin != null)) projectId = (String)BeanUtilsEx.getProperty(origin,"projectId");
+//
+//        //操作者公司编号和用户编号
+//        if (((companyId == null) || (userId == null)) && (companyUserId != null)) {
+//            CompanyUserEntity cue = companyUserDao.selectById(companyUserId);
+//            if (cue != null) {
+//                companyId = cue.getCompanyId();
+//                userId = cue.getUserId();
+//            }
+//        }
+//        if ((companyId == null) && (target != null)) companyId = (String)BeanUtilsEx.getProperty(target,"currentCompanyId");
+//        if ((companyId == null) && (origin != null)) companyId = (String)BeanUtilsEx.getProperty(origin,"currentCompanyId");
+//        if ((companyId == null) && (target != null)) companyId = (String)BeanUtilsEx.getProperty(target,"companyId");
+//        if ((companyId == null) && (origin != null)) companyId = (String)BeanUtilsEx.getProperty(origin,"companyId");
+//
+//        if ((userId == null) && (target != null)) userId = (String)BeanUtilsEx.getProperty(target,"accountId");
+//        if ((userId == null) && (target != null)) userId = (String)BeanUtilsEx.getProperty(target,"userId");
+//        if ((userId == null) && (target != null)) userId = (String)BeanUtilsEx.getProperty(target,"updateBy");
+//        if ((userId == null) && (target != null)) userId = (String)BeanUtilsEx.getProperty(target,"createBy");
+//        if ((userId == null) && (origin != null)) userId = (String)BeanUtilsEx.getProperty(origin,"accountId");
+//        if ((userId == null) && (origin != null)) userId = (String)BeanUtilsEx.getProperty(origin,"userId");
+//        if ((userId == null) && (origin != null)) userId = (String)BeanUtilsEx.getProperty(origin,"updateBy");
+//        if ((userId == null) && (origin != null)) userId = (String)BeanUtilsEx.getProperty(origin,"createBy");
+//
+//        //操作者雇员编号
+//        if ((companyUserId == null) && (companyId != null) && (userId != null)){
+//            companyUserId = zInfoDAO.getCompanyUserIdByCompanyIdAndUserId(companyId,userId);
+//        }
+//        if ((companyUserId == null) && (target != null)) companyUserId = (String)BeanUtilsEx.getProperty(target,"currentCompanyUserId");
+//        if ((companyUserId == null) && (target != null)) companyUserId = (String)BeanUtilsEx.getProperty(target,"companyUserId");
+//        if ((companyUserId == null) && (origin != null)) companyUserId = (String)BeanUtilsEx.getProperty(origin,"currentCompanyUserId");
+//        if ((companyUserId == null) && (origin != null)) companyUserId = (String)BeanUtilsEx.getProperty(origin,"companyUserId");
+//
+//        //调用相应创建日志方法
+//        if ((origin instanceof TaskWithFullNameDTO) || (target instanceof TaskWithFullNameDTO)){
+//            addDynamic(createDynamicFrom((TaskWithFullNameDTO)origin,(TaskWithFullNameDTO)target,projectId,companyId,userId,companyUserId));
+//        } else if ((origin instanceof ZCostDTO) || (target instanceof ZCostDTO)){
+//            addDynamic(createDynamicFrom((ZCostDTO)origin,(ZCostDTO)target,projectId,companyId,userId,companyUserId));
+//        } else if ((origin instanceof ZProjectDTO) || (target instanceof ZProjectDTO)){
+//            addDynamic(createDynamicFrom((ZProjectDTO)origin,(ZProjectDTO)target,projectId,companyId,userId,companyUserId));
+//        } else if ((origin instanceof ProjectCostEntity) || (target instanceof ProjectCostEntity)){
+//            addDynamic(createDynamicFrom((ProjectCostEntity)origin,(ProjectCostEntity)target,projectId,companyId,userId,companyUserId));
+//        } else if ((origin instanceof ProjectCostPointEntity) || (target instanceof ProjectCostPointEntity)){
+//            addDynamic(createDynamicFrom((ProjectCostPointEntity)origin,(ProjectCostPointEntity)target,projectId,companyId,userId,companyUserId));
+//        } else if ((origin instanceof ProjectCostPointDetailEntity) || (target instanceof ProjectCostPointDetailEntity)){
+//            addDynamic(createDynamicFrom((ProjectCostPointDetailEntity)origin,(ProjectCostPointDetailEntity)target,projectId,companyId,userId,companyUserId));
+//        } else if ((origin instanceof ProjectCostPaymentDetailEntity) || (target instanceof ProjectCostPaymentDetailEntity)){
+//            addDynamic(createDynamicFrom((ProjectCostPaymentDetailEntity)origin,(ProjectCostPaymentDetailEntity)target,projectId,companyId,userId,companyUserId));
+//        } else if ((origin instanceof ProjectTaskEntity) || (target instanceof ProjectTaskEntity)){
+//            addDynamic(createDynamicFrom((ProjectTaskEntity)origin,(ProjectTaskEntity)target,projectId,companyId,userId,companyUserId));
+//        } else if ((origin instanceof ProjectEntity) || (target instanceof ProjectEntity)){
+//            addDynamic(createDynamicFrom((ProjectEntity)origin,(ProjectEntity)target,projectId,companyId,userId,companyUserId));
+//        } else if ((origin instanceof ProjectMemberEntity) || (target instanceof ProjectMemberEntity)){
+//            addDynamic(createDynamicFrom((ProjectMemberEntity)origin,(ProjectMemberEntity)target,projectId,companyId,userId,companyUserId));
+//        } else if ((origin instanceof ProjectProcessNodeEntity) || (target instanceof ProjectProcessNodeEntity)){
+//            addDynamic(createDynamicFrom((ProjectProcessNodeEntity)origin,(ProjectProcessNodeEntity)target,projectId,companyId,userId,companyUserId));
+//        } else if ((origin instanceof ProjectProcessTimeEntity) || (target instanceof ProjectProcessTimeEntity)){
+//            addDynamic(createDynamicFrom((ProjectProcessTimeEntity)origin,(ProjectProcessTimeEntity)target,projectId,companyId,userId,companyUserId));
+//        } else if ((origin instanceof NetFileDO) || (target instanceof NetFileDO)){
+//            addDynamic(createDynamicFrom((NetFileDO)origin,(NetFileDO)target,projectId,companyId,userId,companyUserId));
+//        }
     }
     /**
      * 更改时间

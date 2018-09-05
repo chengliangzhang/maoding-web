@@ -23,7 +23,7 @@
         this._uuid = UUID.genV4().hexNoDelim;//targetId
 
         this._baseData = null;
-        this._passAuditData = null;//关联审批
+        this._auditList = [];//审批人
         this._ccCompanyUserList = [];//抄送人
 
         this._title = this.settings.doType==1?'报销':'费用';
@@ -333,6 +333,22 @@
                 })
             });
         }
+        //抄送人事件处理
+        ,ccBoxDeal:function () {
+            var that = this;
+            $(that.element).find('#ccUserListBox .approver-box').hover(function () {
+                $(this).find('.cc-remove').show();
+            },function () {
+                $(this).find('.cc-remove').hide();
+            });
+            $(that.element).find('#ccUserListBox a[data-action="removeCcUser"]').off('click').on('click',function () {
+
+                var i = $(that.element).find('#ccUserListBox .approver-outbox').index($(this).closest('.approver-outbox'));
+                that._ccCompanyUserList.splice(i,1);
+                console.log(that._ccCompanyUserList)
+                $(this).closest('.approver-outbox').remove();
+            });
+        }
         //事件绑定
         ,bindActionClick:function () {
             var that = this;
@@ -356,6 +372,22 @@
                             that._ccCompanyUserList = data.selectedUserList;
                             var html = template('m_approval/m_approval_cost_add_ccUser', {userList: data.selectedUserList});
                             $(that.element).find('#ccUserListBox').html(html);
+                            that.ccBoxDeal();
+                        };
+                        $('body').m_orgByTree(options);
+                        break;
+
+                    case 'addApprover'://添加审批人
+
+                        var options = {};
+                        options.title = '添加审批人员';
+                        options.selectedUserList = that._auditList;
+                        options.isASingleSelectUser = 2;
+                        options.url = restApi.url_getOrgTree;
+                        options.saveCallback = function (data) {
+                            that._auditList = data.selectedUserList;
+                            var html = template('m_approval/m_approval_cost_add_approver', {userList: data.selectedUserList});
+                            $(that.element).find('#approverBox').html(html);
                         };
                         $('body').m_orgByTree(options);
                         break;

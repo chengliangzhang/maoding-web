@@ -15,7 +15,7 @@
     </thead>
     <tbody>
     {{each dataList as p}}
-    <tr data-type="{{p.type}}">
+    <tr data-type="{{p.type}}" data-id="{{p.id}}">
         <td>{{_momentFormat(p.expDate,'YYYY/MM/DD')}}</td>
         <td>{{p.userName}}</td>
         <td>{{p.expTypeName}}</td>

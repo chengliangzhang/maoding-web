@@ -1,6 +1,7 @@
 package com.maoding.financial.dao;
 
 import com.maoding.core.base.dao.BaseDao;
+import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.financial.dto.*;
 import com.maoding.financial.entity.ExpMainEntity;
 import com.maoding.org.dto.CompanyRelationDTO;
@@ -158,5 +159,17 @@ public interface ExpMainDao extends BaseDao<ExpMainEntity> {
      */
     List<ExpMainDTO> getAuditDataForWeb(QueryAuditDTO dto);
 
+    /**
+     * 我申请的报销/费用   的分页
+     * @param dto
+     * @return
+     */
     int getAuditDataForWebCount(QueryAuditDTO dto);
+
+    /**
+     * 我申请的   详情
+     * @param dto
+     * @return
+     */
+    List<ExpMainDTO> getAuditDataDetail(QueryAuditDTO dto);
 }

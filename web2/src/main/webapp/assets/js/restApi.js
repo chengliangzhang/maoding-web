@@ -365,5 +365,6 @@ var restApi = {
     , url_getLeaveType:window.rootPath+'/iWork/leave/getLeaveType'
     , url_getProcessType:window.rootPath+'/iWork/finance/getProcessType'
     , url_saveLeave:window.rootPath+'/iWork/leave/saveLeave'
+    , url_getAuditDetailForExp:window.rootPath+'/iWork/finance/getAuditDetailForExp'
 
 };

@@ -105,6 +105,10 @@ public class TraceUtils {
         return info(message,0,obs);
     }
 
+    public static long info(String message, long t){
+        return info(message,t,(Object[]) null);
+    }
+
     public static long info(String message){
         return info(message,0, (Object[]) null);
     }
@@ -340,6 +344,7 @@ public class TraceUtils {
             if (isCaller(theStack.getClassName(), excludeClassName)) {
                 caller = StringUtils.lastRight(theStack.getClassName(), ".")
                         + "." + theStack.getMethodName();
+                break;
             }
         }
         return caller;
@@ -348,8 +353,9 @@ public class TraceUtils {
     private static boolean isCaller(String className,String excludeClassName){
         return StringUtils.isNotSame(className,Thread.class.getName())
                 && StringUtils.isNotSame(className,TraceUtils.class.getName())
-                && ((StringUtils.isEmpty(excludeClassName))
-                        || StringUtils.isNotSame(className,excludeClassName));
+                && (StringUtils.isEmpty(excludeClassName)
+                        || (StringUtils.isNotEmpty(excludeClassName) &&
+                                StringUtils.isNotSame(className,excludeClassName)));
     }
 
     /**

@@ -192,4 +192,9 @@ public class ExpMainDaoImpl extends GenericDao<ExpMainEntity> implements ExpMain
     public int getAuditDataForWebCount(QueryAuditDTO dto) {
         return this.sqlSession.selectOne("GetExpMainPageMapper.getAuditDataForWebCount",dto);
     }
+
+    @Override
+    public List<ExpMainDTO> getAuditDataDetail(QueryAuditDTO dto) {
+        return this.sqlSession.selectList("GetExpMainPageMapper.getAuditDataDetail",dto);
+    }
 }

@@ -75,17 +75,20 @@
             $(that.element).find('tr').off('click').on('click',function () {
                 var $this = $(this);
                 var type = $this.attr('data-type');
+                var dataId = $this.attr('data-id');
 
                 if(type==1 || type==2 || type==5){
 
                     var option = {};
                     option.doType = type;
+                    option.id = dataId;
                     $('body').m_approval_cost_details(option,true);
 
                 }else if(type==3 || type==4){
 
                     var option = {};
                     option.doType = type;
+                    option.id = dataId;
                     $('body').m_approval_leave_details(option,true);
 
                 }

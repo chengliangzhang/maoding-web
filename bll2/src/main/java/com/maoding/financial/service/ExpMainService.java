@@ -238,4 +238,7 @@ public interface ExpMainService extends BaseService<ExpMainEntity>{
     CorePageDTO<ExpMainDTO> getAuditDataForWeb(QueryAuditDTO dto)throws Exception;
 
     Map<String,Object> getAuditDetailForExp(ExpMainDTO expMainDTO) throws Exception;
+
+
+    List<ExpMainDTO> getAuditDataDetail(QueryAuditDTO dto);
 }

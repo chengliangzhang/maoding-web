@@ -2750,30 +2750,34 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
      */
     @Override
     public ProjectListPageDTO listPageProject(ProjectQueryDTO query) {
+        long t0 = TraceUtils.enter(query);
+
         updateQuery(query);
 
         //查询主列表，包括projectId、过滤、排序、总数信息
-        long time1 = System.currentTimeMillis();
         List<ProjectVariableDTO> mainList = projectDao.listProjectBasic(query);
         int count = projectDao.countProject(query);
-        long time2 = System.currentTimeMillis();
+
+        long t = TraceUtils.info("读取项目主列表",t0);
+
         //添加项目是否可编辑信息
         Map<String, Object> para = setProjectUserPermissionParam(query.getCompanyId(),query.getCurrentCompanyUserId());
         List<PermissionDTO> permissionDTOS = permissionService.getProjectUserPermission(para);
         boolean flag = (permissionDTOS != null) && (permissionDTOS.size() > 0);
+
+        t = TraceUtils.info("读取项目可编辑信息",t);
 
         //创建并返回结果
         ProjectListPageDTO page = new ProjectListPageDTO();
         page.setTotal(count);
         page.setPageIndex(DigitUtils.parseInt(query.getPageIndex()));
         page.setPageSize(DigitUtils.parseInt(query.getPageSize()));
-        long time3 = System.currentTimeMillis();
         page.setData(updateProjectList(mainList,query));
-        long time4 = System.currentTimeMillis();
         page.setFlag((flag) ? "1" : "0");
 
-        System.out.println("主查询："+ (time2 - time1));
-        System.out.println("其他查询："+ (time4 - time3));
+        TraceUtils.info("补充项目信息",t);
+
+        TraceUtils.exit(t0);
         return page;
     }
 

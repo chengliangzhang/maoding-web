@@ -681,4 +681,25 @@
         </if>
 
     </select>
+
+    <select id="getAuditDataDetail" resultType="com.maoding.financial.dto.ExpMainDTO" parameterType="com.maoding.financial.dto.QueryAuditDTO">
+        SELECT
+            exp_main.id,
+            exp_main.company_user_id AS companyUserId,
+            exp_main.exp_date,
+            exp_main.version_num AS versionNum,
+            company_user.user_name AS userName,
+            exp_main.exp_no AS expNo,
+            exp_main.approve_status AS approveStatus,
+            s.type_name AS approveStatusName,
+            exp_main.type,
+            e.type_name AS expTypeName
+         FROM
+            maoding_web_exp_main exp_main
+        INNER JOIN maoding_web_company_user company_user ON exp_main.company_user_id = company_user.id
+        INNER JOIN md_type_exp_status AS s ON s.id = exp_main.approve_status
+        INNER JOIN md_type_exp as e ON e.id = exp_main.type
+        LEFT JOIN maoding_web_exp_audit exp_audit ON exp_main.id = exp_audit.main_id
+        WHERE  exp_main.id = #{id}
+    </select>
 </mapper>

@@ -1506,6 +1506,16 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         return result;
     }
 
+    /**
+     * 我申请的  详情
+     * @param dto
+     * @return
+     */
+    @Override
+    public List<ExpMainDTO> getAuditDataDetail(QueryAuditDTO dto) {
+        return expMainDao.getAuditDataDetail(dto);
+    }
+
     public Map<String,Object> getAuditDetailForExp2(String id) throws Exception{
         // ExpDetailDataDTO result = new ExpDetailDataDTO();
         CompanyUserEntity companyUserEntity = null;

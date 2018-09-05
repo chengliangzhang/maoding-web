@@ -1,6 +1,7 @@
 package com.maoding.financial.controller;
 
 import com.maoding.core.base.controller.BaseController;
+import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.core.util.StringUtil;
@@ -257,6 +258,17 @@ public class FinancialController extends BaseController {
     public AjaxMessage getPassAuditData(@RequestBody QueryAuditDTO query) throws Exception{
         updateCurrentUserInfo(query);
         return AjaxMessage.succeed(expMainService.getPassAuditData(query));
+    }
+
+    /**
+     * 描述       获取审批关联项目列表
+     * 日期       2018/9/5
+     * @author   张成亮
+     **/
+    @RequestMapping(value = "/getProjectList", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage getProjectList(@RequestBody BaseDTO query) {
+        return AjaxMessage.succeed(expMainService.getProjectListWS(currentCompanyId,currentUserId));
     }
 
     /**
@@ -820,6 +832,22 @@ public class FinancialController extends BaseController {
         dto.setCurrentCompanyId(this.currentCompanyId);
         dto.setCurrentCompanyUserId(this.currentCompanyUserId);
         return this.ajaxResponseSuccess().setData(expMainService.getAuditDataForWeb(dto));
+
+    }
+
+    /**
+     * 作者：FYT
+     * 日期：2018/9/5
+     * 方法描述：我的申请：详情
+     *
+     * @return
+     */
+    @RequestMapping(value = "/getAuditDataDetail/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public AjaxMessage getAuditDataDetail(@PathVariable("id") String id) throws Exception {
+        QueryAuditDTO dto = new QueryAuditDTO();
+        dto.setId(id);
+        return this.ajaxResponseSuccess().setData(expMainService.getAuditDataDetail(dto));
 
     }
 }
