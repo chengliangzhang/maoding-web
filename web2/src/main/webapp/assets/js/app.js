@@ -61,14 +61,20 @@ $(document).ready(function () {
 
         var navbarheight = $('nav.navbar-default').height();
         var wrapperHeight = $('#page-wrapper').height();
+        var windowHeight = $(window).height();
 
         if (navbarheight > wrapperHeight) {
             $('#page-wrapper').css("min-height", navbarheight + "px");
         }
 
-        if (navbarheight < wrapperHeight) {
-            $('#page-wrapper').css("min-height", ($(window).height()-60) + "px");
+        if (navbarheight <= wrapperHeight) {
+            $('#page-wrapper').css("min-height", windowHeight - 60 + "px");
         }
+
+        if (navbarheight < windowHeight && wrapperHeight < windowHeight) {
+            $('#page-wrapper').css("min-height", windowHeight - 60 + "px");
+        }
+
 
         if ($('body').hasClass('fixed-nav')) {
             if (navbarheight > wrapperHeight) {

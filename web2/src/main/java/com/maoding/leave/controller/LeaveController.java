@@ -9,10 +9,7 @@ import com.maoding.financial.service.LeaveService;
 import com.maoding.system.service.DataDictionaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/iWork/leave")
@@ -61,11 +58,12 @@ public class LeaveController extends BaseController{
      * 作    者 : MaoSF
      * 日    期 : 2017/05/23
      */
-    @RequestMapping("/getLeaveDetail")
+    @RequestMapping(value = "/getLeaveDetailForWeb", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseBean getLeaveDetail(@RequestBody SaveLeaveDTO dto) throws Exception {
+    public AjaxMessage getLeaveDetailForWeb(@RequestBody SaveLeaveDTO dto) throws Exception {
         updateCurrentUserInfo(dto);
-        return ResponseBean.responseSuccess().addData("leaveDetail",leaveService.getLeaveDetail(dto.getId()));
+        return AjaxMessage.succeed(leaveService.getLeaveDetail(dto.getId()));
+//        return ResponseBean.responseSuccess().addData("leaveDetail",leaveService.getLeaveDetail(dto.getId()));
     }
 
 }

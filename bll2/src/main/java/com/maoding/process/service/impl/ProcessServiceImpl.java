@@ -531,7 +531,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             TraceUtils.check(StringUtils.isNotEmpty(dto.getAuditType()),"!auditType不能为空");
             ProcessTypeEntity processType = this.processTypeDao.getCurrentProcessType(dto.getCurrentCompanyId(),dto.getAuditType());
             if(!(processType==null || ProcessTypeConst.TYPE_FREE == processType.getType())){
-                processDefineId = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getCurrentCompanyId()));
+                processDefineId = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getCurrentCompanyId()),dto.getCurrentCompanyId());
             }
         }else {
             ProcessInstanceRelationEntity instanceRelation = processInstanceRelationDao.getProcessInstanceRelation(dto.getMainId());
@@ -619,7 +619,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             if(processType==null || ProcessTypeConst.TYPE_FREE == processType.getType()){
                 return userList;
             }else {
-                processDefineId = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getAppOrgId()));
+                processDefineId = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getAppOrgId()),dto.getAppOrgId());
             }
         }else {
             ProcessInstanceRelationEntity instanceRelation = processInstanceRelationDao.getProcessInstanceRelation(dto.getMainId());

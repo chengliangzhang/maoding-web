@@ -1181,7 +1181,8 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         this.setCurrentTaskRealCompanyId(map);
         Map<String, Object> resultData = new HashMap<>();
         List<Map<String, Object>> resultList =  new ArrayList<>();
-        String currentCompanyId = (String)map.get("companyId");
+        String companyId = (String)map.get("companyId");
+        String currentCompanyId =  (String)map.get("currentCompanyId");
         String companyUserId = (String)map.get("companyUserId");
         String accountId = (String)map.get("accountId");
         String payType = (String)map.get("payType");
@@ -1192,10 +1193,12 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         map.put("projectCompanyId",project.getCompanyId());
 
         //获取要返回到前端的部分数据
-        String isManager = this.getManagerFlag(project.getId(), currentCompanyId,companyUserId);
+        String isManager = this.getManagerFlag(project.getId(), companyId,companyUserId);
+        String isFinancial = getIsFinancial(currentCompanyId,accountId,payType);
         map.put("isManager", isManager);//便于传递到 getReviewFeeInfo 处理其他业务
         resultData.put("isManager", isManager);
-        resultData.put("isFinancial", getIsFinancial(currentCompanyId,accountId,payType));
+        resultData.put("isFinancial", isFinancial);
+        map.put("isFinancial",isFinancial);
         //先查询主记录
         List<ProjectCostDTO> costList = this.getProjectCostList(map);
         for(ProjectCostDTO cost:costList){
@@ -1629,7 +1632,9 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         String companyUserId = (String) param.get("companyUserId");
         String accountId = (String) param.get("accountId");
         String companyId = (String) param.get("currentCompanyId");
-        if(permissionService.isFinancialReceive(companyId,accountId) || permissionService.isFinancial(companyId,accountId)){
+        String isFinancial = (param.containsKey("isFinancial")?(String)param.get("isFinancial"):"0");
+       // if(permissionService.isFinancialReceive(companyId,accountId) || permissionService.isFinancial(companyId,accountId)){
+        if("1".equals(isFinancial)){//如果是财务
             Map<String, Object> map = new HashMap<>();
             map.put("targetId", costDetailId);
             map.put("companyId", companyId);

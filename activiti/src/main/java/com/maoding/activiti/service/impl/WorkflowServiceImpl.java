@@ -1279,8 +1279,10 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
 
     @Override
-    public String getProcessDefineIdByProcessKey(String processKey) {
-        ProcessDefinitionQuery processDefinitionQuery = this.repositoryService.createProcessDefinitionQuery().processDefinitionKey(processKey);
+    public String getProcessDefineIdByProcessKey(String processKey,String companyId) {
+        ProcessDefinitionQuery processDefinitionQuery = this.repositoryService.createProcessDefinitionQuery()
+                .processDefinitionKey(processKey)
+                .processDefinitionTenantId(companyId);
         if(processDefinitionQuery!=null){
             List<ProcessDefinition> processDefinitionList = processDefinitionQuery.active().orderByProcessDefinitionVersion().desc().list();//latestVersion().singleResult();
             if(!CollectionUtils.isEmpty(processDefinitionList)){

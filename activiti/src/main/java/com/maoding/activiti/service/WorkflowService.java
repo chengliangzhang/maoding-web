@@ -242,7 +242,7 @@ public interface WorkflowService {
      * @date 2018/8/02
      * @description 根据当前流程实例id获取流程的id
      **/
-    String getProcessDefineIdByProcessKey(String processKey);
+    String getProcessDefineIdByProcessKey(String processKey,String companyId);
 
 
     /**

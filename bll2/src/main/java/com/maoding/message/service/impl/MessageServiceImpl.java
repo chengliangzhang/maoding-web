@@ -21,9 +21,11 @@ import com.maoding.deliver.entity.DeliverEntity;
 import com.maoding.dynamic.dao.ZInfoDAO;
 import com.maoding.financial.dao.ExpAuditDao;
 import com.maoding.financial.dao.ExpMainDao;
+import com.maoding.financial.dao.LeaveDetailDao;
 import com.maoding.financial.dto.ExpMainDTO;
 import com.maoding.financial.entity.ExpAuditEntity;
 import com.maoding.financial.entity.ExpMainEntity;
+import com.maoding.financial.entity.LeaveDetailEntity;
 import com.maoding.hxIm.dto.ImSendMessageDTO;
 import com.maoding.invoice.service.InvoiceService;
 import com.maoding.message.dao.MessageDao;
@@ -124,6 +126,10 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
 
     @Autowired
     private ProjectCostDao projectCostDao;
+
+
+    @Autowired
+    private LeaveDetailDao leaveDetailDao;
 
     @Autowired
     private ZInfoDAO zInfoDAO;
@@ -558,16 +564,15 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
             case SystemParameters.MESSAGE_TYPE_231:
             case SystemParameters.MESSAGE_TYPE_232:
             case SystemParameters.MESSAGE_TYPE_233:
-                //web端暂时没有以下内容
-//            case SystemParameters.MESSAGE_TYPE_238:
-//            case SystemParameters.MESSAGE_TYPE_239:
-//                LeaveDetailEntity leaveDetail = leaveDetailDao.getLeaveDetailByMainId(targetId);
-//                if(leaveDetail!=null){
-//                    para.put("address", leaveDetail.getAddress());
-//                    para.put("leaveTypeName",this.getLeaveTypeName(leaveDetail.getLeaveType()));
-//                    para.put("startTime1", DateUtils.date2Str(leaveDetail.getStartTime(),DateUtils.time_sdf_slash));
-//                    para.put("endTime1", DateUtils.date2Str(leaveDetail.getEndTime(),DateUtils.time_sdf_slash));
-//                }
+            case SystemParameters.MESSAGE_TYPE_238:
+            case SystemParameters.MESSAGE_TYPE_239:
+                LeaveDetailEntity leaveDetail = leaveDetailDao.getLeaveDetailByMainId(targetId);
+                if(leaveDetail!=null){
+                    para.put("address", leaveDetail.getAddress());
+                    para.put("leaveTypeName",this.getLeaveTypeName(leaveDetail.getLeaveType()));
+                    para.put("startTime1", DateUtils.date2Str(leaveDetail.getStartTime(),DateUtils.time_sdf_slash));
+                    para.put("endTime1", DateUtils.date2Str(leaveDetail.getEndTime(),DateUtils.time_sdf_slash));
+                }
                 para.put("expUserName", getExpUserName(targetId));
                 //查询审批原因
                 if(messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_227 || messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_231){

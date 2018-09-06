@@ -237,13 +237,14 @@
             }else if(that._baseData.processType=='3'  && that._baseData.conditionList!=null && that._baseData.conditionList.length>0){//条件流程
 
                 $.each(that._baseData.conditionList,function (i,item) {
-                    if(item.min=='null' && expAmout>=0 && (item.max!='null' && expAmout<item.max-0)){
+
+                    if((item.min=='null' || isNullOrBlank(item.min)) && expAmout>=0 && (item.max!='null' && !isNullOrBlank(item.max) && expAmout<item.max-0)){//min为空，max不为空
                         userList = item.userList;
                         return false;
-                    }else if((item.min!='null' && expAmout>=item.min-0) && (item.max!='null' && expAmout<item.max-0)){
+                    }else if(item.min!='null' && !isNullOrBlank(item.min) && expAmout>=item.min-0 && item.max!='null' && !isNullOrBlank(item.max) && expAmout<item.max-0){//min不为空，max不为空
                         userList = item.userList;
                         return false;
-                    }else if(item.min!='null' && expAmout>=item.min-0 && item.max=='null'){
+                    }else if(item.min!='null' && !isNullOrBlank(item.min) && expAmout>=item.min-0 && (item.max=='null' || isNullOrBlank(item.max))){//min不为空，max为空
                         userList = item.userList;
                         return false;
                     }
