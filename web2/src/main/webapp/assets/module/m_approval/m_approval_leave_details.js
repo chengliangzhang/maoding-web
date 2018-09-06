@@ -8,6 +8,7 @@
     var pluginName = "m_approval_leave_details",
         defaults = {
             isDialog:true,
+            id:null,
             doType: 1
         };
 
@@ -35,8 +36,11 @@
             var that = this;
             that.renderDialog(function () {
                 var option = {};
-                option.url = restApi.url_getExpBaseData;
-                m_ajax.get(option, function (response) {
+                option.url = restApi.url_getAuditDetailForExp;
+                option.postData = {
+                    id:that.settings.id
+                };
+                m_ajax.postJson(option, function (response) {
                     if (response.code == '0') {
 
                         that._baseData = response.data;

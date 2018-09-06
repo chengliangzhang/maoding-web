@@ -1548,6 +1548,8 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         //获取详情信息
         List<ExpDetailDTO> detailList = expDetailDao.selectDetailDTOByMainId(id);
         for(ExpDetailDTO detail:detailList){
+            detail.setExpName(detail.getExpTypeParentName());
+            detail.setExpAllName(detail.getExpTypeName());
             detail.setRelationRecordData( this.relationRecordService.getRelationList(new QueryRelationRecordDTO(id,detail.getId())));
         }
 
@@ -1581,6 +1583,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         //查询抄送人
         map.put("ccCompanyUserList",copyRecordService.getCopyRecode(new QueryCopyRecordDTO(id)));
         //返回流程标识，给前端控制是否要给审批人，以及按钮显示的控制
+
         map.putAll(processService.getCurrentTaskUser(new AuditEditDTO(id,null,null),auditList,(detailList.get(0).getTotalExpAmount()).toString()));
         return map;
 //        return null;

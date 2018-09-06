@@ -115,7 +115,8 @@ public abstract class BaseExportServiceImpl<T,B,C extends BaseDTO>  extends NewB
             for(int col=0;col<titleList.size();col++){
                 Cell c = row.createCell(col);
                 String key = titleList.get(col).getName();
-                c.setCellValue(getCelText(data.get(key),wb));
+                ExcelDataDTO e = data.get(key);
+                c.setCellValue(getCelText(e,wb));
             }
         }
     }

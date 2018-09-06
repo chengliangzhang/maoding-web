@@ -15,16 +15,14 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.h2.util.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("projectExportService")
 public class ProjectExportServiceImpl extends BaseExportServiceImpl<ProjectVariableDTO,ProjectVariableDTO,ProjectQueryDTO>  {
@@ -44,11 +42,11 @@ public class ProjectExportServiceImpl extends BaseExportServiceImpl<ProjectVaria
             Map<String,ExcelDataDTO> map = new HashMap<>();
             titleList.stream().forEach(t->{
                 if("立项时间".equals(t.getName())){
-                    String s = ""+(BeanUtilsEx.getProperty(d,t.getId()));
-                    String date = dateUtils.getDate("s");
+//                    String s = ""+(BeanUtilsEx.getProperty(d,t.getId()));
+                    String date = dateUtils.date2Str((Date)BeanUtilsEx.getProperty(d,t.getId()),DateUtils.date_sdf2);
                     map.put(t.getName(),new ExcelDataDTO(date,1));
-               }else{
-                map.put(t.getName(),new ExcelDataDTO(BeanUtilsEx.getProperty(d,t.getId()),1));
+                }else{
+                    map.put(t.getName(),new ExcelDataDTO(BeanUtilsEx.getProperty(d,t.getId()),1));
                 }
             });
             excelDataList.add(map);
