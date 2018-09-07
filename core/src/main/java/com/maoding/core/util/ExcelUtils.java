@@ -3,6 +3,7 @@ package com.maoding.core.util;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -299,7 +300,7 @@ public class ExcelUtils {
 	 * 日期：2017/7/19
      */
 	public static Workbook getWorkbook(){
-		return new HSSFWorkbook();
+		return new XSSFWorkbook();
 	}
 
 	/**

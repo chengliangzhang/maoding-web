@@ -3,10 +3,12 @@ package com.maoding.financial.controller;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.core.bean.ResponseBean;
 import com.maoding.core.constant.RoleConst;
 import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
 import com.maoding.financial.dto.*;
+import com.maoding.financial.service.ExpAuditService;
 import com.maoding.financial.service.ExpCategoryService;
 import com.maoding.financial.service.ExpFixedService;
 import com.maoding.financial.service.ExpMainService;
@@ -58,6 +60,9 @@ public class FinancialController extends BaseController {
 
     @Autowired
     private ProcessService processService;
+
+    @Autowired
+    private ExpAuditService expAuditService;
 
     @ModelAttribute
     public void before() {
@@ -847,5 +852,45 @@ public class FinancialController extends BaseController {
         dto.setId(id);
         return this.ajaxResponseSuccess().setData(expMainService.getAuditDataDetail(dto));
 
+    }
+
+
+    /**
+     * 方法描述：同意报销报销单id
+     * 作   者：ZhujieChen
+     * 日   期：2016/12/22
+     */
+    @RequestMapping("/agreeExpMain")
+    @ResponseBody
+    public AjaxMessage agreeExpMain(@RequestBody SaveExpMainDTO expMainDTO) throws Exception{
+        this.updateCurrentUserInfo(expMainDTO);
+        expMainDTO.setApproveStatus("1");//同意的状态
+        int i = this.expAuditService.completeAudit(expMainDTO);
+        return i>0?AjaxMessage.succeed("操作成功"):AjaxMessage.error("操作失败");
+    }
+
+    /**
+     * 方法描述：退回
+     * 作   者：ZhujieChen
+     * 日   期：2016/12/22
+     */
+    @RequestMapping("/recallExpMain")
+    @ResponseBody
+    public AjaxMessage recallExpMain(@RequestBody SaveExpMainDTO expMainDTO) throws Exception{
+        this.updateCurrentUserInfo(expMainDTO);
+        expMainDTO.setApproveStatus("2");//拒绝的状态
+        int i = this.expAuditService.completeAudit(expMainDTO);
+        return i>0?AjaxMessage.succeed("操作成功"):AjaxMessage.error("操作失败");
+    }
+
+    /**
+     * 撤销审批单（id：审批单id）
+     */
+    @RequestMapping("/repealApprove")
+    @ResponseBody
+    public AjaxMessage repealApprove(@RequestBody SaveExpMainDTO expMainDTO) throws Exception {
+        this.updateCurrentUserInfo(expMainDTO);
+        int i = processService.suspendProcess(expMainDTO);
+        return i>0?AjaxMessage.succeed("操作成功"):AjaxMessage.error("操作失败");
     }
 }

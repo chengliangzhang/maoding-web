@@ -107,8 +107,7 @@ public class ExpAuditServiceImpl extends GenericService<ExpAuditEntity> implemen
         String id = dto.getId();
         String approveStatus = dto.getApproveStatus();
         Integer versionNum = dto.getVersionNum();
-        CompanyUserEntity u =  this.companyUserDao.getCompanyUserByUserIdAndCompanyId(dto.getAccountId(),dto.getAppOrgId());
-        String companyUserId = u.getId();
+        String companyUserId = dto.getCurrentCompanyUserId();
         int i = 0;
         ExpMainEntity entity = this.expMainDao.selectById(id);
         ExpAuditEntity audit = expAuditDao.getLastAuditByMainId(id);

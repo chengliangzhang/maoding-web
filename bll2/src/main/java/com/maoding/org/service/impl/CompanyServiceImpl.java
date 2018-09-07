@@ -2121,7 +2121,7 @@ public class CompanyServiceImpl extends GenericService<CompanyEntity> implements
     @Override
     public List<String> getExpensesDetailLedgerCompanyList(String companyId, String flag) throws Exception {
         List<String> companyIds = new ArrayList<>();
-        if(flag.equals("root")){
+        if("root".equals(flag)){
             companyIds.add(companyId);
             List<CompanyEntity> list = getAllChildrenCompany(companyId);
             list.stream().forEach(c->{

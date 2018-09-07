@@ -1,66 +1,120 @@
-<form class="form-horizontal m">
+<form class="form-horizontal p-sm overflow-y-auto" style="{{dialogHeight}}">
     <div class="form-group">
-        <label class="col-sm-2 control-label">申请人：</label>
+        <label class="col-sm-2 text-right">申请人：</label>
         <div class="col-sm-10">
-            wrb
+            {{userName}}
         </div>
     </div>
     <div class="form-group">
-        <label class="col-sm-2 control-label">申请时间：</label>
+        <label class="col-sm-2 text-right">申请时间：</label>
         <div class="col-sm-10">
-            2018/08/12
+            {{_momentFormat(submitTime,'YYYY/MM/DD')}}
         </div>
     </div>
-
-
+    {{if doType==3}}
+    <div class="form-group">
+        <label class="col-sm-2 text-right">{{title}}类型：</label>
+        <div class="col-sm-10">
+            {{leaveTypeName}}
+        </div>
+    </div>
+    {{/if}}
+    {{if doType==4}}
+    <div class="form-group">
+        <label class="col-sm-2 text-right">出差地点：</label>
+        <div class="col-sm-10">
+            {{address}}
+        </div>
+    </div>
+    {{/if}}
+    <div class="form-group">
+        <label class="col-sm-2 text-right">开始时间：</label>
+        <div class="col-sm-10">
+            {{_momentFormat(startTime,'YYYY/MM/DD')}}
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 text-right">结束时间：</label>
+        <div class="col-sm-10">
+            {{_momentFormat(endTime,'YYYY/MM/DD')}}
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 text-right">{{title}}天数：</label>
+        <div class="col-sm-10">
+           {{leaveTime}}天
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 text-right">{{title}}事由：</label>
+        <div class="col-sm-10">
+            {{remark}}
+        </div>
+    </div>
     <div class="hr-line-dashed m-t-none m-b-sm"></div>
-
     <div class="form-group">
-        <label class="col-sm-2 control-label">{{data.title}}类型：</label>
+        <label class="col-sm-2 text-right">附件：</label>
         <div class="col-sm-10">
-            婚嫁
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-2 control-label">开始时间：</label>
-        <div class="col-sm-10">
-            2018年7月20日
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-2 control-label">结束时间：</label>
-        <div class="col-sm-10">
-            2018年7月20日
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-2 control-label">{{data.title}}天数：</label>
-        <div class="col-sm-10">
-            5天
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-2 control-label">{{data.title}}事由：</label>
-        <div class="col-sm-10">
-            XXXX
+            {{if attachList!=null && attachList.length>0}}
+            {{each attachList as a i}}
+            <span class="label m-r-xs" style="background: #ecf0f1;padding: 5px 10px;">
+                         <a href="javascript:void(0)" data-action="preview" data-net-file-id="{{a.id}}"  data-src="{{a.fileFullPath}}" data-name="{{a.fileName}}">
+                            {{a.fileName}}
+                         </a>
+                     </span>
+            {{/each}}
+            {{/if}}
         </div>
     </div>
     <div class="hr-line-dashed m-t-none m-b-sm"></div>
     <div class="form-group">
-        <label class="col-sm-2 control-label">附件：</label>
+        <label class="col-sm-2 text-right">审批人：</label>
         <div class="col-sm-10">
-
+            {{if auditList!=null && auditList.length>0}}
+            {{each auditList as u ui}}
+            <div class="approver-outbox">
+                <div class="approver-box text-center pull-left m-r-sm">
+                    <div class="img-circle">
+                        <img alt="image" class="img-circle" src="{{_isNullOrBlank(u.fileFullPath)?_url('/assets/img/head_default.png'):u.fileFullPath}}" width="50" height="50">
+                    </div>
+                </div>
+                <div class="approver-box text-center pull-left m-r-sm">
+                    <div class="m-t-xs">{{u.userName}}</div>
+                    <p class="fc-v1-grey">{{u.approveStatusName}}</p>
+                </div>
+            </div>
+            {{if ui+1 < auditList.length }}
+            <div class="arrow-icon p-h-sm pull-left m-l-sm m-r-sm">
+                <i class="fa fa-long-arrow-right"></i>
+            </div>
+            {{/if}}
+            {{/each}}
+            {{/if}}
         </div>
     </div>
-    <div class="hr-line-dashed m-t-none m-b-sm"></div>
     <div class="form-group">
-        <label class="col-sm-2 control-label">审批人：</label>
+        <label class="col-sm-2 text-right">抄送人：</label>
         <div class="col-sm-10">
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-2 control-label">抄送人：</label>
-        <div class="col-sm-10">
+            {{if ccCompanyUserList!=null && ccCompanyUserList.length>0}}
+            {{each ccCompanyUserList as u ui}}
+            <div class="approver-outbox">
+                <div class="approver-box text-center pull-left m-r-sm">
+                    <div class="img-circle">
+                        <img alt="image" class="img-circle" src="{{_isNullOrBlank(u.fileFullPath)?_url('/assets/img/head_default.png'):u.fileFullPath}}" width="50" height="50">
+                    </div>
+                    <div class="m-t-xs">{{u.userName}}</div>
+                </div>
+            </div>
+            {{/each}}
+            {{/if}}
         </div>
     </div>
 </form>
+<div class="footer fixed_full text-right">
+    <button class="btn btn-default" data-action="cancel">取消</button>
+    {{if currentAuditPerson.companyUserId == currentCompanyUserId && currentAuditPerson.approveStatus == 0 }}
+    <button class="btn btn-primary" data-action="agree">同意</button>
+    <button class="btn btn-success" data-action="returnBack">退回</button>
+    <button class="btn btn-danger" data-action="cancellation">撤销</button>
+    {{/if}}
+</div>

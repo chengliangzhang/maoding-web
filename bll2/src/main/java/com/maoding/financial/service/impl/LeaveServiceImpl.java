@@ -184,10 +184,10 @@ public class LeaveServiceImpl implements LeaveService {
         applyDTO.setUserName(result.getUserName());
         applyDTO.setCompanyUserId(result.getCompanyUserId());
         applyDTO.setApproveDate(result.getExpDate());
-        if("3".equals(result.getApproveStatus())){
+        if("3".equals(result.getApproveStatus())){//撤销
             applyDTO.setApproveStatus(result.getApproveStatus());
         }else {
-            applyDTO.setApproveStatus(null);
+            applyDTO.setApproveStatus(null);//此处设置为null，为了防止ApproveStatusName 在dto的get方法中发生改变
         }
         applyDTO.setApproveStatusName("发起申请");
         applyDTO.setFileFullPath(userAttachService.getHeadImgNotFullPath(result.getAccountId()));
@@ -206,7 +206,6 @@ public class LeaveServiceImpl implements LeaveService {
         result.setProcessFlag(processData.get("processFlag"));
         result.setProcessType(processData.get("processType"));
         result.setConditionList(processData.get("conditionList"));
-
         return result;
     }
 

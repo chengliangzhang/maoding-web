@@ -23,6 +23,7 @@
             , saveDataUrl: null//直接保存url
             , saveData: null//保存格外的参数
             , okText:null//按钮文字
+            , cancelText:null
             , initTreeDataCallBack:null//加载树数据后调用的回调
             , renderTreeCallBack:null//树渲染完后回调
             , afterOpenCallBack:null//打开树回调

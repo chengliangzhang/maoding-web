@@ -92,7 +92,7 @@ public abstract class BaseExportServiceImpl<T,B,C extends BaseDTO>  extends NewB
             fileName =  java.net.URLEncoder.encode(fileName, "UTF-8");
         }
         fileName += ".xlsx";
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8");
+//        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8");
         response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
     }
 

@@ -368,6 +368,10 @@ form.sky-form label.select i {
 .of-auto {
     overflow: auto;
 }
+.overflow-y-auto {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
 .clearfix{
     clear: both;
 }

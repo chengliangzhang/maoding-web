@@ -319,13 +319,13 @@
 
     <select id="getCostAmountReal" resultType="com.maoding.projectcost.dto.CostAmountDTO" parameterType="com.maoding.projectcost.dto.ProjectCostQueryDTO">
         select
-            sum(if(bill_list.fee_type = 1,ifnull(bill_list.fee,0),0)) as contract,
-            sum(if(bill_list.fee_type = 2 and bill_list.pay_type = 1,ifnull(bill_list.fee,0),0)) as technicalGain,
-            sum(if(bill_list.fee_type = 2 and bill_list.pay_type = 2,ifnull(bill_list.fee,0),0)) as technicalPay,
-            sum(if(bill_list.fee_type = 3 and bill_list.pay_type = 1,ifnull(bill_list.fee,0),0)) as cooperateGain,
-            sum(if(bill_list.fee_type = 3 and bill_list.pay_type = 2,ifnull(bill_list.fee,0),0)) as cooperatePay,
-            sum(if(bill_list.fee_type = 4 and bill_list.pay_type = 1,ifnull(bill_list.fee,0),0)) as otherGain,
-            sum(if(bill_list.fee_type = 4 and bill_list.pay_type = 2,ifnull(bill_list.fee,0),0)) as otherPay
+            sum(if(bill_list.fee_type = 1,ifnull(bill_list.fee,0),0))/10000 as contract,
+            sum(if(bill_list.fee_type = 2 and bill_list.pay_type = 1,ifnull(bill_list.fee,0),0))/10000 as technicalGain,
+            sum(if(bill_list.fee_type = 2 and bill_list.pay_type = 2,ifnull(bill_list.fee,0),0))/10000 as technicalPay,
+            sum(if(bill_list.fee_type = 3 and bill_list.pay_type = 1,ifnull(bill_list.fee,0),0))/10000 as cooperateGain,
+            sum(if(bill_list.fee_type = 3 and bill_list.pay_type = 2,ifnull(bill_list.fee,0),0))/10000 as cooperatePay,
+            sum(if(bill_list.fee_type = 4 and bill_list.pay_type = 1,ifnull(bill_list.fee,0),0))/10000 as otherGain,
+            sum(if(bill_list.fee_type = 4 and bill_list.pay_type = 2,ifnull(bill_list.fee,0),0))/10000 as otherPay
         from maoding_web_company_bill bill_list
             <if test="projectId != null">
                 inner join maoding_web_company_bill_relation bill_relation on (

@@ -192,13 +192,14 @@ var restApi = {
     , url_getExpMainPageForAudit: window.rootPath + '/iWork/finance/getExpMainPageForAudit'
     , url_getExpTypeList: window.rootPath + '/iWork/finance/getExpTypeList'
     , url_agreeExpMain: window.rootPath + '/iWork/finance/agreeExpMain'
+    , url_recallExpMain: window.rootPath + '/iWork/finance/recallExpMain'
+    , url_repealApprove: window.rootPath + '/iWork/finance/repealApprove'
     , url_getExpMainPageForSummary: window.rootPath + '/iWork/finance/getExpMainPageForSummary'
     , url_deleteExpMain: window.rootPath + '/iWork/finance/deleteExpMain'
     , url_getExpBaseData: window.rootPath + '/iWork/finance/getExpBaseData'
     , url_getMaxExpNo: window.rootPath + '/iWork/finance/getMaxExpNo'
     , url_expCategory: window.rootPath + '/iWork/finance/expCategory'
     , url_getExpMainDetail: window.rootPath + '/iWork/finance/getExpMainDetail'
-    , url_recallExpMain: window.rootPath + '/iWork/finance/recallExpMain'
     , url_saveOrUpdateExpMainAndDetail: window.rootPath + '/iWork/finance/saveOrUpdateExpMainAndDetail'
     , url_agreeAndTransAuditPerExpMain: window.rootPath + '/iWork/finance/agreeAndTransAuditPerExpMain'
     , url_toMyChecking: window.rootPath + '/iWork/finance/toMyChecking'
@@ -368,5 +369,5 @@ var restApi = {
     , url_getAuditDataDetail:window.rootPath+'/iWork/finance/getAuditDataDetail'
     , url_getAuditDetailForExp:window.rootPath+'/iWork/finance/getAuditDetailForExp'
     , url_getProjectList:window.rootPath+'/iWork/finance/getProjectList'
-
+    , url_getLeaveDetailForWeb:window.rootPath+'/iWork/leave/getLeaveDetailForWeb'
 };

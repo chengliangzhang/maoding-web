@@ -1,79 +1,34 @@
-<form class="form-horizontal p-sm overflow-y-auto" style="{{dialogHeight}}">
+<form class="form-horizontal m">
     <div class="form-group">
-        <label class="col-sm-2 text-right">{{title}}单号：</label>
+        <label class="col-sm-2 text-right">关联项目：</label>
         <div class="col-sm-10">
-            {{exp.expNo}}
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-2 text-right">申请人：</label>
-        <div class="col-sm-10">
-            {{exp.submitter}}
         </div>
     </div>
     <div class="form-group">
-        <label class="col-sm-2 text-right">申请时间：</label>
+        <label class="col-sm-2 text-right">收款单位：</label>
         <div class="col-sm-10">
-            {{_momentFormat(exp.submittime,'YYYY/MM/DD')}}
-        </div>
-    </div>
-    {{if doType == 2}}
-    <div class="form-group">
-        <label class="col-sm-2 text-right">收款方：</label>
-        <div class="col-sm-10">
-            {{exp.auditCompanyName}}
         </div>
     </div>
     <div class="form-group">
-        <label class="col-sm-2 text-right">备注：</label>
+        <label class="col-sm-2 text-right">节点描述：</label>
         <div class="col-sm-10">
-            {{exp.remark}}
         </div>
     </div>
-    {{/if}}
-
-    <div class="hr-line-dashed m-t-none m-b-sm"></div>
-    {{each detailList as d i}}
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <h4 class="title-line">
-                {{title}}明细(<span data-action="itemIndex">{{i}}</span>)
-            </h4>
-            <div class="form-group">
-                <label class="col-sm-2 text-right">{{title}}金额：</label>
-                <div class="col-sm-10">
-                    {{_expNumberFilter(d.expAmount)}} 元
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 text-right">{{title}}类型：</label>
-                <div class="col-sm-10">
-                    {{d.expName}}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 text-right">用途说明：</label>
-                <div class="col-sm-10">
-                    {{d.expUse}}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 text-right">关联项目：</label>
-                <div class="col-sm-10">
-                    {{d.projectName}}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-2 text-right">关联审批：</label>
-                <div class="col-sm-10">
-                    {{if d.relationRecordData!=null}}
-                    {{d.relationRecordData.address}}{{_momentFormat(d.relationRecordData.startTime,'YYYY/MM/DD')}}{{_momentFormat(d.relationRecordData.endTime,'YYYY/MM/DD')}}
-                    {{/if}}
-                </div>
-            </div>
+    <div class="form-group">
+        <label class="col-sm-2 text-right">比例：</label>
+        <div class="col-sm-10">
         </div>
     </div>
-    {{/each}}
+    <div class="form-group">
+        <label class="col-sm-2 text-right">发起人：</label>
+        <div class="col-sm-10">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 text-right">描述：</label>
+        <div class="col-sm-10">
+        </div>
+    </div>
     <div class="hr-line-dashed m-t-none m-b-sm"></div>
     <div class="form-group">
         <label class="col-sm-2 text-right">{{title}}总金额：</label>
@@ -139,11 +94,3 @@
         </div>
     </div>
 </form>
-<div class="footer fixed_full text-right">
-    <button class="btn btn-default" data-action="cancel">取消</button>
-    {{if currentAuditPerson.companyUserId == currentCompanyUserId && currentAuditPerson.approveStatus == 0 }}
-    <button class="btn btn-primary" data-action="agree">同意</button>
-    <button class="btn btn-success" data-action="returnBack">退回</button>
-    <button class="btn btn-danger" data-action="cancellation">撤销</button>
-    {{/if}}
-</div>

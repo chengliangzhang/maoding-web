@@ -61,6 +61,19 @@ public class ProjectCostQueryDTO extends CoreQueryDTO {
      */
     private Integer payType;
 
+    /**
+     * 申请单据id（exp_main 中的id）
+     */
+    private String mainId;
+
+    public String getMainId() {
+        return mainId;
+    }
+
+    public void setMainId(String mainId) {
+        this.mainId = mainId;
+    }
+
     public Boolean getCount() {
         return isCount;
     }

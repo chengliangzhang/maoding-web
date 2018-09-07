@@ -22,6 +22,7 @@ import com.maoding.exception.CustomException;
 import com.maoding.financial.dao.ExpMainDao;
 import com.maoding.financial.dto.ApplyProjectCostDTO;
 import com.maoding.financial.dto.ExpMainDTO;
+import com.maoding.financial.entity.ExpMainEntity;
 import com.maoding.financial.service.ExpMainService;
 import com.maoding.invoice.dto.InvoiceEditDTO;
 import com.maoding.invoice.service.InvoiceService;
@@ -1502,43 +1503,43 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         }
     }
 
-    private void handleNeedRoleToHandle(ProjectCostPaymentDetailDataDTO detailDataDTO, String companyUserId) throws Exception{
-        CompanyUserEntity companyUserEntity = this.companyUserDao.selectById(companyUserId);
-        if(companyUserEntity==null){
-            return;
-        }
-        String companyId = companyUserEntity.getCompanyId();
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("targetId", detailDataDTO.getId());
-        map.put("companyId", companyId);
-        List<MyTaskEntity> myTaskList = this.myTaskService.getMyTaskByParamter(map);
-
-        if(!CollectionUtils.isEmpty(myTaskList)){//理论上只会存在一条有效数据
-            MyTaskEntity entity = myTaskList.get(0);
-            if(companyId.equals(entity.getCompanyId())) {
-                if (entity.getTaskType() == 5 || entity.getTaskType() == 7) {
-                    map.clear();
-                    map.put("permissionId", "50");
-                    map.put("companyId", companyId);
-                    map.put("userId", companyUserEntity.getUserId());
-                    List<CompanyUserTableDTO> companyUserList = this.companyUserDao.getCompanyUserByPermissionId(map);
-                    if (!CollectionUtils.isEmpty(companyUserList)){
-                        detailDataDTO.getRoleMap().put("flag" + entity.getTaskType(), entity.getId());
-                    }else {
-                        detailDataDTO.getRoleMap().remove("flag" + entity.getTaskType());
-                    }
-                }
-
-                if(entity.getTaskType()==8 || entity.getTaskType()==9 || entity.getTaskType()==10 ||  (entity.getTaskType()>15 &&  entity.getTaskType()<22)){
-                    if(isMyTask(entity,companyUserEntity.getUserId())){
-                        detailDataDTO.getRoleMap().put("flag" + entity.getTaskType(), entity.getId());
-                    }else {
-                        detailDataDTO.getRoleMap().remove("flag" + entity.getTaskType());
-                    }
-                }
-            }
-        }
-    }
+//    private void handleNeedRoleToHandle(ProjectCostPaymentDetailDataDTO detailDataDTO, String companyUserId) throws Exception{
+//        CompanyUserEntity companyUserEntity = this.companyUserDao.selectById(companyUserId);
+//        if(companyUserEntity==null){
+//            return;
+//        }
+//        String companyId = companyUserEntity.getCompanyId();
+//        Map<String, Object> map = new HashMap<String, Object>();
+//        map.put("targetId", detailDataDTO.getId());
+//        map.put("companyId", companyId);
+//        List<MyTaskEntity> myTaskList = this.myTaskService.getMyTaskByParamter(map);
+//
+//        if(!CollectionUtils.isEmpty(myTaskList)){//理论上只会存在一条有效数据
+//            MyTaskEntity entity = myTaskList.get(0);
+//            if(companyId.equals(entity.getCompanyId())) {
+//                if (entity.getTaskType() == 5 || entity.getTaskType() == 7) {
+//                    map.clear();
+//                    map.put("permissionId", "50");
+//                    map.put("companyId", companyId);
+//                    map.put("userId", companyUserEntity.getUserId());
+//                    List<CompanyUserTableDTO> companyUserList = this.companyUserDao.getCompanyUserByPermissionId(map);
+//                    if (!CollectionUtils.isEmpty(companyUserList)){
+//                        detailDataDTO.getRoleMap().put("flag" + entity.getTaskType(), entity.getId());
+//                    }else {
+//                        detailDataDTO.getRoleMap().remove("flag" + entity.getTaskType());
+//                    }
+//                }
+//
+//                if(entity.getTaskType()==8 || entity.getTaskType()==9 || entity.getTaskType()==10 ||  (entity.getTaskType()>15 &&  entity.getTaskType()<22)){
+//                    if(isMyTask(entity,companyUserEntity.getUserId())){
+//                        detailDataDTO.getRoleMap().put("flag" + entity.getTaskType(), entity.getId());
+//                    }else {
+//                        detailDataDTO.getRoleMap().remove("flag" + entity.getTaskType());
+//                    }
+//                }
+//            }
+//        }
+//    }
 
 //    private void handleNeedRoleToHandle(ProjectCostPointDetailDataDTO detailDataDTO, String companyUserId) throws Exception{
 //        CompanyUserEntity companyUserEntity = this.companyUserDao.selectById(companyUserId);
@@ -2871,5 +2872,26 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
             result.setDetailFee(pointDetailEntity.getFee());
         }
         return result;
+    }
+
+    @Override
+    public Map<String, Object> getProjectCostPaymentDetailByMainIdForPay(ProjectCostQueryDTO queryDTO) throws Exception {
+        //获取参数
+        if(queryDTO.getMainId()==null){
+            throw new CustomException("参数错误");
+        }
+        RelationRecordEntity relationRecord = this.relationRecordService.getRelationRecord(queryDTO.getMainId());
+        if(relationRecord==null){
+            throw new CustomException("参数错误");
+        }
+        ExpMainEntity main = this.expMainDao.selectById(queryDTO.getMainId());
+        ProjectCostPointDetailEntity pointDetail = this.projectCostPointDetailDao.selectById(relationRecord.getRelationId());
+        ProjectCostEntity projectCost = this.projectCostDao.getProjectCostByPointId(pointDetail.getPointId());
+        queryDTO.setProjectId(projectCost.getProjectId());
+        queryDTO.setCostId(projectCost.getId());
+        queryDTO.setPointId(pointDetail.getPointId());
+        queryDTO.setPointDetailId(pointDetail.getId());
+        queryDTO.setCompanyId(main.getCompanyId());
+        return this.getProjectCostPaymentDetailByPointDetailIdForPay(queryDTO);
     }
 }
