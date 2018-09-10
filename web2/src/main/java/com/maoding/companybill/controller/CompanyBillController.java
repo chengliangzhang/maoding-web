@@ -1,5 +1,6 @@
 package com.maoding.companybill.controller;
 
+import com.maoding.companybill.dto.CompanyBalanceChangeDetailDTO;
 import com.maoding.companybill.dto.CompanyBalanceDTO;
 import com.maoding.companybill.dto.QueryCompanyBalanceDTO;
 import com.maoding.companybill.dto.SaveCompanyBalanceDTO;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -58,4 +60,19 @@ public class CompanyBillController extends BaseController {
         List<CompanyBalanceDTO> list = companyBalanceService.getCompanyBalance(dto);
         return AjaxMessage.succeed(list);
     }
+
+    /**
+     * 方法描述：余额变更记录详情
+     * 作   者：MaoSF
+     * 日   期：2018/5/24 17:35
+     */
+    @RequestMapping(value = "/listCompanyBalanceChangeDetail", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage listCompanyBalanceChangeDetail(@RequestBody QueryCompanyBalanceDTO dto) throws Exception {
+        dto.setCurrentCompanyId(this.currentCompanyId);
+        dto.setAccountId(this.currentUserId);
+        List<CompanyBalanceChangeDetailDTO> list = new ArrayList<>();
+        return AjaxMessage.succeed(list);
+    }
+
 }

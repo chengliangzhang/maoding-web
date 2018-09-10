@@ -80,6 +80,9 @@ template.helper('_shortTime', function (datetime) {
 /*格式化日期*/
 template.helper('_momentFormat', function (datetime, pattern) {
 
+    if(datetime==null)
+        return '';
+
     if(pattern == "A") {
         var date = new Date(Date.parse(datetime.replace(/-/g, "/")));
         if (date.getHours() <= 12) {

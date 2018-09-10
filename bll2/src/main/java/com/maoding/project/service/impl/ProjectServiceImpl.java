@@ -214,6 +214,8 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
     @Autowired
     private EnterpriseService enterpriseService;
 
+    @Autowired
+    private EnterpriseServer enterpriseServer;
     /**
      * 方法描述：保存项目（数据验证）
      * 作者：MaoSF
@@ -1341,7 +1343,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         query.setEnterpriseId(constructCompanyId);
         query.setCompanyId(companyId);
         query.setSave(true);
-        return getEnterpriseOrgId(EnterpriseServer.URL_ENTERPRISE_QUERY_DETAIL, query);
+        return getEnterpriseOrgId(enterpriseServer.getQueryDetail(), query);
     }
 
     /**
@@ -1356,7 +1358,7 @@ public class ProjectServiceImpl extends GenericService<ProjectEntity> implements
         query.setName(constructCompanyName);
         query.setCompanyId(companyId);
         query.setSave(true);
-        return getEnterpriseOrgId(EnterpriseServer.URL_ENTERPRISE_QUERY_FULL, query);
+        return getEnterpriseOrgId(enterpriseServer.getQueryFull(), query);
     }
 
     /**

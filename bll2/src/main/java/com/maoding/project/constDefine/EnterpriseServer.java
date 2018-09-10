@@ -12,12 +12,12 @@ public class EnterpriseServer {
     public  String yongyouCloudServerUrl;
 
    // public static String URL_ENTERPRISE_HANDLE = "/enterpriseSearch";
-    public static String URL_ENTERPRISE_QUERY_DETAIL = "/enterpriseSearch/queryDetail";
-    public static String URL_ENTERPRISE_QUERY_FULL = "/enterpriseSearch/queryFull";
+     String URL_ENTERPRISE_QUERY_DETAIL = "/enterpriseSearch/queryDetail";
+     String URL_ENTERPRISE_QUERY_FULL = "/enterpriseSearch/queryFull";
 
     @Bean
     public EnterpriseServer getImServer(@Value("${yongyoucloud.enterpriseUrl}") String yongyouCloudServerUrl) {
-        URL_ENTERPRISE_QUERY_DETAIL = yongyouCloudServerUrl + "/enterpriseSearch/queryDetail";
+        //URL_ENTERPRISE_QUERY_DETAIL = yongyouCloudServerUrl + "/enterpriseSearch/queryDetail";
         //URL_ENTERPRISE_QUERY_FULL =  yongyouCloudServerUrl +  "/enterpriseSearch/queryFull";
         return new EnterpriseServer();
     }
@@ -26,7 +26,9 @@ public class EnterpriseServer {
         return yongyouCloudServerUrl +URL_ENTERPRISE_QUERY_FULL;
     }
 
-
+    public String getQueryDetail(){
+        return yongyouCloudServerUrl +URL_ENTERPRISE_QUERY_DETAIL;
+    }
 
 
 }
