@@ -117,8 +117,19 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
     @Override
     public ProcessDefineDetailDTO prepareProcessDefine(ProcessDetailPrepareDTO prepareRequest) throws Exception {
-        //type字段
-        prepareRequest.setType(syncProcessType(prepareRequest));
+        //如果没有设置type字段，从数据库内读取type字段，如果数据库内没有，设置为默认type
+        if (prepareRequest.getType() == null) {
+            //从数据库内读取当前的流程类型
+            TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getCurrentCompanyId()),"!currentCompanyId不能为空");
+            TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),"!key不能为空");
+            ProcessTypeEntity typeEntity = processTypeDao
+                    .getCurrentProcessType(prepareRequest.getCurrentCompanyId(), prepareRequest.getKey());
+            if (typeEntity != null) {
+                prepareRequest.setType(typeEntity.getType());
+            } else {
+                prepareRequest.setType(ProcessTypeConst.TYPE_FREE);
+            }
+        }
         ProcessDefineDetailDTO processDefineDetail  = this.workflowService.prepareProcessDefine(prepareRequest);
         if(processDefineDetail!=null){
             //重新组织一下数据，设置人员头像
