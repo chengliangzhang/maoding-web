@@ -48,6 +48,7 @@
                 <label class="col-sm-2 control-label">关联项目：</label>
                 <div class="col-sm-10">
                     <select class="form-control full-width" name="projectName" >
+                        <option value="">请选择关联项目</option>
                         {{each data.projectList as p }}
                             {{if dataInfo && dataInfo.projectId==p.id}}
                                 <option value="{{p.id}}" selected>{{p.projectName}}</option>

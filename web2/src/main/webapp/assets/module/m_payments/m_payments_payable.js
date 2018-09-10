@@ -215,22 +215,17 @@
                         var option = {};
                         var newList = [];
 
-                        if(that._feeTypeNameList!=null && that._feeTypeNameList.length>0){
-                            $.each(that._feeTypeNameList,function (i,item) {
-                                var childList = [];
-                                if(item.childList!=null && item.childList.length>0){
-                                    $.each(item.childList,function (subI,subItem) {
-                                        childList.push({id:item.expTypeValue+'_'+subItem.expTypeValue,name:subItem.expTypeValue});
-                                    });
-                                }
-                                newList.push({id:item.expTypeValue,name:item.expTypeValue,childList:childList});
-                            })
-                        }
+                        newList = [
+                            {name:'技术审查费',id:'2'},
+                            {name:'合作设计费',id:'3'},
+                            {name:'其他收支',id:'4'}
+                        ];
                         option.selectArr = newList;
                         option.selectedArr = that._filterData.feeTypeList;
                         option.eleId = 'filter_feeType';
-                        option.boxStyle = 'min-width:525px;';
-                        option.dialogWidth = '525';
+                        option.boxStyle = 'min-width:150px;';
+                        option.dialogWidth = '150';
+                        option.colClass = 'col-md-12';
                         option.selectedCallBack = function (data) {
                             console.log(data);
                             that._filterData.feeTypeList = data;

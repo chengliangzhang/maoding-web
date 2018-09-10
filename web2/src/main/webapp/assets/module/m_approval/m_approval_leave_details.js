@@ -9,6 +9,7 @@
         defaults = {
             isDialog:true,
             id:null,
+            closeCallBack:null,
             doType: 3// 报销=1=expense,费用=2=costApply,请假=3=leave,出差=4=onBusiness,付款申请=5=projectPayApply
         };
 
@@ -50,7 +51,7 @@
                     title: that.settings.title||that._title+'申请',
                     contentEle: 'dialogOBox',
                     lock: 3,
-                    width: '705',
+                    width: '750',
                     tPadding: '0',
                     height:that._dialogHeight+'',
                     url: rootPath+'/assets/module/m_common/m_dialog.html'
@@ -99,6 +100,8 @@
                 switch(dataAction){
                     case 'cancel'://取消
                         S_dialog.close($(that.element));
+                        if(that.settings.closeCallBack)
+                            that.settings.closeCallBack();
                         break;
                     case 'agree'://同意
                         var option = {};

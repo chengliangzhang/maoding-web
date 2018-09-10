@@ -18,7 +18,7 @@ public class EnterpriseServer {
     @Bean
     public EnterpriseServer getImServer(@Value("${yongyoucloud.enterpriseUrl}") String yongyouCloudServerUrl) {
         URL_ENTERPRISE_QUERY_DETAIL = yongyouCloudServerUrl + "/enterpriseSearch/queryDetail";
-        URL_ENTERPRISE_QUERY_FULL =  yongyouCloudServerUrl +  "/enterpriseSearch/queryFull";
+        //URL_ENTERPRISE_QUERY_FULL =  yongyouCloudServerUrl +  "/enterpriseSearch/queryFull";
         return new EnterpriseServer();
     }
 

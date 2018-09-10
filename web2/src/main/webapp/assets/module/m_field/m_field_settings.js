@@ -51,6 +51,7 @@
 
                         that.initICheck();
                         that.renderSelectedList();
+                        that.ckAllByGroup();
 
                     }else {
                         S_dialog.error(response.info);

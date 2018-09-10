@@ -192,7 +192,7 @@
                 expItem.expUse = $this.find('textarea[name="expUse"]').val();
                 expItem.projectId = $this.find('select[name="projectName"]').val();
                 expItem.expType =  $this.find('select[name="expType"]').val();
-                expItem.expAllName = $this.find('select[name="expType"] option:selected').text()+'-'+$this.find('select[name="expType"] option:selected').parent().attr('label');
+                expItem.expAllName = $this.find('select[name="expType"] option:selected').parent().attr('label')+'-'+$this.find('select[name="expType"] option:selected').text();
 
                 var linkageApproval = $this.find('select[name="linkageApproval"]').val();
                 if(!isNullOrBlank(linkageApproval)){
@@ -239,6 +239,8 @@
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
                     S_toastr.success('操作成功');
+                    if(that.settings.saveCallBack)
+                        that.settings.saveCallBack();
                 } else {
                     S_dialog.error(response.info);
                 }
@@ -341,8 +343,8 @@
             option.server = restApi.url_attachment_uploadExpenseAttach;
             option.accept={
                 title: '上传附件',
-                extensions: '*',
-                mimeTypes: '*'
+                extensions: 'jpg,jpeg,png,bmp',
+                mimeTypes: 'image/jpg,image/jpeg,image/png,image/bmp'
             };
             option.btnPickText = '<i class="fa fa-upload"></i>&nbsp;上传附件';
             option.ifCloseItemFinished = true;
@@ -481,17 +483,11 @@
             $(that.element).find('form.form-horizontal').validate({
                 ignore : [],
                 rules: {
-                    enterpriseName: {
-                        required: true
-                    },
                     approver:{
                         approverCk: true
                     }
                 },
                 messages: {
-                    enterpriseName: {
-                        required: '请输入收款方！'
-                    },
                     approver:{
                         approverCk: '请选择审批人员！'
                     }

@@ -21,7 +21,7 @@
     <div class="form-group">
         <label class="col-sm-2 text-right">收款方：</label>
         <div class="col-sm-10">
-            {{exp.auditCompanyName}}
+            {{enterpriseName}}
         </div>
     </div>
     <div class="form-group">
@@ -37,7 +37,7 @@
     <div class="panel panel-default">
         <div class="panel-body">
             <h4 class="title-line">
-                {{title}}明细(<span data-action="itemIndex">{{i}}</span>)
+                {{title}}明细(<span data-action="itemIndex">{{i+1}}</span>)
             </h4>
             <div class="form-group">
                 <label class="col-sm-2 text-right">{{title}}金额：</label>
@@ -99,28 +99,51 @@
     <div class="form-group">
         <label class="col-sm-2 text-right">审批人：</label>
         <div class="col-sm-10">
-            {{if auditList!=null && auditList.length>0}}
-                {{each auditList as u ui}}
-                    <div class="approver-outbox">
-                        <div class="approver-box text-center pull-left m-r-sm">
-                            <div class="img-circle">
-                                <img alt="image" class="img-circle" src="{{_isNullOrBlank(u.fileFullPath)?_url('/assets/img/head_default.png'):u.fileFullPath}}" width="50" height="50">
-                            </div>
-                        </div>
-                        <div class="approver-box text-center pull-left m-r-sm">
-                            <div class="m-t-xs">{{u.userName}}</div>
-                            <p class="fc-v1-grey">{{u.approveStatusName}}</p>
-                        </div>
+            <div id="vertical-timeline" class="vertical-container dark-timeline center-orientation timeline-box no-margins full-width">
+                {{if auditList!=null && auditList.length>0}}
+                {{each auditList as s i}}
+                <div class="vertical-timeline-block">
+                    <div class="vertical-timeline-icon navy-bg">
+                        <i class="fa fa-circle-o"></i>
                     </div>
-                    {{if ui+1 < auditList.length }}
-                    <div class="arrow-icon p-h-sm pull-left m-l-sm m-r-sm">
-                        <i class="fa fa-long-arrow-right"></i>
+                    <div class="vertical-timeline-content">
+                        {{if s.approveStatus=='1'}}
+                        <h2 class="text-success">{{s.userName}}</h2>
+                        {{else if s.approveStatus=='2' || s.approveStatus=='3'}}
+                        <h2 class="text-danger">{{s.userName}}</h2>
+                        {{else}}
+                        <h2>{{s.userName}}</h2>
+                        {{/if}}
+                        <p class="no-margins">
+                            {{s.companyName}}
+                        </p>
+                        <span class="vertical-date">
+                            {{if s.approveStatus=='1'}}
+                                <span class="text-success">{{s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.expDate,'YYYY/MM/DD')}} </span>
+                            {{else if s.approveStatus=='2' || s.approveStatus=='3'}}
+                                <span class="text-danger">{{s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.expDate,'YYYY/MM/DD')}} </span>
+                            {{else}}
+                                <span>{{s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.expDate,'YYYY/MM/DD')}} </span>
+                            {{/if}}
+                            <br>
+                            <small>
+                                {{if s.approveStatusName=='发起申请'}}
+                                    {{typeStr}}备注：{{s.remark}}
+                                {{/if}}
+                                {{if s.approveStatusName=='退回'}}
+                                    退回原因：{{s.remark}}
+                                {{/if}}
+                            </small>
+                        </span>
                     </div>
-                    {{/if}}
+                </div>
                 {{/each}}
-            {{/if}}
+                {{/if}}
+            </div>
+
         </div>
     </div>
+    <div class="hr-line-dashed m-t-none m-b-sm"></div>
     <div class="form-group">
         <label class="col-sm-2 text-right">抄送人：</label>
         <div class="col-sm-10">

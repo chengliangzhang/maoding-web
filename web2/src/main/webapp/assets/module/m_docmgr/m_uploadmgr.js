@@ -247,6 +247,10 @@
                         content = '已超最大的文件上传数';
                         break;
                     case 'Q_TYPE_DENIED':
+
+                        if(that.settings.accept && that.settings.accept.extensions)
+                            that.settings.fileExts = that.settings.accept.extensions;
+
                         if(file!=null && file.size==0){
                             content = '不支持上传空文件';
                         }else{

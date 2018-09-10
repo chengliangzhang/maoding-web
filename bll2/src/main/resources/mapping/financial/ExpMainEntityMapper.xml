@@ -94,15 +94,17 @@
                                           exp_date, approve_status,
                                           company_id, depart_id, remark,
                                           create_date, create_by, update_date,
-                                          update_by, exp_no, exp_flag, type, allocation_date, allocation_user_id)
+                                          update_by, exp_no, exp_flag, type, allocation_date, allocation_user_id,enterprise_id)
         VALUES (#{id,jdbcType=VARCHAR}, #{companyUserId,jdbcType=VARCHAR},
                                         now(), #{approveStatus,jdbcType=VARCHAR},
                                         #{companyId,jdbcType=VARCHAR}, #{departId,jdbcType=VARCHAR},
                                         #{remark,jdbcType=VARCHAR},
                                         now(), #{createBy,jdbcType=VARCHAR}, now(),
                                         #{updateBy,jdbcType=VARCHAR}, #{expNo,jdbcType=VARCHAR},
-                #{expFlag,jdbcType=INTEGER},
-                #{type,jdbcType=INTEGER}, #{allocationDate,jdbcType=DATE}, #{allocationUserId,jdbcType=VARCHAR})
+                                        #{expFlag,jdbcType=INTEGER},
+                                        #{type,jdbcType=INTEGER}, #{allocationDate,jdbcType=DATE},
+                                        #{allocationUserId,jdbcType=VARCHAR}
+                                        , #{enterpriseId,jdbcType=VARCHAR})
     </insert>
 
     <update id="updateById" parameterType="com.maoding.financial.entity.ExpMainEntity">
@@ -122,6 +124,9 @@
             </if>
             <if test="departId != null">
                 depart_id = #{departId,jdbcType=VARCHAR},
+            </if>
+            <if test="enterpriseId != null">
+                enterprise_id = #{enterpriseId,jdbcType=VARCHAR},
             </if>
             <if test="remark != null">
                 remark = #{remark,jdbcType=VARCHAR},

@@ -8,6 +8,8 @@
     var pluginName = "m_approval_leave_add",
         defaults = {
             isDialog:true,
+            dataInfo:null,//dataInfo不为null,即编辑
+            saveCallBack:null,
             doType: 3// 报销=1=expense,费用=2=costApply,请假=3=leave,出差=4=onBusiness,付款申请=5=projectPayApply
         };
 
@@ -30,6 +32,8 @@
         this._baseData = {};
         this._auditList = [];//审批人
         this._ccCompanyUserList = [];//抄送人
+
+        this._deleteAttachList = [];//编辑才用，已有删除的集合
 
         this._title = this.settings.doType==3?'请假':'出差';
         this._auditType = this.settings.doType==3?'leave':'onBusiness';//auditType 的取值： 请假leave 出差onBusiness 报销expense 费用costApply 付款申请projectPayApply
@@ -54,7 +58,10 @@
                         that._baseData = response.data;
                         that._baseData.doType = that.settings.doType;
                         that._baseData.title = that._title;
-                        var html = template('m_approval/m_approval_leave_add', {data: that._baseData});
+                        var html = template('m_approval/m_approval_leave_add', {
+                            data: that._baseData,
+                            dataInfo:that.settings.dataInfo
+                        });
                         $(that.element).html(html);
                         if(that.settings.doType==3){
                             that.renderLeaveType();
@@ -62,7 +69,7 @@
                         if(that.settings.doType==4){
                             that.renderProjectList();
                         }
-                        that.renderApprover();
+
                         that.fileUpload();
                         that.bindActionClick();
                         that.save_validate();
@@ -71,6 +78,60 @@
                                 that.renderApprover();
                             }
                         });
+
+                        if(that.settings.dataInfo!=null){
+
+                            if(that.settings.dataInfo.attachList){
+
+                                $.each(that.settings.dataInfo.attachList,function (i,item) {
+                                    var fileData = {};
+                                    fileData.fullPath = item.fileFullPath;
+                                    fileData.netFileId = item.id;
+                                    fileData.fileName = item.fileName;
+                                    fileData.type = -1;//代表已存在
+                                    var html = template('m_common/m_attach', fileData);
+                                    $('#showFileLoading').append(html);
+                                    that.bindAttachDelele();
+                                })
+                            }
+                            if(that.settings.dataInfo.ccCompanyUserList){
+
+                                that._ccCompanyUserList = [];
+
+                                $.each(that.settings.dataInfo.ccCompanyUserList,function (i,item) {
+                                    that._ccCompanyUserList.push({
+                                        id:item.companyUserId,
+                                        userName:item.userName,
+                                        userId:item.userId
+                                    })
+                                });
+                                var html = template('m_approval/m_approval_cost_add_ccUser', {userList: that._ccCompanyUserList});
+                                $(that.element).find('#ccUserListBox').html(html);
+                                that.ccBoxDeal();
+                            }
+                            if(that.settings.dataInfo.auditList && that.settings.dataInfo.processFlag=='1'){
+
+                                that._auditList = [];
+                                $.each(that.settings.dataInfo.auditList,function (i,item) {
+                                    if(i==that.settings.dataInfo.auditList.length-1){//取最后一条
+                                        that._auditList.push({
+                                            id:item.companyUserId,
+                                            userName:item.userName,
+                                            userId:item.userId,
+                                            fileFullPath:item.fileFullPath
+                                        })
+                                    }
+                                });
+                                var html = template('m_approval/m_approval_cost_add_approver', {userList: that._auditList});
+                                $(that.element).find('#approverBox').html(html);
+                            }else{
+                                that.renderApprover();
+                            }
+
+                        }else{
+                            that.renderApprover();
+                        }
+
 
                     } else {
                         S_dialog.error(response.info);
@@ -134,6 +195,9 @@
                         data: data
                     });
 
+                    if(that.settings.dataInfo && that.settings.dataInfo.leaveType)
+                        $(that.element).find('select[name="leaveType"]').val(that.settings.dataInfo.leaveType).trigger('change');
+
                 } else {
                     S_dialog.error(response.info);
                 }
@@ -155,7 +219,7 @@
                     $.each(response.data, function (i, o) {
                         data.push({id: o.id, text: o.projectName});
                     });
-                    $(that.element).find('select[name="projectName"]').select2({
+                    $(that.element).find('select[name="projectId"]').select2({
                         width: '100%',
                         allowClear: true,
                         language: "zh-CN",
@@ -163,6 +227,8 @@
                         data: data
                     });
 
+                    if(that.settings.dataInfo && that.settings.dataInfo.projectId)
+                        $(that.element).find('select[name="projectId"]').val(that.settings.dataInfo.projectId).trigger('change');
 
                 } else {
                     S_dialog.error(response.info);
@@ -221,6 +287,11 @@
             }
             $data.ccCompanyUserList = ccUser;
 
+            if(that.settings.dataInfo){
+                $data.id = that.settings.dataInfo.id;
+                $data.deleteAttachList = that._deleteAttachList;
+            }
+
             var option = {};
             option.classId = '#content-right';
             option.url = restApi.url_saveLeave;
@@ -229,6 +300,8 @@
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
                     S_toastr.success('操作成功');
+                    if(that.settings.saveCallBack)
+                        that.settings.saveCallBack();
                 } else {
                     S_dialog.error(response.info);
                 }
@@ -242,8 +315,8 @@
             option.server = restApi.url_attachment_uploadExpenseAttach;
             option.accept={
                 title: '上传附件',
-                extensions: '*',
-                mimeTypes: '*'
+                extensions: 'jpg,jpeg,png,bmp',
+                mimeTypes: 'image/jpg,image/jpeg,image/png,image/bmp'
             };
             option.btnPickText = '<i class="fa fa-upload"></i>&nbsp;上传附件';
             option.ifCloseItemFinished = true;
@@ -280,6 +353,7 @@
             $.each($('#showFileLoading').find('a[data-action="deleteAttach"]'), function (i, o) {
                 $(o).off('click.deleteAttach').on('click.deleteAttach', function () {
                     var netFileId = $(this).attr('data-net-file-id');
+                    var type = $(this).attr('data-type');
 
                     var ajaxDelete = function () {
                         var ajaxOption = {};
@@ -297,7 +371,12 @@
                             }
                         });
                     };
-                    ajaxDelete();
+
+                    if(type==-1){
+                        that._deleteAttachList.push(netFileId);
+                    }else{
+                        ajaxDelete();
+                    }
 
                     $(this).closest('span').remove();
                 })

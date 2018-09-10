@@ -68,6 +68,17 @@
             $(that.element).html(html);
             that.bindActionClick();
             that.submit_validate();
+
+            if(that.settings.$processData && that.settings.$processData.flowTaskGroupList!=null && that.settings.$processData.flowTaskGroupList.length>0){
+                $.each(that.settings.$processData.flowTaskGroupList,function (i,item) {
+                    if(i>1 && i<that.settings.$processData.flowTaskGroupList.length-1){
+                        that.addInput($(that.element).find('a[data-action="addCondition"]'));
+                    }
+                    $(that.element).find('input[name="conditionalVal"]').eq(i).val(item.maxValue);
+
+                })
+            }
+
         }
         ,saveProcessCondtion:function () {
             var that =this;
@@ -95,6 +106,27 @@
                 }
             });
         }
+        ,renderRemoveInput:function () {
+            var that = this;
+            var len = $(that.element).find('input[name="conditionalVal"]').length;
+            $(that.element).find('a[data-action="removeInput"]').remove();
+            $(that.element).find('input[name="conditionalVal"]').each(function (i) {
+                if(i>0 && len>2){
+
+                    $(this).after('<a href="javascript:void(0);" class="icon-remove fc-red" data-action="removeInput"><i class="glyphicon glyphicon-remove"></i></a>')
+                }
+            });
+            $(that.element).find('a[data-action="removeInput"]').off('click').on('click',function () {
+                $(this).parent().prev().remove();
+                $(this).parent().remove();
+                that.renderRemoveInput();
+            });
+        }
+        ,addInput:function ($this) {
+            var that = this;
+            $this.parent().before('<div class="col-md-1 m-b-xs p-xxs text-center"> < </div><div class="col-md-2 m-b-xs"><input class="form-control input-sm" type="text" name="conditionalVal"></div>');
+            that.renderRemoveInput();
+        }
         //事件绑定
         ,bindActionClick:function () {
             var that = this;
@@ -104,8 +136,7 @@
                 switch (dataAction){
                     case 'addCondition'://添加条件
 
-                        $this.parent().before('<div class="col-md-1 m-b-xs p-xxs text-center"> < </div><div class="col-md-2 m-b-xs"><input class="form-control input-sm" type="text" name="conditionalVal"></div>');
-
+                        that.addInput($this);
                         break;
                 }
             })

@@ -470,7 +470,7 @@
             ) AS depart_name,
             (
                 SELECT
-                  GROUP_CONCAT(e.exp_name SEPARATOR '、')
+                  GROUP_CONCAT(CONCAT(e.exp_pname,'-',e.exp_name) SEPARATOR '、')  AS exp_name
                 FROM
                     maoding_web_exp_detail e
                 WHERE
@@ -601,6 +601,7 @@
             exp_main.company_user_id AS companyUserId,
             exp_main.exp_date,
             exp_main.version_num AS versionNum,
+            exp_main.exp_flag as expFlag,
             company_user.user_name AS userName,
             exp_main.exp_no AS expNo,
             exp_main.approve_status AS approveStatus,
@@ -622,6 +623,12 @@
         <if test="companyUserId!=null">
             AND exp_main.company_user_id =#{companyUserId}
         </if>
+        <if test="approveStatus!=null">
+            AND exp_main.approve_status = #{approveStatus}
+        </if>
+        <if test="expType!=null">
+            AND exp_main.type = #{expType}
+        </if>
         <if test="type=='2'.toString()">
            and exp_audit.approve_status = '0' and exp_audit.is_new='Y'
            AND (exp_main.approve_status = '0' or exp_main.approve_status = '5')
@@ -636,11 +643,13 @@
             and copy.deleted = 0
             and copy.company_user_id = #{ccCompanyUserId}
             and (exp_main.approve_status = 6 and 3> exp_main.type or exp_main.approve_status = 1 and exp_main.type >2 )
-        </if>
+        </if >
         <if test="type=='5'.toString()">
             AND exp_main.approve_status = 1 and exp_main.type = 4
         </if>
-
+        <if test="userNameLike!=null">
+            AND company_user.user_name LIKE  '%' #{userNameLike} '%'
+        </if>
         GROUP BY exp_main.id
         order by exp_main.exp_date DESC , exp_main.create_date DESC
         <include refid="CommonMapper.limitSQL"/>
@@ -652,7 +661,9 @@
             count(distinct exp_main.id)
         FROM
             maoding_web_exp_main exp_main
-
+        <if test="userNameLike!=null">
+            INNER JOIN maoding_web_company_user company_user ON exp_main.company_user_id = company_user.id
+        </if>
         <if test="type=='4'.toString()">
             INNER JOIN maoding_copy_record copy on exp_main.id = copy.target_id
         </if>
@@ -660,6 +671,12 @@
         WHERE
         1 = 1
         AND exp_main.approve_status != '4'
+        <if test="approveStatus!=null">
+            AND exp_main.approve_status = #{approveStatus}
+        </if>
+        <if test="expType!=null">
+            AND exp_main.type = #{expType}
+        </if>
         <if test="companyUserId!=null">
             AND exp_main.company_user_id =#{companyUserId}
         </if>
@@ -680,6 +697,9 @@
         </if>
         <if test="type=='5'.toString()">
             AND exp_main.approve_status = 1 and exp_main.type = 4
+        </if>
+        <if test="userNameLike!=null">
+            AND company_user.user_name LIKE  '%' #{userNameLike} '%'
         </if>
 
     </select>
@@ -704,4 +724,6 @@
         LEFT JOIN maoding_web_exp_audit exp_audit ON exp_main.id = exp_audit.main_id
         WHERE  exp_main.id = #{id}
     </select>
+
+
 </mapper>

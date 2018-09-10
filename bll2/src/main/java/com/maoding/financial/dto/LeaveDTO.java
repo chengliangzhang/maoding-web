@@ -1,5 +1,6 @@
 package com.maoding.financial.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.maoding.core.util.StringUtil;
 import com.maoding.org.dto.CompanyUserDataDTO;
 
@@ -33,11 +34,13 @@ public class LeaveDTO extends AuditDetailDTO{
     /**
      * 请假、出差的开始时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
     private Date startTime;
 
     /**
      * 请假、出差的结束时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
     private Date endTime;
 
     private String submitTime;

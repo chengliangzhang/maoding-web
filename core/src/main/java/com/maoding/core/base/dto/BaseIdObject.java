@@ -1,7 +1,7 @@
 package com.maoding.core.base.dto;
 
 
-import javax.persistence.Id;
+//import javax.persistence.Id;
 
 /**
  * 深圳市卯丁技术有限公司
@@ -12,7 +12,7 @@ import javax.persistence.Id;
  **/
 public class BaseIdObject implements Cloneable {
     /** 元素编号 */
-    @Id
+   // @Id
     private String id;
 
     public String getId() {

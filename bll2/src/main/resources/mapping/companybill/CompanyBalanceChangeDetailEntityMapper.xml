@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="CompanyBalanceChangeDetailEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.companybill.entity.CompanyBalanceChangeDetailEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="balance_id" property="balanceId" jdbcType="VARCHAR" />
+    <result column="before_change_amount" property="beforeChangeAmount" jdbcType="VARCHAR" />
+    <result column="after_change_amount" property="afterChangeAmount" jdbcType="VARCHAR" />
+    <result column="change_amount" property="changeAmount" jdbcType="VARCHAR" />
+    <result column="change_type" property="changeType" jdbcType="INTEGER" />
+    <result column="change_reason" property="changeReason" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="change_date" property="changeDate" jdbcType="DATE" />
+    <result column="operator_id" property="operatorId" jdbcType="VARCHAR" />
+    <result column="deleted" property="deleted" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, balance_id, before_change_amount, after_change_amount, change_amount, change_type, 
+    change_reason, remark, change_date, operator_id, deleted, create_date, create_by, 
+    update_date, update_by
+  </sql>
+  <select id="selectBy" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_company_balance_change_detail
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_company_balance_change_detail
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maoding.companybill.entity.CompanyBalanceChangeDetailEntity" >
+    insert into maoding_company_balance_change_detail (id, balance_id, before_change_amount, 
+      after_change_amount, change_amount, change_type, 
+      change_reason, remark, change_date, 
+      operator_id, deleted, create_date, 
+      create_by, update_date, update_by
+      )
+    values (#{id,jdbcType=VARCHAR}, #{balanceId,jdbcType=VARCHAR}, #{beforeChangeAmount,jdbcType=VARCHAR}, 
+      #{afterChangeAmount,jdbcType=VARCHAR}, #{changeAmount,jdbcType=VARCHAR}, #{changeType,jdbcType=INTEGER}, 
+      #{changeReason,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{changeDate,jdbcType=DATE}, 
+      #{operatorId,jdbcType=VARCHAR}, #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.companybill.entity.CompanyBalanceChangeDetailEntity" >
+    update maoding_company_balance_change_detail
+    <set >
+      <if test="balanceId != null" >
+        balance_id = #{balanceId,jdbcType=VARCHAR},
+      </if>
+      <if test="beforeChangeAmount != null" >
+        before_change_amount = #{beforeChangeAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="afterChangeAmount != null" >
+        after_change_amount = #{afterChangeAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="changeAmount != null" >
+        change_amount = #{changeAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="changeType != null" >
+        change_type = #{changeType,jdbcType=INTEGER},
+      </if>
+      <if test="changeReason != null" >
+        change_reason = #{changeReason,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="changeDate != null" >
+        change_date = #{changeDate,jdbcType=DATE},
+      </if>
+      <if test="operatorId != null" >
+        operator_id = #{operatorId,jdbcType=VARCHAR},
+      </if>
+      <if test="deleted != null" >
+        deleted = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="update" parameterType="com.maoding.companybill.entity.CompanyBalanceChangeDetailEntity" >
+    update maoding_company_balance_change_detail
+    set balance_id = #{balanceId,jdbcType=VARCHAR},
+      before_change_amount = #{beforeChangeAmount,jdbcType=VARCHAR},
+      after_change_amount = #{afterChangeAmount,jdbcType=VARCHAR},
+      change_amount = #{changeAmount,jdbcType=VARCHAR},
+      change_type = #{changeType,jdbcType=INTEGER},
+      change_reason = #{changeReason,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      change_date = #{changeDate,jdbcType=DATE},
+      operator_id = #{operatorId,jdbcType=VARCHAR},
+      deleted = #{deleted,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

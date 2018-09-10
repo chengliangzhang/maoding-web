@@ -430,6 +430,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         if (pointEntity == null) {
             return AjaxMessage.failed("操作失败");
         }
+        //判断金额是否为空，是否大于0
         if (null == pointEntity.getFee() || pointEntity.getFee().compareTo(new BigDecimal("0"))==0) {
             return AjaxMessage.failed("请先设置总金额");
         }
@@ -593,6 +594,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
      */
     @Override
     public AjaxMessage saveOrUpdateReturnMoneyDetail(ProjectCostPointDetailDTO projectCostPointDetailDTO) throws Exception {
+        //判断输入的金额是否符合规范
         AjaxMessage ajaxMessage = validateReturnMoneyDetail(projectCostPointDetailDTO);
         if (ajaxMessage != null) {
             return ajaxMessage;
@@ -600,6 +602,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
         //todo 查询是否是内部组织
         ProjectCostEntity p = this.projectCostDao.getProjectCostByPointId(projectCostPointDetailDTO.getPointId());
         ProjectCostDTO costDTO = new ProjectCostDTO();
+        //对象复制，将对象P的值，复制到costDTO
         BaseDTO.copyFields(p,costDTO);
         if(costDTO == null){
             return AjaxMessage.error("数据错误");
@@ -644,6 +647,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
 
     private ProjectCostPointDetailEntity savePointDetailForPay(ProjectCostPointDetailDTO projectCostPointDetailDTO,ProjectCostDTO costDTO,boolean isInnerCompany) throws Exception{
         ProjectCostPointDetailEntity entity = null;
+        //调用ActivitiDTO有参构造，返回一个 map
         ActivitiDTO activitiDTO = new ActivitiDTO(null,null,projectCostPointDetailDTO.getCurrentCompanyId(),null,projectCostPointDetailDTO.getFee(), ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY);
         activitiDTO.getParam().put("approveUser",projectCostPointDetailDTO.getAuditPerson());
         boolean isNeedStartProcess = processService.isNeedStartProcess(activitiDTO);

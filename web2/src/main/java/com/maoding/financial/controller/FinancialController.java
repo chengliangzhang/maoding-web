@@ -5,16 +5,25 @@ import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.bean.ResponseBean;
 import com.maoding.core.constant.RoleConst;
+import com.maoding.core.util.BeanUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
+import com.maoding.core.util.TraceUtils;
 import com.maoding.financial.dto.*;
 import com.maoding.financial.service.ExpAuditService;
 import com.maoding.financial.service.ExpCategoryService;
 import com.maoding.financial.service.ExpFixedService;
 import com.maoding.financial.service.ExpMainService;
+import com.maoding.invoice.dto.InvoiceDTO;
+import com.maoding.org.dto.CompanyDTO;
+import com.maoding.org.dto.CompanyDataDTO;
+import com.maoding.org.dto.CompanyQueryDTO;
 import com.maoding.org.dto.CompanyRelationDTO;
 import com.maoding.org.service.CompanyService;
 import com.maoding.process.service.ProcessService;
+import com.maoding.project.dto.TitleColumnDTO;
+import com.maoding.project.dto.TitleQueryDTO;
+import com.maoding.project.dto.TitleSimpleDTO;
 import com.maoding.system.service.SystemService;
 import org.apache.shiro.authc.AccountException;
 import org.apache.shiro.authz.annotation.Logical;
@@ -860,4 +869,5 @@ public class FinancialController extends BaseController {
         int i = processService.suspendProcess(expMainDTO);
         return i>0?AjaxMessage.succeed("操作成功"):AjaxMessage.error("操作失败");
     }
+
 }

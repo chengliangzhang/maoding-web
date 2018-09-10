@@ -737,7 +737,11 @@ input.form-control[readonly] {
     padding: 2px 10px;
     vertical-align: middle;
 }
-
+.icon-remove{
+    position: absolute;
+    right: -5px;
+    top: -5px;
+}
 /********标题 *********/
 .title-line{
     border-left:3px solid #4765a0 ;

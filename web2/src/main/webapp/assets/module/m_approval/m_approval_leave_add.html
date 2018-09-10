@@ -15,7 +15,7 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">出差地点<span class="fc-red">*</span>：</label>
                 <div class="col-sm-10">
-                    <input placeholder="请输入出差地点" class="form-control" type="text" name="address">
+                    <input placeholder="请输入出差地点" class="form-control" type="text" name="address" value="{{dataInfo?dataInfo.address:''}}">
                 </div>
             </div>
             {{/if}}
@@ -23,7 +23,8 @@
                 <label class="col-sm-2 control-label">开始时间<span class="fc-red">*</span>：</label>
                 <div class="col-sm-10">
                     <div class="input-group">
-                        <input type="text" class="form-control" id="ipt_startTime" name="leaveStartTime" placeholder="开始时间" readonly onFocus="WdatePicker({maxDate:'#F{$dp.$D(\'ipt_endTime\')}'})" >
+                        <input type="text" class="form-control" id="ipt_startTime" name="leaveStartTime" placeholder="开始时间" readonly
+                               onFocus="WdatePicker({maxDate:'#F{$dp.$D(\'ipt_endTime\')}',dateFmt:'yyyy-MM-dd HH:mm'})" value="{{dataInfo?_momentFormat(dataInfo.startTime,'YYYY-MM-DD HH:mm'):''}}">
                         <span class="input-group-addon ">
                             <i class="icon-append fa fa-calendar"></i>
                         </span>
@@ -34,7 +35,8 @@
                 <label class="col-sm-2 control-label">结束时间<span class="fc-red">*</span>：</label>
                 <div class="col-sm-10">
                     <div class="input-group">
-                        <input type="text" class="form-control" id="ipt_endTime" name="leaveEndTime" placeholder="开始时间" readonly onFocus="WdatePicker({minDate:'#F{$dp.$D(\'ipt_startTime\')}'})" >
+                        <input type="text" class="form-control" id="ipt_endTime" name="leaveEndTime" placeholder="开始时间" readonly
+                               onFocus="WdatePicker({minDate:'#F{$dp.$D(\'ipt_startTime\')}',dateFmt:'yyyy-MM-dd HH:mm'})" value="{{dataInfo?_momentFormat(dataInfo.endTime,'YYYY-MM-DD HH:mm'):''}}">
                         <span class="input-group-addon ">
                             <i class="icon-append fa fa-calendar"></i>
                         </span>
@@ -45,7 +47,7 @@
                 <label class="col-sm-2 control-label">{{data.title}}天数<span class="fc-red">*</span>：</label>
                 <div class="col-sm-10">
                     <div class="input-group">
-                        <input placeholder="请输入{{data.title}}天数" class="form-control" type="text" name="leaveTime">
+                        <input placeholder="请输入{{data.title}}天数" class="form-control" type="text" name="leaveTime" value="{{dataInfo?dataInfo.leaveTime:''}}">
                         <span class="input-group-addon">天</span>
                     </div>
                 </div>
@@ -53,16 +55,20 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">{{data.title}}事由：</label>
                 <div class="col-sm-10">
-                    <textarea placeholder="请输入{{data.title}}事由" class="form-control" type="text" name="remark"></textarea>
+                    <textarea placeholder="请输入{{data.title}}事由" class="form-control" type="text" name="remark">{{dataInfo?dataInfo.remark:''}}</textarea>
                 </div>
             </div>
             {{if data.doType==4}}
             <div class="form-group">
                 <label class="col-sm-2 control-label">关联项目：</label>
                 <div class="col-sm-10">
-                    <select class="form-control full-width" name="projectName" >
+                    <select class="form-control full-width" name="projectId" >
                         {{each data.projectList as p }}
-                        <option value="{{p.id}}">{{p.projectName}}</option>
+                            {{if dataInfo && dataInfo.projectId && dataInfo.projectId==p.id}}
+                                <option value="{{p.id}}" selected >{{p.projectName}}</option>
+                            {{else}}
+                                <option value="{{p.id}}">{{p.projectName}}</option>
+                            {{/if}}
                         {{/each}}
                     </select>
                 </div>

@@ -166,16 +166,11 @@ public class DateUtils extends PropertyEditorSupport {
 
     /**
      * 字符串转换成日期
-     *
-     * @param str
-     * @param sdf
-     * @return
      */
     public static Date str2Date(String str, SimpleDateFormat sdf) {
         if (StringUtil.isNullOrEmpty(str)) {
             return null;
         }
-        str = formatMonthString(str);
         Date date = null;
         try {
             date = sdf.parse(str);
@@ -183,7 +178,6 @@ public class DateUtils extends PropertyEditorSupport {
         } catch (ParseException e) {
             return null;
         }
-
     }
 
     public static Date str2Date(String str) {
@@ -205,11 +199,16 @@ public class DateUtils extends PropertyEditorSupport {
         if (StringUtils.isEmpty(str)){
             return "";
         }
-        str = str.replaceAll("/-","/");
-        Integer y = getYear(str);
-        Integer m = getMonth(str);
-        Integer d = getDay(str);
-        return y + "-" + ((m < 10) ? "0" + m : m) + "-" + ((d < 10) ? "0" + d : d);
+        if(str.length()<10){
+            str = str.replaceAll("/-","/");
+            Integer y = getYear(str);
+            Integer m = getMonth(str);
+            Integer d = getDay(str);
+            return y + "-" + ((m < 10) ? "0" + m : m) + "-" + ((d < 10) ? "0" + d : d);
+        }else {
+            return str;
+        }
+
     }
 
     public static String formatDateString(String str){

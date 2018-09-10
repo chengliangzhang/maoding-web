@@ -32,6 +32,10 @@ public class QueryAuditDTO extends CoreQueryDTO {
 
     private String endDate;
 
+    private String approveStatus;
+
+    private String userNameLike;
+
     /**
      * 抄送人
      */
@@ -149,5 +153,21 @@ public class QueryAuditDTO extends CoreQueryDTO {
 
     public void setIgnoreRecall(String ignoreRecall) {
         this.ignoreRecall = ignoreRecall;
+    }
+
+    public String getApproveStatus() {
+        return approveStatus;
+    }
+
+    public void setApproveStatus(String approveStatus) {
+        this.approveStatus = approveStatus;
+    }
+
+    public String getUserNameLike() {
+        return userNameLike;
+    }
+
+    public void setUserNameLike(String userNameLike) {
+        this.userNameLike = userNameLike;
     }
 }

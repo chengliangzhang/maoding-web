@@ -102,7 +102,6 @@ public class ExpAuditServiceImpl extends GenericService<ExpAuditEntity> implemen
         auditEntity.setAuditPerson(auditPerson);
         auditEntity.setSubmitAuditId(submitAuditId);
         auditEntity.set4Base(accountId, accountId, new Date(), new Date());
-        auditEntity.setApproveDate(DateUtils.getDate());
         expAuditDao.insert(auditEntity);
         return auditEntity;
     }
@@ -171,6 +170,7 @@ public class ExpAuditServiceImpl extends GenericService<ExpAuditEntity> implemen
         //修改当前审批记录的状态及审批意见
         audit.setAuditMessage(dto.getAuditMessage());
         audit.setApproveStatus(approveStatus);
+        audit.setApproveDate(DateUtils.getDate());
         if(isContinueAudit){
             audit.setIsNew("N");
         }

@@ -9,6 +9,7 @@
         defaults = {
             isDialog:true,
             id:null,
+            closeCallBack:null,
             doType: 1// 报销=1=expense,费用=2=costApply,请假=3=leave,出差=4=onBusiness,付款申请=5=projectPayApply
         };
 
@@ -47,7 +48,7 @@
                     title: that.settings.title||that._title+'申请',
                     contentEle: 'dialogOBox',
                     lock: 3,
-                    width: '705',
+                    width: '750',
                     tPadding: '0',
                     height:that._dialogHeight+'',
                     url: rootPath+'/assets/module/m_common/m_dialog.html'
@@ -96,6 +97,7 @@
                 switch(dataAction){
                     case 'cancel'://取消
                         S_dialog.close($(that.element));
+
                         break;
                     case 'agree'://同意
                         var option = {};
@@ -106,6 +108,8 @@
                         option.doType = 1;
                         option.saveCallBack = function () {
                             that.renderContent();
+                            if(that.settings.closeCallBack)
+                                that.settings.closeCallBack();
                         };
                         console.log(option);
                         $('body').m_approval_operational_comments(option,true);
@@ -121,6 +125,8 @@
                         option.doType = 2;
                         option.saveCallBack = function () {
                             that.renderContent();
+                            if(that.settings.closeCallBack)
+                                that.settings.closeCallBack();
                         };
                         $('body').m_approval_operational_comments(option,true);
 
@@ -135,6 +141,8 @@
                         option.doType = 3;
                         option.saveCallBack = function () {
                             that.renderContent();
+                            if(that.settings.closeCallBack)
+                                that.settings.closeCallBack();
                         };
                         $('body').m_approval_operational_comments(option,true);
 

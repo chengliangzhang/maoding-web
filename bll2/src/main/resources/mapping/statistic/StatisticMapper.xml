@@ -365,16 +365,15 @@
             <if test="projectName!=null">
                 and mwp.project_name like concat('%',#{projectName},'%')
             </if>
-            <if test="feeType!=null">
-                <choose>
-                    <when test="feeType ==4">
-                        and (mwpc.type='4' or mwpc.type='5')
-                    </when>
-                    <otherwise>
-                        and mwpc.type=#{feeType}
-                    </otherwise>
-                </choose>
+            <if test="feeTypeList!=null and feeTypeList.size()>0">
+                and mwpc.type in
+                <foreach collection="feeTypeList" item="feeType" index="i" open="(" separator="," close=")">
+                    <if test="feeType!=null">
+                        #{feeType}
+                    </if>
+                </foreach>
             </if>
+
             <if test="payType!=null and payType==1">
                 and mwpcpd.paid_fee_status = 1
                 and mwpc.to_company_id in

@@ -249,7 +249,7 @@ public class SaveLeaveDTO extends BaseDTO {
     public Date getStartTime() {
         Date d = startTime;
         if ((d == null) && (StringUtils.isNotEmpty(leaveStartTime))){
-            d = DateUtils.str2Date(leaveStartTime, DateUtils.date_sdf);
+            d = DateUtils.str2Date(leaveStartTime, DateUtils.time_sdf);
         }
         return d;
     }
@@ -261,7 +261,7 @@ public class SaveLeaveDTO extends BaseDTO {
     public Date getEndTime() {
         Date d = endTime;
         if ((d == null) && (StringUtils.isNotEmpty(leaveEndTime))){
-            d = DateUtils.str2Date(leaveEndTime, DateUtils.date_sdf);
+            d = DateUtils.str2Date(leaveEndTime, DateUtils.time_sdf);
         }
         return d;
     }
@@ -285,7 +285,7 @@ public class SaveLeaveDTO extends BaseDTO {
     public void setLeaveStartTime(String leaveStartTime) {
         this.leaveStartTime = leaveStartTime;
         if (StringUtils.isNotEmpty(leaveStartTime)) {
-            setStartTime(DateUtils.str2Date(leaveStartTime, DateUtils.date_sdf));
+            setStartTime(DateUtils.str2Date(leaveStartTime, DateUtils.time_sdf));
         }
     }
 
@@ -296,7 +296,7 @@ public class SaveLeaveDTO extends BaseDTO {
     public void setLeaveEndTime(String leaveEndTime) {
         this.leaveEndTime = leaveEndTime;
         if (StringUtils.isNotEmpty(leaveEndTime)) {
-            setEndTime(DateUtils.str2Date(leaveEndTime, DateUtils.date_sdf));
+            setEndTime(DateUtils.str2Date(leaveEndTime, DateUtils.time_sdf));
         }
     }
 

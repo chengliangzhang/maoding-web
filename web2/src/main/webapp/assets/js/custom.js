@@ -254,7 +254,49 @@ function handleResponse(response) {
 }
 
 /******************************************** 弹窗方法 开始 *****************************************************/
+var S_layer = {
+    dialog:function (option,initCallback) {
 
+        var options = {
+            type: option.type || 1
+            ,title: option.title || false
+            ,skin:option.skin || ''
+            ,area:option.area || 'auto'
+            ,offset:option.offset || 'auto'
+            ,icon:option.icon || null
+            ,closeBtn:option.closeBtn || 1
+            ,shade:option.shade || 0.3
+            ,shadeClose:option.quickClose || false // 点击空白处快速关闭
+            ,time:option.time || 0
+            ,shift:option.shift || 0
+            ,maxmin:option.maxmin || false
+            ,fixed :option.fixed  || true
+            ,scrollbar:option.scrollbar || true
+            ,btn: option.btn
+            ,yes: option.ok || null//确定函数
+            ,cancel: option.cancel || null//取消函数
+            ,end: option.end || null//层销毁后触发的回调
+            ,success: function(layero, index){
+                console.log(layero);
+                console.log(index);
+                return initCallback(layero);
+            }};
+
+        if(option.url){
+            $.get(option.url, {cache: true}).success(function (data) {
+
+                options.content = data;
+                layer.open(options);
+
+            }).error(function () {
+                alert('操作异常\n网络错误');
+            });
+        }else{
+            options.content = option.content || '';
+            layer.open(options);
+        }
+    }
+};
 var S_dialog = {
 
     /**
@@ -337,6 +379,7 @@ var S_dialog = {
 
             afterShow = afterShow || function () {};
             return afterShow(d);
+
         }).error(function () {
             alert('操作异常\n网络错误');
         });

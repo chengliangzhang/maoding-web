@@ -1,6 +1,6 @@
 {{if userList!=null && userList.length>0}}
     {{each userList as u ui}}
-    <div class="approver-outbox">
+    <div class="approver-outbox col-md-2">
         <div class="approver-box text-center pull-left m-r-sm">
             <div class="img-circle">
                 <img alt="image" class="img-circle" src="{{_isNullOrBlank(u.fileFullPath)?_url('/assets/img/head_default.png'):u.fileFullPath}}" width="50" height="50">
@@ -9,9 +9,10 @@
         </div>
     </div>
     {{if ui+1 < userList.length }}
-    <div class="arrow-icon p-h-sm pull-left m-l-sm m-r-sm">
+    <div class="arrow-icon p-h-sm col-md-1">
         <i class="fa fa-long-arrow-right"></i>
     </div>
     {{/if}}
     {{/each}}
 {{/if}}
+<div class="clearfix"></div>

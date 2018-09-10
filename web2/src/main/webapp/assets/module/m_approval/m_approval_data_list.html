@@ -4,12 +4,15 @@
         <th>申请日期</th>
         <th>
             申请人
+            <a class="icon-filter pull-right" id="filter_userName"><i class="icon iconfont icon-shaixuan"></i></a>
         </th>
         <th>
             类型
+            <a class="icon-filter pull-right" id="filter_expType"><i class="icon iconfont icon-shaixuan"></i></a>
         </th>
         <th>
             审批状态
+            <a class="icon-filter pull-right" id="filter_approveStatus"><i class="icon iconfont icon-shaixuan"></i></a>
         </th>
         <th width="">操作</th>
     </tr>
@@ -22,7 +25,7 @@
         <td>{{p.expTypeName}}</td>
         <td>{{p.approveStatusName}}</td>
         <td>
-            {{if p.expFlag!=1 && (p.approveStatus ==2 || p.approveStatus ==3) && p.companyUserId == currentCompanyUserId}}
+            {{if p.expFlag!=1 && (p.approveStatus ==2 || p.approveStatus ==3) && p.companyUserId == currentCompanyUserId && p.type!=5}}
                 <button class="btn btn-primary btn-xs" data-action="edit">编辑</button>
             {{/if}}
         </td>
@@ -30,7 +33,7 @@
     {{/each}}
     {{if dataList==null || dataList.length==0}}
     <tr class="no-data">
-        <td colspan="4" class="text-center v-middle">
+        <td colspan="5" class="text-center v-middle">
             <div class="m-b-xl m-t-md">
                 <img src="{{_url('/assets/img/default/without_data.png')}}">
                 <span class="fc-dark-blue dp-block">您还没有相关数据</span>

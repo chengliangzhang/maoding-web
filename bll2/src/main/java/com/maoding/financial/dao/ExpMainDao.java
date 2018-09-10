@@ -4,6 +4,7 @@ import com.maoding.core.base.dao.BaseDao;
 import com.maoding.core.base.dto.CorePageDTO;
 import com.maoding.financial.dto.*;
 import com.maoding.financial.entity.ExpMainEntity;
+import com.maoding.invoice.dto.InvoiceDTO;
 import com.maoding.org.dto.CompanyRelationDTO;
 import com.maoding.statistic.dto.StatisticDetailQueryDTO;
 import com.maoding.statistic.dto.StatisticDetailSummaryDTO;
@@ -172,4 +173,5 @@ public interface ExpMainDao extends BaseDao<ExpMainEntity> {
      * @return
      */
     List<ExpMainDTO> getAuditDataDetail(QueryAuditDTO dto);
+
 }
