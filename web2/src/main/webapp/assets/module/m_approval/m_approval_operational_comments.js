@@ -27,7 +27,19 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
+
+
+            if(that.settings.doType==3){//撤销，不需要填写意见
+                that.confirm(restApi.url_repealApprove);
+                return false;
+            }
+            if(that.settings.doType==1 && that.settings.dataInfo.processFlag!='1'){//同意，固定流程，条件流程不需要填写意见
+                that.agree();
+                return false;
+            }
+
             that.renderDialog(function () {
+                that.settings.dataInfo.doType = that.settings.doType;
                 var html = template('m_approval/m_approval_operational_comments', that.settings.dataInfo);
                 $(that.element).html(html);
                 that.bindActionClick();
@@ -134,6 +146,7 @@
 
                             S_dialog.confirm('确定同意并转交['+data.userName+']审批？', function () {
                                 that.agree(data.companyUserId);
+                                S_dialog.close($(event));
                             }, function () {
                                 S_dialog.close($(event));
                             });

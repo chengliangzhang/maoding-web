@@ -2024,10 +2024,10 @@ CREATE PROCEDURE `initConst`()
     delete from md_list_const where classic_id = 48;
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,-1,'审批状态','');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,0,'待审核','');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,1,'同意','');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,2,'退回','');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,3,'撤回','');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,4,'删除','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,1,'已完成','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,2,'已退回','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,3,'已撤回','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,4,'已删除','');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,5,'审批中','');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,6,'财务已拨款','');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (48,7,'财务拒绝拨款','');

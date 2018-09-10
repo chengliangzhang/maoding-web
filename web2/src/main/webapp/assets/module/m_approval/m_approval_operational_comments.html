@@ -1,9 +1,11 @@
 <form class="form-horizontal" >
+    {{if doType==2}}
     <div class="m-b-sm">
         <label>审批意见：</label>
         <textarea placeholder="请输入审批意见" class="form-control" type="text" name="auditMessage"></textarea>
     </div>
-    {{if processFlag==1 && doType==1}}
+    {{/if}}
+    {{if processFlag=='1' && doType==1}}
     <button type="button" class="btn btn-sm btn-primary  rounded" data-action="agreeAndDone">同意并完成</button>
     <button type="button" class="btn btn-sm btn-primary  rounded" data-action="agreeAndToNext">同意并继续</button>
     {{else}}

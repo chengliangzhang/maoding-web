@@ -370,4 +370,5 @@ var restApi = {
     , url_getAuditDetailForExp:window.rootPath+'/iWork/finance/getAuditDetailForExp'
     , url_getProjectList:window.rootPath+'/iWork/finance/getProjectList'
     , url_getLeaveDetailForWeb:window.rootPath+'/iWork/leave/getLeaveDetailForWeb'
+    , url_getProjectCostPaymentDetailByMainIdForPay:window.rootPath+'/iWork/projectcost/getProjectCostPaymentDetailByMainIdForPay'
 };

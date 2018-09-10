@@ -1,8 +1,9 @@
 package com.maoding.financial.service.impl;
 
-import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.constant.SystemParameters;
+import com.maoding.core.util.BeanUtils;
+import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.financial.dao.ExpAuditDao;
 import com.maoding.financial.dao.ExpMainDao;
@@ -15,7 +16,9 @@ import com.maoding.message.dto.SendMessageDTO;
 import com.maoding.message.service.MessageService;
 import com.maoding.org.dao.CompanyUserDao;
 import com.maoding.org.entity.CompanyUserEntity;
+import com.maoding.process.dao.ProcessInstanceRelationDao;
 import com.maoding.process.dto.TaskDTO;
+import com.maoding.process.entity.ProcessInstanceRelationEntity;
 import com.maoding.process.service.ProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +56,8 @@ public class ExpAuditServiceImpl extends GenericService<ExpAuditEntity> implemen
     @Autowired
     private ProcessService processService;
 
+    @Autowired
+    private ProcessInstanceRelationDao processInstanceRelationDao;
 
     @Override
     public String getAuditPerson(String mainId,String accountId) {
@@ -89,7 +94,6 @@ public class ExpAuditServiceImpl extends GenericService<ExpAuditEntity> implemen
     public ExpAuditEntity saveExpAudit(String mainId, String auditPerson, String submitAuditId, String accountId,String parentId) throws Exception {
         ExpAuditEntity auditEntity = new ExpAuditEntity();
         //插入新审批人审批记录
-        auditEntity = new ExpAuditEntity();
         auditEntity.setId(StringUtil.buildUUID());
         auditEntity.setIsNew("Y");
         auditEntity.setMainId(mainId);
@@ -98,12 +102,47 @@ public class ExpAuditServiceImpl extends GenericService<ExpAuditEntity> implemen
         auditEntity.setAuditPerson(auditPerson);
         auditEntity.setSubmitAuditId(submitAuditId);
         auditEntity.set4Base(accountId, accountId, new Date(), new Date());
+        auditEntity.setApproveDate(DateUtils.getDate());
         expAuditDao.insert(auditEntity);
         return auditEntity;
     }
 
+
+
+    private int completeAuditForNoProcess(SaveExpMainDTO dto) throws Exception {
+        //版本控制，只为了方便
+        String id = dto.getId();
+        boolean isContinueAudit = !StringUtil.isNullOrEmpty(dto.getAuditPerson());
+        ExpMainEntity entityVersion = this.expMainDao.selectById(dto.getId());
+        ExpAuditEntity audit = expAuditDao.getLastAuditByMainId(id);
+        if (entityVersion == null || audit == null) {
+            return 0;
+        }
+
+        //修改当前审批记录的状态及审批意见
+        audit.setAuditMessage(dto.getAuditMessage());
+        audit.setApproveStatus(dto.getApproveStatus());
+        if(isContinueAudit){
+            audit.setIsNew("N");
+        }
+        expAuditDao.updateById(audit);
+        if(isContinueAudit) {
+            //插入新审批人审批记录
+            this.saveAudit(dto);
+            entityVersion.setApproveStatus("5");
+        }else {
+            entityVersion.setApproveStatus("1");
+        }
+        int result = expMainDao.updateById(entityVersion);
+        return result;
+    }
+
     @Override
     public int completeAudit(SaveExpMainDTO dto) throws Exception {
+        ProcessInstanceRelationEntity instanceRelation = processInstanceRelationDao.getProcessInstanceRelation(dto.getId());
+        if(instanceRelation==null){//如果没有使用流程，则走一下程序
+            return completeAuditForNoProcess(dto);
+        }
         String id = dto.getId();
         String approveStatus = dto.getApproveStatus();
         Integer versionNum = dto.getVersionNum();
@@ -123,9 +162,7 @@ public class ExpAuditServiceImpl extends GenericService<ExpAuditEntity> implemen
         i = expMainDao.updateById(entity);
 
         //根据报销单id查询最新审批记录id
-        TaskDTO task = new TaskDTO();
-        BaseDTO.copyFields(task,dto);
-        task.setCurrentCompanyUserId(companyUserId);
+        TaskDTO task = BeanUtils.createFrom(dto,TaskDTO.class);
         task.setNextCompanyUserId(dto.getAuditPerson());
         task.setApproveStatus(approveStatus);
         task.setBusinessKey(id);

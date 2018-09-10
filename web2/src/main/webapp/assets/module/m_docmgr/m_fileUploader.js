@@ -171,6 +171,10 @@
                         content = '已超最大的文件上传数';
                         break;
                     case 'Q_TYPE_DENIED':
+
+                        if(that.settings.accept && that.settings.accept.extensions)
+                            that.settings.fileExts = that.settings.accept.extensions;
+
                         content = '仅支持上传如下类型文件：' + that.settings.fileExts;
                         break;
                     case 'F_DUPLICATE':

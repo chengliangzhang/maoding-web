@@ -112,9 +112,11 @@
 </form>
 <div class="footer fixed_full text-right">
     <button class="btn btn-default" data-action="cancel">取消</button>
-    {{if currentAuditPerson.companyUserId == currentCompanyUserId && currentAuditPerson.approveStatus == 0 }}
-    <button class="btn btn-primary" data-action="agree">同意</button>
-    <button class="btn btn-success" data-action="returnBack">退回</button>
-    <button class="btn btn-danger" data-action="cancellation">撤销</button>
+    {{if (approveStatus==0 || approveStatus==5) && currentAuditPerson.companyUserId == currentCompanyUserId && currentAuditPerson.approveStatus == 0 }}
+        <button class="btn btn-primary" data-action="agree">同意</button>
+        <button class="btn btn-success" data-action="returnBack">退回</button>
+    {{/if}}
+    {{if companyUserId == currentCompanyUserId && approveStatus == 0 }}
+        <button class="btn btn-danger" data-action="cancellation">撤销</button>
     {{/if}}
 </div>

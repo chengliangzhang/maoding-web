@@ -8,7 +8,8 @@
     var pluginName = "m_approval_cost_add",
         defaults = {
             isDialog:true,
-            doType: 1
+            dataInfo:null,//dataInfo不为null,即编辑
+            doType: 1// 报销=1=expense,费用=2=costApply,请假=3=leave,出差=4=onBusiness,付款申请=5=projectPayApply
         };
 
     // The actual plugin constructor
@@ -18,18 +19,20 @@
         this.settings = $.extend({}, defaults, options);
         this._defaults = defaults;
         this._name = pluginName;
-        this._uploadmgrContainer = null;
 
         this._currentCompanyUserId = window.currentCompanyUserId;
         this._currentCompanyId = window.currentCompanyId;
         this._currentUserId = window.currentUserId;
         this._fastdfsUrl = window.fastdfsUrl;
 
+        this._uploadmgrContainer = null;
         this._uuid = UUID.genV4().hexNoDelim;//targetId
-
         this._baseData = null;
         this._auditList = [];//审批人
         this._ccCompanyUserList = [];//抄送人
+
+
+        this._deleteAttachList = [];//编辑才用，已有删除的集合
 
         this._title = this.settings.doType==1?'报销':'费用';
         this._auditType = this.settings.doType==1?'expense':'costApply';//auditType 的取值： 请假leave 出差onBusiness 报销expense 费用costApply 付款申请projectPayApply
@@ -52,13 +55,80 @@
                         that._baseData = response.data;
                         that._baseData.doType = that.settings.doType;
                         that._baseData.title = that._title;
-                        var html = template('m_approval/m_approval_cost_add', {data: that._baseData});
+                        var html = template('m_approval/m_approval_cost_add', {
+                            data: that._baseData,
+                            dataInfo:that.settings.dataInfo
+                        });
                         $(that.element).html(html);
-                        that.addItem();
-                        that.renderApprover();
                         that.fileUpload();
                         that.bindActionClick();
                         that.save_validate();
+
+                        if(that.settings.dataInfo!=null){
+
+                            if(that.settings.dataInfo.detailList){
+                                $.each(that.settings.dataInfo.detailList,function (i,item) {
+                                    that.addItem(item);
+                                });
+                            }else{
+                                that.addItem();
+                            }
+
+                            if(that.settings.dataInfo.attachList){
+
+                                $.each(that.settings.dataInfo.attachList,function (i,item) {
+                                    var fileData = {};
+                                    fileData.fullPath = item.fileFullPath;
+                                    fileData.netFileId = item.id;
+                                    fileData.fileName = item.fileName;
+                                    fileData.type = -1;//代表已存在
+                                    var html = template('m_common/m_attach', fileData);
+                                    $('#showFileLoading').append(html);
+                                    that.bindAttachDelele();
+                                })
+                            }
+                            if(that.settings.dataInfo.ccCompanyUserList){
+
+                                that._ccCompanyUserList = [];
+
+                                $.each(that.settings.dataInfo.ccCompanyUserList,function (i,item) {
+                                    that._ccCompanyUserList.push({
+                                        id:item.companyUserId,
+                                        userName:item.userName,
+                                        userId:item.userId
+                                    })
+                                });
+                                var html = template('m_approval/m_approval_cost_add_ccUser', {userList: that._ccCompanyUserList});
+                                $(that.element).find('#ccUserListBox').html(html);
+                                that.ccBoxDeal();
+                            }
+                            if(that.settings.dataInfo.auditList && that.settings.dataInfo.processFlag=='1'){
+
+                                that._auditList = [];
+                                $.each(that.settings.dataInfo.auditList,function (i,item) {
+                                    if(i==that.settings.dataInfo.auditList.length-1){//取最后一条
+                                        that._auditList.push({
+                                            id:item.companyUserId,
+                                            userName:item.userName,
+                                            userId:item.userId,
+                                            fileFullPath:item.fileFullPath
+                                        })
+                                    }
+                                });
+                                var html = template('m_approval/m_approval_cost_add_approver', {userList: that._auditList});
+                                $(that.element).find('#approverBox').html(html);
+                            }else{
+                                that.renderApprover();
+                            }
+
+                        }else{
+                            that.addItem();
+                            that.renderApprover();
+                        }
+
+
+
+
 
                     } else {
                         S_dialog.error(response.info);
@@ -155,7 +225,13 @@
                 $data.auditPerson = that._auditList[0].id;
             }
 
+            if(that.settings.dataInfo){
+                $data.id = that.settings.dataInfo.id;
+                $data.deleteAttachList = that._deleteAttachList;
+            }
+
             var option = {};
+            option.classId = '#content-right';
             option.url = restApi.url_saveOrUpdateExpMainAndDetail;
             option.postData = $data;
 
@@ -169,11 +245,14 @@
             });
         }
         //添加明细
-        ,addItem:function () {
+        ,addItem:function (item) {
             var that = this;
             var panelBoxLen = $(that.element).find('.panel').length;
             that._baseData.itemIndex = panelBoxLen+1;
-            var html = template('m_approval/m_approval_cost_add_item', {data:that._baseData});
+            var html = template('m_approval/m_approval_cost_add_item', {
+                data:that._baseData,
+                dataInfo:item
+            });
             $(that.element).find('button[data-action="addItem"]').parents('.form-group').before(html);
 
             var $ele = $(that.element).find('button[data-action="addItem"]').parents('.form-group').prev();
@@ -286,7 +365,6 @@
                     $uploadItem.find('.span_status:eq(0)').html('上传成功');
                     var html = template('m_common/m_attach', fileData);
                     $('#showFileLoading').append(html);
-                    var obj = 'a[data-net-file-id="' + fileData.netFileId + '"]';
                     that.bindAttachDelele();
                 } else {
                     $uploadItem.find('.span_status:eq(0)').html('上传失败');
@@ -296,10 +374,11 @@
             that._uploadmgrContainer.m_uploadmgr(option, true);
         }
         ,bindAttachDelele: function () {
-
+            var that = this;
             $.each($('#showFileLoading').find('a[data-action="deleteAttach"]'), function (i, o) {
                 $(o).off('click.deleteAttach').on('click.deleteAttach', function () {
                     var netFileId = $(this).attr('data-net-file-id');
+                    var type = $(this).attr('data-type');
 
                     var ajaxDelete = function () {
                         var ajaxOption = {};
@@ -317,9 +396,18 @@
                             }
                         });
                     };
-                    ajaxDelete();
 
+                    if(type==-1){
+                        that._deleteAttachList.push(netFileId);
+                    }else{
+                        ajaxDelete();
+                    }
                     $(this).closest('span').remove();
+                })
+            });
+            $.each($('#showFileLoading').find('a[data-action="preview"]'), function (i, o) {
+                $(o).off('click.preview').on('click.preview', function () {
+                    window.open($(this).attr('data-src'));
                 })
             });
         }
@@ -335,7 +423,6 @@
 
                 var i = $(that.element).find('#ccUserListBox .approver-outbox').index($(this).closest('.approver-outbox'));
                 that._ccCompanyUserList.splice(i,1);
-                console.log(that._ccCompanyUserList)
                 $(this).closest('.approver-outbox').remove();
             });
         }
@@ -416,7 +503,7 @@
             $.validator.addMethod('approverCk', function(value, element) {
 
                 var isOk = true;
-                if(that._baseData.processFlag==1 && (that._auditList==null || that._auditList.length==0)){
+                if(that._baseData.processFlag=='1' && (that._auditList==null || that._auditList.length==0)){
                     isOk = false;
                 }
                 return  isOk;
@@ -428,7 +515,11 @@
             $ele.find('form').validate({
                 rules: {
                     expAmount: {
-                        required: true
+                        required: true,
+                        number:true,
+                        minNumber:true,
+                        maxlength:25,//是否超过25位
+                        pointTwo:true
                     },
                     expUse:{
                         required: true
@@ -439,7 +530,11 @@
                 },
                 messages: {
                     expAmount: {
-                        required: '请输入金额！'
+                        required: '请输入金额！',
+                        number:'请输入有效数字',
+                        minNumber:'请输入大于0的数字!',
+                        maxlength:'对不起，您的操作超出了系统允许的范围。',
+                        pointTwo:'请保留小数点后两位!'
                     },
                     expUse:{
                         required: '请输入用途说明！'
@@ -452,6 +547,22 @@
                     error.appendTo(element.closest('.col-sm-10'));
                 }
             });
+            $.validator.addMethod('minNumber', function(value, element) {
+                value = $.trim(value);
+                var isOk = true;
+                if( value<=0){
+                    isOk = false;
+                }
+                return  isOk;
+            }, '请输入大于0的数字!');
+            $.validator.addMethod('pointTwo', function(value, element) {
+                value = $.trim(value);
+                var isOk = true;
+                if(!regularExpressions.proportionnumber.test(value)){
+                    isOk = false;
+                }
+                return  isOk;
+            }, '请保留小数点后两位!');
             $.validator.addMethod('associatedProjectCk', function(value, element) {
 
                 var isOk = true;

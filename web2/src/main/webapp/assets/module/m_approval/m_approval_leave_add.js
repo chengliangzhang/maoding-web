@@ -8,7 +8,7 @@
     var pluginName = "m_approval_leave_add",
         defaults = {
             isDialog:true,
-            doType: 3
+            doType: 3// 报销=1=expense,费用=2=costApply,请假=3=leave,出差=4=onBusiness,付款申请=5=projectPayApply
         };
 
     // The actual plugin constructor
@@ -18,16 +18,20 @@
         this.settings = $.extend({}, defaults, options);
         this._defaults = defaults;
         this._name = pluginName;
+
+        this._currentCompanyUserId = window.currentCompanyUserId;
+        this._currentCompanyId = window.currentCompanyId;
+        this._currentUserId = window.currentUserId;
+        this._fastdfsUrl = window.fastdfsUrl;
+
         this._uploadmgrContainer = null;
         this._maxExpNo = null;//报销编号
         this._uuid = UUID.genV4().hexNoDelim;//targetId
-
         this._baseData = {};
         this._auditList = [];//审批人
         this._ccCompanyUserList = [];//抄送人
 
         this._title = this.settings.doType==3?'请假':'出差';
-
         this._auditType = this.settings.doType==3?'leave':'onBusiness';//auditType 的取值： 请假leave 出差onBusiness 报销expense 费用costApply 付款申请projectPayApply
 
         this.init();
@@ -62,6 +66,11 @@
                         that.fileUpload();
                         that.bindActionClick();
                         that.save_validate();
+                        $(that.element).find('input[name="leaveTime"]').on('keyup',function () {
+                            if(that._baseData.processType=='3'){
+                                that.renderApprover();
+                            }
+                        });
 
                     } else {
                         S_dialog.error(response.info);
@@ -136,8 +145,8 @@
             var option = {};
             option.url = restApi.url_getProjectList;
             option.postData = {
-                currentCompanyId:window.currentCompanyId,
-                currentCompanyUserId:window.currentCompanyUserId
+                currentCompanyId:that._currentCompanyId,
+                currentCompanyUserId:that._currentCompanyUserId
             };
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
@@ -154,6 +163,7 @@
                         data: data
                     });
 
+
                 } else {
                     S_dialog.error(response.info);
                 }
@@ -163,7 +173,7 @@
             var that = this;
             var expAmout = 0,userList = [];
 
-            $(that.element).find('input[name="expAmount"]').each(function () {
+            $(that.element).find('input[name="leaveTime"]').each(function () {
 
                 expAmout = expAmout + ($(this).val()-0);
             });
@@ -196,7 +206,7 @@
 
             var $data = $(that.element).find("form.form-horizontal").serializeObject();
             $data.type = that.settings.doType;
-            $data.userId = window.currentCompanyUserId;
+            $data.userId = that._currentCompanyUserId;
             $data.targetId = that._uuid;
 
             if(that._auditList!=null && that._auditList.length>0){
@@ -212,6 +222,7 @@
             $data.ccCompanyUserList = ccUser;
 
             var option = {};
+            option.classId = '#content-right';
             option.url = restApi.url_saveLeave;
             option.postData = $data;
 
@@ -239,8 +250,8 @@
             option.boxClass = 'no-borders';
             option.isShowBtnClose = false;
             option.uploadBeforeSend = function (object, data, headers) {
-                data.companyId = window.currentCompanyId;
-                data.accountId = window.currentUserId;
+                data.companyId = that._currentCompanyId;
+                data.accountId = that._currentUserId;
                 data.targetId = that._uuid;
             };
             option.uploadSuccessCallback = function (file, response) {
@@ -248,7 +259,7 @@
                 var fileData = {
                     netFileId: response.data.netFileId,
                     fileName: response.data.fileName,
-                    fullPath: window.fastdfsUrl + response.data.fastdfsGroup + '/' + response.data.fastdfsPath
+                    fullPath: that._fastdfsUrl + response.data.fastdfsGroup + '/' + response.data.fastdfsPath
                 };
                 var $uploadItem = that._uploadmgrContainer.find('.uploadItem_' + file.id + ':eq(0)');
                 if (!isNullOrBlank(fileData.netFileId)) {
@@ -265,7 +276,7 @@
             that._uploadmgrContainer.m_uploadmgr(option, true);
         }
         ,bindAttachDelele: function () {
-
+            var that = this;
             $.each($('#showFileLoading').find('a[data-action="deleteAttach"]'), function (i, o) {
                 $(o).off('click.deleteAttach').on('click.deleteAttach', function () {
                     var netFileId = $(this).attr('data-net-file-id');
@@ -276,7 +287,7 @@
                         ajaxOption.url = restApi.url_attachment_delete;
                         ajaxOption.postData = {
                             id: netFileId,
-                            accountId: window.currentUserId
+                            accountId: that._currentUserId
                         };
                         m_ajax.postJson(ajaxOption, function (res) {
                             if (res.code === '0') {
@@ -289,6 +300,11 @@
                     ajaxDelete();
 
                     $(this).closest('span').remove();
+                })
+            });
+            $.each($('#showFileLoading').find('a[data-action="preview"]'), function (i, o) {
+                $(o).off('click.preview').on('click.preview', function () {
+                    window.open($(this).attr('data-src'));
                 })
             });
         }
@@ -374,7 +390,9 @@
                         required: true
                     },
                     leaveTime:{
-                        required: true
+                        required: true,
+                        number:true,
+                        minNumber:true
                     },
                     approver:{
                         approverCk: true
@@ -395,7 +413,9 @@
                         required: '请选择结束时间！'
                     },
                     leaveTime:{
-                        required: '请输入出差天数！'
+                        required: '请输入出差天数！',
+                        number:'请输入有效数字',
+                        minNumber:'请输入大于0的数字!'
                     },
                     approver:{
                         approverCk: '请选择审批人员！'
@@ -405,10 +425,18 @@
                     error.appendTo(element.closest('.col-sm-10'));
                 }
             });
+            $.validator.addMethod('minNumber', function(value, element) {
+                value = $.trim(value);
+                var isOk = true;
+                if( value<=0){
+                    isOk = false;
+                }
+                return  isOk;
+            }, '请输入大于0的数字!');
             $.validator.addMethod('approverCk', function(value, element) {
 
                 var isOk = true;
-                if(that._baseData.processFlag==1 && (that._auditList==null || that._auditList.length==0)){
+                if(that._baseData.processFlag=='1' && (that._auditList==null || that._auditList.length==0)){
                     isOk = false;
                 }
                 return  isOk;

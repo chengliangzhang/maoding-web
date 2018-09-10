@@ -3,16 +3,17 @@
     <div class="form-group">
         <label class="col-sm-2 control-label">收款方：</label>
         <div class="col-sm-10">
-            <input placeholder="请输入收款方" class="form-control" type="text" name="enterpriseName">
+            <input placeholder="请输入收款方" class="form-control" type="text" name="enterpriseName" value="{{dataInfo?dataInfo.exp.enterpriseName:''}}">
         </div>
     </div>
     <div class="form-group">
         <label class="col-sm-2 control-label">备注：</label>
         <div class="col-sm-10">
-            <textarea placeholder="请输入备注" class="form-control" type="text" name="remark"></textarea>
+            <textarea placeholder="请输入备注" class="form-control" type="text" name="remark">{{dataInfo?dataInfo.exp.remark:''}}</textarea>
         </div>
     </div>
     {{/if}}
+
     <div class="form-group">
         <div class="col-sm-12">
             <button class="btn btn-primary btn-sm" data-action="addItem" title="添加{{data.title}}明细"><i class="fa fa-plus"></i>添加明细</button>
@@ -21,7 +22,7 @@
     <div class="form-group">
         <label class="col-sm-2 control-label">{{data.title}}总金额：</label>
         <div class="col-sm-10 p-t-7">
-            <i class="fa fa-jpy"></i> <span id="expAmount"></span>元
+            <i class="fa fa-jpy"></i> <span id="expAmount">{{dataInfo?dataInfo.totalExpAmount:'0'}}</span>元
         </div>
     </div>
     <div class="form-group">
@@ -49,7 +50,7 @@
             <div id="approverBox">
 
             </div>
-            {{if data.processFlag==1}}
+            {{if data.processFlag=='1'}}
             <div class="approver-box text-center pull-left">
                 <a class="btn btn-default btn-circle circle-lg" type="button" data-action="addApprover">
                     <i class="fa fa-plus"></i>

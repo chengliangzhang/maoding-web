@@ -18,6 +18,8 @@
         this._defaults = defaults;
         this._name = pluginName;
 
+        this._currentCompanyUserId = window.currentCompanyUserId;
+
         this._title = '';
         if(this.settings.doType==1){
             this._title = '我申请的';
@@ -45,9 +47,6 @@
         , renderDataList: function () {
             var that = this;
 
-            var html = template('m_approval/m_approval_data_list', {});
-            $(that.element).find('.data-list-container').html(html);
-
             var option = {};
             option.param = {};
             that._filterData.type=that.settings.doType;
@@ -61,9 +60,10 @@
                 // data为ajax返回数据
                 if (response.code == '0') {
 
-                    var html = template('m_approval/m_approval_data_list', {dataList:response.data.data});
+                    var html = template('m_approval/m_approval_data_list', {dataList:response.data.data,currentCompanyUserId:that._currentCompanyUserId});
                     $(that.element).find('.data-list-container').html(html);
                     that.bindTrClick();
+                    that.bindActionClick();
                 } else {
                     S_dialog.error(response.info);
                 }
@@ -97,6 +97,54 @@
                     option.id = dataId;
                     $('body').m_approval_payment_details(option,true);
                 }
+
+            });
+        }
+        ,bindActionClick:function () {
+            var that = this;
+            $(that.element).find('button[data-action="edit"]').off('click').on('click',function () {
+
+                var $this = $(this),dataType = $this.closest('tr').attr('data-type'),dataId = $this.closest('tr').attr('data-id');
+
+                switch (dataType){
+                    case '1':
+                    case '2':
+
+                        var option = {};
+                        option.url = restApi.url_getAuditDetailForExp;
+                        option.postData = {
+                            id:dataId
+                        };
+                        m_ajax.postJson(option, function (response) {
+                            if (response.code == '0') {
+
+                                var option = {};
+                                option.doType = dataType;
+                                option.dataInfo = response.data;
+                                $('body').m_approval_cost_add(option,true);
+
+                            } else {
+                                S_dialog.error(response.info);
+                            }
+                        });
+
+                        return false;
+                        break;
+
+                    case '3':
+
+
+                        break;
+                    case '4':
+
+
+                        break;
+                    case '5':
+
+
+                        break;
+                }
+
 
             });
         }

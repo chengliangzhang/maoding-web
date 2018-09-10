@@ -1,0 +1,110 @@
+<div class="ibox m-b-xs">
+    <div class="ibox-content MyExpDetailsCheckExpenseOBox p-b-none" >
+        <fieldset>
+            <div class="headline ">
+                <h2>{{typeStr}}状态</h2>
+            </div>
+            <div id="vertical-timeline" class="vertical-container dark-timeline center-orientation timeline-box">
+                {{if myExpDetails.auditList!=null && myExpDetails.auditList.length>0}}
+                {{each myExpDetails.auditList as s i}}
+                <div class="vertical-timeline-block">
+                    <div class="vertical-timeline-icon navy-bg">
+                        <i class="fa fa-circle-o"></i>
+                    </div>
+                    <div class="vertical-timeline-content">
+                        {{if s.approveStatus=='1'}}
+                        <h2 class="text-success">{{s.userName}}</h2>
+                        {{else if s.approveStatus=='2' || s.approveStatus=='3'}}
+                        <h2 class="text-danger">{{s.userName}}</h2>
+                        {{else}}
+                        <h2>{{s.userName}}</h2>
+                        {{/if}}
+                        <p class="no-margins">
+                            {{s.companyName}}
+                        </p>
+                        <span class="vertical-date">
+                            {{if s.approveStatus=='1'}}
+                                <span class="text-success">{{s.approveStatusName=="待审核"?"待审批":s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.expDate,'YYYY/MM/DD')}} </span>
+                            {{else if s.approveStatus=='2' || s.approveStatus=='3'}}
+                                <span class="text-danger">{{s.approveStatusName=="待审核"?"待审批":s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.expDate,'YYYY/MM/DD')}} </span>
+                            {{else}}
+                                <span>{{s.approveStatusName=="待审核"?"待审批":s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.expDate,'YYYY/MM/DD')}} </span>
+                            {{/if}}
+                            <br>
+                            <small>
+                                {{if s.approveStatusName=='发起申请'}}
+                                    {{typeStr}}备注：{{s.remark}}
+                                {{/if}}
+                                {{if s.approveStatusName=='退回'}}
+                                    退回原因：{{s.remark}}
+                                {{/if}}
+                            </small>
+
+                        </span>
+                    </div>
+                </div>
+                {{/each}}
+                {{/if}}
+            </div>
+
+            {{if myExpDetails.expAttachEntityList&&myExpDetails.expAttachEntityList.length>0}}
+            <div class="headline m-b">
+                <h2>相关票据</h2>
+            </div>
+            <div class="row margin-bottom-30">
+                <div class="col-md-12 p-w-m">
+                    {{each myExpDetails.expAttachEntityList as file j}}
+                    <span class="label m-r-xs dp-inline-block" style="background: #ecf0f1;padding: 5px 10px;">
+                            <a class="curp m-l-xs" href="{{fastdfsUrl}}{{file.fileGroup}}/{{file.filePath}}"
+                               target="_blank">
+                            <i class="fa fa-file-image-o"></i>&nbsp;{{file.fileName}}
+                            </a>
+                            </span>
+                    {{/each}}
+                </div>
+            </div>
+            {{/if}}
+            <div class="headline m-b-sm">
+                <h2>{{typeStr}}信息</h2>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <label>{{typeStr}}编号：</label>
+                    <b>{{expNo}}</b>
+                </div>
+                <div class="col-md-12">
+                    <table class="table m-b-none">
+                        <thead>
+                        <tr>
+                            <td class="p-l-none">{{typeStr}}条目</td>
+                            <td>{{typeStr}}金额</td>
+                            <td>{{typeStr}}类别</td>
+                            <td>用途说明</td>
+                            <td class="p-r-none">关联项目</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{each myExpDetails.detailList as each i}}
+                        <tr>
+                            <td class="p-l-none">{{i+1}}</td>
+                            <td>{{each.expAmount}}</td>
+                            <td>{{each.expTypeName}}</td>
+                            <td style="word-break: break-all;">{{each.expUse}}</td>
+                            <td class="p-r-none">{{each.projectName}}</td>
+                        </tr>
+                        {{/each}}
+                        <tr>
+                            <td colspan="5">
+                                <div class="pull-right ">
+                                    <h5>合计金额：<p class="fc-red dp-inline-block">{{myExpDetails.totalExpAmount}} </p>元
+                                    </h5>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>

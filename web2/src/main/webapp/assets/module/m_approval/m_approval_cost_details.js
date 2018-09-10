@@ -9,7 +9,7 @@
         defaults = {
             isDialog:true,
             id:null,
-            doType: 1
+            doType: 1// 报销=1=expense,费用=2=costApply,请假=3=leave,出差=4=onBusiness,付款申请=5=projectPayApply
         };
 
     // The actual plugin constructor
@@ -38,7 +38,7 @@
             });
 
         }
-        //初始化数据,生成html
+        //渲染弹窗
         ,renderDialog:function (callBack) {
 
             var that = this;
@@ -63,6 +63,7 @@
                     callBack();
             }
         }
+        //渲染内容
         ,renderContent:function () {
             var that = this;
             var option = {};
@@ -89,7 +90,7 @@
         }
         ,bindActionClick:function () {
             var that = this;
-            $(that.element).find('button[data-action]').off('click').on('click',function () {
+            $(that.element).find('button[data-action],a[data-action]').off('click').on('click',function () {
                 var $this = $(this),dataAction = $this.attr('data-action');
 
                 switch(dataAction){
@@ -136,6 +137,11 @@
                             that.renderContent();
                         };
                         $('body').m_approval_operational_comments(option,true);
+
+                        break;
+                    case 'preview'://查看文件
+
+                        window.open($this.attr('data-src'));
 
                         break;
                 }

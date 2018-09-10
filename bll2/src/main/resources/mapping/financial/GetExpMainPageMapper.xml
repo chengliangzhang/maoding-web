@@ -623,7 +623,8 @@
             AND exp_main.company_user_id =#{companyUserId}
         </if>
         <if test="type=='2'.toString()">
-           and exp_audit.approve_status = 0 and exp_audit.is_new='Y'
+           and exp_audit.approve_status = '0' and exp_audit.is_new='Y'
+           AND (exp_main.approve_status = '0' or exp_main.approve_status = '5')
         </if>
         <if test="type=='3'.toString()">
             and exp_audit.approve_status != 0
@@ -641,7 +642,7 @@
         </if>
 
         GROUP BY exp_main.id
-        order by exp_main.exp_date DESC
+        order by exp_main.exp_date DESC , exp_main.create_date DESC
         <include refid="CommonMapper.limitSQL"/>
     </select>
 
@@ -663,7 +664,8 @@
             AND exp_main.company_user_id =#{companyUserId}
         </if>
         <if test="type=='2'.toString()">
-            and exp_audit.approve_status = 0 and exp_audit.is_new='Y'
+            and exp_audit.approve_status = '0' and exp_audit.is_new='Y'
+            AND (exp_main.approve_status = '0' or exp_main.approve_status = '5')
         </if>
         <if test="type=='3'.toString()">
             and exp_audit.approve_status != 0

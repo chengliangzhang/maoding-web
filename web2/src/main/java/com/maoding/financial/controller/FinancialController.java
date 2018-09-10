@@ -485,22 +485,6 @@ public class FinancialController extends BaseController {
         return this.ajaxResponseSuccess().setData(expMainService.getExpMainPageCount(param));
     }
 
-    /**
-     * 方法描述：退回报销
-     * 作   者：LY
-     * 日   期：2016/7/29 11:01
-     *
-     * @param dto -- mainId--报销单id  approveStatus--状态(2.退回) auditMessage审批意见
-     */
-    @RequestMapping(value = "/recallExpMain", method = RequestMethod.POST)
-    @ResponseBody
-    public AjaxMessage recallExpMain(@RequestBody ExpAuditDTO dto) throws Exception {
-        if (dto.getAuditPerson() == null) {
-            dto.setAuditPerson(currentUserId);
-        }
-        expMainService.recallExpMain(dto);
-        return ajaxResponseSuccess().setInfo("退回成功");
-    }
 
     /**
      * 方法描述：报销详情
@@ -533,23 +517,6 @@ public class FinancialController extends BaseController {
         return this.ajaxResponseSuccess().setInfo("删除成功");
     }
 
-    /**
-     * 方法描述：同意报销
-     * 作   者：LY
-     * 日   期：2016/8/1 15:08
-     *
-     * @param id--报销单id
-     */
-    @RequestMapping(value = "/agreeExpMain/{id}/{versionNum}", method = RequestMethod.POST)
-    @ResponseBody
-    public AjaxMessage agreeExpMain(@PathVariable("id") String id, @PathVariable("versionNum") String versionNum) throws Exception {
-        int i = expMainService.agreeExpMain(id, versionNum, this.currentCompanyId, currentUserId);
-        if (i == 1) {
-            return AjaxMessage.succeed("审批成功");
-        } else {
-            return AjaxMessage.failed("审批失败");
-        }
-    }
 
     /**
      * 方法描述：同意报销并转移审批人

@@ -643,10 +643,6 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
             return result;
         }
 
-        Integer taskType = this.getMyTaskType(entityVersion);
-        //处理任务
-        this.setMyTaskStatus(id, taskType, "1", false);
-
         //根据报销单id查询最新审批记录id
         String parentId = null;
         ExpAuditEntity auditEntities = expAuditDao.getLastAuditByMainId(id);
@@ -662,7 +658,6 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
 
         //插入新审批人审批记录
         auditEntity = new ExpAuditEntity();
-        // approve_date audit_message
         auditEntity.setId(StringUtil.buildUUID());
         auditEntity.setIsNew("Y");
         auditEntity.setMainId(id);
@@ -672,17 +667,9 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         auditEntity.set4Base(userId, userId, new Date(), new Date());
         expAuditDao.insert(auditEntity);
 
-        //更新报销主表审批状态
-        ExpMainEntity entity = this.expMainDao.selectById(id);
-        //指派任务
-        this.myTaskService.saveMyTask(entity.getId(), taskType, entity.getCompanyId(), auditPerson, userId, entity.getCompanyId(), true);
-
         //推送消息
-        this.sendMessageForType20(id, currentCompanyId, auditPerson, entity.getType(), userId, "3");//同意并转交
-
-        //修改状态
-        entity.setApproveStatus("5");
-        return expMainDao.updateById(entity);
+        this.sendMessageForType20(id, currentCompanyId, auditPerson, entityVersion.getType(), userId, "3");//同意并转交
+        return result;
     }
 
     /**
@@ -1515,21 +1502,10 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         if (null == expMainEntity) {
             return map;
         }
-        //获取最后一个审批人信息（ 和currentAuditPerson重复，只是为了保持兼容，暂时保留）
-        ExpAuditEntity auditEntity = expAuditDao.getLastAuditByMainId(id);
-        CompanyUserDetailDTO companyUser = null;
-        if(auditEntity!=null){
-            companyUser = companyUserService.selectCompanyUserById(auditEntity.getAuditPerson());
-        }
         Map<String, String> exp = new HashMap<>();
         companyUserEntity = companyUserDao.selectById(expMainEntity.getCompanyUserId());
         if(companyUserEntity!=null){
             exp.put("submitter", companyUserEntity.getUserName());
-        }
-        if(companyUser!=null){
-            exp.put("auditCompanyUserId", companyUser.getId());
-            exp.put("auditUserName", companyUser.getUserName());
-            exp.put("auditCompanyName", companyUser.getCompanyName());
         }
         exp.put("expFlag", expMainEntity.getExpFlag() + "");
         exp.put("submittime", DateUtils.formatTimeSlash(expMainEntity.getCreateDate()));
@@ -1537,6 +1513,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         exp.put("approveStatus", expMainEntity.getApproveStatus());
         exp.put("versionNum", expMainEntity.getVersionNum() + "");
         exp.put("expNo", expMainEntity.getExpNo());
+        exp.put("companyUserId",expMainEntity.getCompanyUserId());
 
         ExpAuditEntity recallAudit = this.expAuditDao.selectLastRecallAudit(id);
         if (recallAudit!=null) {

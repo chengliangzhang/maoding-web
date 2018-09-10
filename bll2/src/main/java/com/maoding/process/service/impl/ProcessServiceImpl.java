@@ -326,6 +326,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
                 saveExpMain.setAppOrgId(dto.getAppOrgId());
                 saveExpMain.setAccountId(dto.getAccountId());
                 saveExpMain.setId(businessKey);
+                saveExpMain.setCurrentCompanyId(dto.getCurrentCompanyId());
                 String auditId = this.expAuditService.saveAudit(saveExpMain);
                 Map<String,Object> map = new HashMap<>();
                 map.put(auditIdKey,auditId);
@@ -520,18 +521,31 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
      * @param dto:targetType 审批类型
      * @return 返回到前端的标识，1：代表是自由流程，需要前端传递审批人 0：代表不是自由流程，不需要前端传递审批人
      */
+    /**
+     *
+     * @param dto:mainId:审批主记录的id
+     * @param dto:targetType 审批类型
+     * @return 返回到前端的标识，1：代表是自由流程，需要前端传递审批人 0：代表不是自由流程，不需要前端传递审批人,2:无流程
+     */
     @Override
     public  Map<String,Object>  getCurrentProcess(AuditEditDTO dto) {
         String processDefineId = null;
         Map<String,Object> result = new HashMap<>();
-        result.put("processFlag",1);//返回到前端的标识，1：代表是自由流程，需要前端传递审批人
+        result.put("processFlag","1");//返回到前端的标识，1：代表是自由流程，需要前端传递审批人
         result.put("conditionList",new ArrayList<>());//首先默认返回个空数组
-        result.put("processType", ProcessTypeConst.TYPE_FREE);
+        result.put("processType",ProcessTypeConst.TYPE_FREE);
         if(StringUtil.isNullOrEmpty(dto.getMainId())){
-            TraceUtils.check(StringUtils.isNotEmpty(dto.getAuditType()),"!auditType不能为空");
-            ProcessTypeEntity processType = this.processTypeDao.getCurrentProcessType(dto.getCurrentCompanyId(),dto.getAuditType());
-            if(!(processType==null || ProcessTypeConst.TYPE_FREE == processType.getType())){
-                processDefineId = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getCurrentCompanyId()),dto.getCurrentCompanyId());
+            ProcessTypeEntity processType = this.processTypeDao.getCurrentProcessType(dto.getAppOrgId(),dto.getAuditType());
+            //如果是费用申请，特殊情况，如果是无流程的情况下。是不需要审批的，processFlag = 2 告诉前端不需要传递人员
+            if(ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY.equals(dto.getAuditType())
+                    && (processType==null || processType.getType()== ProcessTypeConst.TYPE_NOT_PROCESS)){
+                result.put("processFlag","2");//返回到前端的标识，2:无流程
+                result.put("processType",ProcessTypeConst.TYPE_NOT_PROCESS);
+            }
+            if(!"2".equals((String)result.get("processFlag"))){
+                if(!(processType==null || ProcessTypeConst.TYPE_FREE == processType.getType())){
+                    processDefineId = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getAppOrgId()),dto.getAppOrgId());
+                }
             }
         }else {
             ProcessInstanceRelationEntity instanceRelation = processInstanceRelationDao.getProcessInstanceRelation(dto.getMainId());
@@ -546,13 +560,14 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             List<UserTaskDTO> userTaskList = this.workflowService.listFlowTaskUser(detailPrepareDTO);
             //todo 重新封装
             userList = this.getUserList(userTaskList);
-            result.put("processFlag",0);//代表不是自由流程，不需要前端传递审批人
+            result.put("processFlag","0");//代表不是自由流程，不需要前端传递审批人
             result.put("conditionList",userList);
             String key = processDefineId.split(":")[0];
             result.put("processType",key.substring(key.lastIndexOf("_")+1));
         }
         return result;
     }
+
 
     @Override
     public Map<String,Object> getCurrentTaskUser(AuditEditDTO dto, List<AuditDTO> auditList, String value) throws Exception{

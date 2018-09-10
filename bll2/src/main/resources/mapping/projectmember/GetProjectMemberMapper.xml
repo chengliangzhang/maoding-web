@@ -331,7 +331,7 @@
         SELECT a.project_id, GROUP_CONCAT(DISTINCT b.user_name) as member_name,a.member_type
         from maoding_web_project_member a
         INNER JOIN maoding_web_company_user b on a.company_user_id = b.id
-        where 1=1
+        where 1=1 and a.deleted = 0
         and a.project_id in
         <foreach collection="projectList" index="i" item="mProjectId" open="(" separator="," close=")">
             #{mProjectId}

@@ -13,8 +13,10 @@ import com.maoding.financial.entity.ExpCategoryEntity;
 import com.maoding.financial.entity.ExpCategoryRelationEntity;
 import com.maoding.financial.service.ExpCategoryService;
 import com.maoding.financial.service.ExpMainService;
+import com.maoding.org.dao.CompanyDao;
 import com.maoding.org.dao.CompanyUserDao;
 import com.maoding.org.dto.CompanyDTO;
+import com.maoding.org.dto.CompanyQueryDTO;
 import com.maoding.org.dto.DepartDTO;
 import com.maoding.org.service.CompanyService;
 import com.maoding.org.service.CompanyUserService;
@@ -71,6 +73,9 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
     @Autowired
     private ProcessService processService;
 
+    @Autowired
+    private CompanyDao companyDao;
+
     private String otherIncome = "gdfy_qtywsr";
     private String directCost = "bx_ywfy";
     private String directCost2 = "zjxmcb";
@@ -111,6 +116,13 @@ public class ExpCategoryServiceImpl extends GenericDao<ExpCategoryEntity> implem
         AuditEditDTO auditRequest = BeanUtils.createFrom(query,AuditEditDTO.class);
         Map<String,Object> auditMap = processService.getCurrentProcess(auditRequest);
         map.putAll(auditMap);
+
+        //合并获取合作组织接口
+        CompanyQueryDTO companyQuery = new CompanyQueryDTO();
+        companyQuery.setCurrentCompanyId(query.getCurrentCompanyId());
+        companyQuery.setIsPay("1");
+        List<CompanyDTO> companyList = companyDao.listCompanyCooperate(companyQuery);
+        map.put("toCompanyList",companyList);
 
         Map<String, Object> mapParams = new HashMap<>();
         mapParams.put("companyId", companyId);

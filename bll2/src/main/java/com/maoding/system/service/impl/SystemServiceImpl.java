@@ -321,11 +321,15 @@ public class SystemServiceImpl implements SystemService {
         }
         Map<String, Object> role = new HashMap<String, Object>();
         /*************权限设置**************/
-        List<RoleEntity> roles = roleDao.getUserRolesByOrgId(userId, companyId);;
+        List<RoleEntity> roles = roleDao.getUserRolesByOrgId(userId, companyId);
         //获取在当前公司下的部门
         // 此处执行用户查询操作，并将用户信息保存到session中
+        AccountDTO accountDTO = (AccountDTO) (userRealm.getSession().getAttribute("user"));
+        if(accountDTO!=null && StringUtil.isNullOrEmpty(accountDTO.getId())){
+            accountDTO.setId(userId);
+        }
         m.put("companies", companies);
-        m.put("user", (AccountDTO) (userRealm.getSession().getAttribute("user")));
+        m.put("user", accountDTO);
         role.put("roles", roles);
         m.put("roleCompany", role);
         m.put("role", roles);
@@ -333,7 +337,7 @@ public class SystemServiceImpl implements SystemService {
         m.put("companyUserId",user.getId());
         setServerUrl(m,null);
         userRealm.setSession(request, response, m);
-        userRealm.resetRole((AccountDTO) (userRealm.getSession().getAttribute("user")));
+        userRealm.resetRole(accountDTO);
         //userRealm.doGetAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
         return AjaxMessage.succeed(null).setInfo("切换组织成功");
     }

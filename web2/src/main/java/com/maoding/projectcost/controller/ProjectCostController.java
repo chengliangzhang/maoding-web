@@ -309,7 +309,8 @@ public class ProjectCostController extends BaseController {
     @RequestMapping(value = "/getProjectCostPaymentDetailByMainIdForPay", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage getProjectCostPaymentDetailByMainIdForPay(@RequestBody ProjectCostQueryDTO queryDTO) throws Exception {
-//        return ResponseBean.responseSuccess().setData(this.projectCostService.getProjectCostPaymentDetailByMainIdForPay(queryDTO));
+//        String str = this.currentCompanyUserId;
+        this.updateCurrentUserInfo(queryDTO);
         return AjaxMessage.succeed(this.projectCostService.getProjectCostPaymentDetailByMainIdForPay(queryDTO));
     }
 }

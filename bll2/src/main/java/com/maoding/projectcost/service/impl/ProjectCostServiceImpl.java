@@ -1,6 +1,8 @@
 package com.maoding.projectcost.service.impl;
 
+import com.maoding.commonModule.dto.QueryCopyRecordDTO;
 import com.maoding.commonModule.entity.RelationRecordEntity;
+import com.maoding.commonModule.service.CopyRecordService;
 import com.maoding.commonModule.service.RelationRecordService;
 import com.maoding.companybill.dto.SaveCompanyBillDTO;
 import com.maoding.companybill.service.CompanyBalanceService;
@@ -33,6 +35,7 @@ import com.maoding.mytask.service.MyTaskService;
 import com.maoding.org.dao.CompanyDao;
 import com.maoding.org.dao.CompanyUserDao;
 import com.maoding.org.dto.CompanyRelationDTO;
+import com.maoding.org.dto.CompanyUserDTO;
 import com.maoding.org.dto.CompanyUserTableDTO;
 import com.maoding.org.entity.CompanyEntity;
 import com.maoding.org.entity.CompanyUserEntity;
@@ -155,6 +158,8 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
     @Autowired
     private ExpMainDao expMainDao;
 
+    @Autowired
+    private CopyRecordService copyRecordService;
     /**
      * 方法描述：设置合同总金额/技术审查费
      * 作者：chenzhujie
@@ -2876,6 +2881,7 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
 
     @Override
     public Map<String, Object> getProjectCostPaymentDetailByMainIdForPay(ProjectCostQueryDTO queryDTO) throws Exception {
+        queryDTO.setMainId(queryDTO.getId());
         //获取参数
         if(queryDTO.getMainId()==null){
             throw new CustomException("参数错误");
@@ -2885,13 +2891,41 @@ public class ProjectCostServiceImpl extends GenericService<ProjectCostEntity> im
             throw new CustomException("参数错误");
         }
         ExpMainEntity main = this.expMainDao.selectById(queryDTO.getMainId());
+        //查询审批单主体数据（付款申请部分的数据）
         ProjectCostPointDetailEntity pointDetail = this.projectCostPointDetailDao.selectById(relationRecord.getRelationId());
+        ProjectCostPointEntity point = this.projectCostPointDao.selectById(pointDetail.getPointId());
         ProjectCostEntity projectCost = this.projectCostDao.getProjectCostByPointId(pointDetail.getPointId());
+        ProjectCostDTO costDTO = new ProjectCostDTO();
+        BeanUtils.copyCleanProperties(projectCost,costDTO);
         queryDTO.setProjectId(projectCost.getProjectId());
         queryDTO.setCostId(projectCost.getId());
         queryDTO.setPointId(pointDetail.getPointId());
         queryDTO.setPointDetailId(pointDetail.getId());
         queryDTO.setCompanyId(main.getCompanyId());
-        return this.getProjectCostPaymentDetailByPointDetailIdForPay(queryDTO);
+        ProjectCostPayDetailDTO  costPayDetail = new ProjectCostPayDetailDTO();
+        costPayDetail.setProjectName(projectDao.getProjectName(projectCost.getProjectId()));
+        costPayDetail.setToCompanyName(this.getRelationCompanyName(costDTO,queryDTO.getAppOrgId()));
+        costPayDetail.setFeeDescription(point.getFeeDescription());
+        costPayDetail.setFeeProportion(point.getFeeProportion());
+        costPayDetail.setFee(pointDetail.getFee());
+        costPayDetail.setPointDetailDescription(pointDetail.getPointDetailDescription());
+        //查询发起人
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("costDetailId",pointDetail.getId());
+        List<ProjectCostOperaterDTO> operaterDTOS = this.projectCostOperaterDao.getCostOperator(map);
+        for (ProjectCostOperaterDTO dto : operaterDTOS) {
+            if ("2".equals(dto.getType()) || "1".equals(dto.getType())) {
+                costPayDetail.setUserName(dto.getUserName());
+            }
+        }
+        //审批记录
+        Map<String,Object> auditInfo = expMainService.getAuditInfoByRelationId(queryDTO.getPointDetailId(),queryDTO.getCurrentCompanyUserId());
+        //查询抄送人
+        auditInfo.put("ccCompanyUserList",copyRecordService.getCopyRecode(new QueryCopyRecordDTO(queryDTO.getMainId())));
+        auditInfo.put("costPayDetail",costPayDetail);
+        //获取附件
+        auditInfo.put("attachList",projectSkyDriverService.getAttachListByTargetId(projectCost.getId()));
+        return auditInfo;
     }
+
 }

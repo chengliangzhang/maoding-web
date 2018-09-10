@@ -1,25 +1,31 @@
 <table class="table table-hover table-bordered table-responsive dataTable" >
     <thead>
     <tr>
-        <th width="6%">申请日期</th>
-        <th width="10%">
+        <th>申请日期</th>
+        <th>
             申请人
         </th>
-        <th width="10%">
+        <th>
             类型
         </th>
-        <th width="10%">
+        <th>
             审批状态
         </th>
+        <th width="">操作</th>
     </tr>
     </thead>
     <tbody>
     {{each dataList as p}}
-    <tr data-type="{{p.type}}" data-id="{{p.id}}">
+    <tr class="curp" data-type="{{p.type}}" data-id="{{p.id}}">
         <td>{{_momentFormat(p.expDate,'YYYY/MM/DD')}}</td>
         <td>{{p.userName}}</td>
         <td>{{p.expTypeName}}</td>
         <td>{{p.approveStatusName}}</td>
+        <td>
+            {{if p.expFlag!=1 && (p.approveStatus ==2 || p.approveStatus ==3) && p.companyUserId == currentCompanyUserId}}
+                <button class="btn btn-primary btn-xs" data-action="edit">编辑</button>
+            {{/if}}
+        </td>
     </tr>
     {{/each}}
     {{if dataList==null || dataList.length==0}}
