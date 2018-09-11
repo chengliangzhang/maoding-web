@@ -43,6 +43,7 @@
                     var html = template('m_finance/m_finance_basic_settings',{companyDataList:response.data});
                     $(that.element).html(html);
                     that.bindEditable();
+                    that.bindActionClick();
 
                 }else {
                     S_dialog.error(response.info);
@@ -134,6 +135,35 @@
                 }
             });
             return isError;
+        }
+        //事件绑定
+        ,bindActionClick:function () {
+
+            var that = this;
+            $(that.element).find('button[data-action]').off('click').on('click',function () {
+
+                var $this = $(this),dataAction = $this.attr('data-action');
+                var dataId = $this.closest('tr').attr('data-id');
+                switch (dataAction){
+                    case 'balanceChange'://余额变更
+                        $('body').m_finance_basic_settings_change({
+                            balanceId:dataId,
+                            companyId:$this.closest('tr').attr('data-company-id'),
+                            saveCallBack:function () {
+                                that.renderPage();
+                            }
+                        },true);
+                        break;
+                    case 'changeRecord'://变更记录
+                        $('body').m_finance_basic_settings_change_record({
+                            id:dataId,
+                            companyId:$this.closest('tr').attr('data-company-id')
+                        },true);
+                        break;
+                }
+
+            })
+
         }
 
 

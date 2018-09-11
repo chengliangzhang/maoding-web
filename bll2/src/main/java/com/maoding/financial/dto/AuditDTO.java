@@ -1,5 +1,6 @@
 package com.maoding.financial.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.maoding.org.dto.CompanyUserDTO;
 
 import java.util.Date;
@@ -49,6 +50,7 @@ public class AuditDTO extends CompanyUserDTO{
     /**
      * 审批日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date approveDate;
 
     /**

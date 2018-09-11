@@ -226,6 +226,9 @@ var restApi = {
     , url_getRelationTypeIsThree: window.rootPath + '/iWork/org/getRelationTypeIsThree'
     , url_getPermissionOperator: window.rootPath + '/iWork/role/getPermissionOperator'
 
+    , url_listCompanyBalanceChangeDetail: window.rootPath + '/iWork/companyBill/listCompanyBalanceChangeDetail'
+    , url_saveCompanyBalanceChangeDetail: window.rootPath + '/iWork/companyBill/saveCompanyBalanceChangeDetail'
+
     /**财务流程设置**/
     , url_getProcessByCompany: window.rootPath + '/iWork/process/getProcessByCompany'
     , url_saveProcess: window.rootPath + '/iWork/process/saveProcess'

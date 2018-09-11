@@ -63,16 +63,9 @@
                     <div class="clearfix"></div>
                 </a>
                 <ul class="nav nav-second-level collapse" >
-                    <!--<li><a href="javascript:void(0);" id="reimbursementSummary"><span class="nav-label ">报销汇总</span></a></li>-->
-                    <li class="roleControl" roleCode="finance_report" flag="2">
-                        <a href="#/paymentsDetail" id="paymentsDetail">收支明细</a>
-                    </li>
-                    <li class="roleControl" roleCode="finance_report" flag="2">
+                    <!--<li class="roleControl" roleCode="finance_report" flag="2">
                         <a href="#/paymentsStatistics" id="paymentsStatistics">分类统计</a>
-                    </li>
-                    <li class="roleControl" roleCode="finance_report" flag="2">
-                        <a href="#/profitStatement" id="profitStatement">利润报表</a>
-                    </li>
+                    </li>-->
                     <li class="roleControl" roleCode="sys_finance_type" flag="2">
                         <a href="#/financeSettings" id="financeSettings">财务设置</a>
                     </li>
@@ -82,6 +75,23 @@
                     <!--<li class="roleControl" ><a href="#/projectCost" id="projectCost"><span class="nav-label ">项目收支</span></a></li>-->
                     <li class="roleControl" >
                         <a href="#/invoiceSummary" id="invoiceSummary">发票汇总</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a class="svg"  href="javascript:void(0);">
+                    <object class="pull-left" data="{{_url('/assets/img/home/financialManagement.svg')}}" type="image/svg+xml"></object>
+                    <span class="nav-label pull-left">财务报表</span>
+                    <span class="fa arrow"></span>
+                    <div class="clearfix"></div>
+                </a>
+                <ul class="nav nav-second-level collapse" >
+                    <!--<li><a href="javascript:void(0);" id="reimbursementSummary"><span class="nav-label ">报销汇总</span></a></li>-->
+                    <li class="roleControl" roleCode="finance_report" flag="2">
+                        <a href="#/paymentsDetail" id="paymentsDetail">收支明细</a>
+                    </li>
+                    <li class="roleControl" roleCode="finance_report" flag="2">
+                        <a href="#/profitStatement" id="profitStatement">利润报表</a>
                     </li>
                 </ul>
             </li>

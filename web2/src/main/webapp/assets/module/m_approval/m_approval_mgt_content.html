@@ -27,7 +27,13 @@
             <td>{{p.documentation}}</td>
             <td>
                 <a class="btn btn-link text-navy no-padding pull-left" data-action="setProcess" data-key="{{p.key}}" data-type="{{p.type}}">审批人</a>
-                <span class="fc-v1-grey">（已设置）</span>
+                <span class="fc-v1-grey">
+                    {{if p.type==1}}
+                    （未设置）
+                    {{else}}
+                    （已设置）
+                    {{/if}}
+                </span>
             </td>
             <td>
                <!-- <button  class="btn btn-primary btn-xs " data-action="edit" data-action-type="0">编辑</button>

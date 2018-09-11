@@ -69,7 +69,7 @@
                         if(that.settings.doType==4){
                             that.renderProjectList();
                         }
-
+                        clickTimeIcon($(that.element));
                         that.fileUpload();
                         that.bindActionClick();
                         that.save_validate();

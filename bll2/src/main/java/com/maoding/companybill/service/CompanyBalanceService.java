@@ -12,6 +12,8 @@ public interface CompanyBalanceService {
 
     int saveCompanyBalance(SaveCompanyBalanceDTO dto) throws Exception;
 
+    String saveCompanyBalance(String companyId) throws Exception;
+
     List<CompanyBalanceDTO> getCompanyBalance(QueryCompanyBalanceDTO query) throws Exception;
 
     CompanyBalanceEntity getCompanyBalanceByCompanyId(String companyId) ;

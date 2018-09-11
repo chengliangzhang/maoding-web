@@ -1,9 +1,7 @@
 package com.maoding.companybill.controller;
 
-import com.maoding.companybill.dto.CompanyBalanceChangeDetailDTO;
-import com.maoding.companybill.dto.CompanyBalanceDTO;
-import com.maoding.companybill.dto.QueryCompanyBalanceDTO;
-import com.maoding.companybill.dto.SaveCompanyBalanceDTO;
+import com.maoding.companybill.dto.*;
+import com.maoding.companybill.service.CompanyBalanceChangeDetailService;
 import com.maoding.companybill.service.CompanyBalanceService;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
@@ -21,6 +19,9 @@ public class CompanyBillController extends BaseController {
 
     @Autowired
     private CompanyBalanceService companyBalanceService;
+
+    @Autowired
+    private CompanyBalanceChangeDetailService companyBalanceChangeDetailService;
 
 
     @ModelAttribute
@@ -61,6 +62,20 @@ public class CompanyBillController extends BaseController {
         return AjaxMessage.succeed(list);
     }
 
+
+    /**
+     * 方法描述：保存余额变更记录
+     * 作   者：MaoSF
+     * 日   期：2018/5/24 17:35
+     */
+    @RequestMapping(value = "/saveCompanyBalanceChangeDetail", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage saveCompanyBalanceChangeDetail(@RequestBody SaveCompanyBalanceChangeDetailDTO dto) throws Exception {
+        this.updateCurrentUserInfo(dto);
+        int i = companyBalanceChangeDetailService.SaveCompanyBalanceChangeDetail(dto);
+        return i>0?AjaxMessage.succeed("操作成功"):AjaxMessage.error("操作失败");
+    }
+
     /**
      * 方法描述：余额变更记录详情
      * 作   者：MaoSF
@@ -71,8 +86,7 @@ public class CompanyBillController extends BaseController {
     public AjaxMessage listCompanyBalanceChangeDetail(@RequestBody QueryCompanyBalanceDTO dto) throws Exception {
         dto.setCurrentCompanyId(this.currentCompanyId);
         dto.setAccountId(this.currentUserId);
-        List<CompanyBalanceChangeDetailDTO> list = new ArrayList<>();
-        return AjaxMessage.succeed(list);
+        return AjaxMessage.succeed(companyBalanceChangeDetailService.listCompanyBalanceChangeDetail(dto));
     }
 
 }

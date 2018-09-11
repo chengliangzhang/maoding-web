@@ -5,26 +5,27 @@ import com.maoding.core.base.entity.BaseEntity;
 import java.util.Date;
 
 public class CompanyBalanceChangeDetailEntity extends BaseEntity{
+    //主键id，uuid
     private String id;
-
+    //余额主表id
     private String balanceId;
-
+    //变更前的金额
     private String beforeChangeAmount;
-
+    //变更后的金额
     private String afterChangeAmount;
-
+    //变更的金额
     private String changeAmount;
-
+    //变更类型：1=增加余额值，2=减少余额值
     private Integer changeType;
-
+    //变更原因
     private String changeReason;
-
+    //备注
     private String remark;
-
+    //变更日期
     private Date changeDate;
-
+    //操作人id（companyUserId）
     private String operatorId;
-
+    //删除标识：0：有效，1：无效
     private Integer deleted;
 
     public String getId() {

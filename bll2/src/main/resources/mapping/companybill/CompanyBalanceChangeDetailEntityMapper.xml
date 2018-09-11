@@ -23,12 +23,31 @@
     change_reason, remark, change_date, operator_id, deleted, create_date, create_by, 
     update_date, update_by
   </sql>
-  <select id="selectBy" resultMap="BaseResultMap" parameterType="java.lang.String" >
+
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from maoding_company_balance_change_detail
     where id = #{id,jdbcType=VARCHAR}
   </select>
+
+  <select id="listCompanyBalanceChangeDetail" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_company_balance_change_detail
+    where balance_id = #{balanceId}
+    and deleted = 0
+    order by change_date,create_date
+  </select>
+
+  <select id="getCompanyBalanceChangeDetailSum" resultType="java.math.BigDecimal" parameterType="java.lang.String" >
+    select
+    ifnull(sum(if(change_type=1,ifnull(change_amount,0),0-ifnull(change_amount,0))),0)
+    from maoding_company_balance_change_detail
+    where balance_id = #{balanceId}
+    and deleted = 0
+  </select>
+
   <delete id="deleteById" parameterType="java.lang.String" >
     delete from maoding_company_balance_change_detail
     where id = #{id,jdbcType=VARCHAR}

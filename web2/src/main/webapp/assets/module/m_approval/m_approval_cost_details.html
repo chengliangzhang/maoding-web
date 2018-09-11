@@ -119,11 +119,11 @@
                         </p>
                         <span class="vertical-date">
                             {{if s.approveStatus=='1'}}
-                                <span class="text-success">{{s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.expDate,'YYYY/MM/DD')}} </span>
+                                <span class="text-success">{{s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.approveDate,'YYYY/MM/DD')}} </span>
                             {{else if s.approveStatus=='2' || s.approveStatus=='3'}}
-                                <span class="text-danger">{{s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.expDate,'YYYY/MM/DD')}} </span>
+                                <span class="text-danger">{{s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.approveDate,'YYYY/MM/DD')}} </span>
                             {{else}}
-                                <span>{{s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.expDate,'YYYY/MM/DD')}} </span>
+                                <span>{{s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.approveDate,'YYYY/MM/DD')}} </span>
                             {{/if}}
                             <br>
                             <small>

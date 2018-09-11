@@ -7,28 +7,17 @@ import java.util.Date;
 public class SaveCompanyBalanceChangeDetailDTO extends BaseDTO{
 
     private String balanceId;//余额主表id
-    private String currentBalance;//当前余额
     private Date changeDate;//'变更日期'
     private int changeType;//变更类型：1=增加余额值，2=减少余额值
     private String changeAmount;//变更的金额
     private String changeReason;// '变更原因'
-    private String beforeChangeAmount;//变更前的金额
-    private String afterChangeAmount;//变更后的金额
-
+    private String companyId;
     public String getBalanceId() {
         return balanceId;
     }
 
     public void setBalanceId(String balanceId) {
         this.balanceId = balanceId;
-    }
-
-    public String getCurrentBalance() {
-        return currentBalance;
-    }
-
-    public void setCurrentBalance(String currentBalance) {
-        this.currentBalance = currentBalance;
     }
 
     public Date getChangeDate() {
@@ -63,19 +52,11 @@ public class SaveCompanyBalanceChangeDetailDTO extends BaseDTO{
         this.changeReason = changeReason;
     }
 
-    public String getBeforeChangeAmount() {
-        return beforeChangeAmount;
+    public String getCompanyId() {
+        return companyId;
     }
 
-    public void setBeforeChangeAmount(String beforeChangeAmount) {
-        this.beforeChangeAmount = beforeChangeAmount;
-    }
-
-    public String getAfterChangeAmount() {
-        return afterChangeAmount;
-    }
-
-    public void setAfterChangeAmount(String afterChangeAmount) {
-        this.afterChangeAmount = afterChangeAmount;
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 }

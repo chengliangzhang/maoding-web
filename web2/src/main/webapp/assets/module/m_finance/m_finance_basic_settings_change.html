@@ -1,0 +1,24 @@
+<form class="form-horizontal m">
+    <div class="form-group">
+        <label class="col-24-sm-5 control-label">变更类型<span class="fc-red">*</span>：</label>
+        <div class="col-24-sm-18">
+            <select class="form-control full-width" name="changeType" >
+                <option value="">请选择变更类型</option>
+                <option value="1">增加余额值</option>
+                <option value="2">减少余额值</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-24-sm-5 control-label">变更余额(元)<span class="fc-red">*</span>：</label>
+        <div class="col-24-sm-18">
+            <input placeholder="请输入变更余额" class="form-control" type="text" name="changeAmount" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-24-sm-5 control-label">变更原因：</label>
+        <div class="col-24-sm-18">
+            <textarea placeholder="请输入变更原因" class="form-control" type="text" name="changeReason"></textarea>
+        </div>
+    </div>
+</form>

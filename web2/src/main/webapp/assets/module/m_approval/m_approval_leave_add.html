@@ -24,7 +24,7 @@
                 <div class="col-sm-10">
                     <div class="input-group">
                         <input type="text" class="form-control" id="ipt_startTime" name="leaveStartTime" placeholder="开始时间" readonly
-                               onFocus="WdatePicker({maxDate:'#F{$dp.$D(\'ipt_endTime\')}',dateFmt:'yyyy-MM-dd HH:mm'})" value="{{dataInfo?_momentFormat(dataInfo.startTime,'YYYY-MM-DD HH:mm'):''}}">
+                               onFocus="WdatePicker({maxDate:'#F{$dp.$D(\'ipt_endTime\')}',startDate:'%y-%M-%d %H:00:00',isShowToday:false,autoPickDate:false,dateFmt:'yyyy-MM-dd HH:mm',disabledDates:['....-..-.. ..:0[1-9]','....-..-.. ..:[1-2][0-9]','....-..-.. ..:[4-9][0-9]','....-..-.. ..:3[1-9]']})" value="{{dataInfo?_momentFormat(dataInfo.startTime,'YYYY-MM-DD HH:mm'):''}}">
                         <span class="input-group-addon ">
                             <i class="icon-append fa fa-calendar"></i>
                         </span>
@@ -36,7 +36,7 @@
                 <div class="col-sm-10">
                     <div class="input-group">
                         <input type="text" class="form-control" id="ipt_endTime" name="leaveEndTime" placeholder="开始时间" readonly
-                               onFocus="WdatePicker({minDate:'#F{$dp.$D(\'ipt_startTime\')}',dateFmt:'yyyy-MM-dd HH:mm'})" value="{{dataInfo?_momentFormat(dataInfo.endTime,'YYYY-MM-DD HH:mm'):''}}">
+                               onFocus="WdatePicker({minDate:'#F{$dp.$D(\'ipt_startTime\')}',startDate:'%y-%M-%d %H:00:00',isShowToday:false,dateFmt:'yyyy-MM-dd HH:mm',disabledDates:['....-..-.. ..:0[1-9]','....-..-.. ..:[1-2][0-9]','....-..-.. ..:[4-9][0-9]','....-..-.. ..:3[1-9]']})" value="{{dataInfo?_momentFormat(dataInfo.endTime,'YYYY-MM-DD HH:mm'):''}}">
                         <span class="input-group-addon ">
                             <i class="icon-append fa fa-calendar"></i>
                         </span>

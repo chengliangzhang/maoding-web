@@ -1,5 +1,6 @@
 package com.maoding.statistic.service.impl;
 
+import com.maoding.companybill.dao.CompanyBalanceChangeDetailDao;
 import com.maoding.companybill.entity.CompanyBalanceEntity;
 import com.maoding.companybill.service.CompanyBalanceService;
 import com.maoding.core.base.dto.CoreShowDTO;
@@ -37,7 +38,7 @@ public class StatisticServiceImpl implements StatisticService {
     protected ProjectCostDao projectCostDao;
 
     @Autowired
-    private DataDictionaryDao dataDictionaryDao;
+    private CompanyBalanceChangeDetailDao companyBalanceChangeDetailDao;
 
     @Autowired
     private ExpCategoryService expCategoryService;
@@ -195,13 +196,21 @@ public class StatisticServiceImpl implements StatisticService {
             data.setPay(new BigDecimal("0"));
             data.setGain(new BigDecimal("0"));
         }
-        data.setAmount(data.getGain().subtract(data.getPay()));
+        //amount：当前余额
+        BigDecimal amount = data.getGain().subtract(data.getPay());
         if(balance!=null){
             if(!StringUtil.isNullOrEmpty(balance.getInitialBalance())){
-                data.setAmount(data.getAmount().add(new BigDecimal(balance.getInitialBalance())));
+                amount = amount.add(new BigDecimal(balance.getInitialBalance()));
             }
+            //查询变更记录，并且把变更的记录的数据累加到当前余额上
+            BigDecimal changeDetailSum = companyBalanceChangeDetailDao.getCompanyBalanceChangeDetailSum(balance.getId());
+            if (null == changeDetailSum){
+                changeDetailSum = new BigDecimal("0");
+            }
+            amount = amount.add(changeDetailSum);
             data.setBalance(balance);
         }
+        data.setAmount(amount);
         return data;
     }
 

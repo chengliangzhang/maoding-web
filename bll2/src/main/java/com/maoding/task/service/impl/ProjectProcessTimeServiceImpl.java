@@ -272,7 +272,7 @@ public class ProjectProcessTimeServiceImpl extends GenericService<ProjectProcess
     }
 
     private String getHistoryText(ProjectProcessTimeDTO current,ProjectProcessTimeDTO last) {
-        String changeTimeStr = DateUtils.date2Str(current.getChangedTime(),DateUtils.MD_DAY_H_M);
+        String changeTimeStr = DateUtils.date2Str(current.getChangedTime(),DateUtils.time_sdf_slash);
         String userName = StringUtils.isEmpty(current.getUserName()) ? "" : "【" + current.getUserName() + "】";
         String lastTimeStr = getTimeText(last);
         String currentTimeStr = getTimeText(current);

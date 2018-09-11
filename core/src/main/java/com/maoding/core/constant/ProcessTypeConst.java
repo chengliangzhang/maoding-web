@@ -137,7 +137,7 @@ public interface ProcessTypeConst {
             put(ProcessTypeConst.PROCESS_TYPE_LEAVE,"天");
             put(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS,"天");
             put(ProcessTypeConst.PROCESS_TYPE_EXPENSE,"元");
-            put(ProcessTypeConst.PROCESS_TYPE_COST_APPLY,"万元");
+            put(ProcessTypeConst.PROCESS_TYPE_COST_APPLY,"元");
             put(ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP,"");
             put(ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY,"万元");
         }

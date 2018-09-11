@@ -247,11 +247,10 @@ public class SaveLeaveDTO extends BaseDTO {
     }
 
     public Date getStartTime() {
-        Date d = startTime;
-        if ((d == null) && (StringUtils.isNotEmpty(leaveStartTime))){
-            d = DateUtils.str2Date(leaveStartTime, DateUtils.time_sdf);
+        if (StringUtils.isNotEmpty(leaveStartTime)){
+            startTime = DateUtils.getStr2Date(leaveStartTime);
         }
-        return d;
+        return startTime;
     }
 
     public void setStartTime(Date startTime) {
@@ -259,11 +258,10 @@ public class SaveLeaveDTO extends BaseDTO {
     }
 
     public Date getEndTime() {
-        Date d = endTime;
-        if ((d == null) && (StringUtils.isNotEmpty(leaveEndTime))){
-            d = DateUtils.str2Date(leaveEndTime, DateUtils.time_sdf);
+        if (StringUtils.isNotEmpty(leaveEndTime)){
+            endTime = DateUtils.getStr2Date(leaveEndTime);
         }
-        return d;
+        return endTime;
     }
 
     public void setEndTime(Date endTime) {
@@ -284,9 +282,6 @@ public class SaveLeaveDTO extends BaseDTO {
 
     public void setLeaveStartTime(String leaveStartTime) {
         this.leaveStartTime = leaveStartTime;
-        if (StringUtils.isNotEmpty(leaveStartTime)) {
-            setStartTime(DateUtils.str2Date(leaveStartTime, DateUtils.time_sdf));
-        }
     }
 
     public String getLeaveEndTime() {
@@ -295,9 +290,6 @@ public class SaveLeaveDTO extends BaseDTO {
 
     public void setLeaveEndTime(String leaveEndTime) {
         this.leaveEndTime = leaveEndTime;
-        if (StringUtils.isNotEmpty(leaveEndTime)) {
-            setEndTime(DateUtils.str2Date(leaveEndTime, DateUtils.time_sdf));
-        }
     }
 
     public List<String> getDeleteAttachList() {

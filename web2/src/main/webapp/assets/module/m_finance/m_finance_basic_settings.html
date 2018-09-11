@@ -8,18 +8,19 @@
     <table class="table table-bordered table-responsive">
         <thead>
         <tr>
-            <th width="20%">组织名称</th>
-            <th width="17%" class="text-right">录入余额初始值（元）</th>
-            <th width="16%" class="text-right">录入余额初始日期</th>
-            <th width="17%" class="text-right">设置最低余额（元）</th>
+            <th width="17%">组织名称</th>
+            <th width="14%" class="text-right">录入余额初始值（元）</th>
+            <th width="14%" class="text-right">录入余额初始日期</th>
+            <th width="13%" class="text-right">设置最低余额（元）</th>
             <th width="10%" class="text-right">当前余额（元）</th>
             <!--<th width="10%" class="text-right">当前总收入（元）</th>-->
             <th width="10%" class="text-right">上月费用录入（元）</th>
+            <th width="12%">当前余额变更</th>
         </tr>
         </thead>
         <tbody>
         {{each companyDataList as c i}}
-        <tr data-i="{{i}}" data-company-id="{{c.companyId}}">
+        <tr data-i="{{i}}" data-company-id="{{c.companyId}}" data-id="{{c.id}}">
             <td class="fc-black font-bold">
                 {{c.companyName}}
             </td>
@@ -41,6 +42,10 @@
             <td class="text-right">{{_expNumberDecimalFilter(c.currentBalance)}}</td>
             <!--<td class="text-right">{{_expNumberDecimalFilter(c.currentIncome)}}</td>-->
             <td class="text-right">{{_expNumberDecimalFilter(c.lastMonthFixFee)}}</td>
+            <td>
+                <button class="btn btn-primary btn-xs" data-action="balanceChange" >余额变更</button>
+                <button class="btn btn-primary btn-xs" data-action="changeRecord">变更记录</button>
+            </td>
         </tr>
         {{/each}}
         </tbody>

@@ -68,6 +68,15 @@ public class CompanyBalanceServiceImpl extends NewBaseService implements Company
     }
 
     @Override
+    public String saveCompanyBalance(String companyId) throws Exception {
+        CompanyBalanceEntity balance = new CompanyBalanceEntity();
+        balance.initEntity();
+        balance.setCompanyId(companyId);
+        companyBalanceDao.insert(balance);
+        return balance.getId();
+    }
+
+    @Override
     public List<CompanyBalanceDTO> getCompanyBalance(QueryCompanyBalanceDTO query) throws Exception {
         List<CompanyBalanceDTO> result = new ArrayList<>();
         List<CompanyEntity> list  = companyService.getAllOrg(query.getCurrentCompanyId());

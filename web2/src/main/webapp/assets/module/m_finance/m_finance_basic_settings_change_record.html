@@ -1,0 +1,55 @@
+<form class="form-horizontal m">
+    <table class="table table-hover table-bordered table-responsive dataTable" >
+        <thead>
+        <tr>
+            <th>变更时间</th>
+            <th>
+                变更类型
+            </th>
+            <th>
+                变更余额(元)
+            </th>
+            <th>
+                变更原因
+            </th>
+            <th>
+                变更前余额(元)
+            </th>
+            <th>
+                变更后余额(元)
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {{if dataList!=null && dataList.length>0}}
+        {{each dataList as p}}
+        <tr  data-id="{{p.id}}">
+            <td>{{_momentFormat(p.changeDate,'YYYY/MM/DD')}}</td>
+            <td>
+                <!--changeType;//变更类型：1=增加余额值，2=减少余额值-->
+                {{if p.changeType==1}}
+                增加余额值
+                {{else}}
+                减少余额值
+                {{/if}}
+            </td>
+            <td>{{_expNumberDecimalFilter(p.changeAmount)}}</td>
+            <td>{{p.changeReason}}</td>
+            <td>{{_expNumberDecimalFilter(p.beforeChangeAmount)}}</td>
+            <td>{{_expNumberDecimalFilter(p.afterChangeAmount)}}</td>
+        </tr>
+        {{/each}}
+        {{else}}
+        <tr class="no-data">
+            <td colspan="6" class="text-center v-middle">
+                <div >
+                    <img src="{{_url('/assets/img/default/without_data.png')}}">
+                    <span class="fc-dark-blue dp-block">您还没有相关数据</span>
+                </div>
+            </td>
+        </tr>
+        {{/if}}
+        </tbody>
+    </table>
+
+</form>

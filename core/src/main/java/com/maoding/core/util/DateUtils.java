@@ -53,8 +53,7 @@ public class DateUtils extends PropertyEditorSupport {
             "HH:mm");
     public static final SimpleDateFormat datetimeFormat = new SimpleDateFormat(
             "yyyy-MM-dd HH:mm:ss");
-    public static final SimpleDateFormat MD_DAY_H_M = new SimpleDateFormat(
-            "yyyy/MM/dd HH:mm");
+
 
     public static final SimpleDateFormat date_sdf = (new ThreadLocal<SimpleDateFormat>() {
         protected SimpleDateFormat initialValue() {
@@ -194,6 +193,28 @@ public class DateUtils extends PropertyEditorSupport {
         }
 
     }
+
+    public static Date getStr2Date(String str) {
+        if (StringUtil.isNullOrEmpty(str)) {
+            return null;
+        }
+        str = formatMonthString(str);
+        Date date = null;
+        if(str.length()>10){
+            date = DateUtils.str2Date(str,DateUtils.time_sdf);
+            if (date == null) {
+                date = DateUtils.str2Date(str, DateUtils.time_sdf_slash);
+            } else if (date == null) {
+                date = DateUtils.str2Date(str, DateUtils.time_sdf_slash);
+            } else if (date == null) {
+                date = DateUtils.str2Date(str, DateUtils.datetimeFormat);
+            }
+        }else {
+            date = DateUtils.str2Date(str, DateUtils.date_sdf);
+        }
+        return date;
+    }
+
 
     public static String formatMonthString(String str){
         if (StringUtils.isEmpty(str)){
@@ -440,6 +461,7 @@ public class DateUtils extends PropertyEditorSupport {
     public static String getDataString(SimpleDateFormat formatstr) {
         return formatstr.format(getCalendar().getTime());
     }
+
 
     /**
      * 指定日期的默认显示，具体格式：年-月-日

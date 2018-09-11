@@ -25,7 +25,7 @@ public class StatisticDetailSummaryDTO extends BaseDTO implements Serializable {
      */
     private BigDecimal pay;
     /**
-     * 合计收益
+     * 合计收益，当前余额
      */
     private BigDecimal amount;
 

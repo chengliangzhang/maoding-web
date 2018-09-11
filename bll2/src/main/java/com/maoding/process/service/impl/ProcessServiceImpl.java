@@ -6,10 +6,7 @@ import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.constant.ProcessTypeConst;
 import com.maoding.core.constant.ProjectCostConst;
-import com.maoding.core.util.ObjectUtils;
-import com.maoding.core.util.StringUtil;
-import com.maoding.core.util.StringUtils;
-import com.maoding.core.util.TraceUtils;
+import com.maoding.core.util.*;
 import com.maoding.financial.dto.AuditBaseDTO;
 import com.maoding.financial.dto.AuditDTO;
 import com.maoding.financial.dto.AuditEditDTO;
@@ -354,11 +351,12 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             this.expMainService.updateById(exp);
             if(exp.getType()==5){
                 //推送任务
-                ProjectCostPointDetailDTO projectCostPointDetailDTO = new ProjectCostPointDetailDTO();
+                ProjectCostPointDetailDTO projectCostPointDetailDTO = BeanUtils.createFrom(dto,ProjectCostPointDetailDTO.class);
                 projectCostPointDetailDTO.setMainId(businessKey);
                 projectCostPointDetailDTO.setFeeStatus(ProjectCostConst.FEE_STATUS_APPROVE);
                 projectCostService.completeProjectFeeApply(projectCostPointDetailDTO);
             }
+            this.expMainService.sendMessageForAudit(businessKey,dto.getCurrentCompanyId(),exp.getCompanyUserId(),exp.getType(),dto.getAccountId(),null,ProjectCostConst.FEE_STATUS_APPROVE+"");
         }
         if(!isPass){
             ExpMainEntity exp = this.expMainService.selectById(businessKey);
@@ -367,11 +365,12 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             this.expMainService.updateById(exp);
             if(exp.getType()==5){
                 //推送任务
-                ProjectCostPointDetailDTO projectCostPointDetailDTO = new ProjectCostPointDetailDTO();
+                ProjectCostPointDetailDTO projectCostPointDetailDTO =  BeanUtils.createFrom(dto,ProjectCostPointDetailDTO.class);
                 projectCostPointDetailDTO.setMainId(businessKey);
                 projectCostPointDetailDTO.setFeeStatus(ProjectCostConst.FEE_STATUS_NOT_APPROVE);
                 projectCostService.completeProjectFeeApply(projectCostPointDetailDTO);
             }
+            this.expMainService.sendMessageForAudit(businessKey,dto.getCurrentCompanyId(),exp.getCompanyUserId(),exp.getType(),dto.getAccountId(),null,ProjectCostConst.FEE_STATUS_APPROVE+"");
         }
         return isContinueAudit;
     }
