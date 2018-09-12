@@ -1,7 +1,9 @@
 package com.maoding.enterprise.dto;
 
 
-public class EnterpriseSearchQueryDTO  {
+import com.maoding.core.base.dto.BaseDTO;
+
+public class EnterpriseSearchQueryDTO extends BaseDTO {
 
     private String enterpriseId;
 

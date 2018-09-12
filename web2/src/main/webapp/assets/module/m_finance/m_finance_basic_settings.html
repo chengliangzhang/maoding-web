@@ -30,8 +30,8 @@
                 </a>
             </td>
             <td class="text-right">
-                <a href="javascript:void(0);" data-action="editDate" data-action-type="{{i}}" class="editable editable-click" >
-                    {{c.setBalanceDate==null||c.setBalanceDate==''?'未设置':c.setBalanceDate}}
+                <a href="javascript:void(0);" data-action="editDate" data-action-type="{{i}}" class="editable editable-click" data-value="{{c.setBalanceDate}}">
+                    {{c.setBalanceDate==null||c.setBalanceDate==''?'未设置':_momentFormat(c.setBalanceDate,'YYYY/MM/DD')}}
                 </a>
             </td>
             <td class="text-right">

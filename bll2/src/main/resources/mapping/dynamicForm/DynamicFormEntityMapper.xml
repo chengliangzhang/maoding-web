@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="DynamicFormEntityMapper" >
+  <resultMap id="BaseResultMap" type="com.maoding.dynamicForm.entity.DynamicFormEntity" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="form_name" property="formName" jdbcType="VARCHAR" />
+    <result column="company_id" property="companyId" jdbcType="VARCHAR" />
+    <result column="form_type" property="formType" jdbcType="INTEGER" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="deleted" property="deleted" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, form_name, company_id, form_type, seq, status, deleted, create_date, create_by, 
+    update_date, update_by
+  </sql>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from maoding_dynamic_form
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from maoding_dynamic_form
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maoding.dynamicForm.entity.DynamicFormEntity" >
+    insert into maoding_dynamic_form (id, form_name, company_id, 
+      form_type, seq, status, 
+      deleted, create_date, create_by, 
+      update_date, update_by)
+    values (#{id,jdbcType=VARCHAR}, #{formName,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, 
+      #{formType,jdbcType=INTEGER}, #{seq,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="updateById" parameterType="com.maoding.dynamicForm.entity.DynamicFormEntity" >
+    update maoding_dynamic_form
+    <set >
+      <if test="formName != null" >
+        form_name = #{formName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null" >
+        company_id = #{companyId,jdbcType=VARCHAR},
+      </if>
+      <if test="formType != null" >
+        form_type = #{formType,jdbcType=INTEGER},
+      </if>
+      <if test="seq != null" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="deleted != null" >
+        deleted = #{deleted,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null" >
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null" >
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="update" parameterType="com.maoding.dynamicForm.entity.DynamicFormEntity" >
+    update maoding_dynamic_form
+    set form_name = #{formName,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=VARCHAR},
+      form_type = #{formType,jdbcType=INTEGER},
+      seq = #{seq,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      deleted = #{deleted,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

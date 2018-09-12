@@ -948,8 +948,8 @@ public class StatisticServiceImpl implements StatisticService {
         statisticTotal(dataList,mapData.get("财务费用合计"), Arrays.asList("财务费用"),"code4",true);
         //财务费用
         statisticTotal(dataList,mapData.get("税务费用合计"), Arrays.asList("税务费用"),"code5",true);
-        //利润总额
-        statisticTotal(dataList,mapData.get("利润总额"), Arrays.asList("主营业务收入"),null,false);
+        //利润总额 = 业务收入 - 主营业务成本
+        statisticTotal(dataList,mapData.get("利润总额"), Arrays.asList("业务收入"),null,false);
         statisticTotal2(dataList,mapData.get("利润总额"), Arrays.asList("主营业务成本","管理费用","财务费用"));
         //净利润
         statisticTotal(dataList,mapData.get("净利润"), Arrays.asList("利润总额"),null,false);
