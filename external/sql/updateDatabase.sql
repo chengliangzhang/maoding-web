@@ -2387,12 +2387,12 @@ CREATE PROCEDURE `initConst`()
   BEGIN
     -- -- 常量
     delete from md_list_const where classic_id = 55;
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,0,'审批名称:1-流程关键字;2-流程名称',  ';2.所属群组;3.说明');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,1,':leave;请假',                   ';1;适用于公司请假审批');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,2,':onBusiness;出差',              ';1;适用于公司出差审批');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,3,':expense;报销',                 ';2;适用于公司报销审批');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,4,':costApply;费用申请',            ';2;适用于公司报销审批');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,5,':projectPayApply;付款审批',      ';3;适用于公司报销审批');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,0,'审批名称:1-流程关键字;2-流程名称',  ';2.所属群组;3.说明;4.分条件审批变量名;5.分条件审批变量单位');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,1,':leave;请假',                   ';1;适用于公司请假审批;请假时长;天');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,2,':onBusiness;出差',              ';1;适用于公司出差审批;出差时长;天');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,3,':expense;报销',                 ';2;适用于公司报销审批;报销金额;元');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,4,':costApply;费用申请',            ';2;适用于公司报销审批;费用申请金额;元');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,5,':projectPayApply;付款审批',      ';3;适用于公司报销审批;付款审批金额;万元');
 
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,55,'审批名称','md_type_process,md_type_process_custom');
@@ -2416,7 +2416,15 @@ CREATE PROCEDURE `initConst`()
         substring(process_type.extra,
                   char_length(substring_index(process_type.extra,';',2))+2,
                   char_length(substring_index(process_type.extra,';',3)) - char_length(substring_index(process_type.extra,';',2))-1)
-          as description
+          as description,
+        substring(process_type.extra,
+                  char_length(substring_index(process_type.extra,';',3))+2,
+                  char_length(substring_index(process_type.extra,';',4)) - char_length(substring_index(process_type.extra,';',3))-1)
+          as var_name,
+        substring(process_type.extra,
+                  char_length(substring_index(process_type.extra,';',4))+2,
+                  char_length(substring_index(process_type.extra,';',5)) - char_length(substring_index(process_type.extra,';',4))-1)
+          as var_unit
       from
         md_list_const process_type
       where
@@ -2455,7 +2463,15 @@ CREATE PROCEDURE `initConst`()
         substring(process_type.extra,
                   char_length(substring_index(process_type.extra,';',2))+2,
                   char_length(substring_index(process_type.extra,';',3)) - char_length(substring_index(process_type.extra,';',2))-1)
-          as description
+          as description,
+        substring(process_type.extra,
+                  char_length(substring_index(process_type.extra,';',3))+2,
+                  char_length(substring_index(process_type.extra,';',4)) - char_length(substring_index(process_type.extra,';',3))-1)
+          as var_name,
+        substring(process_type.extra,
+                  char_length(substring_index(process_type.extra,';',4))+2,
+                  char_length(substring_index(process_type.extra,';',5)) - char_length(substring_index(process_type.extra,';',4))-1)
+          as var_unit
       from
         md_list_const_custom process_type
       where
