@@ -6,9 +6,7 @@ import com.maoding.dynamicForm.dao.DynamicFormDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldSelectableValueDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldValueDao;
-import com.maoding.dynamicForm.dto.DynamicFormFieldDTO;
-import com.maoding.dynamicForm.dto.DynamicFormFieldSelectedValueDTO;
-import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
+import com.maoding.dynamicForm.dto.*;
 import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldSelectableValueEntity;
@@ -90,4 +88,13 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
         return dynamicFormFieldEntity.getId();
     }
 
+    /**
+     * 描述       获取动态窗口组件位置、标题等信息
+     * 日期       2018/9/13
+     * @author   张成亮
+     **/
+    @Override
+    public FormDetailDTO getFormDetail(FormDetailQueryDTO query) {
+        return null;
+    }
 }

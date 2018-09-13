@@ -15,5 +15,10 @@ public interface DynamicFormService extends BaseService<DynamicFormEntity> {
 */
     int insertDynamicForm (SaveDynamicFormDTO dto) throws Exception;
 
+    /**
+     * 描述       获取动态窗口组件位置、标题等信息
+     * 日期       2018/9/13
+     * @author   张成亮
+     **/
     FormDetailDTO getFormDetail(FormDetailQueryDTO query);
 }

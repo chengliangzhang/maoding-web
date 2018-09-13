@@ -2,6 +2,7 @@ package com.maoding.dynamicForm.controller;
 
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.dynamicForm.dto.FormDetailDTO;
 import com.maoding.dynamicForm.dto.FormDetailQueryDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicAuditDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
@@ -66,7 +67,8 @@ public class DynamicFormController extends BaseController {
     @ResponseBody
     public AjaxMessage getFormDetail(@RequestBody FormDetailQueryDTO query) throws Exception {
         updateCurrentUserInfo(query);
-        return AjaxMessage.succeed(null);
+        FormDetailDTO detail = dynamicFormService.getFormDetail(query);
+        return AjaxMessage.succeed(detail);
     }
 
 
