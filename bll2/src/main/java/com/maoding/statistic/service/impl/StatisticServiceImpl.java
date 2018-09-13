@@ -940,7 +940,7 @@ public class StatisticServiceImpl implements StatisticService {
         //主营业务成本
         statisticTotal(dataList,mapData.get("主营业务成本"), SystemParameters.CATEGORY_CHILD.get("主营业务成本"),"code2",true);
         //主营业务利润
-        statisticTotal(dataList,mapData.get("主营业务利润"), Arrays.asList("主营业务收入"),null,false);
+        statisticTotal(dataList,mapData.get("主营业务利润"), Arrays.asList("业务收入"),null,false);
         statisticTotal2(dataList,mapData.get("主营业务利润"), Arrays.asList("主营业务成本"));
         //管理费用
         statisticTotal(dataList,mapData.get("管理费用"), SystemParameters.CATEGORY_CHILD.get("管理费用"),"code3",true);
