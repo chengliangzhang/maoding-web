@@ -118,7 +118,7 @@
                             if (res.code === '0') {
                                 S_toastr.success("删除成功");
                             } else if (res.code === '1') {
-                                S_dialog.error(res.msg);
+                                S_layer.error(res.msg);
                             }
                         });
                     };
@@ -147,7 +147,7 @@
                 options.title = '选择发送范围';
                 options.isExcludeOrgChoice = 1;
                 options.ids = ids;
-                options.CallBack = function (data) {
+                options.callBack = function (data) {
                     ids = data;
                     if (data && data.length > 0 && $("#choseDepartment-error").length > 0) {
                         $("#choseDepartment-error").remove();
@@ -203,7 +203,7 @@
                                     $('.summernote').summernote('destroy');
                                     location.hash = '/announcement';
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
 
                             });

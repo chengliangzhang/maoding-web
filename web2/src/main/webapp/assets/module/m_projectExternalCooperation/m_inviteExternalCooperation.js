@@ -9,7 +9,7 @@
         defaults = {
             title: '',
             inivteUserUrl: '',
-            isDailog: true,
+            isDialog: true,
             inviteType:3, //外部合作
             projectId:null,
             saveCallBack:null//操作完成回滚事件
@@ -29,32 +29,33 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData();
+            var html = template('m_projectExternalCooperation/m_inviteExternalCooperation', {});
+            that.initHtmlData(html,function () {
+                $('.inviteCorpBox').closest('.dialogOBox').css('overflow','inherit');
+                that.bindSendMessage();
+            });
         }
         //初始化数据并加载模板
-        , initHtmlData: function (callBack) {
+        , initHtmlData: function (html,callBack) {
             var that = this;
-            if (that.settings.isDailog) {//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.isDialog===true){//以弹窗编辑
+                S_layer.dialog({
                     title: that.settings.title || '邀请合作设计组织',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '460',
-                    tPadding: '0px',
-                    url: rootPath + '/assets/module/m_common/m_dialog.html'
-                }, function (d) {//加载html后触发
+                    area : '460px',
+                    content:html,
+                    btn:false
 
-                    that.element = 'div[id="content:' + d.id + '"] .dialogOBox';
-                    var html = template('m_projectExternalCooperation/m_inviteExternalCooperation', {});
-                    $(that.element).html(html);
-                    $('.inviteCorpBox').closest('.dialogOBox').css('overflow','inherit');
-                    that.bindSendMessage();
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
-            } else {//不以弹窗编辑
 
-                var html = template('m_projectExternalCooperation/m_inviteExternalCooperation', {});
+            }else{//不以弹窗编辑
                 $(that.element).html(html);
-                that.bindSendMessage();
+                if(callBack)
+                    callBack();
             }
         }
         //按钮事件绑定
@@ -67,7 +68,7 @@
                 var pattern = /^1\d{10}$/;
                 if(isNullOrBlank(phone)||!pattern.test(phone))
                 {
-                    S_dialog.tips('请输入11位有效手机号码');
+                    S_layer.tips('请输入11位有效手机号码');
                     return false;
                 }
 
@@ -84,13 +85,13 @@
                         option.postData = {cellphoneList: cellphoneList,type:that.settings.inviteType,projectId:that.settings.projectId};
                         m_ajax.postJson(option, function (response) {
                             if (response.code == '0') {
-                                S_dialog.tips("邀请外部合作伙伴短信已发送");
-                                S_dialog.close($(e.target));
+                                S_layer.tips("邀请外部合作伙伴短信已发送");
+                                S_layer.close($(e.target));
                                 if(that.settings.saveCallBack!=null){
                                     that.settings.saveCallBack();
                                 }
                             } else {
-                                S_dialog.error(response.info);
+                                S_layer.error(response.info);
                             }
                         });
                     }

@@ -48,7 +48,7 @@
                         });
                     });
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -342,7 +342,7 @@
                                 var id = $('#organization_treeH>ul>li>a:eq(0)').attr('id');
                                 rel.select_node(id);
                             } else {
-                                S_dialog.error(response.info);
+                                S_layer.error(response.info);
                             }
                         });
                     }
@@ -393,7 +393,7 @@
                                 var id = $('#organization_treeH>ul>li>a:eq(0)').attr('id');
                                 rel.select_node(id);
                             } else {
-                                S_dialog.error(response.info);
+                                S_layer.error(response.info);
                             }
                         });
                     }

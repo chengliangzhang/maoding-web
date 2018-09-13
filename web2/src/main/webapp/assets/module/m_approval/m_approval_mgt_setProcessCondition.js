@@ -7,10 +7,10 @@
     "use strict";
     var pluginName = "m_approval_mgt_setProcessCondition",
         defaults = {
-            $isDialog:true,
-            $type:null,
-            $processData:null,//流程信息数据{类型名称,key...}
-            $oKCallBack:null//保存回滚事件
+            isDialog:true,
+            type:null,
+            processData:null,//流程信息数据{类型名称,key...}
+            oKCallBack:null//保存回滚事件
         };
 
     // The actual plugin constructor
@@ -29,21 +29,21 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.renderDialog();
+
+            that.initHtmlData();
+
         }
-        ,renderDialog:function () {
+        ,renderDialog:function (html,callBack) {
             var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.isDialog===true){//以弹窗编辑
+                S_layer.dialog({
                     title: that.settings.$title||'设置审批条件',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '600',
-                    height:'572',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    cancel:function(){
+                    area : ['750px','600px'],
+                    content:html,
+                    cancel:function () {
                     },
                     ok:function () {
+
                         if ($(that.element).find('form.form-horizontal').valid()) {
                             return that.saveProcessCondtion();
                         }else{
@@ -51,34 +51,39 @@
                         }
                     }
 
-                },function(d){//加载html后触发
-
-                    that.element = $('div[id="content:'+d.id+'"] .dialogOBox');
-                    $(that.element).closest('table').find('.ui-dialog-header .ui-dialog-title').append('<span class="fc-v1-grey">（审批条件仅能指定一个，且为必填字段）</span>');
-
-                    that.initHtmlData();
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    $(that.element).closest('.layui-layer').find('.layui-layer-title').append('<span class="fc-v1-grey">（审批条件仅能指定一个，且为必填字段）</span>');
+                    if(callBack)
+                        callBack();
                 });
-            }else {//不以弹窗编辑
+
+            }else{//不以弹窗编辑
+                $(that.element).html(html);
+                if(callBack)
+                    callBack();
             }
         }
         //渲染列表内容
         ,initHtmlData:function () {
             var that =this;
-            var html = template('m_approval/m_approval_mgt_setProcessCondition',{processData:that.settings.$processData});
-            $(that.element).html(html);
-            that.bindActionClick();
-            that.submit_validate();
+            var html = template('m_approval/m_approval_mgt_setProcessCondition',{processData:that.settings.processData});
+            that.renderDialog(html,function () {
 
-            if(that.settings.$processData && that.settings.$processData.flowTaskGroupList!=null && that.settings.$processData.flowTaskGroupList.length>0){
-                $.each(that.settings.$processData.flowTaskGroupList,function (i,item) {
-                    if(i>1 && i<that.settings.$processData.flowTaskGroupList.length-1){
-                        that.addInput($(that.element).find('a[data-action="addCondition"]'));
-                    }
-                    $(that.element).find('input[name="conditionalVal"]').eq(i).val(item.maxValue);
+                that.bindActionClick();
+                that.submit_validate();
 
-                })
-            }
+                if(that.settings.processData && that.settings.processData.flowTaskGroupList!=null && that.settings.processData.flowTaskGroupList.length>0){
+                    $.each(that.settings.processData.flowTaskGroupList,function (i,item) {
+                        if(i>1 && i<that.settings.processData.flowTaskGroupList.length-1){
+                            that.addInput($(that.element).find('a[data-action="addCondition"]'));
+                        }
+                        $(that.element).find('input[name="conditionalVal"]').eq(i).val(item.maxValue);
 
+                    })
+                }
+            });
         }
         ,saveProcessCondtion:function () {
             var that =this;
@@ -86,8 +91,8 @@
             option.classId = '#content-right';
             option.url = restApi.url_prepareProcessDefine;
             option.postData = {};
-            option.postData.key = that.settings.$processData.key;
-            option.postData.type = that.settings.$type;
+            option.postData.key = that.settings.processData.key;
+            option.postData.type = that.settings.type;
 
             var list = [];
             $(that.element).find('input[name="conditionalVal"]').each(function () {
@@ -98,11 +103,11 @@
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
 
-                    if(that.settings.$oKCallBack)
-                        that.settings.$oKCallBack(response.data.flowTaskGroupList);
+                    if(that.settings.oKCallBack)
+                        that.settings.oKCallBack(response.data.flowTaskGroupList);
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }

@@ -32,32 +32,36 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData();
+            that.initHtmlTemplate();
         },
         //初始化数据
-        initHtmlData:function () {
+        renderDialog:function (html,callBack) {
             var that = this;
             if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+                S_layer.dialog({
                     title: that.settings.$title || '选择经营负责人',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '800',
-                    minHeight:'125',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    cancelText:'关闭',
+                    area : '750px',
+                    content:html,
                     cancel:function () {
+                    },
+                    ok:function () {
+
+                        var flag = $(that.element).find('form').valid();
+                        if (!flag || that.save()) {
+                            return false;
+                        }
                     }
-                },function(d){//加载html后触发
 
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    that.initHtmlTemplate();
-
-
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
             }else{//不以弹窗编辑
-
+                $(that.element).html(html);
+                if(callBack)
+                    callBack();
             }
         }
         //生成html
@@ -69,12 +73,14 @@
                     orgUserList:data,
                     selectedUserList:that.settings.$selectedUserList
                 });
-                $(that.element).html(html);
+                that.renderDialog(html,function () {
+                    that.bindActionClick();
+                    if(that.settings.$renderCallBack!=null){
+                        that.settings.$renderCallBack(that.element);
+                    }
+                });
 
-                that.bindActionClick();
-                if(that.settings.$renderCallBack!=null){
-                    that.settings.$renderCallBack(that.element);
-                }
+
             });
         }
         //查出人员列表
@@ -88,7 +94,7 @@
                         return callBack(response.data);
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

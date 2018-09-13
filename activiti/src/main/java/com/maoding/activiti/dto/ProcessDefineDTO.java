@@ -22,6 +22,28 @@ public class ProcessDefineDTO extends CoreShowDTO {
     /** 流程类型，定义见ProcessTypeConst.TYPE_xxx */
     private Integer type;
 
+    /** 分条件流程变量名称 **/
+    private String varName;
+
+    /** 分条件流程变量单位 **/
+    private String varUnit;
+
+    public String getVarName() {
+        return varName;
+    }
+
+    public void setVarName(String varName) {
+        this.varName = varName;
+    }
+
+    public String getVarUnit() {
+        return varUnit;
+    }
+
+    public void setVarUnit(String varUnit) {
+        this.varUnit = varUnit;
+    }
+
     public String getDocumentation() {
         return documentation;
     }

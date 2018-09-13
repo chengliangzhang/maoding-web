@@ -59,7 +59,7 @@
                     that._bindActionClick();
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -94,7 +94,7 @@
                                         S_toastr.success('操作成功');
                                         that._initHtml();
                                     } else {
-                                        S_dialog.error(response.info);
+                                        S_layer.error(response.info);
                                     }
                                 });
                             }
@@ -109,7 +109,7 @@
                             if (response.code == '0') {
                                 S_toastr.success('发送成功!');
                             } else {
-                                S_dialog.error(response.info);
+                                S_layer.error(response.info);
                             }
                         });
 

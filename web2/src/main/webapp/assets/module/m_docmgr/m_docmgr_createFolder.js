@@ -30,52 +30,45 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData(function () {
+            var html = template('m_docmgr/m_docmgr_createFolder',{
+                itemData:that.settings.$itemData,
+                fileTypeStr:that._fileTypeStr
+            });
+            that.initHtmlData(html,function () {
                 that.save_validate();
             });
         }
         //初始化数据并加载模板
-        ,initHtmlData:function (callBack) {
+        ,initHtmlData:function (html,callBack) {
             var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.$isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
                     title: that.settings.$title||'新建文件夹',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '600',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    okText:'保存',
+                    area : '600px',
+                    content:html,
+                    cancel:function () {
+                    },
                     ok:function () {
+
                         if($('form.createFolder').valid()){
                             that.saveCreateFolder();
                         }else{
                             return false;
                         }
-                    },
-                    cancel:function () {
-
                     }
-                },function(d){//加载html后触发
 
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    var html = template('m_docmgr/m_docmgr_createFolder',{
-                        itemData:that.settings.$itemData,
-                        fileTypeStr:that._fileTypeStr
-                    });
-                    $(that.element).html(html);
-                    if(callBack!=null){
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
                         callBack();
-                    }
+                });
 
-                });
             }else{//不以弹窗编辑
-                var html = template('m_docmgr/m_docmgr_createFolder',{
-                });
                 $(that.element).html(html);
-                if(callBack!=null){
+                if(callBack)
                     callBack();
-                }
             }
         }
         //文件夹保存
@@ -96,13 +89,13 @@
                     if(response.code=='0'){
                         S_toastr.success('修改成功！');
                         if(that.settings.isDailog){
-                            S_dialog.close(e);
+                            S_layer.close(e);
                         }
                         if(that.settings.$saveCallBack!=null){
                             return that.settings.$saveCallBack(response.data);
                         }
                     }else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 })
             }else{
@@ -118,13 +111,13 @@
                     if(response.code=='0'){
                         S_toastr.success('保存成功！');
                         if(that.settings.isDailog){
-                            S_dialog.close(e);
+                            S_layer.close(e);
                         }
                         if(that.settings.$saveCallBack!=null){
                             return that.settings.$saveCallBack(response.data);
                         }
                     }else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 })
             }

@@ -49,7 +49,7 @@
                     that._bindKeyDownEnter();
                     that._bindAction();
                 } else {
-                    S_dialog.tips(response.info);
+                    S_layer.tips(response.info);
                 }
             });
         }
@@ -85,7 +85,7 @@
                 if (response.code === '0') {
                     that._renderOrg();
                 } else {
-                    S_dialog.tips(response.info);
+                    S_layer.tips(response.info);
                 }
             });
         }
@@ -121,7 +121,7 @@
                         }
                     }
                 } else {
-                    S_dialog.tips(response.info);
+                    S_layer.tips(response.info);
                 }
             });
         }
@@ -170,7 +170,7 @@
                         });
                         $(that.element).html(html);
                     } else {
-                        S_dialog.tips(response.info);
+                        S_layer.tips(response.info);
                     }
                 });
             });
@@ -201,14 +201,14 @@
                 };
                 m_ajax.postJson(option, function (response) {
                     if (response.code === '0') {
-                        S_dialog.tips("操作成功");
+                        S_layer.tips("操作成功");
                         var html = template('m_projectExternalCooperation/m_inviteCooperation_success', {
                             companyName: companyName,
                             a_companyName: that.settings.a_companyName
                         });
                         $(that.element).html(html);
                     } else {
-                        S_dialog.tips(response.info);
+                        S_layer.tips(response.info);
                     }
                 });
             });
@@ -218,7 +218,7 @@
             var invitedId = $('#invitedId').val();
 
             $(that.element).find('li[data-action="selectOrg"]').click(function (e) {
-                S_dialog.tips('选择无效，该组织'+$(this).attr('data-memo'));
+                S_layer.tips('选择无效，该组织'+$(this).attr('data-memo'));
             });
 
             $(that.element).find('li[data-action="selectOrgApply"]').click(function (e) {
@@ -238,14 +238,14 @@
                         };
                         m_ajax.postJson(option, function (response) {
                             if (response.code === '0') {
-                                S_dialog.tips("操作成功");
+                                S_layer.tips("操作成功");
                                 var html = template('m_projectExternalCooperation/m_inviteCooperation_success', {
                                     companyName: companyName,
                                     a_companyName: that.settings.a_companyName
                                 });
                                 $(that.element).html(html);
                             } else {
-                                S_dialog.tips(response.info);
+                                S_layer.tips(response.info);
                             }
                         });
                     }

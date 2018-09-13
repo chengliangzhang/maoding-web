@@ -66,7 +66,7 @@
                     that.bindActionClick();
                     that.filterActionClick();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
 
@@ -137,7 +137,7 @@
                                 $('body').m_approval_cost_add(option,true);
 
                             } else {
-                                S_dialog.error(response.info);
+                                S_layer.error(response.info);
                             }
                         });
 
@@ -164,7 +164,7 @@
                                 $('body').m_approval_leave_add(option,true);
 
                             } else {
-                                S_dialog.error(response.info);
+                                S_layer.error(response.info);
                             }
                         });
 

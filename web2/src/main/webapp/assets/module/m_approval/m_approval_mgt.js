@@ -53,7 +53,7 @@
                         callBack();
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
 
@@ -91,8 +91,8 @@
                    case 'setProcess':
 
                         var option = {};
-                        option.$key = $this.attr('data-key');
-                        option.$type = $this.attr('data-type');
+                        option.key = $this.attr('data-key');
+                        option.type = $this.attr('data-type');
                         $(that.element).m_approval_mgt_setProcess(option,true);
 
                        break;

@@ -454,7 +454,7 @@
                 if (response.code == '0') {
                     $('#content-right').m_userInfo({userDto: response.data});
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }

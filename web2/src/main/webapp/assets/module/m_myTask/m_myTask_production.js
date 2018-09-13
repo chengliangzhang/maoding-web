@@ -80,7 +80,7 @@
                     $(that.element).find('#productionList').m_production_list(option);
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

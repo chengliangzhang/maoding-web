@@ -86,7 +86,7 @@
                 if (response.code == 0) {
                 }
                 else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                     clock = 0;
                     window.clearInterval(timer);
                     window.timer=null;
@@ -139,7 +139,7 @@
                         }, 1500);
                     }
                     else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 });
             }

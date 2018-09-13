@@ -5,6 +5,7 @@
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="company_id" property="companyId" jdbcType="VARCHAR" />
     <result column="target_type" property="targetType" jdbcType="VARCHAR" />
+    <result column="condition_field_id" property="conditionFieldId" jdbcType="VARCHAR" />
     <result column="type" property="type" jdbcType="INTEGER" />
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="deleted" property="deleted" jdbcType="INTEGER" />
@@ -15,7 +16,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, company_id, target_type, status,type, deleted, create_date, create_by, update_date,
+    id, company_id, target_type, condition_field_id,status,type, deleted, create_date, create_by, update_date,
     update_by
   </sql>
 
@@ -41,11 +42,11 @@
   </delete>
 
   <insert id="insert" parameterType="com.maoding.process.entity.ProcessTypeEntity" >
-    insert into maoding_process_type (id, company_id, target_type, 
+    insert into maoding_process_type (id, company_id, target_type, condition_field_id,
       status,type, deleted, create_date,
       create_by, update_date, update_by
       )
-    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{targetType,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{targetType,jdbcType=VARCHAR}, #{conditionFieldId,jdbcType=VARCHAR},
       #{status,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP},
       #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
       )
@@ -59,6 +60,9 @@
       </if>
       <if test="targetType != null" >
         target_type = #{targetType,jdbcType=VARCHAR},
+      </if>
+      <if test="conditionFieldId != null" >
+        condition_field_id = #{conditionFieldId,jdbcType=VARCHAR},
       </if>
       <if test="status != null" >
         status = #{status,jdbcType=INTEGER},
@@ -89,6 +93,7 @@
     update maoding_process_type
     set company_id = #{companyId,jdbcType=VARCHAR},
       target_type = #{targetType,jdbcType=VARCHAR},
+      condition_field_id = #{conditionFieldId,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER},
       type = #{type,jdbcType=INTEGER},
       deleted = #{deleted,jdbcType=INTEGER},
@@ -135,5 +140,45 @@
       order by process_type.company_id desc
     ) process_ordered
     group by process_ordered.type_id,process_ordered.group_type_id
+  </select>
+
+  <!-- 流程名称属性定义 -->
+  <resultMap id="ProcessDefineMap" type="com.maoding.activiti.dto.ProcessDefineDTO">
+      <id column="process_id" property="id"/>
+      <result column="type_code" property="key"/>
+      <result column="type_name" property="name"/>
+      <result column="type_setting" property="type"/>
+      <result column="documentation" property="documentation"/>
+      <result column="var_name" property="varName"/>
+      <result column="var_unit" property="varUnit"/>
+  </resultMap>
+
+  <!-- 获取流程列表 -->
+  <select id="listProcessDefine" resultMap="ProcessDefineMap" parameterType="com.maoding.activiti.dto.ProcessDefineQueryDTO">
+    select process_ordered.*
+    from (
+      select
+        1 as type_setting,
+        <choose>
+          <when test="currentCompanyId != null">
+            concat(#{currentCompanyId},'_',process_type.type_code,'_1') as process_id,
+          </when>
+          <otherwise>
+            concat(ifnull(concat(process_type.company_id,'_'),''),process_type.type_code,'_1') as process_id,
+          </otherwise>
+        </choose>
+        process_type.*
+      from md_type_process_custom process_type
+      <where>
+        <if test="currentCompanyId != null">
+          and (process_type.company_id is null or process_type.company_id = #{currentCompanyId})
+        </if>
+        <if test="key != null">
+          and (process_type.type_code = #{key})
+        </if>
+      </where>
+      order by process_type.company_id desc
+    ) process_ordered
+    group by process_ordered.type_id
   </select>
 </mapper>

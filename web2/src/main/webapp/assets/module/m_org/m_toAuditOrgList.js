@@ -57,7 +57,7 @@
                         return callBack(response.data);
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -89,7 +89,7 @@
                     });
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

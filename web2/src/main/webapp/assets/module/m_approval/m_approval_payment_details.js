@@ -29,45 +29,29 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.renderDialog(function () {
-                that.renderContent();
-            });
+            that.renderContent();
 
         }
         //渲染弹窗
-        ,renderDialog:function (callBack) {
+        ,renderDialog:function (html) {
 
             var that = this;
-            if(that.settings.isDialog){//以弹窗编辑
+            if(that.settings.isDialog===true){//以弹窗编辑
 
-                /*S_layer.dialog({
+                S_layer.dialog({
                     title: that.settings.title||'付款申请',
-                    area : '700px',
-                    maxHeight : '500px',
+                    area : '750px',
+                    btn : false,
                     content:html
-                },function(d){//加载html后触发
-
-                    that.element = 'div.layui-layer'+d.selector+' .layui-layer-content';
-
-                });*/
-
-                S_dialog.dialog({
-                    title: that.settings.title||'付款申请',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '705',
-                    tPadding: '0',
-                    minHeight:'460',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html'
-                },function(d){//加载html后触发
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    if(callBack!=null)
-                        callBack();
+                    
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
 
                 });
+
             }else{//不以弹窗编辑
-                if(callBack!=null)
-                    callBack();
+                $(that.element).html(html);
             }
         }
         //渲染内容
@@ -86,10 +70,10 @@
                     that._baseData.title = that._title;
                     that._baseData.currentCompanyUserId = that._currentCompanyUserId;
                     var html = template('m_approval/m_approval_payment_details', that._baseData);
-                    $(that.element).html(html);
+                    that.renderDialog(html);
                     that.bindActionClick();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -100,7 +84,7 @@
 
                 switch(dataAction){
                     case 'cancel'://取消
-                        S_dialog.close($(that.element));
+                        S_layer.close($(that.element));
                         break;
                     case 'agree'://同意
                         var option = {};

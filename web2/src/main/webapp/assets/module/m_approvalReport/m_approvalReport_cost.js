@@ -80,7 +80,7 @@
 
                     return false;
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
 
@@ -110,14 +110,14 @@
                 var dataAction = $this.attr('data-action');
                 switch (dataAction){
                     case 'agreeToGrant'://拨款
-                        S_dialog.dialog({
+                        var currDate = getNowDate();
+                        S_layer.dialog({
                             title: '请选择时间',
-                            contentEle: 'dialogOBox',
-                            lock: 3,
-                            width: '200',
-                            height:'50',
-                            url: rootPath+'/assets/module/m_common/m_dialog.html',
-                            ok:function(){
+                            area : ['300px','165px'],
+                            content:'<form class="agreeToGrantForm m"><div class="form-group text-center col-md-12 "><input class="form-control" type="text" name="allocationDate" onclick="WdatePicker()" value="'+currDate+'" readonly></div></form>',
+                            cancel:function () {
+                            },
+                            ok:function () {
 
                                 if ($('form.agreeToGrantForm').valid()) {
 
@@ -135,38 +135,31 @@
                                             //that.init();
                                             $this.parents('td').html(moment(financialDate).format('YYYY/MM/DD'));
                                         }else {
-                                            S_dialog.error(response.info);
+                                            S_layer.error(response.info);
                                         }
                                     });
 
                                 } else {
                                     return false;
                                 }
-                            },
-                            cancelText:'取消',
-                            cancel:function(){
                             }
-                        },function(d){//加载html后触发
 
-                            var $dialogEle = $('div[id="content:'+d.id+'"] .dialogOBox');
-                            var currDate = getNowDate();
-                            $dialogEle.html('<form class="agreeToGrantForm"><div class="form-group text-center col-md-12 "><input class="form-control" type="text" name="allocationDate" onclick="WdatePicker()" value="'+currDate+'" readonly></div></form>');
+                        },function(layero,index,dialogEle){//加载html后触发
+
                             that.saveAgreeToGrant_validate();
+
                         });
                         e.stopPropagation();
                         return false;
                         break;
                     case 'sendBack'://退回
-
-                        S_dialog.dialog({
+                        S_layer.dialog({
                             title: '退回原因',
-                            contentEle: 'dialogOBox',
-                            lock: 3,
-                            width: '300',
-                            height:'100',
-                            tPadding:'0',
-                            url: rootPath+'/assets/module/m_common/m_dialog.html',
-                            ok:function(){
+                            area : ['300px','200px'],
+                            content:'<form class="sendBackForm m"><div class=" m-t-md col-md-12 "><textarea class="form-control" name="sendBackReason"></textarea></div></form>',
+                            cancel:function () {
+                            },
+                            ok:function () {
 
                                 if ($('form.sendBackForm').valid()) {
 
@@ -183,21 +176,16 @@
                                             //that.init();
                                             $this.parents('TR').remove();
                                         }else {
-                                            S_dialog.error(response.info);
+                                            S_layer.error(response.info);
                                         }
                                     });
 
                                 } else {
                                     return false;
                                 }
-                            },
-                            cancelText:'取消',
-                            cancel:function(){
                             }
-                        },function(d){//加载html后触发
 
-                            var $dialogEle = $('div[id="content:'+d.id+'"] .dialogOBox');
-                            $dialogEle.html('<form class="sendBackForm"><div class=" m-t-md col-md-12 "><textarea class="form-control" name="sendBackReason"></textarea></div></form>');
+                        },function(layero,index,dialogEle){//加载html后触发
                             that.saveSendBack_validate();
                         });
                         e.stopPropagation();

@@ -28,15 +28,14 @@
         //加载痰喘
         ,getData: function () {
             var that = this;
-            S_dialog.dialog({
+            S_layer.dialog({
                 title: '解散组织',
-                contentEle: 'teamDissolutionOBox',
-                lock: 3,
-                width: '600',
-                minHeight:'250',
-                tPadding: '0px',
-                url: rootPath+'/assets/module/m_common/m_dialog.html',
+                area : '600px',
+                content:template('m_teamInfo/m_teamDissolution',{teamInfo:teamInfo}),
+                cancel:function () {
+                },
                 ok:function () {
+
                     var option = {};
                     option.url=restApi.url_disbandCompany;
                     option.postData={};
@@ -44,32 +43,25 @@
                     if(!$('form.teamDissolutionOBox').valid()){
                         return false;
                     }else{
-                            m_ajax.postJson(option,function (response) {
-                                if(response.code=='0'){
-                                    var url = '/iWork/sys/logout';
-                                    if (response.data != null && response.data != '')
-                                        url = response.data;
-                                    S_dialog.success('解散当前组织成功，系统将跳转至登录界面','提示',function(){
-                                        window.location.href = rootPath+url;
-                                    })
-                                }else {
-                                    S_dialog.error(response.info);
-                                    return false;
-                                }
+                        m_ajax.postJson(option,function (response) {
+                            if(response.code=='0'){
+                                var url = '/iWork/sys/logout';
+                                if (response.data != null && response.data != '')
+                                    url = response.data;
+                                S_layer.success('解散当前组织成功，系统将跳转至登录界面','提示',function(){
+                                    window.location.href = rootPath+url;
+                                })
+                            }else {
+                                S_layer.error(response.info);
+                                return false;
+                            }
 
-                            })
+                        })
 
                     }
-                },
-                cancel:function () {
-
                 }
-            },function(d){//加载html后触发
-                var teamInfo= that.settings.teamInfo;
-                //teamInfo.userName=$("#userName").val();
-                //teamInfo.cellphone=$("#cellphone").val();
-                var html = template('m_teamInfo/m_teamDissolution',{teamInfo:teamInfo});
-                $('div[id="content:'+d.id+'"] .dialogOBox').html(html);
+
+            },function(layero,index,dialogEle){//加载html后触发
                 that.changeAdmin_validate();
             });
         }

@@ -27,6 +27,13 @@ public class ProcessDefineDetailEditDTO extends CoreEditDTO {
     /** 流程类型，定义见ProcessTypeConst.TYPE_xxx */
     private Integer type;
 
+    /** 分条件流程内的变量名称 **/
+    private String varName;
+
+    /** 分条件流程内的变量单位 **/
+    private String varUnit;
+
+
     /** 允许启动流程的角色编号列表 */
     private List<String> candidateStarterGroups;
 
@@ -41,6 +48,22 @@ public class ProcessDefineDetailEditDTO extends CoreEditDTO {
 
     /** 流程需更改的任务节点序列 */
     private List<FlowTaskGroupEditDTO> flowTaskGroupList;
+
+    public String getVarName() {
+        return varName;
+    }
+
+    public void setVarName(String varName) {
+        this.varName = varName;
+    }
+
+    public String getVarUnit() {
+        return varUnit;
+    }
+
+    public void setVarUnit(String varUnit) {
+        this.varUnit = varUnit;
+    }
 
     public List<FlowTaskGroupEditDTO> getFlowTaskGroupList() {
         return flowTaskGroupList;

@@ -12,8 +12,7 @@ vendor.min.js等于上述几个JS打包
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/additional-methods.min.js?v=<%=v%>"></script>
 
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/jquery.blockUI.js"></script>
-<script type="text/javascript" src="<%=rootPath %>/assets/lib/art-dialog/dist/dialog-plus.min.js"></script>
-<script type="text/javascript" src="<%=rootPath %>/assets/lib/layer-2x/layer.min.js?v=<%=v%>"></script>
+<script type="text/javascript" src="<%=rootPath %>/assets/lib/layer/layer.js"></script>
 
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/bowser/bowser.min.js"></script>
 <!--[if lt IE 9]>

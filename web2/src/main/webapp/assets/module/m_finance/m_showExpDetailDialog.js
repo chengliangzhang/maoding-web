@@ -7,6 +7,7 @@
     "use strict";
     var pluginName = "m_showExpDetailDialog",
         defaults = {
+            isDialog:true,
             title:null,//弹窗标题
             url:null,//请求地址
             type:1,//1=报销,2=费用
@@ -28,31 +29,37 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.getData();
+            that.getExpData();
         }
         //加载弹窗
-        ,getData: function () {
+        ,renderDialog: function (html,callBack) {
             var that = this;
-            S_dialog.dialog({
-                title: that.settings.title||'报销详情',
-                contentEle: 'TConsentOBox',
-                lock: 3,
-                width: '800',
-                minHeight: '450',
-                tPadding: '0px',
-                url: rootPath+'/assets/module/m_common/m_dialog.html',
-                cancelText:'关闭',
-                cancel:function () {
+            if(that.settings.isDialog===true){//以弹窗编辑
 
-                }
-            },function(d){//加载html后触发
-                that.getExpData(d);
+                S_layer.dialog({
+                    title: that.settings.title||'报销详情',
+                    area : '750px',
+                    content:html,
+                    cancelText:'关闭',
+                    cancel:function () {
 
+                    }
 
-            });
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
+                });
+
+            }else{//不以弹窗编辑
+                $(that.element).html(html);
+                if(callBack)
+                    callBack();
+            }
         }
         //加载
-        ,getExpData:function(d){
+        ,getExpData:function(){
             var that = this;
             var option = {};
             if(that.settings.url!=null){
@@ -79,9 +86,9 @@
                     $data.type = that.settings.type;
                     $data.typeStr = that._typeStr;
                     var html = template('m_finance/m_showExpDetailDialog',$data);
-                    $('div[id="content:'+d.id+'"] .dialogOBox').html(html);
+                    that.renderDialog(html);
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
 
             })

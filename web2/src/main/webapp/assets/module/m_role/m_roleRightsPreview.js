@@ -29,29 +29,25 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData();
+            that.initHtmlTemplate();
         },
         //初始化数据
-        initHtmlData:function () {
+        renderDialog:function (html,callBack) {
             var that = this;
             if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+                S_layer.dialog({
                     title: that.settings.$title || '权限预览',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '600',
-                    minHeight:'450',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    area : '600px',
+                    content:html,
                     cancelText:'关闭',
                     cancel:function () {
                     }
-                },function(d){//加载html后触发
 
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    that.initHtmlTemplate();
-
-
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
             }else{//不以弹窗编辑
 
@@ -65,11 +61,11 @@
                 var html = template('m_role/m_roleRightsPreview',{
                     rolePermissions:data
                 });
-                $(that.element).html(html);
-
-                if(that.settings.$renderCallBack!=null){
-                    that.settings.$renderCallBack(that.element);
-                }
+                that.renderDialog(html,function () {
+                    if(that.settings.$renderCallBack!=null){
+                        that.settings.$renderCallBack(that.element);
+                    }
+                });
             });
         }
         //查出权限列表
@@ -86,7 +82,7 @@
                         return callBack(response.data);
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

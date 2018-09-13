@@ -8,7 +8,7 @@
     var pluginName = "m_editDepart",
         defaults = {
             title:'',
-            isDailog:true,
+            isDialog:true,
             departObj:null,
             doType:'add',//默认添加 edit=编辑
             saveCallBack:null,//保存回滚事件
@@ -30,47 +30,43 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData(function () {
+            var $data = {};
+            $data.departObj={};
+            $data.parentDepart=that.settings.departObj.parentDepart;
+            $data.isDialog=that.settings.isDialog;
+            if(that.settings.doType=='edit'){
+                $data.departObj = that.settings.departObj;
+                $data.doType = that.settings.doType;
+            }
+            var html = template('m_org/m_editDepart',$data);
+            that.initHtmlData(html,function () {
                 that.bindActionClick();
                 that.saveDepart_validate();
             });
         }
         //初始化数据并加载模板
-        ,initHtmlData:function (callBack) {
+        ,initHtmlData:function (html,callBack) {
             var that = this;
-            if(that.settings.isDailog){//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.title||'添加部门',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '600',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html'
-                },function(d){//加载html后触发
 
-                    var $data = {};
-                    $data.departObj={};
-                    $data.parentDepart=that.settings.departObj.parentDepart;
-                    $data.isDailog=that.settings.isDailog;
-                    if(that.settings.doType=='edit'){
-                        $data.departObj = that.settings.departObj;
-                        $data.doType = that.settings.doType;
-                    }
-                    var html = template('m_org/m_editDepart',$data);
-                    $('div[id="content:'+d.id+'"] .dialogOBox').html(html);
-                    if(callBack!=null){
+            if(that.settings.isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
+                    title: that.settings.title||'添加部门',
+                    area : '600px',
+                    content:html,
+                    btn:false
+
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
                         callBack();
-                    }
                 });
+
             }else{//不以弹窗编辑
-                var html = template('m_org/m_editDepart',{
-                    parentDepart:that.settings.departObj.parentDepart,
-                    isDailog:that.settings.isDailog
-                });
                 $(that.element).html(html);
-                if(callBack!=null){
+                if(callBack)
                     callBack();
-                }
             }
         }
         //部门保存
@@ -96,14 +92,14 @@
                 m_ajax.postJson(option,function (response) {
                     if(response.code=='0'){
                         S_toastr.success('保存成功！');
-                        if(that.settings.isDailog){
-                            S_dialog.close(e);
+                        if(that.settings.isDialog){
+                            S_layer.close(e);
                         }
                         if(that.settings.saveCallBack!=null){
                             return that.settings.saveCallBack(response.data);
                         }
                     }else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 })
             }
@@ -111,21 +107,21 @@
         //删除部门
         ,delDepart:function (e) {
             var that = this;
-            S_dialog.confirm('部门下包含的人员或子部门将一起删除，此操作不可恢复。确定要继续吗？',function(){
+            S_layer.confirm('部门下包含的人员或子部门将一起删除，此操作不可恢复。确定要继续吗？',function(){
                 var options = {};
                 options.url = restApi.url_depart+'/'+that.settings.departObj.id;
                 m_ajax.get(options,function (response) {
                     if(response.code=='0'){
                         S_toastr.success('删除成功！');
-                        if(that.settings.isDailog){
-                            S_dialog.close(e);
+                        if(that.settings.isDialog){
+                            S_layer.close(e);
                         }
                         delNodeByTree();
                         if(that.settings.delCallBack!=null){
                             that.settings.delCallBack();
                         }
                     }else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 })
             },function(){});

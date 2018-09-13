@@ -78,7 +78,7 @@ var home_index1 = {
                     window.location.href = window.rootPath + url;
                 }
                 else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }

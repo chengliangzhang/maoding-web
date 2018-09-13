@@ -36,55 +36,45 @@
                 $(that.element).find('i').addClass('fc-v1-blue');
             }
             $(that.element).on('click',function (e) {
-                S_dialog.dialog({
-                    contentEle: 'dialogOBox',
-                    ele:that.settings.eleId,
-                    lock: 2,
-                    align: that.settings.align || 'bottom right',
-                    quickClose:true,
-                    noTriangle:true,
-                    width: '220',
-                    minHeight:'100',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html'
 
-
-                },function(d){//加载html后触发
-
-                    var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-
-                    var iHtml = template('m_filter/m_filter_time',{
-                        isEndTime:that.settings.isEndTime,
-                        timeData:that.settings.timeData
-                    });
-
-                    $(dialogEle).html(iHtml);
-                    $(dialogEle).find('button[data-action="sureTimeFilter"]').off('click').on('click',function () {
-
-                        var startTime = $(dialogEle).find('input[name="startTime"]').val();
-                        var endTime = $(dialogEle).find('input[name="endTime"]').val();
-
-                        if(!isNullOrBlank(startTime) || !isNullOrBlank(endTime)){
-                            $(that.element).find('i').addClass('fc-v1-blue');
-                        }else{
-                            $(that.element).find('i').removeClass('fc-v1-blue');
-                        }
-                        that.settings.timeData.startTime = startTime;
-                        that.settings.timeData.endTime = endTime;
-
-                        if(that.settings.okCallBack)
-                            that.settings.okCallBack({startTime:startTime,endTime:endTime});
-
-                        S_dialog.close($(dialogEle));
-                    });
-                    $(dialogEle).find('button[data-action="clearTimeInput"]').off('click').on('click',function () {
-                        $(dialogEle).find('input').val('');
-                    });
-                    $(dialogEle).find('i.fa-calendar').off('click').on('click',function () {
-                        $(this).closest('.input-group').find('input').focus();
-                    });
-
+                var iHtml = template('m_filter/m_filter_time',{
+                    isEndTime:that.settings.isEndTime,
+                    timeData:that.settings.timeData
                 });
+                $(that.element).m_floating_popover({
+                    eleId:that.settings.eleId,
+                    content:iHtml,
+                    placement:'bottomRight',
+                    renderedCallBack:function ($popover) {
+
+                        $popover.find('button[data-action="sureTimeFilter"]').off('click').on('click',function () {
+
+                            var startTime = $popover.find('input[name="startTime"]').val();
+                            var endTime = $popover.find('input[name="endTime"]').val();
+
+                            if(!isNullOrBlank(startTime) || !isNullOrBlank(endTime)){
+                                $(that.element).find('i').addClass('fc-v1-blue');
+                            }else{
+                                $(that.element).find('i').removeClass('fc-v1-blue');
+                            }
+                            that.settings.timeData.startTime = startTime;
+                            that.settings.timeData.endTime = endTime;
+
+                            if(that.settings.okCallBack)
+                                that.settings.okCallBack({startTime:startTime,endTime:endTime});
+
+                            $(that.element).m_floating_popover('closePopover');//关闭浮窗
+                        });
+                        $popover.find('button[data-action="clearTimeInput"]').off('click').on('click',function () {
+                            $popover.find('input').val('');
+                        });
+                        $popover.find('i.fa-calendar').off('click').on('click',function () {
+                            $(this).closest('.input-group').find('input').focus();
+                        });
+                    }
+
+                },true);
+
                 stopPropagation(e);
                 return false;
             });

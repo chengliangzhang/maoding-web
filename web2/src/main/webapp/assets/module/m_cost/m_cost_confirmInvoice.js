@@ -31,66 +31,65 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.renderDialog(function () {
 
-                var option  = {};
-                option.classId = that.element;
-                option.url = restApi.url_getInvoice;
-                option.postData = {
-                    id:that.settings.invoiceId
-                };
+            var option  = {};
+            option.classId = that.element;
+            option.url = restApi.url_getInvoice;
+            option.postData = {
+                id:that.settings.invoiceId
+            };
 
-                m_ajax.postJson(option,function (response) {
-                    if(response.code=='0'){
+            m_ajax.postJson(option,function (response) {
+                if(response.code=='0'){
 
-                        var html = template('m_cost/m_cost_confirmInvoice',{
-                            pointInfo:that.settings.pointInfo,
-                            invoiceInfo:response.data
-                        });
-                        $(that.element).html(html);
+                    var html = template('m_cost/m_cost_confirmInvoice',{
+                        pointInfo:that.settings.pointInfo,
+                        invoiceInfo:response.data
+                    });
+                    that.renderDialog(html,function () {
                         that.renderListCompany();
                         //that.initICheck();
                         that.save_validate();
                         //clickTimeIcon($(that.element));
+                    });
 
-                    }else {
-                        S_dialog.error(response.info);
-                    }
-                });
-
-
+                }else {
+                    S_layer.error(response.info);
+                }
             });
+
+
         },
         //初始化数据,生成html
-        renderDialog:function (callBack) {
+        renderDialog:function (html,callBack) {
 
             var that = this;
-            if(that.settings.isDialog){//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.title||'确认开票',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '600',
-                    minHeight: that.settings.dialogHeight||'200',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    cancel:function () {
+            if(that.settings.isDialog===true){//以弹窗编辑
 
+                S_layer.dialog({
+                    title: that.settings.title||'确认开票',
+                    area : '600px',
+                    content:html,
+                    cancel:function () {
                     },
                     ok:function () {
+
                         var flag = $(that.element).find('form').valid();
                         if (!flag || that.save()) {
                             return false;
                         }
                     }
-                },function(d){//加载html后触发
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    if(callBack!=null)
-                        callBack();
 
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
+
             }else{//不以弹窗编辑
-                if(callBack!=null)
+                $(that.element).html(html);
+                if(callBack)
                     callBack();
             }
         }
@@ -155,7 +154,7 @@
                     if(that.settings.saveCallBack)
                         that.settings.saveCallBack();
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }

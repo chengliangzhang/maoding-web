@@ -9,7 +9,7 @@
         defaults = {
             title:'',
             inivteUserUrl:'',
-            isDailog:true
+            isDialog:true
         };
 
     // The actual plugin constructor
@@ -26,42 +26,35 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData(function () {
+            var $data = {};
+            var url = window.rootPath+'/iWork/sys/shareInvitation/'+window.currentCompanyId+'/'+window.currentUserId;
+            $data.inivteUserUrl = url;
+            var html = template('m_org/m_inviteUser',$data);
+            that.renderDialog(html,function () {
                 that.bindActionClick();
             });
         }
         //初始化数据并加载模板
-        ,initHtmlData:function (callBack) {
+        ,renderDialog:function (html,callBack) {
             var that = this;
-            if(that.settings.isDailog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.isDialog===true){//以弹窗编辑
+                S_layer.dialog({
                     title: that.settings.title||'邀请人员',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '460',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html'
-                },function(d){//加载html后触发
+                    area : '460px',
+                    content:html,
+                    btn:false
 
-                    var $data = {};
-
-
-                    var url = window.rootPath+'/iWork/sys/shareInvitation/'+window.currentCompanyId+'/'+window.currentUserId;
-                    $data.inivteUserUrl = url;
-
-                    var html = template('m_org/m_inviteUser',$data);
-                    $('div[id="content:'+d.id+'"] .dialogOBox').html(html);
-                    if(callBack!=null){
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
                         callBack();
-                    }
-
                 });
+
             }else{//不以弹窗编辑
-                var html = template('m_org/m_inviteUser',{});
                 $(that.element).html(html);
-                if(callBack!=null){
+                if(callBack)
                     callBack();
-                }
             }
         }
         //复制链接

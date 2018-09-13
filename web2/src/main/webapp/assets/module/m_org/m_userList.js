@@ -167,7 +167,7 @@
                          }
                          });
                          if(_isASingleSelectUser){
-                         S_dialog.tips('只能选择一人！');
+                         S_layer.tips('只能选择一人！');
                          return false;
                          }*/
                         that.settings.selectedUserList = [];
@@ -178,7 +178,7 @@
                         $data.userId = $this.attr('data-userId');//用户账户ID
                         $data.companyUserId = $this.attr('data-companyUserId');//组织人员ID
                         $data.userName = $this.parent().parent().find('td:eq(0)').text();
-                        $data.id = $this.parents('.ui-dialog-content').attr('id');
+                        $data.id = $this.parents('.layui-layer').attr('times');
 
                         if (that.settings.selectedUserList == null) {
 

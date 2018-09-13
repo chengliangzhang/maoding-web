@@ -32,21 +32,16 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that._initHtml();
+            that._renderHtml();
         },
         //初始化数据,生成html
-        _initHtml: function () {
+        _renderDialog: function (html,callBack) {
             var that = this;
-
-
             if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+                S_layer.dialog({
                     title: that.settings.$title||'组织关系',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '900',
-                    minHeight:'125',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    area : '800px',
+                    content:html,
                     cancelText:'关闭',
                     cancel:function () {
                         /*if(that.settings.$isProduction){//刷新生产的界面
@@ -56,13 +51,17 @@
                         }*/
                     }
 
-                },function(d){//加载html后触发
-
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    that._renderHtml();
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
+
             }else{//不以弹窗编辑
-                that._renderHtml();
+                $(that.element).html(html);
+                if(callBack)
+                    callBack();
             }
         }
         , _renderHtml:function () {
@@ -95,9 +94,10 @@
             $data.isOrgManager = window.currentRoleCodes!=null && window.currentRoleCodes.indexOf('sys_enterprise_logout')>-1?1:0;//是否是当前组织企业负责人
             $data.isView = that.settings.$isView ;
             var html = template('m_taskIssue/m_taskIssue_org', $data);
-            $(that.element).html(html);
-            stringCtrl('companyName');
-            that._bindClickFun();
+            that._renderDialog(html,function () {
+                stringCtrl('companyName');
+                that._bindClickFun();
+            });
         }
         , _bindClickFun: function () {
             var that = this;
@@ -125,10 +125,10 @@
                     options.selectUserCallback = function (data, event) {//1
                         data.type = 1;
                         var targetUser='<strong style="color:red;margin:0 3px;">'+data.userName+'</strong>';
-                        S_dialog.confirm('确定将经营负责人更换为'+targetUser+'？', function () {
+                        S_layer.confirm('确定将经营负责人更换为'+targetUser+'？', function () {
                             that._postManagerChange(data, companyId, event);
                         }, function () {
-                            //S_dialog.close($(event));
+                            //S_layer.close($(event));
                         });
                     }
                 } else if (action == 'changeManagerPerson') {
@@ -144,10 +144,10 @@
                     options.selectUserCallback = function (data, event) {
                         data.type = 2;
                         var targetUser='<strong style="color:red;margin:0 3px;">'+data.userName+'</strong>';
-                        S_dialog.confirm('确定将设计负责人更换为'+targetUser+'？', function () {
+                        S_layer.confirm('确定将设计负责人更换为'+targetUser+'？', function () {
                             that._postManagerChange(data, companyId, event);
                         }, function () {
-                            //S_dialog.close($(event));
+                            //S_layer.close($(event));
                         });
                         data.isFirstSetDesign = isFirstSetDesign;
                     }
@@ -173,7 +173,7 @@
             option.postData.companyUserId = data.companyUserId;
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
-                    S_dialog.close($(event));
+                    S_layer.close($(event));
                     S_toastr.success('保存成功！');
                     if (data.type == 1) {//移交经营负责人会影响项目权限的编辑更改，需要刷新数据
 
@@ -185,7 +185,7 @@
                     }
                     that._refresh();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

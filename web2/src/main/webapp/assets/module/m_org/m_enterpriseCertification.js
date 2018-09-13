@@ -68,7 +68,7 @@
                     }
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
 
@@ -180,7 +180,7 @@
                     S_toastr.success('提交审核成功！');
                     that._initHtml();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

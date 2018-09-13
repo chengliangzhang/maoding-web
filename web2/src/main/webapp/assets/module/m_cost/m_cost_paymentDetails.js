@@ -28,36 +28,33 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.renderDialog(function () {
-
-                that.renderPage();
-            });
+            that.renderPage();
         },
         //初始化数据,生成html
-        renderDialog:function (callBack) {
+        renderDialog:function (html,callBack) {
 
             var that = this;
-            if(that.settings.isDialog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
                     title: that.settings.title||'付款详情',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '700',
-                    minHeight: that.settings.dialogHeight||'300',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    area : '750px',
+                    content:html,
                     cancelText:'关闭',
                     cancel:function () {
 
                     }
-                },function(d){//加载html后触发
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    if(callBack!=null)
-                        callBack();
 
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
+
             }else{//不以弹窗编辑
-                if(callBack!=null)
+                $(that.element).html(html);
+                if(callBack)
                     callBack();
             }
         }
@@ -77,10 +74,10 @@
                 if(response.code=='0'){
 
                     var html = template('m_cost/m_cost_paymentDetails',response.data);
-                    $(that.element).html(html);
+                    that.renderDialog(html);
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }

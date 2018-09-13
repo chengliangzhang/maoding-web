@@ -111,7 +111,7 @@
                             S_toastr.success("保存成功");
                             $('.navbar-header .navbar-brand img').attr('src', path);
                         } else {
-                            S_dialog.error(response.info);
+                            S_layer.error(response.info);
                         }
                     });
                 }

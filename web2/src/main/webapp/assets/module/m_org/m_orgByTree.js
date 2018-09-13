@@ -44,36 +44,36 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that =this;
-            this.renderDialog(function () {
+            that.initTreeData(function (data) {
 
-                that.initTreeData(function (data) {
+                if (that.settings.isGetUserList) {
+                    var $data = {};
+                    if (that.settings.selectedUserList != null) {
+                        $data.selectedUserList = that.settings.selectedUserList;
 
-                    if (that.settings.isGetUserList) {
-                        var $data = {};
-                        if (that.settings.selectedUserList != null) {
-                            $data.selectedUserList = that.settings.selectedUserList;
-
-                        }
-                        $data.isASingleSelectUser = that.settings.isASingleSelectUser;
-                        var html = template('m_org/m_orgByTree', $data);
-                        $(that.element).html(html);
                     }
+                    $data.isASingleSelectUser = that.settings.isASingleSelectUser;
+                    var html = template('m_org/m_orgByTree', $data);
+                    that.renderDialog(html,function () {
+                        that.initTreeStructure(data);
+                    });
+                }else{
                     that.initTreeStructure(data);
-                });
+                }
+
             });
+
         }
         //初始化人员选择弹窗
-        , renderDialog: function (callBack) {
+        , renderDialog: function (html,callBack) {
             var that = this;
-            if (that.settings.isDialog) {
+
+            if(that.settings.isDialog===true){//以弹窗编辑
+
                 var options = {};
                 options.title = that.settings.title || '选择人员';
-                options.contentEle = 'dialogOBox';
-                options.lock = 3;
-                options.width = '800';
-                options.minHeight = '400';
-                options.tPadding = '0px';
-                options.url = rootPath + '/assets/module/m_common/m_dialog.html';
+                options.area = ['800px','500px'];
+                options.content = html;
                 options.cancelText = that.settings.cancelText || '取消';
                 options.okText = that.settings.okText || '确定';
                 options.cancel = function () {};
@@ -97,7 +97,7 @@
                                         return that.settings.saveCallback($data);
                                     }
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             })
                         }else{
@@ -107,13 +107,15 @@
                         }
                     };
                 }
-                S_dialog.dialog(options, function (d) {//加载html后触发
-
-                    that.element = 'div[id="content:' + d.id + '"] .dialogOBox';
+                S_layer.dialog(options,function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
                     if(callBack)
                         callBack();
                 });
-            } else {
+
+            }else{//不以弹窗编辑
+                $(that.element).html(html);
                 if(callBack)
                     callBack();
             }
@@ -133,7 +135,7 @@
                         return callBack(response.data);
                     }
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
 
             })

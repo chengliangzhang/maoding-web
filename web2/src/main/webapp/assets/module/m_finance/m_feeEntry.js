@@ -63,7 +63,7 @@
                         });
                     });
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
 
@@ -98,7 +98,7 @@
 
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -156,7 +156,7 @@
                             year = year.substring(0,4);
                             that.renderMonthList(year,that._currentExpFixedData.expDate);
                         }else {
-                            S_dialog.error(response.info);
+                            S_layer.error(response.info);
                         }
                     });
                 }

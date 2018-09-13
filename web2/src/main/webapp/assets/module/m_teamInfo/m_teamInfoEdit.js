@@ -126,7 +126,7 @@
                                 tInfo = teamInfo;
                                 $('#mainContain').find('a[data-action="abandonEditTeamInfo"]').click();
                             }else {
-                                S_dialog.error(response.info);
+                                S_layer.error(response.info);
                             }
                         });
                     }

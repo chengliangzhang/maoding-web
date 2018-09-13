@@ -35,31 +35,32 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.renderPage();
+            that.renderListDeliver();
 
         }
-        ,renderPage:function () {
+        ,renderDialog:function (html,callBack) {
             var that = this;
-            var currDate = getNowDate();
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.$isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
                     title: that.settings.$title||'交付历史',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '1000',
-                    height:'250',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    area : '750px',
+                    content:html,
                     cancelText:'关闭',
                     cancel:function(){
                     }
 
-                },function(d){//加载html后触发
-
-                    that.element = $('div[id="content:'+d.id+'"] .dialogOBox');
-                    that.renderListDeliver();
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
-            }else {//不以弹窗编辑
-                that.renderListDeliver();
+
+            }else{//不以弹窗编辑
+                $(that.element).html(html);
+                if(callBack)
+                    callBack();
             }
         }
         //请求交付历史数据并渲染
@@ -75,22 +76,23 @@
 
                 if(response.code=='0'){
                     var html = template('m_production/m_deliveryHistory',{listDeliver:response.data});
-                    $(that.element).html(html);
-                    that.bindActionClick();
-                    that.initXeditable();
+                    that.renderDialog(html,function () {
+                        that.bindActionClick();
+                        that.initXeditable();
 
-                    //禁用
-                    $(that.element).find('a[data-action="xeditable"]').editable('toggleDisabled');
+                        //禁用
+                        $(that.element).find('a[data-action="xeditable"]').editable('toggleDisabled');
 
-                    //编辑刷新 开放保留的编辑项
-                    if(that._deliverHistoryIdsByEdit.length>0){
-                        $.each(that._deliverHistoryIdsByEdit,function (i,item) {
-                            that.dealEditStatus($(that.element).find('tr[data-id="'+item+'"]'),1);
-                        });
-                    }
+                        //编辑刷新 开放保留的编辑项
+                        if(that._deliverHistoryIdsByEdit.length>0){
+                            $.each(that._deliverHistoryIdsByEdit,function (i,item) {
+                                that.dealEditStatus($(that.element).find('tr[data-id="'+item+'"]'),1);
+                            });
+                        }
+                    })
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -233,7 +235,7 @@
                     S_toastr.success('保存成功！');
                     that.renderListDeliver();
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -319,7 +321,7 @@
 
                     case 'delete'://删除交付
 
-                        S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+                        S_layer.confirm('删除后将不能恢复，您确定要删除吗？', function () {
 
                             var option = {};
                             option.url = restApi.url_deleteDeliver;
@@ -331,7 +333,7 @@
                                     S_toastr.success('删除成功！');
                                     that.renderListDeliver();
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
 

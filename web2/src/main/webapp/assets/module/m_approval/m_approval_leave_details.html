@@ -114,7 +114,7 @@
         </div>
     </div>
     <div class="hr-line-dashed m-t-none m-b-sm"></div>
-    <div class="form-group">
+    <div class="form-group m-b-xl">
         <label class="col-sm-2 text-right">抄送人：</label>
         <div class="col-sm-10">
             {{if ccCompanyUserList!=null && ccCompanyUserList.length>0}}
@@ -132,7 +132,7 @@
         </div>
     </div>
 </form>
-<div class="footer fixed_full text-right">
+<div class="footer border-b-radius text-right">
     <button class="btn btn-default" data-action="cancel">取消</button>
     {{if (approveStatus==0 || approveStatus==5) && currentAuditPerson.companyUserId == currentCompanyUserId && currentAuditPerson.approveStatus == 0 }}
         <button class="btn btn-primary" data-action="agree">同意</button>

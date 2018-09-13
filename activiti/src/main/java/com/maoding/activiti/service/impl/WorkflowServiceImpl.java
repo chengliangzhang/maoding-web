@@ -83,25 +83,21 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
         //补充未填写字段
         TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),"!key不可以为空");
-        //name字段
-        if (StringUtils.isEmpty(prepareRequest.getName())){
-            prepareRequest.setName(ProcessTypeConst.nameMap.get(prepareRequest.getKey()));
-        }
-
 
         //生成新流程或返回已有流程
         if (isEditConditionType(prepareRequest)){
             //如果是设置条件分支，生成新流程
             processDefineDetail = BeanUtils.createFrom(prepareRequest, ProcessDefineDetailDTO.class);
             DigitConditionEditDTO condition = prepareRequest.getStartDigitCondition();
-            processDefineDetail.setFlowTaskGroupList(toOrderedFlowTaskGroupList(toFlowTaskGroupList(condition),prepareRequest.getKey()));
+            processDefineDetail.setFlowTaskGroupList(toOrderedFlowTaskGroupList(toFlowTaskGroupList(condition),
+                    prepareRequest.getVarName(),prepareRequest.getVarUnit()));
         } else if (!isFreeType(prepareRequest)){
             //否则如果不是自由流程，读取流程或生成新流程
             //查找已有流程
             Process process = getProcessByKey(getProcessDefineKey(prepareRequest),prepareRequest.getCurrentCompanyId());
             //如果是已有流程，转换已有流程
             if (process != null){
-                processDefineDetail = toProcessDefineDetailDTO(process);
+                processDefineDetail = toProcessDefineDetailDTO(process,prepareRequest.getVarName(),prepareRequest.getVarUnit());
             } else {
                 //如果是新流程
                 //如果指定流程模板，复制流程
@@ -113,7 +109,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                     //设定模板参数
                     process.setName(prepareRequest.getName());
                     process.setId(getProcessDefineKey(prepareRequest));
-                    processDefineDetail = toProcessDefineDetailDTO(process);
+                    processDefineDetail = toProcessDefineDetailDTO(process,prepareRequest.getVarName(),prepareRequest.getVarUnit());
                     processDefineDetail = updateProcessDefineDetailDTO(processDefineDetail,process);
                 } else {
                     processDefineDetail = BeanUtils.createFrom(prepareRequest, ProcessDefineDetailDTO.class);
@@ -129,7 +125,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
 
         //添加单位并返回
-        processDefineDetail.setUnit(ProcessTypeConst.unitMap.get(prepareRequest.getKey()));
+        processDefineDetail.setUnit(prepareRequest.getVarUnit());
         return processDefineDetail;
     }
 
@@ -270,14 +266,14 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
             process = getProcessByKey(getProcessDefineKey(editRequest),editRequest.getCurrentCompanyId());
 
-            processDefineDetail = toProcessDefineDetailDTO(process);
+            processDefineDetail = toProcessDefineDetailDTO(process,editRequest.getVarName(),editRequest.getVarUnit());
         } else {
             processDefineDetail = BeanUtils.createFrom(editRequest,ProcessDefineDetailDTO.class);
             processDefineDetail.setId(getProcessDefineKey(editRequest.getCurrentCompanyId(),editRequest.getKey(),editRequest.getType()));
         }
 
         //设置单位并返回
-        processDefineDetail.setUnit(ProcessTypeConst.unitMap.get(editRequest.getKey()));
+        processDefineDetail.setUnit(editRequest.getVarUnit());
         return processDefineDetail;
     }
 
@@ -287,7 +283,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //转换工作流引擎内流程模型对象为ProcessDefineDetailDTO
-    private ProcessDefineDetailDTO toProcessDefineDetailDTO(Process process){
+    private ProcessDefineDetailDTO toProcessDefineDetailDTO(Process process,String varName,String varUnit){
         //检查参数
         TraceUtils.check(ObjectUtils.isNotEmpty(process),"!参数错误");
 
@@ -339,7 +335,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
         processDefineDetailDTO.setType(type);
         processDefineDetailDTO.setKey(key);
-        processDefineDetailDTO.setFlowTaskGroupList(toOrderedFlowTaskGroupList(taskGroupList,key));
+        processDefineDetailDTO.setFlowTaskGroupList(toOrderedFlowTaskGroupList(taskGroupList,varName,varUnit));
 
         processDefineDetailDTO = updateProcessDefineDetailDTO(processDefineDetailDTO,process);
 
@@ -347,7 +343,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     //把taskListMap转换为排好序的路径序列
-    private List<FlowTaskGroupDTO> toOrderedFlowTaskGroupList(List<FlowTaskGroupDTO> taskGroupList,String key){
+    private List<FlowTaskGroupDTO> toOrderedFlowTaskGroupList(List<FlowTaskGroupDTO> taskGroupList,String varName,String varUnit){
         List<FlowTaskGroupDTO> dstList = new ArrayList<>();
         if (ObjectUtils.isNotEmpty(taskGroupList)){
             //添加默认路径
@@ -366,19 +362,18 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
                 FlowTaskGroupDTO taskGroup = taskGroupList.get(i);
                 if (isRemainMin(taskGroupList,taskGroup,point)){
                     point = DigitUtils.parseDouble(taskGroup.getName());
-                    String unit = ProcessTypeConst.unitMap.get(key);
-                    String title = point + unit + "<=" + ProcessTypeConst.titleMap.get(key);
+                    String title = point + varUnit + "<=" + varName;
 
                     taskGroup.setMinValue(point);
                     taskGroup.setTitle(title);
                     if (prevGroup != null) {
                         prevGroup.setMaxValue(point);
-                        String prevTitle = StringUtils.isEmpty(prevGroup.getTitle()) ? ProcessTypeConst.titleMap.get(key) : prevGroup.getTitle();
-                        prevGroup.setTitle(prevTitle + "<" + point + unit);
+                        String prevTitle = StringUtils.isEmpty(prevGroup.getTitle()) ? varName : prevGroup.getTitle();
+                        prevGroup.setTitle(prevTitle + "<" + point + varUnit);
                     }
                     prevGroup = taskGroup;
                     if(i==taskGroupList.size()-1){//最后一个
-                        title = ProcessTypeConst.titleMap.get(key)+">=" + point + unit;
+                        title = varName + ">=" + point + varUnit;
                         taskGroup.setTitle(title);
                     }
                     dstList.add(taskGroup);

@@ -28,24 +28,28 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData(function () {
+            var html = template('m_docmgr/m_docmgr_sendArchiveNotice',{
+                selectedNodeObj:that.settings.$selectedNodeObj,
+                nowDate: getNowDate()
+            });
+            that.initHtmlData(html,function () {
                 that.save_validate();
                 that.initSelect2();
             });
         }
         //初始化数据并加载模板
-        ,initHtmlData:function (callBack) {
+        ,initHtmlData:function (html,callBack) {
             var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.$isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
                     title: that.settings.$title||'发送归档通知',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '700',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    okText:'发送',
+                    area : '750px',
+                    content:html,
+                    cancel:function () {
+                    },
                     ok:function () {
+
                         if($('form.sendArchiveNotice').valid()){
                             if(that.sendArchiveNotice()==false){
                                 return false;
@@ -53,30 +57,19 @@
                         }else{
                             return false;
                         }
-                    },
-                    cancel:function () {
-
                     }
-                },function(d){//加载html后触发
 
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    var html = template('m_docmgr/m_docmgr_sendArchiveNotice',{
-                        selectedNodeObj:that.settings.$selectedNodeObj,
-                        nowDate: getNowDate()
-                    });
-                    $(that.element).html(html);
-                    if(callBack!=null){
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
                         callBack();
-                    }
+                });
 
-                });
             }else{//不以弹窗编辑
-                var html = template('m_docmgr/m_docmgr_sendArchiveNotice',{
-                });
                 $(that.element).html(html);
-                if(callBack!=null){
+                if(callBack)
                     callBack();
-                }
             }
         }
         //初始化select2
@@ -122,7 +115,7 @@
 
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
 
@@ -170,7 +163,7 @@
                         that.settings.$saveCallBack();
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
 

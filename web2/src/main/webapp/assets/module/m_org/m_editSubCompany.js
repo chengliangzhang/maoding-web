@@ -9,7 +9,7 @@
         defaults = {
             title:'',
             type:'add',//add为添加，edit为编辑
-            isDailog:true,
+            isDialog:true,
             companyId:'',
             companyObj:null,
             saveCallBack:null
@@ -30,48 +30,40 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData(function () {
-                that.bindActionClick();
-                that.saveCompany_validate();
-                var options = {};
-                /*if(that.settings.companyObj!=null){
-                    options.$province = that.settings.companyObj.province;
-                    options.$city = that.settings.companyObj.city;
-                    //加载省市区
-                    $("#citysBox").citySelect({
-                        prov:that.settings.companyObj.province,
-                        city:that.settings.companyObj.city,
-                        dist:that.settings.companyObj.county,
-                        nodata:"none",
-                        required:false
-                    });
-                }else{
-                    //加载省市区
-                    $("#citysBox").citySelect({
-                        nodata:"none",
-                        required:false
-                    });
-                }
-                //$('.branchCompanyOBox #citysBox').m_choseCity(options);
-                $('.branchCompanyOBox input[name="serverType"]').bind('click',function(event){
-                    $(this).parents('.serviceTypeEdit').find('span[name="severType"]').html('');
-                });*/
+            var $data = {};
+            $data.companyObj = {};//添加组织对象
+            $data.companyObj.editType = '1';
+            if(that.settings.companyObj!=null){
+                $data.companyObj.editType = '2';
+                $data.companyObj = that.settings.companyObj;
+            }
+            that.getProjectType(function (data) {
+
+                $data.currentCompanyId = window.currentCompanyId;
+                $data.serverTypeList = data;
+                var html = template('m_org/m_editSubCompany',$data);
+                that.renderDialog(html,function () {
+                    that.bindActionClick();
+                    that.saveCompany_validate();
+
+                });
+
             });
+
         }
         //初始化数据并加载模板
-        ,initHtmlData:function (callBack) {
+        ,renderDialog:function (html,callBack) {
             var that = this;
-            if(that.settings.isDailog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
                     title: that.settings.title||'创建分支机构',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '700',
-                    height:'340',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    okText:'保存',
-                    ok:function(){
+                    area : '750px',
+                    content:html,
+                    cancel:function () {
+                    },
+                    ok:function () {
+
                         var check_1 = $('form.branchCompanyOBox').valid();
                         //var check_2 = that.validateServerType();
                         if(!check_1){
@@ -79,46 +71,19 @@
                         }else{
                             that.saveCompany();
                         }
-                    },
-                    cancelText:'取消',
-                    cancel:function(){
-
                     }
-                },function(d){//加载html后触发
 
-                    var $data = {};
-                    $data.companyObj = {};//添加组织对象
-                    $data.companyObj.editType = '1';
-                    if(that.settings.companyObj!=null){
-                        $data.companyObj.editType = '2';
-                        $data.companyObj = that.settings.companyObj;
-                    }
-                    that.getProjectType(function (data) {
-
-                        that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                        $data.currentCompanyId = window.currentCompanyId;
-                        $data.serverTypeList = data;
-                        var html = template('m_org/m_editSubCompany',$data);
-                        $(that.element).html(html);
-                        /*if(that.settings.companyObj!=null){
-                            $('.branchCompanyOBox input[name="serverType"]').each(function () {
-                                if($data.companyObj.serverType.indexOf($(this).val())>-1){
-                                    $(this).attr('checked','checked');
-                                }
-                            });
-                        }*/
-                        if(callBack!=null){
-                            callBack();
-                        }
-                    });
-
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
+
             }else{//不以弹窗编辑
-                var html = template('m_org/m_editSubCompany',{});
                 $(that.element).html(html);
-                if(callBack!=null){
+                if(callBack)
                     callBack();
-                }
             }
         }
         ,getProjectType:function (callBack) {
@@ -132,7 +97,7 @@
                         return callBack(response.data);
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -142,16 +107,6 @@
             var option  = {};
             option.url = restApi.url_subCompany;
             var $data = $("form.branchCompanyOBox").serializeObject();
-            /*var serverTypeStr = '';
-            var i=0;
-            $('form.branchCompanyOBox input[name="serverType"]:checked').each(function(){
-                serverTypeStr += $(this).val()  + ',';
-                i++;
-            });
-            if(i>0){
-                serverTypeStr = serverTypeStr.substring(0,serverTypeStr.length-1);
-            }
-            $data.serverType = serverTypeStr;*/
 
             if(that.settings.companyObj!=null){//编辑
                 $data.id = that.settings.companyObj.id;
@@ -169,7 +124,7 @@
                         return that.settings.saveCallBack(response.data);
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -178,16 +133,16 @@
             var that = this;
             var option  = {};
             option.url = restApi.url_subCompany+'/'+that.settings.companyObj.id;
-            S_dialog.confirm('您确定要删除吗？',function(){
+            S_layer.confirm('您确定要删除吗？',function(){
                 m_ajax.get(option,function (response) {
                     if(response.code=='0'){
                         S_toastr.success('删除成功！');
-                        if(that.settings.isDailog){
-                            S_dialog.close(e);
+                        if(that.settings.isDialog){
+                            S_layer.close(e);
                             delNodeByTree();
                         }
                     }else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 })
             },function(){})

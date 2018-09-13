@@ -31,40 +31,36 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData();
+            that.initHtmlTemplate();
         },
         //初始化数据
-        initHtmlData:function () {
+        renderDialog:function (html,callBack) {
             var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+
+            if(that.settings.$isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
                     title: that.settings.$title||'编辑项信息',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    tPadding: '0px',
-                    width: '1000',
-                    minHeight:'550',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    area : '1000px',
+                    content:html,
                     cancel:function () {
-
-                        /*S_dialog.confirm('当前数据未保存',function () {
-
-                        },function () {
-                            
-                        })*/
                     },
-                    okText:'保存',
                     ok:function () {
+
                         that.saveProjectCustomFields();
-
                     }
-                },function(d){//加载html后触发
 
-                    that.element = $('div[id="content:'+d.id+'"] .dialogOBox');
-                    that.initHtmlTemplate()
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
+
             }else{//不以弹窗编辑
-                that.initHtmlTemplate();
+                $(that.element).html(html);
+                if(callBack)
+                    callBack();
             }
         }
         //生成html
@@ -72,13 +68,15 @@
             var that = this;
             that.getCustomProjectPropertyData(function (data) {
                 var html = template('m_project/m_editCustomPropertyTemp',{projectPropertyData:data});
-                $(that.element).html(html);
-                that.renderSelectProperty(data.selectedPropertyList);
-                that.renderAddCusProperty(data.customPropertyList,0);
-                that.addCustomLibrary();
-                that.bindChoseLibrary();
-                that.initICheck();
-                that.addProperty_validate();
+                that.renderDialog(html,function () {
+                    that.renderSelectProperty(data.selectedPropertyList);
+                    that.renderAddCusProperty(data.customPropertyList,0);
+                    that.addCustomLibrary();
+                    that.bindChoseLibrary();
+                    that.initICheck();
+                    that.addProperty_validate();
+                });
+
             });
         }
         //获取自定义属性数据
@@ -97,7 +95,7 @@
                         return callback(response.data);
                     }
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -528,7 +526,7 @@
                         return that.settings.$okCallBack(null);
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

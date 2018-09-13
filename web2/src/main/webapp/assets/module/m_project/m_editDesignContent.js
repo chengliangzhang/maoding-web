@@ -31,56 +31,38 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData(function () {
+            if (that.settings.$designContentList != null) {
+                that._designContentListClone = jQuery.extend(true, {}, that.settings.$designContentList);
+            }
+            var $data = {};
+            $data.designContentList = that.settings.$designContentList;
+            $data.designContentList[0].projectProcessTimeEntityList = that.getChangeTimeDiff($data.designContentList[0].projectProcessTimeEntityList);
+            var html = template('m_project/m_editDesignContent', $data);
+            that.renderDialog(html,function () {
                 that.bindActionClick();
                 that.bindDesignContentCk();
             });
         },
         //初始化数据
-        initHtmlData: function (callBack) {
+        renderDialog: function (html,callBack) {
             var that = this;
             if (that.settings.$isDialog) {//以弹窗编辑
-                S_dialog.dialog({
+                S_layer.dialog({
                     title: that.settings.$title || '进度变更',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '800',
-                    minHeight: '350',
-                    tPadding: '0px',
-                    url: rootPath + '/assets/module/m_common/m_dialog.html',
+                    area : '750px',
+                    content:html,
                     cancel: function () {
-                        /*that.settings.$designContentList = that._designContentListClone;
-                        if (that.settings.$cancelCallBack != null) {
-                            return that.settings.$cancelCallBack(that._designContentListClone);
-                        }*/
                     },
                     cancelText:'关闭'
 
-
-                }, function (d) {//加载html后触发
-                    that.element = 'div[id="content:' + d.id + '"] .dialogOBox';
-                    if (that.settings.$designContentList != null) {
-                        that._designContentListClone = jQuery.extend(true, {}, that.settings.$designContentList);
-                        var $data = {};
-                        $data.designContentList = that.settings.$designContentList;
-                        $data.designContentList[0].projectProcessTimeEntityList = that.getChangeTimeDiff($data.designContentList[0].projectProcessTimeEntityList);
-                        that.initHtmlTemplate(callBack, $data)
-                    }
-
-
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
             } else {//不以弹窗编辑
-                var $data = that.dealDesignContent();
-                that.initHtmlTemplate(callBack, $data, classIdObj)
-            }
-        }
-        //生成html
-        , initHtmlTemplate: function (callBack, data, classIdObj) {
-            var that = this;
-            var html = template('m_project/m_editDesignContent', data);
-            $(that.element).html(html);
-            if (callBack != null) {
-                callBack();
+
             }
         }
         //计算变更容器的时间差（天）
@@ -110,7 +92,7 @@
                     that.settings.$designContentList = response.data;
                     return callBack(response.data);
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
 
             })
@@ -180,7 +162,7 @@
                 contentObj.projectProcessTimeEntityList.splice(contentObj.projectProcessTimeEntityList.length - 1, 1);
                 that.settings.$designContentList[contentIndex] = contentObj;
 
-                S_dialog.close($(that.element));
+                S_layer.close($(that.element));
                 var options = {};
                 options.$isHaveMemo = false;
                 options.$timeInfo = {};
@@ -218,7 +200,7 @@
                 }
                 /*else if(dataAction=='delTimeChangeRecord'){
                  var $that = this;
-                 S_dialog.confirm('您确定要删除吗？',function(){
+                 S_layer.confirm('您确定要删除吗？',function(){
                  that.delTimeChangeRecord($that);
                  },function(){})
                  return false;

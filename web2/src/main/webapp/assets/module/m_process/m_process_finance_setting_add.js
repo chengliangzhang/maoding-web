@@ -36,7 +36,7 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData(function () {
+            that.renderPage(function () {
                 that.save_validate();
 
                 //适用团队选择框
@@ -81,41 +81,32 @@
             });
         }
         //初始化数据并加载模板
-        ,initHtmlData:function (callBack) {
+        ,renderDialog:function (html,callBack) {
             var that = this;
             if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+                S_layer.dialog({
                     title: that.settings.$title||that._editTypeName+that._typeName+'计划流程',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '700',
-                    tPadding: '0px',
-                    overFlow:'unset',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    okText:'保存',
+                    area : '750px',
+                    content:html,
+                    cancel:function () {
+                    },
                     ok:function () {
+
                         if($(that.element).find('form.form-horizontal').valid()){
                             that.save();
                         }else{
                             return false;
                         }
-                    },
-                    cancel:function () {
-
                     }
-                },function(d){//加载html后触发
-
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    that.renderPage();
-
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
                     if(callBack!=null){
                         callBack();
                     }
-
                 });
             }else{//不以弹窗编辑
-
-                that.renderPage();
+                $(that.element).html(html);
                 if(callBack!=null){
                     callBack();
                 }
@@ -129,7 +120,7 @@
                 typeName:that._typeName,
                 processInfo:that.settings.$processInfo
             });
-            $(that.element).html(html);
+            that.renderDialog(html);
         }
 
         //发送
@@ -156,7 +147,7 @@
                         that.settings.$saveCallBack();
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
 

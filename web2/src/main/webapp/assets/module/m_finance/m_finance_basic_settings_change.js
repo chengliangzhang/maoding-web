@@ -33,14 +33,11 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.renderDialog(function () {
-
-                var html = template('m_finance/m_finance_basic_settings_change', {
-                    data: that._baseData,
-                    dataInfo:that.settings.dataInfo
-                });
-                $(that.element).html(html);
-
+            var html = template('m_finance/m_finance_basic_settings_change', {
+                data: that._baseData,
+                dataInfo:that.settings.dataInfo
+            });
+            that.renderDialog(html,function () {
                 $(that.element).find('select[name="changeType"]').select2({
                     width: '100%',
                     allowClear: true,
@@ -48,41 +45,39 @@
                     minimumResultsForSearch: Infinity,
                     placeholder: '请选择变更类型!'
                 });
-
                 that.save_validate();
             });
-
         }
         //初始化数据,生成html
-        ,renderDialog:function (callBack) {
+        ,renderDialog:function (html,callBack) {
 
             var that = this;
-            if(that.settings.isDialog){//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.title||'余额变更',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '700',
-                    tPadding: '0',
-                    height: '210',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    cancel:function () {
+            if(that.settings.isDialog===true){//以弹窗编辑
 
+                S_layer.dialog({
+                    title: that.settings.title||'余额变更',
+                    area : '750px',
+                    content:html,
+                    cancel:function () {
                     },
                     ok:function () {
+
                         var flag = $(that.element).find('form').valid();
                         if (!flag || that.save()) {
                             return false;
                         }
                     }
-                },function(d){//加载html后触发
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    if(callBack!=null)
-                        callBack();
 
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
+
             }else{//不以弹窗编辑
-                if(callBack!=null)
+                $(that.element).html(html);
+                if(callBack)
                     callBack();
             }
         }
@@ -105,7 +100,7 @@
                     if(that.settings.saveCallBack)
                         that.settings.saveCallBack();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }

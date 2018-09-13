@@ -161,39 +161,25 @@
 
                     if(!($(that.element).find('.row-edit').length>0)) {
 
-                        S_dialog.dialog({
+                        var remark = currentObj.taskRemark==null?'':currentObj.taskRemark;
+                        var html = template('m_production/m_production_editRemark',{remark:remark});
+                        S_layer.dialog({
                             title: '任务描述',
-                            contentEle: 'dialogOBox',
-                            ele:id,
-                            lock: 2,
-                            quickClose:true,
-                            noTriangle:true,
-                            width: '320',
-                            minHeight:'110',
-                            tPadding: '0px',
-                            url: rootPath+'/assets/module/m_common/m_dialog.html'
+                            area : '300px',
+                            content:html,
+                            btn:false
 
-                        },function(d){//加载html后触发
-
-                            var tipsEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-                            var remark = currentObj.taskRemark==null?'':currentObj.taskRemark;
-
-                            var html = template('m_production/m_production_editRemark',{
-                                remark:remark
+                        },function(layero,index,dialogEle){//加载html后触发
+                            $(dialogEle).find('button[data-action="cancel"]').off('click').on('click',function (e) {
+                                S_layer.close($(e.target));
                             });
-                            $(tipsEle).html(html);
-
-                            $(tipsEle).find('button[data-action="cancel"]').off('click').on('click',function () {
-                                S_dialog.close($(tipsEle));
-                            });
-                            $(tipsEle).find('button[data-action="submit"]').off('click').on('click',function () {
-                                var text = $(tipsEle).find('textarea').val();
+                            $(dialogEle).find('button[data-action="submit"]').off('click').on('click',function (e) {
+                                var text = $(dialogEle).find('textarea').val();
                                 var param = {};
                                 param.taskRemark = text;
                                 that.saveTaskIssueByEdit($this,param);
-                                S_dialog.close($(tipsEle));
+                                S_layer.close($(e.target));
                             });
-
                         });
 
                     }else{
@@ -275,7 +261,7 @@
                     if(response.info.indexOf('已存在')>-1){
                         S_toastr.error(response.info);
                     }else{
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 }
             });
@@ -299,7 +285,7 @@
                         S_toastr.error(response.info);
                         $this.editable('show');
                     }else{
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 }
             });
@@ -325,7 +311,7 @@
                         S_toastr.error(response.info);
                         isError = true;
                     }else{
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 }
             });
@@ -345,7 +331,7 @@
                     S_toastr.success('保存成功！');
                     that.refreshPage();
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -358,7 +344,7 @@
                 if(response.code=='0'){
                     return callBack(response.data);
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -379,7 +365,7 @@
                         callBack(response.data);
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -713,7 +699,7 @@
         ,batchDelTask:function (idList) {
             var that = this;
             
-            S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+            S_layer.confirm('删除后将不能恢复，您确定要删除吗？', function () {
 
                 var option = {};
                 option.url = restApi.url_deleteProjectTask;
@@ -724,7 +710,7 @@
                         S_toastr.success('删除成功！');
                         that.refreshPage();
                     } else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 });
 
@@ -735,7 +721,7 @@
         ,batchPublishTask:function (idList) {
 
             var that = this;
-            S_dialog.confirm('确定发布任务？',function () {
+            S_layer.confirm('确定发布任务？',function () {
 
                 var option = {};
                 option.classId = '.ibox-content';
@@ -748,7 +734,7 @@
                         S_toastr.success('发布成功');
                         that.refreshPage();
                     } else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 });
             },function () {
@@ -767,7 +753,7 @@
                     S_toastr.success('更新成功');
                     that.refreshPage();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -974,10 +960,7 @@
                         option.$eleId = $this.closest('a').attr('id');
                         option.$isView = that.settings.$isView;
                         option.$renderCallBack = function (dialogEle) {
-                            if(that.settings.$isView){
-                                $(dialogEle).parents('.ui-popup').css('z-index','29891016');//layer弹窗下，需要改下z-index
-                                $(dialogEle).parents('.ui-popup').prev('.ui-popup-backdrop').css('z-index','29891016');//layer弹窗下，需要改下z-index
-                            }
+
                         };
                         $('body').m_progressChange_list(option);
                         e.stopPropagation();
@@ -1020,82 +1003,47 @@
                         that.saveTaskMoveInSeq(taskArr);
                         break;
                     case 'viewPlanTime'://与自己有关的约定时间
-                        S_dialog.dialog({
-                            title: '约定时间',
-                            contentEle: 'dialogOBox',
-                            ele:'viewPlanTime'+taskId,//弹框位置定位
-                            lock: 2,
-                            quickClose:true,
-                            noTriangle:true,
-                            width: '420',
-                            minHeight:'110',
-                            tPadding: '0px',
-                            url: rootPath+'/assets/module/m_common/m_dialog.html'
+                        $('#viewPlanTime'+taskId).m_floating_popover({
+                            content:template('m_taskIssue/m_taskIssue_list_changeTime',{issuePlanList:that._taskIssueList[i].issuePlanList}),
+                            placement:'bottom',
+                            renderedCallBack:function ($popover) {
+                                //点击获取变更列表
+                                $popover.find('a[data-action]').click(function(e){
+                                    var $this = $(this);
+                                    var id = $this.closest('a').attr('id');
+                                    var taskId = $this.closest('a').attr('data-id'),i=$this.closest('a').attr('data-i');
+                                    var option = {};
+                                    option.$taskId = taskId;
+                                    option.$publishId = $this.closest('a').attr('data-publish-id');
+                                    option.$type = 2;
+                                    option.$eleId = id;
+                                    option.$isView = that.settings.$isView;
+                                    option.$renderCallBack = function (dialogEle) {
 
-                        },function(d){//加载html后触发
-
-                            var tipsEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-                            var currentTaskObj = that._taskIssueList[i];
-                            $(tipsEle).html(template('m_taskIssue/m_taskIssue_list_changeTime',{
-                                issuePlanList:currentTaskObj.issuePlanList
-                            }));
-                            if(that.settings.$isView) {
-                                $(tipsEle).parents('.ui-popup').css('z-index', '29891016');//layer弹窗下，需要改下z-index
-                                $(tipsEle).parents('.ui-popup').prev('.ui-popup-backdrop').css('z-index', '29891016');//layer弹窗下，需要改下z-index
+                                    };
+                                    $('body').m_progressChange_list(option);
+                                    e.stopPropagation();
+                                })
                             }
 
-                            //点击获取变更列表
-                            $(tipsEle).find('a[data-action]').click(function(e){
-                                var $this = $(this);
-                                var id = $this.closest('a').attr('id');
-                                var taskId = $this.closest('a').attr('data-id'),i=$this.closest('a').attr('data-i');
-                                var option = {};
-                                option.$taskId = taskId;
-                                option.$publishId = $this.closest('a').attr('data-publish-id');
-                                option.$type = 2;
-                                option.$eleId = id;
-                                option.$isView = that.settings.$isView;
-                                option.$renderCallBack = function (dialogEle) {
-                                    if(that.settings.$isView){
-                                        $(dialogEle).parents('.ui-popup').css('z-index','29891016');//layer弹窗下，需要改下z-index
-                                        $(dialogEle).parents('.ui-popup').prev('.ui-popup-backdrop').css('z-index','29891016');//layer弹窗下，需要改下z-index
-                                    }
-                                };
-                                $('body').m_progressChange_list(option);
-                                e.stopPropagation();
-                            })
-                        });
+                        },true);
                         return false;
                         break;
 
                     case 'viewTaskRemarkEdit'://查看任务描述
 
                         var id = $this.attr('id'),currentObj = that._taskIssueList[i];
-                        S_dialog.dialog({
-                            title: '任务描述',
-                            contentEle: 'dialogOBox',
-                            ele:id,
-                            lock: 2,
-                            quickClose:true,
-                            noTriangle:true,
-                            width: '320',
+                        var remark = currentObj.taskRemark==null?'':currentObj.taskRemark;
+                        $('#'+id).m_floating_popover({
+                            content:'<div class="m-sm w-200 h-150"><h4 class="title-line">任务描述</h4><div style="word-break: break-all;">'+remark+'</div></div>',
+                            placement:'bottom',
+                            renderedCallBack:function ($popover) {
+                            }
 
-
-                            minHeight:'110',
-                            tPadding: '0px',
-                            url: rootPath+'/assets/module/m_common/m_dialog.html'
-
-                        },function(d){//加载html后触发
-
-                            var tipsEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-                            var remark = currentObj.taskRemark==null?'':currentObj.taskRemark;
-                            $(tipsEle).html('<div class="m-sm" style="word-break: break-all;">'+remark+'</div>');
-
-                        });
+                        },true);
+                        return false;
                         e.stopPropagation();
                         break;
-
-
                 }
 
             });

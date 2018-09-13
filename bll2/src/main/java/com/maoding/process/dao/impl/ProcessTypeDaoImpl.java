@@ -1,5 +1,6 @@
 package com.maoding.process.dao.impl;
 
+import com.maoding.activiti.dto.ProcessDefineDTO;
 import com.maoding.activiti.dto.ProcessDefineGroupDTO;
 import com.maoding.activiti.dto.ProcessDefineQueryDTO;
 import com.maoding.core.base.dao.GenericDao;
@@ -33,5 +34,17 @@ public class ProcessTypeDaoImpl extends GenericDao<ProcessTypeEntity> implements
     @Override
     public List<ProcessDefineGroupDTO> listProcessDefineWithGroup(ProcessDefineQueryDTO query) {
         return sqlSession.selectList("ProcessTypeEntityMapper.listProcessDefineWithGroup",query);
+    }
+
+    /**
+     * 描述       获取流程列表
+     * 日期       2018/9/13
+     *
+     * @param query
+     * @author 张成亮
+     */
+    @Override
+    public List<ProcessDefineDTO> listProcessDefine(ProcessDefineQueryDTO query) {
+        return sqlSession.selectList("ProcessTypeEntityMapper.listProcessDefine",query);
     }
 }

@@ -28,31 +28,26 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.getData();
+            that.getExpData();
         }
         //加载弹窗
-        ,getData: function () {
+        ,renderDialog: function (html) {
             var that = this;
-            S_dialog.dialog({
+            S_layer.dialog({
                 title: that.settings.title||'报销详情',
-                contentEle: 'TConsentOBox',
-                lock: 3,
-                width: '800',
-                minHeight: '450',
-                tPadding: '0px',
-                url: rootPath+'/assets/module/m_common/m_dialog.html',
+                area : '750px',
+                maxHeight:600,
+                content:html,
                 cancelText:'关闭',
                 cancel:function () {
 
                 }
-            },function(d){//加载html后触发
-                that.getExpData(d);
 
-
+            },function(layero,index,$dialogEle){//加载html后触发
             });
         }
         //加载
-        ,getExpData:function(d){
+        ,getExpData:function(){
             var that = this;
             var option = {};
             if(that.settings.url!=null){
@@ -79,9 +74,9 @@
                     $data.type = that.settings.type;
                     $data.typeStr = that._typeStr;
                     var html = template('m_approvalReport/m_approvalReport_reimbursementDetail',$data);
-                    $('div[id="content:'+d.id+'"] .dialogOBox').html(html);
+                    that.renderDialog(html);
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
 
             })

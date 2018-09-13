@@ -15,14 +15,14 @@
     <div class="panel-footer white-bg">
         {{if doType=='edit'}}
         <div class="pull-left">
-            <button class="btn-u btn-u-red rounded" type="button" data-action="delDepart">删除部门</button>
+            <button class="btn btn-danger" type="button" data-action="delDepart">删除部门</button>
         </div>
         {{/if}}
         <div class="pull-right">
-            {{if isDailog}}
-            <button type="button" class="btn-u btn-u-default rounded" onclick="S_dialog.close($(this))">取消</button>
+            {{if isDialog}}
+            <button type="button" class="btn btn-default " onclick="S_layer.close($(this))">取消</button>
             {{/if}}
-            <button type="button" class="btn-u rounded" data-action="saveDepart">保存</button>
+                <button type="button" class="btn btn-primary " data-action="saveDepart">确定</button>
         </div>
         <div class="clearfix"></div>
     </div>

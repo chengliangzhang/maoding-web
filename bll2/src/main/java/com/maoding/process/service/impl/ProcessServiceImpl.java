@@ -112,27 +112,55 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
     @Override
     public ProcessDefineDetailDTO prepareProcessDefine(ProcessDetailPrepareDTO prepareRequest) throws Exception {
-        //如果没有设置type字段，从数据库内读取type字段，如果数据库内没有，设置为默认type
-        if (prepareRequest.getType() == null) {
-            //从数据库内读取当前的流程类型
+        //如果没有设置type字段等信息，从数据库内读取流程属性，并补充相应信息
+        if (isNeedFill(prepareRequest)) {
             TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getCurrentCompanyId()),"!currentCompanyId不能为空");
             TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),"!key不能为空");
-            ProcessTypeEntity typeEntity = processTypeDao
-                    .getCurrentProcessType(prepareRequest.getCurrentCompanyId(), prepareRequest.getKey());
-            if (typeEntity != null) {
-                prepareRequest.setType(typeEntity.getType());
-            } else {
-                prepareRequest.setType(ProcessTypeConst.TYPE_FREE);
+            ProcessDefineQueryDTO query = BeanUtils.createFrom(prepareRequest,ProcessDefineQueryDTO.class);
+            List<ProcessDefineDTO> processList = listProcessDefine(query);
+            TraceUtils.check(ObjectUtils.isNotEmpty(processList) && processList.size() == 1,"~查询流程结果有误");
+            if (ObjectUtils.isNotEmpty(processList)){
+                ProcessDefineDTO process = ObjectUtils.getFirst(processList);
+                if (prepareRequest.getType() == null){
+                    prepareRequest.setType(process.getType());
+                }
+                if (StringUtils.isEmpty(prepareRequest.getName())){
+                    prepareRequest.setName(process.getName());
+                }
+                if (StringUtils.isEmpty(prepareRequest.getVarName())){
+                    prepareRequest.setVarName(process.getVarName());
+                }
+                if (StringUtils.isEmpty(prepareRequest.getVarUnit())) {
+                    prepareRequest.setVarUnit(process.getVarUnit());
+                }
             }
         }
+
+        //从流程引擎中读取流程定义
         ProcessDefineDetailDTO processDefineDetail  = this.workflowService.prepareProcessDefine(prepareRequest);
         if(processDefineDetail!=null){
             //重新组织一下数据，设置人员头像
             this.setUserInfo(processDefineDetail);
-            //添加单位并返回
-            processDefineDetail.setUnit(ProcessTypeConst.unitMap.get(prepareRequest.getKey()));
+            //添加单位
+            processDefineDetail.setUnit(prepareRequest.getVarUnit());
         }
         return processDefineDetail;
+    }
+
+    //准备流程时的申请数据需要从数据库中补全
+    private boolean isNeedFill(ProcessDetailPrepareDTO prepareRequest){
+        return (prepareRequest.getType() == null)
+                || (StringUtils.isEmpty(prepareRequest.getName()))
+                || (StringUtils.isEmpty(prepareRequest.getVarName()))
+                || (StringUtils.isEmpty(prepareRequest.getVarUnit()));
+    }
+
+    //保存流程时的申请数据需要从数据库中补全
+    private boolean isNeedFill(ProcessDefineDetailEditDTO editRequest){
+        return (editRequest.getType() == null)
+                || (StringUtils.isEmpty(editRequest.getName()))
+                || (StringUtils.isEmpty(editRequest.getVarName()))
+                || (StringUtils.isEmpty(editRequest.getVarUnit()));
     }
 
     private void setUserInfo(ProcessDefineDetailDTO processDefineDetail) {
@@ -161,6 +189,26 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
     @Override
     public ProcessDefineDetailDTO changeProcessDefine(ProcessDefineDetailEditDTO editRequest) {
+        if (isNeedFill(editRequest)){
+            ProcessDefineQueryDTO query = BeanUtils.createFrom(editRequest,ProcessDefineQueryDTO.class);
+            List<ProcessDefineDTO> processList = listProcessDefine(query);
+            TraceUtils.check(ObjectUtils.isNotEmpty(processList) && processList.size() == 1,"~查询流程结果有误");
+            if (ObjectUtils.isNotEmpty(processList)){
+                ProcessDefineDTO process = ObjectUtils.getFirst(processList);
+                if (editRequest.getType() == null){
+                    editRequest.setType(process.getType());
+                }
+                if (StringUtils.isEmpty(editRequest.getName())){
+                    editRequest.setName(process.getName());
+                }
+                if (StringUtils.isEmpty(editRequest.getVarName())){
+                    editRequest.setVarName(process.getVarName());
+                }
+                if (StringUtils.isEmpty(editRequest.getVarUnit())) {
+                    editRequest.setVarUnit(process.getVarUnit());
+                }
+            }
+        }
         ProcessDefineDetailDTO processDefineDetail = workflowService.changeProcessDefine(editRequest);
         syncProcessType(editRequest);
         if(processDefineDetail!=null){
@@ -401,6 +449,21 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         }
         return groupList;
     }
+
+    /**
+     * 描述       查询流程定义
+     * 日期       2018/9/13
+     *
+     * @param query
+     * @author 张成亮
+     */
+    @Override
+    public List<ProcessDefineDTO> listProcessDefine(ProcessDefineQueryDTO query) {
+        List<ProcessDefineDTO> list = processTypeDao.listProcessDefine(query);
+        updateType(list,query.getCurrentCompanyId());
+        return list;
+    }
+
 
     //更新列表内的流程type值
     private void updateType(List<ProcessDefineDTO> pdList,String companyId){

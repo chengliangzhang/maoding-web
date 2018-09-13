@@ -31,7 +31,6 @@
         this._defaults = defaults;
         this._name = pluginName;
         this._uploader = null;
-        this._currentDialogEle = '';//当前弹窗元素
         this.init();
     }
 
@@ -201,7 +200,7 @@
 
                     } else if (res.code === '1') {
 
-                        S_dialog.error(res.msg);
+                        S_layer.error(res.msg);
                         file.setStatus('error');
                         that.showStatusText(file);
 
@@ -430,34 +429,28 @@
 
                         if(res!=null && res.code=='1'){//重命名
 
-                            S_dialog.dialog({
+                            S_layer.dialog({
                                 title: '继续上传',
-                                contentEle: 'dialogOBox',
-                                lock: 3,
-                                width: '300',
-                                height: '100',
-                                tPadding: '0px',
-                                url: rootPath+'/assets/module/m_common/m_dialog.html',
+                                area : '300px',
+                                content:'<div style="padding: 35px 80px;"><a class="btn btn-primary btn-sm " data-action="rename" style="margin-right: 20px;">重命名</a><a class="btn btn-primary btn-sm " data-action="cover">覆盖</a></div>',
                                 cancelText:'关闭',
                                 cancel:function () {
 
                                 }
-                            },function(d){//加载html后触发
 
-                                var $dialogEle = $('div[id="content:'+d.id+'"] .dialogOBox');
-                                $dialogEle.html('<div style="padding: 35px 80px;"><a class="btn btn-primary btn-sm " data-action="rename" style="margin-right: 20px;">重命名</a><a class="btn btn-primary btn-sm " data-action="cover">覆盖</a></div>');
+                            },function(layero,index,dialogEle){//加载html后触发
 
                                 //重命名按钮事件
-                                $dialogEle.find('a[data-action="rename"]').click(function () {
+                                $(dialogEle).find('a[data-action="rename"]').click(function () {
 
-                                    S_dialog.close($dialogEle);//关闭弹窗
+                                    S_layer.close($(dialogEle));//关闭弹窗
                                     that.renameDialog(file);
 
                                 });
                                 //覆盖按钮事件
-                                $dialogEle.find('a[data-action="cover"]').click(function () {
+                                $(dialogEle).find('a[data-action="cover"]').click(function () {
 
-                                    S_dialog.close($dialogEle);//关闭弹窗
+                                    S_layer.close($(dialogEle));//关闭弹窗
 
                                     $('.alertmgr div[data-id="'+file.id+'"]').remove();//删除相关提示
 
@@ -469,6 +462,7 @@
                                 });
 
                             });
+
 
                         }else{
                             that._uploader.upload(file);
@@ -605,21 +599,18 @@
         ,renameDialog:function (file) {
             var that = this;
             var $uploadItem = $(that.element).find('.uploadItem_' + file.id + ':eq(0)');
-            S_dialog.dialog({
+            var $dialog = null;
+            S_layer.dialog({
                 title: '继续上传',
-                contentEle: 'dialogOBox',
-                lock: 3,
-                width: '300',
-                height: '100',
-                tPadding: '0px',
-                url: rootPath+'/assets/module/m_common/m_dialog.html',
+                area : '300px',
+                content:'<form class="m"><input class="form-control" type="text" name="rename"></form>',
                 cancel:function () {
-                    that._currentDialogEle = '';//清除弹窗元素记录
                 },
                 ok:function () {
-                    if($(that._currentDialogEle).find('form').valid()){//验证
 
-                        var name = $(that._currentDialogEle).find('input[name="rename"]').val();
+                    if($dialog.find('form').valid()){//验证
+
+                        var name = $dialog.find('input[name="rename"]').val();
 
                         //没有后缀则补上
                         if(name.lastIndexOf('.'+file.ext)>0){
@@ -635,14 +626,13 @@
                         return false;
                     }
                 }
-            },function(d){//加载html后触发
 
-                that._currentDialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';//记录弹窗元素
-                $(that._currentDialogEle).html('<form style="padding: 30px 50px 0;"><input class="form-control" type="text" name="rename"></form>');
-
-                that.rename_validate($(that._currentDialogEle));//初始化验证
+            },function(layero,index,dialogEle){//加载html后触发
+                $dialog = $(dialogEle);
+                that.rename_validate($dialog);//初始化验证
 
             });
+
         }
         //重命名不为空验证
         ,rename_validate:function ($ele) {

@@ -1,12 +1,13 @@
 package com.maoding.dynamicForm.service.impl;
 
 import com.maoding.core.base.service.GenericService;
-import com.maoding.core.bean.AjaxMessage;
+import com.maoding.core.util.BeanUtils;
 import com.maoding.dynamicForm.dao.DynamicFormDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldSelectableValueDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldValueDao;
 import com.maoding.dynamicForm.dto.DynamicFormFieldDTO;
+import com.maoding.dynamicForm.dto.DynamicFormFieldSelectedValueDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
 import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldEntity;
@@ -36,56 +37,57 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
     /**
      * 作者：FYT
      * 日期：2018/9/13
-     * 描述：保存审核表单样式
+     * 描述：保存审核表单模板
      * @return
      * @throws Exception
      */
     @Override
     public int insertDynamicForm(SaveDynamicFormDTO dto) throws Exception {
-
+        //保存主表(外层审核表)
         DynamicFormEntity dynamicFormEntity = new DynamicFormEntity();
-        DynamicFormFieldEntity dynamicFormFieldEntity = new DynamicFormFieldEntity();
-        DynamicFormFieldSelectableValueEntity dynamicFormFieldSelectableValueEntity = new DynamicFormFieldSelectableValueEntity();
-
-//        for(DynamicFormFieldDTO dto:dtoList){
-//            dynamicFormEntity.initEntity();
-//            dynamicFormEntity.setFormName(dto.getFormName());
-//            dynamicFormEntity.setCompanyId(dto.getCompanyId());
-//            dynamicFormEntity.setFormType(dto.getFormType());
-//            dynamicFormEntity.setSeq(dto.getSeq());
-//            dynamicFormEntity.setStatus(dto.getStatus());
-//            dynamicFormEntity.setDeleted(dto.getDeleted());
-//
-//            dynamicFormFieldEntity.initEntity();
-//            dynamicFormFieldEntity.setFormId(dynamicFormEntity.getId());
-//            dynamicFormFieldEntity.setFieldPid(dto.getFieldPid());
-//            dynamicFormFieldEntity.setFieldTitle(dto.getFieldTitle());
-//            dynamicFormFieldEntity.setFieldType(dto.getFieldType());
-//            dynamicFormFieldEntity.setFieldUnit(dto.getFieldUnit());
-//            dynamicFormFieldEntity.setFieldTooltip(dto.getFieldTooltip());
-//            dynamicFormFieldEntity.setFieldDefaultValue(dto.getFieldDefault_value());
-//            dynamicFormFieldEntity.setFieldSelectValueType(dto.getFieldSelect_value_type());
-//            dynamicFormFieldEntity.setSeqX(dto.getSeqX());
-//            dynamicFormFieldEntity.setSeqY(dto.getSeqY());
-//            dynamicFormFieldEntity.setRequiredType(dto.getRequiredType());
-//            dynamicFormFieldEntity.setDeleted(dto.getDeleted());
-//
-//            dynamicFormFieldSelectableValueEntity.setFieldId(dynamicFormFieldEntity.getId());
-//            dynamicFormFieldSelectableValueEntity.setSelectableValue(dto.getSelectableValue());
-//            dynamicFormFieldSelectableValueEntity.setSelectableName(dto.getSelectableName());
-//            dynamicFormFieldSelectableValueEntity.setSeq(dto.getSeq());
-//            dynamicFormFieldSelectableValueEntity.setDeleted(dto.getDeleted());
-//            //todo 保存
-//            int i1 = dynamicFormDao.insert(dynamicFormEntity);
-//            int i2 = dynamicFormFieldDao.insert(dynamicFormFieldEntity);
-//            int i3 = dynamicFormFieldSelectableValueDao.insert(dynamicFormFieldSelectableValueEntity);
-//
-//            return i1==12&&i2==i3&&i3==1?1:0;
-//        }
-        return 1;
+        dynamicFormEntity.initEntity();
+        dynamicFormEntity.setCompanyId(dto.getCompanyId());
+        dynamicFormEntity.setFormName(dto.getFormName());
+        dynamicFormEntity.setFormType(dto.getFormType());
+        dynamicFormEntity.setStatus(dto.getStatus());
+        dynamicFormEntity.setDeleted(0);
+        int c = dynamicFormDao.insert(dynamicFormEntity);
+        //保存主表的子表（控件表）
+        for (DynamicFormFieldDTO formFieldDTO:  dto.getFieldList()){
+            formFieldDTO.setFormId(dynamicFormEntity.getId());
+            formFieldDTO.setId(saveDynamicFormField(formFieldDTO));
+            //保存明细表
+            for(DynamicFormFieldDTO formFieldDTO2: formFieldDTO.getDetailFieldList()) {
+                formFieldDTO2.setFormId(dynamicFormEntity.getId());
+                formFieldDTO2.setFieldPid(formFieldDTO.getId());
+                saveDynamicFormField(formFieldDTO2);
+            }
+        }
+        return c;
     }
 
-    public AjaxMessage savetDynamicForm(List<DynamicFormFieldDTO> dtoList) throws Exception {
-        return new AjaxMessage().setCode("0").setInfo("保存成功").setData(null);
+    //保存审核表单模板:复制对象抽取的方法
+    private String saveDynamicFormField(DynamicFormFieldDTO formFieldDTO){
+        //将DTO对象复制到entity
+        DynamicFormFieldEntity dynamicFormFieldEntity = BeanUtils.createFrom(formFieldDTO,DynamicFormFieldEntity.class);
+        //补充entity缺失值
+        dynamicFormFieldEntity.initEntity();
+        dynamicFormFieldEntity.setDeleted(0);
+        //添加到数据库
+        dynamicFormFieldDao.insert(dynamicFormFieldEntity);
+        //控件相同属性多个值，即遍历添加
+        List<DynamicFormFieldSelectedValueDTO> dynamicFormFieldSelectedValueList = formFieldDTO.getFieldSelectedValueList();
+        int seq = 1;
+        for (DynamicFormFieldSelectedValueDTO valueDTO: dynamicFormFieldSelectedValueList){
+            DynamicFormFieldSelectableValueEntity dynamicFormFieldSelectableValueEntity = BeanUtils.createFrom(valueDTO,DynamicFormFieldSelectableValueEntity.class);
+            dynamicFormFieldSelectableValueEntity.initEntity();
+            dynamicFormFieldSelectableValueEntity.setFieldId(dynamicFormFieldEntity.getId());
+            dynamicFormFieldSelectableValueEntity.setDeleted(0);
+            dynamicFormFieldSelectableValueEntity.setSeq(seq++);
+            dynamicFormFieldSelectableValueDao.insert(dynamicFormFieldSelectableValueEntity);
+        }
+
+        return dynamicFormFieldEntity.getId();
     }
+
 }

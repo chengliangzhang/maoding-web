@@ -98,7 +98,7 @@
                             }
 
                         } else {
-                            S_dialog.error(response.info);
+                            S_layer.error(response.info);
                         }
                     }
                 }
@@ -120,7 +120,7 @@
                 var gotoPage = function (url) {
 
                     if(status!=undefined && status=='1'){
-                        S_dialog.alert('当前项目已不存在！');
+                        S_layer.alert('当前项目已不存在！');
                         return false;
                     }
 
@@ -131,7 +131,7 @@
 
                             if(response.data!=null && response.data.isUserInOrg){
                                 if (companyId !== window.currentCompanyId) {
-                                    S_dialog.confirm('该消息不属于当前团队，查看会自动切换团队，仍要继续吗？',function () {
+                                    S_layer.confirm('该消息不属于当前团队，查看会自动切换团队，仍要继续吗？',function () {
 
                                         var option = {};
                                         option.url = restApi.url_switchCompany + '/' + companyId;
@@ -140,7 +140,7 @@
                                                 window.location.reload();
                                                 location.href = url;
                                             } else {
-                                                S_dialog.error(response.info);
+                                                S_layer.error(response.info);
                                             }
                                         })
                                     },function () {
@@ -155,7 +155,7 @@
 
 
                         }else {
-                            S_dialog.error(response.info);
+                            S_layer.error(response.info);
                         }
                     });
 

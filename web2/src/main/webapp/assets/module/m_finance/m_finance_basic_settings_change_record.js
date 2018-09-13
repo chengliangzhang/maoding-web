@@ -33,60 +33,52 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.renderDialog(function () {
+            var option = {};
+            option.classId = that.element;
+            option.url = restApi.url_listCompanyBalanceChangeDetail;
+            option.postData = {
+                id:that.settings.id,
+                companyId:that.settings.companyId
+            };
 
-                var option = {};
-                option.classId = that.element;
-                option.url = restApi.url_listCompanyBalanceChangeDetail;
-                option.postData = {
-                    id:that.settings.id,
-                    companyId:that.settings.companyId
-                };
-
-                m_ajax.postJson(option, function (response) {
-                    if (response.code == '0') {
-                        var html = template('m_finance/m_finance_basic_settings_change_record', {
-                            dataList: response.data
-                        });
-                        $(that.element).html(html);
-                    } else {
-                        S_dialog.error(response.info);
-                    }
-                });
-
-
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+                    var html = template('m_finance/m_finance_basic_settings_change_record', {
+                        dataList: response.data
+                    });
+                    that.renderDialog(html)
+                } else {
+                    S_layer.error(response.info);
+                }
             });
-
         }
         //初始化数据,生成html
-        ,renderDialog:function (callBack) {
+        ,renderDialog:function (html,callBack) {
 
             var that = this;
-            if(that.settings.isDialog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.isDialog===true){//以弹窗编辑
+                S_layer.dialog({
                     title: that.settings.title||'余额变更记录',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '700',
-                    tPadding: '0',
-                    height: '310',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    area : '750px',
+                    content:html,
                     cancel:function () {
 
                     },
                     cancelText:'关闭'
-                },function(d){//加载html后触发
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    if(callBack!=null)
-                        callBack();
 
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
+
             }else{//不以弹窗编辑
-                if(callBack!=null)
+                $(that.element).html(html);
+                if(callBack)
                     callBack();
             }
         }
-
 
     });
 

@@ -35,45 +35,36 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that._initHtmlData(function () {
-                that._bindActionClick();
-
+            that._getTaskScheduleChangesList(function (data) {
+                that._initHtmlTemplate(data);
             });
+
         },
         //初始化数据
-        _initHtmlData:function (callBack) {
+        renderDialog:function (html,callBack) {
             var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.$isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
                     title: that.settings.$title||'进度变更',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '800',
-                    minHeight:'125',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    area : '750px',
+                    content:html,
                     cancelText:'关闭',
                     cancel:function () {
                         that._refresh();
                     }
 
-                },function(d){//加载html后触发
-
-                    that._getTaskScheduleChangesList(function (data) {
-                        that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                        that._initHtmlTemplate(data);
-                        if(callBack!=null){
-                            callBack();
-                        }
-                    });
-                });
-            }else{//不以弹窗编辑
-                that._getTaskScheduleChangesList(function (data) {
-                    that._initHtmlTemplate(data);
-                    if (callBack != null) {
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
                         callBack();
-                    }
                 });
+
+            }else{//不以弹窗编辑
+                $(that.element).html(html);
+                if(callBack)
+                    callBack();
             }
         }
         //生成html
@@ -88,7 +79,9 @@
                 $data.taskScheduleChangesList[i].timeDiffStr=timeDiffTime(item.startTime,item.endTime)
             });
             var html = template('m_production/m_productionSchedule',$data);
-            $(that.element).html(html);
+            that.renderDialog(html,function () {
+                that._bindActionClick();
+            });
         }
         //根据任务ID获取该任务的进度变更列表
         ,_getTaskScheduleChangesList:function (callBack) {
@@ -104,7 +97,7 @@
                         return callBack(response.data);
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -194,7 +187,7 @@
         //删除变更
         ,_delTaskScheduleChange:function (obj) {
             var that = this;
-            S_dialog.confirm('您确定要删除吗？', function () {
+            S_layer.confirm('您确定要删除吗？', function () {
 
                 that._delChangeTimeById(obj);
 
@@ -211,7 +204,7 @@
                 if(response.code=='0'){
 
                     if(seq==0){
-                        S_dialog.close($(obj));
+                        S_layer.close($(obj));
                         var options = {};
                         options.$projectId = that.settings.$projectId;
                         options.$title = '设置计划进度';
@@ -237,7 +230,7 @@
                         });
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

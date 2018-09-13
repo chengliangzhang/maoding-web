@@ -123,7 +123,7 @@
                     that.dealPidCheck();
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
 
@@ -189,15 +189,13 @@
             var that = this;
             $(that.element).find('button[data-action="addFeeField"]').off('click').on('click',function (e) {
                 var $this = $(this);
-                S_dialog.dialog({
+                S_layer.dialog({
                     title: '新增费用类型',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '350',
-                    height:'100',
-                    tPadding:'0',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    ok:function(){
+                    area : '350px',
+                    content:template('m_finance/m_feeEntry_settings_add',{editType:'costSharing'}),
+                    cancel:function () {
+                    },
+                    ok:function () {
 
                         if ($('form.addFeeFieldForm').valid()) {
 
@@ -215,33 +213,24 @@
                                     S_toastr.success('操作成功');
                                     that.renderContent();
                                 }else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
 
                         } else {
                             return false;
                         }
-
-                    },
-                    cancelText:'取消',
-                    cancel:function(){
-
                     }
-                },function(d){//加载html后触发
 
-                    var $dialogEle = $('div[id="content:'+d.id+'"] .dialogOBox');
-                    var html = template('m_finance/m_feeEntry_settings_add',{editType:'costSharing'});
-                    $dialogEle.html(html);
-                    $dialogEle.find('select[name="categoryType"]').select2({
+                },function(layero,index,dialogEle){//加载html后触发
+                    $(dialogEle).find('select[name="categoryType"]').select2({
                         allowClear: false,
                         language: "zh-CN",
                         minimumResultsForSearch: -1
                     });
-                    $dialogEle.find('select[name="categoryType"]').val(2).trigger('change');
-                    $dialogEle.find('select[name="categoryType"]').prop('disabled',true);
+                    $(dialogEle).find('select[name="categoryType"]').val(2).trigger('change');
+                    $(dialogEle).find('select[name="categoryType"]').prop('disabled',true);
                     that.saveFeeField_validate();
-
                 });
                 e.stopPropagation();
                 return false;
@@ -269,7 +258,7 @@
                 if(response.code=='0'){
                     S_toastr.success('保存成功！');
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
 

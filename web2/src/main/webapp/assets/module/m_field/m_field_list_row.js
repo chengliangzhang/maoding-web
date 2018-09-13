@@ -88,7 +88,7 @@
                         that.settings.renderCallBack(response.data);
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -144,7 +144,7 @@
                         that.settings.renderCallBack(response.data);
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }

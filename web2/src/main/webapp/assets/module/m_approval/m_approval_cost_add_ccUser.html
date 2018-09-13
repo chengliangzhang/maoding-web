@@ -1,6 +1,6 @@
 {{if userList!=null && userList.length>0}}
     {{each userList as u ui}}
-    <div class="approver-outbox">
+    <div class="approver-outbox col-md-2">
         <div class="approver-box text-center pull-left m-r-sm pt-relative">
             <div class="img-circle">
                 <img alt="image" class="img-circle" src="{{_isNullOrBlank(u.fileFullPath)?_url('/assets/img/head_default.png'):u.fileFullPath}}" width="50" height="50">

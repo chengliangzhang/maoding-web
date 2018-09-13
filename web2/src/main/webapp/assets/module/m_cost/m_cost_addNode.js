@@ -29,41 +29,43 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that._initHtml();
+            var html = template('m_cost/m_cost_addNode',{});
+            that._initHtml(html,function () {
+                that._saveContract_validate();
+                that._bindFeeCalculation();
+            });
         },
         //初始化数据,生成html
-        _initHtml:function () {
+        _initHtml:function (html,callBack) {
 
             var that = this;
-            if(that.settings.isDialog){//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.title||'添加回款节点',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '600',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    cancel:function () {
+            if(that.settings.isDialog===true){//以弹窗编辑
 
+                S_layer.dialog({
+                    title: that.settings.title||'添加回款节点',
+                    area : ['600px'],
+                    content:html,
+                    cancel:function () {
                     },
-                    okText:'保存',
                     ok:function () {
+
                         var flag = $(that.element).find('form').valid();
                         if (!flag || that._saveContract()) {
                             return false;
                         }
                     }
-                },function(d){//加载html后触发
 
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    var html = template('m_cost/m_cost_addNode',{});
-                    $(that.element).html(html);
-                    that._saveContract_validate();
-                    that._bindFeeCalculation();
-
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
-            }else{//不以弹窗编辑
 
+            }else{//不以弹窗编辑
+                $(that.element).html(html);
+                if(callBack)
+                    callBack();
             }
         }
         //保存合同回款节点
@@ -88,7 +90,7 @@
                     }
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                     isError = true;
                 }
             });

@@ -37,46 +37,35 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that._initHtmlData(function () {
-                that._bindActionClick();
-
+            that._getTaskScheduleChangesList(function (data) {
+                that._initHtmlTemplate(data);
             });
+
         },
-        //初始化数据
-        _initHtmlData:function (callBack) {
+        //初始化界面
+        _renderDialog:function (html,callBack) {
             var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.$isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
                     title: that.settings.$title||'进度变更',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '800',
-                    minHeight:'125',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    cancelText:'关闭',
+                    area : '750px',
+                    content:html,
                     cancel:function () {
-                        //that._refresh();
-                    }
+                    },
+                    cancelText:'关闭'
 
-                },function(d){//加载html后触发
-
-                    that._getTaskScheduleChangesList(function (data) {
-                        that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                        that._initHtmlTemplate(data);
-                        if(callBack!=null){
-                            callBack();
-                        }
-                    });
-
-                });
-            }else{//不以弹窗编辑
-                that._getTaskScheduleChangesList(function (data) {
-                    that._initHtmlTemplate(data);
-                    if (callBack != null) {
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
                         callBack();
-                    }
                 });
+
+            }else{//不以弹窗编辑
+                $(that.element).html(html);
+                if(callBack)
+                    callBack();
             }
         }
         //生成html
@@ -95,7 +84,10 @@
                 $data.$labelText='计划进度'
             }
             var html = template('m_taskIssue/m_scheduleChanges_new',$data);
-            $(that.element).html(html);
+            that._renderDialog(html,function () {
+                that._bindActionClick();
+
+            });
         }
         //刷新当前界面
         ,_refresh:function () {
@@ -120,7 +112,7 @@
                         return callBack(response.data);
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -147,13 +139,10 @@
             options.$saveTimeKeyVal=['startTime','endTime','memo'];
             options.$currentAppointmentDate=that.settings.$currentAppointmentDate;
             options.$okCallBack = function (data) {
-                that._getTaskScheduleChangesList(function (data) {
-                    that._initHtmlTemplate(data);
-                    that._bindActionClick();
-                    if(that.settings.$okCallBack!=null){
-                        that.settings.$okCallBack();
-                    }
-                });
+                that.init();
+                if(that.settings.$okCallBack!=null){
+                    that.settings.$okCallBack();
+                }
             };
             $('body').m_inputProcessTime(options);
         }
@@ -193,20 +182,17 @@
             options.$saveData = $data;
             options.$currentAppointmentDate=that.settings.$currentAppointmentDate;
             options.$okCallBack = function (data) {
-                that._getTaskScheduleChangesList(function (data) {
-                    that._initHtmlTemplate(data);
-                    that._bindActionClick();
-                    if(that.settings.$okCallBack!=null){
-                        that.settings.$okCallBack();
-                    }
-                });
+                that.init();
+                if(that.settings.$okCallBack!=null){
+                    that.settings.$okCallBack();
+                }
             };
             $('body').m_inputProcessTime(options);
         }
         //删除变更
         ,_delTaskScheduleChange:function (obj) {
             var that = this;
-            S_dialog.confirm('您确定要删除吗？', function () {
+            S_layer.confirm('您确定要删除吗？', function () {
 
                 that._delChangeTimeById(obj);
 
@@ -223,7 +209,7 @@
 
                 if(response.code=='0'){
                     if(seq==0){
-                        S_dialog.close($(obj));
+                        S_layer.close($(obj));
                         var options = {};
                         options.$projectId = that.settings.$projectId;
                         options.$title = '设置计划进度';
@@ -234,7 +220,6 @@
                         $data.targetId = that.settings.$taskId;
                         $data.type = that.settings.$type;
                         options.$saveData = $data;
-                     /*   options.$currentAppointmentDate = that.settings.$currentAppointmentDate;*/
                         options.$saveTimeKeyVal=['startTime','endTime'];
                         options.$okCallBack = function (data) {
 
@@ -244,16 +229,13 @@
                         };
                         $('body').m_inputProcessTime(options);
                     }else {
-                        that._getTaskScheduleChangesList(function (data) {
-                            that._initHtmlTemplate(data);
-                            that._bindActionClick();
-                            if(that.settings.$okCallBack!=null){
-                                that.settings.$okCallBack();
-                            }
-                        });
+                        that.init();
+                        if(that.settings.$okCallBack!=null){
+                            that.settings.$okCallBack();
+                        }
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

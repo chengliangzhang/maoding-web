@@ -9,7 +9,7 @@
         defaults = {
             title: '',
             inivteUserUrl: '',
-            isDailog: true,
+            isDialog: true,
             inviteType:1 //1：分支机构 2：事业合伙人
         };
 
@@ -27,31 +27,33 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData();
+            var html = template('m_org/m_inviteCorp', {inviteType:that.settings.inviteType});
+            that.renderDialog(html,function () {
+                $('.inviteCorpBox').closest('.dialogOBox').css('overflow','inherit');
+                that.bindSendMessage();
+            });
         }
         //初始化数据并加载模板
-        , initHtmlData: function (callBack) {
+        , renderDialog: function (callBack) {
             var that = this;
-            if (that.settings.isDailog) {//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.isDialog===true){//以弹窗编辑
+                S_layer.dialog({
                     title: that.settings.title || that.settings.inviteType===1?'邀请分支机构':'邀请事业合伙人',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '460',
-                    tPadding: '0px',
-                    url: rootPath + '/assets/module/m_common/m_dialog.html'
-                }, function (d) {//加载html后触发
-                    var html = template('m_org/m_inviteCorp', {inviteType:that.settings.inviteType});
-                    $('div[id="content:' + d.id + '"] .dialogOBox').html(html);
-                    $('.inviteCorpBox').closest('.dialogOBox').css('overflow','inherit');
-                    that.bindSendMessage();
-                    /*that.bindAddCorp();*/
+                    area : '460px',
+                    content:html,
+                    btn:false
+
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
-            } else {//不以弹窗编辑
-                var html = template('m_org/m_inviteCorp', {inviteType:that.settings.inviteType});
+
+            }else{//不以弹窗编辑
                 $(that.element).html(html);
-                that.bindSendMessage();
-                /*that.bindAddCorp();*/
+                if(callBack)
+                    callBack();
             }
         }
         //按钮事件绑定
@@ -82,9 +84,9 @@
                         m_ajax.postJson(option, function (response) {
                             if (response.code == '0') {
                                 S_toastr.success("邀请"+(that.settings.inviteType===1?'分支机构':'事业合伙人')+"短信已发送");
-                                S_dialog.close($(e.target));
+                                S_layer.close($(e.target));
                             } else {
-                                S_dialog.error(response.info);
+                                S_layer.error(response.info);
                             }
                         });
                     }

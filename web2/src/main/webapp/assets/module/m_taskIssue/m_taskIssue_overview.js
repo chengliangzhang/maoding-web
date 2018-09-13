@@ -59,7 +59,7 @@
                     }
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -74,7 +74,7 @@
                     $(that.element).find('#taskIssueOverviewHeader').html(html);
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -88,28 +88,30 @@
                 var taskId = $this.closest('tr').attr('data-id'),i=$this.closest('tr').attr('data-i');
                 switch (dataAction) {
                     case 'viewPlanTime'://与自己有关的约定时间
-                        S_dialog.dialog({
-                            title: '约定时间',
-                            contentEle: 'dialogOBox',
-                            ele:'viewPlanTime'+taskId,
-                            lock: 2,
-                            quickClose:true,
-                            noTriangle:true,
-                            width: '420',
-                            minHeight:'110',
-                            tPadding: '0px',
-                            url: rootPath+'/assets/module/m_common/m_dialog.html'
+                        $('#viewPlanTime'+taskId).m_floating_popover({
+                            content:template('m_taskIssue/m_taskIssue_list_changeTime',{issuePlanList:that._taskIssueList[i].issuePlanList}),
+                            placement:'bottom',
+                            renderedCallBack:function ($popover) {
+                                //点击获取变更列表
+                                $popover.find('a[data-action]').click(function(e){
+                                    var $this = $(this);
+                                    var id = $this.closest('a').attr('id');
+                                    var taskId = $this.closest('a').attr('data-id'),i=$this.closest('a').attr('data-i');
+                                    var option = {};
+                                    option.$taskId = taskId;
+                                    option.$publishId = $this.closest('a').attr('data-publish-id');
+                                    option.$type = 2;
+                                    option.$eleId = id;
+                                    option.$isView = that.settings.$isView;
+                                    option.$renderCallBack = function (dialogEle) {
 
-                        },function(d){//加载html后触发
+                                    };
+                                    $('body').m_progressChange_list(option);
+                                    e.stopPropagation();
+                                })
+                            }
 
-                            var tipsEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-                            var currentTaskObj = that._taskIssueList[i];
-                            $(tipsEle).html(template('m_taskIssue/m_taskIssue_overview_list_relatedTime',{
-                                issuePlanList:currentTaskObj.issuePlanList
-                            }));
-                            $(tipsEle).parents('.ui-popup').css('z-index','29891016');//layer弹窗下，需要改下z-index
-                            $('.ui-popup-backdrop').css('z-index','29891016');//layer弹窗下，需要改下z-index
-                        });
+                        },true);
                         break;
                 }
             });

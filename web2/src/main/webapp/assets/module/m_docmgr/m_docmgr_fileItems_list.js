@@ -113,7 +113,7 @@
                         }
 
                     } else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 });
             }
@@ -290,7 +290,7 @@
                 content = '删除文件夹会移除所有子文件,' + content;
             }
 
-            S_dialog.confirm(content, function () {
+            S_layer.confirm(content, function () {
 
                 that.ajaxDelete(that._fileItems[index]);
 
@@ -313,7 +313,7 @@
                         that.settings.$refreshDataCallBack();
                     }
                 } else if (res.code === '1') {
-                    S_dialog.error(res.msg);
+                    S_layer.error(res.msg);
                 }
             });
         }
@@ -345,7 +345,7 @@
         //提交成果文件
         , submitDocResults:function (index) {
             var that = this;
-            S_dialog.confirm('确定提交成果文件？',function () {
+            S_layer.confirm('确定提交成果文件？',function () {
 
                 var option = {};
                 option.url = restApi.url_notarizeArchivedFileNotifier;
@@ -362,7 +362,7 @@
                             that.settings.$refreshDataCallBack();
                         }
                     } else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 });
             },function () {

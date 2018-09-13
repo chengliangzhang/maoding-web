@@ -31,19 +31,14 @@
         }
         ,initHtmlData:function(){
             var that = this;
-
-            S_dialog.dialog({
+            S_layer.dialog({
                 title:'修改管理员密码',
-                contentEle:'dialogOBox',
-                lock:3,
-                width:'600',
-                minHeight:'300',
-                tPadding:'0px',
-                url:rootPath+'/assets/module/m_common/m_dialog.html',
+                area : '600px',
+                content:template('m_role/m_changeManagerPWD',{}),
                 cancel:function () {
-
-                    },
+                },
                 ok:function () {
+
                     var options = {};
                     options.url = restApi.url_changAdminPassword;
                     options.postData = $('form.changeAdminPWDOBox').serializeObject();
@@ -53,23 +48,19 @@
                     }else{
                         m_ajax.postJson(options,function (response) {
                             if(response.code=='0'){
-                                S_dialog.success('修改成功，请重新登录!','提示',function(){
+                                S_layer.success('修改成功，请重新登录!','提示',function(){
                                     window.location.href = rootPath+'/iWork/sys/logout';
                                 })
                             }else {
-                                S_dialog.error(response.info);
+                                S_layer.error(response.info);
                             }
 
                         });
                     }
-
-                    }
                 }
 
-                ,function(d){//加载html后触发
-                var $data = {};
-                var html = template('m_role/m_changeManagerPWD',$data);
-                $('div[id="content:'+d.id+'"] .dialogOBox').html(html);
+            },function(layero,index,dialogEle){//加载html后触发
+                that.element = dialogEle;
                 that.changeAdminPWDOBox_validate();
             });
 
@@ -109,7 +100,7 @@
                 var pattern=/^\S+$/gi;
                 return this.optional(element) || pattern.test( value ) ;
             }, "密码不应含有空格!");
-        },
+        }
 
 
 

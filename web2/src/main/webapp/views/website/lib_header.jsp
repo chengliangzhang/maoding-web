@@ -35,7 +35,7 @@
 <link rel="stylesheet" href="<%=rootPath %>/assets/lib/revolution-slider/revolution-addons/polyfold/css/revolution.addon.polyfold.css">--%>
 
 <link rel="stylesheet" href="<%=rootPath %>/assets/lib/toastr/toastr.min.css">
-<link rel="stylesheet" href="<%=rootPath %>/assets/lib/art-dialog/css/art-dialog.min.css">
+<link rel="stylesheet" href="<%=rootPath %>/assets/lib/layer/theme/default/layer.css">
 
 <script type="text/javascript">
     window.rootPath = '<%=rootPath %>';

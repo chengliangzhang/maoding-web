@@ -39,63 +39,56 @@
             m_ajax.get(options, function (response) {
                 if (response.code == '0') {
                     var rolePermissions = response.data;
-                        S_dialog.dialog({
-                                title: that.settings.dialogTitle || ('人员权限总览' + that.settings.user),
-                                contentEle: 'dialogOBox',
-                                lock: 3,
-                                width: that.settings.dialogWidth || '700',
-                                minHeight: '400',
-                                tPadding: '0px',
-                                url: rootPath + '/assets/module/m_common/m_dialog.html',
-                                cancelText: '关闭',
-                                cancel: function () {
-                                },
-                                okText: '保存',
-                                ok: function () {
+                    var $data = {};
+                    $data.rolePermissions = rolePermissions;
+                    var html = template('m_role/m_roleAuthorization', $data);
+                    S_layer.dialog({
+                        title: that.settings.dialogTitle || ('人员权限总览' + that.settings.user),
+                        area : '750px',
+                        content:html,
+                        cancel:function () {
+                        },
+                        ok:function () {
 
-                                    var errorTip = '';
-                                    $('.m-roleList').find('tr td[data-type="roleUsersTd"]').each(function () {
+                            var errorTip = '';
+                            $('.m-roleList').find('tr td[data-type="roleUsersTd"]').each(function () {
 
-                                        var $this = $(this);
-                                        var pCode = $this.parents('tbody').attr('p-code');
-                                        var code = $this.parent().find('td[p-code]:first').attr('p-code');
-                                        var name = $this.parent().find('span[data-type="roleName"]:last').text();
-                                        var len = $this.find('.user-name').length;
-                                        var isChecked = $('.m-roleAuthorization').find('td[p-code="'+code+'"]').next().find('input[name="userPermission"]').is(':checked');
-                                        if(pCode=='OrgManager'||pCode=='SystemManager'){
-                                            return true;
-                                        }
-                                        if(len==1 && isChecked==false){
-                                            var userId = $this.find('.user-span').attr('userid');
-                                            if(userId==that.settings.userId) {
-                                                errorTip = '“' + name + '”角色必须保留至少一个成员！';
-                                                return false;
-                                            }
-                                        }
-                                    });
-                                    if(errorTip!=''){
-                                        S_toastr.warning(errorTip);
+                                var $this = $(this);
+                                var pCode = $this.parents('tbody').attr('p-code');
+                                var code = $this.parent().find('td[p-code]:first').attr('p-code');
+                                var name = $this.parent().find('span[data-type="roleName"]:last').text();
+                                var len = $this.find('.user-name').length;
+                                var isChecked = $('.m-roleAuthorization').find('td[p-code="'+code+'"]').next().find('input[name="userPermission"]').is(':checked');
+                                if(pCode=='OrgManager'||pCode=='SystemManager'){
+                                    return true;
+                                }
+                                if(len==1 && isChecked==false){
+                                    var userId = $this.find('.user-span').attr('userid');
+                                    if(userId==that.settings.userId) {
+                                        errorTip = '“' + name + '”角色必须保留至少一个成员！';
                                         return false;
                                     }
-                                    return that.saveRoleAuthorization(rolePermissions);
                                 }
-                            }
-                            , function (d) {//加载html后触发
-                                that._element = 'div[id="content:' + d.id + '"] .dialogOBox';
-                                var $data = {};
-                                $data.rolePermissions = rolePermissions;
-                                var html = template('m_role/m_roleAuthorization', $data);
-                                $(that._element).html(html);
-                                that.bindChoseClick();
-                                $(that._element).find('div.i-checks input[type="checkbox"]').each(function () {
-                                    var isChecked = $(this).attr('isCheck');
-                                    if (isChecked == 1) {
-                                        $(this).iCheck('check');
-                                    }
-                                });
                             });
+                            if(errorTip!=''){
+                                S_toastr.warning(errorTip);
+                                return false;
+                            }
+                            return that.saveRoleAuthorization(rolePermissions);
+                        }
+
+                    },function(layero,index,dialogEle){//加载html后触发
+                        that._element = dialogEle;
+                        that.bindChoseClick();
+                        $(that._element).find('div.i-checks input[type="checkbox"]').each(function () {
+                            var isChecked = $(this).attr('isCheck');
+                            if (isChecked == 1) {
+                                $(this).iCheck('check');
+                            }
+                        });
+                    });
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
 
             });
@@ -154,7 +147,7 @@
                     /*$(that.element).m_roleList($data);*/
                     that._refreshMenu();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }

@@ -66,7 +66,7 @@
                         return callBack();
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -120,7 +120,7 @@
 
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -268,7 +268,7 @@
                 option.postData.projectDesignContentList.push(obj);
             });*/
             /*if(timeIsNull){
-             return S_dialog.tips('请设置合同进度');
+             return S_layer.tips('请设置合同进度');
              }*/
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
@@ -281,7 +281,7 @@
                     that.goProjectDetail(response.data,projectName);
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }

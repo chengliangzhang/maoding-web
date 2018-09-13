@@ -36,51 +36,42 @@
             }
             $(that.element).on('click',function (e) {
 
-                S_dialog.dialog({
-                    contentEle: 'dialogOBox',
-                    ele:that.settings.eleId,
-                    lock: 2,
-                    align: that.settings.align || 'bottom right',
-                    quickClose:true,
-                    noTriangle:true,
-                    width: '350',
-                    minHeight:'110',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html'
+                var iHtml = template('m_filter/m_filter_address',{});
+                $(that.element).m_floating_popover({
+                    eleId:that.settings.eleId,
+                    content:iHtml,
+                    placement:'bottomRight',
+                    renderedCallBack:function ($popover) {
 
-                },function(d){//加载html后触发
+                        $popover.find("#selectRegion").citySelect({
+                            prov:isNullOrBlank(that.settings.addressData.province)?'':that.settings.addressData.province,
+                            city:isNullOrBlank(that.settings.addressData.city)?'':that.settings.addressData.city,
+                            dist:isNullOrBlank(that.settings.addressData.county)?'':that.settings.addressData.county,
+                            nodata:"none",
+                            required:false
+                        });
+                        $popover.find('button[data-action="cancel"]').on('click',function () {
+                            $(that.element).m_floating_popover('closePopover');//关闭浮窗
+                        });
+                        $popover.find('button[data-action="confirm"]').on('click',function () {
 
-                    var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    var iHtml = template('m_filter/m_filter_address',{});
-                    $(dialogEle).html(iHtml);
+                            var province = $popover.find('select[name="province"]').val();
+                            var city = $popover.find('select[name="city"]').val();
+                            var county = $popover.find('select[name="county"]').val();
 
-                    $(dialogEle).find("#selectRegion").citySelect({
-                        prov:isNullOrBlank(that.settings.addressData.province)?'':that.settings.addressData.province,
-                        city:isNullOrBlank(that.settings.addressData.city)?'':that.settings.addressData.city,
-                        dist:isNullOrBlank(that.settings.addressData.county)?'':that.settings.addressData.county,
-                        nodata:"none",
-                        required:false
-                    });
-                    $(dialogEle).find('button[data-action="cancel"]').on('click',function () {
-                        S_dialog.close($(dialogEle));
-                    });
-                    $(dialogEle).find('button[data-action="confirm"]').on('click',function () {
+                            province = province==undefined?'':province;
+                            city = city==undefined?'':city;
+                            county = county==undefined?'':county;
 
-                        var province = $(dialogEle).find('select[name="province"]').val();
-                        var city = $(dialogEle).find('select[name="city"]').val();
-                        var county = $(dialogEle).find('select[name="county"]').val();
+                            if(that.settings.okCallBack)
+                                that.settings.okCallBack({province:province,city:city,county:county});
 
-                        province = province==undefined?'':province;
-                        city = city==undefined?'':city;
-                        county = county==undefined?'':county;
+                            $(that.element).m_floating_popover('closePopover');//关闭浮窗
+                        });
+                    }
 
-                        if(that.settings.okCallBack)
-                            that.settings.okCallBack({province:province,city:city,county:county});
+                },true);
 
-                        S_dialog.close($(dialogEle));
-                    });
-
-                });
                 stopPropagation(e);
                 return false;
             });

@@ -28,28 +28,23 @@
         //初始化页面
         ,initHtml:function(){
             var that = this;
-            S_dialog.dialog({
+            S_layer.dialog({
                 title: '绑定手机',
-                //contentEle: 'bindPhoneBox',
-                lock: 3,
-                width: '500',
-                tPadding: '0px',
-                url: rootPath+'/assets/module/m_common/m_dialog.html',
-                ok:function(){
+                area : '500px',
+                content:template('m_personal/m_bindPhone', {}),
+                ok:function () {
+
                     var flag = $('form.bindPhoneBox').valid();
                     if(!flag){
                         return false;
                     }else{
                         that.saveBindPhone();
                     }
-                },
-                okText:'保存',
-                cancel:function(){},
-                cancelText:'取消'
-            },function(d){//加载html后触发
-                var html = template('m_personal/m_bindPhone', {});
-                $('div[id="content:'+d.id+'"]').html(html);
-                //this.receiveCode_validate();
+                }
+
+            },function(layero,index,dialogEle){//加载html后触发
+                that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                that.element = dialogEle;
                 that.saveBindPhone_validate();
                 that.bindActionClick();
                 that.closeDialog();
@@ -65,12 +60,12 @@
                 option.postData = {cellphone: $('form.bindPhoneBox input[name="bindCellPhoneDtoCellphone"]').val()};
                 m_ajax.postJson(option, function (response) {
                     if (response.code == '0') {
-                        //S_dialog.tips('发送成功！');
+                        //S_layer.tips('发送成功！');
                     } else {
                         if ("undefined" != typeof that.timer) {
                             window.clearInterval(that.timer);
                         }
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 })
         }
@@ -95,12 +90,12 @@
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
 
-                    S_dialog.success('更改手机号成功，系统将跳转至登录界面','提示',function(){
+                    S_layer.success('更改手机号成功，系统将跳转至登录界面','提示',function(){
                         window.location.href = window.rootPath + '/iWork/sys/logout';
                     })
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                     return false;
                 }
             });

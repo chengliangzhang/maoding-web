@@ -47,49 +47,36 @@
                     selectList:selectList,
                     isMultiple:that.settings.isMultiple
                 });
-                var iTextObj = iHtml.getTextWH();
-                var iWHObj = setDialogWH(iTextObj.width,iTextObj.height);
 
-                S_dialog.dialog({
-                    contentEle: 'dialogOBox',
-                    ele:that.settings.eleId,
-                    lock: 2,
-                    align: that.settings.align||'bottom right',
-                    quickClose:true,
-                    noTriangle:true,
-                    width: iWHObj.width+20,
-                    height:iWHObj.height,
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html'
+                $(that.element).m_floating_popover({
+                    eleId:that.settings.eleId,
+                    content:iHtml,
+                    placement:'bottomRight',
+                    renderedCallBack:function ($popover) {
 
-                },function(d){//加载html后触发
+                        if(that.settings.isMultiple)
+                            that.initICheck($popover);
 
-                    var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    $(dialogEle).html(iHtml);
-                    $(dialogEle).css('overflow-x','hidden');
+                        $popover.find('.dropdown-menu a').on('click',function () {
+                            var val = $(this).attr('data-state-no');
+                            that._selectedArr = [];
+                            if(val!='')
+                                that._selectedArr.push(val);
 
-                    if(that.settings.isMultiple)
-                        that.initICheck($(dialogEle));
+                            if(that._selectedArr!=null && that._selectedArr.length>0){
+                                $(that.element).find('i').addClass('fc-v1-blue');
+                            }else{
+                                $(that.element).find('i').removeClass('fc-v1-blue');
+                            }
+                            if(that.settings.selectedCallBack)
+                                that.settings.selectedCallBack(that._selectedArr);
 
-                    $(dialogEle).find('.dropdown-menu a').on('click',function () {
+                            $(that.element).m_floating_popover('closePopover');//关闭浮窗
+                        });
+                    }
 
-                        var val = $(this).attr('data-state-no');
-                        that._selectedArr = [];
-                        if(val!='')
-                            that._selectedArr.push(val);
+                },true);
 
-                        if(that._selectedArr!=null && that._selectedArr.length>0){
-                            $(that.element).find('i').addClass('fc-v1-blue');
-                        }else{
-                            $(that.element).find('i').removeClass('fc-v1-blue');
-                        }
-                        if(that.settings.selectedCallBack)
-                            that.settings.selectedCallBack(that._selectedArr);
-
-                        S_dialog.close($(dialogEle));
-                    });
-
-                });
                 e.stopPropagation();
                 return false;
             });

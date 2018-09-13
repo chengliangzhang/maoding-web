@@ -92,7 +92,7 @@
                         $('#wrapper').m_teamDissolution(options);
 
                     } else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 })
             });
@@ -112,7 +112,7 @@
                     }
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -130,7 +130,7 @@
                     }
                     // that.bindClickFun(t,s,f);
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

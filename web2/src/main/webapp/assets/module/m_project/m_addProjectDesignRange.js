@@ -162,7 +162,7 @@
                     that._designRangeList = rangeList;
                     return callBack();
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
 
             })

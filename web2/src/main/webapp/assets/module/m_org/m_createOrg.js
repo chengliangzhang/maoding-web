@@ -52,7 +52,7 @@
                         callback();
                     }
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -75,16 +75,16 @@
             option.postData.serverType = serverTypeStr;
             if ($('form.createOrgBox').valid()) {
                 $(that.element).find('a[data-action="saveOrg"]').removeAttr('data-action');
-                $_loading.show('form.createOrgBox');
+                S_loading.show('form.createOrgBox');
                 m_ajax.postJson(option, function (response) {
                     if (response.code == '0') {
-                        $_loading.close('form.createOrgBox');
+                        S_loading.close('form.createOrgBox');
                         S_toastr.success('保存成功！');
                         if (that.settings.saveOrgCallback != null) {
                             that.settings.saveOrgCallback(response.data);
                         }
                     } else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 });
             }

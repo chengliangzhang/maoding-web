@@ -30,53 +30,45 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData(function () {
+            that.getPartAInfo(function (data) {
+                console.log(data)
+
+                var html = template('m_docmgr/m_docmgr_sendDocResults',{
+                    companyData:data
+                });
+                that.initHtmlData(html);
             });
+
         }
         //初始化数据并加载模板
-        ,initHtmlData:function (callBack) {
+        ,initHtmlData:function (html,callBack) {
             var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.$isDialog===true){//以弹窗编辑
+                S_layer.dialog({
                     title: that.settings.$title||'发送归档通知',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '700',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    okText:'发送',
+                    area : '750px',
+                    content:html,
+                    cancel:function () {
+                    },
                     ok:function () {
-                        S_dialog.confirm('确定发送成果？',function () {
-                           that.sendArchiveNotice();
+
+                        S_layer.confirm('确定发送成果？',function () {
+                            that.sendArchiveNotice();
                         },function () {
                         });
-                    },
-                    cancel:function () {
-
                     }
-                },function(d){//加载html后触发
 
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    that.getPartAInfo(function (data) {
-                        console.log(data)
-
-                        var html = template('m_docmgr/m_docmgr_sendDocResults',{
-                            companyData:data
-                        });
-                        $(that.element).html(html);
-                        if(callBack!=null){
-                            callBack();
-                        }
-                    });
-
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
+
             }else{//不以弹窗编辑
-                var html = template('m_docmgr/m_docmgr_sendDocResults',{
-                });
                 $(that.element).html(html);
-                if(callBack!=null){
+                if(callBack)
                     callBack();
-                }
             }
         }
         //查询甲方信息
@@ -98,7 +90,7 @@
                         callback(response.data);
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
 
@@ -125,7 +117,7 @@
                         that.settings.$saveCallBack();
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
 

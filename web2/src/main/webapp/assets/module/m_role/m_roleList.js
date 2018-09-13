@@ -71,7 +71,7 @@
                     that.bindMouseOverFun();
                     that.bindAddUserClick();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
 
             });
@@ -113,7 +113,6 @@
                     options.isShowChoseUserList = 1;
                     options.selectedUserList = [];
                     options.chosedUserIds = '';
-                    options.okText = '保存';
                     options.selectUserCallback = function (data, event) {//选择人员回调方法
                         if(isOrgManager=='OrgManager'){
                             that._saveUserRolePermission(data,$this);
@@ -174,13 +173,13 @@
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
                     S_toastr.success('保存成功！');
-                    S_dialog.close($('div[id="' + data.id + '"]'));
+                    S_layer.close($('div[id="' + data.id + '"]'));
                     var $data = {};
                     /*$(that.element).m_roleList($data);*/
                     that._refreshMenu();
                     //location.hash = '/backstageMgt/permissionSettings';
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -213,7 +212,7 @@
                             /*$(that.element).m_roleList($data);*/
                             that._refreshMenu();
                         } else {
-                            S_dialog.error(response.info);
+                            S_layer.error(response.info);
                         }
                     });
                 }
@@ -263,11 +262,10 @@
                 option.oldSysManagerUserId = that._sysManagerUserId;
                 option.oldOrgManagerUserId = that._orgManagerUserId;
                 option.saveCallback = function () {
-                    S_dialog.close($('div[id="' + data.id + '"]'));
+                    layer.close(data.id);
                 };
 
                 $('body').m_changeManager(option);
-                //S_dialog.close($('div[id="' + data.id + '"]'));
             };
             $('body').m_orgByTree(options);
         }

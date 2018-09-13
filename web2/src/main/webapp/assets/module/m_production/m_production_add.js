@@ -79,7 +79,7 @@
                     }, true);
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -156,7 +156,7 @@
                     S_toastr.success('添加成功！');
                     that._refresh();
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

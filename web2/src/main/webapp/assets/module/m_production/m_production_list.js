@@ -146,39 +146,27 @@
 
                     if(!($(that.element).find('.row-edit').length>0)) {
 
-                        S_dialog.dialog({
+                        var remark = currentObj.taskRemark==null?'':currentObj.taskRemark;
+                        var html = template('m_production/m_production_editRemark',{
+                            remark:remark
+                        });
+                        S_layer.dialog({
                             title: '任务描述',
-                            contentEle: 'dialogOBox',
-                            ele:id,
-                            lock: 2,
-                            quickClose:true,
-                            noTriangle:true,
-                            width: '320',
-                            minHeight:'110',
-                            tPadding: '0px',
-                            url: rootPath+'/assets/module/m_common/m_dialog.html'
+                            area : '320px',
+                            content:html,
+                            btn:false
 
-                        },function(d){//加载html后触发
-
-                            var tipsEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-                            var remark = currentObj.taskRemark==null?'':currentObj.taskRemark;
-
-                            var html = template('m_production/m_production_editRemark',{
-                                remark:remark
+                        },function(layero,index,dialogEle){//加载html后触发
+                            $(dialogEle).find('button[data-action="cancel"]').off('click').on('click',function () {
+                                S_layer.close($(dialogEle));
                             });
-                            $(tipsEle).html(html);
-
-                            $(tipsEle).find('button[data-action="cancel"]').off('click').on('click',function () {
-                                S_dialog.close($(tipsEle));
-                            });
-                            $(tipsEle).find('button[data-action="submit"]').off('click').on('click',function () {
-                                var text = $(tipsEle).find('textarea').val();
+                            $(dialogEle).find('button[data-action="submit"]').off('click').on('click',function () {
+                                var text = $(dialogEle).find('textarea').val();
                                 var param = {};
                                 param.taskRemark = text;
                                 that.saveTaskIssueByEdit($this,param);
-                                S_dialog.close($(tipsEle));
+                                S_layer.close($(dialogEle));
                             });
-
                         });
 
                     }else{
@@ -318,7 +306,7 @@
                     if(response.info.indexOf('已存在')>-1){
                         S_toastr.error(response.info);
                     }else{
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 }
             })
@@ -416,11 +404,11 @@
             option.postData.targetId=data.companyUserId;
             m_ajax.postJson(option,function (response) {
                 if(response.code=='0'){
-                    S_dialog.close($(event));
+                    S_layer.close($(event));
                     S_toastr.success('保存成功！');
                     that.refreshPage();
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -436,7 +424,7 @@
                     S_toastr.success('保存成功！');
                     that.refreshPage();
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -457,7 +445,7 @@
                         S_toastr.error(response.info);
                         isError = true;
                     }else{
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 }
             });
@@ -477,7 +465,7 @@
                     S_toastr.success('保存成功！');
                     that.refreshPage();
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -510,7 +498,7 @@
                     S_toastr.success('保存成功！');
                     that.refreshPage();
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -527,7 +515,7 @@
                     S_toastr.success('更新成功');
                     that.refreshPage();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -685,13 +673,13 @@
 
                 var targetUser='<strong style="color:red;margin:0px 3px;">'+data.userName+'</strong>';
                 var confirmTitle = '确定安排'+targetUser+'为新的任务负责人？';
-                S_dialog.confirm(confirmTitle,function(){
+                S_layer.confirm(confirmTitle,function(){
 
                     if(t==0){//添加情况下
                         $this.attr('data-id',data.companyUserId);
                         $this.attr('data-user-name',data.userName);
                         $this.prev().find('span').html(data.userName);
-                        S_dialog.close($(event));
+                        S_layer.close($(event));
                     }else{//编辑状态下
                         data.type = 1;
                         data.id = $this.attr('data-id');//旧任务负责人
@@ -699,7 +687,7 @@
                         that.postManagerChange(data,event);
                     }
                 },function(){
-                    //S_dialog.close($(event));
+                    //S_layer.close($(event));
                 });
             };
             $('body').m_orgByTree(options);
@@ -819,7 +807,7 @@
                         e.stopPropagation();
                         break;
                     case 'delTask'://删除任务
-                        S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+                        S_layer.confirm('删除后将不能恢复，您确定要删除吗？', function () {
 
                             var option = {};
                             option.url = restApi.url_deleteProjectTask;
@@ -830,7 +818,7 @@
                                     S_toastr.success('删除成功！');
                                     that.refreshPage();
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
                         }, function () {
@@ -957,7 +945,7 @@
                         var dataStatus = $this.attr('data-status');
                         if(dataStatus=='0'){//激活
 
-                            S_dialog.confirm(tipStr+'？',function () {
+                            S_layer.confirm(tipStr+'？',function () {
                                 var option = {};
                                 //option.url = restApi.url_completeTask+'/'+$taskId+'/'+dataStatus;
                                 option.url = restApi.url_completeTask;
@@ -970,7 +958,7 @@
                                         S_toastr.success('操作成功');
                                         that.refreshPage();
                                     } else {
-                                        S_dialog.error(response.info);
+                                        S_layer.error(response.info);
                                     }
                                 });
                             },function () {
@@ -1030,7 +1018,7 @@
                     case 'submitTask'://提交任务(设校审)
 
                         var dataId = $this.attr('data-id');
-                        S_dialog.confirm('确定完成此任务？',function () {
+                        S_layer.confirm('确定完成此任务？',function () {
 
                             var option = {};
                             option.url = restApi.url_updateCompleteTask+'/'+dataId;
@@ -1039,7 +1027,7 @@
                                     S_toastr.success('操作成功');
                                     that.refreshPage();
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
                         },function () {
@@ -1049,7 +1037,7 @@
                     case 'activateTask'://提交任务(设校审)
 
                         var dataId = $this.attr('data-id');
-                        S_dialog.confirm('确定激活此任务？',function () {
+                        S_layer.confirm('确定激活此任务？',function () {
 
                             var option = {};
                             option.url = restApi.url_activeProjectTask+'/'+dataId;
@@ -1058,7 +1046,7 @@
                                     S_toastr.success('操作成功');
                                     that.refreshPage();
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
                         },function () {
@@ -1067,50 +1055,33 @@
                         break;
 
                     case 'viewTaskRemarkEdit'://查看任务描述
-
                         var id = $this.attr('id'),i=$this.closest('TR').attr('data-i'),currentObj = that._productionList[i];
-                        S_dialog.dialog({
+                        var remark = currentObj.taskRemark==null?'':currentObj.taskRemark;
+                        S_layer.dialog({
                             title: '任务描述',
-                            contentEle: 'dialogOBox',
-                            ele:id,
-                            lock: 2,
-                            quickClose:true,
-                            noTriangle:true,
-                            width: '320',
-                            minHeight:'110',
-                            tPadding: '0px',
-                            url: rootPath+'/assets/module/m_common/m_dialog.html'
+                            area : '320px',
+                            content:'<div class="m-sm" style="word-break: break-all;">'+remark+'</div>',
+                            cancelText:'关闭',
+                            cancel:function () {
+                            }
 
-                        },function(d){//加载html后触发
-
-                            var tipsEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-                            var remark = currentObj.taskRemark==null?'':currentObj.taskRemark;
-                            $(tipsEle).html('<div class="m-sm" style="word-break: break-all;">'+remark+'</div>');
+                        },function(layero,index,dialogEle){//加载html后触发
 
                         });
                         e.stopPropagation();
                         break;
                     case 'viewTaskCompletion'://查看任务完成情况
-
                         var id = $this.attr('id'),i=$this.closest('TR').attr('data-i'),currentObj = that._productionList[i];
-                        S_dialog.dialog({
+                        var completion = currentObj.completion==null?'':currentObj.completion;
+                        S_layer.dialog({
                             title: '完成情况',
-                            contentEle: 'dialogOBox',
-                            ele:id,
-                            lock: 2,
-                            align:'left',
-                            quickClose:true,
-                            noTriangle:true,
-                            width: '300',
-                            minHeight:'110',
-                            tPadding: '0px',
-                            url: rootPath+'/assets/module/m_common/m_dialog.html'
+                            area : '320px',
+                            content:'<div class="m-sm" style="word-break: break-all;">'+completion+'</div>',
+                            cancelText:'关闭',
+                            cancel:function () {
+                            }
 
-                        },function(d){//加载html后触发
-
-                            var tipsEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-                            var completion = currentObj.completion==null?'':currentObj.completion;
-                            $(tipsEle).html('<div class="m-sm" style="word-break: break-all;">'+completion+'</div>');
+                        },function(layero,index,dialogEle){//加载html后触发
 
                         });
                         e.stopPropagation();

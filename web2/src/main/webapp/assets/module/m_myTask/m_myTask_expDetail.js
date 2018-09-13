@@ -24,31 +24,27 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.getData();
+            that.getExpData();
         }
         //加载弹窗
-        ,getData: function () {
+        ,renderDialog: function (html,callBack) {
             var that = this;
-            S_dialog.dialog({
+            S_layer.dialog({
                 title: '报销明细',
-                contentEle: 'TConsentOBox',
-                lock: 3,
-                width: '800',
-                minHeight: '450',
-                tPadding: '0px',
-                url: rootPath+'/assets/module/m_common/m_dialog.html'
+                area : '750px',
+                content:html,
+                btn:false
 
-            },function(d){//加载html后触发
-
-                that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-
-                that.getExpData(d);
-
-
+            },function(layero,index,dialogEle){//加载html后触发
+                that.element = dialogEle;
+                if(callBack)
+                    callBack();
             });
+
+
         }
         //加载
-        ,getExpData:function(d){
+        ,getExpData:function(){
             var that = this;
             var option = {};
             option.url=restApi.url_getExpMainDetail+'/'+that.settings.expDetail.id;
@@ -71,10 +67,11 @@
                     });
                     $data.myExpDetails.totalExpAmount = expNumberFilter($data.myExpDetails.totalExpAmount);
                     var html = template('m_myTask/m_myTask_expDetail',$data);
-                    $(that.element).html(html);
-                    that.bindActionClick();
+                    that.renderDialog(html,function () {
+                        that.bindActionClick();
+                    });
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
 
             })
@@ -89,7 +86,7 @@
 
                 switch (dataAction){
                     case 'cancel':
-                        S_dialog.close($this);
+                        S_layer.close($this);
                         break;
                     case 'agreeAndDone':
                         var options = {};
@@ -97,14 +94,14 @@
                         var versionNum = that.settings.myExamineData.versionNum;
                         options.postData={id:id,versionNum:versionNum};
                         options.url=restApi.url_agreeExpMain+'/'+id+'/'+versionNum;
-                        S_dialog.close($this);
+                        S_layer.close($this);
                         m_ajax.postJson(options,function (response) {
                             if(response.code=='0'){
-                                S_dialog.close($(event));
+                                S_layer.close($(event));
                                 S_toastr.success('操作成功');
                                 that.refreshMyChecking();
                             }else {
-                                S_dialog.error(response.info);
+                                S_layer.error(response.info);
                             }
 
                         });
@@ -113,7 +110,7 @@
 
                         var options = {};
                         options.url = restApi.url_getOrgTree;
-                        S_dialog.close($this);
+                        S_layer.close($this);
                         options.selectUserCallback = function (data,event) {
 
                             var options = {};
@@ -122,11 +119,11 @@
                             options.url=restApi.url_agreeAndTransAuditPerExpMain+'/'+id+'/'+data.companyUserId+'/'+versionNum;
                             m_ajax.postJson(options,function (response) {
                                 if(response.code=='0'){
-                                    S_dialog.close($(event));
+                                    S_layer.close($(event));
                                     S_toastr.success('操作成功');
                                     that.refreshMyChecking();
                                 }else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
                         };

@@ -28,7 +28,6 @@
         init: function () {
             var that = this;
 
-
             if(that.settings.doType==3){//撤销，不需要填写意见
                 that.confirm(restApi.url_repealApprove);
                 return false;
@@ -37,35 +36,34 @@
                 that.agree();
                 return false;
             }
+            that.settings.dataInfo.doType = that.settings.doType;
+            var html = template('m_approval/m_approval_operational_comments', that.settings.dataInfo);
 
-            that.renderDialog(function () {
-                that.settings.dataInfo.doType = that.settings.doType;
-                var html = template('m_approval/m_approval_operational_comments', that.settings.dataInfo);
-                $(that.element).html(html);
+            that.renderDialog(html,function () {
                 that.bindActionClick();
             });
 
         }
         //初始化数据,生成html
-        ,renderDialog:function (callBack) {
-
+        ,renderDialog:function (html,callBack) {
             var that = this;
-            if(that.settings.isDialog){//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.title||'确定审批',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '400',
-                    height:'140',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html'
+            if(that.settings.isDialog===true){//以弹窗编辑
 
-                },function(d){//加载html后触发
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
+                S_layer.dialog({
+                    title: that.settings.title||'确定审批',
+                    area : ['400px','140px'],
+                    btn : false,
+                    content:html
+
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
                     if(callBack!=null)
                         callBack();
-
                 });
+
             }else{//不以弹窗编辑
+                $(that.element).html(html);
                 if(callBack!=null)
                     callBack();
             }
@@ -87,13 +85,13 @@
                 if(response.code=='0'){
 
                     S_toastr.success('操作成功');
-                    S_dialog.close($(that.element));
+                    S_layer.close($(that.element));
 
                     if(that.settings.saveCallBack)
                         that.settings.saveCallBack();
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
 
             });
@@ -114,13 +112,13 @@
                 if(response.code=='0'){
 
                     S_toastr.success('操作成功');
-                    S_dialog.close($(that.element));
+                    S_layer.close($(that.element));
 
                     if(that.settings.saveCallBack)
                         that.settings.saveCallBack();
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
 
             });
@@ -144,11 +142,11 @@
                         options.cancelText = '关闭';
                         options.selectUserCallback = function (data,event) {
 
-                            S_dialog.confirm('确定同意并转交['+data.userName+']审批？', function () {
+                            S_layer.confirm('确定同意并转交['+data.userName+']审批？', function () {
                                 that.agree(data.companyUserId);
-                                S_dialog.close($(event));
+                                S_layer.close($(event));
                             }, function () {
-                                S_dialog.close($(event));
+                                S_layer.close($(event));
                             });
 
                         };

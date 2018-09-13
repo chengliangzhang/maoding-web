@@ -33,25 +33,24 @@
         ,initHtmlData:function () {
 
             var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
                     title: that.settings.title||'待审核人员',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '600',
-                    maxHeight:'700',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    area : ['750px','600px'],
+                    content:html,
                     cancelText:'关闭',
                     cancel:function () {
 
                     }
-                },function(d){//加载html后触发
 
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
 
-                    $('div[id="content:'+d.id+'"] .dialogOBox').html('<form class="sky-form showAuditListOBox rounded-4x p-m" style="position: static; zoom: 1;">' +
-                            '<fieldset><div id="toAuditOrgUser-pagination-container" class="m-pagination pull-right"></div>' +
-                            '</fieldset></form>');
+                    $(dialogEle).html('<form class="sky-form showAuditListOBox rounded-4x p-m" style="position: static; zoom: 1;">' +
+                        '<fieldset><div id="toAuditOrgUser-pagination-container" class="m-pagination pull-right"></div>' +
+                        '</fieldset></form>');
 
                     that.getDataByPage(function (data) {
                         $('table.toAuditOrgUserListBox').remove();
@@ -59,28 +58,25 @@
                         $('#toAuditOrgUser-pagination-container').before(html);
                         that.bindActionClick();
                     });
-
                 });
-            }else{//不以弹窗编辑
 
+            }else{//不以弹窗编辑
                 $(that.element).html('<div id="toAuditOrgUser-pagination-container" class="m-pagination pull-right"></div>');
                 that.getDataByPage(function () {
                     $('table.toAuditOrgUserListBox').remove();
                     var html = template('m_org/m_toAuditOrgUserList',{userAuditList:data});
                     $(that.element).prepend(html);
                     that.bindActionClick();
-                },d.id);
+                });
             }
 
-
         }
-        ,getDataByPage:function (callBack,id) {
+        ,getDataByPage:function (callBack) {
             var that = this;
             var url = that.settings.$dataUrl!=null&&that.settings.$dataUrl!=''?that.settings.$dataUrl:restApi.url_getPendingAudiOrgUser ;
             var params = {};
             paginationFun({
                 eleId:'#toAuditOrgUser-pagination-container',
-                loadingId:'#content:'+id,
                 url:url,
                 params:params
             },function(response){
@@ -112,7 +108,7 @@
 
                     });
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

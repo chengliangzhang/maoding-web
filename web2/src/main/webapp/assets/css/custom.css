@@ -192,13 +192,6 @@ body.mini-navbar #page-wrapper.menu-l-none{
 
 /* dropdown-menu-new  end --------------------------*/
 
-
-
-/*art-dialog-button*/
-.ui-dialog-footer button {
-    border-radius: 4px;
-}
-
 /* form-control */
 .form-control:focus, .single-line:focus {
     border-color: #8db7d4;
@@ -684,6 +677,9 @@ input.form-control[readonly] {
     border-radius: 25px;
     padding: 15px;
 }
+.border-b-radius{
+    border-radius: 0px 0px 5px 5px;
+}
 
 /**
     面包屑
@@ -850,8 +846,36 @@ i.icon-sm{
     color: #fff;
     padding:6px 12px;
 }
-
-
+/**layer**/
+body .layer-new,body layer-floating{
+    box-shadow:none;
+}
+body .layer-new .layui-layer-btn{
+    border-top: 1px solid #eee;
+    padding: 7px 15px 12px;
+}
+.layer-new .layui-layer-btn .layui-layer-btn0{
+    background-color: #4765a0;
+    border-color: #4765a0;
+    color: #fff;
+}
+.layer-new .layui-layer-btn a.layui-layer-btn0:hover {
+    color: #fff;
+    background-color: #286090;
+    border-color: #204d74;
+}
+.layer-new .layui-layer-btn a,
+.layer-new .layui-layer-btn a.btn-default{
+    color: inherit;
+    background: white;
+    border: 1px solid #e7eaec;
+}
+.layer-new .layui-layer-btn a:hover,
+.layer-new .layui-layer-btn a.btn-default:hover {
+     color: #333;
+     background-color: #e6e6e6;
+     border-color: #adadad;
+ }
 
 /*tooltip样式重写*/
 .tooltip-inner {
@@ -896,7 +920,11 @@ i.icon-sm{
 
 /**********************样式重写**************************/
 
-/*popover浮动窗去掉margin-top*/
+/**********************popover**************************/
+.popover.m-floating-popover{
+    max-width: 500px;
+}
+
 .popover h3.popover-title {
     margin-top: 0;
     font-size: 14px;
@@ -977,6 +1005,7 @@ body div label.error, div.popover.m-popover label.error {
 /** 重写table高度 **/
 #content-right .table>thead>tr>th{
     height: 38px;
+    position: relative;
 }
 #content-right .table>tbody>tr>td{
     height: 40px;
@@ -1918,17 +1947,12 @@ body div label.error, div.popover.m-popover label.error {
     color: black !important;
 }
 
-
-/*dialog下*/
-.ui-dialog .select2-container {
-    z-index: 1024 !important;
-}
-
 /* 样式 */
 .select2-container .select2-dropdown {
     font-size: inherit;
     font-family: inherit;
     border: 1px solid #e5e6e7;
+    z-index: 19891099;
 }
 
 .select2-container.select2-container--default .select2-selection--single{

@@ -29,13 +29,13 @@
 
         this._companyId = currentCompanyId;
         if (_.isBlank(this._companyId)) {
-            S_dialog.error('无法获取团队Id');
+            S_layer.error('无法获取团队Id');
             return;
         }
 
         this._projectId = this.settings.$projectId;
         if (_.isBlank(this._projectId)) {
-            S_dialog.error('无法获取项目Id');
+            S_layer.error('无法获取项目Id');
             return;
         }
 
@@ -97,7 +97,7 @@
                                     };
                                     jsonArray.push(arr);
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
                         }else{
@@ -129,7 +129,7 @@
                                         }
                                     }
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
                         }

@@ -39,25 +39,20 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.renderDialog(function () {
-                that.initHtmlData();
-            });
+            that.initHtmlData();
         }
-        ,renderDialog:function (callBack) {
+        ,renderDialog:function (html,callBack) {
             var that = this;
-            if(that.settings.isDialog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
                     title: that.settings.title||'添加收款计划',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '600',
-                    height:'220',
-                    //overFlow:'inherit',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    cancel:function(){
+                    area : '600px',
+                    content:html,
+                    cancel:function () {
                     },
-                    okText:'保存',
                     ok:function () {
+
                         if ($(that.element).find('form.form-horizontal').valid()) {
                             return that.save();
                         }else{
@@ -65,14 +60,15 @@
                         }
                     }
 
-                },function(d){//加载html后触发
-
-                    that.element = $('div[id="content:'+d.id+'"] .dialogOBox');
-
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
                     if(callBack)
                         callBack();
                 });
-            }else {//不以弹窗编辑
+
+            }else{//不以弹窗编辑
+                $(that.element).html(html);
                 if(callBack)
                     callBack();
             }
@@ -85,12 +81,12 @@
                 doType:that.settings.doType,
                 title:that._title
             });
-            $(that.element).html(html);
-            that.submit_validate();
-            that.initSelect2();
-            that.uploadRecordFile();
-            that.bindActionClick();
-
+            that.renderDialog(html,function () {
+                that.submit_validate();
+                that.initSelect2();
+                that.uploadRecordFile();
+                that.bindActionClick();
+            });
 
         }
         //select2初始化
@@ -120,7 +116,7 @@
                         that.renderListCompany(response.data);
 
                     } else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 });
             });
@@ -166,7 +162,7 @@
                     })
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
 
@@ -279,7 +275,7 @@
                         that.settings.oKCallBack();
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }

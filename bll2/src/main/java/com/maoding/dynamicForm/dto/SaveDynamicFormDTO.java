@@ -13,7 +13,28 @@ public class SaveDynamicFormDTO extends BaseDTO {
     /*表单类型*/
     private Integer formType;
 
+    /*1：被启用，0：未被启用*/
+    private Integer status;
+
+    private String CompanyId;
+
     List<DynamicFormFieldDTO> fieldList = new ArrayList<>();
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getCompanyId() {
+        return CompanyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        CompanyId = companyId;
+    }
 
     public String getFormName() {
         return formName;

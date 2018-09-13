@@ -38,47 +38,38 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            if(that.settings.$isDialog){
-                S_dialog.dialog({
-                    title: that.settings.$title||'项目基本信息',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    tPadding: '0px',
-                    width: '1000',
-                    minHeight:'700',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    cancel:function () {
-                    },
-                    cancelText:'关闭'
+            that.renderPage();
 
-                },function(d){//加载html后触发
-
-                    that.element = $('div[id="content:'+d.id+'"] .dialogOBox');
-                    that.renderPage();
-                });
-            }else{
-                that.renderPage();
-            }
         }
         //渲染界面
         ,renderPage:function () {
             var that = this;
             that.getProjectData(function (data) {
-                that.initHtmlData(data);
-                //that.bindAttentionActionClick();
-                rolesControl();
+                that.initHtmlData(data,function (flag) {
 
-                if(that.settings.$isView==false){
-                    if (that.settings.$editFlag!=null && that.settings.$editFlag==1) {//具有编辑权限操作
-                        that.bindEditItem();
-                        that.uploadRecordFile();
-                        that.bindEditable();
-                        that.bindBtnAddDesignContent();
-                        that.bindCustomInfoTemp();
-                        that.bindFileEditFun();
+                    if (that.settings.$renderCallBack != null) {
+                        that.settings.$renderCallBack();
                     }
-                    that.bindDeleteProject();
-                }
+                    if (!flag) {
+                        $(that.element).find('a[data-action][data-action!="deleteProject"]').addClass('normalAElem');//删除的权限单独控制，跟编辑权限不一样,删除的权限在渲染此组件时作了处理
+                    }
+                    $(that.element).find('span[data-toggle="tooltip"]').tooltip();
+                    that.bindDesignContentCheckbox();//给设计阶段的checkbox绑定事件
+                    rolesControl();
+
+                    if(that.settings.$isView==false){
+                        if (that.settings.$editFlag!=null && that.settings.$editFlag==1) {//具有编辑权限操作
+                            that.bindEditItem();
+                            that.uploadRecordFile();
+                            that.bindEditable();
+                            that.bindBtnAddDesignContent();
+                            that.bindCustomInfoTemp();
+                            that.bindFileEditFun();
+                        }
+                        that.bindDeleteProject();
+                    }
+                });
+
             });
         }
         ,getProjectData: function (callback) {
@@ -96,7 +87,7 @@
                             callback.call(that, that._projectInfo);
                     });
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         },
@@ -113,11 +104,11 @@
                         return callback();
                     }
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         },
-        initHtmlData: function (data) {
+        initHtmlData: function (data,callBack) {
             var that = this;
             var flag =  that.settings.$editFlag!=null && that.settings.$editFlag==1 ? true : false;//编辑标识
             var html = template('m_project/m_projectBasicInfo', {
@@ -131,18 +122,27 @@
                 fastdfsUrl: window.fastdfsUrl + '/',
                 isView:that.settings.$isView
             });
-            $(that.element).html(html);
-            if (that.settings.$renderCallBack != null) {
-                that.settings.$renderCallBack();
+            if(that.settings.$isDialog){
+                S_layer.dialog({
+                    title: that.settings.$title||'项目基本信息',
+                    area : '1000px',
+                    content:html,
+                    cancel:function () {
+                    },
+                    cancelText:'关闭'
+
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack(flag);
+                });
+            }else{
+                $(that.element).html(html);
+                if(callBack)
+                    callBack(flag);
             }
 
-            $(that.element).find('span[data-toggle="tooltip"]').tooltip();
-
-            if (!flag) {
-                $(that.element).find('a[data-action][data-action!="deleteProject"]').addClass('normalAElem');//删除的权限单独控制，跟编辑权限不一样,删除的权限在渲染此组件时作了处理
-            }
-            rolesControl();
-            that.bindDesignContentCheckbox();//给设计阶段的checkbox绑定事件
         },
         //处理文件上传的删除事件，hover事件
         bindFileEditFun:function () {
@@ -156,7 +156,7 @@
 
                 var dataId = $(this).attr('data-id');
 
-                S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+                S_layer.confirm('删除后将不能恢复，您确定要删除吗？', function () {
 
                     var option = {};
                     option.url = restApi.url_netFile_delete;
@@ -169,7 +169,7 @@
                             S_toastr.success('删除成功！');
                             that._refresh();
                         } else {
-                            S_dialog.error(response.info);
+                            S_layer.error(response.info);
                         }
                     });
 
@@ -206,7 +206,7 @@
                     $(obj).attr('data-attention-id', response.data);
                     $(obj).attr('title', '取消关注该项目');
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         },
@@ -223,7 +223,7 @@
                     $(obj).attr('data-attention-id', '');
                     $(obj).attr('title', '关注该项目');
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         },
@@ -233,7 +233,7 @@
             $(that.element).find('a[data-action="deleteProject"]').on('click',function(){
                 var $this = this;
 
-                S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+                S_layer.confirm('删除后将不能恢复，您确定要删除吗？', function () {
 
                     var option = {};
                     var id = $($this).attr('data-id');
@@ -243,7 +243,7 @@
                             S_toastr.success('删除成功！');
                             location.hash = '/';
                         } else {
-                            S_dialog.error(response.info);
+                            S_layer.error(response.info);
                         }
                     });
 
@@ -312,7 +312,7 @@
                 if (response.code == '0') {
                     return callBack(response.data);
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -332,7 +332,7 @@
                         return callback(that._constructCompanyList);
                     }
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -416,7 +416,7 @@
                             return false;
                         }
 
-                        S_dialog.confirm('删除（更换）乙方后，相关费用信息将被删除，你确定保存吗？', function () {
+                        S_layer.confirm('删除（更换）乙方后，相关费用信息将被删除，你确定保存吗？', function () {
 
                             that.saveProjectData(null, data, 'partyB', function () {
                                 S_toastr.success('保存成功！');
@@ -660,7 +660,7 @@
                         return callBack(response.data);
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -746,7 +746,7 @@
                 else {
                     resetCheck($this, true);
 
-                    S_dialog.confirm('该设计内容取消后将不能恢复，确定吗？', function () {
+                    S_layer.confirm('该设计内容取消后将不能恢复，确定吗？', function () {
 
                         var id = $this.closest('.designContentDiv').attr('data-id');
                         that.deleteProjectTask(id,function(){
@@ -1058,7 +1058,7 @@
                     }
                     that._refresh();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -1101,7 +1101,7 @@
                     S_toastr.success('保存成功！');
                     that._refresh();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -1162,7 +1162,7 @@
                         return callback();
                     }
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -1182,7 +1182,7 @@
                     S_toastr.success('保存成功！');
                     that._refresh();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -1201,7 +1201,7 @@
                         return callback();
                     }
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }

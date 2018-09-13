@@ -33,7 +33,7 @@
 
         this._companyId = window.currentCompanyId;
         if (_.isBlank(this._companyId)) {
-            S_dialog.error('无法获取团队Id');
+            S_layer.error('无法获取团队Id');
             return;
         }
 
@@ -116,7 +116,7 @@
                                         jsonArray.push(arr);
                                     }
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
                             callback.call(this, jsonArray);
@@ -149,7 +149,7 @@
                                         }
                                     }
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
                             callback.call(this, jsonArray);

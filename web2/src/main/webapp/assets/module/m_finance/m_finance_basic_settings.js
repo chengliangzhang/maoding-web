@@ -46,7 +46,7 @@
                     that.bindActionClick();
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -130,7 +130,7 @@
                     that.renderPage();
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                     isError = true;
                 }
             });

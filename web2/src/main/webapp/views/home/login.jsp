@@ -26,8 +26,7 @@
     <link rel="shortcut icon" href="<%=rootPath %>/assets/img/favicon2.ico">
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="<%=rootPath %>/assets/lib/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="<%=rootPath %>/assets/lib/art-dialog/css/art-dialog.min.css">
-    <link rel="stylesheet" href="<%=rootPath %>/assets/lib/layer-2x/skin/default/layer.min.css">
+    <link rel="stylesheet" href="<%=rootPath %>/assets/lib/layer/theme/default/layer.css">
     <link rel="stylesheet" href="<%=rootPath %>/assets/css/style.css">
     <link rel="stylesheet" href="<%=rootPath %>/assets/css/module.min.css?<%=v%>">
 

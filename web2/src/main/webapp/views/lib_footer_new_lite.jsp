@@ -12,15 +12,10 @@ vendor.min.js等于上述几个JS打包
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/jquery.spinner/js/jquery.spinner.min.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/jquery.validate.min.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/additional-methods.min.js?v=<%=v%>"></script>
-<script type="text/javascript" src="<%=rootPath %>/assets/lib/metisMenu/jquery.metisMenu.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/slimscroll/jquery.slimscroll.min.js"></script>
-<script type="text/javascript" src="<%=rootPath %>/assets/js/inspinia.min.js"></script>
 
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/jquery.blockUI.js"></script>
-<script type="text/javascript" src="<%=rootPath %>/assets/lib/art-dialog/dist/dialog-plus.min.js"></script>
-<%--<script type="text/javascript" src="<%=rootPath %>/assets/lib/artTemplate/template.js"></script>
-<script type="text/javascript" src="<%=rootPath %>/assets/module/m_inviteBPartner"></script>--%>
-
+<script type="text/javascript" src="<%=rootPath %>/assets/lib/layer/layer.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/pace/pace.min.js"></script>
 
 <!--[if lt IE 9]>

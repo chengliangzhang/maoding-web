@@ -140,7 +140,7 @@
                         }, true);
                     })
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -221,7 +221,7 @@
                         that._refreshTaskIssuePage();
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                     isError = true;
                 }
             });
@@ -240,7 +240,7 @@
                 if(response.code=='0'){
                     return callBack(response.data);
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -259,7 +259,7 @@
                 if(response.code=='0'){
                     return callBack(response.data);
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

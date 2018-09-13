@@ -54,7 +54,7 @@ var home_shareRegister={
                 if($_screenW<768){
                     S_toastr.success(response.info);
                 }else{
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
                 clock = 0;
                 window.clearInterval(timer);
@@ -116,7 +116,7 @@ var home_shareRegister={
                     if($_screenW<768){
                         S_toastr.success(response.info);
                     }else{
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
 
                 }

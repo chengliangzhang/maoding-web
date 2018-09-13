@@ -36,33 +36,32 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData();
+            that.initHtmlTemplate();
         },
         //初始化数据
-        initHtmlData:function () {
+        renderDialog:function (html,callBack) {
             var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.$isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
                     title: '计划进度调整历史',
-                    contentEle: 'dialogOBox',
-                    ele:that.settings.$eleId,
-                    align:that.settings.$align||'bottom',
-                    lock: 2,
-                    quickClose:true,
-                    noTriangle:true,
-                    width: '670',
-                    height:'200',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html'
-                },function(d){//加载html后触发
+                    area : '750px',
+                    content:html,
+                    cancel:function () {
+                    },
+                    cancelText:'关闭'
 
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    that.initHtmlTemplate();
-
-
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
-            }else{//不以弹窗编辑
 
+            }else{//不以弹窗编辑
+                $(that.element).html(html);
+                if(callBack)
+                    callBack();
             }
         }
         //生成html
@@ -71,11 +70,13 @@
 
             that.getTaskScheduleChangesList(function (data) {
                 var html = template('m_production/m_schedule_list',{taskScheduleChangesList:data});
-                $(that.element).html(html);
+                that.renderDialog(html,function () {
+                    if(that.settings.$renderCallBack!=null){
+                        that.settings.$renderCallBack(that.element);
+                    }
+                });
 
-                if(that.settings.$renderCallBack!=null){
-                    that.settings.$renderCallBack(that.element);
-                }
+
             });
         }
         //根据任务ID获取该任务的进度变更列表
@@ -97,7 +98,7 @@
 
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

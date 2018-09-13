@@ -60,7 +60,7 @@
                         that.bindSelectPartyA();
 
                     } else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 });
 

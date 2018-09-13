@@ -30,7 +30,7 @@ vendor.min.js等于上述几个JS打包
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/jquery.validate.min.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/toastr/toastr.min.js"></script>
 <script type="text/javascript" src="<%=rootPath %>/assets/lib/jquery.blockUI.js"></script>
-<script type="text/javascript" src="<%=rootPath %>/assets/lib/art-dialog/dist/dialog-plus.min.js"></script>
+<script type="text/javascript" src="<%=rootPath %>/assets/lib/layer/layer.js"></script>
 
 <!--[if lt IE 9]>
 <script src="<%=rootPath %>/assets/lib/respond.js"></script>

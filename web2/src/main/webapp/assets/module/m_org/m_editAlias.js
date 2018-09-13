@@ -30,42 +30,39 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData();
+            var opt = {
+                companyOriginalName:that.settings.companyOriginalName,
+                companyAlias:that.settings.companyAlias,
+                relationTypeId:that.settings.relationTypeId
+            };
+            var html = template('m_org/m_editAlias',opt);
+            that.initHtmlData(html,function () {
+                that.initValidate();
+                that.bindActionClick();
+            });
         }
         //初始化数据并加载模板
-        , initHtmlData:function () {
+        , initHtmlData:function (html,callBack) {
             var that = this;
-            S_dialog.dialog({
+            S_layer.dialog({
                 title: that.settings.title||'编辑事业合伙人',
-                contentEle: 'dialogOBox',
-                lock: 3,
-                width: '430',
-                tPadding: '0',
-                url: rootPath+'/assets/module/m_common/m_dialog.html',
-                ok:function(){
+                area : '430px',
+                content:html,
+                cancel:function () {
+                },
+                ok:function () {
+
                     if(!$('form.editAliasForm').valid()){
                         return false;
                     }else{
                         that.submitFunction();
                     }
-                },
-                okText:'保存',
-                cancel:function(){
+                }
 
-                },
-                cancelText:'取消'
-            },function(d){//加载html后触发
-
-                that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                var opt = {
-                    companyOriginalName:that.settings.companyOriginalName,
-                    companyAlias:that.settings.companyAlias,
-                    relationTypeId:that.settings.relationTypeId
-                };
-                var html = template('m_org/m_editAlias',opt);
-                $(that.element).html(html);
-                that.initValidate();
-                that.bindActionClick();
+            },function(layero,index,dialogEle){//加载html后触发
+                that.element = dialogEle;
+                if(callBack)
+                    callBack();
             });
         }
         , submitFunction:function () {
@@ -83,7 +80,7 @@
                     if(that.settings.saveCallback)
                         that.settings.saveCallback();
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }

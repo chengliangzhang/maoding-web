@@ -118,7 +118,7 @@
                                         S_toastr.success('保存成功');
                                         that.refeshPage();
                                     }else {
-                                        S_dialog.error(response.info);
+                                        S_layer.error(response.info);
                                     }
 
                                 })

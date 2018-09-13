@@ -28,25 +28,29 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that._initHtml();
-        }
-        //初始化数据,生成html
-        ,_initHtml:function () {
-            var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.$title||'添加设计任务',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '600',
-                    minHeight:'125',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    cancel:function () {
+            var html = template('m_taskIssue/m_taskIssueDesignContent_add', {});
+            that._renderDialog(html,function () {
 
+                var option = {};
+                option.$isDialog = false;
+                option.$isHaveMemo = false;
+                $(that.element).find('#time-box').m_inputProcessTime(option);
+                that._saveDesignContent_validate();
+            });
+        }
+        //初始化界面
+        ,_renderDialog:function (html,callBack) {
+            var that = this;
+            if(that.settings.$isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
+                    title: that.settings.$title||'添加设计任务',
+                    area : '600px',
+                    content:html,
+                    cancel:function () {
                     },
-                    okText:'保存',
                     ok:function () {
+
                         if($(that.element).find('form.content-form').valid()){//&& $(that.element).find('form.inputTimeOBox').valid()
                             that._saveDesignContent();
                         }else {
@@ -54,30 +58,17 @@
                         }
                     }
 
-                },function(d){//加载html后触发
-
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    var html = template('m_taskIssue/m_taskIssueDesignContent_add', {});
-                    $(that.element).html(html);
-
-                    var option = {};
-                    option.$isDialog = false;
-                    option.$isHaveMemo = false;
-                    $(that.element).find('#time-box').m_inputProcessTime(option);
-
-                    that._saveDesignContent_validate();
-                    //that._saveDesignContent_validate2();
-
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
+
             }else{//不以弹窗编辑
-
-
-                var html = template('m_taskIssue/m_taskIssueDesignContent_add', {});
                 $(that.element).html(html);
-
-                var option = {};
-                option.$isDialog = false;
-                $(that.element).find('#time-box').m_inputProcessTime(option);
+                if(callBack)
+                    callBack();
             }
         }
 
@@ -100,7 +91,7 @@
                         that.settings.$okBackCall();
                     }
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }

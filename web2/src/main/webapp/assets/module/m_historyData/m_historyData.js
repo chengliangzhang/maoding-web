@@ -130,7 +130,7 @@
 
             $(that.element).find('button[data-action="submit"]').click(function () {
 
-                S_dialog.confirm('你确定要提交吗？', function () {
+                S_layer.confirm('你确定要提交吗？', function () {
 
                     var option = {
                         url: restApi.url_historyData_createProjects,

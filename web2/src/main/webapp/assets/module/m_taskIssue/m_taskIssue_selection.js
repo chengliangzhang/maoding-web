@@ -33,60 +33,42 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that._initHtmlData();
+            var $data = {};
+            $data.allTaskList = that.settings.$allTaskList;//response.data;
+            $data.companyUserName = that.settings.$companyUserName;
+            $data.isFirstSetDesign = that.settings.$isFirstSetDesign;
+            var html = template('m_taskIssue/m_taskIssue_selection',$data);
+            that._renderDialog(html,function () {
+            });
         },
         //初始化数据
-        _initHtmlData:function () {
+        _renderDialog:function (html,callBack) {
             var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
+            if(that.settings.$isDialog===true){//以弹窗编辑
                 var title = that.settings.$isFirstSetDesign==true?'选择设计负责人':'设置设计负责人';
-                S_dialog.dialog({
+                S_layer.dialog({
                     title: that.settings.$title||title,
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '800',
-                    minHeight:'125',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    area : '750px',
+                    content:html,
                     cancel:function () {
                     },
-                    okText:'保存',
                     ok:function () {
+
                         that._saveTransferTaskDesigner();
                     }
 
-                },function(d){//加载html后触发
-
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    that._initHtmlTemplate();
-
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
+
             }else{//不以弹窗编辑
-                that._initHtmlTemplate();
+                $(that.element).html(html);
+                if(callBack)
+                    callBack();
             }
-        }
-        //生成html
-        ,_initHtmlTemplate:function () {
-            var that = this,option  = {},$data = {};
-            /*option.url = restApi.url_getProjectTaskForChangeDesigner;
-            option.postData = {
-                projectId:that.settings.$projectId
-            };
-            m_ajax.postJson(option,function (response) {
-                if(response.code=='0'){*/
-                    $data.allTaskList = that.settings.$allTaskList;//response.data;
-                    $data.companyUserName = that.settings.$companyUserName;
-                    $data.isFirstSetDesign = that.settings.$isFirstSetDesign;
-                    var html = template('m_taskIssue/m_taskIssue_selection',$data);
-                    $(that.element).html(html);
-
-                    that._initCheckBox();
-
-                /*}else {
-                    S_dialog.error(response.info);
-                }
-            })*/
-
         }
         //初始化checkbox并处理点击事件
         ,_initCheckBox:function () {
@@ -149,7 +131,7 @@
                         that.settings.$okCallBack();
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
 

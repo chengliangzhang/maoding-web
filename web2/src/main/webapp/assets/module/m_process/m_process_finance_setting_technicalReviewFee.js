@@ -42,7 +42,7 @@
                     that.initICheck();
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
 
@@ -83,7 +83,7 @@
                 if(response.code=='0'){
                     S_toastr.success('操作成功！');
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }

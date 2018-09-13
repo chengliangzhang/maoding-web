@@ -7,8 +7,8 @@
     "use strict";
     var pluginName = "m_approval_mgt_setProcess",
         defaults = {
-            $type:null,
-            $key:null
+            type:null,
+            key:null
         };
 
     // The actual plugin constructor
@@ -44,7 +44,7 @@
             option.classId = '#content-right';
             option.url = restApi.url_prepareProcessDefine;
             option.postData = {};
-            option.postData.key = that.settings.$key;
+            option.postData.key = that.settings.key;
             option.postData.currentCompanyId = that._currentCompanyId;
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
@@ -91,7 +91,7 @@
                         callBack(response.data);
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
 
@@ -174,7 +174,7 @@
                     S_toastr.success('保存成功！');
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -272,9 +272,9 @@
                     case 'setApprovalCondition'://设置审批流程
 
                         var option = {};
-                        option.$type = $this.attr('data-type');
-                        option.$processData = that._processDetail;
-                        option.$oKCallBack = function (data) {
+                        option.type = $this.attr('data-type');
+                        option.processData = that._processDetail;
+                        option.oKCallBack = function (data) {
 
                             that._editCondProcess = data;
                             var html = template('m_approval/m_approval_mgt_setProcess_flow',{flowTaskGroupList:data});

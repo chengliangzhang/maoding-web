@@ -8,7 +8,7 @@
     var pluginName = "m_editUser",
         defaults = {
             title: '',
-            isDailog: true,
+            isDialog: true,
             userObj: null,
             doType: 'add'//默认添加 edit=编辑
             , saveCallBack: null
@@ -31,77 +31,71 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData(function () {
-                that.bindActionClick();
-                that.saveUser_validate();
+            var $data = {};
+            $data.memberObj = {};//添加人员对象
+            that.getDepartByCompanyId(function () {
+
+                $data.memberObj.departList = [];
+                $data.orgList = that.settings.orgList;
+                if (that.settings.userObj != null) {//编辑
+                    $data.memberObj = that.settings.userObj;
+                } else {
+                    var org = {
+                        "id": null,
+                        "companyId": null,
+                        "departId": null,
+                        "cuId": null,
+                        "userId": null,
+                        "serverStation": null
+                    };
+                    $data.memberObj.departList.push(org);
+                    $data.memberObj.departList[0].departId = that.settings.realId;
+                }
+
+                var html = template('m_org/m_editUser', $data);
+                that.renderDialog(html,function () {
+                    $('form.editUserOBox a[data-action="delDepartServerStation"]').eq(0).addClass('hide');
+                    if (that.settings.userObj != null) {
+                        that.dealSelectDisabled();
+                    }
+                    that.bindActionClick();
+                    that.saveUser_validate();
+                })
+
             });
         }
         //初始化数据并加载模板
-        , initHtmlData: function (callBack) {
+        , renderDialog: function (html,callBack) {
             var that = this;
-            if (that.settings.isDailog) {//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.title || '添加人员',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '800',
-                    height: '450',
-                    maxHeight: '550',
-                    tPadding: '0px',
-                    url: rootPath + '/assets/module/m_common/m_dialog.html',
-                    okText: '保存',
-                    ok: function () {
+            if(that.settings.isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
+                    title: that.settings.title||'余额变更',
+                    area : '750px',
+                    content:html,
+                    cancel:function () {
+                    },
+                    ok:function () {
+
                         if ( !(that.saveUser_depart_validate() && $('form.editUserOBox').valid())) {
                             return false;
                         } else {
                             that.saveUser();
 
                         }
-                    },
-                    cancel: function () {
-
                     }
-                }, function (d) {//加载html后触发
 
-                    var $data = {};
-                    $data.memberObj = {};//添加人员对象
-                    that.getDepartByCompanyId(function () {
-
-                        $data.memberObj.departList = [];
-                        $data.orgList = that.settings.orgList;
-                        if (that.settings.userObj != null) {//编辑
-                            $data.memberObj = that.settings.userObj;
-                        } else {
-                            var org = {
-                                "id": null,
-                                "companyId": null,
-                                "departId": null,
-                                "cuId": null,
-                                "userId": null,
-                                "serverStation": null
-                            };
-                            $data.memberObj.departList.push(org);
-                            $data.memberObj.departList[0].departId = that.settings.realId;
-                        }
-
-                        var html = template('m_org/m_editUser', $data);
-                        $('div[id="content:' + d.id + '"] .dialogOBox').html(html);
-                        $('form.editUserOBox a[data-action="delDepartServerStation"]').eq(0).addClass('hide');
-                        if (that.settings.userObj != null) {
-                            that.dealSelectDisabled();
-                        }
-                        if (callBack != null) {
-                            callBack();
-                        }
-                    });
-
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
-            } else {//不以弹窗编辑
-                var html = template('m_org/m_editUser', {});
+
+            }else{//不以弹窗编辑
                 $(that.element).html(html);
-                if (callBack != null) {
+                if(callBack)
                     callBack();
-                }
             }
         }
         , getDepartByCompanyId: function (callBack) {
@@ -115,7 +109,7 @@
                         callBack();
                     }
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -151,9 +145,6 @@
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
                     S_toastr.success('保存成功！');
-                    /*if(that.settings.isDailog){
-                     S_dialog.close(e);
-                     }*/
                     $('#organization_treeH a.jstree-anchor.jstree-clicked').click();//刷新员工页面数据
                     if (that.settings.doType == 'add') {
                         var count_num1 = $('.panel-footer span[data-key="companyUserCount"]').text();
@@ -165,7 +156,7 @@
                         return that.settings.saveCallBack(response.data);
                     }
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

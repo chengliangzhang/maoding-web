@@ -34,34 +34,29 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.renderDialog(function () {
-                that.renderContent();
-            });
+            that.renderContent();
 
         }
         //渲染弹窗
-        ,renderDialog:function (callBack) {
+        ,renderDialog:function (html,callBack) {
 
             var that = this;
-            if(that.settings.isDialog){//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.title||that._title+'申请',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '750',
-                    tPadding: '0',
-                    height:that._dialogHeight+'',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html'
+            if(that.settings.isDialog===true){//以弹窗编辑
 
-                },function(d){//加载html后触发
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    if(callBack!=null)
-                        callBack();
+                S_layer.dialog({
+                    title: that.settings.title||that._title+'申请',
+                    area : '750px',
+                    btn : false,
+                    content:html
+
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
 
                 });
+
             }else{//不以弹窗编辑
-                if(callBack!=null)
-                    callBack();
+                $(that.element).html(html);
             }
         }
         //渲染内容
@@ -79,13 +74,13 @@
                     that._baseData.doType = that.settings.doType;
                     that._baseData.title = that._title;
                     that._baseData.currentCompanyUserId = that._currentCompanyUserId;
-                    that._baseData.dialogHeight = 'height:'+(that._dialogHeight-55)+'px';
+                    that._baseData.dialogHeight = 'height:'+(that._dialogHeight-100)+'px';
                     var html = template('m_approval/m_approval_cost_details', that._baseData);
-                    $(that.element).html(html);
+                    that.renderDialog(html);
                     that.bindActionClick();
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -96,7 +91,7 @@
 
                 switch(dataAction){
                     case 'cancel'://取消
-                        S_dialog.close($(that.element));
+                        S_layer.close($(that.element));
 
                         break;
                     case 'agree'://同意

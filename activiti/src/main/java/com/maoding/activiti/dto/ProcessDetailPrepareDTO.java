@@ -21,11 +21,33 @@ public class ProcessDetailPrepareDTO extends CoreEditDTO {
     /** 流程类型，定义见ProcessTypeConst.TYPE_xxx */
     private Integer type;
 
+    /** 分条件流程内的变量名称 **/
+    private String varName;
+
+    /** 分条件流程内的变量单位 **/
+    private String varUnit;
+
     /** 模板流程编号 */
     private String srcProcessDefineId;
 
     /** 流程启动时的数字式的审批条件 */
     private DigitConditionEditDTO startDigitCondition;
+
+    public String getVarName() {
+        return varName;
+    }
+
+    public void setVarName(String varName) {
+        this.varName = varName;
+    }
+
+    public String getVarUnit() {
+        return varUnit;
+    }
+
+    public void setVarUnit(String varUnit) {
+        this.varUnit = varUnit;
+    }
 
     public String getName() {
         return name;

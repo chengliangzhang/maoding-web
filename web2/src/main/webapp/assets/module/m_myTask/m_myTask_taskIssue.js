@@ -74,7 +74,7 @@
                     $(that.element).find('#taskIssueList').m_taskIssue_list(option);
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

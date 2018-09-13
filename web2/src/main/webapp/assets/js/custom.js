@@ -225,29 +225,29 @@ var cutString = function (str, length, suffix) {
 function handlePostJsonError(response) {
     if (response.status == 404) {
         //当前请求地址未找到
-        S_dialog.error('当前请求地址未找到！');
+        S_layer.error('当前请求地址未找到！');
 
     } else if (response.status == 0) {
         //网络请求超时
-        S_dialog.error('网络请求超时！');
+        S_layer.error('网络请求超时！');
     } else {
-        S_dialog.error('网络请求出现错误！status：' + response.status + "，statusText：" + response.statusText);
+        S_layer.error('网络请求出现错误！status：' + response.status + "，statusText：" + response.statusText);
     }
     //var text = '访问出现异常！<br/>status: ' + response.status + '<br/>statusText: ' + response.statusText;
-    //S_dialog.alert(text);
+    //S_layer.alert(text);
 }
 //数据提交访问错误
 function handleResponse(response) {
     var result = false;
     if (response.code == "401") {
         //session超时 !
-        S_dialog.error('当前用户状态信息已超时!点击“确定”后返回登录界面。', '提示', function () {
+        S_layer.error('当前用户状态信息已超时!点击“确定”后返回登录界面。', '提示', function () {
             window.location.href = window.rootPath + '/iWork/sys/login';
         });
         result = true;
     } else if (response.code == "500") {
         //未捕获异常 X
-        S_dialog.error('出现异常错误 !详细信息：' + response.info);
+        S_layer.error('出现异常错误 !详细信息：' + response.info);
         result = true;
     }
     return result;
@@ -257,34 +257,82 @@ function handleResponse(response) {
 var S_layer = {
     dialog:function (option,initCallback) {
 
+        var btn = [];
+        if(option.okText && typeof(option.ok)==='function')
+            btn.push(option.okText);
+
+        if(option.cancelText && typeof(option.cancel)==='function')
+            btn.push(option.cancelText);
+
+        if(option.btn)
+            btn.push(option.btn);
+
+        if(option.btn===undefined && btn.length==0)
+            btn = ['确定', '取消'];
+
+        if(option.btn===false)
+            btn = false;
+
         var options = {
             type: option.type || 1
+            ,id: option.id
             ,title: option.title || false
-            ,skin:option.skin || ''
+            ,skin:option.skin || 'layer-new'
             ,area:option.area || 'auto'
+            ,maxHeight:option.maxHeight
+            ,maxWidth:option.maxWidth
             ,offset:option.offset || 'auto'
             ,icon:option.icon || null
-            ,closeBtn:option.closeBtn || 1
-            ,shade:option.shade || 0.3
-            ,shadeClose:option.quickClose || false // 点击空白处快速关闭
+            ,closeBtn:option.closeBtn==undefined?  1 :option.closeBtn
+            ,shade:option.shade==undefined?  0.3 :option.shade
+            ,shadeClose:option.shadeClose || false // 点击空白处快速关闭
             ,time:option.time || 0
             ,shift:option.shift || 0
             ,maxmin:option.maxmin || false
-            ,fixed :option.fixed  || true
+            ,fixed :option.fixed  || false
+            ,resize:option.resize  || false
             ,scrollbar:option.scrollbar || true
-            ,btn: option.btn
-            ,yes: option.ok || null//确定函数
-            ,cancel: option.cancel || null//取消函数
+            ,btn: btn
+            ,btn2: option.btn2 || option.cancel || null//取消函数
+            ,yes:function(index,layero){
+                var flag = true;
+                if(option.ok)
+                    flag = option.ok();
+
+                if(!(flag===false))
+                    layer.close(index);
+
+            }
+            ,cancel:function () {
+                if(option.cancel)
+                    option.cancel();
+            }
             ,end: option.end || null//层销毁后触发的回调
             ,success: function(layero, index){
-                console.log(layero);
-                console.log(index);
-                return initCallback(layero);
+
+                if(btn && btn.length>1)
+                    layero.find('.layui-layer-btn .layui-layer-btn0').addClass('pull-right');
+
+                //只有一个按钮
+                if(btn && btn.length==1 && (btn[0]=='关闭' || btn[0]=='取消'))
+                    layero.find('.layui-layer-btn .layui-layer-btn0').addClass('btn-default');
+
+                var dialogEle = 'div.layui-layer'+layero.selector+' .layui-layer-content';
+
+                return initCallback(layero,index,dialogEle);
             }};
 
+        if(btn && btn.length>2){//大于两个btn，往里加
+            $.each(btn,function (i,item) {
+                if(i<2)
+                    return true;
+                var key = 'btn'+(i+1);
+                options[key] = option[key];
+            })
+        }
+        console.log(options)
         if(option.url){
             $.get(option.url, {cache: true}).success(function (data) {
-
                 options.content = data;
                 layer.open(options);
 
@@ -295,94 +343,7 @@ var S_layer = {
             options.content = option.content || '';
             layer.open(options);
         }
-    }
-};
-var S_dialog = {
 
-    /**
-     * 当title=null,quickClose=true并lock=2,为不带标题框的浮动窗口
-     * 当title!=null,quickClose=true并lock=2,为带标题框的浮动窗口
-     * 当title!=null,quickClose=false并lock=1,为带标题框没有遮罩层的弹窗
-     * 当title!=null,quickClose=false并lock=3,为带标题框有遮罩层的弹窗
-     * 适用于多种情况,需要扩展属性直接添加
-     * @param 属性值{title，align，quickClose，okText,ok function,cancelText,}
-     */
-    dialog: function (option, afterShow, callback) {
-        var baseUrl = '';//'http://localhost:8081/idcc-web-test/';
-        $.get(baseUrl + option.url, {cache: true}).success(function (data) {
-            var d = dialog({
-                title: option.title || null,
-                content: data,
-                align: option.align || 'bottom',//当quickClose=true并lock=2为浮动窗口,此属性对应浮动窗口的三角图标定位
-                quickClose: option.quickClose || false,// 点击空白处快速关闭
-                ok: option.ok || null,//确定函数
-                okValue: option.okText || '确定',
-                cancel: option.cancel || null,//取消函数
-                cancelValue: option.cancelText || '取消',
-                height: option.height || '',
-                width: option.width || 668
-            });
-
-            if (option.tPadding != null && option.tPadding != '') {//弹窗的内容padding设置
-                $('div[id="content:' + d.id + '"]').parents('.ui-dialog-body').css('padding', option.tPadding);
-            }
-
-            if (option.minHeight != null && option.minHeight != '') {//弹窗的内容min-height设置
-                $('div[id="content:' + d.id + '"]').css({
-                    'min-height': option.minHeight + 'px'
-                });
-            }
-
-            if (option.maxHeight != null && option.maxHeight != '') {//弹窗的内容max-height设置
-                $('div[id="content:' + d.id + '"]').css('max-height', option.maxHeight + 'px');
-            }
-
-            if (option.overFlow != null && option.overFlow != '') {//弹窗的内容overFlow设置
-                $('div[id="content:' + d.id + '"] .dialogOBox').css('overflow', option.overFlow);
-            }
-
-            if (option.lock == 1) {//弹窗没有遮罩层
-
-                d.show();
-
-            } else if (option.lock == 2) {//弹窗自由定位,以ele为定位点
-
-                d.show(document.getElementById(option.ele));//option.ele为定位的元素ID
-
-            } else if (option.lock == 3) {//此情况,quickClose需要为false
-
-                d.showModal();
-
-            } else if(option.lock == 4){
-
-                d.showModal(document.getElementById(option.ele));//option.ele为定位的元素ID
-
-            } else {
-
-                d.showModal();
-            }
-            if (option.noTriangle) {//为noTriangle = true//去掉三角图标
-
-                $('.' + option.contentEle).parents('.ui-dialog').find('.ui-dialog-arrow-a').hide();
-                $('.' + option.contentEle).parents('.ui-dialog').find('.ui-dialog-arrow-b').hide();
-            }
-            if (option.enterToSubmit == null || option.enterToSubmit == void 0 || option.enterToSubmit == true) {//是否给input绑定回车确认提交事件
-
-                setTimeout(function () {
-                    $('div[id="content:' + d.id + '"]').find('input').keydown(function () {
-                        if (event.keyCode == '13') {//keyCode=13是回车键
-                            $('div[id="content:' + d.id + '"]').closest('.ui-dialog').find('button[i-id="ok"]').click();
-                        }
-                    });
-                }, 500);
-            }
-
-            afterShow = afterShow || function () {};
-            return afterShow(d);
-
-        }).error(function () {
-            alert('操作异常\n网络错误');
-        });
     },
     /**
      * 确定提示对话框
@@ -390,15 +351,8 @@ var S_dialog = {
      * @param title 标题
      */
     alert: function (text, title) {
-        var d = dialog({
-            title: title || '提示',
-            content: '<div style="padding:0 70px;">' + text + '</div>',
-            okValue: '确定',
-            cancel: false,
-            ok: function () {
-            }
-        });
-        d.showModal();
+        text = '<div class="text-center">'+text+'</div>'
+        layer.alert(text, {title:title||'提示',skin:'layer-new',resize:false});
     },
     /**
      * 确定提示对话框
@@ -407,15 +361,17 @@ var S_dialog = {
      */
     //成功提示
     success: function (text, title, okCallback) {
-        var d = dialog({
-            title: title || '提示',
-            content: '<div style="min-width: 300px;max-width: 800px;"><div class="text-center"><i class="icon-custom icon-color-light rounded-x fa fa-check"  style="background: cadetblue"></i> <p style="font-size: 16px; padding-top: 12px">' + text + '</p></div> </div>',
-            okValue: '确定',
-            cancel: false,
-            ok: okCallback || function () {
+        text = '<div style="min-width: 300px;max-width: 800px;"><div class="text-center"><i class="icon-custom icon-color-light rounded-x fa fa-check"  style="background: cadetblue"></i> <p style="font-size: 16px; padding-top: 12px">' + text + '</p></div> </div>';
+        layer.alert(text, {
+            title:title||'提示',
+            skin:'layer-new',
+            resize:false,
+            yes:function (index,layero) {
+                if(okCallback)
+                    okCallback();
+                layer.close(index);
             }
         });
-        d.showModal();
     },
 
     /**
@@ -425,15 +381,17 @@ var S_dialog = {
      */
     //错误提示
     error: function (text, title, okCallback) {
-        var d = dialog({
-            title: title || '提示',
-            content: '<div style="min-width: 300px;max-width: 800px;"><div class="text-center"><i class="icon-custom icon-color-light rounded-x fa fa-times"  style="background: brown"></i> <p style="line-height: 3">' + text + '</p></div> </div>',
-            okValue: '确定',
-            cancel: false,
-            ok: okCallback || function () {
+        text = '<div style="min-width: 300px;max-width: 800px;"><div class="text-center"><i class="icon-custom icon-color-light rounded-x fa fa-times"  style="background: brown"></i> <p style="line-height: 3">' + text + '</p></div> </div>';
+        layer.alert(text, {
+            title:title||'提示',
+            skin:'layer-new',
+            resize:false,
+            yes:function (index,layero) {
+                if(okCallback)
+                    okCallback();
+                layer.close(index);
             }
         });
-        d.showModal();
     },
 
     /**
@@ -443,15 +401,17 @@ var S_dialog = {
      */
     //警告提示
     warning: function (text, title, okCallback) {
-        var d = dialog({
-            title: title || '提示',
-            content: '<div style="min-width: 300px;max-width: 800px;"><div class="text-center"><i class="icon-custom icon-color-light rounded-x fa fa-exclamation-triangle" style="background: darkgoldenrod"></i> <p style="line-height: 3">' + text + '</p></div> </div>',
-            okValue: '确定',
-            cancel: false,
-            ok: okCallback || function () {
+        text = '<div style="min-width: 300px;max-width: 800px;"><div class="text-center"><i class="icon-custom icon-color-light rounded-x fa fa-exclamation-triangle" style="background: darkgoldenrod"></i> <p style="line-height: 3">' + text + '</p></div> </div>';
+        layer.alert(text, {
+            title:title||'提示',
+            skin:'layer-new',
+            resize:false,
+            yes:function (index,layero) {
+                if(okCallback)
+                    okCallback();
+                layer.close(index);
             }
         });
-        d.showModal();
     },
 
     /**
@@ -461,32 +421,19 @@ var S_dialog = {
      */
     //
     info: function (text, title) {
-        var d = dialog({
-            title: title || '提示',
-            content: '<div style="min-width: 300px;max-width: 800px;"><div class="text-center"><i class="icon-custom icon-color-light rounded-x fa fa-info" style="background: cornflowerblue"></i> <p style="line-height: 3">' + text + '</p></div> </div>',
-            okValue: '确定',
-            cancel: false,
-            ok: function () {
-            }
+        text = '<div style="min-width: 300px;max-width: 800px;"><div class="text-center"><i class="icon-custom icon-color-light rounded-x fa fa-info" style="background: cornflowerblue"></i> <p style="line-height: 3">' + text + '</p></div> </div>';
+        layer.alert(text, {
+            title:title||'提示',
+            skin:'layer-new',
+            resize:false
         });
-        d.showModal();
     },
     /**
      * 控制对话框提示
      * @param text 内容
      */
     tips: function (text) {
-        var d = dialog({
-            content: text,
-            opacity: 0.8,
-            lock: false
-        });
-        $('div[aria-labelledby="title:' + d.id + '"]').find('.ui-dialog').attr('style', 'background:rgba(0,0,0,.8);color:white;');
-        d.show();
-        setTimeout(function () {
-                d.close();
-            },
-            1500);
+        layer.msg(text);
     },
     /**
      * 前端确认弹窗提示
@@ -495,35 +442,45 @@ var S_dialog = {
      * @param cancel function
      */
     confirm: function (text, callback1, callback2) {
-        var d = dialog({
-            title: '提示',
-            content: '<div style="text-align:center;padding:15px;">' + text || '您确定要操作吗?' + '</div>',
-            width: 300,
-            okValue: '确定',
-            cancelValue: '取消',
-            ok: callback1 || function () {
-            },
-            cancel: callback2 || function () {
-            }
+        text = '<div class="text-center p-sm">' + (text || '您确定要操作吗?') + '</div>';
+        layer.confirm(text, {
+            title:'提示',
+            skin:'layer-new',
+            resize:false,
+            success: function(layero, index){
+                layero.find('.layui-layer-btn .layui-layer-btn0').addClass('pull-right');
+            }}
+        , function(index){
+            if(callback1)
+                callback1();
+            layer.close(index);
+        },function (index) {
+            if(callback2)
+                callback2();
+            layer.close(index);
         });
-        d.showModal();
-    },
-    close: function (obj) {
-        obj.parents('.ui-dialog-grid').find('.ui-dialog-close').click();
-    }
 
+    },
+    close: function ($ele) {
+        var index = $ele.parents('.layui-layer').attr('times');
+        layer.close(index);
+    },
+    load:function (id, text) {
+
+        layer.load();
+    }
 };
 /**
  * 加载中 提示
  * @param id 标签ID或类名
  * @param text 提示内容
  */
-var $_loading = {
+var S_loading = {
     show: function (id, text) {
         if (text == undefined || text == '') {
-            text = '正在保存中...';
+            text = '正在请求中...';
         }
-        $(id).eq(0).block({message: text,baseZ:'1024'});
+        $(id).eq(0).block({message: text,baseZ:'19891099'});
     },
     close: function (id) {
         $(id).eq(0).unblock();
@@ -620,7 +577,7 @@ var m_ajax = {
             cache: false,
             beforeSend: function () {
                 if (option.classId)
-                    $_loading.show(option.classId, '正在请求中...');
+                    S_loading.show(option.classId, '正在请求中...');
 
                 if (option.bindDisabled) {
                     var $el = $(option.bindDisabled);
@@ -655,7 +612,7 @@ var m_ajax = {
             },
             complete: function () {
                 if (option.classId)
-                    $_loading.close(option.classId);
+                    S_loading.close(option.classId);
 
                 if (option.bindDisabled) {
                     setTimeout(function () {
@@ -684,7 +641,7 @@ var m_ajax = {
             contentType: "application/json",
             beforeSend: function () {
                 if (option.classId)
-                    $_loading.show(option.classId, '正在请求中...');
+                    S_loading.show(option.classId, '正在请求中...');
 
                 if (option.bindDisabled) {
                     var $el = $(option.bindDisabled);
@@ -719,7 +676,7 @@ var m_ajax = {
             },
             complete: function () {
                 if (option.classId)
-                    $_loading.close(option.classId);
+                    S_loading.close(option.classId);
 
                 if (option.bindDisabled) {
                     setTimeout(function () {
@@ -749,7 +706,7 @@ var m_ajax = {
             cache: false,
             beforeSend: function () {
                 if (option.classId)
-                    $_loading.show(option.classId, '正在请求中...');
+                    S_loading.show(option.classId, '正在请求中...');
 
                 if (option.bindDisabled) {
                     var $el = $(option.bindDisabled);
@@ -784,7 +741,7 @@ var m_ajax = {
             },
             complete: function () {
                 if (option.classId)
-                    $_loading.close(option.classId);
+                    S_loading.close(option.classId);
 
                 if (option.bindDisabled) {
                     setTimeout(function () {
@@ -815,7 +772,7 @@ var m_ajax = {
             contentType: "application/json",
             beforeSend: function () {
                 if (option.classId)
-                    $_loading.show(option.classId, '正在请求中...');
+                    S_loading.show(option.classId, '正在请求中...');
 
                 if (option.bindDisabled) {
                     var $el = $(option.bindDisabled);
@@ -847,7 +804,7 @@ var m_ajax = {
             },
             complete: function () {
                 if (option.classId)
-                    $_loading.close(option.classId);
+                    S_loading.close(option.classId);
 
                 if (option.bindDisabled) {
                     setTimeout(function () {
@@ -877,7 +834,7 @@ var m_ajax = {
             contentType: "application/json",
             beforeSend: function () {
                 if (option.classId)
-                    $_loading.show(option.classId, '正在请求中...');
+                    S_loading.show(option.classId, '正在请求中...');
 
                 if (option.bindDisabled) {
                     var $el = $(option.bindDisabled);
@@ -912,7 +869,7 @@ var m_ajax = {
             },
             complete: function () {
                 if (option.classId)
-                    $_loading.close(option.classId);
+                    S_loading.close(option.classId);
 
                 if (option.bindDisabled) {
                     setTimeout(function () {
@@ -969,12 +926,12 @@ function paginationFun(option, callback) {
                 handleResponse(response);
             },
             beforeSend: function (xmlHttpRequest) {
-                $_loading.show(option.loadingId, '正在加载中...');
+                S_loading.show(option.loadingId, '正在加载中...');
             },
             complete: function (xmlHttpRequest, textStatue) {
-                $_loading.close(option.loadingId);
+                S_loading.close(option.loadingId);
                 if (xmlHttpRequest.status != 200) {
-                    S_dialog.error('error！status：' + xmlHttpRequest.status);
+                    S_layer.error('error！status：' + xmlHttpRequest.status);
                 }
             }
         },

@@ -67,7 +67,7 @@
                     that.bindClickAction();
                     that.initSelectByView();
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -100,7 +100,7 @@
                         that.renderTaskList(i);
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -161,7 +161,7 @@
                     }
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -209,10 +209,10 @@
                 option.$selectUserCallback = function (data, event) {//1
                     data.type = 1;
                     var targetUser='<strong style="color:red;margin:0 3px;">'+data.userName+'</strong>';
-                    S_dialog.confirm('确定将设计负责人更换为'+targetUser+'？', function () {
+                    S_layer.confirm('确定将设计负责人更换为'+targetUser+'？', function () {
                         that.postManagerChange(data, companyId, event);
                     }, function () {
-                        //S_dialog.close($(event));
+                        //S_layer.close($(event));
                     });
                 };
                 $('body').m_changeOperator(option);
@@ -245,13 +245,13 @@
                         obj.companyUserId = data.selectedUserList[0].id;
                         obj.isFirstSetDesign = isFirstSetDesign;
                         var targetUser='<strong style="color:red;margin:0 3px;">'+obj.userName+'</strong>';
-                        S_dialog.confirm('确定将助理更换为'+targetUser+'？', function () {
+                        S_layer.confirm('确定将助理更换为'+targetUser+'？', function () {
                             that.postManagerChange(obj, companyId, event);
                         }, function () {
                         });
                     }else{
                         obj.companyUserId=null;
-                        S_dialog.confirm('确定将助理置空？', function () {
+                        S_layer.confirm('确定将助理置空？', function () {
                             that.postManagerChange(obj, companyId, event);
                         }, function () {
                         });
@@ -283,11 +283,11 @@
             option.postData.companyUserId = data.companyUserId;
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
-                    S_dialog.close($(event));
+                    S_layer.close($(event));
                     S_toastr.success('保存成功！');
                     that.refreshPage();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

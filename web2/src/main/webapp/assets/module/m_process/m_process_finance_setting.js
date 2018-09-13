@@ -64,7 +64,7 @@
                     that.bindActionClick();
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
 
@@ -103,7 +103,7 @@
                 if(response.code=='0'){
                     S_toastr.success('操作成功！');
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -150,7 +150,7 @@
 
                     case 'del'://删除流程
 
-                        S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+                        S_layer.confirm('删除后将不能恢复，您确定要删除吗？', function () {
 
                             var option = {};
                             option.classId = '#content-right';
@@ -162,7 +162,7 @@
                                     S_toastr.success('删除成功！');
                                     that.renderContent();
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
 

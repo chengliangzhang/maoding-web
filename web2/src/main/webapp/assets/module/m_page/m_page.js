@@ -58,19 +58,19 @@
             var that = this;
             if (that.settings.loadingId !== null && that.settings.remote.beforeSend === null) {
                 that.settings.remote.beforeSend = function () {
-                    $_loading.show(that.settings.loadingId, '正在加载中...');
+                    S_loading.show(that.settings.loadingId, '正在加载中...');
                 }
             }
             if (that.settings.loadingId !== null && that.settings.remote.complete === null) {
                 that.settings.remote.complete = function () {
-                    $_loading.close(that.settings.loadingId);
+                    S_loading.close(that.settings.loadingId);
                 }
             }
 
             if (that.settings.remote.remoteWrongFormat === null) {
                 that.settings.remote.remoteWrongFormat = function (res) {
                     if (res && res.code === '500')
-                        S_dialog.error('很抱歉，请求发生异常');
+                        S_layer.error('很抱歉，请求发生异常');
                 }
             }
 

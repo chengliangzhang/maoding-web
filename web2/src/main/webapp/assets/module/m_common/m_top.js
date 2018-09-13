@@ -95,7 +95,7 @@
                     that.renderToolTip();
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
 
@@ -123,7 +123,7 @@
                 if (response.code == '0') {
                     window.location.href = window.rootPath + '/iWork/home/workbench';
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

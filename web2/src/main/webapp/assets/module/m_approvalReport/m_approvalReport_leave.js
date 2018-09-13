@@ -74,7 +74,7 @@
 
                     return false;
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
 
@@ -94,8 +94,7 @@
                     options.$url = restApi.url_getLeaveDetail;
                     options.$detailData = data[i];
                     options.$type = that.settings.$type;
-                    console.log(options);
-                    $(this).m_approvalReport_leaveDetail(options);
+                    $(this).m_approvalReport_leaveDetail(options,true);
                     event.stopPropagation();
                     return false;
                 });

@@ -19,10 +19,8 @@
 <link rel="stylesheet" href="<%=rootPath %>/assets/lib/font-awesome/css/font-awesome.min.css">
 <link rel="stylesheet" href="<%=rootPath %>/assets/lib/icon/iconfont.min.css">
 
-<link rel="stylesheet" href="<%=rootPath %>/assets/lib/art-dialog/css/art-dialog.min.css">
-<link rel="stylesheet" href="<%=rootPath %>/assets/lib/layer-2x/skin/default/layer.min.css">
+<link rel="stylesheet" href="<%=rootPath %>/assets/lib/layer/theme/default/layer.css">
 <link rel="stylesheet" href="<%=rootPath %>/assets/lib/toastr/toastr.min.css">
-
 <link rel="stylesheet" href="<%=rootPath %>/assets/lib/mricodePagination/mricode.pagination.min.css">
 
 <link rel="stylesheet" href="<%=rootPath %>/assets/css/style.min.css?v=1">

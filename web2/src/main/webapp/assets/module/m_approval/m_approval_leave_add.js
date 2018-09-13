@@ -45,24 +45,23 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.renderDialog(function () {
 
-                var option = {};
-                option.url = restApi.url_getProcessType;
-                option.postData = {
-                    auditType:that._auditType
-                };
-                m_ajax.postJson(option, function (response) {
-                    if (response.code == '0') {
+            var option = {};
+            option.url = restApi.url_getProcessType;
+            option.postData = {
+                auditType:that._auditType
+            };
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
 
-                        that._baseData = response.data;
-                        that._baseData.doType = that.settings.doType;
-                        that._baseData.title = that._title;
-                        var html = template('m_approval/m_approval_leave_add', {
-                            data: that._baseData,
-                            dataInfo:that.settings.dataInfo
-                        });
-                        $(that.element).html(html);
+                    that._baseData = response.data;
+                    that._baseData.doType = that.settings.doType;
+                    that._baseData.title = that._title;
+                    var html = template('m_approval/m_approval_leave_add', {
+                        data: that._baseData,
+                        dataInfo:that.settings.dataInfo
+                    });
+                    that.renderDialog(html,function () {
                         if(that.settings.doType==3){
                             that.renderLeaveType();
                         }
@@ -131,46 +130,44 @@
                         }else{
                             that.renderApprover();
                         }
+                    });
 
-
-                    } else {
-                        S_dialog.error(response.info);
-                    }
-                });
-
+                } else {
+                    S_layer.error(response.info);
+                }
             });
 
         }
-        //初始化数据,生成html
-        ,renderDialog:function (callBack) {
+        //渲染界面
+        ,renderDialog:function (html,callBack) {
 
             var that = this;
-            if(that.settings.isDialog){//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.title||'请假申请',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '705',
-                    tPadding: '0',
-                    height: '630',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    cancel:function () {
+            if(that.settings.isDialog===true){//以弹窗编辑
 
+                S_layer.dialog({
+                    title: that.settings.title||'请假申请',
+                    area : ['750px','650px'],
+                    content:html,
+                    cancel:function () {
                     },
                     ok:function () {
+
                         var flag = $(that.element).find('form').valid();
                         if (!flag || that.save()) {
                             return false;
                         }
                     }
-                },function(d){//加载html后触发
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    if(callBack!=null)
-                        callBack();
 
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
+
             }else{//不以弹窗编辑
-                if(callBack!=null)
+                $(that.element).html(html);
+                if(callBack)
                     callBack();
             }
         }
@@ -199,7 +196,7 @@
                         $(that.element).find('select[name="leaveType"]').val(that.settings.dataInfo.leaveType).trigger('change');
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -231,7 +228,7 @@
                         $(that.element).find('select[name="projectId"]').val(that.settings.dataInfo.projectId).trigger('change');
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -303,7 +300,7 @@
                     if(that.settings.saveCallBack)
                         that.settings.saveCallBack();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -367,7 +364,7 @@
                             if (res.code === '0') {
                                 S_toastr.success("删除成功");
                             } else if (res.code === '1') {
-                                S_dialog.error(res.msg);
+                                S_layer.error(res.msg);
                             }
                         });
                     };

@@ -1,7 +1,5 @@
 package com.maoding.dynamicForm.dto;
 
-import com.maoding.core.base.dto.BaseDTO;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +8,7 @@ import java.util.List;
 */
 public class DynamicFormFieldDTO {
 
+    private String id;
     /*
     主表id（maoding_dynamic_form的id）
 */
@@ -50,9 +49,18 @@ public class DynamicFormFieldDTO {
     */
     private Integer requiredType;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     List<DynamicFormFieldDTO> detailFieldList = new ArrayList<>();
 
     List<DynamicFormFieldSelectedValueDTO> fieldSelectedValueList = new ArrayList<>();
+
 
     public String getFormId() {
         return formId;
@@ -157,4 +165,5 @@ public class DynamicFormFieldDTO {
     public void setFieldSelectedValueList(List<DynamicFormFieldSelectedValueDTO> fieldSelectedValueList) {
         this.fieldSelectedValueList = fieldSelectedValueList;
     }
+
 }

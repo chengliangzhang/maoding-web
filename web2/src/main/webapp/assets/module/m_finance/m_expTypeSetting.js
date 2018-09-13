@@ -37,7 +37,7 @@
                     $(that.element).html(html);
                     that.addActionClick(expTypeList);
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
 
             });

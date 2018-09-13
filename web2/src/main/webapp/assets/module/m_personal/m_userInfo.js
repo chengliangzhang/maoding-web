@@ -68,7 +68,7 @@
                         that.renderUserInfo();
 
                     } else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 });
             } else {
@@ -87,7 +87,7 @@
                        return callBack(response.data);
                    }
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -104,7 +104,7 @@
                         return callBack(response.data);
                     }
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -158,7 +158,7 @@
                     // $(that.element).m_userInfo(option.postData);
                     if(callback) return callback();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -213,7 +213,7 @@
                                             S_toastr.success('保存成功！');
                                             that.refresh();
                                         } else {
-                                            S_dialog.error(response.info);
+                                            S_layer.error(response.info);
                                         }
                                     })
                                 }else{
@@ -299,7 +299,7 @@
                             $('#navbar ul.navbar-right li .img-circle').attr('src', path);
                             S_toastr.success("保存成功");
                         } else {
-                            S_dialog.error(response.info);
+                            S_layer.error(response.info);
                         }
                     });
                 }
@@ -315,7 +315,7 @@
                     that.userDto = response.data;
                     $('#box_detail').m_userInfo({userDto: that.userDto});
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }

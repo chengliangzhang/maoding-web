@@ -12,13 +12,12 @@ import com.maoding.core.common.okhttp.BaseHttpCallback;
 import okhttp3.*;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
-import org.springframework.http.client.OkHttpClientHttpRequestFactory;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class OkHttpUtils extends OkHttpClientHttpRequestFactory {
+public class OkHttpUtils /*extends OkHttpClientHttpRequestFactory*/ {
     private static final String MEDIA_TYPE_JSON = "application/json; charset=utf-8";
     private static final String MEDIA_TYPE_FILE = "application/octet-stream; charset=utf-8";
     private static final String MEDIA_TYPE_DEFAULT = MEDIA_TYPE_JSON;

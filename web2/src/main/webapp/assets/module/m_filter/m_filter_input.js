@@ -36,37 +36,30 @@
                 $(that.element).find('i').addClass('fc-v1-blue');
             }
 
-            var iHtml = template('m_filter/m_filter_input',{
-                isClear:that.settings.isClear,
-                inputValue:that.settings.inputValue,
-                placeholder:that.settings.placeholder
-            });
+
 
             $(that.element).on('click',function (e) {
-                S_dialog.dialog({
-                    contentEle: 'dialogOBox',
-                    ele:that.settings.eleId,
-                    lock: 2,
-                    align: that.settings.align||'bottom right',
-                    quickClose:true,
-                    noTriangle:true,
-                    width: '220',
-                    minHeight:'100',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html'
 
-                },function(d){//加载html后触发
-
-                    var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    $(dialogEle).html(iHtml);
-                    $(dialogEle).css('overflow-x','hidden');
-
-                    that.bindBtnAction($(dialogEle));
-
+                var iHtml = template('m_filter/m_filter_input',{
+                    isClear:that.settings.isClear,
+                    inputValue:that.settings.inputValue,
+                    placeholder:that.settings.placeholder
                 });
+                $(that.element).m_floating_popover({
+                    eleId:that.settings.eleId,
+                    content:iHtml,
+                    placement:'bottomRight',
+                    renderedCallBack:function ($popover) {
+
+                        that.bindBtnAction($popover);
+                    }
+
+                },true);
+
                 e.stopPropagation();
                 return false;
             });
+
         }
 
         //获取选中的数据
@@ -74,13 +67,23 @@
             var that = this;
 
             $ele.find('button[data-action="sureFilter"]').off('click').on('click',function () {
-                var textVal = $ele.find('input[name="txtVal"]').val();
-                S_dialog.close($ele);
+
+                that.settings.inputValue = $ele.find('input[name="txtVal"]').val();
+
+                $(that.element).m_floating_popover('closePopover');//关闭浮窗
+
+                if(!isNullOrBlank(that.settings.inputValue))
+                    $(that.element).find('i').addClass('fc-v1-blue');
+
                 if(that.settings.oKCallBack)
-                    that.settings.oKCallBack(textVal);
+                    that.settings.oKCallBack(that.settings.inputValue);
             });
             $ele.find('button[data-action="clearInput"]').off('click').on('click',function () {
                 $ele.find('input[name="txtVal"]').val('');
+                $(that.element).find('i').removeClass('fc-v1-blue');
+                that.settings.inputValue = '';
+                if(that.settings.oKCallBack)
+                    that.settings.oKCallBack(that.settings.inputValue);
             });
         }
 

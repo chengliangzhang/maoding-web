@@ -61,6 +61,13 @@ public interface ProcessService {
     List<ProcessDefineGroupDTO> listProcessDefineWithGroup(ProcessDefineQueryDTO query);
 
     /**
+     * 描述       查询流程定义
+     * 日期       2018/9/13
+     * @author   张成亮
+     **/
+    List<ProcessDefineDTO> listProcessDefine(ProcessDefineQueryDTO query);
+
+    /**
      * 任务签收
      */
     void claimTask(TaskDTO dto) throws Exception;

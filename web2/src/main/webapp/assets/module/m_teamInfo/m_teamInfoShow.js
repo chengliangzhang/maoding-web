@@ -216,7 +216,7 @@
                         $('#navbar a.orgInfo').html(value+'<span class="caret"></span>')
                     }
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         },

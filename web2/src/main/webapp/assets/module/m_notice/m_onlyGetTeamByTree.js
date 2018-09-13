@@ -15,7 +15,7 @@
             parentOrgObj: null,
             isExcludeOrgChoice: null,//是否暂时隐藏树里面团队里的部门
             ids: '',
-            CallBack: null
+            callBack: null
         };
 
     // The actual plugin constructor
@@ -38,16 +38,14 @@
         //任务签发弹窗
         , initUserTreeDialog: function () {
             var that = this;
-
-            S_dialog.dialog({
+            S_layer.dialog({
                 title: that.settings.title || '选择组织',
-                contentEle: 'dialogOBox',
-                lock: 3,
-                width: that.settings.width || '600',
-                minHeight: that.settings.minHeight || '400',
-                tPadding: '0px',
-                url: rootPath + '/assets/module/m_common/m_dialog.html',
-                ok: function () {
+                area : '600px',
+                content:template('m_notice/m_onlyGetTeamByTree', {}),
+                cancel:function () {
+                },
+                ok:function () {
+
                     var data = that.settings.ids;
                     var companyName = that.getCompanyName(that.settings.ids);
                     // console.log('确定：'+data);
@@ -56,16 +54,11 @@
                     } else {
                         $(that.element).find('input[data-action="choseDepartment"]').val('点击设置');
                     }
-                    return that.settings.CallBack(data);
-                },
-                cancel: function () {
-
+                    return that.settings.callBack(data);
                 }
-            }, function (d) {//加载html后触发
-                that.initTreeData(function (data) {
-                    var html = template('m_notice/m_onlyGetTeamByTree', {});
-                    $('div[id="content:' + d.id + '"] .dialogOBox').html(html);
 
+            },function(layero,index,dialogEle){//加载html后触发
+                that.initTreeData(function (data) {
                     that.initTreeStructure(data, that.settings.ids);
                 });
             });
@@ -111,7 +104,7 @@
                         return callBack(response.data);
                     }
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
 
             })

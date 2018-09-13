@@ -28,33 +28,32 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData();
+            that.initHtmlTemplate();
         },
-        //初始化数据
-        initHtmlData:function (callBack) {
+        //渲染弹窗
+        renderDialog:function (html,callBack) {
             var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.$isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
                     title: that.settings.$title||'详情',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '800',
-                    minHeight:'125',
-                    height:'600',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    area : '750px',
+                    content:html,
                     cancelText:'关闭',
                     cancel:function () {
                     }
 
-                },function(d){//加载html后触发
-
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    that.initHtmlTemplate();
-
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
+
             }else{//不以弹窗编辑
-                that.initHtmlTemplate();
+                $(that.element).html(html);
+                if(callBack)
+                    callBack();
             }
         }
         //生成html
@@ -72,9 +71,9 @@
                         detailData:response.data,
                         type:that.settings.$type
                     });
-                    $(that.element).html(html);
+                    that.renderDialog(html);
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
 

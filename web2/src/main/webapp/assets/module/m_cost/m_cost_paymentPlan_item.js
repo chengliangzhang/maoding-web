@@ -83,7 +83,7 @@
                         if(callBack!=null)
                             callBack();
                     }else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 })
             }else{
@@ -177,7 +177,7 @@
                     that.initHtml(1);
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -312,7 +312,7 @@
                     that.initHtml(1);
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                     isError = true;
                 }
             });
@@ -350,7 +350,7 @@
 
                     case 'delCostPointDetail'://删除费用明细
 
-                        S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+                        S_layer.confirm('删除后将不能恢复，您确定要删除吗？', function () {
 
                             var option = {};
                             option.url = restApi.url_deleteProjectCostPointDetail+'/'+$this.attr('data-id');
@@ -359,7 +359,7 @@
                                     S_toastr.success('删除成功！');
                                     that.initHtml(1);
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
 
@@ -370,7 +370,7 @@
 
                     case 'delCostPoint'://删除费用节点
 
-                        S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+                        S_layer.confirm('删除后将不能恢复，您确定要删除吗？', function () {
 
                             var option = {};
                             option.url = restApi.url_deleteProjectCostPoint+'/'+$this.attr('data-id');
@@ -379,7 +379,7 @@
                                     S_toastr.success('删除成功！');
                                     that.initHtml(1);
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
 
@@ -389,7 +389,7 @@
 
                     case 'delPaidFee'://删除到账节点
 
-                        S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+                        S_layer.confirm('删除后将不能恢复，您确定要删除吗？', function () {
 
                             var option = {};
                             option.url = restApi.url_deleteProjectCostPaymentDetail+'/'+$this.attr('data-id');
@@ -398,7 +398,7 @@
                                     S_toastr.success('删除成功！');
                                     that.initHtml(1);
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
 
@@ -439,7 +439,7 @@
                                             S_toastr.success('操作成功');
                                             that.initHtml(1);
                                         } else {
-                                            S_dialog.error(response.info);
+                                            S_layer.error(response.info);
                                         }
                                     });
                                 }
@@ -495,7 +495,7 @@
                         break;
                     case 'delAttach'://删除附件
 
-                        S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+                        S_layer.confirm('删除后将不能恢复，您确定要删除吗？', function () {
 
                             var option = {};
                             option.url = restApi.url_netFile_delete;
@@ -508,7 +508,7 @@
                                     S_toastr.success('删除成功！');
                                     that.initHtml(1);
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
 

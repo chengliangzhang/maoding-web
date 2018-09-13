@@ -37,31 +37,29 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.renderDialog(function () {
-                that.renderContent();
-            });
+            that.renderContent();
 
         }
         //渲染弹窗
-        ,renderDialog:function (callBack) {
-
+        ,renderDialog:function (html,callBack) {
             var that = this;
-            if(that.settings.isDialog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
                     title: that.settings.title||that._title+'申请',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '750',
-                    tPadding: '0',
-                    height:that._dialogHeight+'',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html'
-                },function(d){//加载html后触发
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
+                    area : '750px',
+                    btn : false,
+                    content:html
+
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
                     if(callBack!=null)
                         callBack();
-
                 });
+
             }else{//不以弹窗编辑
+                $(that.element).html(html);
                 if(callBack!=null)
                     callBack();
             }
@@ -84,11 +82,12 @@
                     that._baseData.dialogHeight = 'height:'+(that._dialogHeight-55)+'px';
 
                     var html = template('m_approval/m_approval_leave_details', that._baseData);
-                    $(that.element).html(html);
-                    that.bindActionClick();
+                    that.renderDialog(html,function () {
+                        that.bindActionClick();
+                    });
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -99,7 +98,7 @@
 
                 switch(dataAction){
                     case 'cancel'://取消
-                        S_dialog.close($(that.element));
+                        S_layer.close($(that.element));
                         if(that.settings.closeCallBack)
                             that.settings.closeCallBack();
                         break;

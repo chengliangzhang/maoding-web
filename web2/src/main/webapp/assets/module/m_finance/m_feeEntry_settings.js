@@ -132,7 +132,7 @@
                     that.bindActionClick();
 
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
 
@@ -223,7 +223,7 @@
                 if(response.code=='0'){
                     S_toastr.success('保存成功！');
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
 
@@ -251,15 +251,13 @@
                 var dataCategoryType = $this.attr('data-category-type');
                 switch (dataAction){
                     case 'editName'://编辑费用类型
-                        S_dialog.dialog({
+                        S_layer.dialog({
                             title: '编辑费用类型',
-                            contentEle: 'dialogOBox',
-                            lock: 3,
-                            width: '350',
-                            height:'90',
-                            tPadding:'0',
-                            url: rootPath+'/assets/module/m_common/m_dialog.html',
-                            ok:function(){
+                            area : '350px',
+                            content:template('m_finance/m_feeEntry_settings_add',{}),
+                            cancel:function () {
+                            },
+                            ok:function () {
 
                                 if ($('form.addFeeFieldForm').valid()) {
 
@@ -278,49 +276,31 @@
                                             S_toastr.success('操作成功');
                                             that.renderContent();
                                         }else {
-                                            S_dialog.error(response.info);
+                                            S_layer.error(response.info);
                                         }
                                     });
 
                                 } else {
                                     return false;
                                 }
-
-                            },
-                            cancelText:'取消',
-                            cancel:function(){
-                                //$('form.addFeeFieldForm select[name="categoryType"]').select2('destroy');
                             }
-                        },function(d){//加载html后触发
 
-                            var $dialogEle = $('div[id="content:'+d.id+'"] .dialogOBox');
-                            var html = template('m_finance/m_feeEntry_settings_add',{});
-                            $dialogEle.html(html);
-
-                            /*$dialogEle.find('select[name="categoryType"]').select2({
-                                allowClear: false,
-                                language: "zh-CN",
-                                minimumResultsForSearch: -1
-                            });*/
+                        },function(layero,index,dialogEle){//加载html后触发
 
                             $('form.addFeeFieldForm input[name="feeField"]').val(dataName);
-                            //$('form.addFeeFieldForm select[name="categoryType"]').val(dataCategoryType).trigger('change');
-
                             that.saveFeeField_validate();
                         });
                         e.stopPropagation();
                         return false;
                         break;
                     case 'addFeeField'://新增费用类型
-                        S_dialog.dialog({
+                        S_layer.dialog({
                             title: '新增费用类型',
-                            contentEle: 'dialogOBox',
-                            lock: 3,
-                            width: '350',
-                            height:'90',
-                            tPadding:'0',
-                            url: rootPath+'/assets/module/m_common/m_dialog.html',
-                            ok:function(){
+                            area : '350px',
+                            content:template('m_finance/m_feeEntry_settings_add',{}),
+                            cancel:function () {
+                            },
+                            ok:function () {
 
                                 if ($('form.addFeeFieldForm').valid()) {
 
@@ -338,29 +318,18 @@
                                             S_toastr.success('操作成功');
                                             that.renderContent();
                                         }else {
-                                            S_dialog.error(response.info);
+                                            S_layer.error(response.info);
                                         }
                                     });
 
                                 } else {
                                     return false;
                                 }
-                            },
-                            cancelText:'取消',
-                            cancel:function(){
-                                //$('form.addFeeFieldForm select[name="categoryType"]').select2('destroy');
                             }
-                        },function(d){//加载html后触发
 
-                            var $dialogEle = $('div[id="content:'+d.id+'"] .dialogOBox');
-                            var html = template('m_finance/m_feeEntry_settings_add',{});
-                            $dialogEle.html(html);
+                        },function(layero,index,dialogEle){//加载html后触发
 
-                            /*$dialogEle.find('select[name="categoryType"]').select2({
-                                allowClear: false,
-                                language: "zh-CN",
-                                minimumResultsForSearch: -1
-                            });*/
+                            $('form.addFeeFieldForm input[name="feeField"]').val(dataName);
                             that.saveFeeField_validate();
                         });
                         e.stopPropagation();
@@ -368,7 +337,7 @@
                         break;
                     case 'delFeeField'://删除费用类型
 
-                        S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+                        S_layer.confirm('删除后将不能恢复，您确定要删除吗？', function () {
 
                             var option = {};
                             option.url = restApi.url_deleteExpCategory;
@@ -379,7 +348,7 @@
                                     S_toastr.success('删除成功！');
                                     that.renderContent();
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
 

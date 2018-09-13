@@ -108,7 +108,7 @@
                     if (response.code == 0) {
                     }
                     else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                         clock = 0;
                         window.clearInterval(timer);
                         window.timer=null;
@@ -183,7 +183,7 @@
                         that.bindStep2ClickAction();
                     }
                     else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 })
             }
@@ -209,7 +209,7 @@
                 m_ajax.postJson(option, function (response) {
                     if (response.code == 0) {
 
-                        S_dialog.success('修改成功！确定跳转请重新登录。','提示',function(){
+                        S_layer.success('修改成功！确定跳转请重新登录。','提示',function(){
 
                             var url = that.settings.toSuccessUrl||'/iWork/sys/login';
                             if (response.data != null && response.data != '')
@@ -219,7 +219,7 @@
                         })
                     }
                     else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 })
             }

@@ -48,49 +48,49 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.renderHtml();
+            that.renderTemplate();
         },
         //渲染界面
-        renderHtml: function () {
+        renderHtml: function (html,callBack) {
             var that = this;
-            if (that.settings.showDialog) {//以弹窗编辑
-                S_dialog.dialog({
-                    title: that.settings.title,
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '600',
-                    minHeight: '300',
-                    tPadding: '0px',
-                    url: window.rootPath + '/assets/module/m_common/m_dialog.html',
-                    cancel: function () {
+            if(that.settings.showDialog===true){//以弹窗编辑
 
+                S_layer.dialog({
+                    title: that.settings.title||'图片裁剪',
+                    area : '600px',
+                    content:html,
+                    cancel:function () {
                     },
-                    okText: '保存',
-                    ok: function () {
+                    ok:function () {
+
                         var imgSrc = $('.setArea .thumbnail img.img-responsive').attr('src');
                         if(imgSrc && imgSrc!=null && imgSrc!=''){
-                            that._saveCroppedImage();
+                            that.saveCroppedImage();
                         }else{
                             S_toastr.warning('上传图片不能为空！');
                             return false;
                         }
-
                     }
-                }, function (d) {//加载html后触发
-                    that.element = 'div[id="content:' + d.id+'"] .dialogOBox';
-                    that._renderTemplate();
-                    that.renderPic();
+
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
+                        callBack();
                 });
-            } else {//不以弹窗编辑
-                that._renderTemplate();
-                that.renderPic();
+
+            }else{//不以弹窗编辑
+                $(that.element).html(html);
+                if(callBack)
+                    callBack();
             }
         },
-        _renderTemplate: function () {
+        renderTemplate: function () {
             var that = this;
             var html = template('m_imgCropper/m_imgCropper', {});
-            $(that.element).html(html);
-            // that._bindUploadOrinalImage();
+            that.renderHtml(html,function () {
+                that.renderPic();
+            });
         }
         //渲染图片
         ,renderPic:function(){
@@ -103,11 +103,11 @@
             $(that.element).find('.setArea:eq(0)').removeClass('hide');
 
             setTimeout(function () {
-                that._setImage();
+                that.setImage();
             }, 500);
         }
         //上传原图
-        , _bindUploadOrinalImage: function () {
+        , bindUploadOrinalImage: function () {
             var that = this;
             $('.m_imgCropper .btnFilePicker').m_imgUploader({
                 server: window.fileCenterUrl + "/fastUploadImage",
@@ -128,7 +128,7 @@
                     $(that.element).find('.setArea:eq(0)').removeClass('hide');
 
                     setTimeout(function () {
-                        that._setImage();
+                        that.setImage();
                     }, 500);
 
                     S_toastr.success(response.info);
@@ -136,7 +136,7 @@
             },true);
         }
         //保存裁切过的图片并替换Fastdfs上原图
-        , _saveCroppedImage: function () {
+        , saveCroppedImage: function () {
             var that = this;
             var cutPostData = {
                 x: that._x,
@@ -158,12 +158,12 @@
                         return that.settings.croppedCallback(response.data);
                     }
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
         //初始化cropping插件
-        , _setImage: function () {
+        , setImage: function () {
             var that = this;
             var $image = $('.m_imgCropper .img-container');
             /*var options = {

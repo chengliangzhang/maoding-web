@@ -50,19 +50,18 @@
                 that._type = 4;
                 that._title = '指定企业负责人';
             }
-
-            S_dialog.dialog({
+            var $data = {};
+            $data.adminInfo = that.settings.adminInfo;
+            $data.type = that._type;
+            var html = template('m_role/m_changeManager',$data);
+            S_layer.dialog({
                 title:that._title,//that.settings.title||'选择人员',
-                contentEle:'dialogOBox',
-                lock:3,
-                width:'390',
-                minHeight:'100',
-                tPadding:'0px',
-                url:rootPath+'/assets/module/m_common/m_dialog.html',
+                area : '400px',
+                content:html,
                 cancel:function () {
-
                 },
                 ok:function () {
+
                     var flag = $("form.ensureChangeAdministraterOBox").valid();
                     if(flag){
                         var data = that.settings.adminInfo;
@@ -88,7 +87,7 @@
                                 if(that.settings.type!=null && that.settings.type==1){//管理员
                                     if(that.settings.adminInfo!=null && that.settings.adminInfo.userId!=window.currentUserId
                                         && that.settings.oldOrgManagerUserId!=null && that.settings.oldOrgManagerUserId!=window.currentUserId){//企业负责人或系统管理员皆不是指定的人
-                                        S_dialog.success('处理成功，请重新登录!','提示',function(){
+                                        S_layer.success('处理成功，请重新登录!','提示',function(){
                                             window.location.href = rootPath+'/iWork/sys/logout';
                                         })
                                     }else{
@@ -101,7 +100,7 @@
                                 }else{//企业负责人
                                     if(that.settings.adminInfo!=null && that.settings.adminInfo.userId!=window.currentUserId
                                         && that.settings.oldSysManagerUserId!=null && that.settings.oldSysManagerUserId!=window.currentUserId){//企业负责人或系统管理员皆不是指定的人
-                                        S_dialog.success('处理成功，请重新登录!','提示',function(){
+                                        S_layer.success('处理成功，请重新登录!','提示',function(){
                                             window.location.href = rootPath+'/iWork/sys/logout';
                                         })
                                     }else {
@@ -113,7 +112,7 @@
                                     that.permissionSettings();//刷新组件
                                 }
                             }else {
-                                S_dialog.error(response.info);
+                                S_layer.error(response.info);
                             }
                         });
                     }else{
@@ -121,19 +120,9 @@
                     }
                 }
 
-            },function(d){//加载html后触发
-                var $data = {};
-                $data.adminInfo = that.settings.adminInfo;
-                /*$data.oldUserId = that.settings.oldUserId;
-                $data.type = that.settings.type;
-                $data.currentUserId = window.currentUserId;*/
-                $data.type = that._type;
-                var html = template('m_role/m_changeManager',$data);
-                that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                $(that.element).html(html);
-                //that.submit_validate();
-            });
+            },function(layero,index,dialogEle){//加载html后触发
 
+            });
         }
         //移交管理员密码的表单验证
         ,submit_validate:function(){

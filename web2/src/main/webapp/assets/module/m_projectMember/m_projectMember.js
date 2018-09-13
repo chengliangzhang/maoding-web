@@ -45,7 +45,7 @@
                     $(that.element).html(html);
                     that._bindBtn();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -72,10 +72,10 @@
                     options.selectUserCallback = function (data, event) {
                         data.type = 1;
                         var targetUser='<strong style="color:red;margin:0 3px;">'+data.userName+'</strong>';
-                        S_dialog.confirm('确定将经营负责人更换为'+targetUser+'？',function(){
+                        S_layer.confirm('确定将经营负责人更换为'+targetUser+'？',function(){
                             that._postManagerChange(data,companyId,event);
                         },function(){
-                            //S_dialog.close($(event));
+                            //S_layer.close($(event));
                         });
                     }
                 } else if (action == 'changeManagerPerson') {
@@ -88,10 +88,10 @@
                     options.selectUserCallback = function (data, event) {
                         data.type = 2;
                         var targetUser='<strong style="color:red;margin:0 3px;">'+data.userName+'</strong>';
-                        S_dialog.confirm('确定将设计负责人更换为'+targetUser+'？', function () {
+                        S_layer.confirm('确定将设计负责人更换为'+targetUser+'？', function () {
                             that._postManagerChange(data, companyId, event);
                         }, function () {
-                            //S_dialog.close($(event));
+                            //S_layer.close($(event));
                         });
                     }
                 }
@@ -111,14 +111,14 @@
             option.postData.companyUserId = data.companyUserId;
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
-                    S_dialog.close($(event));
+                    S_layer.close($(event));
                     that._renderHtml();
                     if(data.type==1){//移交经营负责人会影响项目权限的编辑更改，需要刷新数据
                         that._refreshMenu();
                     }
                     S_toastr.success('保存成功！');
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }

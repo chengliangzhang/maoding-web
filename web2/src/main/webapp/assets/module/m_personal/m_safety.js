@@ -47,7 +47,7 @@
                         that.settings.userDto=response.data;
                         that._renderHtml(response.data)
                     } else {
-                        S_dialog.error(response.info);
+                        S_layer.error(response.info);
                     }
                 });
             } else {
@@ -56,23 +56,21 @@
         }
         //打开绑定邮箱弹窗
         ,_openBindEmailDialog:function () {
-            S_dialog.dialog({
+            S_layer.dialog({
                 title: '绑定邮箱',
-                //contentEle: 'bindEmailBox',
-                lock: 3,
-                width: '500',
-                tPadding: '0px',
-                url: rootPath+'/assets/module/m_common/m_dialog.html',
+                area : '750px',
+                content:html,
                 cancelText:'关闭',
                 cancel:function () {
 
                 }
-            },function(d){//加载html后触发
+
+            },function(layero,index,dialogEle){//加载html后触发
                 var options = {};
                 options.sendEmailCallBack = function () {
-                    S_dialog.close($('.bindEmailBox'))
+                    S_layer.close($('.bindEmailBox'))
                 };
-                $('div[id="content:'+d.id+'"]').m_bindEmail(options);
+                $(dialogEle).m_bindEmail(options);
             });
         }
         //事件绑定

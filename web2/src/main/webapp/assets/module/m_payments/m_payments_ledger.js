@@ -121,7 +121,7 @@
 
 
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }
@@ -176,7 +176,7 @@
                     if(callBack!=null)
                         callBack();
                 } else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             });
         }

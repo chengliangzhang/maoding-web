@@ -64,7 +64,7 @@
             //文件队列
             that._uploader.on('beforeFileQueued', function (file) {
                 if (_.isBlank(file.ext)) {
-                    S_dialog.error(file.name + ' 缺少扩展名，无法加入上传队列');
+                    S_layer.error(file.name + ' 缺少扩展名，无法加入上传队列');
                     return false;
                 }
 

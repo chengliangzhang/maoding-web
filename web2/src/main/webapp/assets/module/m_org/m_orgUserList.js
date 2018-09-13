@@ -49,7 +49,7 @@
                     that.bindTrActionClick();
                     that.bindActionClick();
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
 
             })
@@ -94,10 +94,10 @@
             option.postData = param;
             m_ajax.postJson(option,function (response) {
                 if(response.code=='0'){
-                   /* S_dialog.tips('操作成功！');*/
+                   /* S_layer.tips('操作成功！');*/
                     that.initUserData();
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
 
             })
@@ -115,10 +115,10 @@
             option.postData = param;
             m_ajax.postJson(option,function (response) {
                 if(response.code=='0'){
-                   /* S_dialog.tips('操作成功！');*/
+                   /* S_layer.tips('操作成功！');*/
                     that.initUserData();
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
 
             })
@@ -135,7 +135,7 @@
         //             that.initUserData();
         //
         //         }else {
-        //             S_dialog.error(response.info);
+        //             S_layer.error(response.info);
         //         }
         //
         //     })
@@ -158,7 +158,7 @@
                     return false;
                 }else if(dataAction=='delOrgUser'){//删除人员
 
-                    S_dialog.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+                    S_layer.confirm('删除后将不能恢复，您确定要删除吗？', function () {
 
                         var option = {};
                         var id = $(_this).attr('data-id');
@@ -168,7 +168,7 @@
                                 S_toastr.success('删除成功！');
                                 that.initUserData();
                             } else {
-                                S_dialog.error(response.info);
+                                S_layer.error(response.info);
                             }
                         });
 

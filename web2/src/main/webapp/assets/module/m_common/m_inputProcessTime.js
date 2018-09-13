@@ -35,35 +35,20 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.initHtmlData(function () {
-                that.initSpinner();
-                if(that.settings.$validate!=null && that.settings.$validate==1){
-                    that.addInputTime_validate1();
-                }else if(that.settings.$validate!=null && that.settings.$validate==2){
-
-                }else{
-                    that.addInputTime_validate();
-                }
-
-            });
+            that.initHtmlTemplate();
         },
 
         //初始化数据
-        initHtmlData: function (callBack) {
+        renderDialog: function (html,callBack) {
             var that = this;
             if (that.settings.$isDialog) {//以弹窗编辑
                 var options = {};
                 options.title = that.settings.$title || '设计依据';
-                options.contentEle = 'dialogOBox';
-                options.lock = 3;
-                options.width = '510';
-                options.minHeight = that.settings.$minHeight || '100';
-                options.tPadding = '0px';
-                options.url = rootPath + '/assets/module/m_common/m_dialog.html';
+                options.area = ['500px'];
+                options.content = html;
                 options.cancel = function () {
                 };
                 if (that.settings.$isOkSave) {//直接保存
-                    options.okText = '保存';
                     options.ok = function () {
                         if ($('form.inputTimeOBox').valid()) {
                             var $data = $("form.inputTimeOBox").serializeObject();
@@ -99,7 +84,7 @@
                                         return that.settings.$okCallBack(response.data);
                                     }
                                 } else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             })
                         } else {
@@ -107,7 +92,6 @@
                         }
                     }
                 } else {//返回上级
-                    options.okText = '确定';
                     options.ok = function () {
                         if ($('form.inputTimeOBox').valid()) {
                             var $data = $("form.inputTimeOBox").serializeObject();
@@ -119,31 +103,18 @@
                         }
                     };
                 }
-                if (that.settings.$okText != null) {
-                    options.okText = that.settings.$okText;
-                }
 
+                S_layer.dialog(options,function(layero,index,$dialogEle){//加载html后触发
 
-                S_dialog.dialog(options, function (d) {//加载html后触发
-
-                    var $data = {};
-                    $data.$isHaveMemo = that.settings.$isHaveMemo;
-                    $data.$timeInfo = {};
-                    if (that.settings.$timeInfo != null) {
-                        $data.$timeInfo = that.settings.$timeInfo;
-                    }
-                    var classIdObj = $('div[id="content:' + d.id + '"] .dialogOBox');
-                    that.initHtmlTemplate(callBack, $data, classIdObj)
+                    if(callBack)
+                        callBack();
                 });
+
             } else {//不以弹窗编辑
-                var $data = {};
-                $data.$isHaveMemo = that.settings.$isHaveMemo;
-                $data.$timeInfo = {};
-                if (that.settings.$timeInfo != null) {
-                    $data.$timeInfo = that.settings.$timeInfo;
-                }
-                var classIdObj = $(that.element);
-                that.initHtmlTemplate(callBack, $data, classIdObj)
+
+                $(that.element).html(html);
+                if(callBack)
+                    callBack();
             }
         }
         //计算时间差的方法
@@ -151,24 +122,39 @@
             return moment(endTime).diff(moment(startTime), 'days') + 1;
         }
         //生成html
-        , initHtmlTemplate: function (callBack, data, classIdObj) {
+        , initHtmlTemplate: function () {
             var that = this;
-            if (that.settings.$currentAppointmentDate != null) {
-                data.appointmentStartTime = that.settings.$currentAppointmentDate.startTime;
-                data.appointmentEndTime = that.settings.$currentAppointmentDate.endTime;
+
+            var $data = {};
+            $data.$isHaveMemo = that.settings.$isHaveMemo;
+            $data.$timeInfo = {};
+            if (that.settings.$timeInfo != null) {
+                $data.$timeInfo = that.settings.$timeInfo;
             }
-            var html = template('m_common/m_inputProcessTime', data);
-            classIdObj.html(html);
 
-            m_inputProcessTime_onpicked();
+            if (that.settings.$currentAppointmentDate != null) {
+                $data.appointmentStartTime = that.settings.$currentAppointmentDate.startTime;
+                $data.appointmentEndTime = that.settings.$currentAppointmentDate.endTime;
+            }
+            var html = template('m_common/m_inputProcessTime', $data);
+            that.renderDialog(html,function () {
 
-            $(that.element).find('.fa-calendar').click(function () {
-                $(this).closest('.input-group').find('input:first').focus();
+                that.initSpinner();
+                if(that.settings.$validate!=null && that.settings.$validate==1){
+                    that.addInputTime_validate1();
+                }else if(that.settings.$validate!=null && that.settings.$validate==2){
+
+                }else{
+                    that.addInputTime_validate();
+                }
+
+                m_inputProcessTime_onpicked();
+
+                $(that.element).find('.fa-calendar').click(function () {
+                    $(this).closest('.input-group').find('input:first').focus();
+                });
             });
 
-            if (callBack != null) {
-                callBack();
-            }
         }
         //初始化Spinner
         , initSpinner: function () {

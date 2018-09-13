@@ -29,24 +29,23 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that.renderPage(function () {
-                //that.bindFileUplad();
+            var currDate = getNowDate();
+            var html = template('m_production/m_confirmCompletion',{currDate:currDate});
+            that.renderPage(html,function () {
+                that.confirmCompletion_validate();
             });
 
         }
-        ,renderPage:function (callBack) {
+        ,renderPage:function (html,callBack) {
             var that = this;
-            var currDate = getNowDate();
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.$isDialog===true){//以弹窗编辑
+                S_layer.dialog({
                     title: that.settings.$title||'确认完成',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '500',
-                    height:'150',
-                    tPadding:'0',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
-                    ok:function(){
+                    area : '500px',
+                    content:html,
+                    cancel:function () {
+                    },
+                    ok:function () {
 
                         if ($('form.m_confirmCompletion').valid()) {
 
@@ -68,31 +67,25 @@
                                         that.settings.$saveCallBack();
                                     }
                                 }else {
-                                    S_dialog.error(response.info);
+                                    S_layer.error(response.info);
                                 }
                             });
 
                         } else {
                             return false;
                         }
-                    },
-                    cancelText:'取消',
-                    cancel:function(){
                     }
 
-                },function(d){//加载html后触发
-
-                    that.element = $('div[id="content:'+d.id+'"] .dialogOBox');
-                    var html = template('m_production/m_confirmCompletion',{currDate:currDate});
-                    $(that.element).html(html);
-                    that.confirmCompletion_validate();
-                    if(callBack!=null)
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
                         callBack();
                 });
-            }else {//不以弹窗编辑
-                var html = template('m_production/m_confirmCompletion', {currDate: currDate});
+
+            }else{//不以弹窗编辑
                 $(that.element).html(html);
-                if(callBack!=null)
+                if(callBack)
                     callBack();
             }
         }
@@ -153,7 +146,7 @@
                             if (res.code === '0') {
                                 S_toastr.success("删除成功");
                             } else if (res.code === '1') {
-                                S_dialog.error(res.msg);
+                                S_layer.error(res.msg);
                             }
                         });
                     };

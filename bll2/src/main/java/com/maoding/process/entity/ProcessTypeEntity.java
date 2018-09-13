@@ -20,6 +20,11 @@ public class ProcessTypeEntity extends BaseEntity {
     private Integer type;
 
     /**
+     * 动态表单中，用于作为条件流程的字段id
+     */
+    private String conditionFieldId;
+
+    /**
      * 0:未启用，1：启用
      */
     private Integer status;
@@ -67,5 +72,13 @@ public class ProcessTypeEntity extends BaseEntity {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public String getConditionFieldId() {
+        return conditionFieldId;
+    }
+
+    public void setConditionFieldId(String conditionFieldId) {
+        this.conditionFieldId = conditionFieldId;
     }
 }

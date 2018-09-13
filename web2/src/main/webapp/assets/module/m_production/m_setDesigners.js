@@ -28,47 +28,39 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            that._initHtmlData(function () {
-
-                that._bindActionClick();
-            });
+            that._initHtmlTemplate();
         },
         //初始化数据
-        _initHtmlData:function (callBack) {
+        _renderDialog:function (callBack) {
             var that = this;
-            if(that.settings.$isDialog){//以弹窗编辑
-                S_dialog.dialog({
+            if(that.settings.$isDialog===true){//以弹窗编辑
+
+                S_layer.dialog({
                     title: that.settings.$title||'设置参与人员',
-                    contentEle: 'dialogOBox',
-                    lock: 3,
-                    width: '850',
-                    height:'520',
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html',
+                    area : '850px',
+                    content:html,
                     cancel:function () {
                         that._refresh();
                     },
-                    okText:'保存',
                     ok:function () {
+
                         var res = that._saveTaskParticipant();
                         if(!res){
                             return false;
                         }
                     }
 
-                },function(d){//加载html后触发
-
-                    that.element = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    that._initHtmlTemplate();
-                    if(callBack!=null){
+                },function(layero,index,dialogEle){//加载html后触发
+                    that.settings.$isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                    that.element = dialogEle;
+                    if(callBack)
                         callBack();
-                    }
                 });
+
             }else{//不以弹窗编辑
-                that._initHtmlTemplate();
-                if(callBack!=null){
+                $(that.element).html(html);
+                if(callBack)
                     callBack();
-                }
             }
         }
         //生成html
@@ -84,11 +76,12 @@
                     var $data = {};
                     $data.projectProcessNodes = response.data.projectProcess.projectProcessNodes;
                     var html = template('m_production/m_setDesigners',$data);
-                    $(that.element).html(html);
-                    that._bindActionClick();
-                    $(that.element).find('#choseUserBox').m_choseUserBox();
+                    that._renderDialog(html,function () {
+                        that._bindActionClick();
+                        $(that.element).find('#choseUserBox').m_choseUserBox();
+                    });
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
             })
         }
@@ -122,7 +115,7 @@
                 });
             });
             /*if(isError){
-                S_dialog.tips('设计人不能为空！');
+                S_layer.tips('设计人不能为空！');
                 return false;
             }*/
 
@@ -140,10 +133,10 @@
             m_ajax.postJson(option,function (response) {
                 if(response.code=='0'){
                     S_toastr.success('保存成功！')
-                    S_dialog.close($(that.element));
+                    S_layer.close($(that.element));
                     that._refresh();
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                 }
 
             })

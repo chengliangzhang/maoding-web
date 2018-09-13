@@ -6,6 +6,7 @@
     <result column="main_id" property="mainId" jdbcType="VARCHAR" />
     <result column="field_id" property="fieldId" jdbcType="VARCHAR" />
     <result column="field_value" property="fieldValue" jdbcType="VARCHAR" />
+    <result column="field_value_pid" property="fieldValuePid" jdbcType="VARCHAR" />
     <result column="deleted" property="deleted" jdbcType="INTEGER" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="create_by" property="createBy" jdbcType="VARCHAR" />
@@ -28,11 +29,11 @@
   </delete>
   <insert id="insert" parameterType="com.maoding.dynamicForm.entity.DynamicFormFieldValueEntity" >
     insert into maoding_dynamic_form_field_value (id, main_id, field_id, 
-      field_value, deleted, create_date, 
+      field_value,field_value_pid, deleted, create_date,
       create_by, update_date, update_by
       )
     values (#{id,jdbcType=VARCHAR}, #{mainId,jdbcType=VARCHAR}, #{fieldId,jdbcType=VARCHAR}, 
-      #{fieldValue,jdbcType=VARCHAR}, #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{fieldValue,jdbcType=VARCHAR},#{fieldValuePid,jdbcType=VARCHAR}, #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP},
       #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
       )
   </insert>
@@ -48,6 +49,9 @@
       </if>
       <if test="fieldValue != null" >
         field_value = #{fieldValue,jdbcType=VARCHAR},
+      </if>
+      <if test="fieldValuePid != null" >
+        field_value_pid = #{fieldValuePid,jdbcType=VARCHAR},
       </if>
       <if test="deleted != null" >
         deleted = #{deleted,jdbcType=INTEGER},
@@ -72,6 +76,7 @@
     set main_id = #{mainId,jdbcType=VARCHAR},
       field_id = #{fieldId,jdbcType=VARCHAR},
       field_value = #{fieldValue,jdbcType=VARCHAR},
+      field_value_pid = #{fieldValuePid,jdbcType=VARCHAR},
       deleted = #{deleted,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       create_by = #{createBy,jdbcType=VARCHAR},

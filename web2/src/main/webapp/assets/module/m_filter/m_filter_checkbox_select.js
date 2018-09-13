@@ -53,37 +53,25 @@
                     boxStyle:that.settings.boxStyle,
                     isParentCheck:that.settings.isParentCheck
                 });
-                var iTextObj = iHtml.getTextWH();
-                var iWHObj = setDialogWH(iTextObj.width,iTextObj.height);
 
-                S_dialog.dialog({
-                    contentEle: 'dialogOBox',
-                    ele:that.settings.eleId,
-                    lock: 2,
-                    align: that.settings.align||'bottom right',
-                    quickClose:true,
-                    noTriangle:true,
-                    width: that.settings.dialogWidth || iWHObj.width+20,
-                    height:iWHObj.height+20,
-                    tPadding: '0px',
-                    url: rootPath+'/assets/module/m_common/m_dialog.html'
+                $(that.element).m_floating_popover({
+                    eleId:that.settings.eleId,
+                    content:iHtml,
+                    placement:'bottomRight',
+                    renderedCallBack:function ($popover) {
 
-                },function(d){//加载html后触发
+                        that.initICheck($popover);
+                        /*//滚动事件
+                        $popover.on('scroll.data-list-filter', function(e){
+                            if($(this).scrollTop()>50){
+                                $popover.find('.check-box-title').addClass('check-box-title-fixed');
+                            }else{
+                                $popover.find('.check-box-title').removeClass('check-box-title-fixed');
+                            }
+                        });*/
+                    }
 
-                    var dialogEle = 'div[id="content:'+d.id+'"] .dialogOBox';
-                    $(dialogEle).html(iHtml);
-                    $(dialogEle).css('overflow-x','hidden');
-
-                    that.initICheck($(dialogEle));
-                    //滚动事件
-                    $(dialogEle).scroll(function() {
-                        if($(this).scrollTop()>50){
-                            $(dialogEle).find('.check-box-title').addClass('check-box-title-fixed');
-                        }else{
-                            $(dialogEle).find('.check-box-title').removeClass('check-box-title-fixed');
-                        }
-                    });
-                });
+                },true);
                 e.stopPropagation();
                 return false;
             });

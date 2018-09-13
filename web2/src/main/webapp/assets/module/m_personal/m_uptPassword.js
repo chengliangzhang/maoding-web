@@ -28,27 +28,25 @@
         }
         ,initHtml:function(){
             var that = this;
-            S_dialog.dialog({
+            S_layer.dialog({
                 title: '修改密码',
-                //contentEle: 'changePassWordOBox',
-                lock: 3,
-                width: '500',
-                tPadding: '0px',
-                url: rootPath+'/assets/module/m_common/m_dialog.html',
-                ok:function(){
+                area : '500px',
+                content:template('m_personal/m_uptPassword',{}),
+                cancel:function () {
+                },
+                ok:function () {
+
                     var flag = $('form.changePassWordOBox').valid();
                     if(!flag){
                         return false;
                     }else{
                         that.savePassword();
                     }
-                },
-                okText:'保存',
-                cancel:function(){},
-                cancelText:'取消',
-            },function(d){//加载html后触发
-                var html = template('m_personal/m_uptPassword',{});
-                $('div[id="content:'+d.id+'"]').html(html);
+                }
+
+            },function(layero,index,dialogEle){//加载html后触发
+                that.settings.isDialog = index;//设置值为index,重新渲染时不重新加载弹窗
+                that.element = dialogEle;
                 that.savePassword_validate();
             });
         }
@@ -61,11 +59,11 @@
             option.postData = $data;
             m_ajax.postJson(option,function (response) {
                 if(response.code=='0'){
-                    S_dialog.success('修改成功，请重新登录!','提示',function(){
+                    S_layer.success('修改成功，请重新登录!','提示',function(){
                         window.location.href = rootPath+'/iWork/sys/logout';
                     })
                 }else {
-                    S_dialog.error(response.info);
+                    S_layer.error(response.info);
                     return false;
                 }
             });

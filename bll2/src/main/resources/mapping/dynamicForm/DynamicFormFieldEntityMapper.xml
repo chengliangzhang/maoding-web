@@ -8,6 +8,7 @@
     <result column="field_title" property="fieldTitle" jdbcType="VARCHAR" />
     <result column="field_type" property="fieldType" jdbcType="INTEGER" />
     <result column="field_unit" property="fieldUnit" jdbcType="INTEGER" />
+    <result column="is_statistics" property="isStatistics" jdbcType="INTEGER" />
     <result column="field_tooltip" property="fieldTooltip" jdbcType="VARCHAR" />
     <result column="field_default_value" property="fieldDefaultValue" jdbcType="VARCHAR" />
     <result column="field_select_value_type" property="fieldSelectValueType" jdbcType="INTEGER" />
@@ -22,7 +23,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, form_id, field_pid, field_title, field_type,field_unit, field_tooltip, field_default_value,
+    id, form_id, field_pid, field_title, field_type,field_unit,is_statistics, field_tooltip, field_default_value,
     field_select_value_type, seq_x, seq_y, required_type, deleted, create_date, create_by, 
     update_date, update_by
   </sql>
@@ -41,13 +42,13 @@
 
   <insert id="insert" parameterType="com.maoding.dynamicForm.entity.DynamicFormFieldEntity" >
     insert into maoding_dynamic_form_field (id, form_id, field_pid, 
-      field_title, field_type, field_unit,field_tooltip,
+      field_title, field_type, field_unit,is_statistics,field_tooltip,
       field_default_value, field_select_value_type, 
       seq_x, seq_y, required_type, 
       deleted, create_date, create_by, 
       update_date, update_by)
     values (#{id,jdbcType=VARCHAR}, #{formId,jdbcType=VARCHAR}, #{fieldPid,jdbcType=VARCHAR}, 
-      #{fieldTitle,jdbcType=VARCHAR}, #{fieldType,jdbcType=INTEGER}, #{fieldTooltip,jdbcType=VARCHAR}, 
+      #{fieldTitle,jdbcType=VARCHAR}, #{fieldType,jdbcType=INTEGER}, #{isStatistics,jdbcType=INTEGER},#{fieldTooltip,jdbcType=VARCHAR},
       #{fieldDefaultValue,jdbcType=VARCHAR}, #{fieldSelectValueType,jdbcType=INTEGER}, 
       #{seqX,jdbcType=INTEGER}, #{seqY,jdbcType=INTEGER}, #{requiredType,jdbcType=INTEGER}, 
       #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
@@ -68,6 +69,9 @@
       </if>
       <if test="fieldType != null" >
         field_type = #{fieldType,jdbcType=INTEGER},
+      </if>
+      <if test="isStatistics != null" >
+        is_statistics = #{isStatistics,jdbcType=INTEGER},
       </if>
       <if test="field_unit != null" >
         field_type = #{fieldUnit,jdbcType=INTEGER},
@@ -116,6 +120,7 @@
       field_title = #{fieldTitle,jdbcType=VARCHAR},
       field_type = #{fieldType,jdbcType=INTEGER},
       field_unit = #{fieldUnit,jdbcType=INTEGER},
+      is_statistics = #{isStatistics,jdbcType=INTEGER},
       field_tooltip = #{fieldTooltip,jdbcType=VARCHAR},
       field_default_value = #{fieldDefaultValue,jdbcType=VARCHAR},
       field_select_value_type = #{fieldSelectValueType,jdbcType=INTEGER},

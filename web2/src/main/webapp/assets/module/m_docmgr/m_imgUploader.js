@@ -60,7 +60,7 @@
             //文件队列
             that._uploader.on('beforeFileQueued', function (file) {
                 if (_.isBlank(file.ext)) {
-                    S_dialog.error(file.name + ' 缺少扩展名，无法加入上传队列');
+                    S_layer.error(file.name + ' 缺少扩展名，无法加入上传队列');
                     return false;
                 }
 
@@ -79,7 +79,7 @@
             });
              that._uploader.on('startUpload', function (file) {
                  if (!isNullOrBlank(that.settings.loadingId))
-                     $_loading.show(that.settings.loadingId, '正在上传中...');
+                     S_loading.show(that.settings.loadingId, '正在上传中...');
             });
              that._uploader.on('uploadStart', function (file) {
                 //console.log('uploadStart.');
@@ -107,9 +107,9 @@
                             return true;
                         } else {
                             if (object && object.file && object.file.name)
-                                S_dialog.error(object.file.name + " 上传失败(#01)，" + response.msg);
+                                S_layer.error(object.file.name + " 上传失败(#01)，" + response.msg);
                             else
-                                S_dialog.error("上传失败(#02)，" + response.msg);
+                                S_layer.error("上传失败(#02)，" + response.msg);
                         }
                     }
                 }
@@ -120,7 +120,7 @@
                 //console.log('uploadSuccess');
                 //console.log(response);
                  if (!isNullOrBlank(that.settings.loadingId))
-                     $_loading.close(that.settings.loadingId);
+                     S_loading.close(that.settings.loadingId);
 
                  if (!handleResponse(response)) {
                      if (response.code === '0') {
@@ -128,7 +128,7 @@
                              that.settings.uploadSuccessCallback(file, response);
                      }
                      else {
-                         S_dialog.error(response.msg);
+                         S_layer.error(response.msg);
                      }
                  }
             });
@@ -139,7 +139,7 @@
             //上传失败
              that._uploader.on('uploadError', function (file, reason) {
                  if (!isNullOrBlank(that.settings.loadingId))
-                     $_loading.close(that.settings.loadingId);
+                     S_loading.close(that.settings.loadingId);
                 that._onError(file, "上传失败，" + reason);
             });
              that._uploader.on('error', function (handler) {
@@ -169,7 +169,7 @@
             //为了可以重试，设置为错误状态
             if (file !== void 0 && file !== null)
                 file.setStatus('error');
-            S_dialog.error(msg);
+            S_layer.error(msg);
         }
     });
 
