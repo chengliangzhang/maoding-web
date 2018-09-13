@@ -24,6 +24,8 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
     private static final String SET = "set";
     /** 点分隔符 */
     private static final String DOT = ".";
+    /** 逗号分隔符 */
+    private static final String COMMA = ",";
     /** 默认关键字属性 */
     private static final String DEFAULT_KEY_NAME = "Id";
 
@@ -39,46 +41,45 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
      * 日期     2018/7/31
      * @author  张成亮
      **/
-    private static MethodAccess cache(Class<?> clazz) {
-        synchronized (clazz) {
-            MethodAccess methodAccess = MethodAccess.get(clazz);
-            List<Field> fieldList = new ArrayList<>();
-            List<Method> methodList = new ArrayList<>();
-            for (Class<?> c=clazz; c != Object.class; c = c.getSuperclass()){
-                Field[] fields = c.getDeclaredFields();
-                Collections.addAll(fieldList, fields);
-                Method[] methods = c.getDeclaredMethods();
-                Collections.addAll(methodList, methods);
-            }
-
-            if ((fieldList.size() > 0) && (methodList.size() > 0)) {
-                List<String> fieldNameList = new ArrayList<>(fieldList.size());
-                for (Field field : fieldList) {
-                    if (!Modifier.isStatic(field.getModifiers())) { //是否是静态的
-                        String fieldName = StringUtils.capitalize(field.getName()); // 获取属性名称
-                        String getKey = GET + fieldName;
-                        String setKey = SET + fieldName;
-                        int n = 0;
-                        for (Method method : methodList) {
-                            if (StringUtils.isSame(method.getName(),getKey) && Modifier.isPublic(method.getModifiers()) && method.getParameterCount() == 0){
-                                int getIndex = methodAccess.getIndex(getKey,0); // 获取get方法的下标
-                                methodIndexMap.put(clazz.getName() + DOT + getKey, getIndex); // 将类名get方法名，方法下标注册到map中
-                                if (++n > 2) break;
-                            } else if (StringUtils.isSame(method.getName(),setKey) && Modifier.isPublic(method.getModifiers()) && method.getParameterCount() == 1) {
-                                int setIndex = methodAccess.getIndex(setKey,method.getParameterTypes()); // 获取set方法的下标
-                                methodIndexMap.put(clazz.getName() + DOT + setKey, setIndex); // 将类名set方法名，方法下标注册到map中
-                                if (++n > 2) break;
-                            }
-                        }
-                        fieldNameList.add(fieldName); // 将属性名称放入集合里
-                    }
-                }
-                fieldMap.put(clazz, fieldNameList); // 将类名列表放入到map中
-            }
-            assert(methodAccess != null);
-            methodMap.put(clazz, methodAccess); // 将类的方法列表放入到map中
-            return methodAccess;
+    private static synchronized MethodAccess cache(Class<?> clazz) {
+        MethodAccess methodAccess = MethodAccess.get(clazz);
+        List<Field> fieldList = new ArrayList<>();
+        List<Method> methodList = new ArrayList<>();
+        for (Class<?> c=clazz; c != Object.class; c = c.getSuperclass()){
+            Field[] fields = c.getDeclaredFields();
+            Collections.addAll(fieldList, fields);
+            Method[] methods = c.getDeclaredMethods();
+            Collections.addAll(methodList, methods);
         }
+
+        if ((fieldList.size() > 0) && (methodList.size() > 0)) {
+            List<String> fieldNameList = new ArrayList<>(fieldList.size());
+            for (Field field : fieldList) {
+                if (!Modifier.isStatic(field.getModifiers())) { //是否是静态的
+                    String fieldName = StringUtils.capitalize(field.getName()); // 获取属性名称
+                    String getKey = GET + fieldName;
+                    String setKey = SET + fieldName;
+                    int n = 0;
+                    for (Method method : methodList) {
+                        if (StringUtils.isSame(method.getName(),getKey) && Modifier.isPublic(method.getModifiers()) && method.getParameterCount() == 0){
+                            int getIndex = methodAccess.getIndex(getKey,0); // 获取get方法的下标
+                            methodIndexMap.put(clazz.getName() + DOT + getKey, getIndex); // 将类名get方法名，方法下标注册到map中
+                            if (++n > 2) break;
+                        } else if (StringUtils.isSame(method.getName(),setKey) && Modifier.isPublic(method.getModifiers()) && method.getParameterCount() == 1) {
+                            int setIndex = methodAccess.getIndex(setKey,method.getParameterTypes()); // 获取set方法的下标
+                            methodIndexMap.put(clazz.getName() + DOT + setKey, setIndex); // 将类名set方法名，方法下标注册到map中
+                            if (++n > 2) break;
+                        }
+                    }
+                    fieldNameList.add(fieldName); // 将属性名称放入集合里
+                }
+            }
+            fieldMap.put(clazz, fieldNameList); // 将类名列表放入到map中
+        }
+
+        assert(methodAccess != null);
+        methodMap.put(clazz, methodAccess); // 将类的方法列表放入到map中
+        return methodAccess;
     }
 
     /**
@@ -102,7 +103,6 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                 String getKey = input.getClass().getName() + DOT + GET + field;
                 Integer getIndex = methodIndexMap.get(getKey);
                 if (getIndex != null){
-                    Object i = inputMethodAccess.invoke(input, getIndex);
                     V val = createFrom(inputMethodAccess.invoke(input, getIndex),valClass,isClean);
                     if (val != null) {
                         K key = createFrom(field,keyClass,false);
@@ -157,6 +157,39 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
      **/
     public static Map<String,Object> createCleanMapFrom(final Object input){
         return createMapFrom(input,true);
+    }
+
+    /**
+     * 描述     根据Json字符串创建对象
+     * 日期     2018/7/31
+     * @author  张成亮
+     **/
+    public static <T> T createFromJson(@NotNull String input,Class<? extends T> outClass){
+        ObjectMapper mapper = StringUtils.getObjectMapper();
+        try {
+            return mapper.readValue(input, outClass);
+        } catch (IOException e) {
+            log.error(getErrorMessage(input,true));
+            throw new UnsupportedOperationException(getErrorMessage(input,false));
+        }
+    }
+
+    /**
+     * 描述     根据对象创建Json字符串
+     * 日期     2018/7/31
+     * @author  张成亮
+     **/
+    public static String createJsonFrom(@NotNull Object input){
+        return StringUtils.toJsonString(input);
+    }
+
+    //获取错误字符串
+    private static String getErrorMessage(@NotNull String json, boolean isAddCaller){
+        String msg = "转换" + json + "时出现错误";
+        if (isAddCaller){
+            msg += ":" + TraceUtils.getCaller();
+        }
+        return msg;
     }
 
     /**
@@ -216,6 +249,32 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
             }
         } else {
             copyProperties(input,Array.get(output,0),isClean);
+        }
+    }
+
+    /**
+     * 复制Bean属性到Map
+     */
+    public static void copyProperties(final Object input, final Map<String, Object> output) {
+        if (input == null || output == null)
+            return;
+
+        try {
+            BeanInfo beanInfo = Introspector.getBeanInfo(input.getClass(), Object.class);
+            PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
+
+            for (PropertyDescriptor pty : properties) {
+                Object val = pty.getReadMethod().invoke(input);
+                if (val != null) {
+                    output.put(pty.getName(),val);
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (IntrospectionException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
     }
 
@@ -334,8 +393,10 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
             if (input.getClass().isArray() && elementClass.isAssignableFrom(input.getClass().getComponentType())) {
                 return outputClass.cast((isClean) ? cleanProperties(input) : input);
             } else {
-                return outputClass.cast(createArrayObjectFrom(input, outputClass.getComponentType(),isClean));
+                return outputClass.cast(createArrayObjectFrom(input, outputClass.getComponentType(), isClean));
             }
+        } else if (outputClass.isAssignableFrom(List.class)) {
+            return outputClass.cast(createListFrom(input,Object.class,isClean));
         } else if (input instanceof Map) {
             D output = constructNull(outputClass);
             copyProperties(input, output, isClean);
@@ -374,12 +435,13 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         assert (elementClass != null) && (!elementClass.isPrimitive());
         List<D> outputList = null;
         if (input != null) {
-            outputList = new ArrayList<>();
             if (input.getClass().isArray()) {
+                outputList = new ArrayList<>();
                 for (int i = 0; i < Array.getLength(input); i++) {
                     outputList.add(createFrom(Array.get(input,i),elementClass,isClean));
                 }
             } else if (input instanceof List) {
+                outputList = new ArrayList<>();
                 List<?> inputList = (List<?>) input;
                 for (Object inputElement : inputList) {
                     if (inputElement == null) continue;
@@ -389,16 +451,20 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                         outputList.add(createFrom(inputElement,elementClass,isClean));
                     }
                 }
+            } else if (elementClass.isInstance(input)) {
+                outputList = new ArrayList<>();
+                outputList.add(elementClass.cast((isClean) ? cleanProperties(input) : input));
+            } else if ((input instanceof String) && (((String) input).contains(","))) {
+                String[] inputArray = ((String) input).split(",");
+                outputList = createListFrom(inputArray, elementClass);
             } else {
-                if (elementClass.isInstance(input)) {
-                    outputList.add(elementClass.cast((isClean) ? cleanProperties(input) : input));
-                } else {
-                    outputList.add(createFrom(input,elementClass,isClean));
-                }
+                outputList = new ArrayList<>();
+                outputList.add(createFrom(input,elementClass,isClean));
             }
         }
         return outputList;
     }
+
 
     /**
      * 描述     根据某输入对象创建元素类型为elementClass的输出对象序列
@@ -435,13 +501,15 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
                 for (int i=0; i<Array.getLength(input); i++){
                     outputArray[i] = createFrom(Array.get(input,i),elementClass,isClean);
                 }
+            } else if (elementClass.isInstance(input)) {
+                outputArray = (D[]) Array.newInstance(elementClass, 1);
+                outputArray[0] = elementClass.cast((isClean) ? cleanProperties(input) : input);
+            } else if ((input instanceof String) && ((String) input).contains(COMMA)) {
+                String[] inputArray = ((String) input).split(COMMA);
+                outputArray = createArrayFrom(inputArray, elementClass, isClean);
             } else {
-                outputArray = (D[])Array.newInstance(elementClass,1);
-                if (elementClass.isInstance(input)) {
-                    outputArray[0] = elementClass.cast((isClean) ? cleanProperties(input) : input);
-                } else {
-                    outputArray[0] = createFrom(input,elementClass,isClean);
-                }
+                outputArray = (D[]) Array.newInstance(elementClass, 1);
+                outputArray[0] = createFrom(input,elementClass,isClean);
             }
         }
         return outputArray;
@@ -798,7 +866,7 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         MethodAccess objMethodAccess = methodMap.get(obj.getClass());
         if (objMethodAccess == null) objMethodAccess = cache(obj.getClass());
 
-        String getKey = obj.getClass().getName() + DOT + GET + ptyName;
+        String getKey = obj.getClass().getName() + DOT + GET + StringUtils.capitalize(ptyName);
         Integer getIndex = methodIndexMap.get(getKey);
         if ((objMethodAccess == null) || (getIndex == null)){
             return null;
@@ -815,7 +883,95 @@ public final class BeanUtils extends org.springframework.beans.BeanUtils{
         return getProperty(obj,ptyName,ptyClass,false);
     }
 
-    public static <T> Object getProperty(T obj,String ptyName){
+    public static <T> Object getProperty(T obj, String ptyName) {
         return getProperty(obj,ptyName,Object.class);
+    }
+
+    /**
+     * 描述     设置输入对象内的属性
+     * 日期     2018/7/31
+     * @author  张成亮
+     **/
+    public static <T,K> void setProperty(T obj,String ptyName,K ptyValue){
+        if ((obj != null) && (!ObjectUtils.isBasicType(obj.getClass())) && (StringUtils.isNotEmpty(ptyName))){
+            Class<?> objClass = obj.getClass();
+            MethodAccess objMethodAccess = methodMap.get(obj.getClass());
+            if (objMethodAccess == null) {
+                objMethodAccess = cache(objClass);
+            }
+
+            if (objMethodAccess != null){
+                String setKey = objClass.getName() + DOT + SET + StringUtils.capitalize(ptyName);
+                Integer setIndex = methodIndexMap.get(setKey);
+                if (setIndex != null){
+                    Class[][] paramTypes = objMethodAccess.getParameterTypes();
+                    Class<?> paramType = paramTypes[setIndex][0];
+                    if (paramType != null) {
+                        objMethodAccess.invoke(obj, setIndex, createFrom(ptyValue,paramType));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 根据entityList复制dtoList
+     */
+    public static List copyFields(List sourceList, Class destClass) throws Exception {
+        List destList = new ArrayList();
+        for (Object source : sourceList) {
+            Object dest = destClass.newInstance();
+            copyProperties(source, dest);
+            destList.add(dest);
+        }
+        return destList;
+    }
+
+    public static <T> String getId(T obj){
+        return getProperty(obj,DEFAULT_KEY_NAME,String.class,false);
+    }
+
+    /**
+     * 描述       查看是否有指定属性
+     * 日期       2018/9/10
+     * @author   张成亮
+     **/
+    public static boolean hasField(Class<?> objClass,String ptyName,Class<?> fieldClass){
+        boolean error = false;
+
+        if ((objClass == null) || (ObjectUtils.isBasicType(objClass)) || (StringUtils.isEmpty(ptyName))){
+            error = true;
+        }
+
+        MethodAccess objMethodAccess = null;
+        if (!error) {
+            objMethodAccess = methodMap.get(objClass);
+            if (objMethodAccess == null) {
+                objMethodAccess = cache(objClass);
+            }
+            if (objMethodAccess == null){
+                error = true;
+            }
+        }
+
+        if (!error) {
+            String getKey = objClass.getName() + DOT + GET + StringUtils.capitalize(ptyName);
+            Integer getIndex = methodIndexMap.get(getKey);
+            if (getIndex == null){
+                error = true;
+            } else if (fieldClass != null){
+                Class[] returnTypes = objMethodAccess.getReturnTypes();
+                Class<?> returnType = returnTypes[getIndex];
+                if ((returnType == null) || !(returnType.isAssignableFrom(fieldClass))){
+                    error = true;
+                }
+            }
+        }
+
+        return !error;
+    }
+
+    public static boolean hasField(Class<?> objClass,String ptyName){
+        return hasField(objClass,ptyName,null);
     }
 }

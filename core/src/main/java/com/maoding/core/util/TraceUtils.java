@@ -117,35 +117,34 @@ public class TraceUtils {
      * @author  张成亮
      * @date    2018/7/31
      * @description     打印一行错误信息
-     * @param   obs 要打印的变量
-     * @return  系统当前时间
+     * @param  message 要打印的字符串
+     * @param  obs 要打印的变量
      **/
-    public static void error(String message, boolean isError, Object... obs){
-        if (isError) {
-            getLogger().error(PREFIX_ERROR + getCaller(null) + "出错"
-                    + ":" + message
-                    + ((obs != null) ? "," + getJsonString(obs) : ""));
-        } else {
-            getLogger().warn(PREFIX_ERROR + getCaller(null) + "出错"
-                    + ":" + message
-                    + ((obs != null) ? "," + getJsonString(obs) : ""));
-        }
-    }
-
     public static void error(String message, Object... obs){
-        error(message,true,obs);
+        getLogger().error(PREFIX_ERROR + getCaller(null) + "出错"
+                + ":" + message
+                + ((obs != null) ? "," + getJsonString(obs) : ""));
     }
 
     public static void error(String message){
-        error(message,true,(Object[]) null);
+        error(message,(Object[]) null);
     }
 
+    /**
+     * @author  张成亮
+     * @date    2018/7/31
+     * @description     打印一行警告信息
+     * @param  message 要打印的字符串
+     * @param  obs 要打印的变量
+     **/
     public static void warn(String message, Object... obs){
-        error(message,false,obs);
+        getLogger().warn(PREFIX_ERROR + getCaller(null) + "出错"
+                + ":" + message
+                + ((obs != null) ? "," + getJsonString(obs) : ""));
     }
 
     public static void warn(String message){
-        error(message,false,(Object[]) null);
+        error(message,(Object[]) null);
     }
 
     /**
@@ -198,6 +197,7 @@ public class TraceUtils {
             final String prefixIllegalArgumentMessage = "!";
             //警告前导字符
             final String prefixIgnoreException = "~";
+
             if (StringUtils.startsWith(message, prefixIllegalArgumentMessage)) {
                 check(condition, IllegalArgumentException.class, StringUtils.right(message,prefixIllegalArgumentMessage));
             } else if (StringUtils.startsWith(message, prefixIgnoreException)) {
@@ -212,6 +212,125 @@ public class TraceUtils {
 
     public static void check(boolean condition) {
         assert(condition);
+    }
+
+    /**
+     * 描述     获取日志对象
+     * 日期     2018/8/16
+     * @author  张成亮
+     * @return  日志对象
+     * @param   clazz 类名
+     **/
+    public static Logger getLogger(Class<?> clazz) {
+        Logger log = null;
+        if (loggerMap != null){
+            log = loggerMap.get(clazz.getName());
+        } else {
+            loggerMap = new HashMap<>();
+        }
+
+        if (log == null){
+            log = LoggerFactory.getLogger(clazz);
+            loggerMap.put(clazz.getName(),log);
+        }
+        return log;
+    }
+
+    public static Logger getLogger() {
+        return getLogger(getCallerClass());
+    }
+
+    /**
+     * 描述     获取调用调用者方法的类名及方法名
+     * 日期     2018/8/14
+     * @author  张成亮
+     * @return  调用调用者的类名及方法名信息
+     **/
+    public static String getCaller(){
+        return getCaller(getCallerClass().getName());
+    }
+
+    // 描述     获取调用者信息，即堆栈中第一个不包含指定类名的类及方法
+    // 日期     2018/8/14
+    // @author  张成亮
+    // @return  调用者信息
+    // @param   excludeClassName 查找调用者信息的类的类名
+    private static String getCaller(String excludeClassName){
+        String caller = "";
+        StackTraceElement[] stackArray = Thread.currentThread().getStackTrace();
+        for (StackTraceElement theStack : stackArray) {
+            if (isCaller(theStack.getClassName(), excludeClassName)) {
+                caller = StringUtils.lastRight(theStack.getClassName(), ".")
+                        + "." + theStack.getMethodName();
+                break;
+            }
+        }
+        return caller;
+    }
+
+    // 描述     获取调用者的类名信息，即堆栈中第一个不包含指定类名的类
+    // 日期     2018/8/14
+    // @author  张成亮
+    // @return  调用者信息
+    private static Class<?> getCallerClass(){
+        Class<?> callerClass = null;
+        StackTraceElement[] stackArray = Thread.currentThread().getStackTrace();
+        for (StackTraceElement theStack : stackArray) {
+            if (isCaller(theStack.getClassName(),null)) {
+                try {
+                    callerClass = Class.forName(theStack.getClassName());
+                    break;
+                } catch (ClassNotFoundException ex) {
+                    getLogger(TraceUtils.class).error(PREFIX_INTERNAL_ERROR + ex.getMessage(),ex);
+                }
+            }
+        }
+        return callerClass;
+    }
+
+    //获取以paramClassArray类型为参数的构造函数
+    private static Constructor<?> getConstructor(Class<?> clazz,Class<?>... lookForParamClassArray){
+        if (clazz == null){
+            return null;
+        }
+
+        //参数个数
+        int pCnt = (lookForParamClassArray == null) ? 0 : lookForParamClassArray.length;
+
+        //查找构造函数
+        Constructor<?> result = null;
+        Constructor<?>[] constructorArray = clazz.getConstructors();
+        for (Constructor<?> c : constructorArray) {
+            if (c.getParameterCount() == pCnt) {
+                if (lookForParamClassArray == null) {
+                    result = c;
+                    break;
+                } else {
+                    Class<?>[] paramArray = c.getParameterTypes();
+                    boolean isMatch = true;
+                    for (int i = 0; i < pCnt; i++) {
+                        if (!paramArray[i].isAssignableFrom(lookForParamClassArray[i])) {
+                            isMatch = false;
+                            break;
+                        }
+                    }
+                    if (isMatch) {
+                        result = c;
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    //判断是否是调用者类名
+    private static boolean isCaller(String className,String excludeClassName){
+        return StringUtils.isNotSame(className,Thread.class.getName())
+                && StringUtils.isNotSame(className,TraceUtils.class.getName())
+                && (StringUtils.isEmpty(excludeClassName)
+                        || (StringUtils.isNotEmpty(excludeClassName) &&
+                                StringUtils.isNotSame(className,excludeClassName)));
     }
 
     //获取要打印的字符串
@@ -267,126 +386,4 @@ public class TraceUtils {
         TraceUtils.isShowCaller = isShowCaller;
     }
 
-    //获取以paramClassArray类型为参数的构造函数
-    private static Constructor<?> getConstructor(Class<?> clazz,Class<?>... lookForParamClassArray){
-        if (clazz == null){
-            return null;
-        }
-
-        //参数个数
-        int pCnt = (lookForParamClassArray == null) ? 0 : lookForParamClassArray.length;
-
-        //查找构造函数
-        Constructor<?> result = null;
-        Constructor<?>[] constructorArray = clazz.getConstructors();
-        for (Constructor<?> c : constructorArray) {
-            if (c.getParameterCount() == pCnt) {
-                if (lookForParamClassArray == null) {
-                    result = c;
-                    break;
-                } else {
-                    Class<?>[] paramArray = c.getParameterTypes();
-                    boolean isMatch = true;
-                    for (int i = 0; i < pCnt; i++) {
-                        if (!paramArray[i].isAssignableFrom(lookForParamClassArray[i])) {
-                            isMatch = false;
-                            break;
-                        }
-                    }
-                    if (isMatch) {
-                        result = c;
-                        break;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * 描述     获取日志对象
-     * 日期     2018/8/16
-     * @author  张成亮
-     * @return  日志对象
-     * @param   clazz 类名
-     **/
-    public static Logger getLogger(Class<?> clazz) {
-        Logger log = null;
-        if (loggerMap != null){
-            log = loggerMap.get(clazz.getName());
-        } else {
-            loggerMap = new HashMap<>();
-        }
-
-        if (log == null){
-            log = LoggerFactory.getLogger(clazz);
-            loggerMap.put(clazz.getName(),log);
-        }
-        return log;
-    }
-
-    public static Logger getLogger() {
-        return getLogger(getCallerClass());
-    }
-
-
-    /**
-     * 描述     获取调用者信息，即堆栈中第一个不包含指定类名的类及方法
-     * 日期     2018/8/14
-     * @author  张成亮
-     * @return  调用者信息
-     * @param   excludeClassName 查找调用者信息的类的类名
-     **/
-    public static String getCaller(String excludeClassName){
-        String caller = "";
-        StackTraceElement[] stackArray = Thread.currentThread().getStackTrace();
-        for (StackTraceElement theStack : stackArray) {
-            if (isCaller(theStack.getClassName(), excludeClassName)) {
-                caller = StringUtils.lastRight(theStack.getClassName(), ".")
-                        + "." + theStack.getMethodName();
-                break;
-            }
-        }
-        return caller;
-    }
-
-    private static boolean isCaller(String className,String excludeClassName){
-        return StringUtils.isNotSame(className,Thread.class.getName())
-                && StringUtils.isNotSame(className,TraceUtils.class.getName())
-                && (StringUtils.isEmpty(excludeClassName)
-                        || (StringUtils.isNotEmpty(excludeClassName) &&
-                                StringUtils.isNotSame(className,excludeClassName)));
-    }
-
-    /**
-     * 描述     获取调用者的方法名信息，即堆栈中第一个不包含指定类名的类及方法名
-     * 日期     2018/8/14
-     * @author  张成亮
-     * @return  调用者信息
-     **/
-    public static String getCaller(){
-        return getCaller(getCallerClass().getName());
-    }
-
-    /**
-     * 描述     获取调用者的类名信息，即堆栈中第一个不包含指定类名的类
-     * 日期     2018/8/14
-     * @author  张成亮
-     * @return  调用者信息
-     **/
-    private static Class<?> getCallerClass(){
-        Class<?> callerClass = null;
-        StackTraceElement[] stackArray = Thread.currentThread().getStackTrace();
-        for (StackTraceElement theStack : stackArray) {
-            if (isCaller(theStack.getClassName(),null)) {
-                try {
-                    callerClass = Class.forName(theStack.getClassName());
-                    break;
-                } catch (ClassNotFoundException ex) {
-                    getLogger(TraceUtils.class).error(PREFIX_INTERNAL_ERROR + ex.getMessage(),ex);
-                }
-            }
-        }
-        return callerClass;
-    }
 }
