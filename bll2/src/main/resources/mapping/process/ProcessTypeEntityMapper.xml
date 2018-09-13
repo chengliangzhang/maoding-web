@@ -98,4 +98,33 @@
       update_by = #{updateBy,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+
+  <resultMap id="ProcessDefineGroupMap" type="com.maoding.activiti.dto.ProcessDefineGroupDTO">
+    <id column="group_type_id" property="id"/>
+    <result column="group_name" property="name"/>
+    <collection property="processDefineList" ofType="com.maoding.activiti.dto.ProcessDefineDTO">
+      <id column="id" property="id"/>
+      <result column="type_id" property="type"/>
+      <result column="type_code" property="key"/>
+      <result column="type_name" property="name"/>
+      <result column="documentation" property="documentation"/>
+    </collection>
+  </resultMap>
+
+  <select id="listProcessDefineWithGroup" resultMap="ProcessDefineGroupMap" parameterType="com.maoding.activiti.dto.ProcessDefineQueryDTO">
+    select process_ordered.*
+    from (
+      select
+        group_type.type_name as group_name,
+        process_type.*
+      from md_type_process_custom process_type
+        inner join md_type_process_group_custom group_type on (group_type.type_id = process_type.group_type_id)
+      <if test="currentCompanyId != null">
+        where
+          process_type.company_id is null or process_type.company_id = #{currentCompanyId}
+      </if>
+      order by process_type.company_id desc
+    ) process_ordered
+    group by process_ordered.type_id,process_ordered.group_type_id
+  </select>
 </mapper>

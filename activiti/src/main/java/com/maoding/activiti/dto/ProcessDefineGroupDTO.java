@@ -6,11 +6,11 @@ import java.util.List;
 
 /**
  * 深圳市卯丁技术有限公司
- *
- * @author : 张成亮
- * @date : 2018/8/3
- * @description :
- */
+ * 日期: 2018/9/13
+ * 类名: com.maoding.activiti.dto.ProcessDefineGroupDTO
+ * 作者: 张成亮
+ * 描述: 流程群组信息
+ **/
 public class ProcessDefineGroupDTO extends CoreShowDTO {
     /** 此组包含的流程定义 */
     private List<ProcessDefineDTO> processDefineList;

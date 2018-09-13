@@ -4,11 +4,11 @@ import com.maoding.core.base.dto.CoreQueryDTO;
 
 /**
  * 深圳市卯丁技术有限公司
- *
- * @author : 张成亮
- * @date : 2018/7/30
- * @description : 流程查询信息
- */
+ * 日期: 2018/9/13
+ * 类名: com.maoding.activiti.dto.ProcessDefineQueryDTO
+ * 作者: 张成亮
+ * 描述: 流程查询条件
+ **/
 public class ProcessDefineQueryDTO extends CoreQueryDTO {
     /** id: 流程key */
 

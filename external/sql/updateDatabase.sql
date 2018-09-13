@@ -2364,6 +2364,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 自定义视图
     CREATE OR REPLACE VIEW `md_type_process_group_custom` AS
       select
+        group_type.id,
         group_type.company_id,
         group_type.project_id,
         group_type.task_id,
@@ -2371,7 +2372,7 @@ CREATE PROCEDURE `initConst`()
         group_type.last_modify_time,
         group_type.last_modify_user_id,
         group_type.last_modify_role_id,
-        group_type.id as type_id,
+        group_type.code_id as type_id,
         group_type.title as type_name
       from
         md_list_const_custom group_type
@@ -2391,8 +2392,8 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,1,':leave;请假',                   ';1;适用于公司请假审批;请假时长;天');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,2,':onBusiness;出差',              ';1;适用于公司出差审批;出差时长;天');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,3,':expense;报销',                 ';2;适用于公司报销审批;报销金额;元');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,4,':costApply;费用申请',            ';2;适用于公司报销审批;费用申请金额;元');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,5,':projectPayApply;付款审批',      ';3;适用于公司报销审批;付款审批金额;万元');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,4,':costApply;费用申请',            ';2;适用于公司费用审批;费用申请金额;元');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,5,':projectPayApply;付款审批',      ';3;适用于公司付款审批;付款审批金额;万元');
 
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,55,'审批名称','md_type_process,md_type_process_custom');
@@ -2412,11 +2413,11 @@ CREATE PROCEDURE `initConst`()
         substring(process_type.extra,
                   char_length(substring_index(process_type.extra,';',1))+2,
                   char_length(substring_index(process_type.extra,';',2)) - char_length(substring_index(process_type.extra,';',1))-1)
-          as process_type,
+          as group_type_id,
         substring(process_type.extra,
                   char_length(substring_index(process_type.extra,';',2))+2,
                   char_length(substring_index(process_type.extra,';',3)) - char_length(substring_index(process_type.extra,';',2))-1)
-          as description,
+          as documentation,
         substring(process_type.extra,
                   char_length(substring_index(process_type.extra,';',3))+2,
                   char_length(substring_index(process_type.extra,';',4)) - char_length(substring_index(process_type.extra,';',3))-1)
@@ -2440,6 +2441,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 自定义视图
     CREATE OR REPLACE VIEW `md_type_process_custom` AS
       select
+        process_type.id,
         process_type.company_id,
         process_type.project_id,
         process_type.task_id,
@@ -2447,7 +2449,7 @@ CREATE PROCEDURE `initConst`()
         process_type.last_modify_time,
         process_type.last_modify_user_id,
         process_type.last_modify_role_id,
-        process_type.id as type_id,
+        process_type.code_id as type_id,
         substring(process_type.title,
                   char_length(substring_index(process_type.title,':',1))+2,
                   char_length(substring_index(process_type.title,';',1)) - char_length(substring_index(process_type.title,':',1))-1)
@@ -2459,11 +2461,11 @@ CREATE PROCEDURE `initConst`()
         substring(process_type.extra,
                   char_length(substring_index(process_type.extra,';',1))+2,
                   char_length(substring_index(process_type.extra,';',2)) - char_length(substring_index(process_type.extra,';',1))-1)
-          as process_type,
+          as group_type_id,
         substring(process_type.extra,
                   char_length(substring_index(process_type.extra,';',2))+2,
                   char_length(substring_index(process_type.extra,';',3)) - char_length(substring_index(process_type.extra,';',2))-1)
-          as description,
+          as documentation,
         substring(process_type.extra,
                   char_length(substring_index(process_type.extra,';',3))+2,
                   char_length(substring_index(process_type.extra,';',4)) - char_length(substring_index(process_type.extra,';',3))-1)

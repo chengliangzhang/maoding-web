@@ -5,11 +5,11 @@ import com.maoding.core.constant.ProcessTypeConst;
 
 /**
  * 深圳市卯丁技术有限公司
- *
- * @author : 张成亮
- * @date : 2018/8/2
- * @description :
- */
+ * 日期: 2018/9/13
+ * 类名: com.maoding.activiti.dto.ProcessDefineDTO
+ * 作者: 张成亮
+ * 描述: 
+ **/
 public class ProcessDefineDTO extends CoreShowDTO {
     /** id: 流程key */
 

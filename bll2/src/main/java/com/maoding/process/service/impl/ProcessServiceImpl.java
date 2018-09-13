@@ -37,8 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Arrays.asList;
-
 /**
  * activiti Service
  * 流程定义，部署，启动,任务 处理接口实现
@@ -397,47 +395,48 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
      **/
     @Override
     public List<ProcessDefineGroupDTO> listProcessDefineWithGroup(ProcessDefineQueryDTO query) {
-        List<ProcessDefineGroupDTO> result = new ArrayList<>();
-
-        //行政审批包含两种，因此都需要过滤出来
-        //因项目需求，现在不从数据库内读取，而直接提供固定信息
-//        query.setKey(ProcessTypeConst.PROCESS_TYPE_LEAVE);
-//        List<ProcessDefineDTO> leaveList = listProcessDefine(query);
-//        query.setKey(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS);
-//        List<ProcessDefineDTO> onBusinessList = listProcessDefine(query);
-//        List<ProcessDefineDTO> normalList = new ArrayList<>();
-//        normalList.addAll(leaveList);
-//        normalList.addAll(onBusinessList);
-        List<ProcessDefineDTO> normalList = asList(
-                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_LEAVE),"适用于公司请假审批",ProcessTypeConst.PROCESS_TYPE_LEAVE,1,query.getCurrentCompanyId()),
-                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS),"适用于公司出差审批",ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS,1,query.getCurrentCompanyId())
-        );
-        updateType(normalList, query.getCurrentCompanyId());
-        result.add(new ProcessDefineGroupDTO("行政审批",normalList));
-
-        //财务审批
-        //因项目需求，现在不从数据库内读取，而直接提供固定信息
-//        query.setKey(ProcessTypeConst.PROCESS_TYPE_FINANCE);
-//        List<ProcessDefineDTO> financeList = listProcessDefine(query)
-        List<ProcessDefineDTO> financeList = asList(
-                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_EXPENSE),"适用于公司报销审批",ProcessTypeConst.PROCESS_TYPE_EXPENSE,1,query.getCurrentCompanyId()),
-                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_COST_APPLY),"适用于公司费用审批",ProcessTypeConst.PROCESS_TYPE_COST_APPLY,1,query.getCurrentCompanyId())
-        );
-        updateType(financeList, query.getCurrentCompanyId());
-        result.add(new ProcessDefineGroupDTO("财务审批", financeList));
-
-        //项目审批
-        //因项目需求，现在不从数据库内读取，而直接提供固定信息
-//        query.setKey(ProcessTypeConst.PROCESS_TYPE_PROJECT);
-//        List<ProcessDefineDTO> projectList = listProcessDefine(query)
-        List<ProcessDefineDTO> projectList = asList(
-             //   new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP),"适用于公司立项审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP,1,query.getCurrentCompanyId()),
-                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY),"适用于公司付款审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY,1,query.getCurrentCompanyId())
-        );
-        updateType(projectList, query.getCurrentCompanyId());
-        result.add(new ProcessDefineGroupDTO("项目审批", projectList));
-
-        return result;
+        return processTypeDao.listProcessDefineWithGroup(query);
+//        List<ProcessDefineGroupDTO> result = new ArrayList<>();
+//
+//        //行政审批包含两种，因此都需要过滤出来
+//        //因项目需求，现在不从数据库内读取，而直接提供固定信息
+////        query.setKey(ProcessTypeConst.PROCESS_TYPE_LEAVE);
+////        List<ProcessDefineDTO> leaveList = listProcessDefine(query);
+////        query.setKey(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS);
+////        List<ProcessDefineDTO> onBusinessList = listProcessDefine(query);
+////        List<ProcessDefineDTO> normalList = new ArrayList<>();
+////        normalList.addAll(leaveList);
+////        normalList.addAll(onBusinessList);
+//        List<ProcessDefineDTO> normalList = asList(
+//                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_LEAVE),"适用于公司请假审批",ProcessTypeConst.PROCESS_TYPE_LEAVE,1,query.getCurrentCompanyId()),
+//                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS),"适用于公司出差审批",ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS,1,query.getCurrentCompanyId())
+//        );
+//        updateType(normalList, query.getCurrentCompanyId());
+//        result.add(new ProcessDefineGroupDTO("行政审批",normalList));
+//
+//        //财务审批
+//        //因项目需求，现在不从数据库内读取，而直接提供固定信息
+////        query.setKey(ProcessTypeConst.PROCESS_TYPE_FINANCE);
+////        List<ProcessDefineDTO> financeList = listProcessDefine(query)
+//        List<ProcessDefineDTO> financeList = asList(
+//                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_EXPENSE),"适用于公司报销审批",ProcessTypeConst.PROCESS_TYPE_EXPENSE,1,query.getCurrentCompanyId()),
+//                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_COST_APPLY),"适用于公司费用审批",ProcessTypeConst.PROCESS_TYPE_COST_APPLY,1,query.getCurrentCompanyId())
+//        );
+//        updateType(financeList, query.getCurrentCompanyId());
+//        result.add(new ProcessDefineGroupDTO("财务审批", financeList));
+//
+//        //项目审批
+//        //因项目需求，现在不从数据库内读取，而直接提供固定信息
+////        query.setKey(ProcessTypeConst.PROCESS_TYPE_PROJECT);
+////        List<ProcessDefineDTO> projectList = listProcessDefine(query)
+//        List<ProcessDefineDTO> projectList = asList(
+//             //   new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP),"适用于公司立项审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_SET_UP,1,query.getCurrentCompanyId()),
+//                new ProcessDefineDTO(ProcessTypeConst.nameMap.get(ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY),"适用于公司付款审批",ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY,1,query.getCurrentCompanyId())
+//        );
+//        updateType(projectList, query.getCurrentCompanyId());
+//        result.add(new ProcessDefineGroupDTO("项目审批", projectList));
+//
+//        return result;
     }
 
     //更新列表内的流程type值
