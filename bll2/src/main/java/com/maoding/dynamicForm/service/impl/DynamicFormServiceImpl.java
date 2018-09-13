@@ -1,7 +1,7 @@
 package com.maoding.dynamicForm.service.impl;
 
 import com.maoding.core.base.service.GenericService;
-import com.maoding.core.util.BeanUtils;
+import com.maoding.core.util.*;
 import com.maoding.dynamicForm.dao.DynamicFormDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldSelectableValueDao;
@@ -14,6 +14,7 @@ import com.maoding.dynamicForm.service.DynamicFormService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -89,12 +90,53 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
     }
 
     /**
+     * 描述       查询动态窗口模板
+     * 日期       2018/9/13
+     *
+     * @param query
+     * @author 张成亮
+     */
+    @Override
+    public List<FormDTO> listForm(@NotNull FormQueryDTO query) {
+        return dynamicFormDao.listForm(query);
+    }
+
+    /**
      * 描述       获取动态窗口组件位置、标题等信息
      * 日期       2018/9/13
      * @author   张成亮
      **/
     @Override
-    public FormDetailDTO getFormDetail(FormDetailQueryDTO query) {
-        return null;
+    public FormDTO getFormDetail(@NotNull FormQueryDTO query) {
+        List<FormDTO> formList = listForm(query);
+        TraceUtils.check((ObjectUtils.isNotEmpty(formList) && formList.size() == 1),"~动态表单查询结果错误");
+        FormDTO form = ObjectUtils.getFirst(formList);
+        return (form != null) ? getFormDetail(form) : null;
+    }
+
+    /**
+     * 描述       补充动态窗口模板的控件的位置、标题、类型等信息
+     * 日期       2018/9/13
+     *
+     * @param form
+     * @author 张成亮
+     */
+    @Override
+    public FormDTO getFormDetail(@NotNull FormDTO form) {
+        FormFieldQueryDTO fieldQuery = new FormFieldQueryDTO();
+        TraceUtils.check(StringUtils.isNotEmpty(form.getId()),"!form.id不能为空");
+        fieldQuery.setFormId(form.getId());
+        List<DynamicFormFieldDTO> fieldList = dynamicFormFieldDao.listFormField(fieldQuery);
+        if (ObjectUtils.isNotEmpty(fieldList)){
+            fieldList.forEach(field->{
+                if (DigitUtils.parseInt(field.getRequiredType()) != 0){
+                    FormFieldOptionalQueryDTO optionalQuery = new FormFieldOptionalQueryDTO();
+                    optionalQuery.setFieldId(field.getId());
+                    field.setFieldSelectedValueList(dynamicFormFieldSelectableValueDao.listOptional(optionalQuery));
+                }
+            });
+        }
+        form.setFieldList(fieldList);
+        return form;
     }
 }

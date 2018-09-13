@@ -89,4 +89,20 @@
       update_by = #{updateBy,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+
+  <!-- 查找动态窗口模板 -->
+  <select id="listForm" resultType="com.maoding.dynamicForm.dto.FormDTO" parameterType="com.maoding.dynamicForm.dto.FormQueryDTO">
+    select form_ordered.*
+    from (
+      select
+        form_list.*
+      from maoding_dynamic_form form_list
+      where deleted = 0
+        <if test="currentCompanyId != null">
+          and (form_list.company_id is null or form_list.company_id = #{currentCompanyId})
+        </if>
+      order by form_list.company_id desc
+    ) form_ordered
+    group by form_ordered.type_id
+  </select>
 </mapper>

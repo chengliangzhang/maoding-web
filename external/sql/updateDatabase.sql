@@ -2238,7 +2238,8 @@ CREATE PROCEDURE `initConst`()
     delete from maoding_dynamic_form where company_id is null;
     REPLACE INTO maoding_dynamic_form (id,create_date,deleted,`status`,form_name,form_type)
       SELECT concat(52,'-',type_id),now(),0,1,type_name,type_id
-      FROM md_type_form;
+      FROM md_type_form
+      WHERE is_detail = 0;
   END;
 call initConst();
 
@@ -2350,7 +2351,7 @@ CREATE PROCEDURE `initConst`()
     delete from maoding_dynamic_form_field where form_id in (select id from maoding_dynamic_form where company_id is null);
     REPLACE INTO maoding_dynamic_form_field (id,create_date,deleted,form_id,field_pid,field_title,field_type,field_unit,is_statistics,field_tooltip,
         field_default_value,seq_x,seq_y,required_type)
-      SELECT id,now(),0,form_id,field_pid,type_name,field_type,field_unit,is_statistics,field_tooltip,
+      SELECT id,now(),0,concat('52-',form_id),field_pid,type_name,field_type,field_unit,is_statistics,field_tooltip,
         field_default_value,seq_x,seq_y,required_type
       FROM (
         select
@@ -2361,7 +2362,7 @@ CREATE PROCEDURE `initConst`()
           field_type.*
         from
           md_type_form_field field_type
-          inner join md_type_form form_type on (concat(form_type.type_id,'') = field_type.direct_form_id)
+          inner join md_type_form form_type on (concat(form_type.type_id,'') = field_type.direct_form_id and form_type.is_detail = 0)
 
         union all
 

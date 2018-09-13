@@ -84,4 +84,16 @@
       update_by = #{updateBy,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+
+  <!-- 查找控件可选项信息 -->
+  <select id="listOptional" resultType="com.maoding.dynamicForm.dto.DynamicFormFieldSelectedValueDTO" parameterType="com.maoding.dynamicForm.dto.FormFieldOptionalQueryDTO">
+    select
+      optional_list.*
+    from maoding_dynamic_form_field_selectable_value optional_list
+      where deleted = 0
+      <if test="fieldId != null">
+        and optional_list.field_id = #{fieldId}
+      </if>
+  </select>
+
 </mapper>

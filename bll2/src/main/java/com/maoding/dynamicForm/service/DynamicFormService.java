@@ -1,10 +1,12 @@
 package com.maoding.dynamicForm.service;
 
 import com.maoding.core.base.service.BaseService;
-import com.maoding.dynamicForm.dto.FormDetailDTO;
-import com.maoding.dynamicForm.dto.FormDetailQueryDTO;
+import com.maoding.dynamicForm.dto.FormDTO;
+import com.maoding.dynamicForm.dto.FormQueryDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
 import com.maoding.dynamicForm.entity.DynamicFormEntity;
+
+import java.util.List;
 
 /**
  * 动态表单自定义的数据层接口
@@ -16,9 +18,23 @@ public interface DynamicFormService extends BaseService<DynamicFormEntity> {
     int insertDynamicForm (SaveDynamicFormDTO dto) throws Exception;
 
     /**
-     * 描述       获取动态窗口组件位置、标题等信息
+     * 描述       查找动态窗口模板
      * 日期       2018/9/13
      * @author   张成亮
      **/
-    FormDetailDTO getFormDetail(FormDetailQueryDTO query);
+    List<FormDTO> listForm(FormQueryDTO query);
+
+    /**
+     * 描述       查找动态窗口模板，并获得控件的位置、标题、类型等信息
+     * 日期       2018/9/13
+     * @author   张成亮
+     **/
+    FormDTO getFormDetail(FormQueryDTO query);
+
+    /**
+     * 描述       补充动态窗口模板的控件的位置、标题、类型等信息
+     * 日期       2018/9/13
+     * @author   张成亮
+     **/
+    FormDTO getFormDetail(FormDTO form);
 }
