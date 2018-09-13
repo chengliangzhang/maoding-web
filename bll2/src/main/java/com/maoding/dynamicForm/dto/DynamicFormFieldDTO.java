@@ -49,6 +49,10 @@ public class DynamicFormFieldDTO {
     */
     private Integer requiredType;
 
+    List<DynamicFormFieldDTO> detailFieldList = new ArrayList<>();
+
+    List<DynamicFormFieldSelectedValueDTO> fieldSelectedValueList = new ArrayList<>();
+
     public String getId() {
         return id;
     }
@@ -56,11 +60,6 @@ public class DynamicFormFieldDTO {
     public void setId(String id) {
         this.id = id;
     }
-
-    List<DynamicFormFieldDTO> detailFieldList = new ArrayList<>();
-
-    List<DynamicFormFieldSelectedValueDTO> fieldSelectedValueList = new ArrayList<>();
-
 
     public String getFormId() {
         return formId;

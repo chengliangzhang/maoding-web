@@ -2,6 +2,7 @@ package com.maoding.dynamicForm.controller;
 
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.dynamicForm.dto.FormDetailQueryDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicAuditDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
 import com.maoding.dynamicForm.service.DynamicFormFieldValueService;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -52,4 +54,20 @@ public class DynamicFormController extends BaseController {
     public AjaxMessage saveAuditDetail(@RequestBody SaveDynamicAuditDTO dto) throws Exception{
         return AjaxMessage.succeed(dynamicFormFieldValueService.saveAuditDetail(dto));
     }
+
+    /**
+     * 描述     查询动态表单应显示的控件及相应属性
+     * 日期     2018/9/13
+     * @author  张成亮
+     * @return  动态表单内各控件的位置、名称等信息
+     * @param   query
+     **/
+    @RequestMapping(value = "/getFormDetail", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage getFormDetail(@RequestBody FormDetailQueryDTO query) throws Exception {
+        updateCurrentUserInfo(query);
+        return AjaxMessage.succeed(null);
+    }
+
+
 }

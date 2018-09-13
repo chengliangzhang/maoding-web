@@ -78,6 +78,7 @@ DROP VIEW IF EXISTS `maoding_storage_storage`;
 DROP VIEW IF EXISTS `maoding_storage_task`;
 DROP VIEW IF EXISTS `maoding_task_node`;
 DROP VIEW IF EXISTS `md_web_role`;
+DROP VIEW IF EXISTS `md_form_field`;
 
 -- -- 清理无用字段
 -- md_tree_storage

@@ -1,6 +1,8 @@
 package com.maoding.dynamicForm.service;
 
 import com.maoding.core.base.service.BaseService;
+import com.maoding.dynamicForm.dto.FormDetailDTO;
+import com.maoding.dynamicForm.dto.FormDetailQueryDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
 import com.maoding.dynamicForm.entity.DynamicFormEntity;
 
@@ -13,4 +15,5 @@ public interface DynamicFormService extends BaseService<DynamicFormEntity> {
 */
     int insertDynamicForm (SaveDynamicFormDTO dto) throws Exception;
 
+    FormDetailDTO getFormDetail(FormDetailQueryDTO query);
 }

@@ -2056,22 +2056,23 @@ CREATE PROCEDURE `initConst`()
   BEGIN
     -- -- 常量
     delete from md_list_const where classic_id = 49;
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,0,'可选控件',  '000000000:1-允许输入,2-允许字母,3-允许多行,4-允许格式,5-是日期,6-可多选,7-可上传,8-可链接,9-可嵌套;2:可设置属性;3:图标');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,1,'单行文本',  '110000000;1,2,3;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,2,'多行文本',  '111000000;1,2,3;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,3,'日期',     '000010000;1,2,3;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,4,'日期区间',  '000010000;10,11,12,13,14,3;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,5,'数字',     '100000000;1,2,3;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,6,'金额',     '100000000;1,2,6,3;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,7,'单选框',   '000000000;1,2,4,5,3;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,8,'复选框',   '000001000;1,2,4,5,3;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,9,'下拉列表', '000000000;1,2,4,5,3;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,10,'富文本',  '111100000;1,2,3;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,11,'纯文本',  '111000000;1,2,3;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,12,'明细',   '000000001;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,13,'图片',   '000000100;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,14,'附件',   '000000100;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,15,'分割线', '000000000;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,0,'可选控件',  '000000000:1-允许输入,2-允许字母,3-允许多行,4-允许格式,5-是日期,6-可多选,7-可上传,8-可链接,9-可嵌套;2.可设置属性;3.可选数据接口;4:图标');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,1,'单行文本',  '110000000;1,2,3;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,2,'多行文本',  '111000000;1,2,3;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,3,'日期',     '000010000;1,2,14,3;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,4,'日期区间',  '000010000;10,11,12,13,14,3;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,5,'数字',     '100000000;1,2,3;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,6,'金额',     '100000000;1,2,6,3;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,7,'单选框',   '000000000;1,2,4,5,3;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,8,'复选框',   '000001000;1,2,4,5,3;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,9,'下拉列表', '000000000;1,2,4,5,3;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,10,'富文本',  '111100000;1,2,3;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,11,'纯文本',  '111000000;1,2,3;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,12,'明细',   '000000001;1;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,14,'附件',   '000000100;1,2,5,3;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,15,'分割线', '000000000;1;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,16,'关联项目', '000000010;1,2,15,3;iWork/finance/getProjectList;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,17,'关联审批', '000000010;1,2,15,3;iWork/finance/getExpBaseData;');
 
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,49,'可选控件','md_type_widget');
@@ -2101,6 +2102,10 @@ CREATE PROCEDURE `initConst`()
         substring(widget_type.extra,
                   char_length(substring_index(widget_type.extra,';',2))+2,
                   char_length(substring_index(widget_type.extra,';',3)) - char_length(substring_index(widget_type.extra,';',2))-1)
+                                           as optional_url,
+        substring(widget_type.extra,
+                  char_length(substring_index(widget_type.extra,';',3))+2,
+                  char_length(substring_index(widget_type.extra,';',4)) - char_length(substring_index(widget_type.extra,';',3))-1)
                                            as icon
       from
         md_list_const widget_type
@@ -2119,7 +2124,7 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,1,':标题;标题',  '11;1;;');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,2,':提示文字;提示文字',  '10;1;;');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,3,':是否必填;是否必填',  '10;3;;必填');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,4,':可选项;提示文字',   '10;4;;选项1,选项2');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,4,':可选项;选项值',   '10;4;;选项1,选项2');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,5,':排列方式;排列方式',  '10;2;;横向,纵向');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,6,':单位;单位',   '10;1;;');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,10,':开始时间标题;标题1', '10;1;开始时间;');
@@ -2127,6 +2132,8 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,12,':结束时间标题;标题2',  '10;1;结束时间;');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,13,':结束时间提示;提示文字2',   '10;1;结束时间;');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,14,':时间格式;日期类型',   '10;2;;年/月/日,年/月/日 时:分,年/月/日 上午&下午');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,15,':项目属性;项目属性',   '10;2;;参与的项目,所有的项目');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,16,':审批属性;审批属性',   '10;2;;报销,费用,请假,出差');
 
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,50,'可设置属性','md_type_widget_property,md_widget_property');
@@ -2210,7 +2217,7 @@ CREATE PROCEDURE `initConst`()
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (52,6,'费用申请-明细',  '1');
 
     -- -- 类型
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,52,'表单模板','md_type_form');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,52,'表单模板','md_type_form,maoding_dynamic_form');
 
     -- -- 视图
     CREATE OR REPLACE VIEW `md_type_form` AS
@@ -2226,6 +2233,12 @@ CREATE PROCEDURE `initConst`()
         md_list_const form_type
       where
         form_type.classic_id = 52 and form_type.code_id > 0;
+
+    -- -- 自定义常量
+    delete from maoding_dynamic_form where company_id is null;
+    REPLACE INTO maoding_dynamic_form (id,create_date,deleted,`status`,form_name,form_type)
+      SELECT concat(52,'-',type_id),now(),0,1,type_name,type_id
+      FROM md_type_form;
   END;
 call initConst();
 
@@ -2235,36 +2248,36 @@ CREATE PROCEDURE `initConst`()
   BEGIN
     -- -- 常量
     delete from md_list_const where classic_id = 53;
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,0,'表单模板字段:1-名称;2-显示标题',        '0:1-必填;2.所属表单;3.横轴排序;4.纵轴排序;5.控件类型;6.默认值;7.格式;8.提示文字;9.固定可选项;10.查询请求;11.嵌套表单');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,1,':请假申请-请假类型;请假类型',           '1;1;0;1;7;;;;;iWork/leave/getLeaveType;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,2,':请假申请-开始结束时间;开始时间,结束时间','1;1;0;2;4;;年/月/日 时:分;;;;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,3,':请假申请-请假天数;请假天数',           '1;1;0;3;5;;;;;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,4,':请假申请-请假事由;请假事由',           '0;1;0;4;2;;;;;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,5,':请假申请-附件;附件',                 '0;1;0;5;14;;;;;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,6,':出差申请-出差地点;出差地点',           '1;2;0;1;1;;;;;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,7,':出差申请-开始结束时间;开始时间,结束时间','1;2;0;2;4;;年/月/日 时:分;;;;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,8,':出差申请-出差天数;出差天数',           '1;2;0;3;5;;;;;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,9,':出差申请-出差事由;出差事由',           '0;2;0;4;2;;;;;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,10,':出差申请-关联项目;关联项目',          '0;2;0;5;9;;;;;iWork/finance/getProjectList;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,11,':出差申请-附件;附件',                 '0;2;0;6;14;;;;;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,12,':报销申请-报销明细;报销明细',           '0;3;0;1;12;;;;;;4');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,13,':报销申请-附件;附件',                 '0;3;0;2;14;;;;;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,14,':报销申请明细-报销金额;报销金额',       '1;4;0;1;6;;;;;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,15,':报销申请明细-报销类型;报销类型',       '1;4;0;2;9;;;;;iWork/finance/getExpBaseData;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,16,':报销申请明细-用途说明;用途说明',       '1;4;0;3;2;;;;;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,17,':报销申请明细-关联项目;关联项目',       '0;4;0;4;9;;;;;iWork/finance/getExpBaseData;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,18,':报销申请明细-关联审批;关联审批',       '0;4;0;5;9;;;;;iWork/finance/getExpBaseData;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,19,':费用申请-收款方;收款方',             '0;5;0;1;1;;;;;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,20,':费用申请-备注;备注',                '0;5;0;2;2;;;;;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,21,':费用申请-费用明细;费用明细',          '0;5;0;3;12;;;;;;6');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,22,':费用申请明细-费用金额;费用金额',       '1;6;0;1;6;;;;;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,23,':费用申请明细-费用类型;费用类型',       '1;6;0;2;9;;;;;iWork/finance/getExpBaseData;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,24,':费用申请明细-用途说明;用途说明',       '1;6;0;3;2;;;;;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,25,':费用申请明细-关联项目;关联项目',       '0;6;0;4;9;;;;;iWork/finance/getExpBaseData;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,26,':费用申请明细-关联审批;关联审批',       '0;6;0;5;9;;;;;iWork/finance/getExpBaseData;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,0,'表单模板字段:1-名称;2-显示标题',        '00:1-必填,2-参与统计;2.所属表单;3.横轴排序;4.纵轴排序;5.控件类型;6.默认值;7.格式;8.提示文字;9.固定可选项;10.查询请求;11.嵌套表单;12.单位');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,1,':请假申请-请假类型;请假类型',           '10;1;0;1;7;;;;;iWork/leave/getLeaveType;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,2,':请假申请-开始结束时间;开始时间,结束时间','10;1;0;2;4;;年/月/日 时:分;;;;;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,3,':请假申请-请假天数;请假天数',           '10;1;0;3;5;;;;;;;天');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,4,':请假申请-请假事由;请假事由',           '00;1;0;4;2;;;;;;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,5,':请假申请-附件;附件',                 '00;1;0;5;14;;;;;;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,6,':出差申请-出差地点;出差地点',           '10;2;0;1;1;;;;;;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,7,':出差申请-开始结束时间;开始时间,结束时间','10;2;0;2;4;;年/月/日 时:分;;;;;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,8,':出差申请-出差天数;出差天数',           '10;2;0;3;5;;;;;;;天');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,9,':出差申请-出差事由;出差事由',           '00;2;0;4;2;;;;;;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,10,':出差申请-关联项目;关联项目',          '00;2;0;5;9;;;;;iWork/finance/getProjectList;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,11,':出差申请-附件;附件',                 '00;2;0;6;14;;;;;;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,12,':报销申请-报销明细;报销明细',           '00;3;0;1;12;;;;;;4;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,13,':报销申请-附件;附件',                 '00;3;0;2;14;;;;;;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,14,':报销申请明细-报销金额;报销金额',       '11;4;0;1;6;;;;;;;元');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,15,':报销申请明细-报销类型;报销类型',       '10;4;0;2;9;;;;;iWork/finance/getExpBaseData;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,16,':报销申请明细-用途说明;用途说明',       '10;4;0;3;2;;;;;;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,17,':报销申请明细-关联项目;关联项目',       '00;4;0;4;15;;;;;iWork/finance/getExpBaseData;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,18,':报销申请明细-关联审批;关联审批',       '00;4;0;5;16;;;;;iWork/finance/getExpBaseData;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,19,':费用申请-收款方;收款方',             '00;5;0;1;1;;;;;;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,20,':费用申请-备注;备注',                '00;5;0;2;2;;;;;;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,21,':费用申请-费用明细;费用明细',          '00;5;0;3;12;;;;;;6;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,22,':费用申请明细-费用金额;费用金额',       '11;6;0;1;6;;;;;;;元');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,23,':费用申请明细-费用类型;费用类型',       '10;6;0;2;9;;;;;iWork/finance/getExpBaseData;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,24,':费用申请明细-用途说明;用途说明',       '10;6;0;3;2;;;;;;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,25,':费用申请明细-关联项目;关联项目',       '00;6;0;4;15;;;;;iWork/finance/getExpBaseData;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (53,26,':费用申请明细-关联审批;关联审批',       '00;6;0;5;16;;;;;iWork/finance/getExpBaseData;;');
 
     -- -- 类型
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,53,'表单模板组件','md_type_form_field,md_form_field');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,53,'表单模板组件','md_type_form_field,maoding_dynamic_form_field');
 
     -- -- 视图
     CREATE OR REPLACE VIEW `md_type_form_field` AS
@@ -2283,6 +2296,7 @@ CREATE PROCEDURE `initConst`()
                   char_length(substring_index(field_type.extra,';',1)))
                           as type_attr,
         substring(field_type.extra,1,1) as required_type,
+        substring(field_type.extra,2,1) as is_statistics,
         substring(field_type.extra,
                   char_length(substring_index(field_type.extra,';',1))+2,
                   char_length(substring_index(field_type.extra,';',2)) - char_length(substring_index(field_type.extra,';',1))-1)
@@ -2290,11 +2304,11 @@ CREATE PROCEDURE `initConst`()
         substring(field_type.extra,
                   char_length(substring_index(field_type.extra,';',2))+2,
                   char_length(substring_index(field_type.extra,';',3)) - char_length(substring_index(field_type.extra,';',2))-1)
-          as xpos,
+          as seq_x,
         substring(field_type.extra,
                   char_length(substring_index(field_type.extra,';',3))+2,
                   char_length(substring_index(field_type.extra,';',4)) - char_length(substring_index(field_type.extra,';',3))-1)
-          as ypos,
+          as seq_y,
         substring(field_type.extra,
                   char_length(substring_index(field_type.extra,';',4))+2,
                   char_length(substring_index(field_type.extra,';',5)) - char_length(substring_index(field_type.extra,';',4))-1)
@@ -2322,11 +2336,47 @@ CREATE PROCEDURE `initConst`()
         substring(field_type.extra,
                   char_length(substring_index(field_type.extra,';',10))+2,
                   char_length(substring_index(field_type.extra,';',11)) - char_length(substring_index(field_type.extra,';',10))-1)
-          as detail_id
+          as detail_id,
+        substring(field_type.extra,
+                  char_length(substring_index(field_type.extra,';',11))+2,
+                  char_length(substring_index(field_type.extra,';',12)) - char_length(substring_index(field_type.extra,';',11))-1)
+          as field_unit
       from
         md_list_const field_type
       where
         field_type.classic_id = 53 and field_type.code_id > 0;
+
+    -- -- 自定义常量
+    delete from maoding_dynamic_form_field where form_id in (select id from maoding_dynamic_form where company_id is null);
+    REPLACE INTO maoding_dynamic_form_field (id,create_date,deleted,form_id,field_pid,field_title,field_type,field_unit,is_statistics,field_tooltip,
+        field_default_value,seq_x,seq_y,required_type)
+      SELECT id,now(),0,form_id,field_pid,type_name,field_type,field_unit,is_statistics,field_tooltip,
+        field_default_value,seq_x,seq_y,required_type
+      FROM (
+        select
+          concat(form_type.type_id,'-',field_type.type_id) as id,
+          form_type.type_id as form_id,
+          0 as is_detail,
+          null as field_pid,
+          field_type.*
+        from
+          md_type_form_field field_type
+          inner join md_type_form form_type on (concat(form_type.type_id,'') = field_type.direct_form_id)
+
+        union all
+
+        select
+          concat(form_type.type_id,'-',top_field_type.type_id,'-',field_type.type_id) as id,
+          form_type.type_id as form_id,
+          1 as is_detail,
+          concat(form_type.type_id,'-',top_field_type.type_id) as field_pid,
+          field_type.*
+        from
+          md_type_form_field top_field_type
+          inner join md_type_form_field field_type on (field_type.direct_form_id = top_field_type.detail_id)
+          inner join md_type_form form_type on (form_type.type_id = top_field_type.direct_form_id)
+      ) x;
+
   END;
 call initConst();
 
@@ -2484,29 +2534,6 @@ call initConst();
 -- -- -- 创建及更改常量 -- 结束 -- -- --
 
 -- -- -- 创建及更改视图 -- 开始 -- -- --
--- 表单模板字段定义
-CREATE OR REPLACE VIEW `md_form_field` AS
-  select
-    concat(form_type.type_id,'-',field_type.type_id) as id,
-    form_type.type_id as form_id,
-    0 as is_detail,
-    field_type.*
-  from
-    md_type_form_field field_type
-    inner join md_type_form form_type on (concat(form_type.type_id,'') = field_type.direct_form_id)
-  
-  union all
-
-  select
-    concat(form_type.type_id,'-',field_type.type_id) as id,
-    form_type.type_id as form_id,
-    1 as is_detail,
-    field_type.*
-  from
-    md_type_form_field top_field_type
-    inner join md_type_form_field field_type on (field_type.direct_form_id = top_field_type.detail_id)
-    inner join md_type_form form_type on (form_type.type_id = top_field_type.direct_form_id);
-
 -- 控件可设置属性
 CREATE OR REPLACE VIEW `md_widget_property` AS
   select
