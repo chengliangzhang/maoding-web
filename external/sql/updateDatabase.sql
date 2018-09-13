@@ -1603,7 +1603,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,30,'web member角色类型','md_type_web_member');
 
-    -- 视图
+    -- -- 视图
     CREATE OR REPLACE VIEW `md_type_web_member` AS
       select
         member_type.code_id                as id,
@@ -1642,7 +1642,7 @@ CREATE PROCEDURE `initConst`()
       from
         md_list_const member_type
       where
-        member_type.classic_id = 30;
+        member_type.classic_id = 30 and member_type.code_id > -1;
   END;
 call initConst();
 
@@ -1708,7 +1708,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,39,'可选标题栏','md_type_optional_title');
 
-    -- 视图
+    -- -- 视图
     CREATE OR REPLACE VIEW `md_type_optional_title` AS
       select
         option_title.code_id as id,
@@ -1759,7 +1759,7 @@ CREATE PROCEDURE `initConst`()
       from
         md_list_const option_title
       where
-        option_title.classic_id = 39;
+        option_title.classic_id = 39 and option_title.code_id > 0;
   END;
 call initConst();
 
@@ -1779,7 +1779,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,40,'可选标题栏群组','md_type_optional_group');
 
-    -- 视图
+    -- -- 视图
     CREATE OR REPLACE VIEW `md_type_optional_group` AS
       select
         optional_group.code_id as id,
@@ -1793,7 +1793,7 @@ CREATE PROCEDURE `initConst`()
       from
         md_list_const optional_group
       where
-        optional_group.classic_id = 40;
+        optional_group.classic_id = 40 and optional_group.code_id > 0;
   END;
 call initConst();
 
@@ -1811,7 +1811,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,41,'web可选标题栏类型','md_type_web_title_classic');
 
-    -- 视图
+    -- -- 视图
     CREATE OR REPLACE VIEW `md_type_web_title_classic` AS
       select
         web_title_classic.code_id as id,
@@ -1826,7 +1826,7 @@ CREATE PROCEDURE `initConst`()
       from
         md_list_const web_title_classic
       where
-        web_title_classic.classic_id = 41;
+        web_title_classic.classic_id = 41 and web_title_classic.code_id > -1;
   END;
 call initConst();
 
@@ -1846,7 +1846,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,42,'标题过滤器类型','md_type_filter');
 
-    -- 视图
+    -- -- 视图
     CREATE OR REPLACE VIEW `md_type_filter` AS
       select
         filter_type.code_id as id,
@@ -1861,7 +1861,7 @@ CREATE PROCEDURE `initConst`()
       from
         md_list_const filter_type
       where
-        filter_type.classic_id = 42;
+        filter_type.classic_id = 42 and filter_type.code_id > 0;
   END;
 call initConst();
 
@@ -1880,7 +1880,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,43,'列表字段类型','md_type_field');
 
-    -- 视图
+    -- -- 视图
     CREATE OR REPLACE VIEW `md_type_field` AS
       select
         filter_type.code_id as id,
@@ -1890,7 +1890,7 @@ CREATE PROCEDURE `initConst`()
       from
         md_list_const filter_type
       where
-        filter_type.classic_id = 43;
+        filter_type.classic_id = 43 and filter_type.code_id > 0;
   END;
 call initConst();
 
@@ -1912,7 +1912,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,44,'项目状态','md_type_project_status');
 
-    -- 视图
+    -- -- 视图
     CREATE OR REPLACE VIEW `md_type_project_status` AS
       select
         project_status.code_id as id,
@@ -1922,7 +1922,7 @@ CREATE PROCEDURE `initConst`()
       from
         md_list_const project_status
       where
-        project_status.classic_id = 44;
+        project_status.classic_id = 44 and project_status.code_id > -1;
   END;
 call initConst();
 
@@ -1939,7 +1939,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,45,'发票类型','md_type_invoice');
 
-    -- 视图
+    -- -- 视图
     CREATE OR REPLACE VIEW `md_type_invoice` AS
       select
         invoice_type.code_id as id,
@@ -1950,7 +1950,7 @@ CREATE PROCEDURE `initConst`()
       from
         md_list_const invoice_type
       where
-        invoice_type.classic_id = 45;
+        invoice_type.classic_id = 45 and invoice_type.code_id > 0;
   END;
 call initConst();
 
@@ -1970,7 +1970,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,46,'款项分类子项','md_type_fee');
 
-    -- 视图
+    -- -- 视图
     CREATE OR REPLACE VIEW `md_type_fee` AS
       select
         invoice_type.code_id as id,
@@ -1981,7 +1981,7 @@ CREATE PROCEDURE `initConst`()
       from
         md_list_const invoice_type
       where
-        invoice_type.classic_id = 46;
+        invoice_type.classic_id = 46 and invoice_type.code_id > 0;
   END;
 call initConst();
 
@@ -2001,7 +2001,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,47,'审批类别','md_type_exp');
 
-    -- 视图
+    -- -- 视图
     CREATE OR REPLACE VIEW `md_type_exp` AS
       select
         exp_type.code_id as id,
@@ -2035,7 +2035,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,48,'审批状态','md_type_exp_status');
 
-    -- 视图
+    -- -- 视图
     CREATE OR REPLACE VIEW `md_type_exp_status` AS
       select
         exp_type_status.code_id as id,
@@ -2046,7 +2046,7 @@ CREATE PROCEDURE `initConst`()
       from
         md_list_const exp_type_status
       where
-        exp_type_status.classic_id = 48;
+        exp_type_status.classic_id = 48 and exp_type_status.code_id > -1;
   END;
 call initConst();
 
@@ -2076,7 +2076,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,49,'可选控件','md_type_widget');
 
-    -- 视图
+    -- -- 视图
     CREATE OR REPLACE VIEW `md_type_widget` AS
       select
         widget_type.code_id as type_id,
@@ -2105,7 +2105,7 @@ CREATE PROCEDURE `initConst`()
       from
         md_list_const widget_type
       where
-        widget_type.classic_id = 49;
+        widget_type.classic_id = 49 and widget_type.code_id > 0;
   END;
 call initConst();
 
@@ -2131,7 +2131,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,50,'可设置属性','md_type_widget_property,md_widget_property');
 
-    -- 视图
+    -- -- 视图
     CREATE OR REPLACE VIEW `md_type_widget_property` AS
       select
         property_type.code_id as type_id,
@@ -2164,7 +2164,7 @@ CREATE PROCEDURE `initConst`()
       from
         md_list_const property_type
       where
-        property_type.classic_id = 50;
+        property_type.classic_id = 50 and property_type.code_id > 0;
   END;
 call initConst();
 
@@ -2183,7 +2183,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,51,'控件可设置属性类型','md_type_widget_property_type');
 
-    -- 视图
+    -- -- 视图
     CREATE OR REPLACE VIEW `md_type_widget_property_type` AS
       select
         input_type.code_id as type_id,
@@ -2191,7 +2191,7 @@ CREATE PROCEDURE `initConst`()
       from
         md_list_const input_type
       where
-        input_type.classic_id = 51;
+        input_type.classic_id = 51 and input_type.code_id > 0;
   END;
 call initConst();
 
@@ -2212,7 +2212,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,52,'表单模板','md_type_form');
 
-    -- 视图
+    -- -- 视图
     CREATE OR REPLACE VIEW `md_type_form` AS
       select
         form_type.code_id as type_id,
@@ -2225,7 +2225,7 @@ CREATE PROCEDURE `initConst`()
       from
         md_list_const form_type
       where
-        form_type.classic_id = 52;
+        form_type.classic_id = 52 and form_type.code_id > 0;
   END;
 call initConst();
 
@@ -2266,7 +2266,7 @@ CREATE PROCEDURE `initConst`()
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,53,'表单模板组件','md_type_form_field,md_form_field');
 
-    -- 视图
+    -- -- 视图
     CREATE OR REPLACE VIEW `md_type_form_field` AS
       select
         field_type.code_id as type_id,
@@ -2326,7 +2326,140 @@ CREATE PROCEDURE `initConst`()
       from
         md_list_const field_type
       where
-        field_type.classic_id = 53;
+        field_type.classic_id = 53 and field_type.code_id > 0;
+  END;
+call initConst();
+
+-- 审批群组
+DROP PROCEDURE IF EXISTS `initConst`;
+CREATE PROCEDURE `initConst`()
+  BEGIN
+    -- -- 常量
+    delete from md_list_const where classic_id = 54;
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (54,0,'审批群组','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (54,1,'行政审批','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (54,2,'财务审批','');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (54,3,'项目审批','');
+
+    -- -- 类型
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,54,'审批群组','md_type_process_group,md_type_process_group_custom');
+
+    -- -- 视图
+    CREATE OR REPLACE VIEW `md_type_process_group` AS
+      select
+        group_type.code_id as type_id,
+        group_type.title   as type_name
+      from
+        md_list_const group_type
+      where
+        group_type.classic_id = 54 and group_type.code_id > 0;
+
+    -- -- 自定义常量
+    delete from md_list_const_custom where classic_id = 54 and length(id) < 10;
+    REPLACE INTO md_list_const_custom (id,create_time,last_modify_time,classic_id,code_id,title,extra)
+      SELECT concat(classic_id,'-',code_id),now(),now(),classic_id,code_id,title,extra
+      FROM md_list_const
+      WHERE classic_id = 54;
+
+    -- -- 自定义视图
+    CREATE OR REPLACE VIEW `md_type_process_group_custom` AS
+      select
+        group_type.company_id,
+        group_type.project_id,
+        group_type.task_id,
+        group_type.create_time,
+        group_type.last_modify_time,
+        group_type.last_modify_user_id,
+        group_type.last_modify_role_id,
+        group_type.id as type_id,
+        group_type.title as type_name
+      from
+        md_list_const_custom group_type
+      where
+        group_type.classic_id = 54 and group_type.code_id > 0 and group_type.deleted = 0;
+
+  END;
+call initConst();
+
+-- 审批名称
+DROP PROCEDURE IF EXISTS `initConst`;
+CREATE PROCEDURE `initConst`()
+  BEGIN
+    -- -- 常量
+    delete from md_list_const where classic_id = 55;
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,0,'审批名称:1-流程关键字;2-流程名称',  ';2.所属群组;3.说明');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,1,':leave;请假',                   ';1;适用于公司请假审批');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,2,':onBusiness;出差',              ';1;适用于公司出差审批');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,3,':expense;报销',                 ';2;适用于公司报销审批');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,4,':costApply;费用申请',            ';2;适用于公司报销审批');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (55,5,':projectPayApply;付款审批',      ';3;适用于公司报销审批');
+
+    -- -- 类型
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,55,'审批名称','md_type_process,md_type_process_custom');
+
+    -- -- 视图
+    CREATE OR REPLACE VIEW `md_type_process` AS
+      select
+        process_type.code_id as type_id,
+        substring(process_type.title,
+                  char_length(substring_index(process_type.title,':',1))+2,
+                  char_length(substring_index(process_type.title,';',1)) - char_length(substring_index(process_type.title,':',1))-1)
+          as type_code,
+        substring(process_type.title,
+                  char_length(substring_index(process_type.title,';',1))+2,
+                  char_length(substring_index(process_type.title,';',2)) - char_length(substring_index(process_type.title,';',1))-1)
+          as type_name,
+        substring(process_type.extra,
+                  char_length(substring_index(process_type.extra,';',1))+2,
+                  char_length(substring_index(process_type.extra,';',2)) - char_length(substring_index(process_type.extra,';',1))-1)
+          as process_type,
+        substring(process_type.extra,
+                  char_length(substring_index(process_type.extra,';',2))+2,
+                  char_length(substring_index(process_type.extra,';',3)) - char_length(substring_index(process_type.extra,';',2))-1)
+          as description
+      from
+        md_list_const process_type
+      where
+        process_type.classic_id = 55 and process_type.code_id > 0;
+
+    -- -- 自定义常量
+    delete from md_list_const_custom where classic_id = 55 and length(id) < 10;
+    REPLACE INTO md_list_const_custom (id,create_time,last_modify_time,classic_id,code_id,title,extra)
+      SELECT concat(classic_id,'-',code_id),now(),now(),classic_id,code_id,title,extra
+      FROM md_list_const
+      WHERE classic_id = 55;
+
+    -- -- 自定义视图
+    CREATE OR REPLACE VIEW `md_type_process_custom` AS
+      select
+        process_type.company_id,
+        process_type.project_id,
+        process_type.task_id,
+        process_type.create_time,
+        process_type.last_modify_time,
+        process_type.last_modify_user_id,
+        process_type.last_modify_role_id,
+        process_type.id as type_id,
+        substring(process_type.title,
+                  char_length(substring_index(process_type.title,':',1))+2,
+                  char_length(substring_index(process_type.title,';',1)) - char_length(substring_index(process_type.title,':',1))-1)
+          as type_code,
+        substring(process_type.title,
+                  char_length(substring_index(process_type.title,';',1))+2,
+                  char_length(substring_index(process_type.title,';',2)) - char_length(substring_index(process_type.title,';',1))-1)
+          as type_name,
+        substring(process_type.extra,
+                  char_length(substring_index(process_type.extra,';',1))+2,
+                  char_length(substring_index(process_type.extra,';',2)) - char_length(substring_index(process_type.extra,';',1))-1)
+          as process_type,
+        substring(process_type.extra,
+                  char_length(substring_index(process_type.extra,';',2))+2,
+                  char_length(substring_index(process_type.extra,';',3)) - char_length(substring_index(process_type.extra,';',2))-1)
+          as description
+      from
+        md_list_const_custom process_type
+      where
+        process_type.classic_id = 55 and process_type.code_id > 0 and process_type.deleted = 0;
   END;
 call initConst();
 
