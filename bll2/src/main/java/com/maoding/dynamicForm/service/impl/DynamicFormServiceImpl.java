@@ -2,15 +2,12 @@ package com.maoding.dynamicForm.service.impl;
 
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.util.*;
-import com.maoding.core.util.StringUtil;
-import com.maoding.dynamicForm.dao.DynamicFormDao;
-import com.maoding.dynamicForm.dao.DynamicFormFieldDao;
-import com.maoding.dynamicForm.dao.DynamicFormFieldSelectableValueDao;
-import com.maoding.dynamicForm.dao.DynamicFormFieldValueDao;
+import com.maoding.dynamicForm.dao.*;
 import com.maoding.dynamicForm.dto.*;
 import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldSelectableValueEntity;
+import com.maoding.dynamicForm.entity.DynamicFormGroupEntity;
 import com.maoding.dynamicForm.service.DynamicFormService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,13 +23,18 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
 
     @Autowired
     private DynamicFormDao dynamicFormDao;
+
     @Autowired
     private DynamicFormFieldDao dynamicFormFieldDao;
+
     @Autowired
     private DynamicFormFieldSelectableValueDao dynamicFormFieldSelectableValueDao;
+
     @Autowired
     private DynamicFormFieldValueDao dynamicFormFieldValueDao;
 
+    @Autowired
+    private DynamicFormGroupDao dynamicFormGroupDao;
 
     /**
      * 作者：FYT
@@ -248,5 +250,99 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
         }
         form.setFieldList(fieldList);
         return form;
+    }
+
+    /**
+     * 描述       添加及更改动态窗口模板信息
+     * 日期       2018/9/14
+     *
+     * @param request
+     * @author 张成亮
+     */
+    @Override
+    public FormDTO changeForm(SaveDynamicFormDTO request) {
+        DynamicFormEntity updatedEntity = null;
+        //如果entity内的id不为空,则从数据库内读取，如果为空，则新增，如果不为空，则更改
+        if (StringUtils.isNotEmpty(request.getId())){
+            updatedEntity = dynamicFormDao.selectById(request.getId());
+            if (updatedEntity != null) {
+                //修改
+                BeanUtils.copyProperties(request, updatedEntity);
+                updatedEntity.setCompanyId(request.getCurrentCompanyId());
+                updatedEntity.setUpdateBy(request.getAccountId());
+                updatedEntity.resetUpdateDate();
+                updatedEntity.setDeleted(0);
+                dynamicFormDao.updateById(updatedEntity);
+            }
+        }
+
+        //如果entity的id为空，或者数据库内没有此记录，则新增记录
+        if (updatedEntity == null) {
+            updatedEntity = BeanUtils.createFrom(request,DynamicFormEntity.class);
+            updatedEntity.initEntity();
+            updatedEntity.setCompanyId(request.getCurrentCompanyId());
+            updatedEntity.setCreateBy(request.getAccountId());
+            updatedEntity.setStatus(DigitUtils.parseInt(request.getStatus()));
+            updatedEntity.setDeleted(0);
+
+            //对数据进行检查
+            TraceUtils.check(ObjectUtils.isNotEmpty(updatedEntity.getFormType()),"!formType不能为空");
+            dynamicFormDao.insert(updatedEntity);
+        }
+
+        FormDTO form = BeanUtils.createFrom(updatedEntity,FormDTO.class);
+        form.setName(updatedEntity.getFormName());
+        return form;
+    }
+
+    /**
+     * 描述       添加及更改动态窗口控件信息
+     * 日期       2018/9/14
+     *
+     * @param request
+     * @author 张成亮
+     */
+    @Override
+    public List<DynamicFormFieldDTO> changeFormDetail(SaveDynamicFormDTO request) {
+        return null;
+    }
+
+    /**
+     * 描述       添加及更改动态窗口群组
+     * 日期       2018/9/14
+     *
+     * @param request
+     * @author 张成亮
+     */
+    @Override
+    public FormGroupDTO changeFormGroup(FormGroupEditDTO request) {
+        DynamicFormGroupEntity updatedEntity = null;
+        //如果entity内的id不为空,则从数据库内读取，如果为空，则新增，如果不为空，则更改
+        if (StringUtils.isNotEmpty(request.getId())){
+            updatedEntity = dynamicFormGroupDao.selectById(request.getId());
+            if (updatedEntity != null) {
+                //修改
+                BeanUtils.copyProperties(request, updatedEntity);
+                updatedEntity.setCompanyId(request.getCurrentCompanyId());
+                updatedEntity.setGroupName(request.getName());
+                updatedEntity.setUpdateBy(request.getAccountId());
+                updatedEntity.resetUpdateDate();
+                dynamicFormGroupDao.updateById(updatedEntity);
+            }
+        }
+
+        //如果entity的id为空，或者数据库内没有此记录，则新增记录
+        if (updatedEntity == null) {
+            updatedEntity = BeanUtils.createFrom(request,DynamicFormGroupEntity.class);
+            updatedEntity.initEntity();
+            updatedEntity.setCompanyId(request.getCurrentCompanyId());
+            updatedEntity.setGroupName(request.getName());
+            updatedEntity.setCreateBy(request.getAccountId());
+            dynamicFormGroupDao.insert(updatedEntity);
+        }
+
+        FormGroupDTO group = BeanUtils.createFrom(updatedEntity,FormGroupDTO.class);
+        group.setName(updatedEntity.getGroupName());
+        return group;
     }
 }

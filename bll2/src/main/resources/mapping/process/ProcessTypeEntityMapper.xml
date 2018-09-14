@@ -107,7 +107,7 @@
     <!-- 流程名称属性定义 -->
     <resultMap id="ProcessDefineMap" type="com.maoding.activiti.dto.ProcessDefineDTO">
         <id column="process_id" property="id"/>
-        <result column="form_code" property="key"/>
+        <result column="id" property="key"/>
         <result column="form_name" property="name"/>
         <result column="status" property="isActive"/>
         <result column="type_setting" property="type"/>
@@ -118,37 +118,40 @@
     </resultMap>
 
     <resultMap id="ProcessDefineGroupMap" type="com.maoding.activiti.dto.ProcessDefineGroupDTO">
-    <id column="group_type_id" property="id"/>
+    <id column="form_group_id" property="id"/>
     <result column="group_name" property="name"/>
     <collection property="processDefineList" ofType="com.maoding.activiti.dto.ProcessDefineDTO" resultMap="ProcessDefineMap"/>
     </resultMap>
 
   <select id="listProcessDefineWithGroup" resultMap="ProcessDefineGroupMap" parameterType="com.maoding.activiti.dto.ProcessDefineQueryDTO">
     select
-      if(process_ordered.company_id is null,1,0) as is_system,
+      if(process_ordered.id is null,null,if(process_ordered.company_id is null,1,0)) as is_system,
       process_ordered.*
     from (
       select
+        group_type.id as form_group_id,
+        group_type.type_id as form_group_type_id,
         group_type.group_name as group_name,
-        1 as type_setting,
+        if(process_type.id is null,null,1) as type_setting,
         <choose>
           <when test="currentCompanyId != null">
-            concat(#{currentCompanyId},'_',process_type.form_code,'_1') as process_id,
+            concat(#{currentCompanyId},'_',process_type.id,'_1') as process_id,
           </when>
           <otherwise>
-            concat(ifnull(concat(process_type.company_id,'_'),''),process_type.type_code,'_1') as process_id,
+            concat(ifnull(concat(process_type.company_id,'_'),''),process_type.id,'_1') as process_id,
           </otherwise>
         </choose>
         process_type.*
       from maoding_dynamic_form process_type
-        right join maoding_dynamic_form_group group_type on (group_type.id = process_type.group_type_id)
+        right join maoding_dynamic_form_group group_type on (group_type.id = process_type.form_type)
       <if test="currentCompanyId != null">
         where
           process_type.company_id is null or process_type.company_id = #{currentCompanyId}
       </if>
       order by process_type.company_id desc
     ) process_ordered
-    group by process_ordered.form_type,process_ordered.group_type_id
+    group by ifnull(process_ordered.seq,process_ordered.id),process_ordered.form_group_id
+    order by ifnull(process_ordered.form_group_type_id,9999),ifnull(process_ordered.seq,9999)
   </select>
 
   <!-- 获取流程列表 -->
@@ -158,13 +161,13 @@
       process_ordered.*
     from (
       select
-        1 as type_setting,
+        if(process_type.id is null,null,1) as type_setting,
         <choose>
           <when test="currentCompanyId != null">
-            concat(#{currentCompanyId},'_',process_type.form_code,'_1') as process_id,
+            concat(#{currentCompanyId},'_',process_type.id,'_1') as process_id,
           </when>
           <otherwise>
-            concat(ifnull(concat(process_type.company_id,'_'),''),process_type.form_code,'_1') as process_id,
+            concat(ifnull(concat(process_type.company_id,'_'),''),process_type.id,'_1') as process_id,
           </otherwise>
         </choose>
         process_type.*
@@ -174,11 +177,12 @@
           and (process_type.company_id is null or process_type.company_id = #{currentCompanyId})
         </if>
         <if test="key != null">
-          and (process_type.form_code = #{key})
+          and (process_type.id = #{key})
         </if>
       </where>
       order by process_type.company_id desc
     ) process_ordered
-    group by process_ordered.form_type
+    group by ifnull(process_ordered.seq,process_ordered.id)
+    order by ifnull(process_ordered.seq,9999)
   </select>
 </mapper>

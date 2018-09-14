@@ -4,7 +4,11 @@ import com.maoding.activiti.dto.*;
 import com.maoding.activiti.service.WorkflowService;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.core.util.BeanUtils;
 import com.maoding.core.util.StringUtils;
+import com.maoding.dynamicForm.dto.FormDTO;
+import com.maoding.dynamicForm.dto.FormGroupDTO;
+import com.maoding.dynamicForm.service.DynamicFormService;
 import com.maoding.process.dto.ProcessDefineEditDTO;
 import com.maoding.process.dto.ProcessGroupEditDTO;
 import com.maoding.process.service.ProcessService;
@@ -30,6 +34,10 @@ public class WorkFlowController extends BaseController {
 
     @Autowired
     private ProcessService processService;
+
+    @Autowired
+    private DynamicFormService dynamicFormService;
+
     /**
      * 描述       加载流程，准备进行编辑
      * 日期       2018/8/2
@@ -81,7 +89,9 @@ public class WorkFlowController extends BaseController {
     }
 
     /**
-     * 描述     添加动态审批单群组
+     * 描述     添加审批群组
+     *          由于原有审批管理的查询接口在此类内实现，因此保留一个接口，保持一致性
+     *          但根据目前的设计，审批信息使用动态表单表来存储，因此在动态表单服务内进行具体实现，并在动态表单内也提供相同功能的接口
      * 日期     2018/9/14
      * @author  张成亮
      * @return  新创建的群组
@@ -92,22 +102,26 @@ public class WorkFlowController extends BaseController {
     @ResponseBody
     public AjaxMessage addProcessGroup(@RequestBody ProcessGroupEditDTO request) throws Exception {
         updateCurrentUserInfo(request);
-        ProcessDefineGroupDTO data = processService.changeProcessDefineGroup(request);
+        FormGroupDTO formGroup = dynamicFormService.changeFormGroup(request);
+        ProcessDefineGroupDTO data = BeanUtils.createFrom(formGroup,ProcessDefineGroupDTO.class);
         return AjaxMessage.succeed(data);
     }
 
     /**
-     * 描述     添加动态审批管理流程
+     * 描述     添加审批
+     *          由于原有审批管理的查询接口在此类内实现，因此保留一个接口，保持一致性
+     *          但根据目前的设计，审批信息使用动态表单表来存储，因此在动态表单服务内进行具体实现，并在动态表单内也提供相同功能的接口
      * 日期     2018/9/14
      * @author  张成亮
      * @return  审批管理流程信息
-     * @param   request
+     * @param   request 流程更改申请
      **/
     @RequestMapping(value = "/addProcess", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage addProcess(@RequestBody ProcessDefineEditDTO request) throws Exception {
         updateCurrentUserInfo(request);
-        ProcessDefineDTO data = processService.changeProcessDefine(request);
+        FormDTO form = dynamicFormService.changeForm(request);
+        ProcessDefineDTO data = BeanUtils.createFrom(form,ProcessDefineDTO.class);
         return AjaxMessage.succeed(data);
     }
 

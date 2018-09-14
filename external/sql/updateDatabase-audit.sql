@@ -205,9 +205,10 @@ DROP PROCEDURE IF EXISTS `update_table`;
 CREATE PROCEDURE `update_table`()
 BEGIN
   CREATE TABLE IF NOT EXISTS `maoding_dynamic_form_group` (
-    `id` varchar(32) NOT NULL COMMENT '审批类型群组编号',
+    `id` varchar(32) NOT NULL COMMENT '动态表单群组编号',
     `company_id` varchar(32) DEFAULT NULL COMMENT '所属公司编号',
     `group_name` varchar(32) DEFAULT NULL COMMENT '审批类型群组名称',
+    `type_id` int(4) DEFAULT NULL COMMENT '动态表单群组类型',
 
     `deleted` int(1) DEFAULT 0 COMMENT '删除标识',
     `create_date` datetime DEFAULT NULL COMMENT '创建时间',
@@ -216,6 +217,10 @@ BEGIN
     `update_by` char(32) DEFAULT NULL COMMENT '最后更新者用户编号',
     PRIMARY KEY (`id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='动态表实例值';
+
+  if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_dynamic_form_group' and column_name='type_id') then
+    alter table maoding_dynamic_form_group add column `type_id` int(4) DEFAULT NULL COMMENT '动态表单群组类型';
+  end if;
 
   call createIndex('maoding_dynamic_form_group');
 END;
@@ -493,8 +498,8 @@ CREATE PROCEDURE `initConst`()
 
     -- -- 自定义常量
     delete from maoding_dynamic_form where company_id is null;
-    REPLACE INTO maoding_dynamic_form (id,create_date,update_date,deleted,`status`,form_name,form_type,form_code,group_type_id,documentation,var_name,var_unit,is_system)
-      SELECT concat(52,'-',type_id),now(),now(),0,1,type_name,type_id,type_code,group_type_id,documentation,var_name,var_unit,1
+    REPLACE INTO maoding_dynamic_form (id,create_date,update_date,deleted,`status`,form_name,form_type,documentation,seq)
+      SELECT type_code,now(),now(),0,1,type_name,concat('54-',group_type_id),documentation,type_id
       FROM md_type_form;
   END;
 call initConst();
@@ -641,8 +646,8 @@ CREATE PROCEDURE `initConst`()
 
     -- -- 自定义常量
     delete from maoding_dynamic_form_group where company_id is null;
-    REPLACE INTO maoding_dynamic_form_group (id,create_date,update_date,deleted,group_name)
-      SELECT type_id,now(),now(),0,type_name
+    REPLACE INTO maoding_dynamic_form_group (id,create_date,update_date,deleted,group_name,type_id)
+      SELECT concat('54-',type_id),now(),now(),0,type_name,type_id
       FROM md_type_form_group;
   END;
 call initConst();

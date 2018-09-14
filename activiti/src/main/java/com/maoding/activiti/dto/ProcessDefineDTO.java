@@ -11,7 +11,7 @@ import com.maoding.core.constant.ProcessTypeConst;
  * 描述: 
  **/
 public class ProcessDefineDTO extends CoreShowDTO {
-    /** id: 流程key */
+    /** id: 流程编号 */
 
     /** 流程说明 */
     private String documentation;

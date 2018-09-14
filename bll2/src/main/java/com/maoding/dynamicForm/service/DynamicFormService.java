@@ -1,9 +1,7 @@
 package com.maoding.dynamicForm.service;
 
 import com.maoding.core.base.service.BaseService;
-import com.maoding.dynamicForm.dto.FormDTO;
-import com.maoding.dynamicForm.dto.FormQueryDTO;
-import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
+import com.maoding.dynamicForm.dto.*;
 import com.maoding.dynamicForm.entity.DynamicFormEntity;
 
 import java.util.List;
@@ -42,4 +40,25 @@ public interface DynamicFormService extends BaseService<DynamicFormEntity> {
      * @author   张成亮
      **/
     FormDTO getFormDetail(FormDTO form);
+    
+    /**
+     * 描述       添加及更改动态窗口模板信息
+     * 日期       2018/9/14
+     * @author   张成亮
+     **/
+    FormDTO changeForm(SaveDynamicFormDTO request);
+
+    /**
+     * 描述       添加及更改动态窗口控件信息
+     * 日期       2018/9/14
+     * @author   张成亮
+     **/
+    List<DynamicFormFieldDTO> changeFormDetail(SaveDynamicFormDTO request);
+
+    /**
+     * 描述       添加及更改动态窗口群组
+     * 日期       2018/9/14
+     * @author   张成亮
+     **/
+    FormGroupDTO changeFormGroup(FormGroupEditDTO request);
 }

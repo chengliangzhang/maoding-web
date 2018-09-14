@@ -5,7 +5,9 @@ import com.maoding.activiti.dto.*;
 import com.maoding.financial.dto.AuditDTO;
 import com.maoding.financial.dto.AuditEditDTO;
 import com.maoding.financial.dto.SaveExpMainDTO;
-import com.maoding.process.dto.*;
+import com.maoding.process.dto.ActivitiDTO;
+import com.maoding.process.dto.TaskDTO;
+import com.maoding.process.dto.UserTaskNodeDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -94,18 +96,4 @@ public interface ProcessService {
      * 用于单据撤销
      */
     int suspendProcess(SaveExpMainDTO dto);
-
-    /**
-     * 描述       更改流程群组
-     * 日期       2018/9/14
-     * @author   张成亮
-     **/
-    ProcessDefineGroupDTO changeProcessDefineGroup(ProcessGroupEditDTO request);
-
-    /**
-     * 描述       更改流程信息
-     * 日期       2018/9/14
-     * @author   张成亮
-     **/
-    ProcessDefineDTO changeProcessDefine(ProcessDefineEditDTO request);
 }
