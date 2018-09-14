@@ -19,30 +19,8 @@ public class SaveDynamicFormDTO extends BaseDTO {
     /** 组织id **/
     private String companyId;
 
-    /** 流程关键字 **/
-    private String formCode;
-
-    /** 表单群组编号 **/
-    private String groupTypeId;
-
     /** 说明文字 **/
     private String documentation;
-
-    public String getFormCode() {
-        return formCode;
-    }
-
-    public void setFormCode(String formCode) {
-        this.formCode = formCode;
-    }
-
-    public String getGroupTypeId() {
-        return groupTypeId;
-    }
-
-    public void setGroupTypeId(String groupTypeId) {
-        this.groupTypeId = groupTypeId;
-    }
 
     public String getDocumentation() {
         return documentation;

@@ -4,10 +4,7 @@ import com.maoding.activiti.dto.*;
 import com.maoding.activiti.service.WorkflowService;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
-import com.maoding.core.util.BeanUtils;
 import com.maoding.core.util.StringUtils;
-import com.maoding.dynamicForm.dto.FormDTO;
-import com.maoding.dynamicForm.dto.FormGroupDTO;
 import com.maoding.dynamicForm.service.DynamicFormService;
 import com.maoding.process.dto.ProcessDefineEditDTO;
 import com.maoding.process.dto.ProcessGroupEditDTO;
@@ -102,9 +99,8 @@ public class WorkFlowController extends BaseController {
     @ResponseBody
     public AjaxMessage addProcessGroup(@RequestBody ProcessGroupEditDTO request) throws Exception {
         updateCurrentUserInfo(request);
-        FormGroupDTO formGroup = dynamicFormService.changeFormGroup(request);
-        ProcessDefineGroupDTO data = BeanUtils.createFrom(formGroup,ProcessDefineGroupDTO.class);
-        return AjaxMessage.succeed(data);
+        dynamicFormService.changeFormGroup(request);
+        return AjaxMessage.succeed(null);
     }
 
     /**
@@ -120,9 +116,8 @@ public class WorkFlowController extends BaseController {
     @ResponseBody
     public AjaxMessage addProcess(@RequestBody ProcessDefineEditDTO request) throws Exception {
         updateCurrentUserInfo(request);
-        FormDTO form = dynamicFormService.changeForm(request);
-        ProcessDefineDTO data = BeanUtils.createFrom(form,ProcessDefineDTO.class);
-        return AjaxMessage.succeed(data);
+        dynamicFormService.changeForm(request);
+        return AjaxMessage.succeed(null);
     }
 
 

@@ -47,14 +47,8 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
     public int insertDynamicForm (SaveDynamicFormDTO dto) throws Exception{
 
         //保存主表(外层审核表)
-        DynamicFormEntity dynamicFormEntity = new DynamicFormEntity();
-        dynamicFormEntity.initEntity();
-        dynamicFormEntity.setCompanyId(dto.getCompanyId());
-        dynamicFormEntity.setFormName(dto.getFormName());
-        dynamicFormEntity.setFormType(dto.getFormType());
-        dynamicFormEntity.setStatus(dto.getStatus());
-        dynamicFormEntity.setDeleted(0);
-        int c = dynamicFormDao.insert(dynamicFormEntity);
+        FormDTO form = changeForm(dto);
+        DynamicFormEntity dynamicFormEntity = BeanUtils.createFrom(form,DynamicFormEntity.class);
         //保存主表的子表（控件表）
         for (DynamicFormFieldDTO formFieldDTO:  dto.getFieldList()){
             formFieldDTO.setFormId(dynamicFormEntity.getId());
@@ -66,7 +60,7 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
                 saveDynamicFormField(formFieldDTO2);
             }
         }
-        return c;
+        return 1;
     }
 
     //保存审核表单模板:复制对象抽取的方法
@@ -104,19 +98,9 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
      */
     public int saveAndUpdateDynamicFormField(SaveDynamicFormDTO dto){
 
-         DynamicFormEntity dynamicFormEntity = new DynamicFormEntity();
          //保存主表(外层审核表)
-         if(StringUtil.isNullOrEmpty(dto.getId())){
-             dynamicFormEntity.initEntity();
-             dynamicFormEntity.setCompanyId(dto.getCompanyId());
-             dynamicFormEntity.setDeleted(0);
-         }else{
-             dynamicFormEntity.setId(dto.getId());
-         }
-         dynamicFormEntity.setFormName(dto.getFormName());
-         dynamicFormEntity.setFormType(dto.getFormType());
-         dynamicFormEntity.setStatus(dto.getStatus());
-         int c = dynamicFormDao.insert(dynamicFormEntity);
+         FormDTO form = changeForm(dto);
+         DynamicFormEntity dynamicFormEntity = BeanUtils.createFrom(form,DynamicFormEntity.class);
          //保存主表的子表（控件表）
          for (DynamicFormFieldDTO formFieldDTO:  dto.getFieldList()){
              formFieldDTO.setFormId(dynamicFormEntity.getId());
@@ -128,7 +112,7 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
                      saveAndUpdateDynamicFormField(formFieldDTO2,dto.getId(),dynamicFormEntity.getId());
              }
          }
-         return c;
+         return 1;
      }
 
     private String saveAndUpdateDynamicFormField(DynamicFormFieldDTO formFieldDTO,String dtoId,String entityId){
@@ -179,11 +163,11 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
      */
     @Override
     public int startOrStopDynamicForm(SaveDynamicFormDTO dto) throws Exception {
+        TraceUtils.check(StringUtils.isNotEmpty(dto.getId()),"!id不能为空");
+        TraceUtils.check(ObjectUtils.isNotEmpty(dto.getStatus()),"!status不能为空");
         //设置动态表单状态为1启用 0停用
-        DynamicFormEntity dynamicFormEntity = new DynamicFormEntity();
-        dynamicFormEntity.setId(dto.getId());
-        dynamicFormEntity.setStatus(dto.getStatus());
-        return dynamicFormDao.updateById(dynamicFormEntity);
+        changeForm(dto);
+        return 1;
     }
 
     /**
@@ -195,10 +179,9 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
      */
     @Override
     public int deleteDynamicForm(SaveDynamicFormDTO dto) throws Exception {
-        DynamicFormEntity dynamicFormEntity = new DynamicFormEntity();
-        dynamicFormEntity.setId(dto.getId());
-        dynamicFormEntity.setDeleted(1);
-        return dynamicFormDao.updateById(dynamicFormEntity);
+        TraceUtils.check(StringUtils.isNotEmpty(dto.getId()),"!id不能为空");
+        DynamicFormEntity dynamicFormEntity = BeanUtils.createFrom(dto,DynamicFormEntity.class);
+        return dynamicFormDao.deleteById(dynamicFormEntity);
     }
 
     /**

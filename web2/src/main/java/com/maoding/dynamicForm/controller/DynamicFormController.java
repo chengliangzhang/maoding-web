@@ -10,10 +10,7 @@ import com.maoding.dynamicForm.service.DynamicFormFieldValueService;
 import com.maoding.dynamicForm.service.DynamicFormService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 作者：FYT
@@ -28,6 +25,13 @@ public class DynamicFormController extends BaseController {
     @Autowired
     DynamicFormFieldValueService dynamicFormFieldValueService;
 
+
+    @ModelAttribute
+    public void before() {
+        this.currentUserId = this.getFromSession("userId", String.class);
+        this.currentCompanyId = this.getFromSession("companyId", String.class);
+        this.currentCompanyUserId = this.getFromSession("companyUserId", String.class);
+    }
 
     /**
      * 作者：FYT
@@ -53,6 +57,7 @@ public class DynamicFormController extends BaseController {
     @RequestMapping("/saveAuditDetail")
     @ResponseBody
     public AjaxMessage saveAuditDetail(@RequestBody SaveDynamicAuditDTO dto) throws Exception{
+        updateCurrentUserInfo(dto);
         return AjaxMessage.succeed(dynamicFormFieldValueService.saveAuditDetail(dto));
     }
 
@@ -66,6 +71,7 @@ public class DynamicFormController extends BaseController {
     @RequestMapping("/startOrStopDynamicForm")
     @ResponseBody
     public AjaxMessage startOrStopDynamicForm(@RequestBody SaveDynamicFormDTO dto) throws Exception{
+        updateCurrentUserInfo(dto);
         return AjaxMessage.succeed(dynamicFormService.startOrStopDynamicForm(dto));
     }
 
@@ -78,7 +84,8 @@ public class DynamicFormController extends BaseController {
      */
     @RequestMapping("/deleteDynamicForm")
     @ResponseBody
-    public AjaxMessage deleteDynamicForm (SaveDynamicFormDTO dto) throws  Exception{
+    public AjaxMessage deleteDynamicForm (@RequestBody SaveDynamicFormDTO dto) throws  Exception{
+        updateCurrentUserInfo(dto);
         return AjaxMessage.succeed(dynamicFormService.deleteDynamicForm(dto));
     }
 
