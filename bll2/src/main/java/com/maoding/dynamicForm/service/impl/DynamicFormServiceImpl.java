@@ -97,11 +97,26 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
      * @throws Exception
      */
     @Override
-    public int startOrStopAudit(SaveDynamicFormDTO dto) throws Exception {
+    public int startOrStopDynamicForm(SaveDynamicFormDTO dto) throws Exception {
         //设置动态表单状态为1启用 0停用
         DynamicFormEntity dynamicFormEntity = new DynamicFormEntity();
         dynamicFormEntity.setId(dto.getId());
         dynamicFormEntity.setStatus(dto.getStatus());
+        return dynamicFormDao.updateById(dynamicFormEntity);
+    }
+
+    /**
+     * 作者：FYT
+     * 日期：2018/9/14
+     * 描述：审批表 删除
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public int deleteDynamicForm(SaveDynamicFormDTO dto) throws Exception {
+        DynamicFormEntity dynamicFormEntity = new DynamicFormEntity();
+        dynamicFormEntity.setId(dto.getId());
+        dynamicFormEntity.setDeleted(1);
         return dynamicFormDao.updateById(dynamicFormEntity);
     }
 

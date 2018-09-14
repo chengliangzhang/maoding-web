@@ -17,7 +17,10 @@ public interface DynamicFormService extends BaseService<DynamicFormEntity> {
     int insertDynamicForm (SaveDynamicFormDTO dto) throws Exception;
 
     //审批表 启用/停用
-    int startOrStopAudit (SaveDynamicFormDTO dto) throws  Exception;
+    int startOrStopDynamicForm (SaveDynamicFormDTO dto) throws  Exception;
+
+    //审批表 删除
+    int deleteDynamicForm (SaveDynamicFormDTO dto) throws  Exception;
 
     /**
      * 描述       查找动态窗口模板

@@ -7,15 +7,16 @@ import java.util.List;
 
 public class SaveDynamicFormDTO extends BaseDTO {
 
-    /*名称*/
+    //名称
     private String formName;
 
-    /*表单类型*/
+    //表单类型
     private String formType;
 
-    /*1：被启用，0：未被启用*/
+    //1：被启用，0：未被启用
     private Integer status;
 
+    //组织id
     private String CompanyId;
 
     List<DynamicFormFieldDTO> fieldList = new ArrayList<>();
@@ -59,4 +60,5 @@ public class SaveDynamicFormDTO extends BaseDTO {
     public void setFieldList(List<DynamicFormFieldDTO> fieldList) {
         this.fieldList = fieldList;
     }
+
 }

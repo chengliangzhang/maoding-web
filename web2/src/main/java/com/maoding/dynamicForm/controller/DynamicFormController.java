@@ -63,10 +63,23 @@ public class DynamicFormController extends BaseController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/startOrStopAudit")
+    @RequestMapping("/startOrStopDynamicForm")
     @ResponseBody
-    public AjaxMessage startOrStopAudit(@RequestBody SaveDynamicFormDTO dto) throws Exception{
-        return AjaxMessage.succeed(dynamicFormService.startOrStopAudit(dto));
+    public AjaxMessage startOrStopDynamicForm(@RequestBody SaveDynamicFormDTO dto) throws Exception{
+        return AjaxMessage.succeed(dynamicFormService.startOrStopDynamicForm(dto));
+    }
+
+    /**
+     * 作者：FYT
+     * 日期：2018/9/14
+     * 描述：审批表 删除
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/deleteDynamicForm")
+    @ResponseBody
+    public AjaxMessage deleteDynamicForm (SaveDynamicFormDTO dto) throws  Exception{
+        return AjaxMessage.succeed(dynamicFormService.deleteDynamicForm(dto));
     }
 
 
