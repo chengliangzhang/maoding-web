@@ -103,6 +103,6 @@
         </if>
       order by form_list.company_id desc
     ) form_ordered
-    group by form_ordered.type_id
+    group by form_ordered.form_type
   </select>
 </mapper>
