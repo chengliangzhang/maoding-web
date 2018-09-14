@@ -5,14 +5,11 @@ import com.maoding.activiti.service.WorkflowService;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.util.StringUtils;
+import com.maoding.process.dto.ProcessGroupEditDTO;
 import com.maoding.process.service.ProcessService;
-import com.maoding.user.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -81,6 +78,23 @@ public class WorkFlowController extends BaseController {
             return AjaxMessage.succeed("查询成功").setData(result);
         }
     }
+
+    /**
+     * 描述     添加动态审批单群组
+     * 日期     2018/9/14
+     * @author  张成亮
+     * @return  新创建的群组
+     * @param   request 添加群组请求
+     *                  name 群组名称
+     **/
+    @RequestMapping(value = "/addProcessGroup", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage addProcessGroup(@RequestBody ProcessGroupEditDTO request) throws Exception {
+        updateCurrentUserInfo(request);
+        ProcessDefineGroupDTO data = processService.changeProcessDefineGroup(request);
+        return AjaxMessage.succeed(data);
+    }
+
 
     /**
      * 描述       创建或修改一个流程，并保存到数据库

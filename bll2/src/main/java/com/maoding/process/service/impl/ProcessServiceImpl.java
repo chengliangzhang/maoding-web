@@ -7,6 +7,8 @@ import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.constant.ProcessTypeConst;
 import com.maoding.core.constant.ProjectCostConst;
 import com.maoding.core.util.*;
+import com.maoding.dynamicForm.dao.DynamicFormGroupDao;
+import com.maoding.dynamicForm.entity.DynamicFormGroupEntity;
 import com.maoding.financial.dto.AuditBaseDTO;
 import com.maoding.financial.dto.AuditDTO;
 import com.maoding.financial.dto.AuditEditDTO;
@@ -20,6 +22,7 @@ import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.process.dao.ProcessInstanceRelationDao;
 import com.maoding.process.dao.ProcessTypeDao;
 import com.maoding.process.dto.ActivitiDTO;
+import com.maoding.process.dto.ProcessGroupEditDTO;
 import com.maoding.process.dto.TaskDTO;
 import com.maoding.process.dto.UserTaskNodeDTO;
 import com.maoding.process.entity.ProcessInstanceRelationEntity;
@@ -67,6 +70,9 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
     @Autowired
     private ProjectCostService projectCostService;
+
+    @Autowired
+    private DynamicFormGroupDao dynamicFormGroupDao;
 
     private static final String auditIdKey = "auditId";
 
@@ -732,4 +738,55 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         return StringUtils.getStringOrDefault(value,defaultValue);
     }
 
+    /**
+     * 描述       创建流程群组
+     * 日期       2018/9/14
+     *
+     * @param request
+     * @author 张成亮
+     */
+    @Override
+    public ProcessDefineGroupDTO createProcessDefineGroup(ProcessGroupEditDTO request) {
+        request.setId(null);
+        return changeProcessDefineGroup(request);
+    }
+
+    /**
+     * 描述       更改流程群组
+     * 日期       2018/9/14
+     *
+     * @param request
+     * @author 张成亮
+     */
+    @Override
+    public ProcessDefineGroupDTO changeProcessDefineGroup(ProcessGroupEditDTO request) {
+        DynamicFormGroupEntity updatedEntity = null;
+        //如果entity内的id不为空,则从数据库内读取，如果为空，则新增，如果不为空，则更改
+        if (StringUtils.isNotEmpty(request.getId())){
+            updatedEntity = dynamicFormGroupDao.selectById(request.getId());
+            if (updatedEntity != null) {
+                //修改
+                BeanUtils.copyProperties(request, updatedEntity);
+                updatedEntity.setCompanyId(request.getCurrentCompanyId());
+                updatedEntity.setGroupName(request.getName());
+                updatedEntity.setUpdateBy(request.getAccountId());
+                updatedEntity.resetUpdateDate();
+                dynamicFormGroupDao.updateById(updatedEntity);
+            }
+        }
+
+        //如果entity的id为空，或者数据库内没有此记录，则新增记录
+        if (updatedEntity == null) {
+            updatedEntity = BeanUtils.createFrom(request,DynamicFormGroupEntity.class);
+            updatedEntity.initEntity();
+            updatedEntity.setCompanyId(request.getCurrentCompanyId());
+            updatedEntity.setGroupName(request.getName());
+            updatedEntity.setCreateBy(request.getAccountId());
+            dynamicFormGroupDao.insert(updatedEntity);
+        }
+
+        ProcessDefineGroupDTO result = BeanUtils.createFrom(updatedEntity,ProcessDefineGroupDTO.class);
+        result.setName(updatedEntity.getGroupName());
+        return result;
+    }
 }
