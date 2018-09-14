@@ -95,6 +95,7 @@
     select form_ordered.*
     from (
       select
+        form_list.form_name as name,
         form_list.*
       from maoding_dynamic_form form_list
       where deleted = 0
