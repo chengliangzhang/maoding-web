@@ -34,6 +34,17 @@ public class ProcessDefineDTO extends CoreShowDTO {
     /** 是否设置了抄送人 **/
     private Integer isCCSet;
 
+    /** 是否系统表单 **/
+    private Integer isSystem;
+
+    public Integer getIsSystem() {
+        return isSystem;
+    }
+
+    public void setIsSystem(Integer isSystem) {
+        this.isSystem = isSystem;
+    }
+
     public Integer getIsCCSet() {
         return isCCSet;
     }

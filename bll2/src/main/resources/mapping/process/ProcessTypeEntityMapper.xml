@@ -104,21 +104,29 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
-  <resultMap id="ProcessDefineGroupMap" type="com.maoding.activiti.dto.ProcessDefineGroupDTO">
+    <!-- 流程名称属性定义 -->
+    <resultMap id="ProcessDefineMap" type="com.maoding.activiti.dto.ProcessDefineDTO">
+        <id column="process_id" property="id"/>
+        <result column="form_code" property="key"/>
+        <result column="form_name" property="name"/>
+        <result column="status" property="isActive"/>
+        <result column="type_setting" property="type"/>
+        <result column="documentation" property="documentation"/>
+        <result column="var_name" property="varName"/>
+        <result column="var_unit" property="varUnit"/>
+        <result column="is_system" property="isSystem"/>
+    </resultMap>
+
+    <resultMap id="ProcessDefineGroupMap" type="com.maoding.activiti.dto.ProcessDefineGroupDTO">
     <id column="group_type_id" property="id"/>
     <result column="group_name" property="name"/>
-    <collection property="processDefineList" ofType="com.maoding.activiti.dto.ProcessDefineDTO">
-      <id column="process_id" property="id"/>
-      <result column="form_code" property="key"/>
-      <result column="form_name" property="name"/>
-      <result column="status" property="isActive"/>
-      <result column="type_setting" property="type"/>
-      <result column="documentation" property="documentation"/>
-    </collection>
-  </resultMap>
+    <collection property="processDefineList" ofType="com.maoding.activiti.dto.ProcessDefineDTO" resultMap="ProcessDefineMap"/>
+    </resultMap>
 
   <select id="listProcessDefineWithGroup" resultMap="ProcessDefineGroupMap" parameterType="com.maoding.activiti.dto.ProcessDefineQueryDTO">
-    select process_ordered.*
+    select
+      if(process_ordered.company_id is null,1,0) as is_system,
+      process_ordered.*
     from (
       select
         group_type.group_name as group_name,
@@ -131,7 +139,6 @@
             concat(ifnull(concat(process_type.company_id,'_'),''),process_type.type_code,'_1') as process_id,
           </otherwise>
         </choose>
-        process_type.status,
         process_type.*
       from maoding_dynamic_form process_type
         inner join maoding_dynamic_form_group group_type on (group_type.id = process_type.group_type_id)
@@ -144,20 +151,11 @@
     group by process_ordered.form_type,process_ordered.group_type_id
   </select>
 
-  <!-- 流程名称属性定义 -->
-  <resultMap id="ProcessDefineMap" type="com.maoding.activiti.dto.ProcessDefineDTO">
-      <id column="process_id" property="id"/>
-      <result column="form_code" property="key"/>
-      <result column="form_name" property="name"/>
-      <result column="type_setting" property="type"/>
-      <result column="documentation" property="documentation"/>
-      <result column="var_name" property="varName"/>
-      <result column="var_unit" property="varUnit"/>
-  </resultMap>
-
   <!-- 获取流程列表 -->
   <select id="listProcessDefine" resultMap="ProcessDefineMap" parameterType="com.maoding.activiti.dto.ProcessDefineQueryDTO">
-    select process_ordered.*
+    select
+      if(process_ordered.company_id is null,1,0) as is_system,
+      process_ordered.*
     from (
       select
         1 as type_setting,
