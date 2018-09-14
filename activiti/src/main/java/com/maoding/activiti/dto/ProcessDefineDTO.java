@@ -28,6 +28,28 @@ public class ProcessDefineDTO extends CoreShowDTO {
     /** 分条件流程变量单位 **/
     private String varUnit;
 
+    /** 是否启用 **/
+    private Integer isActive;
+
+    /** 是否设置了抄送人 **/
+    private Integer isCCSet;
+
+    public Integer getIsCCSet() {
+        return isCCSet;
+    }
+
+    public void setIsCCSet(Integer isCCSet) {
+        this.isCCSet = isCCSet;
+    }
+
+    public Integer getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Integer isActive) {
+        this.isActive = isActive;
+    }
+
     public String getVarName() {
         return varName;
     }
