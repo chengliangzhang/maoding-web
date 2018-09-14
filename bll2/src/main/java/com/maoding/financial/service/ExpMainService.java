@@ -67,13 +67,13 @@ public interface ExpMainService extends BaseService<ExpMainEntity>{
      int recallExpMain(String id,String versionNum, String type) throws Exception;
 
 
-    /**
-     * 方法描述：退回报销
-     * 作   者：LY
-     * 日   期：2016/7/29 11:01
-     * @param  dto -- mainId--报销单id  approveStatus--状态(2.退回) auditMessage审批意见
-     */
-     int recallExpMain(ExpAuditDTO dto) throws Exception;
+//    /**
+//     * 方法描述：退回报销
+//     * 作   者：LY
+//     * 日   期：2016/7/29 11:01
+//     * @param  dto -- mainId--报销单id  approveStatus--状态(2.退回) auditMessage审批意见
+//     */
+//     int recallExpMain(ExpAuditDTO dto) throws Exception;
 
     /**
      * 方法描述：报销详情
@@ -92,22 +92,22 @@ public interface ExpMainService extends BaseService<ExpMainEntity>{
      */
      int deleteExpMain(String id,String versionNum) throws Exception;
 
-    /**
-     * 方法描述：同意报销
-     * 作   者：LY
-     * 日   期：2016/8/1 15:08
-     * @param  id--报销单id
-     */
-     int agreeExpMain(String id,String versionNum,String currentCompanyId, String currentUserId) throws Exception;
+//    /**
+//     * 方法描述：同意报销
+//     * 作   者：LY
+//     * 日   期：2016/8/1 15:08
+//     * @param  id--报销单id
+//     */
+//     int agreeExpMain(String id,String versionNum,String currentCompanyId, String currentUserId) throws Exception;
 
 
-    /**
-     * 方法描述：同意报销并转移审批人
-     * 作   者：LY
-     * 日   期：2016/8/1 15:08
-     * @param  id--报销单id auditPerson--新审批人  userId用户Id
-     */
-     int agreeAndTransAuditPerExpMain(String id, String userId,String auditPerson,String versionNum,String currentCompanyId) throws Exception;
+//    /**
+//     * 方法描述：同意报销并转移审批人
+//     * 作   者：LY
+//     * 日   期：2016/8/1 15:08
+//     * @param  id--报销单id auditPerson--新审批人  userId用户Id
+//     */
+//     int agreeAndTransAuditPerExpMain(String id, String userId,String auditPerson,String versionNum,String currentCompanyId) throws Exception;
 
     /**
      * 财务拨款
@@ -223,7 +223,7 @@ public interface ExpMainService extends BaseService<ExpMainEntity>{
     /**
      * 发送消息
      */
-    void sendMessageForAudit(String mainId, String companyId, String companyUserId,Integer type,String accountId,String auditId,String approveStatus) throws Exception;
+    void sendMessageForAudit(String mainId, String companyId, String companyUserId,String type,String accountId,String auditId,String approveStatus) throws Exception;
 
     /**
      * 待审批的,我提交的(type=1:我提交的，type=2：待审核的,type=3:我已经审核的)

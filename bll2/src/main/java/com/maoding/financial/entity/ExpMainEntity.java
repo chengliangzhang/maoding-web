@@ -61,9 +61,9 @@ public class ExpMainEntity extends BaseEntity {
 
 
     /**
-     * 报销类别：1=报销申请，2=费用申请
+     * 审批单类型
      */
-    private Integer type;
+    private String type;
 
     /**
      * 拨款日期
@@ -158,11 +158,11 @@ public class ExpMainEntity extends BaseEntity {
         this.remark = remark == null ? null : remark.trim();
     }
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 

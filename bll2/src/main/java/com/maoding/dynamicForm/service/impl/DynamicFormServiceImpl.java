@@ -2,6 +2,7 @@ package com.maoding.dynamicForm.service.impl;
 
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.util.*;
+import com.maoding.core.util.StringUtil;
 import com.maoding.dynamicForm.dao.DynamicFormDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldSelectableValueDao;
@@ -41,7 +42,8 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
      * @throws Exception
      */
     @Override
-    public int insertDynamicForm(SaveDynamicFormDTO dto) throws Exception {
+    public int insertDynamicForm (SaveDynamicFormDTO dto) throws Exception{
+
         //保存主表(外层审核表)
         DynamicFormEntity dynamicFormEntity = new DynamicFormEntity();
         dynamicFormEntity.initEntity();
@@ -88,6 +90,83 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
 
         return dynamicFormFieldEntity.getId();
     }
+
+
+
+    /**
+     * 作者：FYT
+     * 日期：2018/9/14
+     * 描述：保存/修改审核表单模板(暂时未启用接口)
+     * @return
+     * @throws Exception
+     */
+    public int saveAndUpdateDynamicFormField(SaveDynamicFormDTO dto){
+
+         DynamicFormEntity dynamicFormEntity = new DynamicFormEntity();
+         //保存主表(外层审核表)
+         if(StringUtil.isNullOrEmpty(dto.getId())){
+             dynamicFormEntity.initEntity();
+             dynamicFormEntity.setCompanyId(dto.getCompanyId());
+             dynamicFormEntity.setDeleted(0);
+         }else{
+             dynamicFormEntity.setId(dto.getId());
+         }
+         dynamicFormEntity.setFormName(dto.getFormName());
+         dynamicFormEntity.setFormType(dto.getFormType());
+         dynamicFormEntity.setStatus(dto.getStatus());
+         int c = dynamicFormDao.insert(dynamicFormEntity);
+         //保存主表的子表（控件表）
+         for (DynamicFormFieldDTO formFieldDTO:  dto.getFieldList()){
+             formFieldDTO.setFormId(dynamicFormEntity.getId());
+             formFieldDTO.setId(saveAndUpdateDynamicFormField(formFieldDTO,dto.getId(),dynamicFormEntity.getId()));
+             //保存明细表
+             for(DynamicFormFieldDTO formFieldDTO2: formFieldDTO.getDetailFieldList()) {
+                 formFieldDTO2.setFormId(dynamicFormEntity.getId());
+                 formFieldDTO2.setFieldPid(formFieldDTO.getId());
+                     saveAndUpdateDynamicFormField(formFieldDTO2,dto.getId(),dynamicFormEntity.getId());
+             }
+         }
+         return c;
+     }
+
+    private String saveAndUpdateDynamicFormField(DynamicFormFieldDTO formFieldDTO,String dtoId,String entityId){
+        //将DTO对象复制到entity
+        DynamicFormFieldEntity dynamicFormFieldEntity = BeanUtils.createFrom(formFieldDTO,DynamicFormFieldEntity.class);
+        //如果之前有设置，则逻辑删除后再重新添加
+        if (dtoId.equals(entityId)) {
+            dynamicFormFieldEntity.setDeleted(1);
+            dynamicFormFieldDao.updateById(dynamicFormFieldEntity);
+        }
+
+        //补充entity缺失值
+        dynamicFormFieldEntity.initEntity();
+        dynamicFormFieldEntity.setDeleted(0);
+        //添加到数据库
+        dynamicFormFieldDao.insert(dynamicFormFieldEntity);
+
+        //控件相同属性多个值，即遍历添加
+        List<DynamicFormFieldSelectedValueDTO> dynamicFormFieldSelectedValueList = formFieldDTO.getFieldSelectedValueList();
+        //如果之前有设置，则逻辑删除后再重新添加
+        if (dtoId.equals(entityId)){
+            for (DynamicFormFieldSelectedValueDTO valueDTO: dynamicFormFieldSelectedValueList){
+                DynamicFormFieldSelectableValueEntity dynamicFormFieldSelectableValueEntity = BeanUtils.createFrom(valueDTO,DynamicFormFieldSelectableValueEntity.class);
+                dynamicFormFieldSelectableValueEntity.setDeleted(1);
+                dynamicFormFieldSelectableValueDao.updateById(dynamicFormFieldSelectableValueEntity);
+            }
+        }
+        int seq = 1;
+        for (DynamicFormFieldSelectedValueDTO valueDTO: dynamicFormFieldSelectedValueList){
+            DynamicFormFieldSelectableValueEntity dynamicFormFieldSelectableValueEntity = BeanUtils.createFrom(valueDTO,DynamicFormFieldSelectableValueEntity.class);
+            dynamicFormFieldSelectableValueEntity.initEntity();
+            dynamicFormFieldSelectableValueEntity.setFieldId(dynamicFormFieldEntity.getId());
+            dynamicFormFieldSelectableValueEntity.setDeleted(0);
+            dynamicFormFieldSelectableValueEntity.setSeq(seq++);
+            dynamicFormFieldSelectableValueDao.insert(dynamicFormFieldSelectableValueEntity);
+        }
+        return dynamicFormFieldEntity.getId();
+    }
+
+
 
     /**
      * 作者：FYT

@@ -527,22 +527,22 @@ public class FinancialController extends BaseController {
     }
 
 
-    /**
-     * 方法描述：同意报销并转移审批人
-     * 作   者：LY
-     * 日   期：2016/8/1 15:08
-     *
-     * @param id--报销单id auditPerson--新审批人
-     */
-    @RequestMapping(value = "/agreeAndTransAuditPerExpMain/{id}/{auditPerson}/{versionNum}", method = RequestMethod.POST)
-    @ResponseBody
-    public AjaxMessage agreeAndTransAuditPerExpMain(@PathVariable("id") String id, @PathVariable("auditPerson") String auditPerson, @PathVariable("versionNum") String versionNum) throws Exception {
-        int result = expMainService.agreeAndTransAuditPerExpMain(id, this.currentUserId, auditPerson, versionNum, this.currentCompanyId);
-        if (result == 0) {
-            return this.ajaxResponseSuccess().setCode("1").setInfo("该记录失效,审批失败");
-        }
-        return this.ajaxResponseSuccess().setInfo("审批成功");
-    }
+//    /**
+//     * 方法描述：同意报销并转移审批人
+//     * 作   者：LY
+//     * 日   期：2016/8/1 15:08
+//     *
+//     * @param id--报销单id auditPerson--新审批人
+//     */
+//    @RequestMapping(value = "/agreeAndTransAuditPerExpMain/{id}/{auditPerson}/{versionNum}", method = RequestMethod.POST)
+//    @ResponseBody
+//    public AjaxMessage agreeAndTransAuditPerExpMain(@PathVariable("id") String id, @PathVariable("auditPerson") String auditPerson, @PathVariable("versionNum") String versionNum) throws Exception {
+//        int result = expMainService.agreeAndTransAuditPerExpMain(id, this.currentUserId, auditPerson, versionNum, this.currentCompanyId);
+//        if (result == 0) {
+//            return this.ajaxResponseSuccess().setCode("1").setInfo("该记录失效,审批失败");
+//        }
+//        return this.ajaxResponseSuccess().setInfo("审批成功");
+//    }
 
     /**
      * 方法描述：同意报销

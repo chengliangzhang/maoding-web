@@ -208,11 +208,12 @@ public class ExpAuditServiceImpl extends GenericService<ExpAuditEntity> implemen
     /**
      *
      * @param targetId 主记录id（expMainId）
-     * @param type 类型（1：报销，2：费用，3：请假，4：出差）
+     * @param expType 类型（1：报销，2：费用，3：请假，4：出差）
      * @param currentCompanyId （当前用户所在组织的id）
      * @param accountId （当前用户id）
      */
-    private void sendMessageForCopy(String targetId,int type,String currentCompanyId,String accountId) throws Exception{
+    private void sendMessageForCopy(String targetId,String expType,String currentCompanyId,String accountId) throws Exception{
+        Integer type = Integer.parseInt(expType);
         if(type>2){
             //推送
             //推送抄送消息

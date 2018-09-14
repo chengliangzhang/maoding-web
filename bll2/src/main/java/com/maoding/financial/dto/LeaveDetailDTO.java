@@ -23,7 +23,7 @@ public class LeaveDetailDTO extends BaseDTO implements Serializable {
     private Date applyDate;//申请时间
     private String applyName;//申请人
     private String typeName;//请假类型名称
-    private Integer type;//请假类型
+    private String type;//请假类型
     private String comment;//请假事由
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
     private Date startTime;//开始时间
@@ -54,25 +54,26 @@ public class LeaveDetailDTO extends BaseDTO implements Serializable {
     }
 
     public String getTypeName() {
-        if (1 == getType()) {
+        Integer type = Integer.parseInt(getType());
+        if (1 == type) {
             typeName = "年假";
-        } else if (2 == getType()) {
+        } else if (2 == type) {
             typeName = "事假";
-        } else if (3 == getType()) {
+        } else if (3 == type) {
             typeName = "病假";
-        } else if (4 == getType()) {
+        } else if (4 == type) {
             typeName = "调休假";
-        } else if (5 == getType()) {
+        } else if (5 == type) {
             typeName = "婚假";
-        } else if (6 == getType()) {
+        } else if (6 == type) {
             typeName = "产假";
-        } else if (7 == getType()) {
+        } else if (7 == type) {
             typeName = "陪产假";
-        } else if (8 == getType()) {
+        } else if (8 == type) {
             typeName = "丧假";
-        } else if (9 == getType()) {
+        } else if (9 == type) {
             typeName = "其他";
-        } else if (10 == getType()) {
+        } else if (10 == type) {
             typeName = "出差";
         } else {
             typeName = "其他";
@@ -84,11 +85,11 @@ public class LeaveDetailDTO extends BaseDTO implements Serializable {
         this.typeName = typeName;
     }
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 

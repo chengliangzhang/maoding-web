@@ -69,7 +69,7 @@ public class SaveLeaveDTO extends BaseDTO {
     /**
      * 报销类别：1=报销申请，2=费用申请,3=请假，4=出差
      */
-    private Integer type;
+    private String type;
 
     /**
      * 请假类型
@@ -198,11 +198,11 @@ public class SaveLeaveDTO extends BaseDTO {
         this.expFlag = expFlag;
     }
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 

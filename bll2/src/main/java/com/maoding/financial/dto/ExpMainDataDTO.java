@@ -60,7 +60,7 @@ public class ExpMainDataDTO extends CompanyUserDataDTO {
     /**
      * 记录 类型
      */
-    private Integer type;
+    private String type;
 
     /**
      * 拨款日期
@@ -141,11 +141,11 @@ public class ExpMainDataDTO extends CompanyUserDataDTO {
         this.accountId = accountId;
     }
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 

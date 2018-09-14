@@ -68,6 +68,7 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         }
 
         //todo 3.添加明细的List对应value
+        long time = 1000;
         Map<String,List<DynamicFormFieldValueDTO>> detailList = dto.getDetailList();
         if(StringUtil.isNullOrEmpty(detailList)){
             DynamicFormFieldValueEntity detailFieldValue = new DynamicFormFieldValueEntity();
@@ -77,6 +78,9 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
                 String key = iterator.next();
                 //todo 3.1 先设置好主记录数据
                 detailFieldValue.initEntity();
+                //此处重新设置创建时间，为了明细数据，按时间有序排列
+                detailFieldValue.setCreateDate(DateUtils.getDate(DateUtils.getDate().getTime()+time));
+                time = time+100;
                 detailFieldValue.setFieldId(key);
                 detailFieldValue.setMainId(mainId);
                 double filedValue = 0;

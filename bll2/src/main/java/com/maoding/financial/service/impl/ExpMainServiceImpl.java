@@ -23,13 +23,12 @@ import com.maoding.exception.CustomException;
 import com.maoding.financial.dao.ExpAuditDao;
 import com.maoding.financial.dao.ExpDetailDao;
 import com.maoding.financial.dao.ExpMainDao;
+import com.maoding.financial.dao.LeaveDetailDao;
 import com.maoding.financial.dto.*;
 import com.maoding.financial.entity.ExpAuditEntity;
 import com.maoding.financial.entity.ExpDetailEntity;
 import com.maoding.financial.entity.ExpMainEntity;
 import com.maoding.financial.service.ExpMainService;
-import com.maoding.financial.dao.LeaveDetailDao;
-import com.maoding.invoice.dto.InvoiceDTO;
 import com.maoding.message.dto.SendMessageDTO;
 import com.maoding.message.entity.MessageEntity;
 import com.maoding.message.service.MessageService;
@@ -37,7 +36,6 @@ import com.maoding.mytask.service.MyTaskService;
 import com.maoding.org.dao.CompanyDao;
 import com.maoding.org.dao.CompanyUserDao;
 import com.maoding.org.dto.CompanyRelationDTO;
-import com.maoding.org.dto.CompanyUserDetailDTO;
 import com.maoding.org.dto.CompanyUserTableDTO;
 import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.org.service.CompanyUserService;
@@ -296,7 +294,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         ExpMainEntity entity = new ExpMainEntity();
         BaseDTO.copyFields(dto, entity);
         entity.setApproveStatus("0");
-        entity.setType(5);//项目付款申请类型
+        entity.setType(ExpenseConst.TYPE_PROJECT_PAY_APPLY);//项目付款申请类型
         if (StringUtil.isNullOrEmpty(dto.getId())) {//插入
             this.saveExpMain(entity,dto,userId,companyId);
         }  else {//保存
@@ -364,7 +362,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         }
         dto.setExpNo(expNo);
         if(StringUtil.isNullOrEmpty(dto.getType())){
-            entity.setType(1); //默认为报销费用
+            entity.setType(ExpenseConst.TYPE_EXPENSE); //默认为报销费用
         }
         entity.setExpNo(expNo);
         entity.set4Base(userId, userId, new Date(), new Date());
@@ -373,7 +371,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         //保存明细
         this.saveExpDetail(dto,entity.getId(),userId,dto.getCurrentCompanyUserId());
         String targetType = null;
-        if(entity.getType()==1){
+        if(ExpenseConst.TYPE_EXPENSE.equals(entity.getType())){
             targetType = ProcessTypeConst.PROCESS_TYPE_EXPENSE;
         }else {
             targetType= ProcessTypeConst.PROCESS_TYPE_COST_APPLY;
@@ -388,9 +386,8 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
     private ExpMainEntity saveExpMain(ExpMainEntity entity,ApplyProjectCostDTO dto,String userId,String companyId) throws Exception{
         String expNo = this.getExpNo(companyId);
         entity.setExpFlag(0);
-      //  dto.setExpNo(expNo);
         if(StringUtil.isNullOrEmpty(dto.getType())){
-            entity.setType(1); //默认为报销费用
+            entity.setType(ExpenseConst.TYPE_EXPENSE); //默认为报销费用
         }
         entity.setExpNo(expNo);
         entity.set4Base(userId, userId, new Date(), new Date());
@@ -430,7 +427,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
     }
 
     private Integer getMyTaskType(ExpMainEntity entity) {
-        if (entity.getType() == 2) {
+        if (entity.getType() == ExpenseConst.TYPE_COST_APPLY) {
             return SystemParameters.COST_AUDIT;
         }
         return SystemParameters.EXP_AUDIT;
@@ -502,58 +499,58 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         myTaskService.updateStatesByTargetId(param);
     }
 
-    /**
-     * 方法描述：退回报销
-     * 作   者：LY
-     * 日   期：2016/7/29 11:01
-     *
-     * @param dto -- mainId--报销单id  approveStatus--状态(2.退回) auditMessage审批意见
-     */
-    public int recallExpMain(ExpAuditDTO dto) throws Exception {
-        ExpAuditEntity auditEntity = new ExpAuditEntity();
-        auditEntity.setMainId(dto.getMainId());
-        auditEntity.setApproveStatus(dto.getApproveStatus());
-        auditEntity.setAuditMessage(dto.getAuditMessage());
-        expAuditDao.updateByMainId(auditEntity);
-        ExpMainEntity entity = this.expMainDao.selectById(dto.getMainId());
-        entity.setApproveStatus(dto.getApproveStatus());
-        //任务设置状态
-        setMyTaskStatus(dto.getMainId(), this.getMyTaskType(entity), "2", false);
-        //发送消息
-        this.sendMessageForType20(dto.getMainId(),dto.getAppOrgId(), entity.getCompanyUserId(), entity.getType(), dto.getAuditPerson(), "2");//推送拒绝的消息
-        return expMainDao.updateById(entity);
-    }
+//    /**
+//     * 方法描述：退回报销
+//     * 作   者：LY
+//     * 日   期：2016/7/29 11:01
+//     *
+//     * @param dto -- mainId--报销单id  approveStatus--状态(2.退回) auditMessage审批意见
+//     */
+//    public int recallExpMain(ExpAuditDTO dto) throws Exception {
+//        ExpAuditEntity auditEntity = new ExpAuditEntity();
+//        auditEntity.setMainId(dto.getMainId());
+//        auditEntity.setApproveStatus(dto.getApproveStatus());
+//        auditEntity.setAuditMessage(dto.getAuditMessage());
+//        expAuditDao.updateByMainId(auditEntity);
+//        ExpMainEntity entity = this.expMainDao.selectById(dto.getMainId());
+//        entity.setApproveStatus(dto.getApproveStatus());
+//        //任务设置状态
+//        setMyTaskStatus(dto.getMainId(), this.getMyTaskType(entity), "2", false);
+//        //发送消息
+//        this.sendMessageForType20(dto.getMainId(),dto.getAppOrgId(), entity.getCompanyUserId(), entity.getType(), dto.getAuditPerson(), "2");//推送拒绝的消息
+//        return expMainDao.updateById(entity);
+//    }
 
-    private void sendMessageForType20(String mainId, String companyId, String companyUserId, Integer type, String accountId, String approveStatus) throws Exception {
-        CompanyUserEntity companyUserEntity = this.companyUserDao.selectById(companyUserId);
-        if (companyUserEntity != null) {
-            MessageEntity messageEntity = new MessageEntity();
-            messageEntity.setTargetId(mainId);
-            if (type == 1 && "1".equals(approveStatus)) {
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_22);
-            }
-            if (type == 1 && "2".equals(approveStatus)) {
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_20);
-            }
-            if (type == 1 && "3".equals(approveStatus)) {
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_221);
-            }
-            if (type == 2 && "1".equals(approveStatus)) {
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_224);
-            }
-            if (type == 2 && "2".equals(approveStatus)) {
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_223);
-            }
-            if (type == 2 && "3".equals(approveStatus)) {
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_225);
-            }
-            messageEntity.setCompanyId(companyUserEntity.getCompanyId());
-            messageEntity.setUserId(companyUserEntity.getUserId());
-            messageEntity.setSendCompanyId(companyId);
-            messageEntity.setCreateBy(accountId);
-            this.messageService.sendMessage(messageEntity);
-        }
-    }
+//    private void sendMessageForType20(String mainId, String companyId, String companyUserId, Integer type, String accountId, String approveStatus) throws Exception {
+//        CompanyUserEntity companyUserEntity = this.companyUserDao.selectById(companyUserId);
+//        if (companyUserEntity != null) {
+//            MessageEntity messageEntity = new MessageEntity();
+//            messageEntity.setTargetId(mainId);
+//            if (type == 1 && "1".equals(approveStatus)) {
+//                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_22);
+//            }
+//            if (type == 1 && "2".equals(approveStatus)) {
+//                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_20);
+//            }
+//            if (type == 1 && "3".equals(approveStatus)) {
+//                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_221);
+//            }
+//            if ( "1".equals(approveStatus)) {
+//                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_224);
+//            }
+//            if ( "2".equals(approveStatus)) {
+//                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_223);
+//            }
+//            if ( "3".equals(approveStatus)) {
+//                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_225);
+//            }
+//            messageEntity.setCompanyId(companyUserEntity.getCompanyId());
+//            messageEntity.setUserId(companyUserEntity.getUserId());
+//            messageEntity.setSendCompanyId(companyId);
+//            messageEntity.setCreateBy(accountId);
+//            this.messageService.sendMessage(messageEntity);
+//        }
+//    }
 
     /**
      * 方法描述：报销详情
@@ -593,86 +590,86 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         return i;
     }
 
-    /**
-     * 方法描述：同意报销
-     * 作   者：LY
-     * 日   期：2016/8/1 15:08
-     */
-    public int agreeExpMain(String id, String versionNum, String currentCompanyId, String currentUserId) throws Exception {
-        //处理我的任务
-        ExpMainEntity mainEntity = this.expMainDao.selectById(id);
-        if (mainEntity != null) {
-            Map<String, Object> param = new HashMap<String, Object>();
-            param.put("taskType", SystemParameters.EXP_AUDIT);
-            if (mainEntity.getType() == 2) {
-                param.put("taskType", SystemParameters.COST_AUDIT);
-            }
-            this.setMyTaskStatus(id, null, "1", false);
-            //给报销人推送消息
-            this.sendMessageForType20(id, currentCompanyId, mainEntity.getCompanyUserId(), mainEntity.getType(), currentUserId, "1");
-        }
-        mainEntity.setApproveStatus("1");
-        if (versionNum != null) {
-            mainEntity.setVersionNum(Integer.parseInt(versionNum));
-        }
-        ExpAuditEntity auditEntity = new ExpAuditEntity();
-        auditEntity.setMainId(id);
-        auditEntity.setApproveStatus("1");
-        if (versionNum != null) {
-            auditEntity.setVersionNum(Integer.parseInt(versionNum));
-        }
-        expAuditDao.updateByMainId(auditEntity);
-        return expMainDao.updateById(mainEntity);
-    }
+//    /**
+//     * 方法描述：同意报销
+//     * 作   者：LY
+//     * 日   期：2016/8/1 15:08
+//     */
+//    public int agreeExpMain(String id, String versionNum, String currentCompanyId, String currentUserId) throws Exception {
+//        //处理我的任务
+//        ExpMainEntity mainEntity = this.expMainDao.selectById(id);
+//        if (mainEntity != null) {
+//            Map<String, Object> param = new HashMap<String, Object>();
+//            param.put("taskType", SystemParameters.EXP_AUDIT);
+//            if (mainEntity.getType() == ExpenseConst.TYPE_COST_APPLY) {
+//                param.put("taskType", SystemParameters.COST_AUDIT);
+//            }
+//            this.setMyTaskStatus(id, null, "1", false);
+//            //给报销人推送消息
+//            this.sendMessageForType20(id, currentCompanyId, mainEntity.getCompanyUserId(), mainEntity.getType(), currentUserId, "1");
+//        }
+//        mainEntity.setApproveStatus("1");
+//        if (versionNum != null) {
+//            mainEntity.setVersionNum(Integer.parseInt(versionNum));
+//        }
+//        ExpAuditEntity auditEntity = new ExpAuditEntity();
+//        auditEntity.setMainId(id);
+//        auditEntity.setApproveStatus("1");
+//        if (versionNum != null) {
+//            auditEntity.setVersionNum(Integer.parseInt(versionNum));
+//        }
+//        expAuditDao.updateByMainId(auditEntity);
+//        return expMainDao.updateById(mainEntity);
+//    }
 
-    /**
-     * 方法描述：同意报销并转移审批人
-     * 作   者：LY
-     * 日   期：2016/8/1 15:08
-     *
-     * @param id--报销单id auditPerson--新审批人  userId用户Id
-     */
-    public int agreeAndTransAuditPerExpMain(String id, String userId, String auditPerson, String versionNum, String currentCompanyId) throws Exception {
-        //版本控制，只为了方便
-        ExpMainEntity entityVersion = this.expMainDao.selectById(id);
-        if (entityVersion == null) {
-            return 0;
-        }
-        entityVersion.setApproveStatus("5");
-        entityVersion.setVersionNum(Integer.parseInt(versionNum));
-        int result = expMainDao.updateById(entityVersion);
-        if (result == 0) {
-            return result;
-        }
-
-        //根据报销单id查询最新审批记录id
-        String parentId = null;
-        ExpAuditEntity auditEntities = expAuditDao.getLastAuditByMainId(id);
-        if (auditEntities!=null) {
-            parentId = auditEntities.getId();
-        }
-
-        //把当前自己的审批记录改为同意并且is_new为N
-        ExpAuditEntity auditEntity = new ExpAuditEntity();
-        auditEntity.setMainId(id);
-        auditEntity.setApproveStatus("1");
-        expAuditDao.transAuditPer(auditEntity);
-
-        //插入新审批人审批记录
-        auditEntity = new ExpAuditEntity();
-        auditEntity.setId(StringUtil.buildUUID());
-        auditEntity.setIsNew("Y");
-        auditEntity.setMainId(id);
-        auditEntity.setParentId(parentId);
-        auditEntity.setApproveStatus("5");
-        auditEntity.setAuditPerson(auditPerson);
-        auditEntity.set4Base(userId, userId, new Date(), new Date());
-        expAuditDao.insert(auditEntity);
-
-        //推送消息
-        this.sendMessageForType20(id, currentCompanyId, auditPerson, entityVersion.getType(), userId, "3");//同意并转交
-        return result;
-    }
+//    /**
+//     * 方法描述：同意报销并转移审批人
+//     * 作   者：LY
+//     * 日   期：2016/8/1 15:08
+//     *
+//     * @param id--报销单id auditPerson--新审批人  userId用户Id
+//     */
+//    public int agreeAndTransAuditPerExpMain(String id, String userId, String auditPerson, String versionNum, String currentCompanyId) throws Exception {
+//        //版本控制，只为了方便
+//        ExpMainEntity entityVersion = this.expMainDao.selectById(id);
+//        if (entityVersion == null) {
+//            return 0;
+//        }
+//        entityVersion.setApproveStatus("5");
+//        entityVersion.setVersionNum(Integer.parseInt(versionNum));
+//        int result = expMainDao.updateById(entityVersion);
+//        if (result == 0) {
+//            return result;
+//        }
+//
+//        //根据报销单id查询最新审批记录id
+//        String parentId = null;
+//        ExpAuditEntity auditEntities = expAuditDao.getLastAuditByMainId(id);
+//        if (auditEntities!=null) {
+//            parentId = auditEntities.getId();
+//        }
+//
+//        //把当前自己的审批记录改为同意并且is_new为N
+//        ExpAuditEntity auditEntity = new ExpAuditEntity();
+//        auditEntity.setMainId(id);
+//        auditEntity.setApproveStatus("1");
+//        expAuditDao.transAuditPer(auditEntity);
+//
+//        //插入新审批人审批记录
+//        auditEntity = new ExpAuditEntity();
+//        auditEntity.setId(StringUtil.buildUUID());
+//        auditEntity.setIsNew("Y");
+//        auditEntity.setMainId(id);
+//        auditEntity.setParentId(parentId);
+//        auditEntity.setApproveStatus("5");
+//        auditEntity.setAuditPerson(auditPerson);
+//        auditEntity.set4Base(userId, userId, new Date(), new Date());
+//        expAuditDao.insert(auditEntity);
+//
+//        //推送消息
+//        this.sendMessageForType20(id, currentCompanyId, auditPerson, entityVersion.getType(), userId, "3");//同意并转交
+//        return result;
+//    }
 
     /**
      * 财务拨款
@@ -709,7 +706,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
             m.setTargetId(id);
             m.setCurrentCompanyId(currentCompanyId);
             m.setAccountId(accountId);
-            int type = entity.getType();
+            int type = Integer.parseInt(entity.getType());
             if (type == 1) {//
                 m.setMessageType(SystemParameters.MESSAGE_TYPE_236);
             }
@@ -810,6 +807,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
             lastAudit.initEntity();//重新插入一条新的记录
             lastAudit.setIsNew("Y");
             lastAudit.setApproveStatus("0");
+            lastAudit.setCreateDate(DateUtils.getDate(DateUtils.getDate().getTime()+100));
             this.expAuditDao.insert(lastAudit);
             //激活原有的任务
             Map<String,Object> map = new HashMap<>();
@@ -828,7 +826,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         SaveCompanyBillDTO billDTO = new SaveCompanyBillDTO();
         billDTO.setCompanyId(entity.getCompanyId());
         billDTO.setFromCompanyId(entity.getCompanyId());
-        if(entity.getType()==1){
+        if(entity.getType()==ExpenseConst.TYPE_EXPENSE){
             billDTO.setFeeType(CompanyBillType.FEE_TYPE_EXPENSE);
         }else {
             billDTO.setFeeType(CompanyBillType.FEE_TYPE_EXP_APPLY);
@@ -1237,105 +1235,117 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         return auditList;
     }
 
-    public void sendMessageForAudit(String mainId, String companyId, String companyUserId,Integer type,String accountId,String auditId,String approveStatus) throws Exception {
+    public void sendMessageForAudit(String mainId, String companyId, String companyUserId,String type,String accountId,String auditId,String approveStatus) throws Exception {
         CompanyUserEntity companyUserEntity = this.companyUserDao.selectById(companyUserId);
         if (companyUserEntity != null) {
             MessageEntity messageEntity = new MessageEntity();
             messageEntity.setTargetId(mainId);
             //报销
-            if(type==1 && "0".equals(approveStatus)){//提交
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_19);
+            if(ExpenseConst.TYPE_EXPENSE.equals(type)){
+                if( "0".equals(approveStatus)){//提交
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_19);
+                }
+                if( "1".equals(approveStatus)){//同意
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_22);
+                }
+                if( "2".equals(approveStatus)){//拒绝
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_20);
+                }
+                if( "3".equals(approveStatus)){//同意并转交
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_221);
+                }
+                if( "6".equals(approveStatus)){//拨款
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_234);
+                }
+                //抄送
+                if( "7".equals(approveStatus)){//
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_236);
+                }
+                //财务审批不通过（报销）
+                if( "8".equals(approveStatus)){
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_247);
+                }
             }
-            if(type==1 && "1".equals(approveStatus)){//同意
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_22);
-            }
-            if(type==1 && "2".equals(approveStatus)){//拒绝
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_20);
-            }
-            if(type==1 && "3".equals(approveStatus)){//同意并转交
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_221);
-            }
-            if(type==1 && "6".equals(approveStatus)){//拨款
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_234);
-            }
+
             //费用
-            if(type==2 && "0".equals(approveStatus)){//提交
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_222);
-            }
-            if(type==2 && "1".equals(approveStatus)){//同意
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_224);
-            }
-            if(type==2 && "2".equals(approveStatus)){//拒绝
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_223);
-            }
-            if(type==2 && "3".equals(approveStatus)){
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_225);
-            }
-            if(type==2 && "6".equals(approveStatus)){
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_235);//拨款
-            }
-            //财务审批不通过（报销）
-            if(type==1 && "8".equals(approveStatus)){
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_247);
-            }
-            //财务审批不通过（费用）
-            if(type==2 && "8".equals(approveStatus)){
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_248);
+            if(ExpenseConst.TYPE_COST_APPLY.equals(type)) {
+                if ( "0".equals(approveStatus)) {//提交
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_222);
+                }
+                if ( "1".equals(approveStatus)) {//同意
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_224);
+                }
+                if ( "2".equals(approveStatus)) {//拒绝
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_223);
+                }
+                if ( "3".equals(approveStatus)) {
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_225);
+                }
+                if ( "6".equals(approveStatus)) {
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_235);//拨款
+                }
+                if ( "7".equals(approveStatus)) {//提交
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_237);
+                }
+                //财务审批不通过（费用）
+                if( "8".equals(approveStatus)){
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_248);
+                }
             }
 
             //请假
-            if(type==3 && "0".equals(approveStatus)){//提交
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_226);
+            if(ExpenseConst.TYPE_LEAVE.equals(type)) {
+                if ( "0".equals(approveStatus)) {//提交
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_226);
+                }
+                if ( "1".equals(approveStatus)) {//同意
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_228);
+                }
+                if ( "2".equals(approveStatus)) {//拒绝
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_227);
+                }
+                if ( "3".equals(approveStatus)) {//同意并转交
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_229);
+                }
+                if ( "7".equals(approveStatus)) {//提交
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_238);
+                }
             }
-            if(type==3 && "1".equals(approveStatus)){//同意
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_228);
-            }
-            if(type==3 && "2".equals(approveStatus)){//拒绝
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_227);
-            }
-            if(type==3 && "3".equals(approveStatus)){//同意并转交
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_229);
-            }
+
             //出差
-            if(type==4 && "0".equals(approveStatus)){//提交
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_230);
-            }
-            if(type==4 && "1".equals(approveStatus)){//同意
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_232);
-            }
-            if(type==4 && "2".equals(approveStatus)){//拒绝
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_231);
-            }
-            if(type==4 && "3".equals(approveStatus)){//同意并转交
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_233);
+            if (ExpenseConst.TYPE_ON_BUSINESS.equals(type)){
+
+                if( "0".equals(approveStatus)){//提交
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_230);
+                }
+                if( "1".equals(approveStatus)){//同意
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_232);
+                }
+                if( "2".equals(approveStatus)){//拒绝
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_231);
+                }
+                if( "3".equals(approveStatus)){//同意并转交
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_233);
+                }
+                if( "7".equals(approveStatus)){//提交
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_239);
+                }
             }
 
-            //todo 一下内容待处理
-            if(type==5 && "0".equals(approveStatus)){//提交
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_243);
-            }
-            if(type==5 && "1".equals(approveStatus)){//同意
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_244);
-            }
-            if(type==5 && "2".equals(approveStatus)){//拒绝
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_245);
-            }
-            if(type==5 && "3".equals(approveStatus)){//同意并转交
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_246);
-            }
-
-            //抄送
-            if(type==1 && "7".equals(approveStatus)){//
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_236);
-            }
-            if(type==2 && "7".equals(approveStatus)){//提交
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_237);
-            }
-            if(type==3 && "7".equals(approveStatus)){//提交
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_238);
-            }
-            if(type==4 && "7".equals(approveStatus)){//提交
-                messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_239);
+            //付款申请
+            if (ExpenseConst.TYPE_PROJECT_PAY_APPLY.equals(type)) {
+                if ( "0".equals(approveStatus)) {//提交
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_243);
+                }
+                if ( "1".equals(approveStatus)) {//同意
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_244);
+                }
+                if ( "2".equals(approveStatus)) {//拒绝
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_245);
+                }
+                if ( "3".equals(approveStatus)) {//同意并转交
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_246);
+                }
             }
 
             //把最新的审批记录的id关联上
@@ -1497,7 +1507,6 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
 
 
     public Map<String,Object> getAuditDetailForExp2(String id) throws Exception{
-        // ExpDetailDataDTO result = new ExpDetailDataDTO();
         CompanyUserEntity companyUserEntity = null;
         Map<String, Object> map = new HashMap<>();
         ExpMainEntity expMainEntity = expMainDao.selectById(id);
@@ -1565,7 +1574,6 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
 
         map.putAll(processService.getCurrentTaskUser(new AuditEditDTO(id,null,null),auditList,(detailList.get(0).getTotalExpAmount()).toString()));
         return map;
-//        return null;
     }
 
     /**
@@ -1583,26 +1591,27 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
 
         String userId = dto.getAccountId();
         String companyId = dto.getCurrentCompanyId();
-        String expNo = this.getExpNo(companyId);
         String type = null;
         Object conditionFieldValue = null;
         if(dto instanceof SaveDynamicAuditDTO){
             type = ((SaveDynamicAuditDTO) dto).getAuditType();
-            conditionFieldValue = ((SaveDynamicAuditDTO) dto).getConditionFieldValue();
+            conditionFieldValue = dto.getConditionFieldValue();
+        }
+
+        if(StringUtil.isNullOrEmpty(type)){
+            entity.setType(ExpenseConst.TYPE_EXPENSE); //默认为报销费用
+        }else {
+            entity.setType(type);
         }
         entity.setExpFlag(0);
-        if(StringUtil.isNullOrEmpty(type)){
-            entity.setType(1); //默认为报销费用
-        }else {
-            //todo 需要把entity中的type修改成string类型
-
-        }
-        entity.setExpNo(expNo);
+        entity.setExpNo(this.getExpNo(companyId));
         entity.set4Base(userId, userId, new Date(), new Date());
         entity.setCompanyId(companyId);
-        entity.initEntity();
-        expMainDao.insert(entity);
+        if(StringUtils.isEmpty(entity.getId())){
+            entity.initEntity();//如果id不为null，不用initEntity，因为在调用该接口的地方已经设置了id
+        }
 
+        expMainDao.insert(entity);
         String targetType = type;//动态模板中的 targetType 就是 expMain中的type （每创建一个模板，就当做是一种类型）
         // 启动流程
         ActivitiDTO activitiDTO = new ActivitiDTO(entity.getId(),entity.getCompanyUserId(),companyId,userId,conditionFieldValue,targetType);

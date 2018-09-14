@@ -9,11 +9,7 @@ import java.util.Map;
 
 public class SaveDynamicAuditDTO extends AuditBaseDTO {
 
-
-
     private String auditType;
-
-    Object conditionFieldValue;
 
     private List<DynamicFormFieldValueDTO> filedList = new ArrayList<>();
 
@@ -43,11 +39,4 @@ public class SaveDynamicAuditDTO extends AuditBaseDTO {
         this.detailList = detailList;
     }
 
-    public Object getConditionFieldValue() {
-        return conditionFieldValue;
-    }
-
-    public void setConditionFieldValue(Object conditionFieldValue) {
-        this.conditionFieldValue = conditionFieldValue;
-    }
 }

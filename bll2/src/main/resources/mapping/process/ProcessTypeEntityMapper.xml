@@ -141,7 +141,7 @@
         </choose>
         process_type.*
       from maoding_dynamic_form process_type
-        inner join maoding_dynamic_form_group group_type on (group_type.id = process_type.group_type_id)
+        right join maoding_dynamic_form_group group_type on (group_type.id = process_type.group_type_id)
       <if test="currentCompanyId != null">
         where
           process_type.company_id is null or process_type.company_id = #{currentCompanyId}

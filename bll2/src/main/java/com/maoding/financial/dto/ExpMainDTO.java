@@ -16,7 +16,7 @@ import java.util.List;
  * 作    者 : LY
  * 日    期 : 2016/7/26 15:15
  */
-public class ExpMainDTO extends BaseDTO {
+public class ExpMainDTO extends AuditBaseDTO {
 
     /**
      * 前端生成的报销单Id
@@ -176,7 +176,7 @@ public class ExpMainDTO extends BaseDTO {
     /**
      * 报销类别：1=报销申请，2=费用申请
      */
-    private Integer type;
+    private String type;
 
     /**
      * 拨款人
@@ -534,11 +534,11 @@ public class ExpMainDTO extends BaseDTO {
         this.projectName = projectName;
     }
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
     }
 

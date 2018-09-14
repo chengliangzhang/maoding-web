@@ -6,10 +6,7 @@ import com.maoding.commonModule.dto.SaveCopyRecordDTO;
 import com.maoding.commonModule.service.CopyRecordService;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.bean.AjaxMessage;
-import com.maoding.core.constant.CopyTargetType;
-import com.maoding.core.constant.NetFileType;
-import com.maoding.core.constant.ProcessTypeConst;
-import com.maoding.core.constant.SystemParameters;
+import com.maoding.core.constant.*;
 import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
@@ -132,8 +129,6 @@ public class LeaveServiceImpl implements LeaveService {
         if(!CollectionUtils.isEmpty(dto.getDeleteAttachList())){
             projectSkyDriverService.deleteSysDrive(dto.getDeleteAttachList(),dto.getAccountId(),id);
         }
-        //    Integer myTaskType = this.getMyTaskType(entity);
-
 
         //处理抄送
         SaveCopyRecordDTO copyDTO = new SaveCopyRecordDTO();
@@ -143,9 +138,6 @@ public class LeaveServiceImpl implements LeaveService {
         copyDTO.setTargetId(id);
         copyDTO.setRecordType(CopyTargetType.EXP_MAIN);
         copyRecordService.saveCopyRecode(copyDTO);
-//        for(String companyUserId:dto.getCcCompanyUserList()){
-//            this.expMainService.sendMessageForAudit(entity.getId(),companyId,companyUserId,entity.getType(),dto.getAccountId(),null,"7");//抄送
-//        }
         return AjaxMessage.succeed("保存成功");
     }
 
@@ -221,7 +213,7 @@ public class LeaveServiceImpl implements LeaveService {
         }
         dto.setExpNo(expNo);
         if(StringUtil.isNullOrEmpty(dto.getType())){
-            entity.setType(1); //默认为报销费用
+            entity.setType(ExpenseConst.TYPE_EXPENSE); //默认为报销费用
         }
         entity.setExpNo(expNo);
         entity.set4Base(userId, userId, new Date(), new Date());
@@ -230,7 +222,7 @@ public class LeaveServiceImpl implements LeaveService {
         this.saveLeaveDetail(dto,entity.getId());
         // 启动流程
         String targetType = null;
-        if(entity.getType()==3){
+        if(entity.getType()==ExpenseConst.TYPE_LEAVE){
             targetType = ProcessTypeConst.PROCESS_TYPE_LEAVE;
         }else {
             targetType= ProcessTypeConst.PROCESS_TYPE_ON_BUSINESS;
@@ -270,7 +262,7 @@ public class LeaveServiceImpl implements LeaveService {
             leaveDetail.setMainId(mainId);
             leaveDetail.setTimeUnit(1);//默认为天
             leaveDetail.setCreateBy(dto.getAccountId());
-            if(dto.getType()==4){
+            if(ExpenseConst.TYPE_ON_BUSINESS.equals(dto.getType())){
                 leaveDetail.setLeaveType("10");//出差
             }
             this.leaveDetailDao.insert(leaveDetail);
@@ -284,14 +276,4 @@ public class LeaveServiceImpl implements LeaveService {
         }
     }
 
-
-    private Integer getMyTaskType(ExpMainEntity entity){
-        if(entity.getType()==3){
-            return SystemParameters.LEAVE_AUDIT;
-        }
-        if(entity.getType()==4){
-            return SystemParameters.EVECTION_AUDIT;
-        }
-        return SystemParameters.EXP_AUDIT;
-    }
 }

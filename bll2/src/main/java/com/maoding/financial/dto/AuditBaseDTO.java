@@ -14,6 +14,11 @@ public class AuditBaseDTO extends BaseDTO {
      */
     private String auditPerson;
 
+    /**
+     * 条件值（用于审批流程中判断路由哪条审批）
+     */
+    Object conditionFieldValue;
+
     public String getAuditMessage() {
         return auditMessage;
     }
@@ -28,5 +33,13 @@ public class AuditBaseDTO extends BaseDTO {
 
     public void setAuditPerson(String auditPerson) {
         this.auditPerson = auditPerson;
+    }
+
+    public Object getConditionFieldValue() {
+        return conditionFieldValue;
+    }
+
+    public void setConditionFieldValue(Object conditionFieldValue) {
+        this.conditionFieldValue = conditionFieldValue;
     }
 }

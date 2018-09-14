@@ -16,7 +16,7 @@
         <result column="version_num" property="versionNum" jdbcType="INTEGER"/>
         <result column="exp_no" property="expNo" jdbcType="INTEGER"/>
         <result column="exp_flag" property="expFlag" jdbcType="INTEGER"/>
-        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
         <result column="allocation_date" property="allocationDate" jdbcType="DATE"/>
         <result column="allocation_user_id" property="allocationUserId" jdbcType="VARCHAR"/>
         <result column="enterprise_id" property="enterpriseId" jdbcType="VARCHAR" />
@@ -25,7 +25,7 @@
         <id column="id" property="id" jdbcType="VARCHAR"/>
         <result column="applyDate" property="applyDate" jdbcType="DATE" />
         <result column="applyName" property="applyName" jdbcType="VARCHAR" />
-        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="type" property="type" jdbcType="VARCHAR" />
         <result column="comment" property="comment" jdbcType="VARCHAR" />
         <result column="startTime" property="startTime" jdbcType="TIMESTAMP" />
         <result column="endTime" property="endTime" jdbcType="TIMESTAMP" />
@@ -55,7 +55,7 @@
         <result column="allocation_date" property="allocationDate" jdbcType="DATE"/>
         <result column="allocation_user_name" property="allocationUserName" jdbcType="VARCHAR"/>
         <result column="allocation_user_company_id" property="allocationUserCompanyId" jdbcType="VARCHAR"/>
-        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
     </resultMap>
     <select id="selectByIdWithUserName" resultMap="BaseResultMapWithUserName" parameterType="java.lang.String">
        SELECT
@@ -102,7 +102,7 @@
                                         now(), #{createBy,jdbcType=VARCHAR}, now(),
                                         #{updateBy,jdbcType=VARCHAR}, #{expNo,jdbcType=VARCHAR},
                                         #{expFlag,jdbcType=INTEGER},
-                                        #{type,jdbcType=INTEGER}, #{allocationDate,jdbcType=DATE},
+                                        #{type,jdbcType=VARCHAR}, #{allocationDate,jdbcType=DATE},
                                         #{allocationUserId,jdbcType=VARCHAR}
                                         , #{enterpriseId,jdbcType=VARCHAR})
     </insert>
@@ -151,7 +151,7 @@
                 exp_flag = #{expFlag,jdbcType=VARCHAR},
             </if>
             <if test="type != null">
-                type = #{type,jdbcType=INTEGER},
+                type = #{type,jdbcType=VARCHAR},
             </if>
 
             <if test="allocationDate != null">
@@ -174,7 +174,7 @@
             approve_status     = #{approveStatus,jdbcType=VARCHAR},
             company_id         = #{companyId,jdbcType=VARCHAR},
             depart_id          = #{departId,jdbcType=VARCHAR},
-            type               = #{type,jdbcType=INTEGER},
+            type               = #{type,jdbcType=VARCHAR},
             allocation_date    = #{allocationDate,jdbcType=DATE},
             allocation_user_id = #{allocationUserId,jdbcType=VARCHAR},
             remark             = #{remark,jdbcType=VARCHAR},

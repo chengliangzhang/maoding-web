@@ -4,6 +4,7 @@ import com.maoding.activiti.dto.*;
 import com.maoding.activiti.service.WorkflowService;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.NewBaseService;
+import com.maoding.core.constant.ExpenseConst;
 import com.maoding.core.constant.ProcessTypeConst;
 import com.maoding.core.constant.ProjectCostConst;
 import com.maoding.core.util.*;
@@ -401,7 +402,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             exp.setId(businessKey);
             exp.setApproveStatus("1");//审批通过的状态
             this.expMainService.updateById(exp);
-            if(exp.getType()==5){
+            if(ExpenseConst.TYPE_PROJECT_PAY_APPLY.equals(exp.getType())){
                 //推送任务
                 ProjectCostPointDetailDTO projectCostPointDetailDTO = BeanUtils.createFrom(dto,ProjectCostPointDetailDTO.class);
                 projectCostPointDetailDTO.setMainId(businessKey);
@@ -415,7 +416,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             exp.setId(businessKey);
             exp.setApproveStatus("2");//退回的状态
             this.expMainService.updateById(exp);
-            if(exp.getType()==5){
+            if(ExpenseConst.TYPE_PROJECT_PAY_APPLY.equals(exp.getType())){
                 //推送任务
                 ProjectCostPointDetailDTO projectCostPointDetailDTO =  BeanUtils.createFrom(dto,ProjectCostPointDetailDTO.class);
                 projectCostPointDetailDTO.setMainId(businessKey);
