@@ -5,6 +5,7 @@ import com.maoding.activiti.service.WorkflowService;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.util.StringUtils;
+import com.maoding.process.dto.ProcessDefineEditDTO;
 import com.maoding.process.dto.ProcessGroupEditDTO;
 import com.maoding.process.service.ProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +93,21 @@ public class WorkFlowController extends BaseController {
     public AjaxMessage addProcessGroup(@RequestBody ProcessGroupEditDTO request) throws Exception {
         updateCurrentUserInfo(request);
         ProcessDefineGroupDTO data = processService.changeProcessDefineGroup(request);
+        return AjaxMessage.succeed(data);
+    }
+
+    /**
+     * 描述     添加动态审批管理流程
+     * 日期     2018/9/14
+     * @author  张成亮
+     * @return  审批管理流程信息
+     * @param   request
+     **/
+    @RequestMapping(value = "/addProcess", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage addProcess(@RequestBody ProcessDefineEditDTO request) throws Exception {
+        updateCurrentUserInfo(request);
+        ProcessDefineDTO data = processService.changeProcessDefine(request);
         return AjaxMessage.succeed(data);
     }
 
