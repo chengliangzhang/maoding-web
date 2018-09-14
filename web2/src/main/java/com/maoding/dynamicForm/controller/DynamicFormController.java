@@ -40,7 +40,7 @@ public class DynamicFormController extends BaseController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/insertDynamicForm")
+    @RequestMapping(value = "/insertDynamicForm", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage insertDynamicForm(@RequestBody SaveDynamicFormDTO dto) throws Exception{
         updateCurrentUserInfo(dto);
@@ -54,7 +54,7 @@ public class DynamicFormController extends BaseController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/saveAuditDetail")
+    @RequestMapping(value = "/saveAuditDetail", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage saveAuditDetail(@RequestBody SaveDynamicAuditDTO dto) throws Exception{
         updateCurrentUserInfo(dto);
@@ -68,7 +68,7 @@ public class DynamicFormController extends BaseController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/startOrStopDynamicForm")
+    @RequestMapping(value = "/startOrStopDynamicForm", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage startOrStopDynamicForm(@RequestBody SaveDynamicFormDTO dto) throws Exception{
         updateCurrentUserInfo(dto);
@@ -82,7 +82,7 @@ public class DynamicFormController extends BaseController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/deleteDynamicForm")
+    @RequestMapping(value = "/deleteDynamicForm", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage deleteDynamicForm (@RequestBody SaveDynamicFormDTO dto) throws  Exception{
         updateCurrentUserInfo(dto);
