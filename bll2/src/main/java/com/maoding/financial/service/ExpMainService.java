@@ -5,7 +5,6 @@ import com.maoding.core.base.service.BaseService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.financial.dto.*;
 import com.maoding.financial.entity.ExpMainEntity;
-import com.maoding.invoice.dto.InvoiceDTO;
 import com.maoding.org.dto.CompanyUserTableDTO;
 import com.maoding.project.dto.ProjectDTO;
 import com.maoding.statistic.dto.StatisticDetailQueryDTO;
@@ -242,5 +241,7 @@ public interface ExpMainService extends BaseService<ExpMainEntity>{
 
 
     List<ExpMainDTO> getAuditDataDetail(QueryAuditDTO dto);
+
+    void saveExpMain(ExpMainEntity mainEntity, AuditBaseDTO dto) throws Exception;
 
 }

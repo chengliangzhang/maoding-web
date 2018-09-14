@@ -12,10 +12,12 @@ import java.util.List;
  * 动态表单自定义的数据层接口
  */
 public interface DynamicFormService extends BaseService<DynamicFormEntity> {
-/*
-    保存审核表样式
-*/
+
+    //保存审批表模板
     int insertDynamicForm (SaveDynamicFormDTO dto) throws Exception;
+
+    //审批表 启用/停用
+    int startOrStopAudit (SaveDynamicFormDTO dto) throws  Exception;
 
     /**
      * 描述       查找动态窗口模板

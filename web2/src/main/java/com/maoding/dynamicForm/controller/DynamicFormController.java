@@ -57,6 +57,20 @@ public class DynamicFormController extends BaseController {
     }
 
     /**
+     * 作者：FYT
+     * 日期：2018/9/14
+     * 描述：审批表 启用/停用
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/startOrStopAudit")
+    @ResponseBody
+    public AjaxMessage startOrStopAudit(@RequestBody SaveDynamicFormDTO dto) throws Exception{
+        return AjaxMessage.succeed(dynamicFormService.startOrStopAudit(dto));
+    }
+
+
+    /**
      * 描述     查询动态表单应显示的控件及相应属性
      * 日期     2018/9/13
      * @author  张成亮
@@ -70,6 +84,5 @@ public class DynamicFormController extends BaseController {
         FormDTO detail = dynamicFormService.getFormDetail(query);
         return AjaxMessage.succeed(detail);
     }
-
 
 }

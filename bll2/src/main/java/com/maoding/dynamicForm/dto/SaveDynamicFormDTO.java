@@ -11,7 +11,7 @@ public class SaveDynamicFormDTO extends BaseDTO {
     private String formName;
 
     /*表单类型*/
-    private Integer formType;
+    private String formType;
 
     /*1：被启用，0：未被启用*/
     private Integer status;
@@ -44,11 +44,11 @@ public class SaveDynamicFormDTO extends BaseDTO {
         this.formName = formName;
     }
 
-    public Integer getFormType() {
+    public String getFormType() {
         return formType;
     }
 
-    public void setFormType(Integer formType) {
+    public void setFormType(String formType) {
         this.formType = formType;
     }
 

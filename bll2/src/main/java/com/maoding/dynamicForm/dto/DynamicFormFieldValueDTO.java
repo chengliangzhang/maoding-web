@@ -1,14 +1,11 @@
 package com.maoding.dynamicForm.dto;
 
 public class DynamicFormFieldValueDTO extends DynamicFormFieldDTO{
-    /*
-    审批主表id（maoding_web_exp_main 的id）
-*/
+
+    //审批主表id（maoding_web_exp_main 的id）
     private String mainId;
 
-    /*
-        值（全部用字符串类型接收）
-    */
+    //值（全部用字符串类型接收）
     private String fieldValue;
 
 

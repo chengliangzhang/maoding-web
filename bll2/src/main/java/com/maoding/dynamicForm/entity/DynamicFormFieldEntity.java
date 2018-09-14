@@ -20,7 +20,7 @@ public class DynamicFormFieldEntity extends BaseEntity{
     private Integer isStatistics;
 
     //字段的单位
-    private Integer fieldUnit;
+    private String fieldUnit;
 
     //提示文本
     private String fieldTooltip;
@@ -131,11 +131,11 @@ public class DynamicFormFieldEntity extends BaseEntity{
         this.deleted = deleted;
     }
 
-    public Integer getFieldUnit() {
+    public String getFieldUnit() {
         return fieldUnit;
     }
 
-    public void setFieldUnit(Integer fieldUnit) {
+    public void setFieldUnit(String fieldUnit) {
         this.fieldUnit = fieldUnit;
     }
 

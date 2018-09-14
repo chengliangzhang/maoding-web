@@ -5,7 +5,7 @@
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="form_name" property="formName" jdbcType="VARCHAR" />
     <result column="company_id" property="companyId" jdbcType="VARCHAR" />
-    <result column="form_type" property="formType" jdbcType="INTEGER" />
+    <result column="form_type" property="formType" jdbcType="VARCHAR" />
     <result column="seq" property="seq" jdbcType="INTEGER" />
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="deleted" property="deleted" jdbcType="INTEGER" />
@@ -34,7 +34,7 @@
       deleted, create_date, create_by, 
       update_date, update_by)
     values (#{id,jdbcType=VARCHAR}, #{formName,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, 
-      #{formType,jdbcType=INTEGER}, #{seq,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{formType,jdbcType=VARCHAR}, #{seq,jdbcType=INTEGER}, #{status,jdbcType=INTEGER},
       #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
       #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
   </insert>
@@ -49,7 +49,7 @@
         company_id = #{companyId,jdbcType=VARCHAR},
       </if>
       <if test="formType != null" >
-        form_type = #{formType,jdbcType=INTEGER},
+        form_type = #{formType,jdbcType=VARCHAR},
       </if>
       <if test="seq != null" >
         seq = #{seq,jdbcType=INTEGER},
@@ -79,7 +79,7 @@
     update maoding_dynamic_form
     set form_name = #{formName,jdbcType=VARCHAR},
       company_id = #{companyId,jdbcType=VARCHAR},
-      form_type = #{formType,jdbcType=INTEGER},
+      form_type = #{formType,jdbcType=VARCHAR},
       seq = #{seq,jdbcType=INTEGER},
       status = #{status,jdbcType=INTEGER},
       deleted = #{deleted,jdbcType=INTEGER},

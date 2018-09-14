@@ -9,45 +9,40 @@ import java.util.List;
 public class DynamicFormFieldDTO {
 
     private String id;
-    /*
-    主表id（maoding_dynamic_form的id）
-*/
+    //主表id（maoding_dynamic_form的id）
     private String formId;
 
-    /*
-    父记录id（maoding_dynamic_form_field的id）,如果pid不为null，则代表的是明细中的字段
-*/
+    //父记录id（maoding_dynamic_form_field的id）,如果pid不为null，则代表的是明细中的字段
     private String fieldPid;
-    /*
-        标题
-    */
+
+    //标题
     private String fieldTitle;
-    /*字段类型*/
+    //字段类型
     private Integer fieldType;
-    /*
-        字段的单位
-    */
-    private Integer fieldUnit;
-    /*提示文本*/
+
+    //字段的单位
+    private String fieldUnit;
+
+    //提示文本
     private String fieldTooltip;
-    /*
-        默认值（暂时定100个长度）
-    */
+
+    //默认值（暂时定100个长度）
     private String fieldDefaultValue;
-    /*
-        默认值0(由数据字典提供，如果为0，则从maoding_dynamic_form_field_selectable_value 去获取
-    */
+
+    //默认值0(由数据字典提供，如果为0，则从maoding_dynamic_form_field_selectable_value 去获取
     private Integer fieldSelectValueType;
-    /*
-        横坐标排序（如果x相同，则排成一行）
-    */
+
+    //横坐标排序（如果x相同，则排成一行）
     private Integer seqX;
-    /*纵坐标排序*/
+
+    //纵坐标排序
     private Integer seqY;
-    /*
-        必填类型（1：必填，0：非必填）
-    */
+
+    //必填类型（1：必填，0：非必填）
     private Integer requiredType;
+
+    //0:不参与统计，1：参与统计
+    private Integer isStatistics;
 
     List<DynamicFormFieldDTO> detailFieldList = new ArrayList<>();
 
@@ -93,11 +88,11 @@ public class DynamicFormFieldDTO {
         this.fieldType = fieldType;
     }
 
-    public Integer getFieldUnit() {
+    public String getFieldUnit() {
         return fieldUnit;
     }
 
-    public void setFieldUnit(Integer fieldUnit) {
+    public void setFieldUnit(String fieldUnit) {
         this.fieldUnit = fieldUnit;
     }
 
@@ -165,4 +160,11 @@ public class DynamicFormFieldDTO {
         this.fieldSelectedValueList = fieldSelectedValueList;
     }
 
+    public Integer getIsStatistics() {
+        return isStatistics;
+    }
+
+    public void setIsStatistics(Integer isStatistics) {
+        this.isStatistics = isStatistics;
+    }
 }

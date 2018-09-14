@@ -9,7 +9,7 @@ public class DynamicFormEntity extends BaseEntity{
     /*组织id（如果为null，则为公共的可以供每个组织选择复制的）*/
     private String companyId;
     /*表单类型*/
-    private Integer formType;
+    private String formType;
     /*排序*/
     private Integer seq;
     /*1：被启用，0：未被启用*/
@@ -33,11 +33,11 @@ public class DynamicFormEntity extends BaseEntity{
         this.companyId = companyId == null ? null : companyId.trim();
     }
 
-    public Integer getFormType() {
+    public String getFormType() {
         return formType;
     }
 
-    public void setFormType(Integer formType) {
+    public void setFormType(String formType) {
         this.formType = formType;
     }
 

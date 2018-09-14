@@ -1,32 +1,23 @@
 package com.maoding.dynamicForm.dto;
 
-import com.maoding.core.base.dto.BaseDTO;
+import com.maoding.financial.dto.AuditBaseDTO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SaveDynamicAuditDTO extends BaseDTO {
+public class SaveDynamicAuditDTO extends AuditBaseDTO {
 
-    /**
-     * 审核人id
-     */
-    private String auditPerson;
+
 
     private String auditType;
+
+    Object conditionFieldValue;
 
     private List<DynamicFormFieldValueDTO> filedList = new ArrayList<>();
 
     private Map<String,List<DynamicFormFieldValueDTO>> detailList = new HashMap<>();
-
-    public String getAuditPerson() {
-        return auditPerson;
-    }
-
-    public void setAuditPerson(String auditPerson) {
-        this.auditPerson = auditPerson;
-    }
 
     public String getAuditType() {
         return auditType;
@@ -50,5 +41,13 @@ public class SaveDynamicAuditDTO extends BaseDTO {
 
     public void setDetailList(Map<String, List<DynamicFormFieldValueDTO>> detailList) {
         this.detailList = detailList;
+    }
+
+    public Object getConditionFieldValue() {
+        return conditionFieldValue;
+    }
+
+    public void setConditionFieldValue(Object conditionFieldValue) {
+        this.conditionFieldValue = conditionFieldValue;
     }
 }

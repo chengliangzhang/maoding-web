@@ -3,25 +3,19 @@ package com.maoding.dynamicForm.entity;
 import com.maoding.core.base.entity.BaseEntity;
 
 public class DynamicFormFieldSelectableValueEntity extends BaseEntity{
-/*
-    动态字段表id（maoding_dynamic_form_field的id）
-*/
+    //动态字段表id（maoding_dynamic_form_field的id）
     private String fieldId;
-/*
-    值（例如：select 下拉框对应的value，如果前端并没有设置，后台默认为vlaue = name）
-*/
+
+    //值（例如：select 下拉框对应的value，如果前端并没有设置，后台默认为vlaue = name）
     private String selectableValue;
-/*
-    名称（显示在外面的名称）
-*/
+
+    //名称（显示在外面的名称）
     private String selectableName;
-/*
-    排序
-*/
+
+    //排序
     private Integer seq;
-/*
-    删除标识
-*/
+
+    //删除标识
     private Integer deleted;
 
     public String getFieldId() {

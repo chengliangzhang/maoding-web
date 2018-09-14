@@ -16,6 +16,7 @@ import com.maoding.core.constant.*;
 import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
+import com.maoding.dynamicForm.dto.SaveDynamicAuditDTO;
 import com.maoding.enterprise.dto.EnterpriseSearchQueryDTO;
 import com.maoding.enterprise.service.EnterpriseService;
 import com.maoding.exception.CustomException;
@@ -1575,6 +1576,38 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
     @Override
     public List<ExpMainDTO> getAuditDataDetail(QueryAuditDTO dto) {
         return expMainDao.getAuditDataDetail(dto);
+    }
+
+    @Override
+    public void saveExpMain(ExpMainEntity entity, AuditBaseDTO dto) throws Exception {
+
+        String userId = dto.getAccountId();
+        String companyId = dto.getCurrentCompanyId();
+        String expNo = this.getExpNo(companyId);
+        String type = null;
+        Object conditionFieldValue = null;
+        if(dto instanceof SaveDynamicAuditDTO){
+            type = ((SaveDynamicAuditDTO) dto).getAuditType();
+            conditionFieldValue = ((SaveDynamicAuditDTO) dto).getConditionFieldValue();
+        }
+        entity.setExpFlag(0);
+        if(StringUtil.isNullOrEmpty(type)){
+            entity.setType(1); //默认为报销费用
+        }else {
+            //todo 需要把entity中的type修改成string类型
+
+        }
+        entity.setExpNo(expNo);
+        entity.set4Base(userId, userId, new Date(), new Date());
+        entity.setCompanyId(companyId);
+        entity.initEntity();
+        expMainDao.insert(entity);
+
+        String targetType = type;//动态模板中的 targetType 就是 expMain中的type （每创建一个模板，就当做是一种类型）
+        // 启动流程
+        ActivitiDTO activitiDTO = new ActivitiDTO(entity.getId(),entity.getCompanyUserId(),companyId,userId,conditionFieldValue,targetType);
+        activitiDTO.getParam().put("approveUser",dto.getAuditPerson());
+        this.processService.startProcessInstance(activitiDTO);
     }
 
 }

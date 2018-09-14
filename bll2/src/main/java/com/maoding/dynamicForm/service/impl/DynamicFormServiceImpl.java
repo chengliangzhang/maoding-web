@@ -90,6 +90,22 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
     }
 
     /**
+     * 作者：FYT
+     * 日期：2018/9/14
+     * 描述：审批表 启用/停用
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public int startOrStopAudit(SaveDynamicFormDTO dto) throws Exception {
+        //设置动态表单状态为1启用 0停用
+        DynamicFormEntity dynamicFormEntity = new DynamicFormEntity();
+        dynamicFormEntity.setId(dto.getId());
+        dynamicFormEntity.setStatus(dto.getStatus());
+        return dynamicFormDao.updateById(dynamicFormEntity);
+    }
+
+    /**
      * 描述       查询动态窗口模板
      * 日期       2018/9/13
      *

@@ -7,7 +7,7 @@
     <result column="field_pid" property="fieldPid" jdbcType="VARCHAR" />
     <result column="field_title" property="fieldTitle" jdbcType="VARCHAR" />
     <result column="field_type" property="fieldType" jdbcType="INTEGER" />
-    <result column="field_unit" property="fieldUnit" jdbcType="INTEGER" />
+    <result column="field_unit" property="fieldUnit" jdbcType="VARCHAR" />
     <result column="is_statistics" property="isStatistics" jdbcType="INTEGER" />
     <result column="field_tooltip" property="fieldTooltip" jdbcType="VARCHAR" />
     <result column="field_default_value" property="fieldDefaultValue" jdbcType="VARCHAR" />
@@ -48,7 +48,8 @@
       deleted, create_date, create_by, 
       update_date, update_by)
     values (#{id,jdbcType=VARCHAR}, #{formId,jdbcType=VARCHAR}, #{fieldPid,jdbcType=VARCHAR}, 
-      #{fieldTitle,jdbcType=VARCHAR}, #{fieldType,jdbcType=INTEGER}, #{isStatistics,jdbcType=INTEGER},#{fieldTooltip,jdbcType=VARCHAR},
+      #{fieldTitle,jdbcType=VARCHAR}, #{fieldType,jdbcType=INTEGER}, #{fieldUnit,jdbcType=VARCHAR},
+      #{isStatistics,jdbcType=INTEGER},#{fieldTooltip,jdbcType=VARCHAR},
       #{fieldDefaultValue,jdbcType=VARCHAR}, #{fieldSelectValueType,jdbcType=INTEGER}, 
       #{seqX,jdbcType=INTEGER}, #{seqY,jdbcType=INTEGER}, #{requiredType,jdbcType=INTEGER}, 
       #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
@@ -74,7 +75,7 @@
         is_statistics = #{isStatistics,jdbcType=INTEGER},
       </if>
       <if test="field_unit != null" >
-        field_type = #{fieldUnit,jdbcType=INTEGER},
+        field_type = #{fieldUnit,jdbcType=VARCHAR},
       </if>
       <if test="fieldTooltip != null" >
         field_tooltip = #{fieldTooltip,jdbcType=VARCHAR},
@@ -119,7 +120,7 @@
       field_pid = #{fieldPid,jdbcType=VARCHAR},
       field_title = #{fieldTitle,jdbcType=VARCHAR},
       field_type = #{fieldType,jdbcType=INTEGER},
-      field_unit = #{fieldUnit,jdbcType=INTEGER},
+      field_unit = #{fieldUnit,jdbcType=VARCHAR},
       is_statistics = #{isStatistics,jdbcType=INTEGER},
       field_tooltip = #{fieldTooltip,jdbcType=VARCHAR},
       field_default_value = #{fieldDefaultValue,jdbcType=VARCHAR},
