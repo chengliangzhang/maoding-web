@@ -86,25 +86,35 @@
     </where>
   </select>
 
+  <!-- 动态表单内控件可以设置的属性的转换器 -->
+  <resultMap id="WidgetPropertyMap" type="com.maoding.commonModule.dto.WidgetPropertyDTO">
+    <id column="type_id" property="id" jdbcType="VARCHAR" />
+    <result column="type_code" property="name" jdbcType="VARCHAR" />
+    <result column="type_name" property="propertyTitle" jdbcType="VARCHAR" />
+    <result column="property_default_value" property="defaultValue" jdbcType="VARCHAR" />
+    <result column="view_type" property="propertySettingType" jdbcType="INTEGER" />
+    <result column="allow_value" property="allowValue" jdbcType="VARCHAR" />
+  </resultMap>
+
 
   <!-- 动态表单可以使用的控件属性转换器 -->
   <resultMap id="WidgetMap" type="com.maoding.commonModule.dto.WidgetDTO">
-    <id column="id" property="id" jdbcType="VARCHAR" />
-    <result column="field_title" property="fieldTitle" jdbcType="VARCHAR" />
-    <result column="field_type" property="fieldType" jdbcType="INTEGER" />
-    <result column="field_unit" property="fieldUnit" jdbcType="VARCHAR" />
-    <result column="is_statistics" property="isStatistics" jdbcType="INTEGER" />
-    <result column="field_tooltip" property="fieldTooltip" jdbcType="VARCHAR" />
-    <result column="field_default_value" property="fieldDefaultValue" jdbcType="VARCHAR" />
-    <result column="field_select_value_type" property="fieldSelectValueType" jdbcType="INTEGER" />
-    <result column="required_type" property="requiredType" jdbcType="INTEGER" />
+    <id column="widget_id" property="id" jdbcType="VARCHAR" />
+    <result column="widget_name" property="name" jdbcType="VARCHAR" />
+    <collection property="propertyList" resultMap="WidgetPropertyMap"/>
   </resultMap>
 
   <!-- 查询动态表单中可以使用的控件及其属性 -->
   <select id="listWidget" resultMap="WidgetMap">
     select
-      widget_list.*
-    from md_type_widget widget_list
-      left inner md_type_widget_property widget_property on (find_in_set(widget_property.type_id,widget_list.set_type))
+      concat(widget_list.type_id,'-',property_type.type_id) as id,
+      if(property_type.is_name_default = 1,widget_list.type_name,property_type.default_value) as property_default_value,
+      widget_list.type_id as widget_id,
+      widget_list.type_name as widget_name,
+      property_type.*
+    from
+      md_type_widget_property property_type
+      inner join md_type_widget widget_list on (find_in_set(property_type.type_id,widget_list.set_type))
+    group by widget_list.type_id
   </select>
 </mapper>

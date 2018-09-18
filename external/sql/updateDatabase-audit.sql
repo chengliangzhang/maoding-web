@@ -330,23 +330,23 @@ CREATE PROCEDURE `initConst`()
   BEGIN
     -- -- 常量
     delete from md_list_const where classic_id = 49;
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,0,'可选控件',  '000000000:1-允许输入,2-允许字母,3-允许多行,4-允许格式,5-是日期,6-可多选,7-可上传,8-可链接,9-可嵌套;2.可设置属性;3.可选数据接口;4:图标');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,1,'单行文本',  '110000000;1,2,3;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,2,'多行文本',  '111000000;1,2,3;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,3,'日期',     '000010000;1,2,14,3;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,4,'日期区间',  '000010000;10,11,12,13,14,3;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,5,'数字',     '100000000;1,2,3;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,6,'金额',     '100000000;1,2,6,3;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,7,'单选框',   '000000000;1,2,4,5,3;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,8,'复选框',   '000001000;1,2,4,5,3;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,9,'下拉列表', '000000000;1,2,4,5,3;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,10,'富文本',  '111100000;1,2,3;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,11,'纯文本',  '111000000;1,2,3;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,12,'明细',   '000000001;1;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,14,'附件',   '000000100;1,2,5,3;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,15,'分割线', '000000000;1;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,16,'关联项目', '000000010;1,2,15,3;iWork/finance/getProjectList;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,17,'关联审批', '000000010;1,2,15,3;iWork/finance/getExpBaseData;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,0,'可选控件',  '1.允许输入;2.允许输入字母;3.允许输入换行;4.允许选择格式;5.是时间选择框;6.允许复选;7.允许上传;8.允许嵌套;9.获取数据接口;10.可设置的属性');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,1,'单行文本',  '1;1;0;0;0;0;0;0;;1,2,3;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,2,'多行文本',  '1;1;1;0;0;0;0;0;;1,2,3;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,3,'日期',     '0;0;0;0;1;0;0;0;;1,2,14,3;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,4,'日期区间',  '0;0;0;0;1;0;0;0;;10,11,12,13,14,3;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,5,'数字',     '1;0;0;0;0;0;0;0;;1,2,3;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,6,'金额',     '1;0;0;0;0;0;0;0;;1,2,6,3;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,7,'单选框',   '0;0;0;0;0;0;0;0;;1,2,4,5,3;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,8,'复选框',   '0;0;0;0;0;1;0;0;;1,2,4,5,3;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,9,'下拉列表', '0;0;0;0;0;0;0;0;;1,2,4,5,3;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,10,'富文本',  '1;1;1;1;0;0;0;0;;1,2,3;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,11,'纯文本',  '1;1;1;0;0;0;0;0;;1,2,3;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,12,'明细',   '0;0;0;0;0;0;0;1;;1;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,14,'附件',   '0;0;0;0;0;0;1;0;;1,2,5,3;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,15,'分割线', '0;0;0;0;0;0;0;0;;1;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,16,'关联项目', '0;0;0;0;0;0;0;0;iWork/finance/getProjectList;1,2,15,3;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,17,'关联审批', '0;0;0;0;0;0;0;0;iWork/finance/getExpBaseData;1,2,15,3;');
 
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,49,'可选控件','md_type_widget');
@@ -359,28 +359,43 @@ CREATE PROCEDURE `initConst`()
         substring(widget_type.extra,
                   1,
                   char_length(substring_index(widget_type.extra,';',1)))
-                                           as type_attr,
-        substring(widget_type.extra,1,1) as allow_input,
-        substring(widget_type.extra,2,1) as allow_alpha,
-        substring(widget_type.extra,3,1) as allow_crlf,
-        substring(widget_type.extra,4,1) as allow_format,
-        substring(widget_type.extra,5,1) as is_time,
-        substring(widget_type.extra,6,1) as allow_multi,
-        substring(widget_type.extra,7,1) as allow_upload,
-        substring(widget_type.extra,8,1) as allow_link,
-        substring(widget_type.extra,9,1) as allow_nest,
+          as allow_input,
         substring(widget_type.extra,
                   char_length(substring_index(widget_type.extra,';',1))+2,
                   char_length(substring_index(widget_type.extra,';',2)) - char_length(substring_index(widget_type.extra,';',1))-1)
-                                           as set_type,
+          as allow_alpha,
         substring(widget_type.extra,
                   char_length(substring_index(widget_type.extra,';',2))+2,
                   char_length(substring_index(widget_type.extra,';',3)) - char_length(substring_index(widget_type.extra,';',2))-1)
-                                           as optional_url,
+          as allow_crlf,
         substring(widget_type.extra,
                   char_length(substring_index(widget_type.extra,';',3))+2,
                   char_length(substring_index(widget_type.extra,';',4)) - char_length(substring_index(widget_type.extra,';',3))-1)
-                                           as icon
+          as allow_format,
+        substring(widget_type.extra,
+                  char_length(substring_index(widget_type.extra,';',4))+2,
+                  char_length(substring_index(widget_type.extra,';',5)) - char_length(substring_index(widget_type.extra,';',4))-1)
+          as is_time,
+        substring(widget_type.extra,
+                  char_length(substring_index(widget_type.extra,';',5))+2,
+                  char_length(substring_index(widget_type.extra,';',6)) - char_length(substring_index(widget_type.extra,';',5))-1)
+          as allow_multi,
+        substring(widget_type.extra,
+                  char_length(substring_index(widget_type.extra,';',6))+2,
+                  char_length(substring_index(widget_type.extra,';',7)) - char_length(substring_index(widget_type.extra,';',6))-1)
+          as allow_upload,
+        substring(widget_type.extra,
+                  char_length(substring_index(widget_type.extra,';',7))+2,
+                  char_length(substring_index(widget_type.extra,';',8)) - char_length(substring_index(widget_type.extra,';',7))-1)
+          as allow_nest,
+        substring(widget_type.extra,
+                  char_length(substring_index(widget_type.extra,';',8))+2,
+                  char_length(substring_index(widget_type.extra,';',9)) - char_length(substring_index(widget_type.extra,';',8))-1)
+          as optional_url,
+        substring(widget_type.extra,
+                  char_length(substring_index(widget_type.extra,';',9))+2,
+                  char_length(substring_index(widget_type.extra,';',10)) - char_length(substring_index(widget_type.extra,';',9))-1)
+          as set_type
       from
         md_list_const widget_type
       where
@@ -394,23 +409,23 @@ CREATE PROCEDURE `initConst`()
   BEGIN
     -- -- 常量
     delete from md_list_const where classic_id = 50;
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,0,'可设置属性:1.名称;2.显示名称','00:1-允许为空,2-控件名称作为默认值;2.类型;3.默认值;4.可选值');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,1,':标题;标题',  '11;1;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,2,':提示文字;提示文字',  '10;1;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,3,':是否必填;是否必填',  '10;3;;必填');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,4,':可选项;选项值',   '10;4;;选项1,选项2');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,5,':排列方式;排列方式',  '10;2;;横向,纵向');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,6,':单位;单位',   '10;1;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,10,':开始时间标题;标题1', '10;1;开始时间;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,11,':开始时间提示;提示文字1',  '10;1;开始时间;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,12,':结束时间标题;标题2',  '10;1;结束时间;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,13,':结束时间提示;提示文字2',   '10;1;结束时间;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,14,':时间格式;日期类型',   '10;2;;年/月/日,年/月/日 时:分,年/月/日 上午&下午');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,15,':项目属性;项目属性',   '10;2;;参与的项目,所有的项目');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,16,':审批属性;审批属性',   '10;2;;报销,费用,请假,出差');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,0,'可设置属性:1.属性名称;2.显示名称','1.可通过属性名称保存属性;2.控件名称作为默认值;3.类型;4.默认值;5.可选值');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,1,':fieldTitle;标题',  '1;1;1;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,2,':fieldTooltip;提示文字',  '1;0;1;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,3,':requiredType;是否必填',  '1;0;3;;必填');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,4,':可选项;选项值',   '0;0;4;选项1,选项2;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,5,':arrangeType;排列方式',  '1;0;2;;横向,纵向');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,6,':fieldUnit;单位',   '1;0;1;元;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,10,':开始时间标题;标题1', '0;0;1;开始时间;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,11,':开始时间提示;提示文字1',  '0;0;1;开始时间;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,12,':结束时间标题;标题2',  '0;0;1;结束时间;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,13,':结束时间提示;提示文字2',   '0;0;1;结束时间;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,14,':dateType;日期类型',   '1;0;2;;年/月/日,年/月/日 时:分,年/月/日 上午&下午');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,15,':项目属性;项目属性',   '0;0;2;;参与的项目,所有的项目');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,16,':审批属性;审批属性',   '0;0;2;;报销,费用,请假,出差');
 
     -- -- 类型
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,50,'可设置属性','md_type_widget_property,md_widget_property');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,50,'可设置属性','md_type_widget_property');
 
     -- -- 视图
     CREATE OR REPLACE VIEW `md_type_widget_property` AS
@@ -427,21 +442,23 @@ CREATE PROCEDURE `initConst`()
         substring(property_type.extra,
                   1,
                   char_length(substring_index(property_type.extra,';',1)))
-                                           as type_attr,
-        substring(property_type.extra,1,1) as allow_null,
-        substring(property_type.extra,2,1) as is_name_default,
+          as can_save_by_code,
         substring(property_type.extra,
                   char_length(substring_index(property_type.extra,';',1))+2,
                   char_length(substring_index(property_type.extra,';',2)) - char_length(substring_index(property_type.extra,';',1))-1)
-                                           as input_type,
+          as is_name_default,
         substring(property_type.extra,
                   char_length(substring_index(property_type.extra,';',2))+2,
                   char_length(substring_index(property_type.extra,';',3)) - char_length(substring_index(property_type.extra,';',2))-1)
-                                           as default_value,
+          as view_type,
         substring(property_type.extra,
                   char_length(substring_index(property_type.extra,';',3))+2,
                   char_length(substring_index(property_type.extra,';',4)) - char_length(substring_index(property_type.extra,';',3))-1)
-                                           as allow_value
+          as default_value,
+        substring(property_type.extra,
+                  char_length(substring_index(property_type.extra,';',4))+2,
+                  char_length(substring_index(property_type.extra,';',5)) - char_length(substring_index(property_type.extra,';',4))-1)
+          as allow_value
       from
         md_list_const property_type
       where
@@ -684,19 +701,6 @@ call initConst();
 -- -- -- 创建及更改常量 -- 结束 -- -- --
 
 -- -- -- 创建及更改视图 -- 开始 -- -- --
--- 控件可设置属性
-CREATE OR REPLACE VIEW `md_widget_property` AS
-  select
-    concat(widget_list.type_id,'-',property_type.type_id) as id,
-    if(property_type.is_name_default = 1,widget_list.type_name,property_type.default_value) as property_default_value,
-    widget_list.type_id as widget_id,
-    widget_list.type_name as widget_name,
-    input_type.type_name as input_type_name,
-    property_type.*
-  from
-    md_type_widget_property property_type
-    inner join md_type_widget widget_list on (find_in_set(property_type.type_id,widget_list.set_type))
-    inner join md_type_widget_property_type input_type on (input_type.type_id = property_type.input_type);
 -- -- -- 创建及更改视图 -- 结束 -- -- --
 
 -- 固定表单转换成动态表单的初始化数据
