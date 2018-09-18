@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="DynamicFormFieldEntityMapper" >
-  <resultMap id="BaseResultMap" type="com.maoding.dynamicForm.entity.DynamicFormFieldEntity" >
+  <resultMap id="BaseResultMap"  type="com.maoding.dynamicForm.entity.DynamicFormFieldEntity" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="form_id" property="formId" jdbcType="VARCHAR" />
     <result column="field_pid" property="fieldPid" jdbcType="VARCHAR" />
@@ -15,6 +15,8 @@
     <result column="seq_x" property="seqX" jdbcType="INTEGER" />
     <result column="seq_y" property="seqY" jdbcType="INTEGER" />
     <result column="required_type" property="requiredType" jdbcType="INTEGER" />
+    <result column="date_format_type" property="dateFormatType" jdbcType="INTEGER" />
+    <result column="arrange_type" property="arrangeType" jdbcType="INTEGER" />
     <result column="deleted" property="deleted" jdbcType="INTEGER" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="create_by" property="createBy" jdbcType="VARCHAR" />
@@ -22,9 +24,11 @@
     <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
   </resultMap>
 
+
   <sql id="Base_Column_List" >
     id, form_id, field_pid, field_title, field_type,field_unit,is_statistics, field_tooltip, field_default_value,
-    field_select_value_type, seq_x, seq_y, required_type, deleted, create_date, create_by, 
+    field_select_value_type, seq_x, seq_y, required_type,date_format_type,arrange_type,
+     deleted, create_date, create_by,
     update_date, update_by
   </sql>
 
@@ -44,14 +48,15 @@
     insert into maoding_dynamic_form_field (id, form_id, field_pid, 
       field_title, field_type, field_unit,is_statistics,field_tooltip,
       field_default_value, field_select_value_type, 
-      seq_x, seq_y, required_type, 
+      seq_x, seq_y, required_type, date_format_type,arrange_type,
       deleted, create_date, create_by, 
       update_date, update_by)
     values (#{id,jdbcType=VARCHAR}, #{formId,jdbcType=VARCHAR}, #{fieldPid,jdbcType=VARCHAR}, 
       #{fieldTitle,jdbcType=VARCHAR}, #{fieldType,jdbcType=INTEGER}, #{fieldUnit,jdbcType=VARCHAR},
       #{isStatistics,jdbcType=INTEGER},#{fieldTooltip,jdbcType=VARCHAR},
       #{fieldDefaultValue,jdbcType=VARCHAR}, #{fieldSelectValueType,jdbcType=INTEGER}, 
-      #{seqX,jdbcType=INTEGER}, #{seqY,jdbcType=INTEGER}, #{requiredType,jdbcType=INTEGER}, 
+      #{seqX,jdbcType=INTEGER}, #{seqY,jdbcType=INTEGER}, #{requiredType,jdbcType=INTEGER},
+      #{dateFormatType,jdbcType=INTEGER}, #{arrangeType,jdbcType=INTEGER},
       #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
       #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
   </insert>
@@ -70,6 +75,12 @@
       </if>
       <if test="fieldType != null" >
         field_type = #{fieldType,jdbcType=INTEGER},
+      </if>
+      <if test="dateFormatType != null" >
+        date_format_type = #{dateFormatType,jdbcType=INTEGER},
+      </if>
+      <if test="arrangeType != null" >
+        arrange_type = #{arrangeType,jdbcType=INTEGER},
       </if>
       <if test="isStatistics != null" >
         is_statistics = #{isStatistics,jdbcType=INTEGER},
@@ -120,6 +131,8 @@
       field_pid = #{fieldPid,jdbcType=VARCHAR},
       field_title = #{fieldTitle,jdbcType=VARCHAR},
       field_type = #{fieldType,jdbcType=INTEGER},
+      date_format_type = #{dateFormatType,jdbcType=INTEGER},
+      arrange_type = #{arrangeType,jdbcType=INTEGER},
       field_unit = #{fieldUnit,jdbcType=VARCHAR},
       is_statistics = #{isStatistics,jdbcType=INTEGER},
       field_tooltip = #{fieldTooltip,jdbcType=VARCHAR},
@@ -151,23 +164,7 @@
   </select>
 
 
-  <!--<resultMap id="BaseResultMap2" type="com.maoding.dynamicForm.dto.DynamicFormFieldDTO" >-->
-    <!--<id column="id" property="id" jdbcType="VARCHAR" />-->
-    <!--<result column="form_id" property="formId" jdbcType="VARCHAR" />-->
-    <!--<result column="field_pid" property="fieldPid" jdbcType="VARCHAR" />-->
-    <!--<result column="field_title" property="fieldTitle" jdbcType="VARCHAR" />-->
-    <!--<result column="field_type" property="fieldType" jdbcType="INTEGER" />-->
-    <!--<result column="field_unit" property="fieldUnit" jdbcType="VARCHAR" />-->
-    <!--<result column="is_statistics" property="isStatistics" jdbcType="INTEGER" />-->
-    <!--<result column="field_tooltip" property="fieldTooltip" jdbcType="VARCHAR" />-->
-    <!--<result column="field_default_value" property="fieldDefaultValue" jdbcType="VARCHAR" />-->
-    <!--<result column="field_select_value_type" property="fieldSelectValueType" jdbcType="INTEGER" />-->
-    <!--<result column="seq_x" property="seqX" jdbcType="INTEGER" />-->
-    <!--<result column="seq_y" property="seqY" jdbcType="INTEGER" />-->
-    <!--<result column="required_type" property="requiredType" jdbcType="INTEGER" />-->
-  <!--</resultMap>-->
-
-  <resultMap id="DynamicFormFieldMap" type="com.maoding.dynamicForm.dto.DynamicFormFieldDTO">
+  <resultMap id="DynamicFormFieldMap" extends="BaseResultMap" type="com.maoding.dynamicForm.dto.DynamicFormFieldDTO">
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="form_id" property="formId" jdbcType="VARCHAR" />
     <result column="field_pid" property="fieldPid" jdbcType="VARCHAR" />
@@ -181,6 +178,8 @@
     <result column="seq_x" property="seqX" jdbcType="INTEGER" />
     <result column="seq_y" property="seqY" jdbcType="INTEGER" />
     <result column="required_type" property="requiredType" jdbcType="INTEGER" />
+    <result column="date_format_type" property="dateFormatType" jdbcType="INTEGER" />
+    <result column="arrange_type" property="arrangeType" jdbcType="INTEGER" />
     <collection property="detailFieldList" ofType="com.maoding.dynamicForm.dto.DynamicFormFieldDTO"
                 select="listFormField" column="{fieldPid=id}"
     />

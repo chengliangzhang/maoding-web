@@ -5,6 +5,8 @@
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="company_id" property="companyId" jdbcType="VARCHAR" />
     <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+    <result column="is_edit" property="isEdit" jdbcType="INTEGER" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
     <result column="deleted" property="deleted" jdbcType="INTEGER" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="create_by" property="createBy" jdbcType="VARCHAR" />
@@ -12,7 +14,7 @@
     <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, company_id,group_name,deleted, create_date, create_by, update_date, update_by
+    id, company_id,group_name,is_edit,seq,deleted, create_date, create_by, update_date, update_by
   </sql>
   <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -48,10 +50,11 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
   <insert id="insert" parameterType="com.maoding.dynamicForm.entity.DynamicFormGroupEntity" >
-    insert into maoding_dynamic_form_group (id, company_id, group_name, 
+    insert into maoding_dynamic_form_group (id, company_id, group_name, is_edit,seq,
       deleted, create_date, create_by, 
       update_date, update_by)
-    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR},
+     #{isEdit,jdbcType=INTEGER}, #{seq,jdbcType=INTEGER},
       0, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
       #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
   </insert>
@@ -64,6 +67,15 @@
       </if>
       <if test="groupName != null" >
         group_name = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="isEdit != null" >
+        is_edit = #{isEdit,jdbcType=INTEGER},
+      </if>
+      <if test="seq != null" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="deleted != null" >
+        deleted = #{deleted,jdbcType=INTEGER},
       </if>
       <if test="createDate != null" >
         create_date = #{createDate,jdbcType=TIMESTAMP},
@@ -84,10 +96,22 @@
     update maoding_dynamic_form_group
     set company_id = #{companyId,jdbcType=VARCHAR},
       group_name = #{groupName,jdbcType=VARCHAR},
+      is_edit = #{isEdit,jdbcType=INTEGER},
+      seq = #{seq,jdbcType=INTEGER},
+      deleted = #{deleted,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       create_by = #{createBy,jdbcType=VARCHAR},
       update_date = #{updateDate,jdbcType=TIMESTAMP},
       update_by = #{updateBy,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+
+  <select id="selectMaxSeq" resultType="java.lang.Integer" parameterType="java.lang.String" >
+     SELECT
+      ifnull(MAX(seq),0)
+    FROM
+      maoding_dynamic_form_group
+    WHERE
+      company_id = #{currentCompanyId}
+  </select>
 </mapper>

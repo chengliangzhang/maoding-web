@@ -4,16 +4,15 @@ import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.util.BeanUtils;
 import com.maoding.core.util.StringUtils;
 import com.maoding.dynamicForm.dao.DynamicFormDao;
-import com.maoding.dynamicForm.dao.DynamicFormFieldDao;
 import com.maoding.dynamicForm.dao.DynamicFormGroupDao;
-import com.maoding.dynamicForm.dto.DynamicFormFieldDTO;
-import com.maoding.dynamicForm.dto.FormFieldQueryDTO;
 import com.maoding.dynamicForm.dto.FormGroupDTO;
 import com.maoding.dynamicForm.dto.FormGroupEditDTO;
 import com.maoding.dynamicForm.entity.DynamicFormEntity;
-import com.maoding.dynamicForm.entity.DynamicFormFieldEntity;
 import com.maoding.dynamicForm.entity.DynamicFormGroupEntity;
 import com.maoding.dynamicForm.service.DynamicFormGroupService;
+import com.maoding.process.dao.ProcessTypeDao;
+import com.maoding.process.entity.ProcessTypeEntity;
+import com.maoding.process.service.ProcessTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +29,11 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
     private DynamicFormDao dynamicFormDao;
 
     @Autowired
-    private DynamicFormFieldDao dynamicFormFieldDao;
+    private ProcessTypeService processTypeService;
+
+    @Autowired
+    private ProcessTypeDao processTypeDao;
+
 
     /**
      * 描述       添加及更改动态窗口群组
@@ -50,6 +53,7 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
                 BeanUtils.copyProperties(request, updatedEntity);
                 updatedEntity.setCompanyId(request.getCurrentCompanyId());
                 updatedEntity.setGroupName(request.getName());
+                updatedEntity.setSeq(request.getSeq());
                 updatedEntity.setUpdateBy(request.getAccountId());
                 updatedEntity.resetUpdateDate();
                 dynamicFormGroupDao.updateById(updatedEntity);
@@ -63,6 +67,7 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
             updatedEntity.setDeleted(0);
             updatedEntity.setCompanyId(request.getCurrentCompanyId());
             updatedEntity.setGroupName(request.getName());
+            updatedEntity.setSeq(dynamicFormGroupDao.selectMaxSeq(request.getCurrentCompanyId())+1);
             updatedEntity.setCreateBy(request.getAccountId());
             dynamicFormGroupDao.insert(updatedEntity);
         }
@@ -83,54 +88,29 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
     @Override
     public void initDynamicFormGroup(String companyId) throws Exception {
         if(!this.dynamicFormGroupDao.isInitFormGroup(companyId)){
-
             List<DynamicFormGroupEntity> list = dynamicFormGroupDao.listDefaultFormGroup();
-            list.stream().forEach(group->{
+            for(DynamicFormGroupEntity group:list){
                 String formType = group.getId();
                 //1.插入group
                 group.initEntity();
                 group.setDeleted(0);
                 group.setCompanyId(companyId);
+                group.setSeq(dynamicFormGroupDao.selectMaxSeq(companyId)+1);
                 dynamicFormGroupDao.insert(group);
                 //2.查询form
                 List<DynamicFormEntity> formList = dynamicFormDao.listDynamicFormByType(formType);
-                formList.stream().forEach(form->{
-                    String formId = form.getId();
-                    //插入 form
-                    form.initEntity();
-                    form.setCompanyId(companyId);
-                    form.setFormType(group.getId());
-                    form.setDeleted(0);
-                    form.setStatus(1);
-                    dynamicFormDao.insert(form);
-                    //3.查询field
-                    FormFieldQueryDTO fieldQuery = new FormFieldQueryDTO();
-                    fieldQuery.setFormId(formId);
-                    List<DynamicFormFieldDTO> fieldList = dynamicFormFieldDao.listFormFieldByFormId(fieldQuery);
-                    //4.处理字段控件
-                    initDynamicFormField(fieldList,form);
-                });
-            });
+                for(DynamicFormEntity form:formList){
+                    //插入综合表的记录
+                    ProcessTypeEntity processType = new ProcessTypeEntity();
+                    processType.setTargetType(form.getId());
+                    processType.setFormId(form.getId());
+                    processType.setFormType(group.getId());
+                    processType.setCompanyId(companyId);
+                    processTypeService.saveProcessType(processType);
+                }
+            }
         }
     }
 
-    void initDynamicFormField(List<DynamicFormFieldDTO> fieldList,DynamicFormEntity form) {
-        fieldList.stream().forEach(field->{
-            DynamicFormFieldEntity fieldEntity = insertField(field,form,null);
-            field.getDetailFieldList().stream().forEach(child->{
-                insertField(field,form,fieldEntity.getId());
-            });
 
-        });
-    }
-
-    DynamicFormFieldEntity  insertField(DynamicFormFieldDTO field,DynamicFormEntity form,String pid){
-        DynamicFormFieldEntity fieldEntity = BeanUtils.createFrom(field,DynamicFormFieldEntity.class);
-        fieldEntity.initEntity();
-        fieldEntity.setDeleted(0);
-        fieldEntity.setFieldPid(pid);
-        fieldEntity.setFormId(form.getId());
-        dynamicFormFieldDao.insert(fieldEntity);
-        return fieldEntity;
-    }
 }

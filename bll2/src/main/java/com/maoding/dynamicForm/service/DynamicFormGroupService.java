@@ -1,6 +1,5 @@
 package com.maoding.dynamicForm.service;
 
-import com.maoding.activiti.dto.ProcessDefineQueryDTO;
 import com.maoding.dynamicForm.dto.FormGroupDTO;
 import com.maoding.dynamicForm.dto.FormGroupEditDTO;
 
@@ -23,4 +22,6 @@ public interface DynamicFormGroupService {
      * 初始化话分组
      */
     void initDynamicFormGroup(String companyId) throws Exception;
+
+
 }

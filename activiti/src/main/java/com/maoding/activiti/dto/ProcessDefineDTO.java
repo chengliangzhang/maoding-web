@@ -3,6 +3,9 @@ package com.maoding.activiti.dto;
 import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.constant.ProcessTypeConst;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 深圳市卯丁技术有限公司
  * 日期: 2018/9/13
@@ -10,7 +13,7 @@ import com.maoding.core.constant.ProcessTypeConst;
  * 作者: 张成亮
  * 描述: 
  **/
-public class ProcessDefineDTO extends CoreShowDTO {
+public class ProcessDefineDTO<T> extends CoreShowDTO {
     /** id: 流程编号 */
 
     /** 流程说明 */
@@ -36,6 +39,8 @@ public class ProcessDefineDTO extends CoreShowDTO {
 
     /** 是否系统表单 **/
     private Integer isSystem;
+
+    List<T> copyList = new ArrayList<>(); //对象的类型为AuditCopyDataDTO，由于AuditCopyDataDTO 在bill2层。所以此处用Object接收
 
     public Integer getIsSystem() {
         return isSystem;
@@ -111,5 +116,13 @@ public class ProcessDefineDTO extends CoreShowDTO {
                 + companyId + ProcessTypeConst.ID_SPLIT
                 + key + ProcessTypeConst.ID_SPLIT
                 + type);
+    }
+
+    public List<T> getCopyList() {
+        return copyList;
+    }
+
+    public void setCopyList(List<T> copyList) {
+        this.copyList = copyList;
     }
 }

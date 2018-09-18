@@ -35,7 +35,7 @@ body.mini-navbar #page-wrapper.menu-l-none{
     height: 60px;width: 100%;
 }
 .m-box .m-box-title .fixed-title{
-    height: 60px;position: fixed;width: 100%;z-index: 1;padding: 12px 0px 0 8px;
+    height: 60px;position: fixed;width: 100%;z-index: 3;padding: 12px 0px 0 8px;
 }
 .m-box .m-box-title .fixed-title h3{
     margin: 7px 45px;

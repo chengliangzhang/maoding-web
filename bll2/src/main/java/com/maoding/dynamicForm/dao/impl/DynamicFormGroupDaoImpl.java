@@ -28,4 +28,9 @@ public class DynamicFormGroupDaoImpl extends GenericDao<DynamicFormGroupEntity> 
     public boolean isInitFormGroup(String companyId) {
         return this.sqlSession.selectOne("DynamicFormGroupEntityMapper.isInitFormGroup",companyId);
     }
+
+    @Override
+    public Integer selectMaxSeq(String currentCompanyId) {
+        return this.sqlSession.selectOne("DynamicFormGroupEntityMapper.selectMaxSeq",currentCompanyId);
+    }
 }

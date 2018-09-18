@@ -2,6 +2,7 @@ package com.maoding.process.service;
 
 
 import com.maoding.activiti.dto.*;
+import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
 import com.maoding.financial.dto.AuditDTO;
 import com.maoding.financial.dto.AuditEditDTO;
 import com.maoding.financial.dto.SaveExpMainDTO;
@@ -96,4 +97,6 @@ public interface ProcessService {
      * 用于单据撤销
      */
     int suspendProcess(SaveExpMainDTO dto);
+
+
 }

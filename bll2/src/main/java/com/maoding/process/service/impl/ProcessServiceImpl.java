@@ -2,12 +2,15 @@ package com.maoding.process.service.impl;
 
 import com.maoding.activiti.dto.*;
 import com.maoding.activiti.service.WorkflowService;
+import com.maoding.commonModule.dto.AuditCopyDataDTO;
+import com.maoding.commonModule.service.AuditCopyService;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.constant.ExpenseConst;
 import com.maoding.core.constant.ProcessTypeConst;
 import com.maoding.core.constant.ProjectCostConst;
 import com.maoding.core.util.*;
+import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
 import com.maoding.dynamicForm.service.DynamicFormGroupService;
 import com.maoding.financial.dto.AuditBaseDTO;
 import com.maoding.financial.dto.AuditDTO;
@@ -70,6 +73,8 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
     @Autowired
     private ProjectCostService projectCostService;
 
+    @Autowired
+    private AuditCopyService auditCopyService;
 
     @Autowired
     private DynamicFormGroupService dynamicFormGroupService;
@@ -454,7 +459,13 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         dynamicFormGroupService.initDynamicFormGroup(query.getCurrentCompanyId());
         List<ProcessDefineGroupDTO> groupList = processTypeDao.listProcessDefineWithGroup(query);
         if (ObjectUtils.isNotEmpty(groupList)){
-            groupList.forEach(group->updateType(group.getProcessDefineList(),query.getCurrentCompanyId()));
+           // groupList.forEach(group->updateType(group.getProcessDefineList(),query.getCurrentCompanyId())); 不需要，不能更改id
+            groupList.forEach(group->{
+                group.getProcessDefineList().stream().forEach(processType->{
+                    List<AuditCopyDataDTO> list = auditCopyService.listAuditCopy(processType.getId());
+                    processType.setCopyList(list);
+                });
+            });
         }
         return groupList;
     }
@@ -740,4 +751,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         }
         return StringUtils.getStringOrDefault(value,defaultValue);
     }
+
+
+
 }

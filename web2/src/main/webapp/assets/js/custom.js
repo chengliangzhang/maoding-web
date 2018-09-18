@@ -287,7 +287,7 @@ var S_layer = {
             ,shade:option.shade==undefined?  0.3 :option.shade
             ,shadeClose:option.shadeClose || false // 点击空白处快速关闭
             ,time:option.time || 0
-            ,anim:option.anim || 0
+            ,anim:option.shift || 0
             ,maxmin:option.maxmin || false
             ,fixed :option.fixed  || false
             ,resize:option.resize  || false

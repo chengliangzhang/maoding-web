@@ -19,6 +19,9 @@ public class ProcessTypeEntity extends BaseEntity {
      */
     private String formId;
 
+    /** 表单类型(关联id=DynamicFormGroupEntity的id) **/
+    private String formType;
+
     /**
      * 动态表单中，用于作为条件流程的字段id（对应formId记录中的field数据的id）
      */
@@ -119,5 +122,13 @@ public class ProcessTypeEntity extends BaseEntity {
 
     public void setNoticeType(Integer noticeType) {
         this.noticeType = noticeType;
+    }
+
+    public String getFormType() {
+        return formType;
+    }
+
+    public void setFormType(String formType) {
+        this.formType = formType;
     }
 }

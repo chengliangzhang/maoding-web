@@ -3,13 +3,13 @@ package com.maoding.dynamicForm.service.impl;
 import com.maoding.commonModule.dao.ConstDao;
 import com.maoding.commonModule.dto.WidgetDTO;
 import com.maoding.core.base.service.NewBaseService;
-import com.maoding.core.constant.ProcessTypeConst;
 import com.maoding.core.util.*;
 import com.maoding.dynamicForm.dao.*;
 import com.maoding.dynamicForm.dto.*;
 import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldSelectableValueEntity;
+import com.maoding.dynamicForm.entity.DynamicFormGroupEntity;
 import com.maoding.dynamicForm.service.DynamicFormService;
 import com.maoding.process.dao.ProcessTypeDao;
 import com.maoding.process.entity.ProcessTypeEntity;
@@ -69,6 +69,24 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
                 formFieldDTO2.setFieldPid(formFieldDTO.getId());
                 saveDynamicFormField(formFieldDTO2);
             }
+        }
+
+        ProcessTypeEntity processTypeEntity = processTypeDao.selectByCompanyIdFormId(dto);
+        if(StringUtil.isNullOrEmpty(processTypeEntity)){
+            processTypeEntity.initEntity();
+            processTypeEntity.setCompanyId(dto.getCompanyId());
+            processTypeEntity.setTargetType(dynamicFormEntity.getId());//业务类型
+            processTypeEntity.setType(1);//流程类型
+            processTypeEntity.setStatus(StringUtil.isNullOrEmpty(dto.getStatus())?0:dto.getStatus());//业务类型
+            processTypeEntity.setDeleted(0);
+            processTypeEntity.setFormId(dynamicFormEntity.getId());
+            processTypeEntity.setSeq(processTypeDao.selectMaxSeq(dto)+1);
+            processTypeDao.insert(processTypeEntity);
+        }else{
+            //正在做
+            processTypeEntity.setTargetType(dto.getFormType());//业务类型
+            processTypeEntity.setFormId(dynamicFormEntity.getId());
+            processTypeDao.updateById(processTypeEntity);
         }
         return 1;
     }
@@ -162,56 +180,6 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         return dynamicFormFieldEntity.getId();
     }
 
-
-
-    /**
-     * 作者：FYT
-     * 日期：2018/9/14
-     * 描述：审批表 启用/停用
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public int startOrStopDynamicForm(SaveDynamicFormDTO dto) throws Exception {
-        TraceUtils.check(StringUtils.isNotEmpty(dto.getId()),"!id不能为空");
-        TraceUtils.check(ObjectUtils.isNotEmpty(dto.getStatus()),"!status不能为空");
-        //1.查询，根据dto中的id，和当前组织去查询ProcessTypeEntity（targetType = dto.id,companyId = dto.currentCompanyId)
-        ProcessTypeEntity processTypeEntity = null;
-        processTypeEntity = processTypeDao.selectByTargetType(dto);
-        //2.如果 processTypeEntity==null,添加记录，如果不为null，则更新记录
-        if(StringUtil.isNullOrEmpty(processTypeEntity)){
-            //添加参数
-            processTypeEntity.initEntity();
-            processTypeEntity.setCompanyId(dto.getCurrentCompanyId());
-            //设置动态表单状态为Status=1启用 Status=0停用,
-            processTypeEntity.setStatus(dto.getStatus());
-            processTypeEntity.setDeleted(0);
-            processTypeEntity.setSeq(processTypeDao.selectMaxSeq(dto)+1);
-            processTypeEntity.setTargetType(dto.getId());
-            //默认设置流程为1；
-            processTypeEntity.setType(ProcessTypeConst.TYPE_FREE);
-            processTypeDao.insert(processTypeEntity);
-        }else {
-            processTypeEntity.setStatus(dto.getStatus());
-            processTypeDao.updateById(processTypeEntity);
-        }
-//        changeForm(dto);
-        return 1;
-    }
-
-    /**
-     * 作者：FYT
-     * 日期：2018/9/14
-     * 描述：审批表 删除 （不能物理删除，要逻辑删除）
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public int deleteDynamicForm(SaveDynamicFormDTO dto) throws Exception {
-        TraceUtils.check(StringUtils.isNotEmpty(dto.getId()),"!id不能为空");
-        DynamicFormEntity dynamicFormEntity = BeanUtils.createFrom(dto,DynamicFormEntity.class);
-        return dynamicFormDao.updateById(dynamicFormEntity);
-    }
 
     /**
      * 描述       查询动态窗口模板
@@ -322,26 +290,17 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
     /**
      * 作者：FYT
      * 日期：2018/9/17
-     * 描述：后台管理-审批管理-操作，seq排序对调(交换seq值)
+     * 描述：是否启用动态表单 isEdit： 1启用，0禁用
      */
     @Override
-    public int setDynamicFormSeq(SaveDynamicFormDTO dto, SaveDynamicFormDTO dto2) throws Exception {
-        DynamicFormEntity dynamicFormEntity1 = BeanUtils.createFrom(dto,DynamicFormEntity.class);
-        DynamicFormEntity dynamicFormEntity2 = BeanUtils.createFrom(dto,DynamicFormEntity.class);
-        exchangeValue(dynamicFormEntity1,dynamicFormEntity2);
-        dynamicFormDao.updateById(dynamicFormEntity1);
-        dynamicFormDao.updateById(dynamicFormEntity2);
+    public int setDynamicFormIsEdit(SaveDynamicFormDTO dto) throws Exception {
+        //isEdit： 1启用，0禁用
+        ProcessTypeEntity entity = BeanUtils.createFrom(dto, ProcessTypeEntity.class);
+        entity.setDeleted(1);
+        processTypeDao.updateById(entity);
         return 1;
     }
-    private void exchangeValue(DynamicFormEntity dynamicFormEntity1,DynamicFormEntity dynamicFormEntity2){
-        Integer dtoSeq = dynamicFormEntity1.getSeq();
-        Integer dto2Seq = dynamicFormEntity2.getSeq();
-        dtoSeq = dtoSeq^dto2Seq;
-        dto2Seq = dtoSeq^dto2Seq;
-        dtoSeq = dtoSeq^dto2Seq;
-        dynamicFormEntity1.setSeq(dtoSeq);
-        dynamicFormEntity2.setSeq(dto2Seq);
-    }
+
 
     /**
      * 描述       准备用于编辑的动态窗口
@@ -352,20 +311,56 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
      * @author 张成亮
      */
     @Override
-    public FormWithOptionalDTO prepareFormDetail(@NotNull FormEditDTO request) {
+    public FormWithOptionalDTO prepareFormToEdit(@NotNull FormEditDTO request) {
         //获取动态模板信息，并复制已设置的编辑信息到目标模板
         FormWithOptionalDTO form = new FormWithOptionalDTO();
-        if (StringUtils.isNotEmpty(request.getId())){
+        if (StringUtils.isNotEmpty(request.getId())) {
             FormQueryDTO query = new FormQueryDTO();
             query.setId(request.getId());
             FormDTO origForm = getFormDetail(query);
-            BeanUtils.copyProperties(origForm,form);
+            BeanUtils.copyProperties(origForm, form);
         }
-        BeanUtils.copyProperties(request,form);
+        BeanUtils.copyProperties(request, form);
 
         //读取可选控件信息
         List<WidgetDTO> widgetList = constDao.listWidget();
         form.setOptionalWidgetList(widgetList);
+
+        //读取可选群组信息
+        List<DynamicFormGroupEntity> groupList = dynamicFormGroupDao.listFormGroupByCompanyId(request.getCurrentCompanyId());
+        form.setFormGroupList(BeanUtils.createListFrom(groupList,FormGroupDTO.class));
+
         return form;
+    }
+
+
+
+    /**
+     * 作者：FYT
+     * 日期：2018/9/17
+     * 描述：后台管理-审批管理-操作，seq排序对调(交换seq值)
+     */
+    @Override
+    public int setDynamicFormSeq(FormGroupEditDTO dto) throws Exception {
+        //从数据库根据id查询seq
+        ProcessTypeEntity entity1 = processTypeDao.selectById(dto.getDynamicFromId1());
+        ProcessTypeEntity entity2 = processTypeDao.selectById(dto.getDynamicFromId2());
+
+        //值交换
+        exchangeValue(entity1,entity2);
+        processTypeDao.updateById(entity1);
+        processTypeDao.updateById(entity2);
+
+        return 1;
+    }
+    private void exchangeValue(ProcessTypeEntity entity1,ProcessTypeEntity entity2){
+
+        Integer dtoSeq = entity1.getSeq();
+        Integer dto2Seq = entity2.getSeq();
+        dtoSeq = dtoSeq^dto2Seq;
+        dto2Seq = dtoSeq^dto2Seq;
+        dtoSeq = dtoSeq^dto2Seq;
+        entity1.setSeq(dtoSeq);
+        entity2.setSeq(dto2Seq);
     }
 }

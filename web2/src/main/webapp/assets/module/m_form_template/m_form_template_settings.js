@@ -27,8 +27,9 @@
         this._$controlBox = {};//控件面板
         this._$contentForm = {};//已选择的控件表单
         this._$propertyForm = {};//控件属性表单
+        this._$formProperty = {};//审批属性表单
 
-        this._formFieldInfo = [];//保存的json，
+        this._formFieldInfo = [];//预存的json，
 
         this.init();
     }
@@ -43,7 +44,6 @@
             });
             that.renderDialog(html,function () {
 
-
                 that._$controlBox = $(that.element).find('#controlBox');
                 that._$contentForm = $(that.element).find('#contentBox form.content-form');
                 that._$propertyForm = $(that.element).find('#propertyBox form[data-property-type="2"]');
@@ -54,6 +54,7 @@
                 that.renderICheckOrSelect($(that.element).find('#propertyBox'));
                 that.bindActionClick();
                 that.controlMousemove();
+                that.clickOutStoreData();
                 that.resizeFun();
 
             });
@@ -139,7 +140,50 @@
                 language: "zh-CN"
             });
         }
+        //点击文本外预存数据
+        ,clickOutStoreData:function () {
+            var that = this;
+            $(that.element).on('click.m-form-template-settings',function () {
+                console.log('click.m-form-template-settings');
+                //预存数据
+                that.storeFieldData();
+            });
+        }
+        //预存数据
+        ,storeFieldData:function () {
+            var that = this;
+            var formItem = that._$contentForm.find('.form-item');
+            if(formItem.length==0)
+                return false;
+            var data = that._$propertyForm.serializeObject();
 
+            if(!data.hasOwnProperty('itemKey'))
+                return false;
+
+            //判断该itemKey的记录是否存在，存在先删除
+            if(that._formFieldInfo.length>0){
+                var index = null;
+                $.each(that._formFieldInfo,function (i,item) {
+                    if(data.itemKey==item.itemKey){
+                        index = i;
+                        return false;
+                    }
+                });
+                if(index!=null)
+                    that._formFieldInfo.splice(index,1);
+            }
+            that._formFieldInfo.push(data);
+            console.log(that._formFieldInfo)
+        }
+        //类型 明细，附件，只能放一个，
+        ,judgingControlOnlyOne:function (type) {
+            var that = this;
+            if((type==9||type==10) && that._$contentForm.find('.form-item[data-type="'+type+'"]').length==1)
+                return true;
+
+            return false;
+
+        }
         //左边控件拖拽
         ,controlMousemove:function () {
             var that = this;
@@ -169,17 +213,22 @@
                 });
                 $drag.mousedown(function(e) {//鼠标按下，鼠标变移动标志，克隆元素，并确定新克隆元素位置
 
-                    //console.log('mousedown')
+                    console.log('mousedown')
                     //that.renderSelectingControl();
-                    //$(this).clone().addClass("clone").appendTo($("body"));
+                    //$(this).clone().addClass("control-clone").appendTo($("body"));
                     var type = $(e.target).closest('.control-item').attr('data-type');
                     if(isNullOrBlank(type))
                         return false;
-                    var html = that.renderSelectingControl(type);
-                    //console.log(html)
-                    $(html).addClass('clone').appendTo($("body"));
 
-                    that.renderICheckOrSelect($('.clone'));
+                    if(that.judgingControlOnlyOne(type)){
+                        S_toastr.warning('该控件目前只开放一个！');
+                        stopPropagation(e);
+                        return false;
+                    }
+
+                    var html = that.renderSelectingControl(type);
+                    $(html).addClass('control-clone').appendTo($("body"));
+                    that.renderICheckOrSelect($('.control-clone'));
 
                     $("body").css('cursor','move');
                     e = e || window.event;
@@ -199,9 +248,9 @@
                         var oX = e.clientX + 1;
                         var oY = e.clientY + 1;
 
-                        if($(".clone").length>0)
+                        if($(".control-clone").length>0)
                         {
-                            $(".clone").css({"left":oX + "px", "top":oY + "px"});
+                            $(".control-clone").css({"left":oX + "px", "top":oY + "px"});
                             that.makeSpaceToFormItem(oX,oY);
                         }
                         return false;
@@ -212,43 +261,43 @@
 
                     //console.log('document.mouseup')
                     $("body").css('cursor','auto');
-                    if($(".clone").length>0){
+                    if($(".control-clone").length>0){
                         //IE下释放焦点
                         el.releaseCapture && el.releaseCapture();
 
-                        var cleft = that._$contentForm.offset().left;
-                        var eleft = $(".clone").offset().left;
+                        var cleft = that._$contentForm.offset().left-50;
+                        var eleft = $(".control-clone").offset().left;
                         if(eleft>=cleft){
-                            var itemKey = $(".clone").attr('data-key');
+                            var itemKey = $(".control-clone").attr('data-key');
                             console.log('itemKey=='+itemKey)
                             if( that._$contentForm.find('.form-item.m-b-space').length>0){
 
-                                var ele = $(".clone").removeClass('clone').removeAttr('style');
+                                var ele = $(".control-clone").removeClass('control-clone').removeAttr('style');
                                 that._$contentForm.find('.form-item.m-b-space').after(ele.prop('outerHTML'));
 
                             }else if(that._$contentForm.find('h4.m-b-space').length>0){
 
-                                var ele = $(".clone").removeClass('clone').removeAttr('style');
+                                var ele = $(".control-clone").removeClass('control-clone').removeAttr('style');
                                 that._$contentForm.find('h4.m-b-space').after(ele.prop('outerHTML'));
 
                             }else if(that._$contentForm.find('.form-item.m-t-space').length>0){
 
-                                var ele = $(".clone").removeClass('clone').removeAttr('style');
+                                var ele = $(".control-clone").removeClass('control-clone').removeAttr('style');
                                 that._$contentForm.find('.form-item.m-t-space').before(ele.prop('outerHTML'));
 
                             }else{
-                                $(".clone").removeClass('clone').removeAttr('style').appendTo(that._$contentForm);
+                                $(".control-clone").removeClass('control-clone').removeAttr('style').appendTo(that._$contentForm);
                             }
-                            that._$contentForm.find('.form-item').removeClass('m-b-space').removeClass('m-t-space');
-                            that._$contentForm.find('.panel h4').removeClass('m-b-space');
                             that.bindFormItemClick(that._$contentForm.find('.form-item[data-key="'+itemKey+'"]'));
                             that._$contentForm.find('.form-item[data-key="'+itemKey+'"]').click();
                         }
-                        $(".clone").remove();
+                        that._$contentForm.find('.form-item').removeClass('m-b-space').removeClass('m-t-space');
+                        that._$contentForm.find('.panel h4').removeClass('m-b-space');
+                        $(".control-clone").remove();
                     }
                     dragging = false;
                     //阻止冒泡
-                    e.cancelBubble = true;
+                    stopPropagation(e);
                 });
             });
         }
@@ -256,11 +305,28 @@
         ,renderProperty:function () {
             var that = this;
 
-            var type = that._$contentForm.find('.form-item.active').attr('data-type');
+            var $activeFormItem = that._$contentForm.find('.form-item.active');
+            if($activeFormItem.length>1){//多个，明细控件存在
+                $activeFormItem = $activeFormItem.eq(1);//取第二个
+            }
+            var type = $activeFormItem.attr('data-type');
             //获取选中的key
-            var itemKey = that._$contentForm.find('.form-item.active').attr('data-key');
+            var itemKey = $activeFormItem.attr('data-key');
 
-            var html = template('m_form_template/m_form_template_item_property',{type:type,itemKey:itemKey});
+            if(type==9 || type==10 || type==14)
+                return false;
+
+            var formFieldInfo = {};
+            if(that._formFieldInfo.length>0){
+                formFieldInfo = getObjectInArray(that._formFieldInfo,itemKey,'itemKey');
+                if(isNullOrBlank(formFieldInfo))
+                    formFieldInfo = {};
+
+                if(formFieldInfo.approvalAttr && formFieldInfo.approvalAttr.length>1){
+                    formFieldInfo.approvalAttr = formFieldInfo.approvalAttr.join(',');
+                }
+            }
+            var html = template('m_form_template/m_form_template_item_property',{type:type,itemKey:itemKey,formFieldInfo:formFieldInfo});
             that._$propertyForm.html(html);
             that.renderICheckOrSelect(that._$propertyForm,function ($this) {//选中事件
 
@@ -268,9 +334,47 @@
 
             },function ($this) {//点击事件
 
-                if(type==6){
-                    var radioType =  $this.attr('data-type');
-                    if(radioType=='4'){
+                if(type==4 && $this.attr('name')=='dateType'){
+
+                    var radioValue =  $this.val();
+                    var $time = that._$contentForm.find('.form-item[data-key="'+itemKey+'"]').find('.time-box');
+
+                    if(radioValue==2){
+
+                        $time.each(function () {
+                            $(this).removeClass('col-24-xs-24').addClass('col-24-xs-10');
+                            $(this).parent().find('.time-hh').show();
+                            $(this).parent().find('.time-mm').show();
+                            $(this).parent().find('.am-pm').hide();
+                        });
+
+
+                    }else if(radioValue==3){
+
+                        $time.each(function () {
+                            $(this).removeClass('col-24-xs-24').addClass('col-24-xs-10');
+                            $(this).parent().find('.time-hh').hide();
+                            $(this).parent().find('.time-mm').hide();
+                            $(this).parent().find('.am-pm').show();
+
+                        });
+
+                    }else{
+                        $time.each(function () {
+                            $(this).removeClass('col-24-xs-10').addClass('col-24-xs-24');
+                            $(this).parent().find('.time-hh').hide();
+                            $(this).parent().find('.time-mm').hide();
+                            $(this).parent().find('.am-pm').hide();
+
+                        });
+
+                    }
+
+                }
+                //下拉列表
+                if(type==6 && $this.attr('name')=='optional'){
+                    var radioValue =  $this.val();
+                    if(radioValue=='0'){
                         that._$propertyForm.find('.select-item').show();
                         delClick();
                         addSelectItem();
@@ -278,9 +382,7 @@
                         that._$propertyForm.find('.select-item').hide();
                     }
                 }
-
             });
-
 
             var delClick = function(){
                 that._$propertyForm.find('.row button[data-action="delSelectItem"]').off('click').on('click',function () {
@@ -297,7 +399,13 @@
             };
             var addSelectItem = function () {
                 that._$propertyForm.find('button[data-action="addSelectItem"]').on('click',function () {
-                    $(this).next().clone().appendTo($(this).parents('.form-group'));
+
+                    if($(this).parents('.form-group').find('.select-item').length>0){
+                        $(this).next().clone().appendTo($(this).parents('.form-group').find('.select-item'));
+                    }else{
+                        $(this).next().clone().appendTo($(this).parents('.form-group'));
+                    }
+
                     $(this).parents('.form-group').find('.row[data-type="optional"]:last input').val('');
                     $(this).parents('.form-group').find('.row[data-type="optional"]:last .col-xs-1').removeAttr('style');
                     delItem();
@@ -306,25 +414,11 @@
                 });
             };
 
-            //下拉列表
-            if(type==6){
-                that._$propertyForm.find('input[name="optional"]').on('click',function () {
-                    var radioType =  $(this).attr('data-type');
-                    if(radioType=='4'){
-                        that._$propertyForm.find('.select-item').show();
-                        delClick();
-                        addSelectItem();
-                    }else{
-                        that._$propertyForm.find('.select-item').hide();
-                    }
-                });
-            }
             //单选框和复选框
             if(type==7 || type==8){
                 delClick();
                 addSelectItem();
             }
-
 
         }
         //渲染中间正在选择控件面板（点击或拖拽）
@@ -342,9 +436,9 @@
             var $ele = null;
             that._$contentForm.find('.form-item').each(function (i) {
                  var top = $(this).offset().top;
-                 var left = $(this).offset().left;
+                 var left = $(this).offset().left-50;
                  var height = $(this).height();
-                 var width = $(this).width();
+                 var width = $(this).width()+50;
                  var type = $(this).attr('data-type');
                 if(type==9 && $(this).find('.panel').length>0 && $(this).find('.panel .form-item').length==0 && x>left && x<left+width && y>(top+(height/2)) && y<(top+height)){
 
@@ -367,15 +461,19 @@
             });
             return $ele;
         }
+        //已选控件点击事件
         ,bindFormItemClick:function ($formItem) {
             var that = this;
             //选择后的控件点击事件
             $formItem.on('click',function () {
-
+                //先预存数据
+                that.storeFieldData();
                 //添加点击样式
                 $(this).addClass('active').siblings().removeClass('active');
-                //渲染右边控件属性
-                that.renderProperty();
+                //渲染右边控件属性,若是控件9，14，提示
+                if(that.renderProperty()==false)
+                    that._$propertyForm.html('无相关属性');
+
             });
             $formItem.find('button[data-action="delItem"]').on('click',function () {
                 $(this).parent('.form-item').remove();
@@ -408,10 +506,27 @@
             //左边控件点击事件
             $(that.element).find('#controlBox').children().off('click').on('click',function (e) {
 
-                //console.log('controlBox.click')
+                console.log('controlBox.click')
                 var $this = $(this),type = $this.attr('data-type');
-                var itemKey = UUID.genV4().hexNoDelim;//生成key，对应选择的控件，控件属性
-                var html = template('m_form_template/m_form_template_item',{type:type,itemKey:itemKey});
+
+                if(that.judgingControlOnlyOne(type)){
+
+                    //判断提示是否已有，mousedown原因，避免重复提示
+                    var isExist = false;
+                    $('#toast-container .toast-message').each(function () {
+                        if($.trim($(this).text()) == '该控件目前只开放一个！'){
+                            isExist = true;
+                            return false;
+                        }
+                    });
+                    if(isExist)
+                        return false;
+                    S_toastr.warning('该控件目前只开放一个！');
+                    return false;
+                }
+
+                var html = that.renderSelectingControl(type);
+                var itemKey = $(html).attr('data-key');
 
                 //当前选中是明细，且已出现明细面板,追加到明细里
                 var $activeFormItem = that._$contentForm.find('.form-item.active[data-type="9"]');
@@ -420,8 +535,6 @@
                 }else{
                     $(that.element).find('#contentBox form.content-form').append(html);
                 }
-
-
                 var $formItem = that._$contentForm.find('.form-item[data-key="'+itemKey+'"]');
                 that.bindFormItemClick($formItem);
                 that.renderICheckOrSelect($formItem);

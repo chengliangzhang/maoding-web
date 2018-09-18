@@ -1,45 +1,61 @@
-<div data-key="{{itemKey}}" >
+<div data-key="{{itemKey}}" data-type="{{type}}">
+
+    <input type="hidden" name="dateType" value="{{type}}"/>
+    <input type="hidden" name="itemKey" value="{{itemKey}}"/>
+
     {{if type!=11 && type!=12}}
     <div class="form-group">
         <label>标题{{type==4?'1':''}}</label>
-        <input placeholder="请输入标题{{type==4?'1':''}}" class="form-control" type="text" name="fieldTitle">
+        <input placeholder="请输入标题{{type==4?'1':''}}" class="form-control" type="text" name="fieldTitle" value="{{formFieldInfo?formFieldInfo.fieldTitle:''}}">
     </div>
     {{/if}}
 
     {{if type!=13 && type!=14}}
     <div class="form-group">
         <label>提示文字{{type==4?'1':''}}</label>
-        <input placeholder="请输入提示文字{{type==4?'1':''}}" class="form-control" type="text" name="fieldTooltip">
+        <input placeholder="请输入提示文字{{type==4?'1':''}}" class="form-control" type="text" name="fieldTooltip" value="{{formFieldInfo?formFieldInfo.fieldTooltip:''}}">
     </div>
     {{/if}}
 
     {{if type==4}}
     <div class="form-group">
         <label>标题2</label>
-        <input placeholder="请输入标题2" class="form-control" type="text" name="fieldTitle2">
+        <input placeholder="请输入标题2" class="form-control" type="text" name="fieldTitle2" value="{{formFieldInfo?formFieldInfo.fieldTitle2:''}}">
     </div>
     <div class="form-group">
         <label>提示文字2</label>
-        <input placeholder="请输入提示文字2" class="form-control" type="text" name="fieldTooltip2">
+        <input placeholder="请输入提示文字2" class="form-control" type="text" name="fieldTooltip2" value="{{formFieldInfo?formFieldInfo.fieldTooltip2:''}}">
     </div>
     <div class="form-group pt-relative">
         <label>日期类型</label>
         <div class="row">
             <div class="col-xs-12">
                 <label class="i-checks i-checks-label fw-normal">
-                    <input type="radio" name="dateType"/>
+                    {{if formFieldInfo.dateType==null || (formFieldInfo && formFieldInfo.dateType==1)}}
+                        <input type="radio" name="dateType" value="1" checked/>
+                    {{else}}
+                        <input type="radio" name="dateType" value="1"/>
+                    {{/if}}
                     <span class="i-checks-span">年/月/日</span>
                 </label>
             </div>
             <div class="col-xs-12">
                 <label class="i-checks i-checks-label fw-normal">
-                    <input type="radio" name="dateType" />
+                    {{if formFieldInfo && formFieldInfo.dateType==2}}
+                        <input type="radio" name="dateType" value="2" checked/>
+                    {{else}}
+                        <input type="radio" name="dateType" value="2"/>
+                    {{/if}}
                     <span class="i-checks-span">年/月/日 时:分</span>
                 </label>
             </div>
             <div class="col-xs-12">
                 <label class="i-checks i-checks-label fw-normal">
-                    <input type="radio" name="dateType" />
+                    {{if formFieldInfo && formFieldInfo.dateType==3}}
+                        <input type="radio" name="dateType" value="3" checked/>
+                    {{else}}
+                        <input type="radio" name="dateType" value="3"/>
+                    {{/if}}
                     <span class="i-checks-span">年/月/日 上午&下午</span>
                 </label>
             </div>
@@ -50,7 +66,7 @@
     {{if type==5}}
     <div class="form-group">
         <label>单位</label>
-        <input placeholder="请输入单位" class="form-control" type="text" name="fieldUnit">
+        <input placeholder="请输入单位" class="form-control" type="text" name="fieldUnit" value="{{formFieldInfo?formFieldInfo.fieldUnit:''}}">
     </div>
     {{/if}}
 
@@ -60,34 +76,51 @@
         <div class="row">
             <div class="col-xs-12">
                 <label class="i-checks i-checks-label fw-normal">
-                    <input type="radio" name="optional" data-type="1"/>
+                    {{if formFieldInfo.optional==null || (formFieldInfo&&formFieldInfo.optional==1)}}
+                        <input type="radio" name="optional" value="1" checked/>
+                    {{else}}
+                        <input type="radio" name="optional" value="1"/>
+                    {{/if}}
                     <span class="i-checks-span">财务设置中的报销类型<i class="glyphicon glyphicon-info-sign fc-dark-blue m-l-xs"></i></span>
                 </label>
             </div>
             <div class="col-xs-12">
                 <label class="i-checks i-checks-label fw-normal">
-                    <input type="radio" name="optional" data-type="2"/>
+                    {{if formFieldInfo&&formFieldInfo.optional==2}}
+                        <input type="radio" name="optional" value="2" checked/>
+                    {{else}}
+                        <input type="radio" name="optional" value="2"/>
+                    {{/if}}
                     <span class="i-checks-span">财务设置中的费用类型<i class="glyphicon glyphicon-info-sign fc-dark-blue m-l-xs"></i></span>
                 </label>
             </div>
             <div class="col-xs-12">
                 <label class="i-checks i-checks-label fw-normal">
-                    <input type="radio" name="optional" data-type="3"/>
+                    {{if formFieldInfo&&formFieldInfo.optional==3}}
+                        <input type="radio" name="optional" value="3" checked/>
+                    {{else}}
+                        <input type="radio" name="optional" value="3"/>
+                    {{/if}}
                     <span class="i-checks-span">系统中的请假类型<i class="glyphicon glyphicon-info-sign fc-dark-blue m-l-xs"></i></span>
                 </label>
             </div>
             <div class="col-xs-12">
                 <label class="i-checks i-checks-label fw-normal">
-                    <input type="radio" name="optional" data-type="4"/>
+                    {{if formFieldInfo&&formFieldInfo.optional==0}}
+                        <input type="radio" name="optional" value="0" checked/>
+                    {{else}}
+                        <input type="radio" name="optional" value="0"/>
+                    {{/if}}
                     <span class="i-checks-span">自定义添加</span>
                 </label>
             </div>
         </div>
-        <div class="select-item" style="display: none;">
+        <div class="select-item" style="{{formFieldInfo&&formFieldInfo.optional==0?'display: block;':'display: none;'}}">
             <button class="btn btn-link absolute-top-right" data-action="addSelectItem" style="top:108px;"><i class="fa fa-plus"></i></button>
+
             <div class="row m-b-xs" data-type="optional">
                 <div class="col-xs-11">
-                    <input placeholder="选项1" class="form-control" type="text" >
+                    <input placeholder="选项1" class="form-control" type="text" name="iptOptional" value="{{formFieldInfo&& formFieldInfo.iptOptional && formFieldInfo.iptOptional.length>0?formFieldInfo.iptOptional[0]:''}}">
                 </div>
                 <div class="col-xs-1 no-padding" style="display: none;">
                     <button class="btn btn-link p-h-xxs" data-action="delSelectItem"><i class="glyphicon glyphicon-remove"></i></button>
@@ -95,12 +128,26 @@
             </div>
             <div class="row m-b-xs" data-type="optional">
                 <div class="col-xs-11">
-                    <input placeholder="选项2" class="form-control" type="text" >
+                    <input placeholder="选项2" class="form-control" type="text" name="iptOptional" value="{{formFieldInfo && formFieldInfo.iptOptional && formFieldInfo.iptOptional.length>1?formFieldInfo.iptOptional[1]:''}}">
                 </div>
                 <div class="col-xs-1 no-padding">
                     <button class="btn btn-link p-h-xxs" data-action="delSelectItem"><i class="glyphicon glyphicon-remove"></i></button>
                 </div>
             </div>
+            {{if formFieldInfo && formFieldInfo.iptOptional && formFieldInfo.iptOptional.length>2}}
+                {{each formFieldInfo.iptOptional as o i}}
+                    {{if i>1}}
+                        <div class="row m-b-xs" data-type="optional">
+                            <div class="col-xs-11">
+                                <input placeholder="选项{{i}}" class="form-control" type="text" name="iptOptional" value="{{o}}">
+                            </div>
+                            <div class="col-xs-1 no-padding">
+                                <button class="btn btn-link p-h-xxs" data-action="delSelectItem"><i class="glyphicon glyphicon-remove"></i></button>
+                            </div>
+                        </div>
+                    {{/if}}
+                {{/each}}
+            {{/if}}
         </div>
     </div>
     {{/if}}
@@ -111,7 +158,7 @@
         <button class="btn btn-link absolute-top-right" data-action="addSelectItem" style="top:-8px;"><i class="fa fa-plus"></i></button>
         <div class="row m-b-xs" data-type="optional">
             <div class="col-xs-11">
-                <input placeholder="选项1" class="form-control" type="text" >
+                <input placeholder="选项1" class="form-control" type="text" name="iptOptional" value="{{formFieldInfo && formFieldInfo.iptOptional && formFieldInfo.iptOptional.length>0?formFieldInfo.iptOptional[0]:''}}">
             </div>
             <div class="col-xs-1 no-padding" style="display: none;">
                 <button class="btn btn-link p-h-xxs" data-action="delSelectItem"><i class="glyphicon glyphicon-remove"></i></button>
@@ -119,22 +166,44 @@
         </div>
         <div class="row m-b-xs" data-type="optional">
             <div class="col-xs-11">
-                <input placeholder="选项2" class="form-control" type="text" >
+                <input placeholder="选项2" class="form-control" type="text" name="iptOptional" value="{{formFieldInfo && formFieldInfo.iptOptional && formFieldInfo.iptOptional.length>1?formFieldInfo.iptOptional[1]:''}}">
             </div>
             <div class="col-xs-1 no-padding">
                 <button class="btn btn-link p-h-xxs" data-action="delSelectItem"><i class="glyphicon glyphicon-remove"></i></button>
             </div>
         </div>
+        {{if formFieldInfo && formFieldInfo.iptOptional && formFieldInfo.iptOptional.length>2}}
+            {{each formFieldInfo.iptOptional as o i}}
+                {{if i>1}}
+                    <div class="row m-b-xs" data-type="optional">
+                        <div class="col-xs-11">
+                            <input placeholder="选项{{i}}" class="form-control" type="text" name="iptOptional" value="{{o}}">
+                        </div>
+                        <div class="col-xs-1 no-padding">
+                            <button class="btn btn-link p-h-xxs" data-action="delSelectItem"><i class="glyphicon glyphicon-remove"></i></button>
+                        </div>
+                    </div>
+                {{/if}}
+            {{/each}}
+        {{/if}}
     </div>
     <div class="form-group pt-relative">
         <label>排列方式</label>
         <div>
             <label class="i-checks i-checks-label fw-normal m-r-sm">
-                <input type="radio"  />
+                {{if formFieldInfo.arrangeType==null || (formFieldInfo&&formFieldInfo.arrangeType==1)}}
+                    <input type="radio" name="arrangeType" value="1" checked/>
+                {{else}}
+                    <input type="radio" name="arrangeType" value="1"/>
+                {{/if}}
                 <span class="i-checks-span">横向</span>
             </label>
             <label class="i-checks i-checks-label fw-normal">
-                <input type="radio"  />
+                {{if formFieldInfo&&formFieldInfo.arrangeType==2}}
+                    <input type="radio" name="arrangeType" value="2" checked/>
+                {{else}}
+                    <input type="radio" name="arrangeType" value="2" />
+                {{/if}}
                 <span class="i-checks-span">纵向</span>
             </label>
         </div>
@@ -147,25 +216,41 @@
         <div class="row">
             <div class="col-xs-12">
                 <label class="i-checks i-checks-label fw-normal">
-                    <input type="checkbox"  />
+                    {{if formFieldInfo && formFieldInfo.approvalAttr!=null && formFieldInfo.approvalAttr.indexOf('1')>-1}}
+                        <input type="checkbox" name="approvalAttr" value="1" checked/>
+                    {{else}}
+                        <input type="checkbox" name="approvalAttr" value="1"/>
+                    {{/if}}
                     <span class="i-checks-span">报销</span>
                 </label>
             </div>
             <div class="col-xs-12">
                 <label class="i-checks i-checks-label fw-normal">
-                    <input type="checkbox"  />
+                    {{if formFieldInfo && formFieldInfo.approvalAttr!=null && formFieldInfo.approvalAttr.indexOf('2')>-1}}
+                        <input type="checkbox" name="approvalAttr" value="2" checked />
+                    {{else}}
+                        <input type="checkbox" name="approvalAttr" value="2" />
+                    {{/if}}
                     <span class="i-checks-span">费用申请</span>
                 </label>
             </div>
             <div class="col-xs-12">
                 <label class="i-checks i-checks-label fw-normal">
-                    <input type="checkbox"  />
+                    {{if formFieldInfo && formFieldInfo.approvalAttr!=null && formFieldInfo.approvalAttr.indexOf('3')>-1}}
+                        <input type="checkbox" name="approvalAttr" value="3" checked/>
+                    {{else}}
+                        <input type="checkbox" name="approvalAttr" value="3" />
+                    {{/if}}
                     <span class="i-checks-span">请假</span>
                 </label>
             </div>
             <div class="col-xs-12">
                 <label class="i-checks i-checks-label fw-normal">
-                    <input type="checkbox"  />
+                    {{if formFieldInfo && formFieldInfo.approvalAttr!=null && formFieldInfo.approvalAttr.indexOf('4')>-1}}
+                        <input type="checkbox" name="approvalAttr" value="4" checked/>
+                    {{else}}
+                        <input type="checkbox" name="approvalAttr" value="4" />
+                    {{/if}}
                     <span class="i-checks-span">出差</span>
                 </label>
             </div>
@@ -178,24 +263,35 @@
         <label>项目属性</label>
         <div>
             <label class="i-checks i-checks-label fw-normal m-r-sm">
-                <input type="radio"  />
+                {{if formFieldInfo&&formFieldInfo.projectAttr==1}}
+                    <input type="radio" name="projectAttr" value="1" checked/>
+                {{else}}
+                    <input type="radio" name="projectAttr" value="1" />
+                {{/if}}
                 <span class="i-checks-span">我参与的项目</span>
             </label>
             <label class="i-checks i-checks-label fw-normal">
-                <input type="radio"  />
+                {{if formFieldInfo&&formFieldInfo.projectAttr==2}}
+                    <input type="radio" name="projectAttr" value="2" checked/>
+                {{else}}
+                    <input type="radio" name="projectAttr" value="2"/>
+                {{/if}}
                 <span class="i-checks-span">所有项目</span>
             </label>
         </div>
     </div>
     {{/if}}
 
-
     {{if type!=13 && type!=14}}
     <div class="form-group">
         <label>是否必填</label>
         <div class="">
             <label class="i-checks i-checks-label fw-normal">
-                <input type="checkbox"  name="requiredType" value="1"/>
+                {{if formFieldInfo&&formFieldInfo.requiredType==1}}
+                    <input type="checkbox"  name="requiredType" value="1" checked/>
+                {{else}}
+                    <input type="checkbox"  name="requiredType" value="1"/>
+                {{/if}}
                 <span class="i-checks-span">必填</span>
             </label>
         </div>

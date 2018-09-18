@@ -1,10 +1,14 @@
 package com.maoding.dynamicForm.controller;
 
+import com.maoding.commonModule.dto.SaveAuditCopyDTO;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.dynamicForm.dto.*;
 import com.maoding.dynamicForm.service.DynamicFormFieldValueService;
+import com.maoding.dynamicForm.service.DynamicFormGroupService;
 import com.maoding.dynamicForm.service.DynamicFormService;
+import com.maoding.process.service.ProcessService;
+import com.maoding.process.service.ProcessTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +23,17 @@ public class DynamicFormController extends BaseController {
 
     @Autowired
     DynamicFormService dynamicFormService;
+
     @Autowired
     DynamicFormFieldValueService dynamicFormFieldValueService;
+    @Autowired
+    DynamicFormGroupService dynamicFormGroupService;
+
+    @Autowired
+    private ProcessTypeService processTypeService;
+
+    @Autowired
+    private ProcessService processService;
 
 
     @ModelAttribute
@@ -61,29 +74,28 @@ public class DynamicFormController extends BaseController {
     /**
      * 作者：FYT
      * 日期：2018/9/14
-     * 描述：审批表 启用/停用
-     * @return
-     * @throws Exception
+     * 描述：是否启用动态表单 Status： 1启用，0禁用
+     * 参数：（id(processType_Id)）
+     * 接口：iWork/dynamicForm/updateStatusDynamicForm
      */
-    @RequestMapping(value = "/startOrStopDynamicForm", method = RequestMethod.POST)
+    @RequestMapping(value = "/updateStatusDynamicForm", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxMessage startOrStopDynamicForm(@RequestBody SaveDynamicFormDTO dto) throws Exception{
-        updateCurrentUserInfo(dto);
-        return AjaxMessage.succeed(dynamicFormService.startOrStopDynamicForm(dto));
+    public AjaxMessage updateStatusDynamicForm(@RequestBody SaveDynamicFormDTO dto) throws Exception{
+        return AjaxMessage.succeed(processTypeService.updateStatusDynamicForm(dto));
     }
 
     /**
      * 作者：FYT
      * 日期：2018/9/14
-     * 描述：审批表 删除
-     * @return
-     * @throws Exception
+     * 描述：动态表单模板 删除
+     * 参数：（id(processType_Id)）
+     * 接口：iWork/dynamicForm/deleteDynamicForm
      */
     @RequestMapping(value = "/deleteDynamicForm", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage deleteDynamicForm (@RequestBody SaveDynamicFormDTO dto) throws  Exception{
         updateCurrentUserInfo(dto);
-        return AjaxMessage.succeed(dynamicFormService.deleteDynamicForm(dto));
+        return AjaxMessage.succeed(processTypeService.deleteDynamicForm(dto));
     }
 
 
@@ -107,11 +119,11 @@ public class DynamicFormController extends BaseController {
      * 日期       2018/9/18
      * @author   张成亮
      **/
-    @RequestMapping(value = "/prepareFormDetail", method = RequestMethod.POST)
+    @RequestMapping(value = "/prepareFormToEdit", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxMessage prepareFormDetail(@RequestBody FormEditDTO request) throws Exception {
+    public AjaxMessage prepareFormToEdit(@RequestBody FormEditDTO request) throws Exception {
         updateCurrentUserInfo(request);
-        FormWithOptionalDTO detail = dynamicFormService.prepareFormDetail(request);
+        FormWithOptionalDTO detail = dynamicFormService.prepareFormToEdit(request);
         return AjaxMessage.succeed(detail);
     }
 
@@ -119,15 +131,25 @@ public class DynamicFormController extends BaseController {
     /**
      * 作者：FYT
      * 日期：2018/9/17
-     * 描述：后台管理-审批管理-操作，seq排序对调
+     * 描述：后台管理-审批管理-操作，seq排序对调(交换seq值) 和
      * 接口：iWork/dynamicForm/setDynamicFormSeq
-     * 参数：SaveDynamicFormDTO   ID,seq
+     * 参数：FormGroupEditDTO  对调（dynamicFromId1，seq1，dynamicFromId2，seq2）
      */
     @RequestMapping(value = "/setDynamicFormSeq", method = RequestMethod.POST)
     @ResponseBody
-    public AjaxMessage setDynamicFormSeq(@RequestBody SaveDynamicFormDTO dto,SaveDynamicFormDTO dto2) throws Exception {
+    public AjaxMessage setDynamicFormSeq(@RequestBody FormGroupEditDTO dto) throws Exception {
 
-        return AjaxMessage.succeed(dynamicFormService.setDynamicFormSeq(dto,dto2));
+        return AjaxMessage.succeed(dynamicFormService.setDynamicFormSeq(dto));
+    }
+
+
+    /**
+     * 添加知会人
+     */
+    @RequestMapping(value = "/saveAuditCopy", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage saveAuditCopy(@RequestBody SaveAuditCopyDTO dto) throws Exception {
+        return AjaxMessage.succeed(processTypeService.saveAuditCopy(dto));
     }
 
 }

@@ -8,7 +8,7 @@
     height: 50px;
 }
 .m-form-template-settings .m-box-content .form-item,
-.form-item.clone{
+.form-item.control-clone{
     margin: 10px auto;
     padding: 20px 50px 5px 0;
     border: dashed 1px #fff;
@@ -21,7 +21,7 @@
     border: dashed 1px #3f65a6;
     background-color: #ebeff7;
 }
-.clone{
+.control-clone{
     position: absolute; border:1px solid #666; background-color:#CCCCCC;z-index:19891099 ;
     cursor: move; -moz-user-select: none; -webkit-user-select: none;
     width: 50%;

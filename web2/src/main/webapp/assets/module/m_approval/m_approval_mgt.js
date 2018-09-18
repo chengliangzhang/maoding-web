@@ -83,6 +83,23 @@
                 radioClass: 'iradio_square-blue'
             }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked).on('ifClicked',ifClicked);
         }
+        //排序
+        ,setDynamicFormSeq:function (data) {
+            var that = this;
+            var option = {};
+            option.classId = '#content-right';
+            option.url = restApi.url_setDynamicFormSeq;
+            option.postData = data;
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+                   S_toastr.success('操作成功！');
+                   that.init();
+
+                } else {
+                    S_layer.error(response.info);
+                }
+            })
+        }
         //事件绑定
         ,bindActionClick:function () {
             var that = this;
@@ -170,6 +187,65 @@
                                that.init();
                            }
                        },true);
+                       return false;
+                       break;
+                   case 'sortDown'://向下排序
+
+                       var data = {};
+                       var $nextData = $this.closest('tr').next();
+                       data.dynamicFromId1 = dataItem.id;
+                       data.dynamicFromId2 = $nextData.attr('data-id');
+                       data.seq1 = isNullOrBlank(dataItem.seq)?null:dataItem.seq;
+                       data.seq2 = isNullOrBlank($nextData.attr('data-seq'))?null:$nextData.attr('data-seq');
+                       that.setDynamicFormSeq(data);
+                       return false;
+                       break;
+                   case 'sortUp'://向上排序
+
+                       var data = {};
+                       var $prevData = $this.closest('tr').prev();
+                       data.dynamicFromId1 = dataItem.id;
+                       data.dynamicFromId2 = $prevData.attr('data-id');
+                       data.seq1 = isNullOrBlank(dataItem.seq)?null:dataItem.seq;
+                       data.seq2 = isNullOrBlank($prevData.attr('data-seq'))?null:$prevData.attr('data-seq');
+                       that.setDynamicFormSeq(data);
+                       return false;
+                       break;
+                   case 'setCcUser'://添加抄送人
+                       var options = {};
+                       options.title = '添加抄送人员';
+                       options.selectedUserList = [];
+                       options.url = restApi.url_getOrgTree;
+                       options.saveCallback = function (data) {
+                           console.log(data);
+                           if(!(data && data.selectedUserList && data.selectedUserList.length>0))
+                               return false;
+
+                           var ccUser = [];
+                           $.each(data.selectedUserList,function (i,item) {
+                               ccUser.push({
+                                   relationId:item.id,
+                                   relationType:'1'
+                               });
+                           });
+
+                           var option = {};
+                           option.url = restApi.url_saveAuditCopy;
+                           option.postData = {
+                               targetId:dataId,
+                               copyList:ccUser
+                           };
+                           m_ajax.postJson(option, function (response) {
+                               if (response.code == '0') {
+                                   S_toastr.success('操作成功！');
+                                   that.init();
+                               } else {
+                                   S_layer.error(response.info);
+                               }
+                           });
+
+                       };
+                       $('body').m_orgByTree(options);
                        return false;
                        break;
                }

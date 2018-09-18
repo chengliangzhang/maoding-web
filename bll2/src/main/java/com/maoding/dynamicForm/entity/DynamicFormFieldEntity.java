@@ -16,7 +16,7 @@ public class DynamicFormFieldEntity extends BaseEntity{
     //字段类型
     private Integer fieldType;
 
-    //0:不参与统计，1：参与统计
+    //0:不参与统计，1：参与统计（用于分条件设置，是否选择该字段作为流程中的条件判断）
     private Integer isStatistics;
 
     //字段的单位
@@ -39,6 +39,12 @@ public class DynamicFormFieldEntity extends BaseEntity{
 
     //必填类型（1：必填，0：非必填）
     private Integer requiredType;
+
+    //数据类型（用于处理时间的，0：不做处理，1：YYYY/MM/HH,2：YYYY/MM/HH hh:mm,3:YYYY/MM/HH 上午&下午等）
+    private Integer dateFormatType;
+
+    //对于有候选值的数据的排列方式，重点是checkbox，radio（0：横向，1：纵向），默认为横向
+    private Integer arrangeType;
 
     //删除标识
     private Integer deleted;
@@ -145,5 +151,21 @@ public class DynamicFormFieldEntity extends BaseEntity{
 
     public void setIsStatistics(Integer isStatistics) {
         this.isStatistics = isStatistics;
+    }
+
+    public Integer getDateFormatType() {
+        return dateFormatType;
+    }
+
+    public void setDateFormatType(Integer dateFormatType) {
+        this.dateFormatType = dateFormatType;
+    }
+
+    public Integer getArrangeType() {
+        return arrangeType;
+    }
+
+    public void setArrangeType(Integer arrangeType) {
+        this.arrangeType = arrangeType;
     }
 }

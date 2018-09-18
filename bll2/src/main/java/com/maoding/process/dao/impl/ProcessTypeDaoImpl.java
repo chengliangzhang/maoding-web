@@ -4,6 +4,8 @@ import com.maoding.activiti.dto.ProcessDefineDTO;
 import com.maoding.activiti.dto.ProcessDefineGroupDTO;
 import com.maoding.activiti.dto.ProcessDefineQueryDTO;
 import com.maoding.core.base.dao.GenericDao;
+import com.maoding.core.util.ObjectUtils;
+import com.maoding.core.util.TraceUtils;
 import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
 import com.maoding.process.dao.ProcessTypeDao;
 import com.maoding.process.entity.ProcessTypeEntity;
@@ -22,7 +24,9 @@ public class ProcessTypeDaoImpl extends GenericDao<ProcessTypeEntity> implements
         Map<String,Object> map = new HashMap<>();
         map.put("companyId",companyId);
         map.put("targetType",targetType);
-        return this.sqlSession.selectOne("ProcessTypeEntityMapper.getCurrentProcessType",map);
+        List<ProcessTypeEntity> list = sqlSession.selectList("ProcessTypeEntityMapper.getCurrentProcessType",map);
+        TraceUtils.check(ObjectUtils.isNotEmpty(list) && list.size() == 1,"~查询流程信息时产生错误，流程个数不对");
+        return ObjectUtils.getFirst(list);
     }
 
     /**
@@ -52,7 +56,7 @@ public class ProcessTypeDaoImpl extends GenericDao<ProcessTypeEntity> implements
     /**
      * 作者：FYT
      * 日期：2018/9/17
-     * 描述：审批表 启用/停用。根据dto中的id，和当前组织去查询ProcessTypeEntity（targetType = dto.id,companyId = dto.currentCompanyId)
+     * 描述：审批表 启用/停用。根据dto中的id，和当前组织去查询ProcessTypeEntity（form_id = dto.id,companyId = dto.currentCompanyId)
      */
     @Override
     public ProcessTypeEntity selectByTargetType(SaveDynamicFormDTO query) {
@@ -67,5 +71,15 @@ public class ProcessTypeDaoImpl extends GenericDao<ProcessTypeEntity> implements
     @Override
     public Integer selectMaxSeq(SaveDynamicFormDTO query) {
         return sqlSession.selectOne("ProcessTypeEntityMapper.selectMaxSeq",query);
+    }
+
+    /**
+     * 作者：FYT
+     * 日期：2018/9/18
+     * 描述：根据公司companyId 和 formId 查询是否存在动态表单
+     */
+    @Override
+    public ProcessTypeEntity selectByCompanyIdFormId(SaveDynamicFormDTO dto) {
+        return sqlSession.selectOne("ProcessTypeEntityMapper.selectByTargetType",dto);
     }
 }

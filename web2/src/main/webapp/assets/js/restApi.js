@@ -377,4 +377,7 @@ var restApi = {
     , url_saveDynamicFormGroup:window.rootPath+'/iWork/dynamicFormGroup/saveDynamicFormGroup'
     , url_deleteDynamicFormGroup:window.rootPath+'/iWork/dynamicFormGroup/deleteDynamicFormGroup'
     , url_insertDynamicForm:window.rootPath+'/iWork/dynamicForm/insertDynamicForm'
+    , url_setDynamicFormSeq:window.rootPath+'/iWork/dynamicForm/setDynamicFormSeq'
+    , url_saveAuditCopy:window.rootPath+'/iWork/dynamicForm/saveAuditCopy'
+
 };

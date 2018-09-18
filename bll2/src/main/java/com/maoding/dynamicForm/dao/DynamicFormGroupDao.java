@@ -19,4 +19,7 @@ public interface DynamicFormGroupDao extends BaseDao<DynamicFormGroupEntity> {
     List<DynamicFormGroupEntity> listFormGroupByCompanyId(String companyId);
 
     boolean isInitFormGroup(String companyId);
+
+    Integer selectMaxSeq(String  currentCompanyId);
+
 }

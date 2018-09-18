@@ -89,4 +89,15 @@ public interface ProcessTypeConst {
 
     /** 流程定义内用户任务编号前缀 */
     String ID_PREFIX_TASK = "t" + ID_SPLIT;
+
+
+    /**
+     * 无流程
+     */
+    Integer STATUS_PROCESS_START = 1;
+
+    /**
+     * 自由流程
+     */
+    Integer STATUS_PROCESS_STOP = 0;
 }

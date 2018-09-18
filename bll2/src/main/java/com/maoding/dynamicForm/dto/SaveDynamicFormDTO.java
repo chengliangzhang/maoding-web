@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SaveDynamicFormDTO extends BaseDTO {
+/* 此dtoId,就是动态字段表id（maoding_dynamic_form的id）*/
+
 
     /** 名称 **/
     private String formName;
@@ -82,4 +84,6 @@ public class SaveDynamicFormDTO extends BaseDTO {
     public void setSeq(Integer seq) {
         this.seq = seq;
     }
+
+
 }

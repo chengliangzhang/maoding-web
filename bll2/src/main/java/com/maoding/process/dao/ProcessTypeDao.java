@@ -7,6 +7,7 @@ import com.maoding.activiti.dto.ProcessDefineQueryDTO;
 import com.maoding.core.base.dao.BaseDao;
 import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
 import com.maoding.process.entity.ProcessTypeEntity;
+
 import java.util.List;
 
 /**
@@ -36,14 +37,21 @@ public interface ProcessTypeDao extends BaseDao<ProcessTypeEntity> {
     /**
      * 作者：FYT
      * 日期：2018/9/17
-     * 描述：审批表 启用/停用。根据dto中的id，和当前组织去查询ProcessTypeEntity（targetType = dto.id,companyId = dto.currentCompanyId)
+     * 描述：审批表 启用/停用。根据dto中的id，和当前组织去查询ProcessTypeEntity（formId ,companyId = dto.currentCompanyId)
      */
     ProcessTypeEntity selectByTargetType (SaveDynamicFormDTO query);
 
     /**
      * 作者：FYT
      * 日期：2018/9/17
-     * 描述：根据公司查询最后的排序值seq
+     * 描述：根据currentCompanyId查询最后的排序值seq
      */
     Integer selectMaxSeq (SaveDynamicFormDTO query);
+
+    /**
+     * 作者：FYT
+     * 日期：2018/9/18
+     * 描述：根据公司companyId 和 formId 查询是否存在动态表单
+     */
+    ProcessTypeEntity selectByCompanyIdFormId(SaveDynamicFormDTO dto);
 }
