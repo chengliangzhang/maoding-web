@@ -13,13 +13,13 @@ public class WidgetDTO extends CoreShowDTO {
     /** 标题 **/
     private String fieldTitle;
 
-    /** 字段类型 **/
+    /** 字段类型，见SystemParameters.DYNAMIC_FORM_FIELD_TYPE_xxx **/
     private Integer fieldType;
 
-    /** 字段数据类型 **/
+    /** 日期字段的显示格式，1-年/月/日,2-年/月/日 时:分,3-年/月/日 上午&下午 **/
     private Integer dateType;
 
-    /** 字段的单位 **/
+    /** 金额（带单位数字）字段的单位 **/
     private String fieldUnit;
 
     /** 提示文本 **/
@@ -37,20 +37,17 @@ public class WidgetDTO extends CoreShowDTO {
     /** 必填类型（1：必填，0：非必填） **/
     private Integer requiredType;
 
-    /** 0:不参与统计，1：参与统计 **/
+    /** 是否参与统计（数字字段是否属于分条件流程内的条件字段）0:不参与统计，1：参与统计 **/
     private Integer isStatistics;
     
-    /** 项目列表筛选条件：1-我参与的项目，2-所有项目 **/
+    /** 项目列表字段的筛选条件：1-我参与的项目，2-所有项目 **/
     private Integer listProjectFilter;
     
-    /** 关联审批属性：1-报销，2-费用申请，3-请假，4-出差 **/
+    /** 关联审批字段的筛选条件：1-报销，2-费用申请，3-请假，4-出差 **/
     private Integer listAuditFilter;
 
-    /** 报销类型：1-财务设置中的报销类型，2-财务设置中的费用类型，3-系统中的请假类型，0-自定义添加 **/
+    /** 报销列表字段的筛选条件：1-财务设置中的报销类型，2-财务设置中的费用类型，3-系统中的请假类型，0-自定义添加 **/
     private Integer listExpFilter;
-
-    /** 日期格式：1-年/月/日，2-年/月/日 时：分，3-年/月/日 上午&下午 **/
-    private Integer timeFormat;
 
     public Integer getListProjectFilter() {
         return listProjectFilter;
@@ -74,14 +71,6 @@ public class WidgetDTO extends CoreShowDTO {
 
     public void setListExpFilter(Integer listExpFilter) {
         this.listExpFilter = listExpFilter;
-    }
-
-    public Integer getTimeFormat() {
-        return timeFormat;
-    }
-
-    public void setTimeFormat(Integer timeFormat) {
-        this.timeFormat = timeFormat;
     }
 
     public String getFieldTitle() {
