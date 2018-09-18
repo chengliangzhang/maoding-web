@@ -1,5 +1,7 @@
 package com.maoding.dynamicForm.service.impl;
 
+import com.maoding.commonModule.dao.ConstDao;
+import com.maoding.commonModule.dto.WidgetDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.constant.ProcessTypeConst;
 import com.maoding.core.util.*;
@@ -40,6 +42,9 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
 
     @Autowired
     private ProcessTypeDao processTypeDao;
+
+    @Autowired
+    private ConstDao constDao;
 
     /**
      * 作者：FYT
@@ -338,5 +343,29 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         dynamicFormEntity2.setSeq(dto2Seq);
     }
 
+    /**
+     * 描述       准备用于编辑的动态窗口
+     * 要编辑的动态表单模板编号为空则返回空白动态表单信息，加载指定表单信息
+     * 日期       2018/9/18
+     *
+     * @param request 目标表单模板的部分属性
+     * @author 张成亮
+     */
+    @Override
+    public FormWithOptionalDTO prepareFormDetail(@NotNull FormEditDTO request) {
+        //获取动态模板信息，并复制已设置的编辑信息到目标模板
+        FormWithOptionalDTO form = new FormWithOptionalDTO();
+        if (StringUtils.isNotEmpty(request.getId())){
+            FormQueryDTO query = new FormQueryDTO();
+            query.setId(request.getId());
+            FormDTO origForm = getFormDetail(query);
+            BeanUtils.copyProperties(origForm,form);
+        }
+        BeanUtils.copyProperties(request,form);
 
+        //读取可选控件信息
+        List<WidgetDTO> widgetList = constDao.listWidget();
+        form.setOptionalWidgetList(widgetList);
+        return form;
+    }
 }

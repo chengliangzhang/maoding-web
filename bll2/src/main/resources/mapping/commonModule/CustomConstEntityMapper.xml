@@ -85,4 +85,26 @@
       <include refid="FilterByTemplate"/>
     </where>
   </select>
+
+
+  <!-- 动态表单可以使用的控件属性转换器 -->
+  <resultMap id="WidgetMap" type="com.maoding.commonModule.dto.WidgetDTO">
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="field_title" property="fieldTitle" jdbcType="VARCHAR" />
+    <result column="field_type" property="fieldType" jdbcType="INTEGER" />
+    <result column="field_unit" property="fieldUnit" jdbcType="VARCHAR" />
+    <result column="is_statistics" property="isStatistics" jdbcType="INTEGER" />
+    <result column="field_tooltip" property="fieldTooltip" jdbcType="VARCHAR" />
+    <result column="field_default_value" property="fieldDefaultValue" jdbcType="VARCHAR" />
+    <result column="field_select_value_type" property="fieldSelectValueType" jdbcType="INTEGER" />
+    <result column="required_type" property="requiredType" jdbcType="INTEGER" />
+  </resultMap>
+
+  <!-- 查询动态表单中可以使用的控件及其属性 -->
+  <select id="listWidget" resultMap="WidgetMap">
+    select
+      widget_list.*
+    from md_type_widget widget_list
+      left inner md_type_widget_property widget_property on (find_in_set(widget_property.type_id,widget_list.set_type))
+  </select>
 </mapper>

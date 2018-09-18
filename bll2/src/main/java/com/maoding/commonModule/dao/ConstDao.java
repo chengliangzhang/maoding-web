@@ -2,6 +2,7 @@ package com.maoding.commonModule.dao;
 
 import com.maoding.commonModule.dto.ContentDTO;
 import com.maoding.commonModule.dto.TemplateQueryDTO;
+import com.maoding.commonModule.dto.WidgetDTO;
 import com.maoding.commonModule.entity.CustomConstEntity;
 import com.maoding.core.base.dao.BaseDao;
 import org.springframework.stereotype.Repository;
@@ -25,4 +26,12 @@ public interface ConstDao extends BaseDao<CustomConstEntity> {
      * @return  模板包含的组件列表
      **/
     List<ContentDTO> listTemplateContent(TemplateQueryDTO query);
+
+
+    /**
+     * 描述       查询动态表单可以使用的控件信息
+     * 日期       2018/9/18
+     * @author   张成亮
+     **/
+    List<WidgetDTO> listWidget();
 }

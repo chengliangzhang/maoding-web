@@ -22,4 +22,5 @@ public interface DynamicFormFieldDao extends BaseDao<DynamicFormFieldEntity> {
 
 
     List<DynamicFormFieldDTO> listFormFieldByFormId(FormFieldQueryDTO query);
+
 }

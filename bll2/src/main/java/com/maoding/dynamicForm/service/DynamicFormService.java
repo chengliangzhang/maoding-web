@@ -1,8 +1,6 @@
 package com.maoding.dynamicForm.service;
 
-import com.maoding.core.base.service.BaseService;
 import com.maoding.dynamicForm.dto.*;
-import com.maoding.dynamicForm.entity.DynamicFormEntity;
 
 import java.util.List;
 
@@ -62,4 +60,13 @@ public interface DynamicFormService {
      * 描述：后台管理-审批管理-操作，seq排序对调(交换seq值)
      */
     int setDynamicFormSeq (SaveDynamicFormDTO dto,SaveDynamicFormDTO dto2) throws  Exception;
+
+    /**
+     * 描述       准备用于编辑的动态窗口
+     *              要编辑的动态表单模板编号为空则返回空白动态表单信息，加载指定表单信息
+     * 日期       2018/9/18
+     * @author   张成亮
+     **/
+    FormWithOptionalDTO prepareFormDetail(FormEditDTO request);
+
 }

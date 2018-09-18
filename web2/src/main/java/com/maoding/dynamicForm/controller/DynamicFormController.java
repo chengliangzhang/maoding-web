@@ -2,10 +2,7 @@ package com.maoding.dynamicForm.controller;
 
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
-import com.maoding.dynamicForm.dto.FormDTO;
-import com.maoding.dynamicForm.dto.FormQueryDTO;
-import com.maoding.dynamicForm.dto.SaveDynamicAuditDTO;
-import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
+import com.maoding.dynamicForm.dto.*;
 import com.maoding.dynamicForm.service.DynamicFormFieldValueService;
 import com.maoding.dynamicForm.service.DynamicFormService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,6 +101,20 @@ public class DynamicFormController extends BaseController {
         FormDTO detail = dynamicFormService.getFormDetail(query);
         return AjaxMessage.succeed(detail);
     }
+
+    /**
+     * 描述       准备用于编辑的动态表单，包括可以使用的控件等信息
+     * 日期       2018/9/18
+     * @author   张成亮
+     **/
+    @RequestMapping(value = "/prepareFormDetail", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage prepareFormDetail(@RequestBody FormEditDTO request) throws Exception {
+        updateCurrentUserInfo(request);
+        FormWithOptionalDTO detail = dynamicFormService.prepareFormDetail(request);
+        return AjaxMessage.succeed(detail);
+    }
+
 
     /**
      * 作者：FYT
