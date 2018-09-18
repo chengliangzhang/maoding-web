@@ -411,7 +411,7 @@ CREATE PROCEDURE `initConst`()
     delete from md_list_const where classic_id = 50;
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,0,'可设置属性:1.属性名称;2.显示名称','1.可通过属性名称保存属性;2.控件名称作为默认值;3.类型;4.默认值;5.可选值');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,1,':fieldTitle;标题',  '1;1;1;;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,2,':fieldTooltip;提示文字',  '1;0;1;;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,2,':fieldTooltip;提示文字',  '1;1;1;;');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,3,':requiredType;是否必填',  '1;0;3;;必填');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,4,':可选项;选项值',   '0;0;4;选项1,选项2;');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (50,5,':arrangeType;排列方式',  '1;0;2;;横向,纵向');
