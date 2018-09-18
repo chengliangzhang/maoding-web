@@ -134,7 +134,7 @@
                             options.type = 'inline';
                             options.hideArrow = true;
                             options.hideElement = true;
-                            options.content = template('m_xeditable/m_xeditable_time', {text:$this.attr('data-value')});
+                            options.content = template('m_editable/m_editable_time', {text:$this.attr('data-value')});
                             options.onShown = function ($popover) {
                                 $popover.find('.fa-calendar').on('click',function () {
                                     $(this).parent().prev().click();

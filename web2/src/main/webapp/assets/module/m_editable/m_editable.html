@@ -1,9 +1,12 @@
-<form class="form-inline m-editable">
-    <div class=""><div>
-        <div class="m-editable-content dp-inline-block pt-relative">
+<form class="m-editable">
+    {{if title}}
+    <h3 class="popover-title">{{title}}</h3>
+    {{/if}}
+    <div class="m-editable-content {{contentClass}}">
+        <div class="m-editable-control pull-left pt-relative m-r-xs">
             {{#content}}
         </div>
-        <div class="m-editable-buttons dp-inline-block">
+        <div class="m-editable-buttons {{btnRight?'dp-block text-right':'dp-inline-block'}}">
             <button type="submit" class="btn btn-primary btn-sm m-editable-submit">
                 <i class="glyphicon glyphicon-ok"></i>
             </button>
@@ -11,4 +14,6 @@
                 <i class="glyphicon glyphicon-remove"></i>
             </button>
         </div>
+        <div class="clearfix"></div>
+    </div>
 </form>

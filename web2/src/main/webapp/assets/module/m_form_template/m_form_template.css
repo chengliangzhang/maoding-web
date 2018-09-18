@@ -1,0 +1,42 @@
+.m-form-template-settings .m-box-title .fixed-title .btn-link:hover{
+    color: #e6e6e6;
+}
+.m-form-template-settings .m-box-title .fixed-title .btn-primary:hover{
+    border-color: #fff;
+}
+.m-form-template-settings .m-box-content-title div{
+    height: 50px;
+}
+.m-form-template-settings .m-box-content .form-item,
+.form-item.clone{
+    margin: 10px auto;
+    padding: 20px 50px 5px 0;
+    border: dashed 1px #fff;
+}
+.m-form-template-settings .m-box-content .form-item:hover{
+    border: dashed 1px #b2c1db;
+    background-color: #f8f9fb;
+}
+.m-form-template-settings .m-box-content .form-item.active{
+    border: dashed 1px #3f65a6;
+    background-color: #ebeff7;
+}
+.clone{
+    position: absolute; border:1px solid #666; background-color:#CCCCCC;z-index:19891099 ;
+    cursor: move; -moz-user-select: none; -webkit-user-select: none;
+    width: 50%;
+}
+.m-form-template-settings .m-box-content .form-item.m-b-space,
+.m-form-template-settings .m-box-content h4.m-b-space{
+    margin-bottom: 80px;
+}
+.m-form-template-settings .m-box-content .form-item.m-t-space{
+    margin-top: 80px;
+}
+
+.m-form-template-settings .contentBox{
+    border: dashed 1px #fff;
+}
+.m-form-template-settings .contentBox.active{
+    border: dashed 1px #3f65a6;
+}

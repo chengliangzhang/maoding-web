@@ -1,0 +1,204 @@
+<div data-key="{{itemKey}}" >
+    {{if type!=11 && type!=12}}
+    <div class="form-group">
+        <label>标题{{type==4?'1':''}}</label>
+        <input placeholder="请输入标题{{type==4?'1':''}}" class="form-control" type="text" name="fieldTitle">
+    </div>
+    {{/if}}
+
+    {{if type!=13 && type!=14}}
+    <div class="form-group">
+        <label>提示文字{{type==4?'1':''}}</label>
+        <input placeholder="请输入提示文字{{type==4?'1':''}}" class="form-control" type="text" name="fieldTooltip">
+    </div>
+    {{/if}}
+
+    {{if type==4}}
+    <div class="form-group">
+        <label>标题2</label>
+        <input placeholder="请输入标题2" class="form-control" type="text" name="fieldTitle2">
+    </div>
+    <div class="form-group">
+        <label>提示文字2</label>
+        <input placeholder="请输入提示文字2" class="form-control" type="text" name="fieldTooltip2">
+    </div>
+    <div class="form-group pt-relative">
+        <label>日期类型</label>
+        <div class="row">
+            <div class="col-xs-12">
+                <label class="i-checks i-checks-label fw-normal">
+                    <input type="radio" name="dateType"/>
+                    <span class="i-checks-span">年/月/日</span>
+                </label>
+            </div>
+            <div class="col-xs-12">
+                <label class="i-checks i-checks-label fw-normal">
+                    <input type="radio" name="dateType" />
+                    <span class="i-checks-span">年/月/日 时:分</span>
+                </label>
+            </div>
+            <div class="col-xs-12">
+                <label class="i-checks i-checks-label fw-normal">
+                    <input type="radio" name="dateType" />
+                    <span class="i-checks-span">年/月/日 上午&下午</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+
+    {{if type==5}}
+    <div class="form-group">
+        <label>单位</label>
+        <input placeholder="请输入单位" class="form-control" type="text" name="fieldUnit">
+    </div>
+    {{/if}}
+
+    {{if type==6}}
+    <div class="form-group pt-relative">
+        <label>可选项</label>
+        <div class="row">
+            <div class="col-xs-12">
+                <label class="i-checks i-checks-label fw-normal">
+                    <input type="radio" name="optional" data-type="1"/>
+                    <span class="i-checks-span">财务设置中的报销类型<i class="glyphicon glyphicon-info-sign fc-dark-blue m-l-xs"></i></span>
+                </label>
+            </div>
+            <div class="col-xs-12">
+                <label class="i-checks i-checks-label fw-normal">
+                    <input type="radio" name="optional" data-type="2"/>
+                    <span class="i-checks-span">财务设置中的费用类型<i class="glyphicon glyphicon-info-sign fc-dark-blue m-l-xs"></i></span>
+                </label>
+            </div>
+            <div class="col-xs-12">
+                <label class="i-checks i-checks-label fw-normal">
+                    <input type="radio" name="optional" data-type="3"/>
+                    <span class="i-checks-span">系统中的请假类型<i class="glyphicon glyphicon-info-sign fc-dark-blue m-l-xs"></i></span>
+                </label>
+            </div>
+            <div class="col-xs-12">
+                <label class="i-checks i-checks-label fw-normal">
+                    <input type="radio" name="optional" data-type="4"/>
+                    <span class="i-checks-span">自定义添加</span>
+                </label>
+            </div>
+        </div>
+        <div class="select-item" style="display: none;">
+            <button class="btn btn-link absolute-top-right" data-action="addSelectItem" style="top:108px;"><i class="fa fa-plus"></i></button>
+            <div class="row m-b-xs" data-type="optional">
+                <div class="col-xs-11">
+                    <input placeholder="选项1" class="form-control" type="text" >
+                </div>
+                <div class="col-xs-1 no-padding" style="display: none;">
+                    <button class="btn btn-link p-h-xxs" data-action="delSelectItem"><i class="glyphicon glyphicon-remove"></i></button>
+                </div>
+            </div>
+            <div class="row m-b-xs" data-type="optional">
+                <div class="col-xs-11">
+                    <input placeholder="选项2" class="form-control" type="text" >
+                </div>
+                <div class="col-xs-1 no-padding">
+                    <button class="btn btn-link p-h-xxs" data-action="delSelectItem"><i class="glyphicon glyphicon-remove"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+
+    {{if type==7 || type==8}}
+    <div class="form-group pt-relative">
+        <label>可选项</label>
+        <button class="btn btn-link absolute-top-right" data-action="addSelectItem" style="top:-8px;"><i class="fa fa-plus"></i></button>
+        <div class="row m-b-xs" data-type="optional">
+            <div class="col-xs-11">
+                <input placeholder="选项1" class="form-control" type="text" >
+            </div>
+            <div class="col-xs-1 no-padding" style="display: none;">
+                <button class="btn btn-link p-h-xxs" data-action="delSelectItem"><i class="glyphicon glyphicon-remove"></i></button>
+            </div>
+        </div>
+        <div class="row m-b-xs" data-type="optional">
+            <div class="col-xs-11">
+                <input placeholder="选项2" class="form-control" type="text" >
+            </div>
+            <div class="col-xs-1 no-padding">
+                <button class="btn btn-link p-h-xxs" data-action="delSelectItem"><i class="glyphicon glyphicon-remove"></i></button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group pt-relative">
+        <label>排列方式</label>
+        <div>
+            <label class="i-checks i-checks-label fw-normal m-r-sm">
+                <input type="radio"  />
+                <span class="i-checks-span">横向</span>
+            </label>
+            <label class="i-checks i-checks-label fw-normal">
+                <input type="radio"  />
+                <span class="i-checks-span">纵向</span>
+            </label>
+        </div>
+    </div>
+    {{/if}}
+
+    {{if type==12}}
+    <div class="form-group pt-relative">
+        <label>审批属性</label>
+        <div class="row">
+            <div class="col-xs-12">
+                <label class="i-checks i-checks-label fw-normal">
+                    <input type="checkbox"  />
+                    <span class="i-checks-span">报销</span>
+                </label>
+            </div>
+            <div class="col-xs-12">
+                <label class="i-checks i-checks-label fw-normal">
+                    <input type="checkbox"  />
+                    <span class="i-checks-span">费用申请</span>
+                </label>
+            </div>
+            <div class="col-xs-12">
+                <label class="i-checks i-checks-label fw-normal">
+                    <input type="checkbox"  />
+                    <span class="i-checks-span">请假</span>
+                </label>
+            </div>
+            <div class="col-xs-12">
+                <label class="i-checks i-checks-label fw-normal">
+                    <input type="checkbox"  />
+                    <span class="i-checks-span">出差</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    {{/if}}
+
+    {{if type==11}}
+    <div class="form-group pt-relative">
+        <label>项目属性</label>
+        <div>
+            <label class="i-checks i-checks-label fw-normal m-r-sm">
+                <input type="radio"  />
+                <span class="i-checks-span">我参与的项目</span>
+            </label>
+            <label class="i-checks i-checks-label fw-normal">
+                <input type="radio"  />
+                <span class="i-checks-span">所有项目</span>
+            </label>
+        </div>
+    </div>
+    {{/if}}
+
+
+    {{if type!=13 && type!=14}}
+    <div class="form-group">
+        <label>是否必填</label>
+        <div class="">
+            <label class="i-checks i-checks-label fw-normal">
+                <input type="checkbox"  name="requiredType" value="1"/>
+                <span class="i-checks-span">必填</span>
+            </label>
+        </div>
+    </div>
+    {{/if}}
+</div>

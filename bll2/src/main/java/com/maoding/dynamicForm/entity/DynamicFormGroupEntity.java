@@ -16,6 +16,8 @@ public class DynamicFormGroupEntity extends BaseEntity {
     /** 群组名称 **/
     private String groupName;
 
+    private Integer deleted;
+
     public String getCompanyId() {
         return companyId;
     }
@@ -30,5 +32,13 @@ public class DynamicFormGroupEntity extends BaseEntity {
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
+    }
+
+    public Integer getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Integer deleted) {
+        this.deleted = deleted;
     }
 }

@@ -31,7 +31,7 @@
             S_layer.dialog({
                 title: '解散组织',
                 area : '600px',
-                content:template('m_teamInfo/m_teamDissolution',{teamInfo:teamInfo}),
+                content:template('m_teamInfo/m_teamDissolution',{teamInfo:that.settings.teamInfo}),
                 cancel:function () {
                 },
                 ok:function () {

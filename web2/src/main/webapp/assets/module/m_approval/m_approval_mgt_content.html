@@ -4,20 +4,29 @@
         <th>审批名称</th>
         <th>说明</th>
         <th>审批人设置</th>
+        <th>抄送人设置</th>
         <th>操作</th>
     </tr>
     </thead>
     <tbody>
     {{each approvalList as a i}}
-    <tr>
+    <tr data-id="{{a.id}}">
         <td colspan="4">
             <h5 class="f-s-sm">{{a.name}}</h5>
-            <!--<button class="btn btn-link" data-action="add" data-action-type="0" title="添加行政审批"><i class="fa fa-plus"></i></button>-->
+        </td>
+        <td>
+            <div class="btn-group">
+                <button type="button" class="btn btn-link btn-xs fc-dark-blue dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="icon iconfont icon-gengduo"></i></button>
+                <ul class="dropdown-menu">
+                    <li><a href="javascript:void(0);" data-action="editGroup">编辑名称</a></li>
+                    <li><a href="javascript:void(0);" data-action="delGroup">删除分组</a></li>
+                </ul>
+            </div>
         </td>
     </tr>
     {{if a.processDefineList!=null && a.processDefineList.length>0}}
         {{each a.processDefineList as p pi}}
-        <tr>
+        <tr data-id="{{p.id}}" data-pid="{{a.id}}">
             <td>
                 <!--<label class="i-checks">
                     <input class="ck"  name="iCheck{{p.id}}" type="radio"   />
@@ -36,8 +45,23 @@
                 </span>
             </td>
             <td>
-               <!-- <button  class="btn btn-primary btn-xs " data-action="edit" data-action-type="0">编辑</button>
-                <button  class="btn btn-danger btn-xs " data-action="edit" data-action-type="0">删除</button>-->
+                <a class="btn btn-link text-navy no-padding pull-left" data-action="setProcess" data-key="{{p.key}}" data-type="{{p.type}}">抄送人</a>
+                <span class="fc-v1-grey">
+                    （未设置）
+                </span>
+            </td>
+            <td>
+                <button  class="btn btn-link btn-xs fc-dark-blue" data-action="edit" data-action-type="0"><i class="icon iconfont icon-bianji"></i></button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-link btn-xs fc-dark-blue dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="icon iconfont icon-gengduo"></i></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:void(0);" data-action="moveToGroup">移动到其他分组</a></li>
+                        <li><a href="javascript:void(0);">删除</a></li>
+                    </ul>
+                </div>
+                <button class="btn btn-link btn-xs fc-dark-blue"><i class="iconfont icon-xiangshang"></i></button>
+                <button class="btn btn-link btn-xs fc-dark-blue"><i class="iconfont icon-xiangxia"></i></button>
+                <button class="btn btn-link btn-xs fc-dark-blue"><i class="icon iconfont icon-kaiguanguan"></i></button>
             </td>
         </tr>
         {{/each}}

@@ -22,6 +22,9 @@ public class SaveDynamicFormDTO extends BaseDTO {
     /** 说明文字 **/
     private String documentation;
 
+    /*排序*/
+    private Integer seq;
+
     public String getDocumentation() {
         return documentation;
     }
@@ -72,4 +75,11 @@ public class SaveDynamicFormDTO extends BaseDTO {
         this.fieldList = fieldList;
     }
 
+    public Integer getSeq() {
+        return seq;
+    }
+
+    public void setSeq(Integer seq) {
+        this.seq = seq;
+    }
 }

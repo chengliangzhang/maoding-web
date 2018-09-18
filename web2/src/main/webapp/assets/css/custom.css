@@ -30,6 +30,21 @@ body.mini-navbar #page-wrapper.menu-l-none{
     border-top: none;
     padding: 20px;
 }
+
+.m-box .m-box-title{
+    height: 60px;width: 100%;
+}
+.m-box .m-box-title .fixed-title{
+    height: 60px;position: fixed;width: 100%;z-index: 1;padding: 12px 0px 0 8px;
+}
+.m-box .m-box-title .fixed-title h3{
+    margin: 7px 45px;
+}
+.m-box .m-box-content{
+
+}
+
+
 /* table-hover */
 .table-hover > tbody > tr:hover {
     background-color: #e7f4f9;
@@ -227,7 +242,7 @@ body label.error {
 }
 
 .border-dashed {
-    border: dashed 1px #bbb;
+    border: dashed 1px #b8b8b8;
 }
 
 .border-b-dashed {
@@ -642,14 +657,23 @@ input.form-control[readonly] {
 }
 
 .bg-v1-grey {
-    background-color: #bebebe;
-    color: #FFFFFF;
+    background-color: #e3e3e3;
+    color: #666;
 }
 
 .bg-v2-grey {
-    background-color: #f3f3f4;
+    background-color: #f5f5f5;
+    color: #333;
+}
+.bg-v3-grey {
+    background-color: #fbfbfb;
     color: #999;
 }
+.bg-v4-grey {
+    background-color: #eaeaea;
+    color: #666;
+}
+
 .bg-body {
     background-color: #d9d9d9;
 }
@@ -737,6 +761,12 @@ input.form-control[readonly] {
     position: absolute;
     right: -5px;
     top: -5px;
+}
+
+body .absolute-top-right{
+    position: absolute;
+    top: 0;
+    right: 0
 }
 /********标题 *********/
 .title-line{
@@ -924,7 +954,25 @@ body .layer-new .layui-layer-btn{
 .popover.m-floating-popover{
     max-width: 500px;
 }
-
+.popover.m-floating-popover.editable-inline{
+    position: relative;
+    margin: 0px;
+    display: block;
+    background: #fff;
+    border: none;
+    box-shadow: none;
+}
+.popover .m-editable-clear {
+    display: block;
+    width: 13px;
+    height: 13px;
+    position: absolute;
+    opacity: .6;
+    z-index: 100;
+    top: 40%;
+    right: 6px;
+    margin-top: -6px;
+}
 .popover h3.popover-title {
     margin-top: 0;
     font-size: 14px;
@@ -973,11 +1021,21 @@ body div label.error, div.popover.m-popover label.error {
     font-size: 12px;
     color: #a94442;
 }
-
+.popover.bottom>.arrow.has-title:after{
+    border-bottom-color:#f7f7f7;
+}
+form.form-horizontal .not-role {
+    text-decoration: none;
+    border-bottom: none;
+    color: #676a6c;
+    display: block;
+    cursor: text;
+}
 
 
 /*icheck-box*/
-.i-checks.i-checks-label .icheckbox_square-blue{
+.i-checks.i-checks-label .icheckbox_square-blue,
+.i-checks.i-checks-label .iradio_square-blue{
     float:left;
 }
 .i-checks.i-checks-label .i-checks-span{

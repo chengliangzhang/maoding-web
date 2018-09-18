@@ -18,4 +18,6 @@ public interface DynamicFormDao extends BaseDao<DynamicFormEntity> {
      * @author   张成亮
      **/
     List<FormDTO> listForm(FormQueryDTO query);
+
+    List<DynamicFormEntity> listDynamicFormByType(String formType);
 }

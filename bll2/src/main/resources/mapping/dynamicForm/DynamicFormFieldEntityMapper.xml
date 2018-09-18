@@ -55,7 +55,7 @@
       #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
       #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
   </insert>
- 
+
   <update id="updateById" parameterType="com.maoding.dynamicForm.entity.DynamicFormFieldEntity" >
     update maoding_dynamic_form_field
     <set >
@@ -145,6 +145,57 @@
       <if test="formId != null">
         and field_list.form_id = #{formId}
       </if>
+    <if test="fieldPid != null">
+      and field_list.field_pid = #{fieldPid}
+    </if>
+  </select>
+
+
+  <!--<resultMap id="BaseResultMap2" type="com.maoding.dynamicForm.dto.DynamicFormFieldDTO" >-->
+    <!--<id column="id" property="id" jdbcType="VARCHAR" />-->
+    <!--<result column="form_id" property="formId" jdbcType="VARCHAR" />-->
+    <!--<result column="field_pid" property="fieldPid" jdbcType="VARCHAR" />-->
+    <!--<result column="field_title" property="fieldTitle" jdbcType="VARCHAR" />-->
+    <!--<result column="field_type" property="fieldType" jdbcType="INTEGER" />-->
+    <!--<result column="field_unit" property="fieldUnit" jdbcType="VARCHAR" />-->
+    <!--<result column="is_statistics" property="isStatistics" jdbcType="INTEGER" />-->
+    <!--<result column="field_tooltip" property="fieldTooltip" jdbcType="VARCHAR" />-->
+    <!--<result column="field_default_value" property="fieldDefaultValue" jdbcType="VARCHAR" />-->
+    <!--<result column="field_select_value_type" property="fieldSelectValueType" jdbcType="INTEGER" />-->
+    <!--<result column="seq_x" property="seqX" jdbcType="INTEGER" />-->
+    <!--<result column="seq_y" property="seqY" jdbcType="INTEGER" />-->
+    <!--<result column="required_type" property="requiredType" jdbcType="INTEGER" />-->
+  <!--</resultMap>-->
+
+  <resultMap id="DynamicFormFieldMap" type="com.maoding.dynamicForm.dto.DynamicFormFieldDTO">
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="form_id" property="formId" jdbcType="VARCHAR" />
+    <result column="field_pid" property="fieldPid" jdbcType="VARCHAR" />
+    <result column="field_title" property="fieldTitle" jdbcType="VARCHAR" />
+    <result column="field_type" property="fieldType" jdbcType="INTEGER" />
+    <result column="field_unit" property="fieldUnit" jdbcType="VARCHAR" />
+    <result column="is_statistics" property="isStatistics" jdbcType="INTEGER" />
+    <result column="field_tooltip" property="fieldTooltip" jdbcType="VARCHAR" />
+    <result column="field_default_value" property="fieldDefaultValue" jdbcType="VARCHAR" />
+    <result column="field_select_value_type" property="fieldSelectValueType" jdbcType="INTEGER" />
+    <result column="seq_x" property="seqX" jdbcType="INTEGER" />
+    <result column="seq_y" property="seqY" jdbcType="INTEGER" />
+    <result column="required_type" property="requiredType" jdbcType="INTEGER" />
+    <collection property="detailFieldList" ofType="com.maoding.dynamicForm.dto.DynamicFormFieldDTO"
+                select="listFormField" column="{fieldPid=id}"
+    />
+  </resultMap>
+
+  <!-- 查找动态表单控件信息 -->
+  <select id="listFormFieldByFormId" resultMap="DynamicFormFieldMap" parameterType="com.maoding.dynamicForm.dto.FormFieldQueryDTO">
+    select
+    field_list.*
+    from maoding_dynamic_form_field field_list
+    where field_list.deleted = 0
+    and field_list.field_pid is null
+    <if test="formId != null">
+      and field_list.form_id = #{formId}
+    </if>
   </select>
 
 </mapper>

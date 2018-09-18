@@ -17,12 +17,19 @@
             ,maxHeight:null
             ,isArrow: false//是否展示arrow icon
             ,quickClose:true//点击浮窗外，关闭浮窗
+            ,popoverClass:null
+            ,popoverStyle:null
             ,scrollClass:null//滚动条class
             ,scrollClose:true//滚动是否关闭浮窗
             ,windowScrollClose:false//window滚动是否关闭浮窗
             ,renderedCallBack:null
+            ,type:1//默认=1,2=相对，3=inline
+            ,closed:null
+            ,hideElement:false//目标元素是否隐藏
         };
 
+    //记录当前弹窗元素，目标元素=that.element,浮窗元素=$floatingPopover,是否隐藏=that.settings.hideElement
+    var elementList = undefined;
     // The actual plugin constructor
     function Plugin(element, options) {
         this.element = element;
@@ -33,7 +40,9 @@
 
         this._scrollClass = 'm-scroll-box';//默认出现滚动条的元素
         this._scrollClassArr = [];
-        this._eleId = $(this.element).attr('id');
+        this._eleId = $(this.element).attr('id')==undefined?'':$(this.element).attr('id');
+
+        this._elementList = [];//当前存储的浮窗对象
 
         this.init();
     }
@@ -42,12 +51,17 @@
     $.extend(Plugin.prototype, {
         init: function () {
 
+
             var that = this;
+
             //是否清掉其他的浮窗
             if (that.settings.clearOnInit === true)
-                that.closePopover();
+                that.closePopover(0);
 
-            var $floatingPopover = $('<div class="popover m-floating-popover box-shadow" data-id="'+that._eleId+'" data-placement="'+that.settings.placement+'" data-arrow="'+(that.settings.isArrow?'1':'0')+'" style="display:none;"></div>');
+            if(that.settings.hideElement === true)
+                $(that.element).hide();
+
+            var $floatingPopover = $('<div class="popover m-floating-popover box-shadow" data-id="'+that._eleId+'" data-placement="'+that.settings.placement+'" data-arrow="'+(that.settings.isArrow?'1':'0')+'" data-type="'+that.settings.type+'" style="display:none;"></div>');
 
             var $arrow = $('<div class="arrow" style="left: 50%;"></div>');
             if(that.settings.isArrow)
@@ -68,10 +82,20 @@
             if(that.settings.maxHeight!=null)
                 $content.css('max-height',that.settings.maxHeight);
 
+            if(that.settings.popoverClass!=null)
+                $floatingPopover.addClass(that.settings.popoverClass);
+
 
             $floatingPopover.append($content);
-            $(document.body).append($floatingPopover);
+
+            if(that.settings.type==1){
+                $(document.body).append($floatingPopover);
+
+            }else{
+                $(that.element).after($floatingPopover);
+            }
             that.setPosition($(that.element),$floatingPopover,that.settings.placement,that.settings.isArrow);
+
             $floatingPopover.fadeToggle();
 
             var t = setTimeout(function () {
@@ -89,6 +113,15 @@
                 that.settings.renderedCallBack($floatingPopover)
 
 
+            //记录当前弹窗元素，目标元素=that.element,浮窗元素=$floatingPopover,是否隐藏=that.settings.hideElement
+            if(elementList==null || elementList==undefined)
+                elementList = [];
+
+            elementList.push({
+                $ele:$(that.element),
+                $floatingPopover:$floatingPopover,
+                hideElement:that.settings.hideElement
+            });
         }
         //浮窗位置定位
         ,setPosition: function ($ele,$floatingPopover,placement,isArrow,type) {
@@ -97,8 +130,18 @@
                 var p_p = placement;//浮窗的展示位置
                 var p_p_new = p_p;
 
-                var a_ptop = $ele.offset().top;//a标签的top值
-                var a_pleft = $ele.offset().left;//a标签的left值
+                var a_ptop =0;//a标签的top值
+                var a_pleft = 0;//a标签的left值
+
+                var popoverType = $floatingPopover.attr('data-type');
+                if(popoverType==1){
+                    a_ptop = $ele.offset().top;
+                    a_pleft = $ele.offset().left;
+                }else{
+                    a_ptop = $ele.position().top;
+                    a_pleft = $ele.position().left;
+                }
+
                 var a_width = $ele.outerWidth();//a标签的width值
                 var a_height = $ele.outerHeight();//a标签的height值
 
@@ -141,6 +184,8 @@
                     case 'left':
                         p_top = (a_ptop - p_height / 2 + 5);
                         p_left = a_pleft - p_width - 10;
+                        p_p_top = '50%';
+                        p_p_left = '';
                         break;
                     case 'leftTop':
                         break;
@@ -149,6 +194,8 @@
                     case 'right':
                         p_top = (a_ptop - p_height / 2 + 7);
                         p_left = a_pleft + a_width;
+                        p_p_top = '50%';
+                        p_p_left = '';
                         break;
                     case 'rightTop':
                         break;
@@ -159,18 +206,35 @@
                 $floatingPopover.find('.arrow').css({'top': p_p_top, 'left': p_p_left});
 
                 console.log(p_top+'=='+p_left);
-                $floatingPopover.css({
-                    position: 'absolute'
-                    //,display: 'inline-block'
-                    //,top: p_top
-                    //,left: p_left
-                });
-                var time = 100;
-                if(type==1)
-                    time = 0;
-                $floatingPopover.animate({left:p_left,top:p_top},time);
+
+                if(popoverType==3){
+                    $floatingPopover.css({
+                        'position': 'relative',
+                        'top': '0px',
+                        'left': '0px'
+                    });
+                    if(that.settings.popoverStyle)
+                        $floatingPopover.css(that.settings.popoverStyle);
+
+                }else{
+                    $floatingPopover.css({
+                        'position': 'absolute'
+                        //,'display': 'inline-block'
+                        //,'top': p_top
+                        //,'left': p_left
+                    });
+                    var time = 100;
+                    if(type==1)
+                        time = 0;
+                    $floatingPopover.animate({left:p_left,top:p_top},time);
+                }
+
+
                 if(!isArrow)
                     $floatingPopover.css('margin','0');
+
+
+
             }
         }
         //当鼠标点击的焦点不在浮窗内时，关闭浮窗
@@ -188,7 +252,6 @@
             });
         }
         //当浏览器大小改变时，窗口位置重新改变
-
         ,setAllPopoverPosition:function (type) {
             var that = this;
             $('.m-floating-popover').each(function(){
@@ -196,13 +259,18 @@
                 var dataId = $this.attr('data-id');
                 var placement = $this.attr('data-placement');
                 var arrow = $this.attr('data-arrow')=='1'?true:false;
-                if(dataId==undefined || dataId=='')
-                    return true;
+
 
                 if(placement==undefined || placement=='')
                     return true;
 
-                var $ele = $('#'+dataId);
+                var $ele = null;
+                if(dataId==undefined || dataId==''){
+                    $ele = $this.prev();
+                }else{
+                    $ele = $('#'+dataId);
+                }
+
 
                 //延迟重置位置，避免左菜单缩放影响
                 var time = 300;
@@ -255,12 +323,22 @@
             });
         }
         //关闭弹窗
-        ,closePopover: function () {
+        ,closePopover: function (t) {
             var that = this;
-            $(document).find('.m-floating-popover').each(function (i, o) {
+            /*$(document).find('.m-floating-popover').each(function (i, o) {
                 $(o).fadeIn();
                 $(o).remove();
-            });
+            });*/
+
+            if(elementList!=null && elementList!=undefined && elementList.length>0){
+                $.each(elementList,function (i,item) {
+                    item.$floatingPopover.fadeIn();
+                    item.$floatingPopover.remove();
+                    if(item.hideElement)
+                        item.$ele.show();
+                });
+            }
+            elementList = undefined;
             $(document).off('click.m-floating-popover');
             $(window).off('scroll.m-floating-popover');
             $(window).off('resize.m-floating-popover');
@@ -268,6 +346,13 @@
             $.each(that._scrollClassArr,function (i,item) {
                 $('.'+item).off('scroll.m-floating-popover');
             });
+
+
+
+            if(t==0)
+                return false;
+            if(that.settings.closed)
+                that.settings.closed();
         }
     });
 

@@ -105,4 +105,18 @@ public class DynamicFormController extends BaseController {
         return AjaxMessage.succeed(detail);
     }
 
+    /**
+     * 作者：FYT
+     * 日期：2018/9/17
+     * 描述：后台管理-审批管理-操作，seq排序对调
+     * 接口：iWork/dynamicForm/setDynamicFormSeq
+     * 参数：SaveDynamicFormDTO   ID,seq
+     */
+    @RequestMapping(value = "/setDynamicFormSeq", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage setDynamicFormSeq(@RequestBody SaveDynamicFormDTO dto,SaveDynamicFormDTO dto2) throws Exception {
+
+        return AjaxMessage.succeed(dynamicFormService.setDynamicFormSeq(dto,dto2));
+    }
+
 }

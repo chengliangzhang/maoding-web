@@ -287,7 +287,7 @@ var S_layer = {
             ,shade:option.shade==undefined?  0.3 :option.shade
             ,shadeClose:option.shadeClose || false // 点击空白处快速关闭
             ,time:option.time || 0
-            ,shift:option.shift || 0
+            ,anim:option.anim || 0
             ,maxmin:option.maxmin || false
             ,fixed :option.fixed  || false
             ,resize:option.resize  || false
@@ -461,13 +461,11 @@ var S_layer = {
         });
 
     },
-    close: function ($ele) {
+    close: function ($ele,callBack) {
         var index = $ele.parents('.layui-layer').attr('times');
         layer.close(index);
-    },
-    load:function (id, text) {
-
-        layer.load();
+        if(callBack)
+            callBack();
     }
 };
 /**

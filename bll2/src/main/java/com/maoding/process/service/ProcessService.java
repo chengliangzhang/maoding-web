@@ -58,7 +58,7 @@ public interface ProcessService {
      * @param    query 流程查询条件
      * @return   分组流程列表
      **/
-    List<ProcessDefineGroupDTO> listProcessDefineWithGroup(ProcessDefineQueryDTO query);
+    List<ProcessDefineGroupDTO> listProcessDefineWithGroup(ProcessDefineQueryDTO query) throws Exception;
 
     /**
      * 描述       查询流程定义

@@ -1,0 +1,14 @@
+.editable-inline .m-editable .m-editable-content {
+    background: #f9f9f9;
+    padding: 8px 10px;
+    border-radius: 5px;
+}
+.editable-inline .m-editable .error{
+    display: block;
+}
+.editable-inline .m-editable .m-editable-control{
+    width:80%;
+}
+.m-editable .m-editable-clear.textarea-clear{
+    top:6px;
+}

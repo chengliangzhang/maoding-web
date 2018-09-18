@@ -18,6 +18,8 @@
         this._name = pluginName;
         this._currentUserId = window.currentUserId;
         this._currentCompanyId = window.currentCompanyId;
+
+        this._dataList = [];
         this.init();
     }
 
@@ -46,7 +48,7 @@
             option.currentCompanyId = that._currentCompanyId;
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
-
+                    that._dataList = response.data;
                     var html = template('m_approval/m_approval_mgt_content',{approvalList:response.data});
                     $(that.element).find('#approvalManagement').html(html);
                     if(callBack)
@@ -84,9 +86,25 @@
         //事件绑定
         ,bindActionClick:function () {
             var that = this;
-            $(that.element).find('a[data-action]').off('click').on('click',function () {
-               var $this = $(this);
-               var dataAction = $this.attr('data-action');
+            $(that.element).find('a[data-action],button[data-action]').off('click').on('click',function () {
+                var $this = $(this);
+                var dataAction = $this.attr('data-action');
+                var dataId = $this.closest('tr').attr('data-id');
+                var dataPid = $this.closest('tr').attr('data-pid');
+
+                //获取节点数据
+                var dataItem = null;
+
+                if(isNullOrBlank(dataPid)){//当前是分组
+
+                    dataItem = getObjectInArray(that._dataList,dataId);
+
+                }else{//当前是子集
+
+                    var pidDataItem = getObjectInArray(that._dataList,dataPid);
+                    dataItem = getObjectInArray(pidDataItem.processDefineList,dataId);
+                }
+
                switch (dataAction){
                    case 'setProcess':
 
@@ -94,9 +112,66 @@
                         option.key = $this.attr('data-key');
                         option.type = $this.attr('data-type');
                         $(that.element).m_approval_mgt_setProcess(option,true);
-
+                       return false;
                        break;
 
+                   case 'addApproval'://添加审批
+
+                       $('body').m_form_template_settings({type:1},true);
+                       return false;
+                       break;
+                   case 'addGroup'://添加分组
+
+                       $('body').m_approval_mgt_addGroup({
+                           saveCallBack:function () {
+                               that.init();
+                           }
+                       },true);
+                       return false;
+                       break;
+                   case 'editGroup'://编辑分组
+
+                       $('body').m_approval_mgt_addGroup({
+                           title:'编辑分组',
+                           dataInfo:dataItem,
+                           saveCallBack:function () {
+                               that.init();
+                           }
+                       },true);
+                       return false;
+                       break;
+                   case 'delGroup'://删除分组
+
+                       S_layer.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+
+                           var option = {};
+                           option.url = restApi.url_deleteDynamicFormGroup ;
+                           option.postData = {
+                               id:dataId
+                           };
+                           m_ajax.postJson(option, function (response) {
+                               if (response.code == '0') {
+                                   S_toastr.success('删除成功！');
+                                   that.init();
+                               } else {
+                                   S_layer.error(response.info);
+                               }
+                           });
+
+                       }, function () {
+                       });
+                       return false;
+                       break;
+                   case 'moveToGroup'://编辑分组
+
+                       $('body').m_approval_mgt_moveToGroup({
+                           dataInfo:dataItem,
+                           saveCallBack:function () {
+                               that.init();
+                           }
+                       },true);
+                       return false;
+                       break;
                }
 
             });

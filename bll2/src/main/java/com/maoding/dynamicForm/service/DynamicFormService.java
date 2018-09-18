@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 动态表单自定义的数据层接口
  */
-public interface DynamicFormService extends BaseService<DynamicFormEntity> {
+public interface DynamicFormService {
 
     //保存审批表模板
     int insertDynamicForm (SaveDynamicFormDTO dto) throws Exception;
@@ -55,10 +55,11 @@ public interface DynamicFormService extends BaseService<DynamicFormEntity> {
      **/
     List<DynamicFormFieldDTO> changeFormDetail(SaveDynamicFormDTO request);
 
+
     /**
-     * 描述       添加及更改动态窗口群组
-     * 日期       2018/9/14
-     * @author   张成亮
-     **/
-    FormGroupDTO changeFormGroup(FormGroupEditDTO request);
+     * 作者：FYT
+     * 日期：2018/9/17
+     * 描述：后台管理-审批管理-操作，seq排序对调(交换seq值)
+     */
+    int setDynamicFormSeq (SaveDynamicFormDTO dto,SaveDynamicFormDTO dto2) throws  Exception;
 }

@@ -374,4 +374,7 @@ var restApi = {
     , url_getProjectList:window.rootPath+'/iWork/finance/getProjectList'
     , url_getLeaveDetailForWeb:window.rootPath+'/iWork/leave/getLeaveDetailForWeb'
     , url_getProjectCostPaymentDetailByMainIdForPay:window.rootPath+'/iWork/projectcost/getProjectCostPaymentDetailByMainIdForPay'
+    , url_saveDynamicFormGroup:window.rootPath+'/iWork/dynamicFormGroup/saveDynamicFormGroup'
+    , url_deleteDynamicFormGroup:window.rootPath+'/iWork/dynamicFormGroup/deleteDynamicFormGroup'
+    , url_insertDynamicForm:window.rootPath+'/iWork/dynamicForm/insertDynamicForm'
 };

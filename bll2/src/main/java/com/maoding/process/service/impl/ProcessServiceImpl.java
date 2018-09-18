@@ -8,6 +8,7 @@ import com.maoding.core.constant.ExpenseConst;
 import com.maoding.core.constant.ProcessTypeConst;
 import com.maoding.core.constant.ProjectCostConst;
 import com.maoding.core.util.*;
+import com.maoding.dynamicForm.service.DynamicFormGroupService;
 import com.maoding.financial.dto.AuditBaseDTO;
 import com.maoding.financial.dto.AuditDTO;
 import com.maoding.financial.dto.AuditEditDTO;
@@ -68,6 +69,10 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
     @Autowired
     private ProjectCostService projectCostService;
+
+
+    @Autowired
+    private DynamicFormGroupService dynamicFormGroupService;
 
     private static final String auditIdKey = "auditId";
 
@@ -142,7 +147,8 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         if(processDefineDetail!=null){
             //重新组织一下数据，设置人员头像
             this.setUserInfo(processDefineDetail);
-            //添加单位
+            //添加变量名和单位
+            processDefineDetail.setName(prepareRequest.getVarName());
             processDefineDetail.setUnit(prepareRequest.getVarUnit());
         }
         return processDefineDetail;
@@ -443,7 +449,9 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
      * @return   分组流程列表
      **/
     @Override
-    public List<ProcessDefineGroupDTO> listProcessDefineWithGroup(ProcessDefineQueryDTO query) {
+    public List<ProcessDefineGroupDTO> listProcessDefineWithGroup(ProcessDefineQueryDTO query) throws Exception{
+        //先做初始化
+        dynamicFormGroupService.initDynamicFormGroup(query.getCurrentCompanyId());
         List<ProcessDefineGroupDTO> groupList = processTypeDao.listProcessDefineWithGroup(query);
         if (ObjectUtils.isNotEmpty(groupList)){
             groupList.forEach(group->updateType(group.getProcessDefineList(),query.getCurrentCompanyId()));

@@ -53,6 +53,7 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         mainEntity.initEntity();
         mainEntity.setExpDate(DateUtils.getDate());
         mainEntity.setApproveStatus("0");
+        mainEntity.setType(dto.getAuditType());
         mainEntity.setCompanyId(dto.getCurrentCompanyId());
         mainEntity.setCompanyUserId(dto.getCurrentCompanyUserId());
 

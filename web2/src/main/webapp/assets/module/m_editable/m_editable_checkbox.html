@@ -1,0 +1,18 @@
+{{each dataInfo as s i}}
+<div class="pull-left m-r-xs m-t-xs">
+    <label class="i-checks i-checks-label fw-normal">
+        {{if s.isSelected==1}}
+            <input name="{{key}}" type="checkbox" checked value="{{s.id}}"/>
+        {{else}}
+            <input name="{{key}}" type="checkbox" value="{{s.id }}" />
+        {{/if}}
+        <span class="i-checks-span">{{s.name }}</span>
+    </label>
+</div>
+{{/each}}
+<script>
+    $('.i-checks').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue'
+    });
+</script>

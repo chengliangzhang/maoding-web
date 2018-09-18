@@ -15,19 +15,34 @@ public class ProcessTypeEntity extends BaseEntity {
     private String targetType;
 
     /**
+     * 动态字段表id（maoding_dynamic_form的id）
+     */
+    private String formId;
+
+    /**
+     * 动态表单中，用于作为条件流程的字段id（对应formId记录中的field数据的id）
+     */
+    private String conditionFieldId;
+
+    /**
      * （1：自由流程，2：固定流程，3：分条件流程）
      */
     private Integer type;
 
     /**
-     * 动态表单中，用于作为条件流程的字段id
-     */
-    private String conditionFieldId;
-
-    /**
      * 0:未启用，1：启用
      */
     private Integer status;
+
+    /**
+     * 通知方式
+     */
+    private Integer noticeType;
+
+    /**
+     * 排序
+     */
+    private Integer seq;
 
     /**
      * 1:删除，0：有效
@@ -80,5 +95,29 @@ public class ProcessTypeEntity extends BaseEntity {
 
     public void setConditionFieldId(String conditionFieldId) {
         this.conditionFieldId = conditionFieldId;
+    }
+
+    public Integer getSeq() {
+        return seq;
+    }
+
+    public void setSeq(Integer seq) {
+        this.seq = seq;
+    }
+
+    public String getFormId() {
+        return formId;
+    }
+
+    public void setFormId(String formId) {
+        this.formId = formId;
+    }
+
+    public Integer getNoticeType() {
+        return noticeType;
+    }
+
+    public void setNoticeType(Integer noticeType) {
+        this.noticeType = noticeType;
     }
 }

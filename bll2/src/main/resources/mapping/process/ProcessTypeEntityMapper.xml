@@ -6,8 +6,12 @@
     <result column="company_id" property="companyId" jdbcType="VARCHAR" />
     <result column="target_type" property="targetType" jdbcType="VARCHAR" />
     <result column="condition_field_id" property="conditionFieldId" jdbcType="VARCHAR" />
+    <result column="form_id" property="formId" jdbcType="VARCHAR" />
+    <result column="notice_type" property="noticeType" jdbcType="INTEGER" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
     <result column="type" property="type" jdbcType="INTEGER" />
     <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
     <result column="deleted" property="deleted" jdbcType="INTEGER" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="create_by" property="createBy" jdbcType="VARCHAR" />
@@ -16,8 +20,8 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, company_id, target_type, condition_field_id,status,type, deleted, create_date, create_by, update_date,
-    update_by
+    id, company_id, target_type, condition_field_id,status,type, deleted,form_id,notice_type,seq,
+     create_date, create_by, update_date, update_by
   </sql>
 
   <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -43,11 +47,13 @@
 
   <insert id="insert" parameterType="com.maoding.process.entity.ProcessTypeEntity" >
     insert into maoding_process_type (id, company_id, target_type, condition_field_id,
-      status,type, deleted, create_date,
-      create_by, update_date, update_by
+      status,type, deleted,form_id,notice_type,seq,
+      create_date,create_by, update_date, update_by
       )
     values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{targetType,jdbcType=VARCHAR}, #{conditionFieldId,jdbcType=VARCHAR},
-      #{status,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP},
+      #{status,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{deleted,jdbcType=INTEGER},
+       #{formId,jdbcType=VARCHAR}, #{noticeType,jdbcType=INTEGER}, #{seq,jdbcType=INTEGER},
+      #{createDate,jdbcType=TIMESTAMP},
       #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
       )
   </insert>
@@ -73,6 +79,15 @@
       <if test="deleted != null" >
         deleted = #{deleted,jdbcType=INTEGER},
       </if>
+      <if test="formId != null" >
+        form_id = #{formId,jdbcType=VARCHAR},
+      </if>
+      <if test="noticeType != null" >
+        notice_type = #{noticeType,jdbcType=INTEGER},
+      </if>
+      <if test="seq != null" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
       <if test="createDate != null" >
         create_date = #{createDate,jdbcType=TIMESTAMP},
       </if>
@@ -97,6 +112,9 @@
       status = #{status,jdbcType=INTEGER},
       type = #{type,jdbcType=INTEGER},
       deleted = #{deleted,jdbcType=INTEGER},
+      form_id = #{formId,jdbcType=VARCHAR},
+      notice_type = #{noticeType,jdbcType=INTEGER},
+      seq = #{seq,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       create_by = #{createBy,jdbcType=VARCHAR},
       update_date = #{updateDate,jdbcType=TIMESTAMP},
@@ -124,34 +142,30 @@
     </resultMap>
 
   <select id="listProcessDefineWithGroup" resultMap="ProcessDefineGroupMap" parameterType="com.maoding.activiti.dto.ProcessDefineQueryDTO">
-    select
-      if(process_ordered.id is null,null,if(process_ordered.company_id is null,1,0)) as is_system,
-      process_ordered.*
-    from (
       select
-        group_type.id as form_group_id,
+       if(dynamic_form.id is null,null,if(dynamic_form.company_id is null,1,0)) as is_system,
+        ifnull(group_type.id,'otherTypeGroup') as form_group_id,
         group_type.type_id as form_group_type_id,
-        group_type.group_name as group_name,
-        if(process_type.id is null,null,1) as type_setting,
+        ifnull(group_type.group_name,'其他分组') as group_name,
+        if(dynamic_form.id is null,null,1) as type_setting,
         <choose>
           <when test="currentCompanyId != null">
-            concat(#{currentCompanyId},'_',process_type.id,'_1') as process_id,
+            concat(#{currentCompanyId},'_',dynamic_form.id,'_1') as process_id,
           </when>
           <otherwise>
-            concat(ifnull(concat(process_type.company_id,'_'),''),process_type.id,'_1') as process_id,
+            concat(ifnull(concat(dynamic_form.company_id,'_'),''),dynamic_form.id,'_1') as process_id,
           </otherwise>
         </choose>
-        process_type.*
-      from maoding_dynamic_form process_type
-        right join maoding_dynamic_form_group group_type on (group_type.id = process_type.form_type)
+    dynamic_form.*
+      from maoding_dynamic_form_group group_type
+      left join maoding_dynamic_form dynamic_form  on (group_type.id = dynamic_form.form_type and group_type.deleted = 0)
       <if test="currentCompanyId != null">
         where
-          process_type.company_id is null or process_type.company_id = #{currentCompanyId}
+        -- dynamic_form.company_id is null or
+        dynamic_form.company_id = #{currentCompanyId}
       </if>
-      order by process_type.company_id desc
-    ) process_ordered
-    group by ifnull(process_ordered.seq,process_ordered.id),process_ordered.form_group_id
-    order by ifnull(process_ordered.form_group_type_id,9999),ifnull(process_ordered.seq,9999)
+    order by if(group_type.id is null ,DATE('2999-12-31'),group_type.create_date),dynamic_form.create_date
+
   </select>
 
   <!-- 获取流程列表 -->
@@ -168,7 +182,7 @@
           </when>
           <otherwise>
             concat(ifnull(concat(process_type.company_id,'_'),''),process_type.id,'_1') as process_id,
-          </otherwise>
+        </otherwise>
         </choose>
         process_type.*
       from maoding_dynamic_form process_type
@@ -184,5 +198,26 @@
     ) process_ordered
     group by ifnull(process_ordered.seq,process_ordered.id)
     order by ifnull(process_ordered.seq,9999)
+  </select>
+
+  <select id="selectByTargetType" resultMap="BaseResultMap" parameterType="com.maoding.dynamicForm.dto.SaveDynamicFormDTO">
+    select
+      <include refid="Base_Column_List" />
+    from
+      maoding_process_type
+    where
+      target_type = #{id}
+    <if test="currentCompanyId != null">
+      and (company_id = #{currentCompanyId})
+    </if>
+  </select>
+
+  <select id="selectMaxSeq" resultType="java.lang.Integer" parameterType="com.maoding.dynamicForm.dto.SaveDynamicFormDTO">
+    SELECT
+      MAX (seq)
+    FROM
+      maoding_process_type
+    WHERE
+      company_id = #{currentCompanyId}
   </select>
 </mapper>

@@ -15,11 +15,21 @@ public class FormFieldQueryDTO extends CoreQueryDTO {
     /** 表单模板编号 **/
     private String formId;
 
+    private String fieldPid;
+
     public String getFormId() {
         return formId;
     }
 
     public void setFormId(String formId) {
         this.formId = formId;
+    }
+
+    public String getFieldPid() {
+        return fieldPid;
+    }
+
+    public void setFieldPid(String fieldPid) {
+        this.fieldPid = fieldPid;
     }
 }

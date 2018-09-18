@@ -45,6 +45,8 @@
             $data.teamInfo = that._teamInfo;
             $data.isEdit = that._isEdit;
             $data.serverTypeList = that._serverTypeList;
+            $data.saveCallBack = function () {
+            };
             $("#infoMainOBox").m_teamInfoShow($data);
 
 
@@ -128,7 +130,6 @@
                     if(callback){
                         return callback();
                     }
-                    // that.bindClickFun(t,s,f);
                 }else {
                     S_layer.error(response.info);
                 }

@@ -1,16 +1,17 @@
 <form class="form-horizontal m_teamInfoShow">
-
-    <div class="form-group">
-        <label class="col-24-md-5 col-24-lg-3 control-label">组织名称：</label>
-        <div class="col-24-md-19 col-24-lg-21 form-control-static">
-            <a href="javascript:void(0)" data-action="text_companyName">{{teamInfo.companyName}}</a>
+    <div class="form-group m-b-l">
+        <label class="col-24-md-5 col-24-lg-3 text-right">组织名称：</label>
+        <div class="col-24-md-19 col-24-lg-21 ">
+            <a href="javascript:void(0)" class="editable-click" data-action="companyName" data-placeholder="请输入组织名称" data-key="companyName" data-valid="1" data-type="1">
+                {{teamInfo.companyName}}
+            </a>
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-24-md-5 col-24-lg-3 control-label">公司地址：</label>
-        <div class="col-24-md-19 col-24-lg-21 form-control-static" id="city_1">
-            <a href="javascript:void(0);" data-action="edit_address" id="address" class="editable editable-click">
+    <div class="form-group m-b-l">
+        <label class="col-24-md-5 col-24-lg-3 text-right">公司地址：</label>
+        <div class="col-24-md-19 col-24-lg-21 " id="city_1">
+            <a href="javascript:void(0);" class="editable-click" data-action="address" data-placeholder="请输入组织名称" data-key="address" data-type="4">
                 {{if teamInfo.province && teamInfo.province!=''}}
                     {{teamInfo.province}}&nbsp;
                 {{/if}}
@@ -24,44 +25,48 @@
             </a>
         </div>
     </div>
-    <!--<div class="form-group">-->
-        <!--<label class="col-lg-2 control-label">详细地址：</label>-->
-        <!--<div class="col-24-md-19 col-24-lg-21 form-control-static">{{teamInfo.companyAddress}}</div>-->
-    <!--</div>-->
-
-    <div class="form-group">
-        <label class="col-24-md-5 col-24-lg-3 control-label">服务类型：</label>
-        <div class="col-24-md-19 col-24-lg-21 form-control-static">
-            <a href="javascript:void(0)" data-action="checklist_serverTypeList" class="editable editable-click">
-                {{each teamInfo.serverTypeList as server a}}
-                <span class="serverType m-r">{{server.name}}</span>
+    <div class="form-group m-b-l">
+        <label class="col-24-md-5 col-24-lg-3 text-right">服务类型：</label>
+        <div class="col-24-md-19 col-24-lg-21 ">
+            <a href="javascript:void(0)" class="editable-click" data-action="serverTypeList" data-key="serverType" data-type="3">
+                {{each serverTypeList as s }}
+                    {{if teamInfo.serverType && teamInfo.serverType.indexOf(s.id)>-1}}
+                        <span class="serverType m-r">{{s.name}}</span>
+                    {{/if}}
                 {{/each}}
             </a>
         </div>
     </div>
-    <div class="form-group">
-        <label class="col-24-md-5 col-24-lg-3 control-label">联系电话：</label>
-        <div class="col-24-md-19 col-24-lg-21 form-control-static">
-            <a href="javascript:void(0)" data-action="text_companyPhone">{{teamInfo.companyPhone}}</a>
+    <div class="form-group m-b-l">
+        <label class="col-24-md-5 col-24-lg-3 text-right">联系电话：</label>
+        <div class="col-24-md-19 col-24-lg-21 ">
+            <a href="javascript:void(0)" class="editable-click" data-action="companyPhone" data-placeholder="请输入联系电话" data-key="companyPhone" data-type="1">
+                {{teamInfo.companyPhone}}
+            </a>
         </div>
     </div>
-    <div class="form-group">
-        <label class="col-24-md-5 col-24-lg-3 control-label">传真号码：</label>
-        <div class="col-24-md-19 col-24-lg-21 form-control-static">
-            <a href="javascript:void(0)" data-action="text_companyFax">{{teamInfo.companyFax}}</a>
+    <div class="form-group m-b-l">
+        <label class="col-24-md-5 col-24-lg-3 text-right">传真号码：</label>
+        <div class="col-24-md-19 col-24-lg-21 ">
+            <a href="javascript:void(0)" class="editable-click" data-action="companyFax" data-placeholder="请输入传真号码" data-key="companyFax" data-type="1">
+                {{teamInfo.companyFax}}
+            </a>
         </div>
     </div>
-    <div class="form-group">
-        <label class="col-24-md-5 col-24-lg-3 control-label">电子邮箱：</label>
-        <div class="col-24-md-19 col-24-lg-21 form-control-static">
-            <a href="javascript:void(0)" data-action="text_companyEmail">{{teamInfo.companyEmail}}</a>
-            </div>
+    <div class="form-group m-b-l">
+        <label class="col-24-md-5 col-24-lg-3 text-right">电子邮箱：</label>
+        <div class="col-24-md-19 col-24-lg-21 ">
+            <a href="javascript:void(0)" class="editable-click" data-action="companyEmail" data-placeholder="请输入电子邮箱" data-key="companyEmail" data-type="1">
+                {{teamInfo.companyEmail}}
+            </a>
+        </div>
     </div>
-    <div class="form-group companyComment" >
-        <label class="col-24-md-5 col-24-lg-3 control-label">组织简介：</label>
-        <div class="col-24-md-19 col-24-lg-21 form-control-static" style="min-height: 44px;height: auto;">
-            <a href="javascript:void(0)" data-action="textarea_companyComment" data-mode="popup">{{teamInfo.companyComment}}</a>
+    <div class="form-group m-b-l" >
+        <label class="col-24-md-5 col-24-lg-3 text-right">组织简介：</label>
+        <div class="col-24-md-19 col-24-lg-21">
+            <a href="javascript:void(0)" class="editable-click" data-action="companyComment" data-placeholder="请输入组织简介" data-key="companyComment" data-type="2">
+                {{teamInfo.companyComment}}
+            </a>
          </div>
-        <div class="clearfix"></div>
     </div>
 </form>

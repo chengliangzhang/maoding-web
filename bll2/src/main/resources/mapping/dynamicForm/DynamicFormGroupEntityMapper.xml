@@ -20,6 +20,28 @@
     from maoding_dynamic_form_group
     where id = #{id,jdbcType=VARCHAR}
   </select>
+
+  <select id="listDefaultFormGroup" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_dynamic_form_group
+    where company_id is null
+  </select>
+
+  <select id="listFormGroupByCompanyId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_dynamic_form_group
+    where company_id = #{companyId} and deleted = 0
+  </select>
+
+  <select id="isInitFormGroup" resultType="java.lang.Boolean" parameterType="java.lang.String" >
+    select
+    if(count(1)>0,true,FALSE )
+    from maoding_dynamic_form_group
+    where company_id = #{companyId} -- 此处不需要用deleted = 0过滤
+  </select>
+
   <update id="deleteById" parameterType="java.lang.String" >
     update maoding_dynamic_form_group
     set deleted = 1

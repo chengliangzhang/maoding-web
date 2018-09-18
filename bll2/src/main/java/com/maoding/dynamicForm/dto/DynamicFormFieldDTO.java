@@ -17,8 +17,12 @@ public class DynamicFormFieldDTO {
 
     //标题
     private String fieldTitle;
+
     //字段类型
     private Integer fieldType;
+
+    //字段数据类型
+    private Integer dateType;
 
     //字段的单位
     private String fieldUnit;
@@ -29,8 +33,11 @@ public class DynamicFormFieldDTO {
     //默认值（暂时定100个长度）
     private String fieldDefaultValue;
 
-    //默认值0(由数据字典提供，如果为0，则从maoding_dynamic_form_field_selectable_value 去获取
-    private Integer fieldSelectValueType;
+    //排列方式 ，针对 fieldSelectedValueList 中的数据以横向还是纵向排列
+    private Integer arrangeType;
+
+    //默认值0(由数据字典提供，如果为0，则从maoding_dynamic_form_field_selectable_value 去获取,如果有多个，用逗号隔开
+    private String fieldSelectValueType;
 
     //横坐标排序（如果x相同，则排成一行）
     private Integer seqX;
@@ -112,11 +119,11 @@ public class DynamicFormFieldDTO {
         this.fieldDefaultValue = fieldDefaultValue;
     }
 
-    public Integer getFieldSelectValueType() {
+    public String getFieldSelectValueType() {
         return fieldSelectValueType;
     }
 
-    public void setFieldSelectValueType(Integer fieldSelectValueType) {
+    public void setFieldSelectValueType(String fieldSelectValueType) {
         this.fieldSelectValueType = fieldSelectValueType;
     }
 
@@ -166,5 +173,21 @@ public class DynamicFormFieldDTO {
 
     public void setIsStatistics(Integer isStatistics) {
         this.isStatistics = isStatistics;
+    }
+
+    public Integer getDateType() {
+        return dateType;
+    }
+
+    public void setDateType(Integer dateType) {
+        this.dateType = dateType;
+    }
+
+    public Integer getArrangeType() {
+        return arrangeType;
+    }
+
+    public void setArrangeType(Integer arrangeType) {
+        this.arrangeType = arrangeType;
     }
 }

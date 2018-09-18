@@ -1,14 +1,16 @@
 package com.maoding.dynamicForm.service.impl;
 
-import com.maoding.core.base.service.GenericService;
+import com.maoding.core.base.service.NewBaseService;
+import com.maoding.core.constant.ProcessTypeConst;
 import com.maoding.core.util.*;
 import com.maoding.dynamicForm.dao.*;
 import com.maoding.dynamicForm.dto.*;
 import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldSelectableValueEntity;
-import com.maoding.dynamicForm.entity.DynamicFormGroupEntity;
 import com.maoding.dynamicForm.service.DynamicFormService;
+import com.maoding.process.dao.ProcessTypeDao;
+import com.maoding.process.entity.ProcessTypeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,7 @@ import java.util.List;
  * 动态表单自定义的数据层接口
  */
 @Service("dynamicFormService")
-public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> implements DynamicFormService {
+public class DynamicFormServiceImpl extends NewBaseService implements DynamicFormService {
 
     @Autowired
     private DynamicFormDao dynamicFormDao;
@@ -35,6 +37,9 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
 
     @Autowired
     private DynamicFormGroupDao dynamicFormGroupDao;
+
+    @Autowired
+    private ProcessTypeDao processTypeDao;
 
     /**
      * 作者：FYT
@@ -165,15 +170,34 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
     public int startOrStopDynamicForm(SaveDynamicFormDTO dto) throws Exception {
         TraceUtils.check(StringUtils.isNotEmpty(dto.getId()),"!id不能为空");
         TraceUtils.check(ObjectUtils.isNotEmpty(dto.getStatus()),"!status不能为空");
-        //设置动态表单状态为1启用 0停用
-        changeForm(dto);
+        //1.查询，根据dto中的id，和当前组织去查询ProcessTypeEntity（targetType = dto.id,companyId = dto.currentCompanyId)
+        ProcessTypeEntity processTypeEntity = null;
+        processTypeEntity = processTypeDao.selectByTargetType(dto);
+        //2.如果 processTypeEntity==null,添加记录，如果不为null，则更新记录
+        if(StringUtil.isNullOrEmpty(processTypeEntity)){
+            //添加参数
+            processTypeEntity.initEntity();
+            processTypeEntity.setCompanyId(dto.getCurrentCompanyId());
+            //设置动态表单状态为Status=1启用 Status=0停用,
+            processTypeEntity.setStatus(dto.getStatus());
+            processTypeEntity.setDeleted(0);
+            processTypeEntity.setSeq(processTypeDao.selectMaxSeq(dto)+1);
+            processTypeEntity.setTargetType(dto.getId());
+            //默认设置流程为1；
+            processTypeEntity.setType(ProcessTypeConst.TYPE_FREE);
+            processTypeDao.insert(processTypeEntity);
+        }else {
+            processTypeEntity.setStatus(dto.getStatus());
+            processTypeDao.updateById(processTypeEntity);
+        }
+//        changeForm(dto);
         return 1;
     }
 
     /**
      * 作者：FYT
      * 日期：2018/9/14
-     * 描述：审批表 删除
+     * 描述：审批表 删除 （不能物理删除，要逻辑删除）
      * @return
      * @throws Exception
      */
@@ -181,7 +205,7 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
     public int deleteDynamicForm(SaveDynamicFormDTO dto) throws Exception {
         TraceUtils.check(StringUtils.isNotEmpty(dto.getId()),"!id不能为空");
         DynamicFormEntity dynamicFormEntity = BeanUtils.createFrom(dto,DynamicFormEntity.class);
-        return dynamicFormDao.deleteById(dynamicFormEntity);
+        return dynamicFormDao.updateById(dynamicFormEntity);
     }
 
     /**
@@ -291,41 +315,28 @@ public class DynamicFormServiceImpl extends GenericService<DynamicFormEntity> im
     }
 
     /**
-     * 描述       添加及更改动态窗口群组
-     * 日期       2018/9/14
-     *
-     * @param request
-     * @author 张成亮
+     * 作者：FYT
+     * 日期：2018/9/17
+     * 描述：后台管理-审批管理-操作，seq排序对调(交换seq值)
      */
     @Override
-    public FormGroupDTO changeFormGroup(FormGroupEditDTO request) {
-        DynamicFormGroupEntity updatedEntity = null;
-        //如果entity内的id不为空,则从数据库内读取，如果为空，则新增，如果不为空，则更改
-        if (StringUtils.isNotEmpty(request.getId())){
-            updatedEntity = dynamicFormGroupDao.selectById(request.getId());
-            if (updatedEntity != null) {
-                //修改
-                BeanUtils.copyProperties(request, updatedEntity);
-                updatedEntity.setCompanyId(request.getCurrentCompanyId());
-                updatedEntity.setGroupName(request.getName());
-                updatedEntity.setUpdateBy(request.getAccountId());
-                updatedEntity.resetUpdateDate();
-                dynamicFormGroupDao.updateById(updatedEntity);
-            }
-        }
-
-        //如果entity的id为空，或者数据库内没有此记录，则新增记录
-        if (updatedEntity == null) {
-            updatedEntity = BeanUtils.createFrom(request,DynamicFormGroupEntity.class);
-            updatedEntity.initEntity();
-            updatedEntity.setCompanyId(request.getCurrentCompanyId());
-            updatedEntity.setGroupName(request.getName());
-            updatedEntity.setCreateBy(request.getAccountId());
-            dynamicFormGroupDao.insert(updatedEntity);
-        }
-
-        FormGroupDTO group = BeanUtils.createFrom(updatedEntity,FormGroupDTO.class);
-        group.setName(updatedEntity.getGroupName());
-        return group;
+    public int setDynamicFormSeq(SaveDynamicFormDTO dto, SaveDynamicFormDTO dto2) throws Exception {
+        DynamicFormEntity dynamicFormEntity1 = BeanUtils.createFrom(dto,DynamicFormEntity.class);
+        DynamicFormEntity dynamicFormEntity2 = BeanUtils.createFrom(dto,DynamicFormEntity.class);
+        exchangeValue(dynamicFormEntity1,dynamicFormEntity2);
+        dynamicFormDao.updateById(dynamicFormEntity1);
+        dynamicFormDao.updateById(dynamicFormEntity2);
+        return 1;
     }
+    private void exchangeValue(DynamicFormEntity dynamicFormEntity1,DynamicFormEntity dynamicFormEntity2){
+        Integer dtoSeq = dynamicFormEntity1.getSeq();
+        Integer dto2Seq = dynamicFormEntity2.getSeq();
+        dtoSeq = dtoSeq^dto2Seq;
+        dto2Seq = dtoSeq^dto2Seq;
+        dtoSeq = dtoSeq^dto2Seq;
+        dynamicFormEntity1.setSeq(dtoSeq);
+        dynamicFormEntity2.setSeq(dto2Seq);
+    }
+
+
 }

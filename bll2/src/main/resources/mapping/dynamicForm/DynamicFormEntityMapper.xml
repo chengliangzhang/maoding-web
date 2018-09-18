@@ -24,6 +24,14 @@
     from maoding_dynamic_form
     where id = #{id,jdbcType=VARCHAR}
   </select>
+
+  <select id="listDynamicFormByType" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from maoding_dynamic_form
+    where form_type = #{formType} and deleted = 0
+  </select>
+
   <delete id="deleteById" parameterType="java.lang.String" >
     delete from maoding_dynamic_form
     where id = #{id,jdbcType=VARCHAR}

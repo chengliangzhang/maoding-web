@@ -2461,6 +2461,7 @@ label.error {
 /* Toastr custom style */
 #toast-container {
   top: 51px;
+  z-index: 19891099;
 }
 
 #toast-container > .toast {
@@ -4531,7 +4532,9 @@ a.close-canvas-menu:hover {
 .m-b-md {
   margin-bottom: 20px;
 }
-.m-b-25{margin-bottom: 25px;}
+.m-b-l{
+  margin-bottom: 25px;
+}
 .m-b-lg {
   margin-bottom: 30px;
 }
