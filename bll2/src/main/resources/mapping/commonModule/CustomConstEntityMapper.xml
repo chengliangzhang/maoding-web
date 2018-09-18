@@ -94,6 +94,7 @@
     <result column="property_default_value" property="defaultValue" jdbcType="VARCHAR" />
     <result column="view_type" property="propertySettingType" jdbcType="INTEGER" />
     <result column="allow_value" property="allowValue" jdbcType="VARCHAR" />
+    <result column="can_save_by_code" property="canSaveByCode" jdbcType="INTEGER" />
   </resultMap>
 
 
@@ -115,6 +116,6 @@
     from
       md_type_widget_property property_type
       inner join md_type_widget widget_list on (find_in_set(property_type.type_id,widget_list.set_type))
-    group by widget_list.type_id
+    group by concat(widget_list.type_id,'-',property_type.type_id)
   </select>
 </mapper>
