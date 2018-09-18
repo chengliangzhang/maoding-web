@@ -41,6 +41,17 @@ public class FormDTO extends BaseIdObject {
     /** 控件列表 **/
     private List<DynamicFormFieldDTO> fieldList;
 
+    /** 编辑时可使用的控件列表 **/
+    private List<DynamicFormFieldDTO> optionalFieldList;
+
+    public List<DynamicFormFieldDTO> getOptionalFieldList() {
+        return optionalFieldList;
+    }
+
+    public void setOptionalFieldList(List<DynamicFormFieldDTO> optionalFieldList) {
+        this.optionalFieldList = optionalFieldList;
+    }
+
     public String getDocumentation() {
         return documentation;
     }
