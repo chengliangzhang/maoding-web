@@ -69,17 +69,8 @@ public class ProcessTypeDaoImpl extends GenericDao<ProcessTypeEntity> implements
      * 描述：根据公司查询排序值(Seq如最大为10，返回+1，结果11)
      */
     @Override
-    public Integer selectMaxSeq(SaveDynamicFormDTO query) {
-        return sqlSession.selectOne("ProcessTypeEntityMapper.selectMaxSeq",query);
+    public Integer selectMaxSeq(String currentCompanyId) {
+        return sqlSession.selectOne("ProcessTypeEntityMapper.selectMaxSeq",currentCompanyId);
     }
 
-    /**
-     * 作者：FYT
-     * 日期：2018/9/18
-     * 描述：根据公司companyId 和 formId 查询是否存在动态表单
-     */
-    @Override
-    public ProcessTypeEntity selectByCompanyIdFormId(SaveDynamicFormDTO dto) {
-        return sqlSession.selectOne("ProcessTypeEntityMapper.selectByTargetType",dto);
-    }
 }

@@ -43,7 +43,7 @@ public class ProcessTypeServiceImpl extends NewBaseService implements ProcessTyp
         SaveDynamicFormDTO saveDynamicFormDTO = new SaveDynamicFormDTO();
         saveDynamicFormDTO.setId(processTypeEntity.getFormId());
         saveDynamicFormDTO.setCurrentCompanyId(processTypeEntity.getCompanyId());
-        processTypeEntity.setSeq(this.processTypeDao.selectMaxSeq(saveDynamicFormDTO));
+        processTypeEntity.setSeq(this.processTypeDao.selectMaxSeq(saveDynamicFormDTO.getCurrentCompanyId()));
         processTypeEntity.setStatus(ProcessTypeConst.STATUS_PROCESS_START);//默认启用
         if(processTypeEntity.getTargetType()==null) {
             processTypeEntity.setTargetType(processTypeEntity.getFormId());

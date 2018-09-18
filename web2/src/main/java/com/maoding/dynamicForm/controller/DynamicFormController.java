@@ -47,8 +47,8 @@ public class DynamicFormController extends BaseController {
      * 作者：FYT
      * 日期：2018/9/13
      * 描述：保存审核表单模板
-     * @return
-     * @throws Exception
+     * 接口：iWork/dynamicForm/insertDynamicForm
+     * 参数：SaveDynamicFormDTO
      */
     @RequestMapping(value = "/insertDynamicForm", method = RequestMethod.POST)
     @ResponseBody
@@ -61,8 +61,8 @@ public class DynamicFormController extends BaseController {
      * 作者：FYT
      * 日期：2018/9/13
      * 描述：保存审核表单内容
-     * @return
-     * @throws Exception
+     * 接口：iWork/dynamicForm/saveAuditDetail
+     * 参数：SaveDynamicFormDTO
      */
     @RequestMapping(value = "/saveAuditDetail", method = RequestMethod.POST)
     @ResponseBody

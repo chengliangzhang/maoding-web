@@ -71,7 +71,7 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
             }
         }
 
-        ProcessTypeEntity processTypeEntity = processTypeDao.selectByCompanyIdFormId(dto);
+        ProcessTypeEntity processTypeEntity = processTypeDao.selectByTargetType(dto);
         if(StringUtil.isNullOrEmpty(processTypeEntity)){
             processTypeEntity.initEntity();
             processTypeEntity.setCompanyId(dto.getCompanyId());
@@ -80,7 +80,7 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
             processTypeEntity.setStatus(StringUtil.isNullOrEmpty(dto.getStatus())?0:dto.getStatus());//业务类型
             processTypeEntity.setDeleted(0);
             processTypeEntity.setFormId(dynamicFormEntity.getId());
-            processTypeEntity.setSeq(processTypeDao.selectMaxSeq(dto)+1);
+            processTypeEntity.setSeq(processTypeDao.selectMaxSeq(dto.getCurrentCompanyId())+1);
             processTypeDao.insert(processTypeEntity);
         }else{
             //正在做

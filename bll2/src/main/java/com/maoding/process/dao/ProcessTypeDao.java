@@ -46,12 +46,6 @@ public interface ProcessTypeDao extends BaseDao<ProcessTypeEntity> {
      * 日期：2018/9/17
      * 描述：根据currentCompanyId查询最后的排序值seq
      */
-    Integer selectMaxSeq (SaveDynamicFormDTO query);
+    Integer selectMaxSeq (String currentCompanyId);
 
-    /**
-     * 作者：FYT
-     * 日期：2018/9/18
-     * 描述：根据公司companyId 和 formId 查询是否存在动态表单
-     */
-    ProcessTypeEntity selectByCompanyIdFormId(SaveDynamicFormDTO dto);
 }
