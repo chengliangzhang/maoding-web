@@ -1,15 +1,12 @@
 package com.maoding.dynamicForm.service.impl;
 
 import com.maoding.core.base.service.GenericService;
-import com.maoding.core.util.BeanUtils;
 import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.dynamicForm.dao.DynamicFormDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldDao;
-import com.maoding.dynamicForm.dao.DynamicFormFieldSelectableValueDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldValueDao;
 import com.maoding.dynamicForm.dto.*;
-import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldSelectableValueEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldValueEntity;
 import com.maoding.dynamicForm.service.DynamicFormFieldValueService;
@@ -59,7 +56,7 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
 
         String mainId = mainEntity.getId();
         //todo 2.添加页面上的fieldId 对应的 value
-        for(DynamicFormFieldValueDTO valueDTO: dto.getFiledList()){
+        for(DynamicFormFieldValueDTO valueDTO: dto.getFieldList()){
             DynamicFormFieldValueEntity dynamicFormFieldValueEntity = new DynamicFormFieldValueEntity();
             dynamicFormFieldValueEntity.setMainId(mainEntity.getId());
             dynamicFormFieldValueEntity.initEntity();

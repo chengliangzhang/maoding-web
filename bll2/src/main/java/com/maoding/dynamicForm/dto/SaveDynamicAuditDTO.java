@@ -11,7 +11,7 @@ public class SaveDynamicAuditDTO extends AuditBaseDTO {
 
     private String auditType;
 
-    private List<DynamicFormFieldValueDTO> filedList = new ArrayList<>();
+    private List<DynamicFormFieldValueDTO> fieldList = new ArrayList<>();
 
     private Map<String,List<DynamicFormFieldValueDTO>> detailList = new HashMap<>();
 
@@ -23,12 +23,12 @@ public class SaveDynamicAuditDTO extends AuditBaseDTO {
         this.auditType = auditType;
     }
 
-    public List<DynamicFormFieldValueDTO> getFiledList() {
-        return filedList;
+    public List<DynamicFormFieldValueDTO> getFieldList() {
+        return fieldList;
     }
 
-    public void setFiledList(List<DynamicFormFieldValueDTO> filedList) {
-        this.filedList = filedList;
+    public void setFieldList(List<DynamicFormFieldValueDTO> fieldList) {
+        this.fieldList = fieldList;
     }
 
     public Map<String, List<DynamicFormFieldValueDTO>> getDetailList() {
