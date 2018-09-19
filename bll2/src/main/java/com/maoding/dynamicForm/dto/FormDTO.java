@@ -14,6 +14,12 @@ import java.util.List;
 public class FormDTO extends BaseIdObject {
     /** id:动态表单模板编号 **/
 
+    /** 表单编号 **/
+    private String formId;
+
+    /** 流程类型：见ProcessTypeConst内 **/
+    private Integer type;
+
     /** 表单名称 **/
     private String name;
 
@@ -37,6 +43,22 @@ public class FormDTO extends BaseIdObject {
 
     /** 控件列表 **/
     private List<DynamicFormFieldDTO> fieldList;
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getFormId() {
+        return formId;
+    }
+
+    public void setFormId(String formId) {
+        this.formId = formId;
+    }
 
     public String getDocumentation() {
         return documentation;

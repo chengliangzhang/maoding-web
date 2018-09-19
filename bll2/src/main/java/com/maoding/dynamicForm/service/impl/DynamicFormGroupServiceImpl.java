@@ -32,8 +32,6 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
     private ProcessTypeService processTypeService;
 
 
-
-
     /**
      * 描述       添加及更改动态窗口群组
      * 日期       2018/9/14
@@ -93,6 +91,7 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
         formGroupDTO.setCompanyId(dynamicFormGroupEntity.getCompanyId());
         formGroupDTO.setId(dynamicFormGroupEntity.getId());
 
+
         //通过companyId 和 is_edit=0  和 group_name=其他模板  查询出对应的type_id
         FormGroupDTO dto = new FormGroupDTO();
         dto.setCompanyId(entity.getCurrentCompanyId());
@@ -100,16 +99,7 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
         dto.setGroupName("其他模板");
         DynamicFormGroupEntity formGroup= dynamicFormGroupDao.selectTypeId(dto);
 
-        //通过companyId和Id，查询所有属于该分组的动态审批表，并遍历设置FormType = 4
-        List<ProcessTypeEntity> processTypeList = processTypeService.selectByCompanyIdFormType(formGroupDTO);
-        processTypeList.forEach(processTypeEntity -> {
-            processTypeEntity.setFormType(formGroup.getId());
-            try {
-                processTypeService.updateDynamicFormType(processTypeEntity);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        processTypeService.updateDynamicFormType(entity.getId(),formGroup.getId());
     }
 
     @Override

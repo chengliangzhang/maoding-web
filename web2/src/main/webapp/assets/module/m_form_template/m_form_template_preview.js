@@ -9,6 +9,7 @@
         defaults = {
              isDialog:true
             ,type:1//1=我的审批
+            ,dataInfo:null
         };
 
     // The actual plugin constructor
@@ -31,10 +32,12 @@
 
             var html = template('m_form_template/m_form_template_preview',{
                 title:that._title,
-                subTitle:that._subTitle
+                subTitle:that._subTitle,
+                dataInfo:that.settings.dataInfo
             });
             that.renderDialog(html,function () {
 
+                that.renderICheckOrSelect();
             });
         }
         //渲染列表内容
@@ -43,6 +46,7 @@
             if(that.settings.isDialog===true){//以弹窗编辑
 
                 S_layer.dialog({
+                    title:that.settings.dataInfo.formName || '我的审批',
                     area : ['750px','600px'],
                     content:html,
                     cancel:function () {
@@ -67,20 +71,14 @@
 
         }
         //初始化iCheck
-        ,renderICheckOrSelect:function (ifCheckedFun,ifUncheckedFun,ifClickedFun) {
+        ,renderICheckOrSelect:function () {
 
             var that = this;
             var ifChecked = function (e) {
-                if(ifCheckedFun)
-                    ifCheckedFun($(this));
             };
             var ifUnchecked = function (e) {
-                if(ifUncheckedFun)
-                    ifUncheckedFun($(this));
             };
             var ifClicked = function (e) {
-                if(ifClickedFun)
-                    ifClickedFun($(this));
             };
             $(that.element).find('.i-checks').iCheck({
                 checkboxClass: 'icheckbox_square-blue',

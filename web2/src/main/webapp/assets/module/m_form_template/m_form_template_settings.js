@@ -212,11 +212,13 @@
                     fieldUnit:dataItem.fieldUnit,
                     fieldTooltip:dataItem.fieldTooltip,
                     arrangeType:dataItem.arrangeType,
-                    requiredType:dataItem.requiredType
+                    requiredType:dataItem.requiredType,
+                    seqX:'2'
                 };
                 if(type==4){//时间区间，需要拆成两个组件
 
-                    newDataItem.fieldSelectValueType = dataItem.dataType;
+                    newDataItem.dateFormatType = dataItem.dateType;
+                    newDataItem.seqX = '1';
 
                     var clone = $.extend(true, {}, newDataItem);
                     clone.fieldTitle = dataItem.fieldTitle2;
@@ -285,7 +287,10 @@
                 if (response.code == '0') {
 
                     S_toastr.success('保存成功！');
-
+                    S_layer.close($(that.element),function () {
+                        $(document).off('mouseup.m-form-template-settings');
+                        $(document).off('mousemove.m-form-template-settings');
+                    });
                     if(that.settings.saveCallBack)
                         that.settings.saveCallBack();
 
@@ -582,13 +587,20 @@
         ,bindFormItemClick:function ($formItem) {
             var that = this;
             //选择后的控件点击事件
-            $formItem.on('click',function () {
+            $formItem.on('click',function (e) {
                 //先预存数据
                 that.storeFieldData();
                 //添加点击样式
-                $(this).addClass('active').siblings().removeClass('active');
+                that._$contentForm.find('.form-item').removeClass('active');
+                $(this).addClass('active');
+                if($(this).parents('.form-item').length>0)
+                    $(this).parents('.form-item').addClass('active');
+
                 //渲染右边控件属性
                 that.renderProperty();
+
+                stopPropagation(e);
+                return false;
 
             });
             $formItem.find('button[data-action="delItem"]').on('click',function () {
@@ -696,11 +708,16 @@
                        break;
                    case 'formPreview'://预览
 
-
+                        var dataInfo = that.getSaveData();
+                        $('body').m_form_template_preview({
+                            dataInfo:dataInfo
+                        },true);
 
                        break;
                    case 'save'://保存
 
+                       //先预存数据
+                       that.storeFieldData();
                        if(that._$contentForm.find('.form-item').length==0){
                            S_toastr.warning('请选择控件！');
                            return false;

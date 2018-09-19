@@ -64,18 +64,26 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         TraceUtils.check(form != null);
         String formId = form.getId();
         //保存主表的子表（控件表）
+        int seq = 1;
         for (DynamicFormFieldDTO formFieldDTO:  dto.getFieldList()){
             formFieldDTO.setFormId(formId);
             formFieldDTO.setId(saveDynamicFormField(formFieldDTO));
+            formFieldDTO.setSeqY(seq++);
             //保存明细表
+            int seq2 = 1;
             for(DynamicFormFieldDTO formFieldDTO2: formFieldDTO.getDetailFieldList()) {
                 formFieldDTO2.setFormId(formId);
                 formFieldDTO2.setFieldPid(formFieldDTO.getId());
+                formFieldDTO2.setSeqY(seq2++);
                 saveDynamicFormField(formFieldDTO2);
             }
         }
 
+
         if(processTypeEntity==null){
+            if(StringUtil.isNullOrEmpty(dto.getFormType())){
+                //查询其他模板，插入到其他模板中
+            }
             processTypeEntity = new ProcessTypeEntity();
             processTypeEntity.initEntity();
             processTypeEntity.setCompanyId(dto.getCurrentCompanyId());

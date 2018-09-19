@@ -42,11 +42,7 @@ public class ProcessTypeServiceImpl extends NewBaseService implements ProcessTyp
     public int saveProcessType(ProcessTypeEntity processTypeEntity) throws Exception {
         processTypeEntity.initEntity();
         processTypeEntity.setDeleted(0);
-        SaveDynamicFormDTO saveDynamicFormDTO = new SaveDynamicFormDTO();
-        saveDynamicFormDTO.setId(processTypeEntity.getFormId());
-        saveDynamicFormDTO.setCurrentCompanyId(processTypeEntity.getCompanyId());
-
-        processTypeEntity.setSeq(this.processTypeDao.selectMaxSeq(saveDynamicFormDTO.getCurrentCompanyId()));
+        processTypeEntity.setSeq(this.processTypeDao.selectMaxSeq(processTypeEntity.getCompanyId())+1);
         processTypeEntity.setStatus(ProcessTypeConst.STATUS_PROCESS_START);//默认启用
         if(processTypeEntity.getTargetType()==null) {
             processTypeEntity.setTargetType(processTypeEntity.getFormId());
@@ -115,8 +111,10 @@ public class ProcessTypeServiceImpl extends NewBaseService implements ProcessTyp
      * @throws Exception
      */
     @Override
-    public int updateDynamicFormType(ProcessTypeEntity processTypeEntity) throws Exception{
-        return processTypeDao.updateById(processTypeEntity);
+    public int updateDynamicFormType(String oldFormTypeId,String newFormTypeId) throws Exception{
+        //return processTypeDao.updateById(processTypeEntity);
+       // return processTypeDao.updateDynamicFormType();
+        return 0;
     }
 
     /**

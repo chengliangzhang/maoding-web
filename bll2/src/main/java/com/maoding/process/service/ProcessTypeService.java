@@ -23,7 +23,7 @@ public interface ProcessTypeService {
     List<ProcessTypeEntity> selectByCompanyIdFormType(FormGroupDTO formGroupDTO) throws Exception;
 
     //将没有分组的动态审批表，设置FormType = 4
-    int updateDynamicFormType(ProcessTypeEntity processTypeEntity) throws Exception;
+    int updateDynamicFormType(String oldFormTypeId,String newFormTypeId) throws Exception;
 
     //动态表移动到其他分组
     int updateProcessTypeFormType(SaveDynamicFormDTO dto) throws Exception;

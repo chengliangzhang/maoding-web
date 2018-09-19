@@ -1,81 +1,90 @@
-<div class="m-box m-form-template-settings white-bg navbar-static-top">
-    <div class="m-box-title">
-        <div class="fixed-title navbar-static-top" >
-            <div class="col-xs-6 text-white">
-                <a href="{{rootPath}}" class="pull-left svg" target="_blank">
-                    <object class="maoding-logo pt-relative" data="{{rootPath}}/assets/img/logo_white.png"></object>
+<form class="form-horizontal m">
+    {{if dataInfo.fieldList!=null && dataInfo.fieldList.length>0}}
+
+        {{each dataInfo.fieldList as o i}}
+        <div class="form-group">
+            <label class="col-sm-2 control-label">{{o.fieldTitle?o.fieldTitle:'单行文本'}}：</label>
+            <div class="col-sm-10">
+                <input placeholder="请输入收款方" class="form-control" type="text" name="enterpriseName" value="{{dataInfo?dataInfo.enterpriseName:''}}">
+            </div>
+        </div>
+        {{/each}}
+    {{/if}}
+    <div class="form-group">
+        <label class="col-sm-2 control-label">收款方：</label>
+        <div class="col-sm-10">
+            <input placeholder="请输入收款方" class="form-control" type="text" name="enterpriseName" value="{{dataInfo?dataInfo.enterpriseName:''}}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">备注：</label>
+        <div class="col-sm-10">
+            <textarea placeholder="请输入备注" class="form-control" type="text" name="remark">{{dataInfo?dataInfo.exp.remark:''}}</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <button class="btn btn-primary btn-sm" data-action="addItem" title="添加{{data.title}}明细"><i class="fa fa-plus"></i>添加明细</button>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">{{data.title}}总金额：</label>
+        <div class="col-sm-10 p-t-7">
+            <i class="fa fa-jpy"></i> <span id="expAmount">{{dataInfo?dataInfo.totalExpAmount:'0'}}</span>元
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">附件：</label>
+        <div class="col-sm-10">
+            <div class="row">
+                <div class="col-md-12 m-b-sm">
+                    <span id="showFileLoading"> </span>
+                </div>
+                <div class="col-md-12 m-b-sm">
+                    <span class="uploadmgrContainer"> </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group m-b-none">
+        <div class="col-md-12">
+            <span class="uploadmgrContainer"></span>
+        </div>
+    </div>
+    <div class="hr-line-dashed m-t-none m-b-sm"></div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">审批人：</label>
+        <div class="col-sm-10">
+            <div class="" id="approverBox">
+
+            </div>
+            {{if data.processFlag=='1'}}
+            <div class="approver-box text-center col-md-2">
+                <a class="btn btn-default btn-circle circle-lg" type="button" data-action="addApprover">
+                    <i class="fa fa-plus"></i>
                 </a>
-                <h3 class="pull-left">{{title}}</h3>
             </div>
-            <div class="col-xs-6 text-right">
-                <button class="btn btn-primary border-fff" data-action="formPreview">预览</button>
-                <button class="btn btn-default">保存</button>
-                <button class="btn btn-default">保存并使用</button>
-                <button class="btn btn-link text-white" data-action="close"><i class="glyphicon glyphicon-remove"></i></button>
+            {{/if}}
+
+            <!-- 验证 -->
+            <div class="row clearfix">
+                <div class="col-sm-10 p-t-xs">
+                    <input type="hidden" name="approver" >
+                </div>
             </div>
         </div>
     </div>
-    <div class="m-box-content">
-        <div class="m-box-content-title">
-            <div class="col-24-xs-5 bg-v4-grey min-h-50">
-                <h4 class="p-l-xs p-t-sm">可选控件</h4>
-            </div>
-            <div class="col-24-xs-14 bg-v1-grey min-h-50">
-                <h4 class="p-t-sm text-center">{{subTitle}}</h4>
-            </div>
-            <div class="col-24-xs-5 bg-v4-grey min-h-50">
-                <ul class="secondary-menu-ul">
-                    <li class="active"><a href="javascript:void(0);" type="1">表单属性</a> </li>
-                    <li>
-                        <a href="javascript:void(0);" type="2">控件属性</a>
-                    </li>
-            </div>
-        </div>
-        <div class="col-24-xs-5 bg-v3-grey" id="controlBox">
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="1">单行文本<i class="icon iconfont icon-danhangwenben pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="2">多行文本<i class="icon iconfont icon-duohangwenben pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="3">日期<i class="icon iconfont icon-riqi pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="4">日期区间<i class="icon iconfont icon-riqiqujian pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="5">数字<i class="icon iconfont icon-shuzi pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="6">下拉列表<i class="icon iconfont icon-xialaliebiao pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="7">单选框<i class="icon iconfont icon-danxuankuang pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="8">复选框<i class="icon iconfont icon-fuxuankuang pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="9">明细<i class="icon iconfont icon-mingxi pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="10">附件<i class="icon iconfont icon-fujian pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="11">关联项目<i class="icon iconfont icon-xiangmu pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="12">关联审批<i class="icon iconfont icon-shenpi pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="13">纯文本<i class="icon iconfont icon-chunwenben pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="14">分割线<i class="icon iconfont icon-fengexian pull-right"></i></div>
-        </div>
-        <div class="col-24-xs-14 " id="contentBox">
-            <form class="form-horizontal content-form">
+    <div class="form-group">
+        <label class="col-sm-2 control-label">抄送人：</label>
+        <div class="col-sm-10">
+            <div id="ccUserListBox">
 
-            </form>
+            </div>
+            <div class="approver-box text-center col-md-2">
+                <a class="btn btn-default btn-circle circle-lg" type="button" data-action="addCcUser">
+                    <i class="fa fa-plus"></i>
+                </a>
+            </div>
         </div>
-        <div class="col-24-xs-5 bg-v2-grey p-t-sm" id="propertyBox" >
-            <form role="form" data-property-type="1">
-                <div class="form-group">
-                    <label>名称</label>
-                    <input placeholder="请输入表单名称" class="form-control" type="text" name="formName" value="{{subTitle}}">
-                </div>
-                <div class="form-group">
-                    <label>我的分组</label>
-                    <select class="form-control m-b" name="account">
-                        <option>option 1</option>
-                        <option>option 2</option>
-                        <option>option 3</option>
-                        <option>option 4</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>说明</label>
-                    <textarea placeholder="请输入表单说明" class="form-control" type="text"></textarea>
-                </div>
-            </form>
-            <form role="form" data-property-type="2" style="display: none;">
-
-            </form>
-        </div>
-        <div class="clearfix"></div>
     </div>
-</div>
+</form>
