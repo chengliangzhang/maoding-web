@@ -31,8 +31,7 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
     @Autowired
     private ProcessTypeService processTypeService;
 
-    @Autowired
-    private ProcessTypeDao processTypeDao;
+
 
 
     /**
@@ -82,7 +81,29 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
         DynamicFormGroupEntity updatedEntity = new DynamicFormGroupEntity();
         updatedEntity.setId(request.getId());
         updatedEntity.setDeleted(1);
+        updateDynamicFormType(request);
         return dynamicFormGroupDao.updateById(updatedEntity);
+    }
+    //如果组删除，会被分配到其他模板（等同于未分组），并且状态是不可编辑
+    private void updateDynamicFormType(FormGroupEditDTO entity) throws Exception{
+
+        //通过ID查询该分组所属的companyId和typeId。
+        DynamicFormGroupEntity dynamicFormGroupEntity = dynamicFormGroupDao.selectById(entity.getId());
+        FormGroupDTO formGroupDTO = new FormGroupDTO();
+        formGroupDTO.setCompanyId(dynamicFormGroupEntity.getCompanyId());
+        formGroupDTO.setTypeId(dynamicFormGroupEntity.getTypeId().toString());
+        //通过companyId和typeId，查询所有属于该分组的动态审批表，并遍历设置FormType = 4
+        List<ProcessTypeEntity> processTypeList = processTypeService.selectByCompanyIdFormType(formGroupDTO);
+        processTypeList.forEach(list -> {
+            ProcessTypeEntity processTypeEntity = new ProcessTypeEntity();
+            processTypeEntity.setId(list.getId());
+            processTypeEntity.setFormType("4");
+            try {
+                processTypeService.updateDynamicFormType(processTypeEntity);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override

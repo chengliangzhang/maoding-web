@@ -8,6 +8,7 @@ import com.maoding.core.util.BeanUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
 import com.maoding.core.util.TraceUtils;
+import com.maoding.dynamicForm.dto.FormGroupDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
 import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.process.dao.ProcessTypeDao;
@@ -15,6 +16,8 @@ import com.maoding.process.entity.ProcessTypeEntity;
 import com.maoding.process.service.ProcessTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service("processTypeService")
 public class ProcessTypeServiceImpl extends NewBaseService implements ProcessTypeService{
@@ -64,11 +67,11 @@ public class ProcessTypeServiceImpl extends NewBaseService implements ProcessTyp
         //1.查询，根据dto中的id，和当前组织去查询ProcessTypeEntity（targetType = dto.id,companyId = dto.currentCompanyId)
         ProcessTypeEntity processTypeEntity = processTypeDao.selectById(dto.getId());
         if(!StringUtil.isNullOrEmpty(processTypeEntity.getStatus())){
-            if(0==processTypeEntity.getStatus()){
+            if(0==processTypeEntity.getStatus() && 0==dto.getStatus()){
                 processTypeEntity.setStatus(1);
                 return processTypeDao.updateById(processTypeEntity);
             }
-            if(1==processTypeEntity.getStatus()){
+            if(1==processTypeEntity.getStatus() && 1==dto.getStatus()){
                 processTypeEntity.setStatus(0);
                 return processTypeDao.updateById(processTypeEntity);
             }
@@ -90,4 +93,29 @@ public class ProcessTypeServiceImpl extends NewBaseService implements ProcessTyp
         processTypeEntity.setDeleted(1);
         return processTypeDao.updateById(processTypeEntity);
     }
+
+    /**
+     * 作者：FYT
+     * 日期：2018/9/18
+     * 描述：查询所有属于该分组的动态审批表
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public List<ProcessTypeEntity> selectByCompanyIdFormType(FormGroupDTO formGroupDTO) throws Exception{
+        return processTypeDao.selectByCompanyIdFormType(formGroupDTO);
+    }
+
+    /**
+     * 作者：FYT
+     * 日期：2018/9/18
+     * 描述：将没有分组的动态审批表，设置FormType = 4
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public int updateDynamicFormType(ProcessTypeEntity processTypeEntity) throws Exception{
+        return processTypeDao.updateById(processTypeEntity);
+    }
+
 }

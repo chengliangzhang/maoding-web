@@ -38,6 +38,18 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
+            var option = {};
+            option.url = restApi.url_prepareFormToEdit ;
+            option.postData = {
+
+            };
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+
+                } else {
+                    S_layer.error(response.info);
+                }
+            });
             var html = template('m_form_template/m_form_template_settings',{
                 title:that._title,
                 subTitle:that._subTitle

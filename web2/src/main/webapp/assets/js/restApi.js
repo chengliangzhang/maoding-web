@@ -378,6 +378,10 @@ var restApi = {
     , url_deleteDynamicFormGroup:window.rootPath+'/iWork/dynamicFormGroup/deleteDynamicFormGroup'
     , url_insertDynamicForm:window.rootPath+'/iWork/dynamicForm/insertDynamicForm'
     , url_setDynamicFormSeq:window.rootPath+'/iWork/dynamicForm/setDynamicFormSeq'
+    , url_deleteDynamicForm:window.rootPath+'/iWork/dynamicForm/deleteDynamicForm'
+    , url_setDynamicFormIsEdit:window.rootPath+'/iWork/dynamicForm/setDynamicFormIsEdit'
     , url_saveAuditCopy:window.rootPath+'/iWork/dynamicForm/saveAuditCopy'
+    , url_prepareFormToEdit:window.rootPath+'/iWork/dynamicForm/prepareFormToEdit'
+
 
 };

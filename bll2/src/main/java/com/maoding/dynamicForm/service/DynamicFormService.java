@@ -76,4 +76,10 @@ public interface DynamicFormService {
      */
     int setDynamicFormSeq (FormGroupEditDTO dto) throws  Exception;
 
+    /**
+     * 作者：FYT
+     * 日期：2018/9/18
+     * 描述：后台管理-审批管理-操作，对调分组seq排序对调(交换seq值) （如：行政审批 与 财务审批 位置对调）
+     */
+    int updateDynamicFormSeq (FormGroupEditDTO dto) throws  Exception;
 }

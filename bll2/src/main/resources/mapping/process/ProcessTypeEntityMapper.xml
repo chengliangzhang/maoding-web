@@ -219,4 +219,15 @@
       company_id = #{currentCompanyId}
   </select>
 
+
+  <select id="selectByCompanyIdFormType" resultType="com.maoding.process.entity.ProcessTypeEntity" parameterType="com.maoding.dynamicForm.dto.FormGroupDTO">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    maoding_process_type
+    WHERE
+    company_id = #{companyId}
+    AND
+    form_type = #{typeId}
+  </select>
 </mapper>

@@ -5,6 +5,7 @@ import com.maoding.activiti.dto.ProcessDefineDTO;
 import com.maoding.activiti.dto.ProcessDefineGroupDTO;
 import com.maoding.activiti.dto.ProcessDefineQueryDTO;
 import com.maoding.core.base.dao.BaseDao;
+import com.maoding.dynamicForm.dto.FormGroupDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
 import com.maoding.process.entity.ProcessTypeEntity;
 
@@ -47,5 +48,8 @@ public interface ProcessTypeDao extends BaseDao<ProcessTypeEntity> {
      * 描述：根据currentCompanyId查询最后的排序值seq
      */
     Integer selectMaxSeq (String currentCompanyId);
+
+    //查询所有属于该分组的动态审批表
+    List<ProcessTypeEntity> selectByCompanyIdFormType(FormGroupDTO formGroupDTO);
 
 }

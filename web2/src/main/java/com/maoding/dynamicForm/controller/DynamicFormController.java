@@ -152,4 +152,18 @@ public class DynamicFormController extends BaseController {
         return AjaxMessage.succeed(processTypeService.saveAuditCopy(dto));
     }
 
+    /**
+     * 作者：FYT
+     * 日期：2018/9/18
+     * 描述：后台管理-审批管理-操作，对调分组seq排序对调(交换seq值) （如：行政审批 与 财务审批 位置对调）
+     * 接口：iWork/dynamicForm/updateDynamicFormSeq
+     * 参数：FormGroupEditDTO  对调（dynamicFromId1，seq1，dynamicFromId2，seq2）
+     */
+    @RequestMapping(value = "/updateDynamicFormSeq", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage updateDynamicFormSeq(@RequestBody FormGroupEditDTO dto) throws Exception {
+
+        return AjaxMessage.succeed(dynamicFormService.updateDynamicFormSeq(dto));
+    }
+
 }

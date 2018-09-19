@@ -71,6 +71,7 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
             }
         }
 
+        //将模板保存到ProcessType与之关联，在页面（后台管理-审批管理 中显示）
         ProcessTypeEntity processTypeEntity = processTypeDao.selectByTargetType(dto);
         if(StringUtil.isNullOrEmpty(processTypeEntity)){
             processTypeEntity.initEntity();
@@ -83,7 +84,6 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
             processTypeEntity.setSeq(processTypeDao.selectMaxSeq(dto.getCurrentCompanyId())+1);
             processTypeDao.insert(processTypeEntity);
         }else{
-            //正在做
             processTypeEntity.setTargetType(dto.getFormType());//业务类型
             processTypeEntity.setFormId(dynamicFormEntity.getId());
             processTypeDao.updateById(processTypeEntity);
@@ -353,6 +353,8 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
 
         return 1;
     }
+
+
     private void exchangeValue(ProcessTypeEntity entity1,ProcessTypeEntity entity2){
 
         Integer dtoSeq = entity1.getSeq();
@@ -363,4 +365,34 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         entity1.setSeq(dtoSeq);
         entity2.setSeq(dto2Seq);
     }
+
+    /**
+     * 作者：FYT
+     * 日期：2018/9/18
+     * 描述：后台管理-审批管理-操作，对调分组seq排序对调(交换seq值) （如：行政审批 与 财务审批 位置对调）
+     */
+    @Override
+    public int updateDynamicFormSeq(FormGroupEditDTO dto) throws Exception {
+        //从数据库根据id查询seq
+        DynamicFormGroupEntity entity1 = dynamicFormGroupDao.selectById(dto.getDynamicFromId1());
+        DynamicFormGroupEntity entity2 = dynamicFormGroupDao.selectById(dto.getDynamicFromId2());
+
+        //值交换
+        exchangeValue(entity1,entity2);
+        dynamicFormGroupDao.updateById(entity1);
+        dynamicFormGroupDao.updateById(entity2);
+
+        return 1;
+    }
+    private void exchangeValue(DynamicFormGroupEntity entity1,DynamicFormGroupEntity entity2){
+
+        Integer dtoSeq = entity1.getSeq();
+        Integer dto2Seq = entity2.getSeq();
+        dtoSeq = dtoSeq^dto2Seq;
+        dto2Seq = dtoSeq^dto2Seq;
+        dtoSeq = dtoSeq^dto2Seq;
+        entity1.setSeq(dtoSeq);
+        entity2.setSeq(dto2Seq);
+    }
+
 }

@@ -56,7 +56,7 @@
                     <button type="button" class="btn btn-link btn-xs fc-dark-blue dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="icon iconfont icon-gengduo"></i></button>
                     <ul class="dropdown-menu">
                         <li><a href="javascript:void(0);" data-action="moveToGroup">移动到其他分组</a></li>
-                        <li><a href="javascript:void(0);">删除</a></li>
+                        <li><a href="javascript:void(0);" data-action="delApproval">删除</a></li>
                     </ul>
                 </div>
                 {{if pi>0}}
@@ -65,7 +65,11 @@
                 {{if pi<a.processDefineList.length-1}}
                     <button class="btn btn-link btn-xs fc-dark-blue" data-action="sortUp" ><i class="iconfont icon-xiangxia"></i></button>
                 {{/if}}
-                <button class="btn btn-link btn-xs fc-dark-blue"><i class="icon iconfont icon-kaiguanguan"></i></button>
+                {{if p.status==1}}
+                    <button class="btn btn-link btn-xs fc-dark-blue" data-action="whetherEnable" data-status="0"><i class="icon iconfont icon-kaiguanguan"></i></button>
+                {{else}}
+                    <button class="btn btn-link btn-xs fc-dark-blue" data-action="whetherEnable" data-status="1"><i class="icon iconfont icon-kaiguanguan1"></i></button>
+                {{/if}}
             </td>
         </tr>
         {{/each}}

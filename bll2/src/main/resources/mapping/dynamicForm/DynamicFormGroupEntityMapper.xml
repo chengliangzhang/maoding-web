@@ -12,9 +12,10 @@
     <result column="create_by" property="createBy" jdbcType="VARCHAR" />
     <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
     <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
+    <result column="type_id" property="typeId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, company_id,group_name,is_edit,seq,deleted, create_date, create_by, update_date, update_by
+    id, company_id,group_name,is_edit,seq,deleted, create_date, create_by, update_date, update_by,type_id
   </sql>
   <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -51,16 +52,16 @@
   </update>
   <insert id="insert" parameterType="com.maoding.dynamicForm.entity.DynamicFormGroupEntity" >
     insert into maoding_dynamic_form_group (id, company_id, group_name, is_edit,seq,
-      deleted, create_date, create_by, 
-      update_date, update_by)
+      deleted, create_date, create_by,
+      update_date, update_by,type_id)
     values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR},
      #{isEdit,jdbcType=INTEGER}, #{seq,jdbcType=INTEGER},
       0, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
-      #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{typeId,jdbcType=INTEGER})
   </insert>
 
   <update id="updateById" parameterType="com.maoding.dynamicForm.entity.DynamicFormGroupEntity" >
-    update maoding_dynamic_form
+    update maoding_dynamic_form_group
     <set >
       <if test="companyId != null" >
         company_id = #{companyId,jdbcType=VARCHAR},
@@ -89,6 +90,9 @@
       <if test="updateBy != null" >
         update_by = #{updateBy,jdbcType=VARCHAR},
       </if>
+      <if test="typeId != null" >
+        type_id = #{typeId,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -102,7 +106,8 @@
       create_date = #{createDate,jdbcType=TIMESTAMP},
       create_by = #{createBy,jdbcType=VARCHAR},
       update_date = #{updateDate,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=VARCHAR}
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      type_id = #{typeId,jdbcType=INTEGER}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 

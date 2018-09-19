@@ -6,6 +6,7 @@ import com.maoding.activiti.dto.ProcessDefineQueryDTO;
 import com.maoding.core.base.dao.GenericDao;
 import com.maoding.core.util.ObjectUtils;
 import com.maoding.core.util.TraceUtils;
+import com.maoding.dynamicForm.dto.FormGroupDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
 import com.maoding.process.dao.ProcessTypeDao;
 import com.maoding.process.entity.ProcessTypeEntity;
@@ -71,6 +72,11 @@ public class ProcessTypeDaoImpl extends GenericDao<ProcessTypeEntity> implements
     @Override
     public Integer selectMaxSeq(String currentCompanyId) {
         return sqlSession.selectOne("ProcessTypeEntityMapper.selectMaxSeq",currentCompanyId);
+    }
+
+    @Override
+    public List<ProcessTypeEntity> selectByCompanyIdFormType(FormGroupDTO formGroupDTO) {
+        return sqlSession.selectList("ProcessTypeEntityMapper.selectByCompanyIdFormType",formGroupDTO);
     }
 
 }

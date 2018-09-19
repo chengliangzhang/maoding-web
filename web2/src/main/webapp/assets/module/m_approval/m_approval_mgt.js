@@ -248,6 +248,46 @@
                        $('body').m_orgByTree(options);
                        return false;
                        break;
+                   case 'delApproval'://删除审批
+
+                       S_layer.confirm('删除后将不能恢复，您确定要删除吗？', function () {
+
+                           var option = {};
+                           option.url = restApi.url_deleteDynamicForm ;
+                           option.postData = {
+                               id:dataId
+                           };
+                           m_ajax.postJson(option, function (response) {
+                               if (response.code == '0') {
+                                   S_toastr.success('删除成功！');
+                                   that.init();
+                               } else {
+                                   S_layer.error(response.info);
+                               }
+                           });
+
+                       }, function () {
+                       });
+                       return false;
+                       break;
+                   case 'whetherEnable'://是否启用
+
+                       var option = {};
+                       option.url = restApi.url_setDynamicFormIsEdit ;
+                       option.postData = {
+                           id:dataId,
+                           status:$this.attr('data-statue')
+                       };
+                       m_ajax.postJson(option, function (response) {
+                           if (response.code == '0') {
+                               S_toastr.success('操作成功！');
+                               that.init();
+                           } else {
+                               S_layer.error(response.info);
+                           }
+                       });
+                       return false;
+                       break;
                }
 
             });

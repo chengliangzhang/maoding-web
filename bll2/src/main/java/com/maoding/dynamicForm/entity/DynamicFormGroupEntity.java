@@ -25,6 +25,9 @@ public class DynamicFormGroupEntity extends BaseEntity {
     /**删除**/
     private Integer deleted;
 
+    /**动态表单群组类型**/
+    private Integer typeId;
+
     public String getCompanyId() {
         return companyId;
     }
@@ -63,5 +66,13 @@ public class DynamicFormGroupEntity extends BaseEntity {
 
     public void setDeleted(Integer deleted) {
         this.deleted = deleted;
+    }
+
+    public Integer getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
     }
 }
