@@ -127,7 +127,7 @@
     FROM
     maoding_dynamic_form_group
     WHERE
-    company_id = #{currentCompanyId}
+    company_id = #{companyId}
     AND
     is_edit = #{isEdit}
     AND

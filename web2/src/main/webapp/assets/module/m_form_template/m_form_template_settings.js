@@ -9,6 +9,7 @@
         defaults = {
              isDialog:true
             ,type:1//1=我的审批
+            ,saveCallBack:null
         };
 
     // The actual plugin constructor
@@ -30,6 +31,7 @@
         this._$formProperty = {};//审批属性表单
 
         this._formFieldInfo = [];//预存的json，
+        this._baseData = {};//
 
         this.init();
     }
@@ -46,30 +48,33 @@
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
 
+                    var html = template('m_form_template/m_form_template_settings',{
+                        title:that._title,
+                        subTitle:that._subTitle,
+                        baseData:response.data
+                    });
+                    that.renderDialog(html,function () {
+
+                        that._$controlBox = $(that.element).find('#controlBox');
+                        that._$contentForm = $(that.element).find('#contentBox form.content-form');
+                        that._$propertyForm = $(that.element).find('#propertyBox form[data-property-type="2"]');
+
+                        $(that.element).css('overflow','initial');
+                        $(that.element).parents('.layui-layer').css('overflow','auto');
+
+                        that.renderICheckOrSelect($(that.element).find('#propertyBox'));
+                        that.bindActionClick();
+                        that.controlMousemove();
+                        that.clickOutStoreData();
+                        that.resizeFun();
+
+                    });
+
                 } else {
                     S_layer.error(response.info);
                 }
             });
-            var html = template('m_form_template/m_form_template_settings',{
-                title:that._title,
-                subTitle:that._subTitle
-            });
-            that.renderDialog(html,function () {
 
-                that._$controlBox = $(that.element).find('#controlBox');
-                that._$contentForm = $(that.element).find('#contentBox form.content-form');
-                that._$propertyForm = $(that.element).find('#propertyBox form[data-property-type="2"]');
-
-                $(that.element).css('overflow','initial');
-                $(that.element).parents('.layui-layer').css('overflow','auto');
-
-                that.renderICheckOrSelect($(that.element).find('#propertyBox'));
-                that.bindActionClick();
-                that.controlMousemove();
-                that.clickOutStoreData();
-                that.resizeFun();
-
-            });
         }
         ,resizeFun : function () {
             var that = this;
@@ -188,20 +193,107 @@
             console.log(that._formFieldInfo)
         }
         //转换数据格式
-        ,convertDataFormat:function (data) {
+        ,convertDataFormat:function ($ele) {
             var that = this;
-
-            var dataInfo = {};
-            //获取第一层formItem
-            $(that.element).find('#contentBox>form>div.form-item').length.each(function (i) {
+            var formField = [];
+            //获取第一层formItem//$(that.element).find('#contentBox>form>div.form-item')
+            $ele.each(function (i) {
                 var $this = $(this);
                 var type = $this.attr('data-type'),itemKey = $this.attr('data-key');
+                var newDataItem = {};
+                //从已预存的数据取出
+                var dataItem = getObjectInArray(that._formFieldInfo,itemKey,'itemKey');
+                if(isNullOrBlank(dataItem))
+                    return true;
 
-                //dataInfo.formName = $(that.element).find()
+                newDataItem = {
+                    fieldTitle:dataItem.fieldTitle,
+                    fieldType:dataItem.dataType,
+                    fieldUnit:dataItem.fieldUnit,
+                    fieldTooltip:dataItem.fieldTooltip,
+                    arrangeType:dataItem.arrangeType,
+                    requiredType:dataItem.requiredType
+                };
+                if(type==4){//时间区间，需要拆成两个组件
 
+                    newDataItem.fieldSelectValueType = dataItem.dataType;
 
+                    var clone = $.extend(true, {}, newDataItem);
+                    clone.fieldTitle = dataItem.fieldTitle;
+                    clone.fieldTooltip = dataItem.fieldTooltip;
+                    formField.push(filterParam(clone));
+
+                }else if(type==6){//下拉列表
+
+                    newDataItem.fieldSelectValueType = dataItem.optional;
+
+                    if(dataItem.iptOptional!=null && dataItem.iptOptional.length>0){
+
+                        $.each(dataItem.iptOptional,function (i,item) {
+
+                            if(newDataItem.fieldSelectedValueList==null)
+                                newDataItem.fieldSelectedValueList = [];
+
+                            newDataItem.fieldSelectedValueList.push({
+                                selectableName:item
+                            });
+                        })
+                    }
+
+                }else if(type==11){//关联审批
+
+                    if(dataItem.approvalAttr!=null && typeof (dataItem.approvalAttr) == 'object'){
+                        newDataItem.fieldSelectValueType = dataItem.approvalAttr.join(',');
+                    }else{
+                        newDataItem.fieldSelectValueType = isNullOrBlank(dataItem.approvalAttr)?'':dataItem.approvalAttr;
+                    }
+                }else if(type==12){//关联项目
+
+                    newDataItem.fieldSelectValueType = isNullOrBlank(dataItem.projectAttr)?'':dataItem.projectAttr;
+
+                }else if(type==9){//明细
+
+                    newDataItem = {};
+                }
+
+                formField.push(filterParam(newDataItem));
             });
-            
+
+            return formField;
+        }
+        //整合保存数据
+        ,getSaveData:function () {
+            var that = this;
+            var dataInfo = {};
+            //表单属性
+            dataInfo = $(that.element).find('#propertyBox form[data-property-type="1"]').serializeObject();
+
+            //取第一层数据
+            dataInfo.fieldList = that.convertDataFormat($(that.element).find('#contentBox>form>div.form-item'));
+
+            //取第二层明细数据
+            dataInfo.fieldList.detailFieldList = that.convertDataFormat($(that.element).find('#contentBox>form>div.form-item[data-type="9"] .panel .form-item'));
+
+            return dataInfo;
+        }
+        ,save:function () {
+            var that = this;
+            var option = {};
+            option.url = restApi.url_saveDynamicForm ;
+            option.postData = that.getSaveData();
+
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+
+                    S_toastr.success('保存成功！');
+
+                    if(that.settings.saveCallBack)
+                        that.settings.saveCallBack();
+
+                } else {
+                    S_layer.error(response.info);
+                }
+            });
         }
         //类型 明细，附件，只能放一个，
         ,judgingControlOnlyOne:function (type) {
@@ -607,6 +699,14 @@
 
 
 
+                       break;
+                   case 'save'://保存
+
+                       if(that._$contentForm.find('.form-item').length==0){
+                           S_toastr.warning('请选择控件！');
+                           return false;
+                       }
+                       that.save();
                        break;
                }
 

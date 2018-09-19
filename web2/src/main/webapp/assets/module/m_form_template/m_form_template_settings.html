@@ -9,7 +9,7 @@
             </div>
             <div class="col-xs-6 text-right">
                 <button class="btn btn-primary border-fff" data-action="formPreview">预览</button>
-                <button class="btn btn-default">保存</button>
+                <button class="btn btn-default" data-action="save">保存</button>
                 <button class="btn btn-default">保存并使用</button>
                 <button class="btn btn-link text-white" data-action="close"><i class="glyphicon glyphicon-remove"></i></button>
             </div>
@@ -32,8 +32,12 @@
             </div>
         </div>
         <div class="col-24-xs-5 bg-v3-grey" id="controlBox">
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="1">单行文本<i class="icon iconfont icon-danhangwenben pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="2">多行文本<i class="icon iconfont icon-duohangwenben pull-right"></i></div>
+            {{if baseData.optionalWidgetList && baseData.optionalWidgetList.length>0 }}
+                {{each baseData.optionalWidgetList as o i}}
+                <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="{{o.fieldType}}">{{o.fieldTitle}}<i class="icon iconfont {{o.iconKey}} pull-right"></i></div>
+                {{/each}}
+            {{/if}}
+            <!--<div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="2">多行文本<i class="icon iconfont icon-duohangwenben pull-right"></i></div>
             <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="3">日期<i class="icon iconfont icon-riqi pull-right"></i></div>
             <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="4">日期区间<i class="icon iconfont icon-riqiqujian pull-right"></i></div>
             <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="5">数字<i class="icon iconfont icon-shuzi pull-right"></i></div>
@@ -42,10 +46,10 @@
             <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="8">复选框<i class="icon iconfont icon-fuxuankuang pull-right"></i></div>
             <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="9">明细<i class="icon iconfont icon-mingxi pull-right"></i></div>
             <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="10">附件<i class="icon iconfont icon-fujian pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="11">关联项目<i class="icon iconfont icon-xiangmu pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="12">关联审批<i class="icon iconfont icon-shenpi pull-right"></i></div>
+            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="12">关联项目<i class="icon iconfont icon-xiangmu pull-right"></i></div>
+            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="11">关联审批<i class="icon iconfont icon-shenpi pull-right"></i></div>
             <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="13">纯文本<i class="icon iconfont icon-chunwenben pull-right"></i></div>
-            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="14">分割线<i class="icon iconfont icon-fengexian pull-right"></i></div>
+            <div class="col-xs-5 bg-v2-grey p-sm m-sm border-dashed curp control-item" data-type="14">分割线<i class="icon iconfont icon-fengexian pull-right"></i></div>-->
         </div>
         <div class="col-24-xs-14 " id="contentBox">
             <form class="form-horizontal content-form">
@@ -60,16 +64,18 @@
                 </div>
                 <div class="form-group">
                     <label>我的分组</label>
-                    <select class="form-control m-b" name="account">
-                        <option>option 1</option>
-                        <option>option 2</option>
-                        <option>option 3</option>
-                        <option>option 4</option>
+                    <select class="form-control m-b" name="formType">
+                        <option value="">请选择分组</option>
+                        {{if baseData.formGroupList && baseData.formGroupList.length>0}}
+                            {{each baseData.formGroupList as o i}}
+                                <option value="{{o.id}}">{{o.groupName}}</option>
+                            {{/each}}
+                        {{/if}}
                     </select>
                 </div>
                 <div class="form-group">
                     <label>说明</label>
-                    <textarea placeholder="请输入表单说明" class="form-control" type="text"></textarea>
+                    <textarea placeholder="请输入表单说明" class="form-control" type="text" name="documentation"></textarea>
                 </div>
             </form>
             <form role="form" data-property-type="2" style="display: none;">

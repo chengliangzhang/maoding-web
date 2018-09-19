@@ -1,6 +1,6 @@
 <div data-key="{{itemKey}}" data-type="{{type}}">
 
-    <input type="hidden" name="dateType" value="{{type}}"/>
+    <input type="hidden" name="dataType" value="{{type}}"/>
     <input type="hidden" name="itemKey" value="{{itemKey}}"/>
 
     {{if type!=11 && type!=12}}
@@ -210,7 +210,7 @@
     </div>
     {{/if}}
 
-    {{if type==12}}
+    {{if type==11}}
     <div class="form-group pt-relative">
         <label>审批属性</label>
         <div class="row">
@@ -258,7 +258,7 @@
     </div>
     {{/if}}
 
-    {{if type==11}}
+    {{if type==12}}
     <div class="form-group pt-relative">
         <label>项目属性</label>
         <div>

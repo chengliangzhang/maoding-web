@@ -160,6 +160,7 @@
       left join maoding_process_type process_type on group_type.id = process_type.form_type and process_type.deleted = 0
       left join maoding_dynamic_form dynamic_form  on (process_type.form_id = dynamic_form.id)
     where 1=1
+    AND group_type.deleted=0
       <if test="currentCompanyId != null">
         and group_type.company_id = #{currentCompanyId}
       </if>
@@ -229,6 +230,6 @@
     WHERE
     company_id = #{companyId}
     AND
-    form_type = #{typeId}
+    id = #{id}
   </select>
 </mapper>

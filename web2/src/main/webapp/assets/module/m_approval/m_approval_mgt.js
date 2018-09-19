@@ -134,7 +134,12 @@
 
                    case 'addApproval'://添加审批
 
-                       $('body').m_form_template_settings({type:1},true);
+                       $('body').m_form_template_settings({
+                           type:1,
+                           saveCallBack:function () {
+                               that.init();
+                           }
+                       },true);
                        return false;
                        break;
                    case 'addGroup'://添加分组
