@@ -142,6 +142,7 @@
         <result column="var_name" property="varName"/>
         <result column="var_unit" property="varUnit"/>
         <result column="is_system" property="isSystem"/>
+      <result column="process_status" property="status"/>
     </resultMap>
 
     <resultMap id="ProcessDefineGroupMap" type="com.maoding.activiti.dto.ProcessDefineGroupDTO">
@@ -155,6 +156,7 @@
         group_type.id as form_group_id,
         group_type.group_name as group_name,
         process_type.id as process_type_id,
+        process_type.status as process_status,
         dynamic_form.*
       from maoding_dynamic_form_group group_type
       left join maoding_process_type process_type on group_type.id = process_type.form_type and process_type.deleted = 0

@@ -57,7 +57,8 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
      */
     @Override
     public int insertDynamicForm (SaveDynamicFormDTO dto) throws Exception{
-
+        //将模板保存到ProcessType与之关联，在页面（后台管理-审批管理 中显示）
+        ProcessTypeEntity processTypeEntity = processTypeDao.selectByTargetType(dto);
         //保存主表(外层审核表)
         FormDTO form = createForm(dto);
         TraceUtils.check(form != null);
@@ -74,21 +75,20 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
             }
         }
 
-        //将模板保存到ProcessType与之关联，在页面（后台管理-审批管理 中显示）
-        ProcessTypeEntity processTypeEntity1 = processTypeDao.selectByTargetType(dto);
-        ProcessTypeEntity processTypeEntity = new ProcessTypeEntity();
-        if(StringUtil.isNullOrEmpty(processTypeEntity1)){
+        if(processTypeEntity==null){
+            processTypeEntity = new ProcessTypeEntity();
             processTypeEntity.initEntity();
-            processTypeEntity.setCompanyId(dto.getCompanyId());
+            processTypeEntity.setCompanyId(dto.getCurrentCompanyId());
             processTypeEntity.setTargetType(formId);//业务类型
             processTypeEntity.setType(1);//流程类型
             processTypeEntity.setStatus(StringUtil.isNullOrEmpty(dto.getStatus())?0:dto.getStatus());//业务类型
             processTypeEntity.setDeleted(0);
+            processTypeEntity.setFormType(dto.getFormType());
             processTypeEntity.setFormId(formId);
             processTypeEntity.setSeq(processTypeDao.selectMaxSeq(dto.getCurrentCompanyId())+1);
             processTypeDao.insert(processTypeEntity);
         }else{
-            processTypeEntity.setTargetType(dto.getFormType());//业务类型
+            processTypeEntity.setFormType(dto.getFormType());//业务类型
             processTypeEntity.setFormId(formId);
             processTypeDao.updateById(processTypeEntity);
         }

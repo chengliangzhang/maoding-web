@@ -67,11 +67,11 @@ public class ProcessTypeServiceImpl extends NewBaseService implements ProcessTyp
         //1.查询，根据dto中的id，和当前组织去查询ProcessTypeEntity（targetType = dto.id,companyId = dto.currentCompanyId)
         ProcessTypeEntity processTypeEntity = processTypeDao.selectById(dto.getId());
         if(!StringUtil.isNullOrEmpty(processTypeEntity.getStatus())){
-            if(0==processTypeEntity.getStatus() && 0==dto.getStatus()){
+            if(0==processTypeEntity.getStatus()){
                 processTypeEntity.setStatus(1);
                 return processTypeDao.updateById(processTypeEntity);
             }
-            if(1==processTypeEntity.getStatus() && 1==dto.getStatus()){
+            if(1==processTypeEntity.getStatus()){
                 processTypeEntity.setStatus(0);
                 return processTypeDao.updateById(processTypeEntity);
             }

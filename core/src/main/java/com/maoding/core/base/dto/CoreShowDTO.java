@@ -11,6 +11,8 @@ public class CoreShowDTO extends BaseIdObject {
     /** 显示元素内容（名称） */
     private String name;
 
+
+
     public String getName() {
         return name;
     }
@@ -24,4 +26,6 @@ public class CoreShowDTO extends BaseIdObject {
         setId(id);
         setName(name);
     }
+
+
 }

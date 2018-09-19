@@ -40,6 +40,9 @@ public class ProcessDefineDTO<T> extends CoreShowDTO {
     /** 是否系统表单 **/
     private Integer isSystem;
 
+    /**0:未启用，1：启用',**/
+    private Integer status;
+
     List<T> copyList = new ArrayList<>(); //对象的类型为AuditCopyDataDTO，由于AuditCopyDataDTO 在bill2层。所以此处用Object接收
 
     public Integer getIsSystem() {
@@ -124,5 +127,13 @@ public class ProcessDefineDTO<T> extends CoreShowDTO {
 
     public void setCopyList(List<T> copyList) {
         this.copyList = copyList;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

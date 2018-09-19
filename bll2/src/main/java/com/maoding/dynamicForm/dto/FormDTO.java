@@ -21,7 +21,7 @@ public class FormDTO extends BaseIdObject {
     private String documentation;
 
     /** 流程类型，定义见ProcessTypeConst.TYPE_xxx */
-    private Integer formType;
+    private String formType;
 
     /** 分条件流程变量名称 **/
     private String varName;
@@ -46,11 +46,11 @@ public class FormDTO extends BaseIdObject {
         this.documentation = documentation;
     }
 
-    public Integer getFormType() {
+    public String getFormType() {
         return formType;
     }
 
-    public void setFormType(Integer formType) {
+    public void setFormType(String formType) {
         this.formType = formType;
     }
 

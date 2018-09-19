@@ -28,4 +28,5 @@ public class ProcessDefineGroupDTO extends CoreShowDTO {
         setName(name);
         setProcessDefineList(processDefineList);
     }
+
 }
