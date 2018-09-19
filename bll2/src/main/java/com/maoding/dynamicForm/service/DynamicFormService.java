@@ -53,13 +53,6 @@ public interface DynamicFormService {
     List<DynamicFormFieldDTO> changeFormDetail(SaveDynamicFormDTO request);
 
     /**
-     * 作者：FYT
-     * 日期：2018/9/17
-     * 描述：是否启用动态表单 isEdit： 1启用，0禁用
-     */
-    int setDynamicFormIsEdit (SaveDynamicFormDTO dto) throws  Exception;
-
-    /**
      * 描述       准备用于编辑的动态窗口
      *              要编辑的动态表单模板编号为空则返回空白动态表单信息，加载指定表单信息
      * 日期       2018/9/18

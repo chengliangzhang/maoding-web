@@ -3,6 +3,7 @@ package com.maoding.dynamicForm.dao;
 
 import com.maoding.core.base.dao.BaseDao;
 import com.maoding.dynamicForm.dto.DynamicFormFieldDTO;
+import com.maoding.dynamicForm.dto.DynamicFormFieldValueDTO;
 import com.maoding.dynamicForm.dto.FormFieldQueryDTO;
 import com.maoding.dynamicForm.entity.DynamicFormFieldEntity;
 
@@ -20,7 +21,5 @@ public interface DynamicFormFieldDao extends BaseDao<DynamicFormFieldEntity> {
      **/
     List<DynamicFormFieldDTO> listFormField(FormFieldQueryDTO query);
 
-
-    List<DynamicFormFieldDTO> listFormFieldByFormId(FormFieldQueryDTO query);
 
 }

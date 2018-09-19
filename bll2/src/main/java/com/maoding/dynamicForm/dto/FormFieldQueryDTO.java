@@ -17,6 +17,7 @@ public class FormFieldQueryDTO extends CoreQueryDTO {
 
     private String fieldPid;
 
+
     public String getFormId() {
         return formId;
     }
@@ -32,4 +33,5 @@ public class FormFieldQueryDTO extends CoreQueryDTO {
     public void setFieldPid(String fieldPid) {
         this.fieldPid = fieldPid;
     }
+
 }

@@ -39,7 +39,7 @@ public class DynamicFormFieldValueEntity extends BaseEntity{
         return fieldValue;
     }
 
-    public void setFieldValue(String fieldValue) {
+    public<T> void  setFieldValue(String fieldValue) {
         this.fieldValue = fieldValue == null ? null : fieldValue.trim();
     }
 

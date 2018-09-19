@@ -286,10 +286,10 @@
                    case 'whetherEnable'://是否启用
 
                        var option = {};
-                       option.url = restApi.url_setDynamicFormIsEdit ;
+                       option.url = restApi.url_updateStatusDynamicForm ;
                        option.postData = {
                            id:dataId,
-                           status:$this.attr('data-statue')
+                           status:$this.attr('data-status')
                        };
                        m_ajax.postJson(option, function (response) {
                            if (response.code == '0') {

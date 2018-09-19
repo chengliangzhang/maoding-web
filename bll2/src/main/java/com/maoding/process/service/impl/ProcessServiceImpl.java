@@ -12,6 +12,7 @@ import com.maoding.core.constant.ProjectCostConst;
 import com.maoding.core.util.*;
 import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
 import com.maoding.dynamicForm.service.DynamicFormGroupService;
+import com.maoding.exception.CustomException;
 import com.maoding.financial.dto.AuditBaseDTO;
 import com.maoding.financial.dto.AuditDTO;
 import com.maoding.financial.dto.AuditEditDTO;
@@ -630,7 +631,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
     public Map<String,Object> getCurrentTaskUser(AuditEditDTO dto, List<AuditDTO> auditList, String value) throws Exception{
         Map<String,Object>  result = getCurrentProcess(dto);
         String processType = result.get("processType").toString();
-        if("0".equals(result.get("processFlag")) && !StringUtil.isNullOrEmpty(value)){
+        if("0".equals(result.get("processFlag")) ){
             List<UserTaskNodeDTO> taskList = (List<UserTaskNodeDTO>)result.get("conditionList");
             List<CompanyUserAppDTO> userList = this.getUserList(taskList,value,processType);
             int index = 0;
@@ -655,6 +656,9 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
            if(ProcessTypeConst.TYPE_FIXED== Integer.parseInt(processType)){//固定流程的情况下
                return taskList.get(0).getUserList();
            }else {//是条件流程的情况下
+               if(value==null){
+                   throw new CustomException("参数错误");
+               }
                for(UserTaskNodeDTO t:taskList){
                    if(isCurrentBrunchProcess(t,value)){
                        return t.getUserList();

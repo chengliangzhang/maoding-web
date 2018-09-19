@@ -9,18 +9,18 @@ import java.util.Map;
 
 public class SaveDynamicAuditDTO extends AuditBaseDTO {
 
-    private String auditType;
+    private String type;
 
     private List<DynamicFormFieldValueDTO> fieldList = new ArrayList<>();
 
     private Map<String,List<DynamicFormFieldValueDTO>> detailList = new HashMap<>();
 
-    public String getAuditType() {
-        return auditType;
+    public String getType() {
+        return type;
     }
 
-    public void setAuditType(String auditType) {
-        this.auditType = auditType;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public List<DynamicFormFieldValueDTO> getFieldList() {
@@ -38,5 +38,4 @@ public class SaveDynamicAuditDTO extends AuditBaseDTO {
     public void setDetailList(Map<String, List<DynamicFormFieldValueDTO>> detailList) {
         this.detailList = detailList;
     }
-
 }

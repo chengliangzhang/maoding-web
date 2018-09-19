@@ -219,8 +219,8 @@
                     newDataItem.fieldSelectValueType = dataItem.dataType;
 
                     var clone = $.extend(true, {}, newDataItem);
-                    clone.fieldTitle = dataItem.fieldTitle;
-                    clone.fieldTooltip = dataItem.fieldTooltip;
+                    clone.fieldTitle = dataItem.fieldTitle2;
+                    clone.fieldTooltip = dataItem.fieldTooltip2;
                     formField.push(filterParam(clone));
 
                 }else if(type==6){//下拉列表
@@ -251,9 +251,11 @@
 
                     newDataItem.fieldSelectValueType = isNullOrBlank(dataItem.projectAttr)?'':dataItem.projectAttr;
 
-                }else if(type==9){//明细
+                }else if(type==9){
 
-                    newDataItem = {};
+                    //取第二层明细数据
+                    newDataItem.detailFieldList = {};
+                    newDataItem.detailFieldList = that.convertDataFormat($this.find('.panel .form-item'));
                 }
 
                 formField.push(filterParam(newDataItem));
@@ -270,9 +272,6 @@
 
             //取第一层数据
             dataInfo.fieldList = that.convertDataFormat($(that.element).find('#contentBox>form>div.form-item'));
-
-            //取第二层明细数据
-            dataInfo.fieldList.detailFieldList = that.convertDataFormat($(that.element).find('#contentBox>form>div.form-item[data-type="9"] .panel .form-item'));
 
             return dataInfo;
         }
@@ -430,9 +429,6 @@
             //获取选中的key
             var itemKey = $activeFormItem.attr('data-key');
 
-            if(type==9 || type==10 || type==14)
-                return false;
-
             var formFieldInfo = {};
             if(that._formFieldInfo.length>0){
                 formFieldInfo = getObjectInArray(that._formFieldInfo,itemKey,'itemKey');
@@ -445,6 +441,10 @@
             }
             var html = template('m_form_template/m_form_template_item_property',{type:type,itemKey:itemKey,formFieldInfo:formFieldInfo});
             that._$propertyForm.html(html);
+
+            if(type==9 || type==10 || type==14)
+                return false;
+
             that.renderICheckOrSelect(that._$propertyForm,function ($this) {//选中事件
 
             },function ($this) {//未选中事件
@@ -587,9 +587,8 @@
                 that.storeFieldData();
                 //添加点击样式
                 $(this).addClass('active').siblings().removeClass('active');
-                //渲染右边控件属性,若是控件9，14，提示
-                if(that.renderProperty()==false)
-                    that._$propertyForm.html('无相关属性');
+                //渲染右边控件属性
+                that.renderProperty();
 
             });
             $formItem.find('button[data-action="delItem"]').on('click',function () {

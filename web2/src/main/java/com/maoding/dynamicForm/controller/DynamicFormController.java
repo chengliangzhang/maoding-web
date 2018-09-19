@@ -60,19 +60,7 @@ public class DynamicFormController extends BaseController {
         return AjaxMessage.succeed(dynamicFormService.insertDynamicForm(dto));
     }
 
-    /**
-     * 作者：FYT
-     * 日期：2018/9/13
-     * 描述：保存审核表单内容
-     * 接口：iWork/dynamicForm/saveAuditDetail
-     * 参数：SaveDynamicFormDTO
-     */
-    @RequestMapping(value = "/saveAuditDetail", method = RequestMethod.POST)
-    @ResponseBody
-    public AjaxMessage saveAuditDetail(@RequestBody SaveDynamicAuditDTO dto) throws Exception{
-        updateCurrentUserInfo(dto);
-        return AjaxMessage.succeed(dynamicFormFieldValueService.saveAuditDetail(dto));
-    }
+
 
     /**
      * 作者：FYT

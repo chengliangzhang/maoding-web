@@ -2,6 +2,7 @@ package com.maoding.dynamicForm.controller;
 
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.dynamicForm.dto.FormFieldQueryDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicAuditDTO;
 import com.maoding.dynamicForm.service.DynamicFormFieldValueService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,20 @@ public class DynamicAuditController extends BaseController {
     public AjaxMessage saveAuditDetail(@RequestBody SaveDynamicAuditDTO dto) throws Exception{
         updateCurrentUserInfo(dto);
         return AjaxMessage.succeed(dynamicFormFieldValueService.saveAuditDetail(dto));
+    }
+
+    /**
+     * 作者：MaoSF
+     * 日期：2018/9/13
+     * 描述：保存审核表单内容
+     * 接口：iWork/dynamicForm/initDynamicAudit
+     * 参数：SaveDynamicFormDTO
+     */
+    @RequestMapping(value = "/initDynamicAudit", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage initDynamicAudit(@RequestBody FormFieldQueryDTO dto) throws Exception{
+        updateCurrentUserInfo(dto);
+        return AjaxMessage.succeed(dynamicFormFieldValueService.initDynamicAudit(dto));
     }
 
 }

@@ -3,14 +3,14 @@
     <input type="hidden" name="dataType" value="{{type}}"/>
     <input type="hidden" name="itemKey" value="{{itemKey}}"/>
 
-    {{if type!=11 && type!=12}}
+    {{if type!=9 && type!=10 && type!=14 && type!=11 && type!=12}}
     <div class="form-group">
         <label>标题{{type==4?'1':''}}</label>
         <input placeholder="请输入标题{{type==4?'1':''}}" class="form-control" type="text" name="fieldTitle" value="{{formFieldInfo?formFieldInfo.fieldTitle:''}}">
     </div>
     {{/if}}
 
-    {{if type!=13 && type!=14}}
+    {{if type!=9 && type!=10 && type!=14 && type!=13 && type!=14}}
     <div class="form-group">
         <label>提示文字{{type==4?'1':''}}</label>
         <input placeholder="请输入提示文字{{type==4?'1':''}}" class="form-control" type="text" name="fieldTooltip" value="{{formFieldInfo?formFieldInfo.fieldTooltip:''}}">
@@ -282,7 +282,7 @@
     </div>
     {{/if}}
 
-    {{if type!=13 && type!=14}}
+    {{if type!=9 && type!=10 && type!=14 && type!=13 && type!=14}}
     <div class="form-group">
         <label>是否必填</label>
         <div class="">
@@ -296,5 +296,10 @@
             </label>
         </div>
     </div>
+    {{/if}}
+    {{if type==9 || type==10 || type==14}}
+        <div>
+            该控件无属性
+        </div>
     {{/if}}
 </div>

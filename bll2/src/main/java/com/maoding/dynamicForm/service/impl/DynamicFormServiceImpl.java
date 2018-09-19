@@ -75,8 +75,9 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         }
 
         //将模板保存到ProcessType与之关联，在页面（后台管理-审批管理 中显示）
-        ProcessTypeEntity processTypeEntity = processTypeDao.selectByTargetType(dto);
-        if(StringUtil.isNullOrEmpty(processTypeEntity)){
+        ProcessTypeEntity processTypeEntity1 = processTypeDao.selectByTargetType(dto);
+        ProcessTypeEntity processTypeEntity = new ProcessTypeEntity();
+        if(StringUtil.isNullOrEmpty(processTypeEntity1)){
             processTypeEntity.initEntity();
             processTypeEntity.setCompanyId(dto.getCompanyId());
             processTypeEntity.setTargetType(formId);//业务类型
@@ -267,20 +268,6 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
     @Override
     public List<DynamicFormFieldDTO> changeFormDetail(SaveDynamicFormDTO request) {
         return null;
-    }
-
-    /**
-     * 作者：FYT
-     * 日期：2018/9/17
-     * 描述：是否启用动态表单 isEdit： 1启用，0禁用
-     */
-    @Override
-    public int setDynamicFormIsEdit(SaveDynamicFormDTO dto) throws Exception {
-        //isEdit： 1启用，0禁用
-        ProcessTypeEntity entity = BeanUtils.createFrom(dto, ProcessTypeEntity.class);
-        entity.setDeleted(1);
-        processTypeDao.updateById(entity);
-        return 1;
     }
 
 

@@ -1594,7 +1594,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         String type = null;
         Object conditionFieldValue = null;
         if(dto instanceof SaveDynamicAuditDTO){
-            type = ((SaveDynamicAuditDTO) dto).getAuditType();
+            type = ((SaveDynamicAuditDTO) dto).getType();
             conditionFieldValue = dto.getConditionFieldValue();
         }
 
