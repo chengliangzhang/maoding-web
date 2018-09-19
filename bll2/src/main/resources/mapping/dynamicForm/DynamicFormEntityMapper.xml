@@ -98,20 +98,57 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
-  <!-- 查询动态窗口模板 -->
-  <select id="listForm" resultType="com.maoding.dynamicForm.dto.FormDTO" parameterType="com.maoding.dynamicForm.dto.FormQueryDTO">
+  <!-- 动态表单模板映射 -->
+  <resultMap id="FormMap" type="com.maoding.dynamicForm.dto.FormDTO">
+    <id column="form_id" property="id"/>
+    <result column="form_name" property="name"/>
+    <result column="form_type" property="formType"/>
+    <result column="documentation" property="documentation"/>
+    <result column="var_name" property="varName"/>
+    <result column="var_unit" property="varUnit"/>
+    <result column="status" property="isActive"/>
+    <result column="is_system" property="isSystem"/>
+  </resultMap>
+
+  <!-- 查询动态表单模板 -->
+  <select id="listForm" resultMap="FormMap" parameterType="com.maoding.dynamicForm.dto.FormQueryDTO">
       select
-        form_list.form_name as name,
-        form_list.status as isActive,
+        <choose>
+          <when test="currentCompanyId != null">
+            process_type.form_id,
+          </when>
+          <otherwise>
+            form_list.id as form_id,
+          </otherwise>
+        </choose>
         form_list.*
       from maoding_dynamic_form form_list
-      where deleted = 0
-        <if test="id != null">
-          and form_list.id = #{id}
-        </if>
         <if test="currentCompanyId != null">
-          and form_list.company_id = #{currentCompanyId}
+          right join maoding_process_type process_type on (
+            process_type.deleted = 0
+            and process_type.form_id = form_list.id
+            and process_type.company_id = #{currentCompanyId}
+          )
         </if>
-      order by form_list.seq
+      where form_list.deleted = 0
+        <if test="id != null">
+          <choose>
+            <when test="currentCompanyId != null">
+              and process_type.form_id = #{id}
+            </when>
+            <otherwise>
+              and form_list.id = #{id}
+            </otherwise>
+          </choose>
+        </if>
+      order by
+        <choose>
+          <when test="currentCompanyId != null">
+            process_type.seq
+          </when>
+          <otherwise>
+            form_list.seq
+          </otherwise>
+        </choose>
   </select>
 </mapper>

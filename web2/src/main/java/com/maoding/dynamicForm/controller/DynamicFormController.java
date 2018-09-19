@@ -184,7 +184,8 @@ public class DynamicFormController extends BaseController {
     @ResponseBody
     public AjaxMessage listForm(@RequestBody FormQueryDTO query) throws Exception {
         updateCurrentUserInfo(query);
-        AjaxMessage ajaxMessage = AjaxMessage.succeed(null);
+
+        AjaxMessage ajaxMessage = AjaxMessage.succeed("查询成功");
         if (query.getUseGroup() != null && query.getUseGroup() == 0){
             List<FormDTO> formList = dynamicFormService.listForm(query);
             ajaxMessage.setData(formList);

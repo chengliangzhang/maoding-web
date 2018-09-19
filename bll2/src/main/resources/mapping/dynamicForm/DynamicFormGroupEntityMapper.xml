@@ -167,11 +167,15 @@
             group_list.*
         from maoding_dynamic_form_group group_list
           <if test="isIncludeForm == 1">
+            left join maoding_process_type process_type on (
+              process_type.deleted = 0
+              and process_type.form_type = group_list.id
+            )
             left join maoding_dynamic_form form_list on (
               form_list.deleted = 0
-              and form_list.form_type = group_list.id
+              and form_list.id = process_type.form_id
               <if test="currentCompanyId != null">
-                and form_list.company_id = #{currentCompanyId}
+                  and form_list.company_id = #{currentCompanyId}
               </if>
             )
           </if>
@@ -182,7 +186,7 @@
         group by group_list.id
         order by group_list.seq
             <if test="isIncludeForm == 1">
-                ,form_list.seq
+                ,process_type.seq
             </if>
     </select>
 

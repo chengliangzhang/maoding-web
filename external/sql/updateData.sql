@@ -1,3 +1,28 @@
+-- 添加已有公司的默认动态表单群组和动态表单
+DROP PROCEDURE IF EXISTS `updateData`;
+CREATE PROCEDURE `updateData`()
+  BEGIN
+    insert into maoding_dynamic_form_group (id,deleted,create_date,update_date,company_id,group_name,is_edit,seq,type_id)
+      select
+        replace(uuid(),'-',''),0,now(),now(),company_list.id,group_template.group_name,group_template.is_edit,group_template.seq,group_template.type_id
+      from
+        maoding_web_company company_list
+        inner join maoding_dynamic_form_group group_template on group_template.company_id is null
+      where company_list.status = '0'
+            and company_list.id not in (select ifnull(company_id,'') from maoding_dynamic_form_group group by company_id);
+
+    insert into maoding_dynamic_form (id,deleted,create_date,update_date,company_id,form_name,form_type,seq,status,documentation,var_name,var_unit,is_system)
+      select
+        replace(uuid(),'-',''),0,now(),now(),company_list.id,form_template.form_name,form_template.form_type,form_template.seq,form_template.status,form_template.documentation,form_template.var_name,form_template.var_unit,1
+      from
+        maoding_web_company company_list
+        inner join maoding_dynamic_form_group form_template on form_template.company_id is null
+      where company_list.status = '0'
+            and company_list.id not in (select ifnull(company_id,'') from maoding_dynamic_form group by company_id);
+
+  END;
+-- call updateData();
+
 -- 设定已有收付款节点的项目费用总额为收付款节点的费用之和
 DROP PROCEDURE IF EXISTS `updateData`;
 CREATE PROCEDURE `updateData`()
@@ -12,7 +37,6 @@ CREATE PROCEDURE `updateData`()
     where cost_list.fee is null;
   END;
 call updateData();
-DROP PROCEDURE IF EXISTS `updateData`;
 
 -- 调整已有网盘目录次序
 DROP PROCEDURE IF EXISTS `updateData`;
@@ -25,7 +49,6 @@ BEGIN
   update maoding_web_project_sky_drive set param4 = 4 where pid is null and file_name = '归档文件';
 END;
 -- call updateData();
-DROP PROCEDURE IF EXISTS `updateData`;
 
 -- 创建协同服务和客户端版本
 DROP PROCEDURE IF EXISTS `updateData`;
@@ -38,7 +61,6 @@ BEGIN
     REPLACE INTO `md_list_version` (id,svn_repo,svn_version,app_name,version_name,update_url,description,min_depend_svn_version,max_depend_svn_version) VALUES ('76bc3c7d6a4e11e8a8e000ffecc6934a','app','12233','卯丁协同客户端','v2.2','http://www.maoding.com/','第二次升级','11240',null);
 END;
 -- call updateData();
-DROP PROCEDURE IF EXISTS `updateData`;
 
 -- 从storage内复制owner_user_id到file
 DROP PROCEDURE IF EXISTS `updateData`;
@@ -56,7 +78,6 @@ BEGIN
 				file_list.company_id = storage_task.company_id;
 END;
 -- call updateData();
-DROP PROCEDURE IF EXISTS `updateData`;
 
 -- 建立初始化权限数据过程
 DROP PROCEDURE IF EXISTS `updateData`;
@@ -268,4 +289,3 @@ BEGIN
       where role_have.permission_id is null;
 END;
 -- call updateData();
-DROP PROCEDURE IF EXISTS `updateData`;

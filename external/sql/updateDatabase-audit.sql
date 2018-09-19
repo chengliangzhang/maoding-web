@@ -237,6 +237,8 @@ BEGIN
     `id` varchar(32) NOT NULL COMMENT '动态表单群组编号',
     `company_id` varchar(32) DEFAULT NULL COMMENT '所属公司编号',
     `group_name` varchar(32) DEFAULT NULL COMMENT '审批类型群组名称',
+    `is_edit` int(1) DEFAULT 1 COMMENT '可编辑标识：1，可编辑，0；不可编辑',
+    `seq` int(1) DEFAULT 0 COMMENT '排序',
     `type_id` int(4) DEFAULT NULL COMMENT '动态表单群组类型',
 
     `deleted` int(1) DEFAULT 0 COMMENT '删除标识',
@@ -249,6 +251,12 @@ BEGIN
 
   if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_dynamic_form_group' and column_name='type_id') then
     alter table maoding_dynamic_form_group add column `type_id` int(4) DEFAULT NULL COMMENT '动态表单群组类型';
+  end if;
+  if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_dynamic_form_group' and column_name='is_edit') then
+    alter table maoding_dynamic_form_group add column `is_edit` int(1) DEFAULT 1 COMMENT '可编辑标识：1，可编辑，0；不可编辑';
+  end if;
+  if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_dynamic_form_group' and column_name='seq') then
+    alter table maoding_dynamic_form_group add column `seq` int(1) DEFAULT 0 COMMENT '排序';
   end if;
 
   call createIndex('maoding_dynamic_form_group');
