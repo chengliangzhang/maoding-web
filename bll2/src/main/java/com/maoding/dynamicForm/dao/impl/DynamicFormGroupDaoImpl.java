@@ -22,7 +22,7 @@ public class DynamicFormGroupDaoImpl extends GenericDao<DynamicFormGroupEntity> 
     }
 
     @Override
-    public List<DynamicFormGroupEntity> listFormGroupByCompanyId(String companyId) {
+    public List<DynamicFormGroupEntity> listFormGroupByCompanyId(String companyId) throws Exception  {
         return this.sqlSession.selectList("DynamicFormGroupEntityMapper.listFormGroupByCompanyId",companyId);
     }
 
@@ -51,11 +51,6 @@ public class DynamicFormGroupDaoImpl extends GenericDao<DynamicFormGroupEntity> 
     @Override
     public List<FormGroupDTO> listFormGroup(FormGroupQueryDTO query) {
         return sqlSession.selectList("DynamicFormGroupEntityMapper.listFormGroup",query);
-    }
-
-    @Override
-    public List<DynamicFormGroupEntity> selectByCompanyId(String currentCompanyId) throws Exception {
-        return this.sqlSession.selectList("DynamicFormGroupEntityMapper.selectByCompanyId",currentCompanyId);
     }
 
 }

@@ -3,6 +3,7 @@ package com.maoding.dynamicForm.controller;
 import com.maoding.commonModule.dto.SaveAuditCopyDTO;
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.core.util.BeanUtils;
 import com.maoding.dynamicForm.dto.*;
 import com.maoding.dynamicForm.service.DynamicFormFieldValueService;
 import com.maoding.dynamicForm.service.DynamicFormGroupService;
@@ -12,6 +13,8 @@ import com.maoding.process.service.ProcessTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 作者：FYT
@@ -166,5 +169,32 @@ public class DynamicFormController extends BaseController {
         return AjaxMessage.succeed(dynamicFormService.updateDynamicFormSeq(dto));
     }
 
+    /**
+     * 描述       获取动态表单列表，以列表或分组形式给出
+     *              可代替iWork/workflow/listProcessDefine接口
+     * 日期       2018/9/19
+     * @author   张成亮
+     * @param    query 动态表单列表查询条件
+     *              如果未指定accountId，currentCompanyId，则使用当前用户信息
+     *              id 动态表单编号，如果不为空则只返回编号相同的表单
+     *              useGroup 是否按群组汇总，0-否，1/null-是
+     * @return   动态表单列表，或动态表单分组-动态表单列表
+     **/
+    @RequestMapping(value = "/listForm", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage listForm(@RequestBody FormQueryDTO query) throws Exception {
+        updateCurrentUserInfo(query);
+        AjaxMessage ajaxMessage = AjaxMessage.succeed(null);
+        if (query.getUseGroup() != null && query.getUseGroup() == 0){
+            List<FormDTO> formList = dynamicFormService.listForm(query);
+            ajaxMessage.setData(formList);
+        } else {
+            FormGroupQueryDTO groupQuery = BeanUtils.createFrom(query,FormGroupQueryDTO.class);
+            groupQuery.setIsIncludeForm(1);
+            List<FormGroupDTO> groupList = dynamicFormGroupService.listFormGroup(groupQuery);
+            ajaxMessage.setData(groupList);
+        }
+        return ajaxMessage;
+    }
 
 }

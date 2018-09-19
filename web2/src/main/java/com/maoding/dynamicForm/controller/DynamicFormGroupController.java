@@ -2,11 +2,9 @@ package com.maoding.dynamicForm.controller;
 
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
-import com.maoding.dynamicForm.dto.FormGroupDTO;
 import com.maoding.dynamicForm.dto.FormGroupEditDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
 import com.maoding.dynamicForm.service.DynamicFormGroupService;
-import com.maoding.process.service.ProcessService;
 import com.maoding.process.service.ProcessTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -72,7 +70,7 @@ public class DynamicFormGroupController  extends BaseController {
     @ResponseBody
     public AjaxMessage selectDynamicFormGroupList(@RequestBody FormGroupEditDTO dto) throws Exception {
         updateCurrentUserInfo(dto);
-        return AjaxMessage.succeed(dynamicFormGroupService.selectDynamicFormGroupList(dto));
+        return AjaxMessage.succeed(dynamicFormGroupService.listFormGroupByCompanyId(dto));
     }
 
     /**

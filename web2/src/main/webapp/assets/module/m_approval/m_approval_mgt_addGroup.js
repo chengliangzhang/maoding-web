@@ -96,7 +96,7 @@
         //表单验证
         ,save_validate:function(){
             var that = this;
-            $(that.element).find('form.form-horizontal').validate({
+            $(that.element).find('form').validate({
                 ignore : [],
                 rules: {
                     name:{

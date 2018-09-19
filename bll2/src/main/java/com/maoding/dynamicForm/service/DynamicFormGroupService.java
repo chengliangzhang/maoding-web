@@ -2,7 +2,7 @@ package com.maoding.dynamicForm.service;
 
 import com.maoding.dynamicForm.dto.FormGroupDTO;
 import com.maoding.dynamicForm.dto.FormGroupEditDTO;
-import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
+import com.maoding.dynamicForm.dto.FormGroupQueryDTO;
 import com.maoding.dynamicForm.entity.DynamicFormGroupEntity;
 
 import java.util.List;
@@ -28,7 +28,12 @@ public interface DynamicFormGroupService {
     void initDynamicFormGroup(String companyId) throws Exception;
 
     //查询当前公司的分组
-    List<DynamicFormGroupEntity> selectDynamicFormGroupList(FormGroupEditDTO dto) throws Exception;
+    List<DynamicFormGroupEntity> listFormGroupByCompanyId(FormGroupEditDTO dto) throws Exception;
 
-
+    /**
+     * 描述       查询公司分组
+     * 日期       2018/9/19
+     * @author   张成亮
+     **/
+    List<FormGroupDTO> listFormGroup(FormGroupQueryDTO query);
 }

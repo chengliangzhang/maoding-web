@@ -7,10 +7,10 @@ import com.maoding.dynamicForm.dao.DynamicFormDao;
 import com.maoding.dynamicForm.dao.DynamicFormGroupDao;
 import com.maoding.dynamicForm.dto.FormGroupDTO;
 import com.maoding.dynamicForm.dto.FormGroupEditDTO;
+import com.maoding.dynamicForm.dto.FormGroupQueryDTO;
 import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.dynamicForm.entity.DynamicFormGroupEntity;
 import com.maoding.dynamicForm.service.DynamicFormGroupService;
-import com.maoding.process.dao.ProcessTypeDao;
 import com.maoding.process.entity.ProcessTypeEntity;
 import com.maoding.process.service.ProcessTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,8 +145,19 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
      * 描述：查询当前公司的分组
      * */
     @Override
-    public List<DynamicFormGroupEntity> selectDynamicFormGroupList(FormGroupEditDTO dto) throws Exception{
-        return dynamicFormGroupDao.selectByCompanyId(dto.getCurrentCompanyId());
+    public List<DynamicFormGroupEntity> listFormGroupByCompanyId(FormGroupEditDTO dto) throws Exception{
+        return dynamicFormGroupDao.listFormGroupByCompanyId(dto.getCurrentCompanyId());
     }
 
+    /**
+     * 描述       查询公司分组
+     * 日期       2018/9/19
+     *
+     * @param query 分组查询条件
+     * @author 张成亮
+     */
+    @Override
+    public List<FormGroupDTO> listFormGroup(FormGroupQueryDTO query) {
+        return dynamicFormGroupDao.listFormGroup(query);
+    }
 }

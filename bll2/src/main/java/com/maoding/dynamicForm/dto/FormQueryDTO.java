@@ -12,4 +12,14 @@ import com.maoding.core.base.dto.CoreQueryDTO;
 public class FormQueryDTO extends CoreQueryDTO {
     /** id:表单模板编号 **/
 
+    /** 是否按照群组汇总：0-否，1-是 **/
+    private Integer useGroup;
+
+    public Integer getUseGroup() {
+        return useGroup;
+    }
+
+    public void setUseGroup(Integer useGroup) {
+        this.useGroup = useGroup;
+    }
 }

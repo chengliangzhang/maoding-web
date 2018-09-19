@@ -134,30 +134,56 @@
     group_name = #{groupName}
   </select>
 
+  <resultMap id="FromGroupMap" type="com.maoding.dynamicForm.dto.FormGroupDTO">
+    <id column="id" property="id"/>
+    <result column="company_id" property="companyId"/>
+    <result column="group_name" property="name"/>
+    <result column="is_edit" property="isEdit"/>
+    <collection property="formList" ofType="com.maoding.dynamicForm.dto.FormDTO">
+      <id column="form_id" property="id"/>
+      <result column="form_name" property="name"/>
+      <result column="form_type" property="formType"/>
+      <result column="documentation" property="documentation"/>
+      <result column="var_name" property="varName"/>
+      <result column="var_unit" property="varUnit"/>
+      <result column="form_is_active" property="isActive"/>
+      <result column="form_is_system" property="isSystem"/>
+    </collection>
+  </resultMap>
+
     <!-- 查找动态窗口模板群组 -->
     <select id="listFormGroup" resultType="com.maoding.dynamicForm.dto.FormGroupDTO" parameterType="com.maoding.dynamicForm.dto.FormGroupQueryDTO">
-        select group_ordered.*
-        from (
-            select
-                group_list.group_name as name,
-                group_list.*
-            from maoding_dynamic_form_group group_list
-            where deleted = 0
-                <if test="currentCompanyId != null">
-                    and (group_list.company_id is null or group_list.company_id = #{currentCompanyId})
-                </if>
-            order by group_list.company_id desc
-        ) group_ordered
-        group by group_ordered.type_id
+        select
+            <if test="isIncludeForm == 1">
+              form_list.id as form_id,
+              form_list.form_name,
+              form_list.form_type,
+              form_list.documentation,
+              form_list.var_name,
+              form_list.var_unit,
+              form_list.status as form_is_active,
+              form_list.is_system as form_is_system,
+            </if>
+            group_list.*
+        from maoding_dynamic_form_group group_list
+          <if test="isIncludeForm == 1">
+            left join maoding_dynamic_form form_list on (
+              form_list.deleted = 0
+              and form_list.form_type = group_list.id
+              <if test="currentCompanyId != null">
+                and form_list.company_id = #{currentCompanyId}
+              </if>
+            )
+          </if>
+        where group_list.deleted = 0
+            <if test="currentCompanyId != null">
+                and group_list.company_id = #{currentCompanyId}
+            </if>
+        group by group_list.id
+        order by group_list.seq
+            <if test="isIncludeForm == 1">
+                ,form_list.seq
+            </if>
     </select>
-
-  <select id="selectByCompanyId" resultType="com.maoding.dynamicForm.entity.DynamicFormGroupEntity" parameterType="java.lang.String" >
-    SELECT
-    <include refid="Base_Column_List" />
-    FROM
-    maoding_dynamic_form_group
-    WHERE
-    company_id = #{currentCompanyId}
-  </select>
 
 </mapper>

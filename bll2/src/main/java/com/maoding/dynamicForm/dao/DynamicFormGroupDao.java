@@ -18,7 +18,7 @@ public interface DynamicFormGroupDao extends BaseDao<DynamicFormGroupEntity> {
 
     List<DynamicFormGroupEntity> listDefaultFormGroup();
 
-    List<DynamicFormGroupEntity> listFormGroupByCompanyId(String companyId);
+    List<DynamicFormGroupEntity> listFormGroupByCompanyId(String companyId) throws Exception;
 
     boolean isInitFormGroup(String companyId);
 
@@ -33,7 +33,6 @@ public interface DynamicFormGroupDao extends BaseDao<DynamicFormGroupEntity> {
      **/
     List<FormGroupDTO> listFormGroup(FormGroupQueryDTO query);
 
-    //查询当前公司的分组
-    List<DynamicFormGroupEntity> selectByCompanyId(String currentCompanyId) throws Exception;
+
 
 }
