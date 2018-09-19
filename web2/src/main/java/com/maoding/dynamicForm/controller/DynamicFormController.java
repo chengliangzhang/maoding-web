@@ -186,4 +186,21 @@ public class DynamicFormController extends BaseController {
         return ajaxMessage;
     }
 
+
+    /**
+     * 描述       以分组形式给出启用的动态表单模板
+     * 日期       2018/9/19
+     * @author   张成亮
+     * @param    query 动态表单列表查询条件
+     *              如果未指定accountId，currentCompanyId，则使用当前用户信息
+     * @return   动态表单列表，或动态表单分组-动态表单列表
+     **/
+    @RequestMapping(value = "/listActiveForm", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage listActiveForm(@RequestBody FormQueryDTO query) throws Exception {
+        updateCurrentUserInfo(query);
+        query.setUseGroup(1);
+        query.setStatus(1);
+        return listForm(query);
+    }
 }

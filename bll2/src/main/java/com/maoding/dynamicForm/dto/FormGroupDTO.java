@@ -16,9 +16,6 @@ public class FormGroupDTO extends CoreShowDTO {
     /**所属公司编号**/
     private String companyId;
 
-    /**动态表单群组类型**/
-    private String typeId;
-
     /**可编辑标识：1，可编辑，0；不可编辑**/
     private Integer isEdit;
 
@@ -42,14 +39,6 @@ public class FormGroupDTO extends CoreShowDTO {
 
     public void setCompanyId(String companyId) {
         this.companyId = companyId;
-    }
-
-    public String getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(String typeId) {
-        this.typeId = typeId;
     }
 
     public Integer getIsEdit() {

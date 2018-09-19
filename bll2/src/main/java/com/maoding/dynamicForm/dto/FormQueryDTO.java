@@ -15,6 +15,17 @@ public class FormQueryDTO extends CoreQueryDTO {
     /** 是否按照群组汇总：0-否，1-是 **/
     private Integer useGroup;
 
+    /** 是否启用：0-未启用，1-启用 **/
+    private Integer status;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public Integer getUseGroup() {
         return useGroup;
     }

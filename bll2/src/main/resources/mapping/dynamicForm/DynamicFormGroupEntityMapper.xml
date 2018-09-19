@@ -12,10 +12,9 @@
     <result column="create_by" property="createBy" jdbcType="VARCHAR" />
     <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
     <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
-    <result column="type_id" property="typeId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, company_id,group_name,is_edit,seq,deleted, create_date, create_by, update_date, update_by,type_id
+    id, company_id,group_name,is_edit,seq,deleted, create_date, create_by, update_date, update_by
   </sql>
   <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -53,11 +52,11 @@
   <insert id="insert" parameterType="com.maoding.dynamicForm.entity.DynamicFormGroupEntity" >
     insert into maoding_dynamic_form_group (id, company_id, group_name, is_edit,seq,
       deleted, create_date, create_by,
-      update_date, update_by,type_id)
+      update_date, update_by)
     values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR},
      #{isEdit,jdbcType=INTEGER}, #{seq,jdbcType=INTEGER},
       0, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
-      #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{typeId,jdbcType=INTEGER})
+      #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
   </insert>
 
   <update id="updateById" parameterType="com.maoding.dynamicForm.entity.DynamicFormGroupEntity" >
@@ -90,9 +89,6 @@
       <if test="updateBy != null" >
         update_by = #{updateBy,jdbcType=VARCHAR},
       </if>
-      <if test="typeId != null" >
-        type_id = #{typeId,jdbcType=INTEGER},
-      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -107,7 +103,6 @@
       create_by = #{createBy,jdbcType=VARCHAR},
       update_date = #{updateDate,jdbcType=TIMESTAMP},
       update_by = #{updateBy,jdbcType=VARCHAR},
-      type_id = #{typeId,jdbcType=INTEGER}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
@@ -146,7 +141,7 @@
       <result column="documentation" property="documentation"/>
       <result column="var_name" property="varName"/>
       <result column="var_unit" property="varUnit"/>
-      <result column="form_is_active" property="isActive"/>
+      <result column="form_is_active" property="status"/>
       <result column="form_is_system" property="isSystem"/>
     </collection>
   </resultMap>

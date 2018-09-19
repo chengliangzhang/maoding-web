@@ -20,9 +20,6 @@ public class FormDTO extends BaseIdObject {
     /** 表单说明 */
     private String documentation;
 
-    /** 流程分类关键字，定义见ProcessTypeConst.PROCESS_TYPE_xxx */
-    private String formCode;
-
     /** 流程类型，定义见ProcessTypeConst.TYPE_xxx */
     private Integer formType;
 
@@ -33,7 +30,7 @@ public class FormDTO extends BaseIdObject {
     private String varUnit;
 
     /** 是否启用 **/
-    private Integer isActive;
+    private Integer status;
 
     /** 是否系统表单 **/
     private Integer isSystem;
@@ -47,14 +44,6 @@ public class FormDTO extends BaseIdObject {
 
     public void setDocumentation(String documentation) {
         this.documentation = documentation;
-    }
-
-    public String getFormCode() {
-        return formCode;
-    }
-
-    public void setFormCode(String formCode) {
-        this.formCode = formCode;
     }
 
     public Integer getFormType() {
@@ -81,12 +70,12 @@ public class FormDTO extends BaseIdObject {
         this.varUnit = varUnit;
     }
 
-    public Integer getIsActive() {
-        return isActive;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setIsActive(Integer isActive) {
-        this.isActive = isActive;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Integer getIsSystem() {

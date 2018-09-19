@@ -106,49 +106,28 @@
     <result column="documentation" property="documentation"/>
     <result column="var_name" property="varName"/>
     <result column="var_unit" property="varUnit"/>
-    <result column="status" property="isActive"/>
+    <result column="process_status" property="status"/>
     <result column="is_system" property="isSystem"/>
   </resultMap>
 
   <!-- 查询动态表单模板 -->
   <select id="listForm" resultMap="FormMap" parameterType="com.maoding.dynamicForm.dto.FormQueryDTO">
       select
-        <choose>
-          <when test="currentCompanyId != null">
-            process_type.form_id,
-          </when>
-          <otherwise>
-            form_list.id as form_id,
-          </otherwise>
-        </choose>
+        process_type.form_id,
+        process_type.status as process_status,
         form_list.*
       from maoding_dynamic_form form_list
-        <if test="currentCompanyId != null">
           right join maoding_process_type process_type on (
             process_type.deleted = 0
             and process_type.form_id = form_list.id
-            and process_type.company_id = #{currentCompanyId}
           )
-        </if>
       where form_list.deleted = 0
         <if test="id != null">
-          <choose>
-            <when test="currentCompanyId != null">
-              and process_type.form_id = #{id}
-            </when>
-            <otherwise>
-              and form_list.id = #{id}
-            </otherwise>
-          </choose>
+          and process_type.form_id = #{id}
         </if>
-      order by
-        <choose>
-          <when test="currentCompanyId != null">
-            process_type.seq
-          </when>
-          <otherwise>
-            form_list.seq
-          </otherwise>
-        </choose>
+        <if test="status == 1">
+          and process_type.status = #{status}
+        </if>
+      order by process_type.seq
   </select>
 </mapper>
