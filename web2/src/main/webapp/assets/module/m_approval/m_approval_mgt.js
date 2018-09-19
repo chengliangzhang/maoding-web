@@ -213,8 +213,14 @@
                        break;
                    case 'setCcUser'://添加抄送人
                        var options = {};
+                       var selectedUserList = [];
+                       if(dataItem.copyList!=null && dataItem.copyList.length>0){
+                           $.each(dataItem.copyList,function (i,item) {
+                               selectedUserList.push({id:item.relationId,userName:item.name});
+                           });
+                       }
                        options.title = '添加抄送人员';
-                       options.selectedUserList = [];
+                       options.selectedUserList = selectedUserList;
                        options.url = restApi.url_getOrgTree;
                        options.saveCallback = function (data) {
                            console.log(data);

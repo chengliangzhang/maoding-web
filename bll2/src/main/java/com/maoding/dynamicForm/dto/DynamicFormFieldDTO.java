@@ -21,9 +21,6 @@ public class DynamicFormFieldDTO {
     /** 字段类型 **/
     private Integer fieldType;
 
-    /** 日期字段的显示格式，1-年/月/日,2-年/月/日 时:分,3-年/月/日 上午&下午 **/
-    private Integer dateType;
-
     /** 金额（带单位数字）字段的单位 **/
     private String fieldUnit;
 
@@ -211,19 +208,19 @@ public class DynamicFormFieldDTO {
         this.isStatistics = isStatistics;
     }
 
-    public Integer getDateType() {
-        return dateType;
-    }
-
-    public void setDateType(Integer dateType) {
-        this.dateType = dateType;
-    }
-
     public Integer getArrangeType() {
         return arrangeType;
     }
 
     public void setArrangeType(Integer arrangeType) {
         this.arrangeType = arrangeType;
+    }
+
+    public Integer getDateFormatType() {
+        return dateFormatType;
+    }
+
+    public void setDateFormatType(Integer dateFormatType) {
+        this.dateFormatType = dateFormatType;
     }
 }

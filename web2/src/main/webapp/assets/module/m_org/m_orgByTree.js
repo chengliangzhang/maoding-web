@@ -18,6 +18,7 @@
             , treeIconObj: null//树生成的图标对象
             , currOrgTreeObj: {}//当前树选中节点对象
             , selectedUserList: null//当前窗口选中的人员[{id,userId,userName}...]
+            , selectedDisabled : true//选中的disabled
             , isASingleSelectUser: false//是否单个选择人员，默认false,2为单选且提示不关窗
             , isOkSave: true//默认存在“OK” 按钮
             , saveDataUrl: null//直接保存url
@@ -237,6 +238,7 @@
             };
             options.delSelectedUserCallback = that.settings.delSelectedUserCallback;
             options.selectedUserList = that.settings.selectedUserList;
+            options.selectedDisabled = that.settings.selectedDisabled;
             $(that.element).find('div[data-list="userList"]').m_userList(options);
         }
 

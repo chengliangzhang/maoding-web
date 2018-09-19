@@ -50,7 +50,7 @@ public class DynamicFormController extends BaseController {
      * 接口：iWork/dynamicForm/insertDynamicForm
      * 参数：SaveDynamicFormDTO
      */
-    @RequestMapping(value = "/insertDynamicForm", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveDynamicForm", method = RequestMethod.POST)
     @ResponseBody
     public AjaxMessage insertDynamicForm(@RequestBody SaveDynamicFormDTO dto) throws Exception{
         updateCurrentUserInfo(dto);

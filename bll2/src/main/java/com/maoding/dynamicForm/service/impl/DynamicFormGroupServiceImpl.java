@@ -92,12 +92,18 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
         FormGroupDTO formGroupDTO = new FormGroupDTO();
         formGroupDTO.setCompanyId(dynamicFormGroupEntity.getCompanyId());
         formGroupDTO.setTypeId(dynamicFormGroupEntity.getTypeId().toString());
+
+        //通过companyId 和 is_edit=0  和 group_name=其他模板  查询出对应的type_id
+        FormGroupDTO dto = new FormGroupDTO();
+        dto.setCompanyId(entity.getCurrentCompanyId());
+        dto.setIsEdit(0);
+        dto.setGroupName("其他模板");
+        DynamicFormGroupEntity formGroup= dynamicFormGroupDao.selectTypeId(dto);
+
         //通过companyId和typeId，查询所有属于该分组的动态审批表，并遍历设置FormType = 4
         List<ProcessTypeEntity> processTypeList = processTypeService.selectByCompanyIdFormType(formGroupDTO);
-        processTypeList.forEach(list -> {
-            ProcessTypeEntity processTypeEntity = new ProcessTypeEntity();
-            processTypeEntity.setId(list.getId());
-            processTypeEntity.setFormType("4");
+        processTypeList.forEach(processTypeEntity -> {
+            processTypeEntity.setFormType(formGroup.getTypeId().toString());
             try {
                 processTypeService.updateDynamicFormType(processTypeEntity);
             } catch (Exception e) {

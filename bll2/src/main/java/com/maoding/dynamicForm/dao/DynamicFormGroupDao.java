@@ -24,6 +24,8 @@ public interface DynamicFormGroupDao extends BaseDao<DynamicFormGroupEntity> {
 
     Integer selectMaxSeq(String  currentCompanyId);
 
+    DynamicFormGroupEntity selectTypeId(FormGroupDTO formGroupDTO);
+
     /**
      * 描述       查询动态表单群组
      * 日期       2018/9/19

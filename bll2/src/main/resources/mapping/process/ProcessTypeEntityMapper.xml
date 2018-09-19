@@ -163,7 +163,7 @@
       <if test="currentCompanyId != null">
         and group_type.company_id = #{currentCompanyId}
       </if>
-      order by group_type.seq
+      order by group_type.seq,process_type.seq
   </select>
 
   <!-- 获取流程列表 -->

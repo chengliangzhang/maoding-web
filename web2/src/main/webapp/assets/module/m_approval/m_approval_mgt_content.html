@@ -45,10 +45,23 @@
                 </span>
             </td>
             <td>
-                <a class="btn btn-link text-navy no-padding pull-left" data-action="setCcUser" data-key="{{p.key}}" data-type="{{p.type}}">抄送人</a>
-                <span class="fc-v1-grey">
-                    （未设置）
-                </span>
+                {{if p.copyList!=null && p.copyList.length>0}}
+                    <a class="btn btn-link text-navy no-padding pull-left" data-action="setCcUser" data-key="{{p.key}}" data-type="{{p.type}}">
+                    {{each p.copyList as c ci}}
+                        {{if ci==p.copyList.length-1}}
+                            {{c.name}}
+                        {{else}}
+                            {{c.name}},
+                        {{/if}}
+
+                    {{/each}}
+                    </a>
+                {{else}}
+                    <a class="btn btn-link text-navy no-padding pull-left" data-action="setCcUser" data-key="{{p.key}}" data-type="{{p.type}}">抄送人</a>
+                    <span class="fc-v1-grey">
+                        （未设置）
+                    </span>
+                {{/if}}
             </td>
             <td>
                 <button  class="btn btn-link btn-xs fc-dark-blue" data-action="edit" data-action-type="0"><i class="icon iconfont icon-bianji"></i></button>
@@ -60,10 +73,10 @@
                     </ul>
                 </div>
                 {{if pi>0}}
-                    <button class="btn btn-link btn-xs fc-dark-blue" data-action="sortDown" ><i class="iconfont icon-xiangshang"></i></button>
+                    <button class="btn btn-link btn-xs fc-dark-blue" data-action="sortUp" ><i class="iconfont icon-xiangshang"></i></button>
                 {{/if}}
                 {{if pi<a.processDefineList.length-1}}
-                    <button class="btn btn-link btn-xs fc-dark-blue" data-action="sortUp" ><i class="iconfont icon-xiangxia"></i></button>
+                    <button class="btn btn-link btn-xs fc-dark-blue" data-action="sortDown" ><i class="iconfont icon-xiangxia"></i></button>
                 {{/if}}
                 {{if p.status==1}}
                     <button class="btn btn-link btn-xs fc-dark-blue" data-action="whetherEnable" data-status="0"><i class="icon iconfont icon-kaiguanguan"></i></button>

@@ -6,12 +6,13 @@
     "use strict";
     var pluginName = "m_userList",
         defaults = {
-              orgId: ''
-            , userUrl: ''
-            , selectUserCallback: null
-            , delSelectedUserCallback: null
-            , selectedUserList: null//选中的人员列表[{id,userId,userName}...]
-            , isASingleSelectUser: false//是否单个选择人员，默认false,2为单选且提示不关窗
+              orgId : ''
+            , userUrl : ''
+            , selectUserCallback : null
+            , delSelectedUserCallback : null
+            , selectedUserList : null //选中的人员列表[{id,userId,userName}...]
+            , selectedDisabled : true //选中的disabled
+            , isASingleSelectUser : false //是否单个选择人员，默认false,2为单选且提示不关窗
         };
 
     // The actual plugin constructor
@@ -51,7 +52,7 @@
                 $(that.element).html(html);
                 that.dealChosedUserList();
                 that.bindActionClick();
-                if (that.settings.isASingleSelectUser != 2) {
+                if (that.settings.selectedDisabled==true) {
                     that.dealChoseUserBtnClass();
                 }
 

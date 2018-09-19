@@ -235,7 +235,7 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
     }
 
     /**
-     * 描述       添加及更改动态窗口模板信息
+     * 描述       添加及更改动态窗口模板信息 保存动态表单主表数据，只做新增，不做更新操作
      * 日期       2018/9/14
      *
      * @param request
@@ -244,20 +244,6 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
     @Override
     public FormDTO changeForm(SaveDynamicFormDTO request) {
         DynamicFormEntity updatedEntity = null;
-        //如果entity内的id不为空,则从数据库内读取，如果为空，则新增，如果不为空，则更改
-        if (StringUtils.isNotEmpty(request.getId())){
-            updatedEntity = dynamicFormDao.selectById(request.getId());
-            if (updatedEntity != null) {
-                //修改
-                BeanUtils.copyProperties(request, updatedEntity);
-                updatedEntity.setCompanyId(request.getCurrentCompanyId());
-                updatedEntity.setUpdateBy(request.getAccountId());
-                updatedEntity.resetUpdateDate();
-                updatedEntity.setDeleted(0);
-                dynamicFormDao.updateById(updatedEntity);
-            }
-        }
-
         //如果entity的id为空，或者数据库内没有此记录，则新增记录
         if (updatedEntity == null) {
             updatedEntity = BeanUtils.createFrom(request,DynamicFormEntity.class);
@@ -266,9 +252,6 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
             updatedEntity.setCreateBy(request.getAccountId());
             updatedEntity.setStatus(DigitUtils.parseInt(request.getStatus()));
             updatedEntity.setDeleted(0);
-
-            //对数据进行检查
-            TraceUtils.check(ObjectUtils.isNotEmpty(updatedEntity.getFormType()),"!formType不能为空");
             dynamicFormDao.insert(updatedEntity);
         }
 

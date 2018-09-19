@@ -36,6 +36,11 @@ public class DynamicFormGroupDaoImpl extends GenericDao<DynamicFormGroupEntity> 
         return this.sqlSession.selectOne("DynamicFormGroupEntityMapper.selectMaxSeq",currentCompanyId);
     }
 
+    @Override
+    public DynamicFormGroupEntity selectTypeId(FormGroupDTO formGroupDTO) {
+        return this.sqlSession.selectOne("DynamicFormGroupEntityMapper.selectTypeId",formGroupDTO);
+    }
+
     /**
      * 描述       查询动态表单群组
      * 日期       2018/9/19

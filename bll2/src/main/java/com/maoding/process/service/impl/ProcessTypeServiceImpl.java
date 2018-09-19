@@ -10,7 +10,6 @@ import com.maoding.core.util.StringUtils;
 import com.maoding.core.util.TraceUtils;
 import com.maoding.dynamicForm.dto.FormGroupDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
-import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.process.dao.ProcessTypeDao;
 import com.maoding.process.entity.ProcessTypeEntity;
 import com.maoding.process.service.ProcessTypeService;
@@ -46,6 +45,7 @@ public class ProcessTypeServiceImpl extends NewBaseService implements ProcessTyp
         SaveDynamicFormDTO saveDynamicFormDTO = new SaveDynamicFormDTO();
         saveDynamicFormDTO.setId(processTypeEntity.getFormId());
         saveDynamicFormDTO.setCurrentCompanyId(processTypeEntity.getCompanyId());
+
         processTypeEntity.setSeq(this.processTypeDao.selectMaxSeq(saveDynamicFormDTO.getCurrentCompanyId()));
         processTypeEntity.setStatus(ProcessTypeConst.STATUS_PROCESS_START);//默认启用
         if(processTypeEntity.getTargetType()==null) {
@@ -78,6 +78,7 @@ public class ProcessTypeServiceImpl extends NewBaseService implements ProcessTyp
         }
         return 0;
     }
+
 
     /**
      * 作者：FYT
