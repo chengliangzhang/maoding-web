@@ -1,7 +1,5 @@
 package com.maoding.dynamicForm.dto;
 
-import com.maoding.commonModule.dto.WidgetDTO;
-
 import java.util.List;
 
 /**
@@ -9,21 +7,21 @@ import java.util.List;
  * 日期: 2018/9/18
  * 类名: com.maoding.dynamicForm.dto.FormWithOptionalDTO
  * 作者: 张成亮
- * 描述:
+ * 描述: 带有可选控件和可选群组的表单模板编辑数据
  **/
 public class FormWithOptionalDTO extends FormDTO {
 
     /** 编辑时可使用的控件列表 **/
-    private List<WidgetDTO> optionalWidgetList;
+    private List<WidgetForJsDTO> optionalWidgetList;
 
     /** 自定义表单群组列表 **/
     private List<FormGroupDTO> formGroupList;
 
-    public List<WidgetDTO> getOptionalWidgetList() {
+    public List<WidgetForJsDTO> getOptionalWidgetList() {
         return optionalWidgetList;
     }
 
-    public void setOptionalWidgetList(List<WidgetDTO> optionalWidgetList) {
+    public void setOptionalWidgetList(List<WidgetForJsDTO> optionalWidgetList) {
         this.optionalWidgetList = optionalWidgetList;
     }
 

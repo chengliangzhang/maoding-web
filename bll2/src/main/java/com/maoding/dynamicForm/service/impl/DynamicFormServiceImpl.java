@@ -2,6 +2,7 @@ package com.maoding.dynamicForm.service.impl;
 
 import com.maoding.commonModule.dao.ConstDao;
 import com.maoding.commonModule.dto.WidgetDTO;
+import com.maoding.commonModule.dto.WidgetPropertyDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.util.*;
 import com.maoding.dynamicForm.dao.*;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -322,15 +324,51 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         }
         BeanUtils.copyProperties(request, form);
 
-        //读取可选控件信息
+        //读取可选控件信息并转换为前端所需格式
         List<WidgetDTO> widgetList = constDao.listWidget();
-        form.setOptionalWidgetList(widgetList);
+        List<WidgetForJsDTO> widgetForJsList = convertWidgetList(widgetList);
+        form.setOptionalWidgetList(widgetForJsList);
 
         //读取可选群组信息
-        List<DynamicFormGroupEntity> groupList = dynamicFormGroupDao.listFormGroupByCompanyId(request.getCurrentCompanyId());
-        form.setFormGroupList(BeanUtils.createListFrom(groupList,FormGroupDTO.class));
+        FormGroupQueryDTO groupQuery = new FormGroupQueryDTO();
+        groupQuery.setCurrentCompanyId(request.getCurrentCompanyId());
+        List<FormGroupDTO> groupList = dynamicFormGroupDao.listFormGroup(groupQuery);
+        form.setFormGroupList(groupList);
 
         return form;
+    }
+
+    //转换可选控件为前端所需形式
+    private List<WidgetForJsDTO> convertWidgetList(List<WidgetDTO> widgetList){
+        List<WidgetForJsDTO> widgetForJsList = new ArrayList<>();
+        if (ObjectUtils.isNotEmpty(widgetList)) {
+            for (WidgetDTO widget : widgetList) {
+                WidgetForJsDTO widgetForJs = BeanUtils.createFrom(widget, WidgetForJsDTO.class);
+                List<WidgetPropertyDTO> propertyList = widget.getPropertyList();
+                if (ObjectUtils.isNotEmpty(propertyList)) {
+                    List<DynamicFormFieldDTO> propertyForJsList = new ArrayList<>();
+                    for (WidgetPropertyDTO widgetProperty : propertyList) {
+                        DynamicFormFieldDTO propertyForJs = BeanUtils.createFrom(widgetProperty, DynamicFormFieldDTO.class);
+                        propertyForJs.setFieldTitle(widgetProperty.getPropertyTitle());
+                        propertyForJs.setFieldDefaultValue(widgetProperty.getDefaultValue());
+                        if (StringUtils.isNotEmpty(widgetProperty.getAllowValue())) {
+                            String[] itemArray = widgetProperty.getAllowValue().split(",");
+                            List<DynamicFormFieldSelectedValueDTO> itemList = new ArrayList<>();
+                            for (String itemStr : itemArray) {
+                                DynamicFormFieldSelectedValueDTO item = new DynamicFormFieldSelectedValueDTO();
+                                item.setSelectableName(itemStr);
+                                itemList.add(item);
+                            }
+                            propertyForJs.setFieldSelectedValueList(itemList);
+                        }
+                        propertyForJsList.add(propertyForJs);
+                    }
+                    widgetForJs.setPropertyList(propertyForJsList);
+                }
+                widgetForJsList.add(widgetForJs);
+            }
+        }
+        return widgetForJsList;
     }
 
 

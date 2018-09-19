@@ -102,6 +102,8 @@
   <resultMap id="WidgetMap" type="com.maoding.commonModule.dto.WidgetDTO">
     <id column="widget_id" property="id" jdbcType="VARCHAR" />
     <result column="widget_name" property="name" jdbcType="VARCHAR" />
+    <result column="widget_id" property="fieldType" jdbcType="VARCHAR" />
+    <result column="icon_key" property="iconKey" jdbcType="VARCHAR" />
     <collection property="propertyList" resultMap="WidgetPropertyMap"/>
   </resultMap>
 
@@ -112,6 +114,7 @@
       if(property_type.is_name_default = 1,widget_list.type_name,property_type.default_value) as property_default_value,
       widget_list.type_id as widget_id,
       widget_list.type_name as widget_name,
+      widget_list.icon_key as icon_key,
       property_type.*
     from
       md_type_widget_property property_type

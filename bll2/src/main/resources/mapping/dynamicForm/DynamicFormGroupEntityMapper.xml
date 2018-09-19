@@ -119,4 +119,21 @@
     WHERE
       company_id = #{currentCompanyId}
   </select>
+
+  <!-- 查找动态窗口模板群组 -->
+  <select id="listFormGroup" resultType="com.maoding.dynamicForm.dto.FormGroupDTO" parameterType="com.maoding.dynamicForm.dto.FormGroupQueryDTO">
+    select group_ordered.*
+    from (
+      select
+        group_list.group_name as name,
+        group_list.*
+      from maoding_dynamic_form_group group_list
+      where deleted = 0
+        <if test="currentCompanyId != null">
+          and (group_list.company_id is null or group_list.company_id = #{currentCompanyId})
+        </if>
+        order by group_list.company_id desc
+    ) group_ordered
+    group by group_ordered.type_id
+  </select>
 </mapper>

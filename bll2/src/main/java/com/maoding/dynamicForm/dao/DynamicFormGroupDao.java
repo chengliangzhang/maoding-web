@@ -1,6 +1,8 @@
 package com.maoding.dynamicForm.dao;
 
 import com.maoding.core.base.dao.BaseDao;
+import com.maoding.dynamicForm.dto.FormGroupDTO;
+import com.maoding.dynamicForm.dto.FormGroupQueryDTO;
 import com.maoding.dynamicForm.entity.DynamicFormGroupEntity;
 
 import java.util.List;
@@ -22,4 +24,10 @@ public interface DynamicFormGroupDao extends BaseDao<DynamicFormGroupEntity> {
 
     Integer selectMaxSeq(String  currentCompanyId);
 
+    /**
+     * 描述       查询动态表单群组
+     * 日期       2018/9/19
+     * @author   张成亮
+     **/
+    List<FormGroupDTO> listFormGroup(FormGroupQueryDTO query);
 }
