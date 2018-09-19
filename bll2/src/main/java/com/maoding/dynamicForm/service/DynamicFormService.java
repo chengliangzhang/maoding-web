@@ -1,8 +1,6 @@
 package com.maoding.dynamicForm.service;
 
-import com.maoding.core.base.service.BaseService;
 import com.maoding.dynamicForm.dto.*;
-import com.maoding.dynamicForm.entity.DynamicFormEntity;
 
 import java.util.List;
 
@@ -44,7 +42,7 @@ public interface DynamicFormService {
      *
      * @author 张成亮
      **/
-    FormDTO changeForm(SaveDynamicFormDTO request);
+    FormDTO createForm(SaveDynamicFormDTO request);
 
     /**
      * 描述       添加及更改动态窗口控件信息

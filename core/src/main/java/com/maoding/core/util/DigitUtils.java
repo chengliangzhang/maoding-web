@@ -249,4 +249,13 @@ public class DigitUtils {
         }
         return (float)parseDouble(value,decimal);
     }
+
+    /**
+     * 描述       对非boolean值进行真假判断
+     * 日期       2018/9/19
+     * @author   张成亮
+     **/
+    public static boolean isTrue(Object value){
+        return parseBoolean(value);
+    }
 }

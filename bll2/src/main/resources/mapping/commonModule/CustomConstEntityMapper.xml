@@ -119,6 +119,5 @@
     from
       md_type_widget_property property_type
       inner join md_type_widget widget_list on (find_in_set(property_type.type_id,widget_list.set_type))
-    group by concat(widget_list.type_id,'-',property_type.type_id)
   </select>
 </mapper>

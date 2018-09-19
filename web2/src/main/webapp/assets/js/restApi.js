@@ -382,6 +382,7 @@ var restApi = {
     , url_setDynamicFormIsEdit:window.rootPath+'/iWork/dynamicForm/setDynamicFormIsEdit'
     , url_saveAuditCopy:window.rootPath+'/iWork/dynamicForm/saveAuditCopy'
     , url_prepareFormToEdit:window.rootPath+'/iWork/dynamicForm/prepareFormToEdit'
-
+    , url_selectDynamicFormGroupList:window.rootPath+'/iWork/dynamicFormGroup/selectDynamicFormGroupList'
+    , url_updateProcessTypeFormType:window.rootPath+'/iWork/dynamicFormGroup/updateProcessTypeFormType'
 
 };

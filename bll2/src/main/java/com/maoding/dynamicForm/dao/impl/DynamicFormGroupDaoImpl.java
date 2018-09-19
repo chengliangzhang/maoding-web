@@ -52,4 +52,10 @@ public class DynamicFormGroupDaoImpl extends GenericDao<DynamicFormGroupEntity> 
     public List<FormGroupDTO> listFormGroup(FormGroupQueryDTO query) {
         return sqlSession.selectList("DynamicFormGroupEntityMapper.listFormGroup",query);
     }
+
+    @Override
+    public List<DynamicFormGroupEntity> selectByCompanyId(String currentCompanyId) throws Exception {
+        return this.sqlSession.selectList("DynamicFormGroupEntityMapper.selectByCompanyId",currentCompanyId);
+    }
+
 }

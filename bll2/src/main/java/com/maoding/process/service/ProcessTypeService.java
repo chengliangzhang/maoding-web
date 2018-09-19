@@ -24,4 +24,7 @@ public interface ProcessTypeService {
 
     //将没有分组的动态审批表，设置FormType = 4
     int updateDynamicFormType(ProcessTypeEntity processTypeEntity) throws Exception;
+
+    //动态表移动到其他分组
+    int updateProcessTypeFormType(SaveDynamicFormDTO dto) throws Exception;
 }

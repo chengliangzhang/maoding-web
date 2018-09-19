@@ -18,6 +18,11 @@ public class ProcessDefineQueryDTO extends CoreQueryDTO {
     /** 流程分类关键字，定义见ProcessTypeConst.PROCESS_TYPE_xxx */
     private String key;
 
+    /**
+     * 1:启用，0：未启用
+     */
+    private String status;
+
     public String getKey() {
         return key;
     }
@@ -32,5 +37,13 @@ public class ProcessDefineQueryDTO extends CoreQueryDTO {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -2,8 +2,12 @@ package com.maoding.dynamicForm.controller;
 
 import com.maoding.core.base.controller.BaseController;
 import com.maoding.core.bean.AjaxMessage;
+import com.maoding.dynamicForm.dto.FormGroupDTO;
 import com.maoding.dynamicForm.dto.FormGroupEditDTO;
+import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
 import com.maoding.dynamicForm.service.DynamicFormGroupService;
+import com.maoding.process.service.ProcessService;
+import com.maoding.process.service.ProcessTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +18,9 @@ public class DynamicFormGroupController  extends BaseController {
 
     @Autowired
     private DynamicFormGroupService dynamicFormGroupService;
+
+    @Autowired
+    private ProcessTypeService processTypeService;
 
 
     @ModelAttribute
@@ -54,4 +61,30 @@ public class DynamicFormGroupController  extends BaseController {
         return AjaxMessage.succeed(null);
     }
 
+    /**
+     * 作者：FYT
+     * 日期：2018/9/19
+     * 描述：后台管理-审批管理-操作-查询当前公司的分组（查询现有分组，返回list）ss
+     * 接口：iWork/dynamicForm/selectDynamicFormGroupList
+     * 参数：
+     */
+    @RequestMapping(value = "/selectDynamicFormGroupList", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage selectDynamicFormGroupList(@RequestBody FormGroupEditDTO dto) throws Exception {
+        updateCurrentUserInfo(dto);
+        return AjaxMessage.succeed(dynamicFormGroupService.selectDynamicFormGroupList(dto));
+    }
+
+    /**
+     * 作者：FYT
+     * 日期：2018/9/19
+     * 描述：后台管理-审批管理-操作-动态表移动到其他分组
+     * 接口：iWork/dynamicForm/updateProcessTypeFormType
+     * 参数：FormGroupEditDTO  动态表单id,分组formType
+     */
+    @RequestMapping(value = "/updateProcessTypeFormType", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage updateProcessTypeFormType(@RequestBody SaveDynamicFormDTO dto) throws Exception {
+        return AjaxMessage.succeed(processTypeService.updateProcessTypeFormType(dto));
+    }
 }

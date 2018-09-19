@@ -111,14 +111,14 @@
 
                 //获取节点数据
                 var dataItem = null;
-
+                var pidDataItem = null;
                 if(isNullOrBlank(dataPid)){//当前是分组
 
                     dataItem = getObjectInArray(that._dataList,dataId);
 
                 }else{//当前是子集
 
-                    var pidDataItem = getObjectInArray(that._dataList,dataPid);
+                    pidDataItem = getObjectInArray(that._dataList,dataPid);
                     dataItem = getObjectInArray(pidDataItem.processDefineList,dataId);
                 }
 
@@ -179,10 +179,12 @@
                        });
                        return false;
                        break;
-                   case 'moveToGroup'://编辑分组
+                   case 'moveToGroup'://移动分组
 
+                       var dataInfo = dataItem;
+                       dataInfo.selectedGroupId = pidDataItem.id;
                        $('body').m_approval_mgt_moveToGroup({
-                           dataInfo:dataItem,
+                           dataInfo:dataInfo,
                            saveCallBack:function () {
                                that.init();
                            }
@@ -294,6 +296,7 @@
                        });
                        return false;
                        break;
+
                }
 
             });

@@ -99,7 +99,7 @@ public class WorkFlowController extends BaseController {
     @ResponseBody
     public AjaxMessage addProcess(@RequestBody ProcessDefineEditDTO request) throws Exception {
         updateCurrentUserInfo(request);
-        dynamicFormService.changeForm(request);
+        dynamicFormService.insertDynamicForm(request);
         return AjaxMessage.succeed(null);
     }
 

@@ -34,13 +34,7 @@
             var html = template('m_approval/m_approval_mgt_moveToGroup', {dataInfo:that.settings.dataInfo});
             that.renderDialog(html,function () {
 
-                $(that.element).find('select').select2({
-                    width: '100%',
-                    allowClear: true,
-                    language: "zh-CN",
-                    minimumResultsForSearch: Infinity,
-                    placeholder: "请选择分组!"
-                });
+                that.getGroupData();
                 that.save_validate();
             });
 
@@ -83,8 +77,10 @@
             var that = this;
             var option = {};
             option.classId = that.element;
-            option.url = restApi.url_saveDynamicFormGroup;
-            option.postData =  $(that.element).find('form').serializeObject();
+            option.url = restApi.url_updateProcessTypeFormType;
+            option.postData = {};
+            option.postData.formType =  $(that.element).find('select[name="groupName"]').val();
+            option.postData.id =  that.settings.dataInfo.id;
 
             if(that.settings.dataInfo)
                 option.postData.id = that.settings.dataInfo.id;
@@ -99,20 +95,59 @@
                 }
             });
         }
+        ,getGroupData:function () {
+            var that = this;
+            var option = {};
+            option.classId = that.element;
+            option.url = restApi.url_selectDynamicFormGroupList;
+            option.postData =  $(that.element).find('form').serializeObject();
 
+            if(that.settings.dataInfo)
+                option.postData.id = that.settings.dataInfo.id;
+
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+
+
+                    var data = [];
+                    $.each(response.data, function (i, o) {
+                        if(!isNullOrBlank(o.groupName)){
+                            data.push({
+                                id: o.id,
+                                text: o.groupName
+                            });
+                        }
+                    });
+                    $(that.element).find('select[name="groupName"]').select2({
+                        allowClear: false,
+                        language: "zh-CN",
+                        width: '100%',
+                        minimumResultsForSearch: Infinity,
+                        placeholder: "请选择分组!",
+                        data: data
+                    });
+                    $(that.element).find('select[name="groupName"]').val(that.settings.dataInfo.selectedGroupId).trigger('change');
+
+                } else {
+                    S_layer.error(response.info);
+                }
+            });
+
+
+        }
         //表单验证
         ,save_validate:function(){
             var that = this;
-            $(that.element).find('form.form-horizontal').validate({
+            $(that.element).find('form').validate({
                 ignore : [],
                 rules: {
-                    name:{
+                    groupName:{
                         required: true
                     }
                 },
                 messages: {
-                    name:{
-                        required: '请输入名称！'
+                    groupName:{
+                        required: '请选择分组！'
                     }
                 },
                 errorPlacement: function (error, element) { //指定错误信息位置

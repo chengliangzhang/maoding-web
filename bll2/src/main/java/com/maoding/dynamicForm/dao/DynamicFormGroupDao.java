@@ -32,4 +32,8 @@ public interface DynamicFormGroupDao extends BaseDao<DynamicFormGroupEntity> {
      * @author   张成亮
      **/
     List<FormGroupDTO> listFormGroup(FormGroupQueryDTO query);
+
+    //查询当前公司的分组
+    List<DynamicFormGroupEntity> selectByCompanyId(String currentCompanyId) throws Exception;
+
 }

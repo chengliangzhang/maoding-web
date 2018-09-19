@@ -187,6 +187,22 @@
             that._formFieldInfo.push(data);
             console.log(that._formFieldInfo)
         }
+        //转换数据格式
+        ,convertDataFormat:function (data) {
+            var that = this;
+
+            var dataInfo = {};
+            //获取第一层formItem
+            $(that.element).find('#contentBox>form>div.form-item').length.each(function (i) {
+                var $this = $(this);
+                var type = $this.attr('data-type'),itemKey = $this.attr('data-key');
+
+                //dataInfo.formName = $(that.element).find()
+
+
+            });
+            
+        }
         //类型 明细，附件，只能放一个，
         ,judgingControlOnlyOne:function (type) {
             var that = this;
@@ -194,7 +210,6 @@
                 return true;
 
             return false;
-
         }
         //左边控件拖拽
         ,controlMousemove:function () {
@@ -225,9 +240,7 @@
                 });
                 $drag.mousedown(function(e) {//鼠标按下，鼠标变移动标志，克隆元素，并确定新克隆元素位置
 
-                    console.log('mousedown')
-                    //that.renderSelectingControl();
-                    //$(this).clone().addClass("control-clone").appendTo($("body"));
+                    console.log('mousedown');
                     var type = $(e.target).closest('.control-item').attr('data-type');
                     if(isNullOrBlank(type))
                         return false;
@@ -584,13 +597,17 @@
                var $this = $(this);
                var dataAction = $this.attr('data-action');
                switch (dataAction){
-                   case 'close':
+                   case 'close'://关闭
                        S_layer.close($this,function () {
                            $(document).off('mouseup.m-form-template-settings');
                            $(document).off('mousemove.m-form-template-settings');
                        });
                        break;
+                   case 'formPreview'://预览
 
+
+
+                       break;
                }
 
             });

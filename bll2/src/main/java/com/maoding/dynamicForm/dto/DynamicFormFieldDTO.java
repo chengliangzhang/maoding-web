@@ -60,6 +60,17 @@ public class DynamicFormFieldDTO {
     /** 报销列表字段的筛选条件：1-财务设置中的报销类型，2-财务设置中的费用类型，3-系统中的请假类型，0-自定义添加 **/
     private Integer listExpFilter;
 
+    /** 图标标志 **/
+    private String iconKey;
+
+    public String getIconKey() {
+        return iconKey;
+    }
+
+    public void setIconKey(String iconKey) {
+        this.iconKey = iconKey;
+    }
+
     public Integer getListProjectFilter() {
         return listProjectFilter;
     }

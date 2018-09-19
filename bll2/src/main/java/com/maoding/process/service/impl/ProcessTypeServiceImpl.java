@@ -119,4 +119,16 @@ public class ProcessTypeServiceImpl extends NewBaseService implements ProcessTyp
         return processTypeDao.updateById(processTypeEntity);
     }
 
+    /**
+     * 作者：FYT
+     * 日期：2018/9/19
+     * 描述：动态表移动到其他分组
+     * */
+    @Override
+    public int updateProcessTypeFormType(SaveDynamicFormDTO dto) throws Exception {
+        ProcessTypeEntity entity = new ProcessTypeEntity();
+        entity.setId(dto.getId());
+        entity.setFormType(dto.getFormType());
+        return processTypeDao.updateById(entity);
+    }
 }

@@ -150,4 +150,14 @@
         ) group_ordered
         group by group_ordered.type_id
     </select>
+
+  <select id="selectByCompanyId" resultType="com.maoding.dynamicForm.entity.DynamicFormGroupEntity" parameterType="java.lang.String" >
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    maoding_dynamic_form_group
+    WHERE
+    company_id = #{currentCompanyId}
+  </select>
+
 </mapper>

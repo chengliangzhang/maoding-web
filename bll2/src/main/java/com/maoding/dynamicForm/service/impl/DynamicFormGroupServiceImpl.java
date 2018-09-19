@@ -139,5 +139,14 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
         }
     }
 
+    /**
+     * 作者：FYT
+     * 日期：2018/9/19
+     * 描述：查询当前公司的分组
+     * */
+    @Override
+    public List<DynamicFormGroupEntity> selectDynamicFormGroupList(FormGroupEditDTO dto) throws Exception{
+        return dynamicFormGroupDao.selectByCompanyId(dto.getCurrentCompanyId());
+    }
 
 }

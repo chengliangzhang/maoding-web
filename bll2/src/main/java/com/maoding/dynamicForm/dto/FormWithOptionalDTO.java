@@ -12,16 +12,16 @@ import java.util.List;
 public class FormWithOptionalDTO extends FormDTO {
 
     /** 编辑时可使用的控件列表 **/
-    private List<WidgetForJsDTO> optionalWidgetList;
+    private List<DynamicFormFieldDTO> optionalWidgetList;
 
     /** 自定义表单群组列表 **/
     private List<FormGroupDTO> formGroupList;
 
-    public List<WidgetForJsDTO> getOptionalWidgetList() {
+    public List<DynamicFormFieldDTO> getOptionalWidgetList() {
         return optionalWidgetList;
     }
 
-    public void setOptionalWidgetList(List<WidgetForJsDTO> optionalWidgetList) {
+    public void setOptionalWidgetList(List<DynamicFormFieldDTO> optionalWidgetList) {
         this.optionalWidgetList = optionalWidgetList;
     }
 

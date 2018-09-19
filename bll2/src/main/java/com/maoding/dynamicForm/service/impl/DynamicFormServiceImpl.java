@@ -59,15 +59,16 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
     public int insertDynamicForm (SaveDynamicFormDTO dto) throws Exception{
 
         //保存主表(外层审核表)
-        FormDTO form = changeForm(dto);
-        DynamicFormEntity dynamicFormEntity = BeanUtils.createFrom(form,DynamicFormEntity.class);
+        FormDTO form = createForm(dto);
+        TraceUtils.check(form != null);
+        String formId = form.getId();
         //保存主表的子表（控件表）
         for (DynamicFormFieldDTO formFieldDTO:  dto.getFieldList()){
-            formFieldDTO.setFormId(dynamicFormEntity.getId());
+            formFieldDTO.setFormId(formId);
             formFieldDTO.setId(saveDynamicFormField(formFieldDTO));
             //保存明细表
             for(DynamicFormFieldDTO formFieldDTO2: formFieldDTO.getDetailFieldList()) {
-                formFieldDTO2.setFormId(dynamicFormEntity.getId());
+                formFieldDTO2.setFormId(formId);
                 formFieldDTO2.setFieldPid(formFieldDTO.getId());
                 saveDynamicFormField(formFieldDTO2);
             }
@@ -78,16 +79,16 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         if(StringUtil.isNullOrEmpty(processTypeEntity)){
             processTypeEntity.initEntity();
             processTypeEntity.setCompanyId(dto.getCompanyId());
-            processTypeEntity.setTargetType(dynamicFormEntity.getId());//业务类型
+            processTypeEntity.setTargetType(formId);//业务类型
             processTypeEntity.setType(1);//流程类型
             processTypeEntity.setStatus(StringUtil.isNullOrEmpty(dto.getStatus())?0:dto.getStatus());//业务类型
             processTypeEntity.setDeleted(0);
-            processTypeEntity.setFormId(dynamicFormEntity.getId());
+            processTypeEntity.setFormId(formId);
             processTypeEntity.setSeq(processTypeDao.selectMaxSeq(dto.getCurrentCompanyId())+1);
             processTypeDao.insert(processTypeEntity);
         }else{
             processTypeEntity.setTargetType(dto.getFormType());//业务类型
-            processTypeEntity.setFormId(dynamicFormEntity.getId());
+            processTypeEntity.setFormId(formId);
             processTypeDao.updateById(processTypeEntity);
         }
         return 1;
@@ -129,17 +130,18 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
     public int saveAndUpdateDynamicFormField(SaveDynamicFormDTO dto){
 
          //保存主表(外层审核表)
-         FormDTO form = changeForm(dto);
-         DynamicFormEntity dynamicFormEntity = BeanUtils.createFrom(form,DynamicFormEntity.class);
+         FormDTO form = createForm(dto);
+        TraceUtils.check(form != null);
+        String formId = form.getId();
          //保存主表的子表（控件表）
          for (DynamicFormFieldDTO formFieldDTO:  dto.getFieldList()){
-             formFieldDTO.setFormId(dynamicFormEntity.getId());
-             formFieldDTO.setId(saveAndUpdateDynamicFormField(formFieldDTO,dto.getId(),dynamicFormEntity.getId()));
+             formFieldDTO.setFormId(formId);
+             formFieldDTO.setId(saveAndUpdateDynamicFormField(formFieldDTO,dto.getId(),formId));
              //保存明细表
              for(DynamicFormFieldDTO formFieldDTO2: formFieldDTO.getDetailFieldList()) {
-                 formFieldDTO2.setFormId(dynamicFormEntity.getId());
+                 formFieldDTO2.setFormId(formId);
                  formFieldDTO2.setFieldPid(formFieldDTO.getId());
-                     saveAndUpdateDynamicFormField(formFieldDTO2,dto.getId(),dynamicFormEntity.getId());
+                     saveAndUpdateDynamicFormField(formFieldDTO2,dto.getId(),formId);
              }
          }
          return 1;
@@ -241,19 +243,14 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
      * @param request
      * @author 张成亮
      */
-    @Override
-    public FormDTO changeForm(SaveDynamicFormDTO request) {
-        DynamicFormEntity updatedEntity = null;
-        //如果entity的id为空，或者数据库内没有此记录，则新增记录
-        if (updatedEntity == null) {
-            updatedEntity = BeanUtils.createFrom(request,DynamicFormEntity.class);
-            updatedEntity.initEntity();
-            updatedEntity.setCompanyId(request.getCurrentCompanyId());
-            updatedEntity.setCreateBy(request.getAccountId());
-            updatedEntity.setStatus(DigitUtils.parseInt(request.getStatus()));
-            updatedEntity.setDeleted(0);
-            dynamicFormDao.insert(updatedEntity);
-        }
+    public FormDTO createForm(SaveDynamicFormDTO request) {
+        DynamicFormEntity updatedEntity = BeanUtils.createFrom(request,DynamicFormEntity.class);
+        updatedEntity.initEntity();
+        updatedEntity.setCompanyId(request.getCurrentCompanyId());
+        updatedEntity.setCreateBy(request.getAccountId());
+        updatedEntity.setStatus(DigitUtils.parseInt(request.getStatus()));
+        updatedEntity.setDeleted(0);
+        dynamicFormDao.insert(updatedEntity);
 
         FormDTO form = BeanUtils.createFrom(updatedEntity,FormDTO.class);
         form.setName(updatedEntity.getFormName());
@@ -309,7 +306,7 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
 
         //读取可选控件信息并转换为前端所需格式
         List<WidgetDTO> widgetList = constDao.listWidget();
-        List<WidgetForJsDTO> widgetForJsList = convertWidgetList(widgetList);
+        List<DynamicFormFieldDTO> widgetForJsList = convertWidgetList(widgetList);
         form.setOptionalWidgetList(widgetForJsList);
 
         //读取可选群组信息
@@ -322,31 +319,18 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
     }
 
     //转换可选控件为前端所需形式
-    private List<WidgetForJsDTO> convertWidgetList(List<WidgetDTO> widgetList){
-        List<WidgetForJsDTO> widgetForJsList = new ArrayList<>();
+    private List<DynamicFormFieldDTO> convertWidgetList(List<WidgetDTO> widgetList){
+        List<DynamicFormFieldDTO> widgetForJsList = new ArrayList<>();
         if (ObjectUtils.isNotEmpty(widgetList)) {
             for (WidgetDTO widget : widgetList) {
-                WidgetForJsDTO widgetForJs = BeanUtils.createFrom(widget, WidgetForJsDTO.class);
+                DynamicFormFieldDTO widgetForJs = BeanUtils.createFrom(widget, DynamicFormFieldDTO.class);
                 List<WidgetPropertyDTO> propertyList = widget.getPropertyList();
                 if (ObjectUtils.isNotEmpty(propertyList)) {
-                    List<DynamicFormFieldDTO> propertyForJsList = new ArrayList<>();
                     for (WidgetPropertyDTO widgetProperty : propertyList) {
-                        DynamicFormFieldDTO propertyForJs = BeanUtils.createFrom(widgetProperty, DynamicFormFieldDTO.class);
-                        propertyForJs.setFieldTitle(widgetProperty.getPropertyTitle());
-                        propertyForJs.setFieldDefaultValue(widgetProperty.getDefaultValue());
-                        if (StringUtils.isNotEmpty(widgetProperty.getAllowValue())) {
-                            String[] itemArray = widgetProperty.getAllowValue().split(",");
-                            List<DynamicFormFieldSelectedValueDTO> itemList = new ArrayList<>();
-                            for (String itemStr : itemArray) {
-                                DynamicFormFieldSelectedValueDTO item = new DynamicFormFieldSelectedValueDTO();
-                                item.setSelectableName(itemStr);
-                                itemList.add(item);
-                            }
-                            propertyForJs.setFieldSelectedValueList(itemList);
+                        if (canSaveByCode(widgetProperty)){
+                            BeanUtils.setProperty(widgetForJs,widgetProperty.getName(),widgetProperty.getDefaultValue());
                         }
-                        propertyForJsList.add(propertyForJs);
                     }
-                    widgetForJs.setPropertyList(propertyForJsList);
                 }
                 widgetForJsList.add(widgetForJs);
             }
@@ -354,6 +338,12 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         return widgetForJsList;
     }
 
+    //是否可以通过属性名称设置
+    private boolean canSaveByCode(WidgetPropertyDTO property){
+        return DigitUtils.isTrue(property.getCanSaveByCode())
+                && StringUtils.isNotEmpty(property.getName())
+                && StringUtils.isNotEmpty(property.getDefaultValue());
+    }
 
 
     /**
