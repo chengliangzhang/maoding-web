@@ -149,22 +149,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
-  <!-- 查找动态表单控件信息 -->
-  <select id="listFormField" resultType="com.maoding.dynamicForm.dto.DynamicFormFieldDTO" parameterType="com.maoding.dynamicForm.dto.FormFieldQueryDTO">
-    select
-      field_list.*
-    from maoding_dynamic_form_field field_list
-    where deleted = 0
-      <if test="formId != null">
-        and field_list.form_id = #{formId}
-      </if>
-    <if test="fieldPid != null">
-      and field_list.field_pid = #{fieldPid}
-    </if>
-    order by field_list.seq_y,seq_x
-  </select>
-
-
+  <!-- 动态表单控件信息映射器，使用多层映射细节组件 -->
   <resultMap id="DynamicFormFieldMap"  type="com.maoding.dynamicForm.dto.DynamicFormFieldDTO">
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="form_id" property="formId" jdbcType="VARCHAR" />
@@ -182,9 +167,31 @@
     <result column="date_format_type" property="dateFormatType" jdbcType="INTEGER" />
     <result column="arrange_type" property="arrangeType" jdbcType="INTEGER" />
     <collection property="detailFieldList" ofType="com.maoding.dynamicForm.dto.DynamicFormFieldDTO"
-                select="listFormField" column="{fieldPid=id}" fetchType="eager"
+                select="listFormField" column="{fieldPid=id}"
     />
   </resultMap>
+
+  <!-- 查找动态表单控件信息 -->
+  <select id="listFormField" resultMap="DynamicFormFieldMap" parameterType="com.maoding.dynamicForm.dto.FormFieldQueryDTO">
+    select
+      field_list.*
+    from maoding_dynamic_form_field field_list
+    where deleted = 0
+      <if test="formId != null">
+        and field_list.form_id = #{formId}
+      </if>
+      <choose>
+        <when test="fieldPid != null">
+          and field_list.field_pid = #{fieldPid}
+        </when>
+        <otherwise>
+          and field_list.field_pid is null
+        </otherwise>
+      </choose>
+    order by field_list.seq_y,seq_x
+  </select>
+
+
 
   <!-- 查找动态表单控件信息 -->
   <select id="listFormFieldByFormId" resultMap="DynamicFormFieldMap" parameterType="com.maoding.dynamicForm.dto.FormFieldQueryDTO">

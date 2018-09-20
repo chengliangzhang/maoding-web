@@ -4,7 +4,6 @@ package com.maoding.dynamicForm.dao.impl;
 import com.maoding.core.base.dao.GenericDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldDao;
 import com.maoding.dynamicForm.dto.DynamicFormFieldDTO;
-import com.maoding.dynamicForm.dto.DynamicFormFieldValueDTO;
 import com.maoding.dynamicForm.dto.FormFieldQueryDTO;
 import com.maoding.dynamicForm.entity.DynamicFormFieldEntity;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,7 @@ public class DynamicFormFieldDaoImpl extends GenericDao<DynamicFormFieldEntity> 
      */
     @Override
     public List<DynamicFormFieldDTO> listFormField(FormFieldQueryDTO query) {
-        return sqlSession.selectList("DynamicFormFieldEntityMapper.listFormFieldByFormId",query);
+        return sqlSession.selectList("DynamicFormFieldEntityMapper.listFormField",query);
     }
 
 
