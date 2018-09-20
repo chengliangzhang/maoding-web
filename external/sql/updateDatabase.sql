@@ -3059,7 +3059,7 @@ CREATE OR REPLACE VIEW `md_title_default` AS
     filter_type.has_list
   from
     md_optional_title optional_title
-    inner join md_type_filter filter_type on (filter_type.id = optional_title.filter_type)
+    left join md_type_filter filter_type on (filter_type.id = optional_title.filter_type)
   where optional_title.can_be_hide = 0;
 
 -- 用户已选择标题栏
