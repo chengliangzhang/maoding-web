@@ -23,23 +23,25 @@
     <div class="ibox-content">
         {{if dataList && dataList.length>0}}
             {{each dataList as p i}}
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <h4 class="title-line">{{p.groupName}}</h4>
-                        <div class="row">
-                            {{if p.formList && p.formList.length>0}}
-                                {{each p.formList as c ci }}
-                                <div class="col-md-2 m-b-sm">
-                                    <span class="badge badge-primary p-sm b-r-xl">
-                                        <i class="fa fa-calendar f-s-xl"></i>
-                                    </span>
-                                    <a class="btn btn-link" data-action="initiate" data-form-id="{{c.formId}}" data-issystem="{{c.isSystem}}">{{c.name}}</a>
-                                </div>
-                                {{/each}}
-                            {{/if}}
+                {{if p.formList && p.formList.length>0}}
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h4 class="title-line">{{p.groupName}}</h4>
+                            <div class="row">
+                                {{if p.formList && p.formList.length>0}}
+                                    {{each p.formList as c ci }}
+                                    <div class="col-md-2 m-b-sm">
+                                        <span class="badge badge-primary p-sm b-r-xl">
+                                            <i class="fa fa-calendar f-s-xl"></i>
+                                        </span>
+                                        <a class="btn btn-link" data-action="initiate" data-form-id="{{c.formId}}" data-issystem="{{c.isSystem}}">{{c.name}}</a>
+                                    </div>
+                                    {{/each}}
+                                {{/if}}
+                            </div>
                         </div>
                     </div>
-                </div>
+                {{/if}}
             {{/each}}
         {{/if}}
         <!--<div class="panel panel-default">

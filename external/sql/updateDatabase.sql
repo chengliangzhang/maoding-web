@@ -1770,7 +1770,8 @@ CREATE PROCEDURE `initConst`()
   BEGIN
     -- -- 常量
     delete from md_list_const where classic_id = 42;
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (42,0,'标题过滤器类型','0:1-有列表过滤器');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (42,-1,'标题过滤器类型','1.是否有列表过滤器');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (42,0,'无过滤器','0');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (42,1,'字符串','0');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (42,2,'单选列表','1');
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (42,3,'多选列表','1');
@@ -1790,12 +1791,11 @@ CREATE PROCEDURE `initConst`()
         substring(filter_type.extra,
                   1,
                   char_length(substring_index(filter_type.extra,';',1)))
-                                               as type_attr,
-        substring(filter_type.extra,1,1) as has_list
+          as has_list
       from
         md_list_const filter_type
       where
-        filter_type.classic_id = 42 and filter_type.code_id > 0;
+        filter_type.classic_id = 42 and filter_type.code_id > -1;
   END;
 call initConst();
 
@@ -3059,7 +3059,7 @@ CREATE OR REPLACE VIEW `md_title_default` AS
     filter_type.has_list
   from
     md_optional_title optional_title
-    left join md_type_filter filter_type on (filter_type.id = optional_title.filter_type)
+    inner join md_type_filter filter_type on (filter_type.id = optional_title.filter_type)
   where optional_title.can_be_hide = 0;
 
 -- 用户已选择标题栏

@@ -133,7 +133,7 @@
             </if>
         </where>
         group by title_list.code
-        order by title_list.seq
+        order by title_list.seq desc
     </select>
 
     <delete id="deleteById" parameterType="java.lang.String">

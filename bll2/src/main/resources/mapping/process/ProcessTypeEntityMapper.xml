@@ -38,7 +38,12 @@
     from maoding_process_type
     where deleted = 0
     and company_id = #{companyId}
-    and target_type =  #{targetType}
+    <if test="targetType!=null">
+      and target_type =  #{targetType}
+    </if>
+    <if test="formId!=null">
+      and form_id =  #{formId}
+    </if>
     and status = 1
     order by create_date desc
   </select>

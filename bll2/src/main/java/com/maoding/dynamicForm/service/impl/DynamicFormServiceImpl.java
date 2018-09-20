@@ -176,11 +176,11 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         List<DynamicFormFieldDTO> fieldList = dynamicFormFieldDao.listFormField(fieldQuery);
         if (ObjectUtils.isNotEmpty(fieldList)){
             fieldList.forEach(field->{
-                if (DigitUtils.parseInt(field.getRequiredType()) != 0){
+                if (isNeedSelectValue(field)){
                     field.setFieldSelectedValueList(listOptional(field.getId()));
                 }
                 field.getDetailFieldList().stream().forEach(child->{
-                    if (DigitUtils.parseInt(child.getRequiredType()) != 0) {
+                    if (isNeedSelectValue(child)) {
                         child.setFieldSelectedValueList(listOptional(child.getId()));
                     }
                 });
@@ -188,6 +188,14 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         }
         form.setFieldList(fieldList);
         return form;
+    }
+
+    private boolean isNeedSelectValue(DynamicFormFieldBaseDTO field){
+        if ("0".equals(field.getFieldSelectValueType())
+                && (field.getFieldType() == 6 || field.getFieldType() == 7 || field.getFieldType() == 8)){
+            return true;
+        }
+        return false;
     }
 
     private List<DynamicFormFieldSelectedValueDTO> listOptional(String fieldId){

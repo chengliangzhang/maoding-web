@@ -1,13 +1,14 @@
 {{if fieldType==1}}
 <div class="col-xs-12 form-item" data-type="1">
     <div class="form-group">
-        <label class="col-24-xs-3 control-label">
+        <label class="col-xs-2 control-label">
             {{fieldTitle?fieldTitle:'单行文本'}}
             {{if requiredType==1}}
                 <span class="fc-red">*</span>
             {{/if}}
+            ：
         </label>
-        <div class="col-24-xs-21">
+        <div class="col-xs-10">
             <input type="text" class="form-control" name="projectType" value="" placeholder="{{fieldTooltip?fieldTooltip:'请输入单行文本'}}">
         </div>
     </div>
@@ -15,13 +16,14 @@
 {{else if fieldType==2}}
 <div class="col-xs-12 form-item " data-type="2">
     <div class="form-group">
-        <label class="col-24-xs-3 control-label">
+        <label class="col-xs-2 control-label">
             {{fieldTitle?fieldTitle:'多行文本'}}
             {{if requiredType==1}}
                 <span class="fc-red">*</span>
             {{/if}}
+            ：
         </label>
-        <div class="col-24-xs-21">
+        <div class="col-xs-10">
             <textarea type="text" class="form-control" name="projectType" placeholder="{{fieldTooltip?fieldTooltip:'请输入多行文本'}}"></textarea>
         </div>
     </div>
@@ -29,13 +31,14 @@
 {{else if fieldType==3}}
 <div class="col-xs-12 form-item " data-type="3">
     <div class="form-group">
-        <label class="col-24-xs-3 control-label">
+        <label class="col-xs-2 control-label">
             {{fieldTitle?fieldTitle:'日期'}}
             {{if requiredType==1}}
                 <span class="fc-red">*</span>
             {{/if}}
+            ：
         </label>
-        <div class="col-24-xs-21">
+        <div class="col-xs-10">
             <div class="input-group">
                 <input type="text" class="form-control" placeholder="{{fieldTooltip?fieldTooltip:'请选择日期'}}" readonly="" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="">
                 <span class="input-group-addon ">
@@ -48,16 +51,17 @@
 {{else if fieldType==4}}
 <div class="col-xs-12 form-item " data-type="4">
     <div class="form-group">
-        <label class="col-24-xs-3 control-label">
+        <label class="col-xs-2 control-label">
             {{fieldTitle?fieldTitle:'开始时间'}}
             {{if requiredType==1}}
             <span class="fc-red">*</span>
             {{/if}}
+            ：
         </label>
-        <div class="col-24-xs-9">
+        <div class="col-xs-4">
             <div class="row">
                 <!-- col-24-xs-10 -->
-                <div class="{{dateFormatType==1?'col-24-xs-24':'col-24-xs-14 p-r-none'}}  time-box">
+                <div class="{{dateFormatType==1?'col-24-xs-24':'col-24-xs-13 p-r-none'}}  time-box">
                     <div class="input-group">
                         <input type="text" class="form-control start-time" placeholder="{{fieldTooltip?fieldTooltip:'请选择日期'}}" readonly="" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="">
                         <span class="input-group-addon "><i class="icon-append fa fa-calendar"></i></span>
@@ -91,13 +95,13 @@
                         <option value="24">24</option>
                     </select>
                 </div>
-                <div class="col-24-xs-5 p-l-xs time-mm" style="{{dateFormatType==1 || dateFormatType==3?'display: none;':''}}">
+                <div class="col-24-xs-6 p-l-xs time-mm" style="{{dateFormatType==1 || dateFormatType==3?'display: none;':''}}">
                     <select class="form-control no-padding">
                         <option>0</option>
                         <option>30</option>
                     </select>
                 </div>
-                <div class="col-24-xs-10 p-l-xs am-pm" style="{{dateFormatType==1 || dateFormatType==2?'display: none;':''}}">
+                <div class="col-24-xs-11 p-l-xs am-pm" style="{{dateFormatType==1 || dateFormatType==2?'display: none;':''}}">
                     <select class="form-control no-padding">
                         <option>上午</option>
                         <option>下午</option>
@@ -105,15 +109,16 @@
                 </div>
             </div>
         </div>
-        <label class="col-24-xs-3 control-label">
+        <label class="col-xs-2 control-label">
             {{fieldTitle2?fieldTitle2:'结束时间'}}
             {{if requiredType==1}}
             <span class="fc-red">*</span>
             {{/if}}
+            ：
         </label>
-        <div class="col-24-xs-9">
+        <div class="col-xs-4">
             <div class="row">
-                <div class="{{dateFormatType==1?'col-24-xs-24':'col-24-xs-14 p-r-none'}}  time-box">
+                <div class="{{dateFormatType==1?'col-24-xs-24':'col-24-xs-13 p-r-none'}}  time-box">
                     <div class="input-group">
                         <input type="text" class="form-control end-time" placeholder="{{fieldTooltip2?fieldTooltip2:'请选择日期'}}" readonly="" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="">
                         <span class="input-group-addon "><i class="icon-append fa fa-calendar"></i></span>
@@ -147,13 +152,13 @@
                         <option value="24">24</option>
                     </select>
                 </div>
-                <div class="col-24-xs-5 p-l-xs time-mm" style="{{dateFormatType==1 || dateFormatType==3?'display: none;':''}}">
+                <div class="col-24-xs-6 p-l-xs time-mm" style="{{dateFormatType==1 || dateFormatType==3?'display: none;':''}}">
                     <select class="form-control no-padding">
                         <option>0</option>
                         <option>30</option>
                     </select>
                 </div>
-                <div class="col-24-xs-10 p-l-xs am-pm" style="{{dateFormatType==1 || dateFormatType==2?'display: none;':''}}">
+                <div class="col-24-xs-11 p-l-xs am-pm" style="{{dateFormatType==1 || dateFormatType==2?'display: none;':''}}">
                     <select class="form-control no-padding">
                         <option>上午</option>
                         <option>下午</option>
@@ -166,14 +171,15 @@
 {{else if fieldType==5}}
 <div class="col-xs-12 form-item " data-type="5" data-key="{{itemKey}}">
     <div class="form-group">
-        <label class="col-24-xs-3 control-label">
+        <label class="col-xs-2 control-label">
             {{fieldTitle?fieldTitle:'数字'}}
             {{if requiredType==1}}
             <span class="fc-red">*</span>
             {{/if}}
+            ：
         </label>
-        <div class="col-24-xs-21">
-            <div class="input-group">
+        <div class="col-xs-10">
+            <div class="input-group full-width">
                 <input type="text" class="form-control" placeholder="{{fieldTooltip?fieldTooltip:'请输入数字'}}" >
                 {{if fieldUnit!=null && fieldUnit!=''}}
                 <span class="input-group-addon ">
@@ -187,13 +193,14 @@
 {{else if fieldType==6}}
 <div class="col-xs-12 form-item " data-type="6" data-key="{{itemKey}}">
     <div class="form-group">
-        <label class="col-24-xs-3 control-label">
+        <label class="col-xs-2 control-label">
             {{fieldTitle?fieldTitle:'下拉列表'}}
             {{if requiredType==1}}
             <span class="fc-red">*</span>
             {{/if}}
+            ：
         </label>
-        <div class="col-24-xs-21">
+        <div class="col-xs-10">
             <select readonly="">
                 {{if fieldTooltip && fieldTooltip!=''}}
                     <option>{{fieldTooltip}}</option>
@@ -210,13 +217,14 @@
 {{else if fieldType==7}}
 <div class="col-xs-12 form-item " data-type="7" data-key="{{itemKey}}">
     <div class="form-group">
-        <label class="col-24-xs-3 control-label">
+        <label class="col-xs-2 control-label">
             {{fieldTitle?fieldTitle:'单选框'}}
             {{if requiredType==1}}
             <span class="fc-red">*</span>
             {{/if}}
+            ：
         </label>
-        <div class="col-24-xs-21">
+        <div class="col-xs-10">
             {{if fieldSelectedValueList && fieldSelectedValueList.length>0}}
                 {{each fieldSelectedValueList as o}}
                     <div class="pull-left m-r-xs m-t-xs">
@@ -233,13 +241,14 @@
 {{else if fieldType==8}}
 <div class="col-xs-12 form-item " data-type="8" data-key="{{itemKey}}">
     <div class="form-group">
-        <label class="col-24-xs-3 control-label">
+        <label class="col-xs-2 control-label">
             {{fieldTitle?fieldTitle:'复选框'}}
             {{if requiredType==1}}
             <span class="fc-red">*</span>
             {{/if}}
+            ：
         </label>
-        <div class="col-24-xs-21">
+        <div class="col-xs-10">
             {{if fieldSelectedValueList && fieldSelectedValueList.length>0}}
                 {{each fieldSelectedValueList as o}}
                     <div class="pull-left m-r-xs m-t-xs">
@@ -260,12 +269,12 @@
             <div class="panel-body">
                 <form>
                     <h4 class="title-line">
-                        明细(<span data-action="itemIndex">1</span>)
+                        明细(<span data-action="panelIndex">{{panelIndex?panelIndex:'1'}}</span>)
                     </h4>
                 </form>
             </div>
         </div>
-        <div class="col-24-xs-21 col-24-xs-offset-3">
+        <div class="col-xs-10 col-xs-offset-2">
             <button class="btn btn-primary btn-sm" data-action="addItem" title="添加明细"><i class="fa fa-plus"></i>&nbsp;添加明细</button>
         </div>
     </div>
@@ -273,17 +282,24 @@
 {{else if fieldType==10}}
 <div class="col-xs-12 form-item " data-type="10" data-key="{{itemKey}}">
     <div class="form-group">
-        <label class="col-24-xs-3 control-label">附件</label>
-        <div class="col-24-xs-21">
-            <button class="btn btn-primary btn-sm" data-action="addItem" title="上传附件"><i class="fa fa-upload"></i>&nbsp;上传附件</button>
+        <label class="col-xs-2 control-label">附件：</label>
+        <div class="col-xs-10">
+            <div class="row">
+                <div class="col-md-12 m-b-sm">
+                    <span id="showFileLoading"> </span>
+                </div>
+                <div class="col-md-12 m-b-sm">
+                    <span class="uploadmgrContainer"> </span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 {{else if fieldType==12}}
 <div class="col-xs-12 form-item " data-type="12" data-key="{{itemKey}}">
     <div class="form-group">
-        <label class="col-24-xs-3 control-label">关联项目</label>
-        <div class="col-24-xs-21">
+        <label class="col-xs-2 control-label">关联项目：</label>
+        <div class="col-xs-10">
             <select>
                 <option>请选择关联项目</option>
             </select>
@@ -293,8 +309,8 @@
 {{else if fieldType==11}}
 <div class="col-xs-12 form-item " data-type="11" data-key="{{itemKey}}">
     <div class="form-group">
-        <label class="col-24-xs-3 control-label">关联审批</label>
-        <div class="col-24-xs-21">
+        <label class="col-xs-2 control-label">关联审批：</label>
+        <div class="col-xs-10">
             <select>
                 <option>请选择关联审批</option>
             </select>
@@ -304,10 +320,10 @@
 {{else if fieldType==13}}
 <div class="col-xs-12 form-item " data-type="13" data-key="{{itemKey}}">
     <div class="form-group">
-        <label class="col-24-xs-3 control-label">
+        <label class="col-xs-2 control-label">
             {{fieldTitle?fieldTitle:'纯文本'}}
         </label>
-        <div class="col-24-xs-21">
+        <div class="col-xs-10">
         </div>
     </div>
 </div>

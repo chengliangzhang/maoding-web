@@ -21,6 +21,8 @@ public interface ProcessTypeDao extends BaseDao<ProcessTypeEntity> {
      */
     ProcessTypeEntity getCurrentProcessType(String companyId,String targetType);
 
+    ProcessTypeEntity getCurrentProcessTypeByFormId(String companyId,String formId);
+
     /**
      * 描述       获取流程列表，分组返回列表
      * 日期       2018/9/13

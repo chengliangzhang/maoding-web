@@ -22,6 +22,11 @@
         this._currentUserId = window.currentUserId;
         this._currentCompanyId = window.currentCompanyId;
 
+        this._uploadmgrContainer = null;
+        this._uuid = UUID.genV4().hexNoDelim;//targetId
+
+        this._dataInfo = {};
+
         this.init();
     }
 
@@ -38,16 +43,67 @@
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
 
-                    var html = template('m_form_template/m_form_template_generate_edit',{
-                        title:that._title,
-                        subTitle:that._subTitle,
-                        dataInfo:that.settings.dataInfo
-                    });
+                    that._dataInfo = response.data;
+                    var html = template('m_form_template/m_form_template_generate_edit',{});
                     that.renderDialog(html,function () {
 
-                        that.renderICheckOrSelect();
-                        console.log(that.settings.dataInfo)
+                        if(response.data && response.data.dynamicAudit && response.data.dynamicAudit.fieldList){
 
+                            var fieldList = response.data.dynamicAudit.fieldList;
+                            var j = -1;
+                            $.each(fieldList,function (i,item) {
+
+                                if(i==j)
+                                    return true;
+
+                                if(item.fieldType==4){//时间区间，需要合并一个组件
+                                    j = i+1;
+                                    item.fieldTitle2 = fieldList[i+1].fieldTitle;
+                                    item.fieldTooltip2 = fieldList[i+1].fieldTooltip;
+                                }
+
+                                if(item.fieldType!=9){
+                                    var iHtml = template('m_form_template/m_form_template_itemForEdit',item);
+                                    $(that.element).find('form').eq(0).append(iHtml);
+                                }
+                                //明细面板
+                                if(item.detailFieldList!=null && item.detailFieldList.length>0){
+
+
+                                    $.each(item.detailFieldList,function (panelI,panelItem) {
+
+                                        var panelInfo = {};
+                                        panelInfo.panelIndex = $(that.element).find('.form-item[data-type="9"]').length+1;
+                                        panelInfo.fieldType = 9;
+                                        var iHtml = template('m_form_template/m_form_template_itemForEdit',panelInfo);
+                                        $(that.element).find('form').append(iHtml);
+
+                                        if(panelItem!=null && panelItem.length>0){
+                                            var subJ = -1;
+                                            $.each(panelItem,function (subI,subItem) {
+
+                                                if(subI==subJ)
+                                                    return true;
+
+                                                if(subItem.fieldType==4){//时间区间，需要合并一个组件
+                                                    subJ = subI+1;
+                                                    subItem.fieldTitle2 = panelItem[i+1].fieldTitle;
+                                                    subItem.fieldTooltip2 = panelItem[i+1].fieldTooltip;
+                                                }
+                                                var iHtml = template('m_form_template/m_form_template_itemForEdit',subItem);
+                                                $(that.element).find('.form-item[data-type="9"]:last .panel form').append(iHtml);
+                                            });
+                                        }
+
+                                    });
+
+
+                                }
+                            });
+                        }
+                        that.renderICheckOrSelect($(that.element));
+                        that.bindActionClick();
+                        that.fileUpload();
                         return false;
                     });
 
@@ -90,7 +146,7 @@
 
         }
         //初始化iCheck
-        ,renderICheckOrSelect:function () {
+        ,renderICheckOrSelect:function ($ele) {
 
             var that = this;
             var ifChecked = function (e) {
@@ -99,16 +155,80 @@
             };
             var ifClicked = function (e) {
             };
-            $(that.element).find('.i-checks').iCheck({
+            $ele.find('.i-checks').iCheck({
                 checkboxClass: 'icheckbox_square-blue',
                 radioClass: 'iradio_square-blue'
             }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked).on('ifClicked',ifClicked);
-            $(that.element).find('select').select2({
+
+            $ele.find('select').select2({
                 tags:false,
                 allowClear: false,
                 minimumResultsForSearch: -1,
                 width:'100%',
                 language: "zh-CN"
+            });
+        }
+        //上传附件
+        ,fileUpload:function () {
+            var that =this;
+            var option = {};
+            that._uploadmgrContainer = $(that.element).find('.uploadmgrContainer:eq(0)');
+            option.server = restApi.url_attachment_uploadExpenseAttach;
+            option.accept={
+                title: '上传附件',
+                extensions: 'jpg,jpeg,png,bmp',
+                mimeTypes: 'image/jpg,image/jpeg,image/png,image/bmp'
+            };
+            option.btnPickText = '<i class="fa fa-upload"></i>&nbsp;上传附件';
+            option.ifCloseItemFinished = true;
+            option.boxClass = 'no-borders';
+            option.isShowBtnClose = false;
+            option.uploadBeforeSend = function (object, data, headers) {
+                data.companyId = that._currentCompanyId;
+                data.accountId = that._currentUserId;
+                data.targetId = that._uuid;
+            };
+            option.uploadSuccessCallback = function (file, response) {
+                console.log(response);
+                var fileData = {
+                    netFileId: response.data.netFileId,
+                    fileName: response.data.fileName,
+                    fullPath: that._fastdfsUrl + response.data.fastdfsGroup + '/' + response.data.fastdfsPath
+                };
+                var $uploadItem = that._uploadmgrContainer.find('.uploadItem_' + file.id + ':eq(0)');
+                if (!isNullOrBlank(fileData.netFileId)) {
+                    $uploadItem.find('.span_status:eq(0)').html('上传成功');
+                    var html = template('m_common/m_attach', fileData);
+                    $('#showFileLoading').append(html);
+                    that.bindAttachDelele();
+                } else {
+                    $uploadItem.find('.span_status:eq(0)').html('上传失败');
+                }
+
+            };
+            that._uploadmgrContainer.m_uploadmgr(option, true);
+        }
+        ,bindActionClick:function () {
+            var that = this;
+            $(that.element).find('a[data-action],button[data-action]').on('click',function () {
+                var $this = $(this);
+                var dataAction = $this.attr('data-action');
+                switch (dataAction){
+                    case 'addItem'://添加明细
+
+                        var $newPanel = $this.parent().prev().clone();
+                        //$newPanel.find('select').select2('destroy');
+                        $newPanel.find('.select2.select2-container').remove();
+                        var panelBoxLen = $(that.element).find('.panel').length;
+                        $newPanel.find('span[data-action="panelIndex"]').html(panelBoxLen+1);
+                        $newPanel.find('input,textarea').val('');
+                        $this.parent().before($newPanel.prop('outerHTML'));
+                        that.renderICheckOrSelect($this.parent().prev());
+                        return false;
+                        break;
+
+                }
+
             });
         }
 

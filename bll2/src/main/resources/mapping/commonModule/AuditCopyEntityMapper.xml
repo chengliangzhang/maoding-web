@@ -138,4 +138,19 @@
       update_by = #{updateBy,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+
+  <select id="listAuditCopyUser" resultType="com.maoding.org.dto.CompanyUserDataDTO" parameterType="com.maoding.commonModule.dto.QueryAuditCopyDTO" >
+    SELECT a.id,a.user_id as userId,a.user_name as userName,a.email,b.oss_file_path as fileFullPath,
+    c.cellphone,c.user_name as accountName,d.aliasName as companyName
+    from maoding_audit_copy copy
+    INNER JOIN maoding_process_type process on copy.target_id = process.id
+    INNER JOIN  maoding_web_company_user a on copy.relation_id = a.id
+    LEFT JOIN (<include refid="UserAttachEntityMapper.getHeadImg" /> ) b on a.user_id = b.user_id AND b.attach_type=5
+    LEFT JOIN maoding_web_account c on a.user_id = c.id
+    LEFT JOIN (<include refid="CompanyEntityMapper.getAliasNameSql" /> ) d on a.company_id = d.id
+    where process.company_id = #{currentCompanyId}
+    and process.form_id = #{formId}
+    and copy.deleted = 0
+  </select>
+
 </mapper>

@@ -2,6 +2,7 @@ package com.maoding.dynamicForm.service.impl;
 
 import com.maoding.attach.dto.FileDataDTO;
 import com.maoding.commonModule.dto.QueryCopyRecordDTO;
+import com.maoding.commonModule.service.AuditCopyService;
 import com.maoding.commonModule.service.CopyRecordService;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.constant.NetFileType;
@@ -10,6 +11,7 @@ import com.maoding.core.util.TraceUtils;
 import com.maoding.dynamicForm.dao.DynamicFormDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldValueDao;
+import com.maoding.dynamicForm.dto.DynamicFormFieldBaseDTO;
 import com.maoding.dynamicForm.dto.DynamicFormFieldValueDTO;
 import com.maoding.dynamicForm.dto.FormFieldQueryDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicAuditDTO;
@@ -22,6 +24,7 @@ import com.maoding.financial.dto.AuditEditDTO;
 import com.maoding.financial.entity.ExpMainEntity;
 import com.maoding.financial.service.ExpMainService;
 import com.maoding.org.dto.CompanyUserDataDTO;
+import com.maoding.process.dao.ProcessTypeDao;
 import com.maoding.process.service.ProcessService;
 import com.maoding.project.service.ProjectSkyDriverService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +40,12 @@ import java.util.Map;
  */
 @Service("dynamicFormFieldSelectableValueService")
 public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicFormFieldSelectableValueEntity> implements DynamicFormFieldValueService {
+
+    @Autowired
+    private AuditCopyService auditCopyService;
+
+    @Autowired
+    private ProcessTypeDao processTypeDao;
 
     @Autowired
     private DynamicFormDao dynamicFormDao;
@@ -58,6 +67,7 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
 
     @Autowired
     private ProcessService processService;
+
 
     private Integer detailType = 9;
     /**
@@ -145,7 +155,7 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
             ccCompanyUserList = copyRecordService.getCopyRecode(new QueryCopyRecordDTO(id));
         }else {
             //查询模板中的知会人,待处理
-
+            ccCompanyUserList = auditCopyService.listAuditCopyUser(dto.getCurrentCompanyId(),dto.getFormId());
         }
         //3.查询流程 返回流程标识，给前端控制是否要给审批人，以及按钮显示的控制
         Map<String,Object> processData = processService.getCurrentTaskUser(new AuditEditDTO(id,null,null),auditList,conditionValue);
@@ -188,5 +198,13 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         });
         dynamicAudit.setFieldList(fieldList);
         return dynamicAudit;
+    }
+
+
+    private boolean isNeedSelectValue(DynamicFormFieldBaseDTO field){
+        if (field.getFieldType() == 6 || field.getFieldType() == 7 || field.getFieldType() == 8){
+            return true;
+        }
+        return false;
     }
 }

@@ -1,5 +1,7 @@
 package com.maoding.dynamicForm.dto;
 
+import com.maoding.core.base.dto.CoreShowDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,11 @@ public class DynamicFormFieldValueDTO extends DynamicFormFieldBaseDTO{
 
     //字段值2（备注额外的值）
     private String fieldValue2;
+
+    /**
+     * 控件选择值
+     */
+    Object fieldSelectedValueList ;
 
     List<List<DynamicFormFieldValueDTO>> detailFieldList = new ArrayList<>();
 
@@ -76,5 +83,13 @@ public class DynamicFormFieldValueDTO extends DynamicFormFieldBaseDTO{
 
     public void setFieldValue2(String fieldValue2) {
         this.fieldValue2 = fieldValue2;
+    }
+
+    public Object getFieldSelectedValueList() {
+        return fieldSelectedValueList;
+    }
+
+    public void setFieldSelectedValueList(Object fieldSelectedValueList) {
+        this.fieldSelectedValueList = fieldSelectedValueList;
     }
 }

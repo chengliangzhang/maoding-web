@@ -30,6 +30,14 @@ public class ProcessTypeDaoImpl extends GenericDao<ProcessTypeEntity> implements
         return ObjectUtils.getFirst(list);
     }
 
+    @Override
+    public ProcessTypeEntity getCurrentProcessTypeByFormId(String companyId, String formId) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("companyId",companyId);
+        map.put("formId",formId);
+        return sqlSession.selectOne("ProcessTypeEntityMapper.getCurrentProcessType",map);
+    }
+
     /**
      * 描述       获取流程列表
      * 日期       2018/9/13

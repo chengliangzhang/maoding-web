@@ -2,11 +2,14 @@ package com.maoding.commonModule.service.impl;
 
 import com.maoding.commonModule.dao.AuditCopyDao;
 import com.maoding.commonModule.dto.AuditCopyDataDTO;
+import com.maoding.commonModule.dto.QueryAuditCopyDTO;
 import com.maoding.commonModule.dto.SaveAuditCopyDTO;
 import com.maoding.commonModule.entity.AuditCopyEntity;
 import com.maoding.commonModule.service.AuditCopyService;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.util.BeanUtils;
+import com.maoding.dynamicForm.dto.FormFieldQueryDTO;
+import com.maoding.org.dto.CompanyUserDataDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,5 +39,14 @@ public class AuditCopyServiceImpl extends NewBaseService implements AuditCopySer
     @Override
     public List<AuditCopyDataDTO> listAuditCopy(String targetId) {
         return auditCopyDao.listAuditCopy(targetId);
+    }
+
+    @Override
+    public List<CompanyUserDataDTO> listAuditCopyUser(String companyId,String formId) {
+
+        QueryAuditCopyDTO query = new QueryAuditCopyDTO();
+        query.setFormId(formId);
+        query.setCurrentCompanyId(companyId);
+        return auditCopyDao.listAuditCopyUser(query);
     }
 }

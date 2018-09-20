@@ -213,7 +213,7 @@
             }else if(item.fieldType==11){//关联审批
 
                 dataItem.approvalAttr = item.fieldSelectValueType;
-                if(item.fieldSelectValueType.indexOf(',')>-1)
+                if(item.fieldSelectValueType && item.fieldSelectValueType.indexOf(',')>-1)
                     dataItem.approvalAttr = item.fieldSelectValueType.split(',');
 
             }else if(item.fieldType==12){//关联项目

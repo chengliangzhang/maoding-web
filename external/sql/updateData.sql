@@ -13,6 +13,9 @@ CREATE PROCEDURE `updateData`()
     update maoding_web_project_condition
     set code = concat(code,',createCompany')
     where not find_in_set('createCompany',code);
+
+    update maoding_web_project_condition
+    set code = concat('projectName,projectNo,createCompany,',replace(replace(replace(replace(code,'projectName',''),'projectNo',''),'createCompany',''),',,',','))
   END;
 call updateData();
 
