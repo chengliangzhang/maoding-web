@@ -32,15 +32,26 @@ public class ProcessDefineDetailDTO extends CoreShowDTO {
     /** 流程所拥有的路径序列 */
     private List<FlowTaskGroupDTO> flowTaskGroupList;
 
-    /** 启动数字条件单位 */
-    private String unit;
+    /** 可选条件列表 **/
+    private List<ConditionDTO> optionalConditionList;
 
-    public String getUnit() {
-        return unit;
+    /** 当前设置的可选条件 **/
+    private String conditionFieldId;
+
+    public List<ConditionDTO> getOptionalConditionList() {
+        return optionalConditionList;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setOptionalConditionList(List<ConditionDTO> optionalConditionList) {
+        this.optionalConditionList = optionalConditionList;
+    }
+
+    public String getConditionFieldId() {
+        return conditionFieldId;
+    }
+
+    public void setConditionFieldId(String conditionFieldId) {
+        this.conditionFieldId = conditionFieldId;
     }
 
     public String getKey() {

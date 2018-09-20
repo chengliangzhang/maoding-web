@@ -10,7 +10,6 @@ import com.maoding.core.constant.ExpenseConst;
 import com.maoding.core.constant.ProcessTypeConst;
 import com.maoding.core.constant.ProjectCostConst;
 import com.maoding.core.util.*;
-import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
 import com.maoding.dynamicForm.service.DynamicFormGroupService;
 import com.maoding.exception.CustomException;
 import com.maoding.financial.dto.AuditBaseDTO;
@@ -150,6 +149,8 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
         //从流程引擎中读取流程定义
         ProcessDefineDetailDTO processDefineDetail  = this.workflowService.prepareProcessDefine(prepareRequest);
+
+
         if(processDefineDetail!=null){
             //重新组织一下数据，设置人员头像
             this.setUserInfo(processDefineDetail);

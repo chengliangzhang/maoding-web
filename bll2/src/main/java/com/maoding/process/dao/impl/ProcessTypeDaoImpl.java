@@ -63,6 +63,20 @@ public class ProcessTypeDaoImpl extends GenericDao<ProcessTypeEntity> implements
     }
 
     /**
+     * 描述       获取单个流程
+     * 日期       2018/9/20
+     *
+     * @param query
+     * @author 张成亮
+     */
+    @Override
+    public ProcessDefineDTO getProcessDefine(ProcessDefineQueryDTO query) {
+        List<ProcessDefineDTO> list = listProcessDefine(query);
+        TraceUtils.check(list != null && list.size() == 1, "~流程个数不对");
+        return ObjectUtils.getFirst(list);
+    }
+
+    /**
      * 作者：FYT
      * 日期：2018/9/17
      * 描述：审批表 启用/停用。根据dto中的id，和当前组织去查询ProcessTypeEntity（form_id = dto.id,companyId = dto.currentCompanyId)

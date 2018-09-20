@@ -2,6 +2,7 @@ package com.maoding.activiti.service;
 
 import com.maoding.activiti.dto.*;
 import com.maoding.core.base.dto.CorePageDTO;
+import org.activiti.bpmn.model.Process;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,13 @@ import java.util.Map;
  * @description :
  */
 public interface WorkflowService {
+    /**
+     * 描述       读取流程信息
+     * 日期       2018/9/20
+     * @author   张成亮
+     **/
+    Process getProcessByKey(String processDefineKey, String currentCompanyId);
+
     /**
      * 描述       加载流程，准备进行编辑
      * 日期       2018/8/2

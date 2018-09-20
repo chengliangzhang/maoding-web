@@ -26,6 +26,9 @@ public class ProcessDetailPrepareDTO extends CoreEditDTO {
 
     /** 分条件流程内的变量单位 **/
     private String varUnit;
+	
+    /** 条件控件编号 **/
+    private String conditionFieldId;
 
     /** 模板流程编号 */
     private String srcProcessDefineId;
@@ -47,6 +50,14 @@ public class ProcessDetailPrepareDTO extends CoreEditDTO {
 
     public void setVarUnit(String varUnit) {
         this.varUnit = varUnit;
+    }
+
+    public String getConditionFieldId() {
+        return conditionFieldId;
+    }
+
+    public void setConditionFieldId(String conditionFieldId) {
+        this.conditionFieldId = conditionFieldId;
     }
 
     public String getName() {

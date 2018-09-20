@@ -209,8 +209,13 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         return BeanUtils.createListFrom(flowTaskEditList,FlowTaskDTO.class);
     }
 
-    //查找已有流程
-    private Process getProcessByKey(String processDefineKey,String currentCompanyId){
+    /**
+     * 描述       读取流程信息
+     * 日期       2018/9/20
+     * @author   张成亮
+     **/
+    @Override
+    public Process getProcessByKey(String processDefineKey,String currentCompanyId){
         //查找最后发布的流程版本
         ProcessDefinitionQuery pdQuery = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionKey(processDefineKey)

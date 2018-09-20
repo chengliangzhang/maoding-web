@@ -38,6 +38,13 @@ public interface ProcessTypeDao extends BaseDao<ProcessTypeEntity> {
     List<ProcessDefineDTO> listProcessDefine(ProcessDefineQueryDTO query);
 
     /**
+     * 描述       获取单个流程
+     * 日期       2018/9/20
+     * @author   张成亮
+     **/
+    ProcessDefineDTO getProcessDefine(ProcessDefineQueryDTO query);
+
+    /**
      * 作者：FYT
      * 日期：2018/9/17
      * 描述：审批表 启用/停用。根据dto中的id，和当前组织去查询ProcessTypeEntity（formId ,companyId = dto.currentCompanyId)

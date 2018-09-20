@@ -34,6 +34,9 @@ public class WorkFlowController extends BaseController {
     @Autowired
     private DynamicFormService dynamicFormService;
 
+    @Autowired
+    private DynamicFormController dynamicFormController;
+
     /**
      * 描述       加载流程，准备进行编辑
      * 日期       2018/8/2
@@ -63,6 +66,7 @@ public class WorkFlowController extends BaseController {
 
     /**
      * 描述       查询流程定义
+     *              流程定义已使用动态表单代替
      * 日期       2018/8/2
      * @author   张成亮
      * @param    query 流程查询条件
@@ -73,15 +77,12 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping("/listProcessDefine")
     @ResponseBody
+    @Deprecated
+    /** 使用iWork/dynamicForm/listForm代替 **/
     public AjaxMessage listProcessDefine(@RequestBody ProcessDefineQueryDTO query) throws Exception {
-        updateCurrentUserInfo(query);
-        if (StringUtils.isEmpty(query.getKey())) {
-            List<ProcessDefineGroupDTO> result = processService.listProcessDefineWithGroup(query);
-            return AjaxMessage.succeed("查询成功").setData(result);
-        } else {
-            List<ProcessDefineDTO> result = workflowService.listProcessDefine(query);
-            return AjaxMessage.succeed("查询成功").setData(result);
-        }
+        FormQueryDTO formQuery = BeanUtils.createFrom(query,FormQueryDTO.class);
+        formQuery.setFormId(query.getKey());
+        return dynamicFormController.listForm(formQuery);
     }
 
 
@@ -97,10 +98,10 @@ public class WorkFlowController extends BaseController {
      **/
     @RequestMapping(value = "/addProcess", method = RequestMethod.POST)
     @ResponseBody
+    @Deprecated
+    /** 使用iWork/dynamicForm/insertDynamicForm代替 **/
     public AjaxMessage addProcess(@RequestBody ProcessDefineEditDTO request) throws Exception {
-        updateCurrentUserInfo(request);
-        dynamicFormService.insertDynamicForm(request);
-        return AjaxMessage.succeed(null);
+        return dynamicFormController.insertDynamicForm(request);
     }
 
 

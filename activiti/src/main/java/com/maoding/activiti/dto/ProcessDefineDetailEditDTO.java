@@ -33,6 +33,8 @@ public class ProcessDefineDetailEditDTO extends CoreEditDTO {
     /** 分条件流程内的变量单位 **/
     private String varUnit;
 
+    /** 条件控件编号 **/
+    private String conditionFieldId;
 
     /** 允许启动流程的角色编号列表 */
     private List<String> candidateStarterGroups;
@@ -63,6 +65,14 @@ public class ProcessDefineDetailEditDTO extends CoreEditDTO {
 
     public void setVarUnit(String varUnit) {
         this.varUnit = varUnit;
+    }
+
+    public String getConditionFieldId() {
+        return conditionFieldId;
+    }
+
+    public void setConditionFieldId(String conditionFieldId) {
+        this.conditionFieldId = conditionFieldId;
     }
 
     public List<FlowTaskGroupEditDTO> getFlowTaskGroupList() {
