@@ -1,3 +1,21 @@
+-- 更新项目列表标题栏，添加默认标题栏
+DROP PROCEDURE IF EXISTS `updateData`;
+CREATE PROCEDURE `updateData`()
+  BEGIN
+    update maoding_web_project_condition
+    set code = concat(code,',projectName')
+    where not find_in_set('projectName',code);
+
+    update maoding_web_project_condition
+    set code = concat(code,',projectNo')
+    where not find_in_set('projectNo',code);
+
+    update maoding_web_project_condition
+    set code = concat(code,',createCompany')
+    where not find_in_set('createCompany',code);
+  END;
+call updateData();
+
 -- 添加已有公司的默认动态表单群组和动态表单
 DROP PROCEDURE IF EXISTS `updateData`;
 CREATE PROCEDURE `updateData`()

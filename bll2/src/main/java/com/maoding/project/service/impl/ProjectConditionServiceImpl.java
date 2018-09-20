@@ -222,11 +222,8 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
             query.setType(SystemParameters.TITLE_TYPE_PROJECT);
         }
         int type = DigitUtils.parseInt(query.getType());
-        List<TitleColumnDTO> titleList = projectConditionDao.listTitle(query);
-        if (ObjectUtils.isEmpty(titleList)){
-            titleList = projectConditionDao.listDefaultTitle(query);
-        }
 
+        List<TitleColumnDTO> titleList = listTitleWithDefault(query);
         if (isNeedGetFilterList(titleList,query)){
             titleList.forEach(title->{
                 if (title.getHasList() == 1){
@@ -247,6 +244,31 @@ public class ProjectConditionServiceImpl extends GenericService<ProjectCondition
             });
         }
 
+        return titleList;
+    }
+
+    //获取带有默认字段的显示字段列表
+    private List<TitleColumnDTO> listTitleWithDefault(TitleQueryDTO query){
+        List<TitleColumnDTO> titleList = projectConditionDao.listTitle(query);
+        if (titleList == null){
+            titleList = new ArrayList<>();
+        }
+
+        List<TitleColumnDTO> defaultTitleList = projectConditionDao.listDefaultTitle(query);
+        if (ObjectUtils.isNotEmpty(defaultTitleList)){
+            for (TitleColumnDTO defaultTitle : defaultTitleList) {
+                boolean found = false;
+                for (TitleColumnDTO title : titleList) {
+                    if (StringUtils.isSame(title.getId(),defaultTitle.getId())) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    titleList.add(defaultTitle);
+                }
+            }
+        }
         return titleList;
     }
 
