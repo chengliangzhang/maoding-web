@@ -104,13 +104,15 @@
   <!-- 动态表单模板映射 -->
   <resultMap id="FormMap" type="com.maoding.dynamicForm.dto.FormDTO">
     <id column="form_id" property="id"/>
+    <result column="form_id" property="formId"/>
     <result column="form_name" property="name"/>
-    <result column="form_type" property="formType"/>
+    <result column="process_form_type" property="formType"/>
+    <result column="process_type" property="type"/>
     <result column="documentation" property="documentation"/>
     <result column="var_name" property="varName"/>
     <result column="var_unit" property="varUnit"/>
     <result column="process_status" property="status"/>
-    <result column="is_system" property="isSystem"/>
+    <result column="form_is_system" property="isSystem"/>
   </resultMap>
 
   <!-- 查询动态表单模板 -->
@@ -118,18 +120,27 @@
       select
         process_type.form_id,
         process_type.status as process_status,
+        process_type.form_type as process_form_type,
+        process_type.type as process_type,
+        if(form_list.id is null,null,if(form_list.company_id is null,1,0)) as form_is_system,
         form_list.*
-      from maoding_dynamic_form form_list
-          right join maoding_process_type process_type on (
-            process_type.deleted = 0
-            and process_type.form_id = form_list.id
+      from maoding_process_type process_type
+          left join maoding_dynamic_form form_list on (
+            form_list.deleted = 0
+            and form_list.id = process_type.form_id
           )
-      where form_list.deleted = 0
+      where process_type.deleted = 0
         <if test="id != null">
-          and process_type.form_id = #{id}
+          and process_type.id = #{id}
+        </if>
+        <if test="formId != null">
+          and process_type.form_id = #{formId}
         </if>
         <if test="status == 1">
           and process_type.status = #{status}
+        </if>
+        <if test="currentCompanyId != null">
+          and process_type.company_id = #{currentCompanyId}
         </if>
       order by process_type.seq
   </select>

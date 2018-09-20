@@ -10,13 +10,24 @@ import com.maoding.core.base.dto.CoreQueryDTO;
  * 描述: 动态表单内容查询条件
  **/
 public class FormQueryDTO extends CoreQueryDTO {
-    /** id:表单模板编号 **/
+    /** id:流程模板编号 **/
+
+    /** 表单模板编号 **/
+    private String formId;
 
     /** 是否按照群组汇总：0-否，1-是 **/
     private Integer useGroup;
 
     /** 是否启用：0-未启用，1-启用 **/
     private Integer status;
+
+    public String getFormId() {
+        return formId;
+    }
+
+    public void setFormId(String formId) {
+        this.formId = formId;
+    }
 
     public Integer getStatus() {
         return status;

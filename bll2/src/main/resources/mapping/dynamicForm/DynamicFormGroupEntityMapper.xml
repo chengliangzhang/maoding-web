@@ -143,7 +143,7 @@
       <result column="documentation" property="documentation"/>
       <result column="var_name" property="varName"/>
       <result column="var_unit" property="varUnit"/>
-      <result column="form_is_active" property="status"/>
+      <result column="process_status" property="status"/>
       <result column="form_is_system" property="isSystem"/>
       <result column="process_type" property="type"/>
     </collection>
@@ -154,15 +154,15 @@
         select
             <if test="isIncludeForm == 1">
               process_type.id as process_id,
-              process_type.status as form_is_active,
+              process_type.status as process_status,
               process_type.type as process_type,
+              process_type.form_type as form_type,
               form_list.id as form_id,
               form_list.form_name,
-              form_list.form_type,
               form_list.documentation,
               form_list.var_name,
               form_list.var_unit,
-              form_list.is_system as form_is_system,
+              if(form_list.id is null,null,if(form_list.company_id is null,1,0)) as form_is_system,
             </if>
             group_list.*
         from maoding_dynamic_form_group group_list

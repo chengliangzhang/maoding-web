@@ -167,13 +167,16 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
     @Override
     public List<FormGroupDTO> listFormGroup(FormGroupQueryDTO query) {
         List<FormGroupDTO> groupList = dynamicFormGroupDao.listFormGroup(query);
-        if (DigitUtils.isTrue(query.getNeedCC()) && ObjectUtils.isNotEmpty(groupList)){
+        if (ObjectUtils.isNotEmpty(groupList) && (DigitUtils.isTrue(query.getIsIncludeForm()))){
             groupList.forEach(group->{
                 List<FormDTO> formList = group.getFormList();
                 if (ObjectUtils.isNotEmpty(formList)){
                     formList.forEach(form->{
-                        List<AuditCopyDataDTO> list = auditCopyService.listAuditCopy(form.getId());
-                        form.setCopyList(list);
+                        if (DigitUtils.isTrue(query.getNeedCC())) {
+                            List<AuditCopyDataDTO> list = auditCopyService.listAuditCopy(form.getId());
+                            form.setCopyList(list);
+                        }
+
                     });
                 }
             });

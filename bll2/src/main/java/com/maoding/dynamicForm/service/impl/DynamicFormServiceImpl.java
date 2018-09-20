@@ -1,13 +1,15 @@
 package com.maoding.dynamicForm.service.impl;
 
 import com.maoding.commonModule.dao.ConstDao;
-import com.maoding.commonModule.dto.AuditCopyDataDTO;
 import com.maoding.commonModule.dto.WidgetDTO;
 import com.maoding.commonModule.dto.WidgetPropertyDTO;
 import com.maoding.commonModule.service.AuditCopyService;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.util.*;
-import com.maoding.dynamicForm.dao.*;
+import com.maoding.dynamicForm.dao.DynamicFormDao;
+import com.maoding.dynamicForm.dao.DynamicFormFieldDao;
+import com.maoding.dynamicForm.dao.DynamicFormFieldSelectableValueDao;
+import com.maoding.dynamicForm.dao.DynamicFormGroupDao;
 import com.maoding.dynamicForm.dto.*;
 import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldEntity;
@@ -241,7 +243,8 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         FormWithOptionalDTO form = new FormWithOptionalDTO();
         if (StringUtils.isNotEmpty(request.getId())) {
             FormQueryDTO query = new FormQueryDTO();
-            query.setId(request.getId());
+            query.setFormId(request.getId());
+            query.setCurrentCompanyId(request.getCurrentCompanyId());
             FormDTO origForm = getFormDetail(query);
             BeanUtils.copyProperties(origForm, form);
         }
