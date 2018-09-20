@@ -81,8 +81,22 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
         return group;
     }
 
+    /**
+     * 删除分组
+     */
     @Override
     public int deleteDynamicFormGroup(FormGroupEditDTO request) throws Exception {
+        //如果删除的分组是“其他模板”则直接删除，并删除其他分组下的动态表单（逻辑删除）
+        DynamicFormGroupEntity groupEntity = dynamicFormGroupDao.selectById(request.getId());
+        if("其他模板".equals(groupEntity.getGroupName())){
+            //批量删除这个模板下的动态表单
+            processTypeService.deleteDynamicForm(groupEntity.getId());
+            //删除分组
+            groupEntity.setId(request.getId());
+            groupEntity.setDeleted(1);
+            return dynamicFormGroupDao.updateById(groupEntity);
+        }
+
         DynamicFormGroupEntity updatedEntity = new DynamicFormGroupEntity();
         updatedEntity.setId(request.getId());
         updatedEntity.setDeleted(1);
@@ -97,7 +111,16 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
         dto.setCompanyId(companyId);
         dto.setIsEdit(0);
         dto.setGroupName("其他模板");
-        return dynamicFormGroupDao.selectTypeId(dto);
+        DynamicFormGroupEntity formGroupEntity = dynamicFormGroupDao.selectTypeId(dto);
+        //如果“其他模板”之前已经被删除，则将原来的 delete 设置为 0 ，重新使用
+        if (StringUtil.isNullOrEmpty(formGroupEntity.getCompanyId()) || 1==formGroupEntity.getDeleted()){
+            DynamicFormGroupEntity groupEntity = new DynamicFormGroupEntity();
+            groupEntity.setId(formGroupEntity.getId());
+            groupEntity.setDeleted(0);
+            dynamicFormGroupDao.updateById(groupEntity);
+            return groupEntity;
+        }
+        return formGroupEntity;
     }
 
     //如果组删除，会被分配到其他模板（等同于未分组），并且状态是不可编辑
@@ -117,8 +140,8 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
         dto.setGroupName("其他模板");
         DynamicFormGroupEntity formGroup= dynamicFormGroupDao.selectTypeId(dto);
 
-        //如果历史数据或者没有其他模板，则会自动创建“其他模板”
-        if (StringUtil.isNullOrEmpty(formGroup) || 1==formGroup.getDeleted()){
+        //如果历史数据没有其他模板，则会自动创建“其他模板”
+        if (StringUtil.isNullOrEmpty(formGroup.getId())){
             DynamicFormGroupEntity groupEntity = new DynamicFormGroupEntity();
             groupEntity.initEntity();
             groupEntity.setCompanyId(entity.getCurrentCompanyId());
@@ -127,8 +150,15 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
             groupEntity.setSeq(dynamicFormGroupDao.selectMaxSeq(entity.getCurrentCompanyId())+1);
             dynamicFormGroupDao.insert(groupEntity);
             processTypeService.updateDynamicFormType(entity.getId(),groupEntity.getId());
-        }else{
+            return;
+        }else if(1==formGroup.getDeleted()){
+            //如果之前拥有被删除的"其他模板"，这个“其他模板” delete 设置为0，重新启用
+            formGroup.setDeleted(0);
+            dynamicFormGroupDao.updateById(formGroup);
             processTypeService.updateDynamicFormType(entity.getId(),formGroup.getId());
+            return;
+        }else {
+            processTypeService.updateDynamicFormType(entity.getId(), formGroup.getId());
         }
     }
 

@@ -95,6 +95,13 @@ public class ProcessTypeServiceImpl extends NewBaseService implements ProcessTyp
         return processTypeDao.updateById(processTypeEntity);
     }
 
+    //入参为“其他模板”的ID，删除所有属于“其他模板”下的动态表单，批量将动态表单delete设置为1；
+    public int deleteDynamicForm(String formType) throws Exception {
+        FormGroupDTO formGroupDTO = new FormGroupDTO();
+        formGroupDTO.setId(formType);
+        return processTypeDao.deleteBatchProcessType(formGroupDTO);
+    }
+
     /**
      * 作者：FYT
      * 日期：2018/9/18

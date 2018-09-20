@@ -7,10 +7,7 @@ import com.maoding.dynamicForm.dto.SaveDynamicAuditDTO;
 import com.maoding.dynamicForm.service.DynamicFormFieldValueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 使用动态表单 处理审批单
@@ -21,6 +18,14 @@ public class DynamicAuditController extends BaseController {
 
     @Autowired
     DynamicFormFieldValueService dynamicFormFieldValueService;
+
+
+    @ModelAttribute
+    public void before() {
+        this.currentUserId = this.getFromSession("userId", String.class);
+        this.currentCompanyId = this.getFromSession("companyId", String.class);
+        this.currentCompanyUserId = this.getFromSession("companyUserId", String.class);
+    }
 
     /**
      * 作者：FYT

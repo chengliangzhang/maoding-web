@@ -80,13 +80,19 @@
 
                 if(type==1 || type==2 ){
 
-                    var option = {};
+                    /*var option = {};
                     option.doType = type;
                     option.id = dataId;
                     option.closeCallBack = function () {
                         that.renderDataList();
                     };
-                    $('body').m_approval_cost_details(option,true);
+                    $('body').m_approval_cost_details(option,true);*/
+                    var option = {};
+                    var data = {};
+                    option.dataInfo = {
+                        id : dataId
+                    };
+                    $('body').m_form_template_generate_details(option,true);
 
                 }else if(type==3 || type==4){
 
@@ -106,6 +112,13 @@
                         that.renderDataList();
                     };
                     $('body').m_approval_payment_details(option,true);
+                }else{
+                    var option = {};
+                    var data = {};
+                    option.dataInfo = {
+                        id : dataId
+                    };
+                    $('body').m_form_template_generate_details(option,true);
                 }
 
             });

@@ -27,6 +27,9 @@
 
         this._dataInfo = {};
 
+        this._auditList = [];//审批人
+        this._ccCompanyUserList = [];//抄送人
+
         this.init();
     }
 
@@ -44,7 +47,7 @@
                 if (response.code == '0') {
 
                     that._dataInfo = response.data;
-                    var html = template('m_form_template/m_form_template_generate_edit',{});
+                    var html = template('m_form_template/m_form_template_generate_edit',{dataInfo:response.data});
                     that.renderDialog(html,function () {
 
                         if(response.data && response.data.dynamicAudit && response.data.dynamicAudit.fieldList){
@@ -58,6 +61,7 @@
 
                                 if(item.fieldType==4){//时间区间，需要合并一个组件
                                     j = i+1;
+                                    item.fieldId2 = fieldList[i+1].fieldId;
                                     item.fieldTitle2 = fieldList[i+1].fieldTitle;
                                     item.fieldTooltip2 = fieldList[i+1].fieldTooltip;
                                 }
@@ -75,8 +79,9 @@
                                         var panelInfo = {};
                                         panelInfo.panelIndex = $(that.element).find('.form-item[data-type="9"]').length+1;
                                         panelInfo.fieldType = 9;
+                                        panelInfo.fieldId = item.fieldId;
                                         var iHtml = template('m_form_template/m_form_template_itemForEdit',panelInfo);
-                                        $(that.element).find('form').append(iHtml);
+                                        $(that.element).find('form').eq(0).append(iHtml);
 
                                         if(panelItem!=null && panelItem.length>0){
                                             var subJ = -1;
@@ -87,8 +92,9 @@
 
                                                 if(subItem.fieldType==4){//时间区间，需要合并一个组件
                                                     subJ = subI+1;
-                                                    subItem.fieldTitle2 = panelItem[i+1].fieldTitle;
-                                                    subItem.fieldTooltip2 = panelItem[i+1].fieldTooltip;
+                                                    subItem.fieldId2 = panelItem[subI+1].fieldId;
+                                                    subItem.fieldTitle2 = panelItem[subI+1].fieldTitle;
+                                                    subItem.fieldTooltip2 = panelItem[subI+1].fieldTooltip;
                                                 }
                                                 var iHtml = template('m_form_template/m_form_template_itemForEdit',subItem);
                                                 $(that.element).find('.form-item[data-type="9"]:last .panel form').append(iHtml);
@@ -104,6 +110,22 @@
                         that.renderICheckOrSelect($(that.element));
                         that.bindActionClick();
                         that.fileUpload();
+                        that.renderApprover();
+                        if(that._dataInfo.dynamicAudit.ccCompanyUserList){
+
+                            that._ccCompanyUserList = [];
+
+                            $.each(that._dataInfo.dynamicAudit.ccCompanyUserList,function (i,item) {
+                                that._ccCompanyUserList.push({
+                                    id:item.companyUserId,
+                                    userName:item.userName,
+                                    userId:item.userId
+                                })
+                            });
+                            var html = template('m_approval/m_approval_cost_add_ccUser', {userList: that._ccCompanyUserList});
+                            $(that.element).find('#ccUserListBox').html(html);
+                            that.ccBoxDeal();
+                        }
                         return false;
                     });
 
@@ -128,7 +150,7 @@
                         
                     },
                     ok:function () {
-                        
+                        that.save();
                     }
 
                 },function(layero,index,dialogEle){//加载html后触发
@@ -145,6 +167,53 @@
             }
 
         }
+        ,renderApprover:function () {
+            var that = this;
+            var expAmout = 0,userList = [];
+
+            $(that.element).find('.form-item[data-type="9"] input').each(function () {
+
+                expAmout = expAmout + ($(this).val()-0);
+            });
+
+            if(that._dataInfo.processType=='2'  && that._dataInfo.conditionList!=null && that._dataInfo.conditionList.length>0){//固定流程
+
+                userList = that._dataInfo.conditionList[0].userList;
+
+            }else if(that._dataInfo.processType=='3'  && that._dataInfo.conditionList!=null && that._dataInfo.conditionList.length>0){//条件流程
+
+                $.each(that._dataInfo.conditionList,function (i,item) {
+
+                    if((item.min=='null' || isNullOrBlank(item.min)) && expAmout>=0 && (item.max!='null' && !isNullOrBlank(item.max) && expAmout<item.max-0)){//min为空，max不为空
+                        userList = item.userList;
+                        return false;
+                    }else if(item.min!='null' && !isNullOrBlank(item.min) && expAmout>=item.min-0 && item.max!='null' && !isNullOrBlank(item.max) && expAmout<item.max-0){//min不为空，max不为空
+                        userList = item.userList;
+                        return false;
+                    }else if(item.min!='null' && !isNullOrBlank(item.min) && expAmout>=item.min-0 && (item.max=='null' || isNullOrBlank(item.max))){//min不为空，max为空
+                        userList = item.userList;
+                        return false;
+                    }
+                });
+            }
+            var html = template('m_approval/m_approval_cost_add_approver', {userList: userList});
+            $(that.element).find('#approverBox').html(html);
+        }
+        //抄送人事件处理
+        ,ccBoxDeal:function () {
+            var that = this;
+            $(that.element).find('#ccUserListBox .approver-box').hover(function () {
+                $(this).find('.cc-remove').show();
+            },function () {
+                $(this).find('.cc-remove').hide();
+            });
+            $(that.element).find('#ccUserListBox a[data-action="removeCcUser"]').off('click').on('click',function () {
+
+                var i = $(that.element).find('#ccUserListBox .approver-outbox').index($(this).closest('.approver-outbox'));
+                that._ccCompanyUserList.splice(i,1);
+                $(this).closest('.approver-outbox').remove();
+            });
+        }
         //初始化iCheck
         ,renderICheckOrSelect:function ($ele) {
 
@@ -160,12 +229,25 @@
                 radioClass: 'iradio_square-blue'
             }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked).on('ifClicked',ifClicked);
 
-            $ele.find('select').select2({
-                tags:false,
-                allowClear: false,
-                minimumResultsForSearch: -1,
-                width:'100%',
-                language: "zh-CN"
+            $ele.find('select').each(function () {
+                if($(this).closest('.form-item').attr('data-type')==12){
+                    $(this).select2({
+                        allowClear: true,
+                        //minimumResultsForSearch: -1,
+                        placeholder: "请选择关联项目",
+                        width:'100%',
+                        language: "zh-CN"
+                    });
+                }else{
+                    $(this).select2({
+                        tags:false,
+                        allowClear: false,
+                        minimumResultsForSearch: -1,
+                        placeholder: "请选择",
+                        width:'100%',
+                        language: "zh-CN"
+                    });
+                }
             });
         }
         //上传附件
@@ -208,6 +290,123 @@
             };
             that._uploadmgrContainer.m_uploadmgr(option, true);
         }
+        ,recursiveData:function ($formItem,item) {
+
+            switch (item.fieldType){
+                case 1://单行文本
+                case 3://日期
+                case 5:
+                    item.fieldValue =$formItem.find('input').val();
+                    break;
+                case 2://多行文本
+                    item.fieldValue =$formItem.find('textarea').val();
+                    break;
+                case 4://日期区间
+                    var yyyymmdd = $formItem.find('input').val();
+                    if(item.dateFormatType==2){
+                        var hh =  $formItem.find('select').eq(0).val();
+                        var mm =  $formItem.find('select').eq(1).val();
+                        item.fieldValue = yyyymmdd + ' ' + hh + ':' + mm;
+                    }else if(item.dateFormatType==3){
+                        var hh =  $formItem.find('select').eq(0).val();
+                        item.fieldValue = yyyymmdd + ' ' + hh;
+                    }else{
+                        item.fieldValue = yyyymmdd;
+                    }
+
+                    break;
+                case 6://下拉列表
+                case 11://关联审批
+                case 12://关联项目
+                    item.fieldValue = $formItem.find('select').val();
+                    break;
+                case 7://单选
+                    item.fieldValue = $formItem.find('input[name="item_radio"]').val();
+                    break;
+                case 8://复选
+                    var v = $formItem.find('input[name="item_checkbox"]').val();
+                    if(v!=null && typeof v == 'object'){
+                        item.fieldValue = v.join(',');
+                    }else{
+                        item.fieldValue = isNullOrBlank(v)?'':v;
+                    }
+                    break;
+                case 9:
+                case 10:
+                case 13:
+                case 14:
+                    break;
+
+            }
+            return item;
+        }
+        ,save:function () {
+            var that = this;
+            var $data = that._dataInfo;
+            var fieldList = that._dataInfo.dynamicAudit.fieldList;
+            $.each(fieldList,function (i,item) {
+                var $formItem = $(that.element).find('div[data-field-id="'+item.fieldId+'"]');
+
+                item = that.recursiveData($formItem,item);
+
+                if(item.detailFieldList!=null && item.detailFieldList.length>0){
+
+                    $.each(item.detailFieldList,function (panelI,panelItem) {
+
+                        $.each(panelItem,function (subI,subItem) {
+                            var $subFormItem = $(that.element).find('div[data-field-id="'+item.fieldId+'"] .panel div[data-field-id="'+subItem.fieldId+'"]');
+                            subItem = that.recursiveData($subFormItem,subItem);
+                        });
+                    });
+
+                    var $panel = $(that.element).find('div[data-field-id="'+item.fieldId+'"] .panel');
+                    var detailsLen = $panel.length;
+                    //明细多于1
+                    if(detailsLen>1){
+                        $panel.each(function (i) {
+                            if(i==0)
+                                return true;
+                            var itemArr = [];
+                            $.each(item.detailFieldList,function (panelI,panelItem) {
+
+                                $.each(panelItem,function (subI,subItem) {
+
+                                    var $ssubFormItem = $(that.element).find('div[data-field-id="'+item.fieldId+'"] .panel:eq('+i+') div[data-field-id="'+subItem.fieldId+'"]');
+                                    itemArr.push(that.recursiveData($ssubFormItem,subItem)) ;
+                                });
+                                item.detailFieldList.push(itemArr);
+                            });
+
+                        });
+                    }
+                }
+            });
+            
+            $data.dynamicAudit.targetId = that._uuid;
+            $data.dynamicAudit.fieldList = fieldList;
+
+            $data.dynamicAudit.ccCompanyUserList = that._ccCompanyUserList;
+
+            if(!(that._dataInfo.processType=='2' || that._dataInfo.processType=='3')){//不存在流程
+                $data.dynamicAudit.auditPerson = that._auditList[0].id;
+            }
+
+            var option = {};
+            option.classId = '#content-right';
+            option.url = restApi.url_saveDynamicAudit;
+            option.postData = $data.dynamicAudit;
+
+            console.log(option);
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+                    S_toastr.success('操作成功');
+                    if(that.settings.saveCallBack)
+                        that.settings.saveCallBack();
+                } else {
+                    S_layer.error(response.info);
+                }
+            });
+        }
         ,bindActionClick:function () {
             var that = this;
             $(that.element).find('a[data-action],button[data-action]').on('click',function () {
@@ -224,7 +423,45 @@
                         $newPanel.find('input,textarea').val('');
                         $this.parent().before($newPanel.prop('outerHTML'));
                         that.renderICheckOrSelect($this.parent().prev());
+                        $this.parent().prev().find('a[data-action="delItem"]').removeClass('hide').on('click',function () {
+                            $(this).parents('.panel.panel-default').remove();
+                            $(that.element).find('span[data-action="panelIndex"]').each(function (i) {
+                                $(this).html(i+1);
+                            });
+                            return false;
+                        });
                         return false;
+                        break;
+                    case 'addCcUser'://添加抄送人
+
+                        var options = {};
+                        options.title = '添加抄送人员';
+                        options.selectedUserList = that._ccCompanyUserList;
+                        options.url = restApi.url_getOrgTree;
+                        options.saveCallback = function (data) {
+                            console.log(data)
+                            that._ccCompanyUserList = data.selectedUserList;
+                            var html = template('m_approval/m_approval_cost_add_ccUser', {userList: data.selectedUserList});
+                            $(that.element).find('#ccUserListBox').html(html);
+                            that.ccBoxDeal();
+                        };
+                        $('body').m_orgByTree(options);
+                        break;
+
+                    case 'addApprover'://添加审批人
+
+                        var options = {};
+                        options.title = '添加审批人员';
+                        options.selectedUserList = that._auditList;
+                        options.isASingleSelectUser = 2;
+                        options.url = restApi.url_getOrgTree;
+                        options.saveCallback = function (data) {
+                            that._auditList = data.selectedUserList;
+                            var html = template('m_approval/m_approval_cost_add_approver', {userList: data.selectedUserList});
+                            $(that.element).find('#approverBox').html(html);
+                            $(that.element).find('#approver-error.error').remove();//若有提示，删除
+                        };
+                        $('body').m_orgByTree(options);
                         break;
 
                 }

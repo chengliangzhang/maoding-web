@@ -63,4 +63,7 @@ public interface ProcessTypeDao extends BaseDao<ProcessTypeEntity> {
 
     int updateDynamicFormType(String oldFormType,String newFormType);
 
+    //入参为“其他模板”的ID,formGroupDTO的ID，删除所有属于“其他模板”下的动态表单，批量将动态表单delete设置为1；
+    int deleteBatchProcessType(FormGroupDTO formGroupDTO) throws Exception;
+
 }

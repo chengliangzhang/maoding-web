@@ -21,6 +21,7 @@ import com.maoding.process.dao.ProcessTypeDao;
 import com.maoding.process.entity.ProcessTypeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -118,6 +119,9 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         //补充entity缺失值
         dynamicFormFieldEntity.initEntity();
         dynamicFormFieldEntity.setDeleted(0);
+        if(!CollectionUtils.isEmpty(formFieldDTO.getFieldSelectedValueList()) && StringUtils.isEmpty(formFieldDTO.getFieldSelectValueType())){
+            formFieldDTO.setFieldSelectValueType("0");//默认从自定义中获取数据
+        }
         //添加到数据库
         dynamicFormFieldDao.insert(dynamicFormFieldEntity);
         //控件相同属性多个值，即遍历添加
@@ -129,6 +133,9 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
             dynamicFormFieldSelectableValueEntity.setFieldId(dynamicFormFieldEntity.getId());
             dynamicFormFieldSelectableValueEntity.setDeleted(0);
             dynamicFormFieldSelectableValueEntity.setSeq(seq++);
+            if(dynamicFormFieldSelectableValueEntity.getSelectableValue()==null){
+                dynamicFormFieldSelectableValueEntity.setSelectableValue(dynamicFormFieldSelectableValueEntity.getSelectableName());
+            }
             dynamicFormFieldSelectableValueDao.insert(dynamicFormFieldSelectableValueEntity);
         }
 
@@ -198,7 +205,8 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         return false;
     }
 
-    private List<DynamicFormFieldSelectedValueDTO> listOptional(String fieldId){
+    @Override
+    public List<DynamicFormFieldSelectedValueDTO> listOptional(String fieldId){
         FormFieldOptionalQueryDTO optionalQuery = new FormFieldOptionalQueryDTO();
         optionalQuery.setFieldId(fieldId);
         return dynamicFormFieldSelectableValueDao.listOptional(optionalQuery);

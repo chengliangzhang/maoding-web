@@ -1,3 +1,42 @@
-<form class="form-horizontal m">
+<form class="form-horizontal m" id="fieldForm">
 
+</form>
+<div class="clearfix"></div>
+<form class="form-horizontal m">
+    <div class="hr-line-dashed m-t-none m-b-sm"></div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">审批人：</label>
+        <div class="col-sm-10">
+            <div class="" id="approverBox">
+
+            </div>
+            {{if dataInfo.processFlag=='1'}}
+            <div class="approver-box text-center col-md-2">
+                <a class="btn btn-default btn-circle circle-lg" type="button" data-action="addApprover">
+                    <i class="fa fa-plus"></i>
+                </a>
+            </div>
+            {{/if}}
+
+            <!-- 验证 -->
+            <div class="row clearfix">
+                <div class="col-sm-10 p-t-xs">
+                    <input type="hidden" name="approver" >
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">抄送人：</label>
+        <div class="col-sm-10">
+            <div id="ccUserListBox">
+
+            </div>
+            <div class="approver-box text-center col-md-2">
+                <a class="btn btn-default btn-circle circle-lg" type="button" data-action="addCcUser">
+                    <i class="fa fa-plus"></i>
+                </a>
+            </div>
+        </div>
+    </div>
 </form>

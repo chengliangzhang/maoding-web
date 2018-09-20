@@ -46,6 +46,7 @@ public interface ExpMainService extends BaseService<ExpMainEntity>{
      *
      */
     List<ProjectDTO> getProjectListWS(String companyId,String userId);
+    List<ProjectDTO> getProjectListWS(String companyId,String userId,String type);
 
     /**
      * 方法描述：得到当前公司和当前组织下面人员

@@ -387,5 +387,6 @@ var restApi = {
     , url_updateProcessTypeFormType:window.rootPath+'/iWork/dynamicFormGroup/updateProcessTypeFormType'
     , url_listActiveForm:window.rootPath+'/iWork/dynamicForm/listActiveForm'
     , url_initDynamicAudit:window.rootPath+'/iWork/dynamicAudit/initDynamicAudit'
+    , url_saveDynamicAudit:window.rootPath+'/iWork/dynamicAudit/saveDynamicAudit'
 
 };

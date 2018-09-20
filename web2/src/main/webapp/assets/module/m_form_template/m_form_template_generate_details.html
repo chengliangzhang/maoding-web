@@ -1,0 +1,121 @@
+<form class="form-horizontal p-sm overflow-y-auto" style="{{dialogHeight}}">
+    {{if dataInfo && dataInfo.dynamicAudit && dataInfo.dynamicAudit.fieldList}}
+    {{each dataInfo.dynamicAudit.fieldList as p i}}
+        {{if p.fieldType!=10}}
+        <div class="form-group">
+            <label class="col-sm-2 text-right">{{p.fieldTitle?p.fieldTitle:'标题'}}：</label>
+            <div class="col-sm-10">
+                {{p.fieldValue?p.fieldValue:''}}
+            </div>
+        </div>
+        {{/if}}
+        {{if p.detailFieldList && p.detailFieldList.length>0}}
+            <div class="hr-line-dashed m-t-none m-b-sm"></div>
+            {{each p.detailFieldList as c ci}}
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h4 class="title-line">
+                        明细(<span data-action="panelIndex">{{ci+1}}</span>)
+                    </h4>
+                    {{each c as cc cci}}
+                    <div class="form-group">
+                        <label class="col-sm-2 text-right">{{cc.fieldTitle?cc.fieldTitle:'标题'}}：</label>
+                        <div class="col-sm-10">
+                            {{cc.fieldValue?cc.fieldValue:''}}
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            {{/each}}
+        {{/if}}
+    {{/each}}
+    {{/if}}
+
+    {{if dataInfo && dataInfo.dynamicAudit && dataInfo.dynamicAudit.attachList!=null && dataInfo.dynamicAudit.attachList.length>0}}
+    <div class="form-group">
+        <label class="col-sm-2 text-right">附件：</label>
+        <div class="col-sm-10">
+            {{each dataInfo.dynamicAudit.attachList as a i}}
+                <span class="label m-r-xs" style="background: #ecf0f1;padding: 5px 10px;">
+                     <a href="javascript:void(0)" data-action="preview" data-net-file-id="{{a.id}}"  data-src="{{a.fileFullPath}}" data-name="{{a.fileName}}">
+                        {{a.fileName}}
+                     </a>
+                 </span>
+            {{/each}}
+        </div>
+    </div>
+    {{/if}}
+    <div class="hr-line-dashed m-t-none m-b-sm"></div>
+    <div class="form-group">
+        <label class="col-sm-2 text-right">审批人：</label>
+        <div class="col-sm-10">
+            <div id="vertical-timeline" class="vertical-container dark-timeline center-orientation timeline-box no-margins full-width">
+                {{if dataInfo && dataInfo.dynamicAudit &&  dataInfo.dynamicAudit.auditList!=null && dataInfo.dynamicAudit.auditList.length>0}}
+                {{each dataInfo.dynamicAudit.auditList as s i}}
+                <div class="vertical-timeline-block">
+                    <div class="vertical-timeline-icon navy-bg">
+                        <i class="fa fa-circle-o"></i>
+                    </div>
+                    <div class="vertical-timeline-content">
+                        {{if s.approveStatus=='1'}}
+                        <h2 class="text-success">{{s.userName}}</h2>
+                        {{else if s.approveStatus=='2' || s.approveStatus=='3'}}
+                        <h2 class="text-danger">{{s.userName}}</h2>
+                        {{else}}
+                        <h2>{{s.userName}}</h2>
+                        {{/if}}
+                        <p class="no-margins">
+                            {{s.companyName}}
+                        </p>
+                        <span class="vertical-date">
+                            {{if s.approveStatus=='1'}}
+                                <span class="text-success">{{s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.approveDate,'YYYY/MM/DD')}} </span>
+                            {{else if s.approveStatus=='2' || s.approveStatus=='3'}}
+                                <span class="text-danger">{{s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.approveDate,'YYYY/MM/DD')}} </span>
+                            {{else}}
+                                <span>{{s.approveStatusName}}&nbsp;&nbsp;{{_momentFormat(s.approveDate,'YYYY/MM/DD')}} </span>
+                            {{/if}}
+                            <br>
+                            <small>
+                                {{if s.approveStatusName=='发起申请'}}
+                                    {{typeStr}}备注：{{s.remark}}
+                                {{/if}}
+                                {{if s.approveStatusName=='退回'}}
+                                    退回原因：{{s.remark}}
+                                {{/if}}
+                            </small>
+                        </span>
+                    </div>
+                </div>
+                {{/each}}
+                {{/if}}
+            </div>
+
+        </div>
+    </div>
+    <div class="hr-line-dashed m-t-none m-b-sm"></div>
+    <div class="form-group m-b-xl">
+        <label class="col-sm-2 text-right">抄送人：</label>
+        <div class="col-sm-10">
+            {{if  dataInfo && dataInfo.dynamicAudit &&  dataInfo.dynamicAudit.ccCompanyUserList!=null && dataInfo.dynamicAudit.ccCompanyUserList.length>0}}
+            {{each dataInfo.dynamicAudit.ccCompanyUserList as u ui}}
+            <div class="approver-outbox">
+                <div class="approver-box text-center pull-left m-r-sm">
+                    <div class="img-circle">
+                        <img alt="image" class="img-circle" src="{{_isNullOrBlank(u.fileFullPath)?_url('/assets/img/head_default.png'):u.fileFullPath}}" width="50" height="50">
+                    </div>
+                    <div class="m-t-xs">{{u.userName}}</div>
+                </div>
+            </div>
+            {{/each}}
+            {{/if}}
+        </div>
+    </div>
+</form>
+<div class="footer border-b-radius text-right">
+    <button class="btn btn-default" data-action="cancel">取消</button>
+    <button class="btn btn-primary" data-action="agree">同意</button>
+    <button class="btn btn-success" data-action="returnBack">退回</button>
+    <button class="btn btn-danger" data-action="cancellation">撤销</button>
+</div>

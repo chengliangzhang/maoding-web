@@ -109,4 +109,10 @@ public class ProcessTypeDaoImpl extends GenericDao<ProcessTypeEntity> implements
         return this.sqlSession.update("ProcessTypeEntityMapper.updateDynamicFormType",map);
     }
 
+    //入参为“其他模板”的ID,formGroupDTO的ID，删除所有属于“其他模板”下的动态表单，批量将动态表单delete设置为1；
+    @Override
+    public int deleteBatchProcessType(FormGroupDTO formGroupDTO) throws Exception {
+        return this.sqlSession.update("ProcessTypeEntityMapper.deleteBatchProcessType",formGroupDTO);
+    }
+
 }

@@ -1402,17 +1402,21 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
      */
     @Override
     public List<ProjectDTO> getProjectListWS(String companyId, String accountId) {
+        return this.getProjectListWS(companyId,accountId,"0");
+    }
 
-        CompanyUserEntity userEntity = companyUserDao.getCompanyUserByUserIdAndCompanyId(accountId,companyId);
+    @Override
+    public List<ProjectDTO> getProjectListWS(String companyId, String userId, String type) {
+        CompanyUserEntity userEntity = companyUserDao.getCompanyUserByUserIdAndCompanyId(userId,companyId);
         if(userEntity==null){
             return new ArrayList<>();
         }
         ProjectDTO query = new ProjectDTO();
         query.setCompanyId(companyId);
         query.setCurrentCompanyUserId(userEntity.getId());
-        Map<String,Object> param = new HashMap<>();
-        param.put("companyId",companyId);
-        param.put("companyUserId",userEntity.getId());
+        if("1".equals(type)){
+            query.setType(type);
+        }
         return projectService.getProjectListByCompanyId(query);
     }
 

@@ -607,13 +607,19 @@
             exp_main.approve_status AS approveStatus,
             s.type_name AS approveStatusName,
             exp_main.type,
-            e.type_name AS expTypeName
+            form.form_name as expTypeName
         FROM
             maoding_web_exp_main exp_main
         INNER JOIN maoding_web_company_user company_user ON exp_main.company_user_id = company_user.id
         INNER JOIN md_type_exp_status AS s ON s.id = exp_main.approve_status
-        INNER JOIN md_type_exp as e ON e.id = exp_main.type
         LEFT JOIN maoding_web_exp_audit exp_audit ON exp_main.id = exp_audit.main_id
+        INNER JOIN maoding_dynamic_form form ON
+        IF ( exp_main.type = 1,'expense',
+        IF ( exp_main.type = 2,'costApply',
+        IF ( exp_main.type = 3,'leave',
+        IF ( exp_main.type = 4,'onBusiness',
+        IF ( exp_main.type = 5,'projectPayApply', exp_main.type
+        ) ) ) ) ) = form.id
         <if test="type=='4'.toString()">
             INNER JOIN maoding_copy_record copy on exp_main.id = copy.target_id
         </if>

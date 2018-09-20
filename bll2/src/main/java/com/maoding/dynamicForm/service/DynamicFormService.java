@@ -45,6 +45,11 @@ public interface DynamicFormService {
     FormDTO createForm(SaveDynamicFormDTO request);
 
     /**
+     * 查询候选项
+     */
+    List<DynamicFormFieldSelectedValueDTO> listOptional(String fieldId);
+
+    /**
      * 描述       添加及更改动态窗口控件信息
      * 日期       2018/9/14
      *

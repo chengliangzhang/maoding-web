@@ -27,4 +27,7 @@ public interface ProcessTypeService {
 
     //动态表移动到其他分组
     int updateProcessTypeFormType(SaveDynamicFormDTO dto) throws Exception;
+
+    //入参为“其他模板”的ID，删除所有属于“其他模板”下的动态表单，批量将动态表单delete设置为1；
+    int deleteDynamicForm(String formType) throws Exception;
 }
