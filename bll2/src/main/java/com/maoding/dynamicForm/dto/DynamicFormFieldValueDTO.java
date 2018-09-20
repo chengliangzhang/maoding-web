@@ -3,18 +3,24 @@ package com.maoding.dynamicForm.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DynamicFormFieldValueDTO<T> extends DynamicFormFieldBaseDTO{
+public class DynamicFormFieldValueDTO extends DynamicFormFieldBaseDTO{
 
     //审批主表id（maoding_web_exp_main 的id）
     private String mainId;
 
     private String fieldId;
 
-    private T fieldValue;
+    private String fieldValue;
 
     private String fieldValuePid;
 
-    List<DynamicFormFieldValueDTO> detailFieldList = new ArrayList<>();
+    //明细中用于分组的编号
+    private Integer groupNum;
+
+    //字段值2（备注额外的值）
+    private String fieldValue2;
+
+    List<List<DynamicFormFieldValueDTO>> detailFieldList = new ArrayList<>();
 
     public String getMainId() {
         return mainId;
@@ -24,11 +30,11 @@ public class DynamicFormFieldValueDTO<T> extends DynamicFormFieldBaseDTO{
         this.mainId = mainId;
     }
 
-    public T getFieldValue() {
+    public String getFieldValue() {
         return fieldValue;
     }
 
-    public void setFieldValue(T fieldValue) {
+    public void setFieldValue(String fieldValue) {
         this.fieldValue = fieldValue;
     }
 
@@ -40,11 +46,11 @@ public class DynamicFormFieldValueDTO<T> extends DynamicFormFieldBaseDTO{
         this.fieldId = fieldId;
     }
 
-    public List<DynamicFormFieldValueDTO> getDetailFieldList() {
+    public List<List<DynamicFormFieldValueDTO>> getDetailFieldList() {
         return detailFieldList;
     }
 
-    public void setDetailFieldList(List<DynamicFormFieldValueDTO> detailFieldList) {
+    public void setDetailFieldList(List<List<DynamicFormFieldValueDTO>> detailFieldList) {
         this.detailFieldList = detailFieldList;
     }
 
@@ -54,5 +60,21 @@ public class DynamicFormFieldValueDTO<T> extends DynamicFormFieldBaseDTO{
 
     public void setFieldValuePid(String fieldValuePid) {
         this.fieldValuePid = fieldValuePid;
+    }
+
+    public Integer getGroupNum() {
+        return groupNum;
+    }
+
+    public void setGroupNum(Integer groupNum) {
+        this.groupNum = groupNum;
+    }
+
+    public String getFieldValue2() {
+        return fieldValue2;
+    }
+
+    public void setFieldValue2(String fieldValue2) {
+        this.fieldValue2 = fieldValue2;
     }
 }

@@ -39,6 +39,9 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
     @Autowired
     private AuditCopyService auditCopyService;
 
+    @Autowired
+    private DynamicFormGroupService dynamicFormGroupService;
+
     /**
      * 描述       添加及更改动态窗口群组
      * 日期       2018/9/14
@@ -165,7 +168,9 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
      * @author 张成亮
      */
     @Override
-    public List<FormGroupDTO> listFormGroup(FormGroupQueryDTO query) {
+    public List<FormGroupDTO> listFormGroup(FormGroupQueryDTO query)  throws Exception{
+        //先做初始化
+        dynamicFormGroupService.initDynamicFormGroup(query.getCurrentCompanyId());
         List<FormGroupDTO> groupList = dynamicFormGroupDao.listFormGroup(query);
         if (ObjectUtils.isNotEmpty(groupList) && (DigitUtils.isTrue(query.getIsIncludeForm()))){
             groupList.forEach(group->{

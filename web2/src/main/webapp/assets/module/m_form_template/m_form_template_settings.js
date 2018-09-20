@@ -66,11 +66,14 @@
                         $(that.element).parents('.layui-layer').css('overflow','auto');
 
 
+
+
                         if(that.settings.id)
                             that.renderBaseDataPage();
 
 
                         that.renderICheckOrSelect($(that.element).find('#propertyBox'));
+                        that.renderICheckOrSelect(that._$contentForm);
                         that.bindActionClick();
                         that.controlMousemove();
                         that.clickOutStoreData();
@@ -84,30 +87,28 @@
             });
 
         }
+        ,setBoxHeight : function () {
+            var that = this;
+            var dialogH = $(that.element).height();
+            var contentH = $(that.element).find('#contentBox').height();
+            if(dialogH>=contentH+110){
+                that._$controlBox.height(dialogH-120);
+                that._$propertyForm.parent().height(dialogH-120);
+
+            }else{
+                that._$controlBox.height(contentH);
+                that._$propertyForm.parent().height(contentH);
+            }
+        }
         ,resizeFun : function () {
             var that = this;
-            var setBoxHeight = function () {
-                var dialogH = $(that.element).height();
-                var contentH = $(that.element).find('.m-form-template-settings').height();
-                if(dialogH>=contentH){
-                    that._$controlBox.height(dialogH-110);
-                    that._$propertyForm.parent().height(dialogH-110);
-
-                }else{
-                    that._$controlBox.height(contentH-110);
-                    that._$propertyForm.parent().height(contentH-110);
-                }
-            };
-            setBoxHeight();
+            that.setBoxHeight();
             $(window).on('resize.m-form-template-settings', function(e){
                 //console.log('resize.m-form-template-settings')
-                setBoxHeight();
+                that.setBoxHeight();
             });
             console.log($(that.element))
-            /*$(that.element).parents('.layui-layer').on('scroll.m-form-template-settings', function(e){
-                //console.log('scroll.m-form-template-settings')
-                setBoxHeight();
-            });*/
+
         }
         //渲染列表内容
         ,renderDialog:function (html,callBack) {
@@ -119,7 +120,7 @@
                     content:html,
                     closeBtn:0,
                     fixed:true,
-                    scrollbar:true,
+                    scrollbar:false,
                     anim:1,
                     btn:false
 
@@ -178,7 +179,7 @@
             var itemKey = item.id;
             var html = template('m_form_template/m_form_template_item',{type:item.fieldType,itemKey:itemKey});
             if(item.fieldPid!=null){
-                that._$contentForm.find('.form-item[data-type="9"] .panel-body').append(html);
+                that._$contentForm.find('.form-item[data-type="9"] .panel-body form').append(html);
             }else{
                 that._$contentForm.append(html);
             }
@@ -394,6 +395,7 @@
                     S_layer.close($(that.element),function () {
                         $(document).off('mouseup.m-form-template-settings');
                         $(document).off('mousemove.m-form-template-settings');
+                        $('body>.control-clone').remove();
                     });
                     if(that.settings.saveCallBack)
                         that.settings.saveCallBack();
@@ -484,7 +486,7 @@
                 });
                 $(document).on('mouseup.m-form-template-settings',function (e) {
 
-                    //console.log('document.mouseup')
+                    console.log('document.mouseup')
                     $("body").css('cursor','auto');
                     if($(".control-clone").length>0){
                         //IE下释放焦点
@@ -518,7 +520,7 @@
                         }
                         that._$contentForm.find('.form-item').removeClass('m-b-space').removeClass('m-t-space');
                         that._$contentForm.find('.panel h4').removeClass('m-b-space');
-                        $(".control-clone").remove();
+                        $('body>.control-clone').remove();
                     }
                     dragging = false;
                     //阻止冒泡
@@ -707,7 +709,9 @@
                 return false;
 
             });
+            console.log($formItem.find('button[data-action="delItem"]').length)
             $formItem.find('button[data-action="delItem"]').on('click',function () {
+                console.log('button[data-action="delItem"].click')
                 $(this).parent('.form-item').remove();
             });
             $formItem.hover(function () {
@@ -771,6 +775,7 @@
                 that.bindFormItemClick($formItem);
                 that.renderICheckOrSelect($formItem);
                 $formItem.click();
+                that.setBoxHeight();
                 stopPropagation(e);
                 return false;
 
@@ -800,7 +805,7 @@
                 }
             });
 
-            $(that.element).find('a[data-action],button[data-action]').off('click').on('click',function () {
+            $(that.element).find('a[data-action],button[data-action]').on('click',function () {
                var $this = $(this);
                var dataAction = $this.attr('data-action');
                switch (dataAction){
@@ -808,11 +813,13 @@
                        S_layer.close($this,function () {
                            $(document).off('mouseup.m-form-template-settings');
                            $(document).off('mousemove.m-form-template-settings');
+                           $('body>.control-clone').remove();
                        });
                        break;
                    case 'formPreview'://预览
 
                         var dataInfo = that.getSaveData();
+                        dataInfo.formGroupList = that._baseData.formGroupList;//分组基础数据
                         $('body').m_form_template_preview({
                             dataInfo:dataInfo
                         },true);

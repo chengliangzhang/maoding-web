@@ -11,9 +11,12 @@ public class SaveDynamicAuditDTO extends AuditBaseDTO {
 
     private String type;
 
-    private List<DynamicFormFieldValueDTO> fieldList = new ArrayList<>();
+    /**
+     * 前端生成的报销单Id
+     */
+    private String targetId;
 
-    private Map<String,List<DynamicFormFieldValueDTO>> detailList = new HashMap<>();
+    private List<DynamicFormFieldValueDTO> fieldList = new ArrayList<>();
 
     public String getType() {
         return type;
@@ -31,11 +34,11 @@ public class SaveDynamicAuditDTO extends AuditBaseDTO {
         this.fieldList = fieldList;
     }
 
-    public Map<String, List<DynamicFormFieldValueDTO>> getDetailList() {
-        return detailList;
+    public String getTargetId() {
+        return targetId;
     }
 
-    public void setDetailList(Map<String, List<DynamicFormFieldValueDTO>> detailList) {
-        this.detailList = detailList;
+    public void setTargetId(String targetId) {
+        this.targetId = targetId;
     }
 }

@@ -109,8 +109,6 @@
     <result column="process_form_type" property="formType"/>
     <result column="process_type" property="type"/>
     <result column="documentation" property="documentation"/>
-    <result column="var_name" property="varName"/>
-    <result column="var_unit" property="varUnit"/>
     <result column="process_status" property="status"/>
     <result column="form_is_system" property="isSystem"/>
   </resultMap>

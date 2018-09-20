@@ -56,6 +56,7 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
     @Autowired
     private ProcessService processService;
 
+    private Integer detailType = 9;
     /**
      * 作者：FYT
      * 日期：2018/9/13
@@ -69,67 +70,53 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         //todo 1.添加审批表单主表的记录
         ExpMainEntity mainEntity = new ExpMainEntity();
         mainEntity.initEntity();
-        mainEntity.setExpDate(DateUtils.getDate());
-        mainEntity.setApproveStatus("0");
+        if(StringUtils.isNotEmpty(dto.getTargetId())){
+            mainEntity.setId(dto.getTargetId());
+        }
         mainEntity.setType(dto.getType());
-        mainEntity.setCompanyId(dto.getCurrentCompanyId());
-        mainEntity.setCompanyUserId(dto.getCurrentCompanyUserId());
-
         String mainId = mainEntity.getId();
         //todo 2.添加页面上的fieldId 对应的 value
-        for(DynamicFormFieldValueDTO valueDTO: dto.getFieldList()){
-            DynamicFormFieldValueEntity dynamicFormFieldValueEntity = new DynamicFormFieldValueEntity();
-            dynamicFormFieldValueEntity.setMainId(mainEntity.getId());
-            dynamicFormFieldValueEntity.initEntity();
-            dynamicFormFieldValueEntity.setFieldId(valueDTO.getId());
-            dynamicFormFieldValueEntity.setFieldValue((String)valueDTO.getFieldValue());
-            dynamicFormFieldValueDao.insert(dynamicFormFieldValueEntity);
-        }
-
-        //todo 3.添加明细的List对应value
-        long time = 1000;
-        Map<String,List<DynamicFormFieldValueDTO>> detailList = dto.getDetailList();
-        if(StringUtil.isNullOrEmpty(detailList)){
-            DynamicFormFieldValueEntity detailFieldValue = new DynamicFormFieldValueEntity();
-            Set<String> keys = detailList.keySet();
-            Iterator<String> iterator = keys.iterator();
-            while (iterator.hasNext()) {
-                String key = iterator.next();
-                //todo 3.1 先设置好主记录数据
-                detailFieldValue.initEntity();
-                //此处重新设置创建时间，为了明细数据，按时间有序排列
-                detailFieldValue.setCreateDate(DateUtils.getDate(DateUtils.getDate().getTime()+time));
-                time = time+100;
-                detailFieldValue.setFieldId(key);
-                detailFieldValue.setMainId(mainId);
-                double filedValue = 0;
+        for(DynamicFormFieldValueDTO valueDTO: dto.getFieldList()) {
+            valueDTO.setMainId(mainId);
+            if (valueDTO.getFieldType() == detailType) {//如果是明细
+                DynamicFormFieldValueEntity fieldValue = this.saveDynamicFormFieldValue(valueDTO);
+                String fieldValuePid = fieldValue.getId();
+                //todo 3.添加明细的List对应value
+                int groupNum = 1;
                 boolean isStatistic = false;
-                //todo 3.2 保存明细中每个控件的值
-                for (DynamicFormFieldValueDTO valueDTO : detailList.get(key)) {
-                    DynamicFormFieldValueEntity childDetailFieldValue = new DynamicFormFieldValueEntity();
-                    childDetailFieldValue.initEntity();
-                    childDetailFieldValue.setMainId(mainId);
-                    childDetailFieldValue.setFieldValuePid(detailFieldValue.getId());//通过pid一样，判断出是同一条明细中的数据
-                    childDetailFieldValue.setFieldId(valueDTO.getId());
-                    childDetailFieldValue.setFieldValue((String)valueDTO.getFieldValue());
-                    dynamicFormFieldValueDao.insert(childDetailFieldValue);
-                    if(valueDTO.getIsStatistics()==1 && valueDTO.getRequiredType()==1){
-                        isStatistic = true;
-                        filedValue += Double.parseDouble(childDetailFieldValue.getFieldValue());
+                double filedValue = 0;
+                for(int i = 0;i<valueDTO.getDetailFieldList().size();i++,groupNum++){
+                    for(DynamicFormFieldValueDTO detailDTO:valueDTO.getDetailFieldList().get(i)){
+                        detailDTO.setMainId(mainId);
+                        detailDTO.setGroupNum(groupNum);
+                        detailDTO.setFieldValuePid(fieldValuePid);
+                        this.saveDynamicFormFieldValue(detailDTO);
+                        if(detailDTO.getIsStatistics()==1 && detailDTO.getRequiredType()==1){
+                            isStatistic = true;
+                            filedValue += Double.parseDouble(detailDTO.getFieldValue());
+                        }
                     }
                 }
-
-                //如果参与统计，则把值累加到主记录上去
                 if(isStatistic){
-                    detailFieldValue.setFieldValue(filedValue+"");
+                    fieldValue.setFieldValue(filedValue+"");
+                    dynamicFormFieldValueDao.updateById(fieldValue);
                 }
-                //todo 3.3 保存明细主记录
-                dynamicFormFieldValueDao.insert(detailFieldValue);
+            }else {
+                this.saveDynamicFormFieldValue(valueDTO);
             }
         }
         //todo 4.插入主表记录，因为，在插入主表记录的时候，要启动流程，分条件流程还需要携带条件值，所有放在最后插入
         this.expMainService.saveExpMain(mainEntity,dto);
         return 1;
+    }
+
+
+    private DynamicFormFieldValueEntity saveDynamicFormFieldValue(DynamicFormFieldValueDTO valueDTO){
+        DynamicFormFieldValueEntity dynamicFormFieldValueEntity = new DynamicFormFieldValueEntity();
+        dynamicFormFieldValueEntity.initEntity();
+        dynamicFormFieldValueEntity.setFieldValue((String)valueDTO.getFieldValue());
+        dynamicFormFieldValueDao.insert(dynamicFormFieldValueEntity);
+        return dynamicFormFieldValueEntity;
     }
 
     @Override
@@ -170,39 +157,22 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         SaveDynamicAuditDTO dynamicAudit = new SaveDynamicAuditDTO();
         fieldList.stream().forEach(field->{
             if(field.getFieldType()==9){
-                dynamicAudit.getDetailList().put(field.getFieldId(),new ArrayList<>());
-                Map<String,List<DynamicFormFieldValueDTO>> detailList = new HashMap<>();
-                //查询明细
+                List<List<DynamicFormFieldValueDTO>> detailFieldValueList = new ArrayList<>();
                 dto.setFieldPid(field.getFieldId());
-                List<DynamicFormFieldValueDTO> detailFieldList = dynamicFormFieldValueDao.listFormFieldValueByFormId(dto);
-                DynamicFormFieldValueDTO detail = new DynamicFormFieldValueDTO();
-                detail.setFieldId(field.getFieldId());
-                detailFieldList.stream().forEach(fDetail->{
-                    String key = fDetail.getFieldValuePid();
-                    if(key==null){
-                        key = "1";
-                    }
-                    if(detailList.containsKey(key)){
-                        detailList.get(key).add(fDetail);
+                List<DynamicFormFieldValueDTO> detailList = dynamicFormFieldValueDao.listFormFieldValueByFormId(dto);
+                Map<String,List<DynamicFormFieldValueDTO>> detailMap = new HashMap<>();
+                for(DynamicFormFieldValueDTO val:detailList){
+                    String key = val.getGroupNum()+"";
+                    if(detailMap.containsKey(key)){
+                        detailMap.get(key).add(val);
                     }else {
-                        List<DynamicFormFieldValueDTO> detailMap = new ArrayList<>();
-                        detailMap.add(fDetail);
-                        detailList.put(key,detailMap);
+                        List<DynamicFormFieldValueDTO> detailList2 = new ArrayList<>();
+                        detailList2.add(val);
+                        detailMap.put(key,detailList2);
+                        detailFieldValueList.add(detailList2);
                     }
-                    detail.getDetailFieldList().add(fDetail);
-                });
-
-                Set<String> keys = detailList.keySet();
-                Iterator<String> iterator = keys.iterator();
-                while (iterator.hasNext()) {
-                    String key = iterator.next();
-                    DynamicFormFieldValueDTO detail3 = new DynamicFormFieldValueDTO();
-                    detail3.setId(key);
-                    detail.setDetailFieldList(detailList.get(key));
-                    dynamicAudit.getDetailList().get(field.getFieldId()).add(detail3);
                 }
-            }else {
-                dynamicAudit.getFieldList().add(field);
+                field.setDetailFieldList(detailFieldValueList);
             }
         });
 

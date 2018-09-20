@@ -40,5 +40,5 @@ public interface DynamicFormGroupService {
      * 日期       2018/9/19
      * @author   张成亮
      **/
-    List<FormGroupDTO> listFormGroup(FormGroupQueryDTO query);
+    List<FormGroupDTO> listFormGroup(FormGroupQueryDTO query)  throws Exception;
 }

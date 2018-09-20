@@ -141,8 +141,6 @@
       <result column="form_name" property="name"/>
       <result column="form_type" property="formType"/>
       <result column="documentation" property="documentation"/>
-      <result column="var_name" property="varName"/>
-      <result column="var_unit" property="varUnit"/>
       <result column="process_status" property="status"/>
       <result column="form_is_system" property="isSystem"/>
       <result column="process_type" property="type"/>
@@ -160,8 +158,6 @@
               form_list.id as form_id,
               form_list.form_name,
               form_list.documentation,
-              form_list.var_name,
-              form_list.var_unit,
               if(form_list.id is null,null,if(form_list.company_id is null,1,0)) as form_is_system,
             </if>
             group_list.*

@@ -291,7 +291,7 @@ var S_layer = {
             ,maxmin:option.maxmin || false
             ,fixed :option.fixed  || false
             ,resize:option.resize  || false
-            ,scrollbar:option.scrollbar || true
+            ,scrollbar:option.scrollbar
             ,btn: btn
             ,btn2: option.btn2 || option.cancel || null//取消函数
             ,yes:function(index,layero){

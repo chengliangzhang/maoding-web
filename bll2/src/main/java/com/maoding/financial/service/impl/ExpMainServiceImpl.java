@@ -1603,14 +1603,20 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         }else {
             entity.setType(type);
         }
+        entity.setCompanyUserId(dto.getCurrentCompanyUserId());
         entity.setExpFlag(0);
         entity.setExpNo(this.getExpNo(companyId));
         entity.set4Base(userId, userId, new Date(), new Date());
-        entity.setCompanyId(companyId);
+        entity.setCompanyId(dto.getCurrentCompanyId());
+        entity.setExpDate(DateUtils.getDate());
+        entity.setApproveStatus("0");//默认为待审批状态
         if(StringUtils.isEmpty(entity.getId())){
             entity.initEntity();//如果id不为null，不用initEntity，因为在调用该接口的地方已经设置了id
         }
 
+        if(StringUtils.isNotEmpty(dto.getId())){//如果是重新编辑
+            projectSkyDriverService.copyFileToNewObject(entity.getId(),dto.getId(),NetFileType.EXPENSE_ATTACH,dto.getDeleteAttachList());
+        }
         expMainDao.insert(entity);
         String targetType = type;//动态模板中的 targetType 就是 expMain中的type （每创建一个模板，就当做是一种类型）
         // 启动流程

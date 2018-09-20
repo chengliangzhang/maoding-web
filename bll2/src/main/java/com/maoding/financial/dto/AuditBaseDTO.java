@@ -2,6 +2,9 @@ package com.maoding.financial.dto;
 
 import com.maoding.core.base.dto.BaseDTO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AuditBaseDTO extends BaseDTO {
 
     /**
@@ -18,6 +21,8 @@ public class AuditBaseDTO extends BaseDTO {
      * 条件值（用于审批流程中判断路由哪条审批）
      */
     Object conditionFieldValue;
+
+    List<String> deleteAttachList = new ArrayList<>();
 
     public String getAuditMessage() {
         return auditMessage;
@@ -41,5 +46,13 @@ public class AuditBaseDTO extends BaseDTO {
 
     public void setConditionFieldValue(Object conditionFieldValue) {
         this.conditionFieldValue = conditionFieldValue;
+    }
+
+    public List<String> getDeleteAttachList() {
+        return deleteAttachList;
+    }
+
+    public void setDeleteAttachList(List<String> deleteAttachList) {
+        this.deleteAttachList = deleteAttachList;
     }
 }

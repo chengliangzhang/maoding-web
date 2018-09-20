@@ -48,7 +48,11 @@ public class ProcessTypeServiceImpl extends NewBaseService implements ProcessTyp
             processTypeEntity.setTargetType(processTypeEntity.getFormId());
         }
         if(processTypeEntity.getType()==null){
-            processTypeEntity.setType(ProcessTypeConst.TYPE_NOT_PROCESS);
+            if(ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY.equals(processTypeEntity.getFormId())){
+                processTypeEntity.setType(ProcessTypeConst.TYPE_NOT_PROCESS);
+            }else {
+                processTypeEntity.setType(ProcessTypeConst.TYPE_FREE);
+            }
         }
         return processTypeDao.insert(processTypeEntity);
     }
