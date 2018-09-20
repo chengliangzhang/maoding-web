@@ -48,6 +48,9 @@ public class DynamicFormFieldBaseDTO {
     /** 是否参与统计（数字字段是否属于分条件流程内的条件字段）0:不参与统计，1：参与统计 **/
     private Integer isStatistics;
 
+    /** 是否参与财务统计 0:不参与统计，1：参与统计 **/
+    private Integer isFinanceStatistics;
+
     /** 数据类型（用于处理时间的，0：不做处理，1：YYYY/MM/HH,2：YYYY/MM/HH hh:mm,3:YYYY/MM/HH 上午&下午等） **/
     private Integer dateFormatType;
 
@@ -181,5 +184,13 @@ public class DynamicFormFieldBaseDTO {
 
     public void setDateFormatType(Integer dateFormatType) {
         this.dateFormatType = dateFormatType;
+    }
+
+    public Integer getIsFinanceStatistics() {
+        return isFinanceStatistics;
+    }
+
+    public void setIsFinanceStatistics(Integer isFinanceStatistics) {
+        this.isFinanceStatistics = isFinanceStatistics;
     }
 }

@@ -385,5 +385,7 @@ var restApi = {
     , url_listForm:window.rootPath+'/iWork/dynamicForm/listForm'
     , url_selectDynamicFormGroupList:window.rootPath+'/iWork/dynamicFormGroup/selectDynamicFormGroupList'
     , url_updateProcessTypeFormType:window.rootPath+'/iWork/dynamicFormGroup/updateProcessTypeFormType'
+    , url_listActiveForm:window.rootPath+'/iWork/dynamicForm/listActiveForm'
+    , url_initDynamicAudit:window.rootPath+'/iWork/dynamicAudit/initDynamicAudit'
 
 };

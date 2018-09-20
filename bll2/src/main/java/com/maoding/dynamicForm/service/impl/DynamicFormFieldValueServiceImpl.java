@@ -175,7 +175,7 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
                 field.setDetailFieldList(detailFieldValueList);
             }
         });
-
+        dynamicAudit.setFieldList(fieldList);
         return dynamicAudit;
     }
 }

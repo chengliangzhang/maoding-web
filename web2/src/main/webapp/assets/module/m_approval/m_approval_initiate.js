@@ -25,9 +25,22 @@
     $.extend(Plugin.prototype, {
         init: function () {
             var that = this;
-            var html = template('m_approval/m_approval_initiate',{});
-            $(that.element).html(html);
-            that.bindActionClick();
+            var option = {};
+            option.url = restApi.url_listActiveForm;
+            option.postData = {
+            };
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+                    console.log(response.data)
+                    var html = template('m_approval/m_approval_initiate',{dataList : response.data});
+                    $(that.element).html(html);
+                    that.bindActionClick();
+
+                } else {
+                    S_layer.error(response.info);
+                }
+            });
+
         }
         //事件绑定
         ,bindActionClick:function () {
@@ -56,6 +69,48 @@
                        var option = {};
                        option.doType = 2;
                        $('body').m_approval_cost_add(option,true);
+                       break;
+
+                   case 'initiate'://发起审批申请
+
+                       var formId = $this.attr('data-form-id');
+
+                       if(formId=='leave'){
+
+                           var option = {};
+                           option.doType = 3;
+                           $('body').m_approval_leave_add(option,true);
+
+                       }else if (formId=='onBusiness'){
+
+                           var option = {};
+                           option.doType = 4;
+                           $('body').m_approval_leave_add(option,true);
+
+                       }else if (formId=='expense'){
+
+                           var option = {};
+                           option.doType = 1;
+                           $('body').m_approval_cost_add(option,true);
+
+                       }else if (formId=='costApply'){
+
+                           var option = {};
+                           option.doType = 2;
+                           $('body').m_approval_cost_add(option,true);
+
+                       }else{
+
+                           var option = {};
+                           var data = {};
+                           option.dataInfo = {
+                               formId : $this.attr('data-form-id')
+                           };
+                           $('body').m_form_template_generate_edit(option,true);
+
+                       }
+
+                       return false;
                        break;
 
                }

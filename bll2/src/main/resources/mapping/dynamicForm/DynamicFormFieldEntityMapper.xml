@@ -9,6 +9,7 @@
     <result column="field_type" property="fieldType" jdbcType="INTEGER" />
     <result column="field_unit" property="fieldUnit" jdbcType="VARCHAR" />
     <result column="is_statistics" property="isStatistics" jdbcType="INTEGER" />
+    <result column="is_finance_statistics" property="isFinanceStatistics" jdbcType="INTEGER" />
     <result column="field_tooltip" property="fieldTooltip" jdbcType="VARCHAR" />
     <result column="field_default_value" property="fieldDefaultValue" jdbcType="VARCHAR" />
     <result column="field_select_value_type" property="fieldSelectValueType" jdbcType="INTEGER" />
@@ -26,7 +27,8 @@
 
 
   <sql id="Base_Column_List" >
-    id, form_id, field_pid, field_title, field_type,field_unit,is_statistics, field_tooltip, field_default_value,
+    id, form_id, field_pid, field_title, field_type,field_unit,is_statistics,is_finance_statistics,
+     field_tooltip, field_default_value,
     field_select_value_type, seq_x, seq_y, required_type,date_format_type,arrange_type,
      deleted, create_date, create_by,
     update_date, update_by
@@ -46,14 +48,14 @@
 
   <insert id="insert" parameterType="com.maoding.dynamicForm.entity.DynamicFormFieldEntity" >
     insert into maoding_dynamic_form_field (id, form_id, field_pid, 
-      field_title, field_type, field_unit,is_statistics,field_tooltip,
-      field_default_value, field_select_value_type, 
+      field_title, field_type, field_unit,is_statistics,is_finance_statistics,
+      field_tooltip,field_default_value, field_select_value_type,
       seq_x, seq_y, required_type, date_format_type,arrange_type,
       deleted, create_date, create_by, 
       update_date, update_by)
     values (#{id,jdbcType=VARCHAR}, #{formId,jdbcType=VARCHAR}, #{fieldPid,jdbcType=VARCHAR}, 
       #{fieldTitle,jdbcType=VARCHAR}, #{fieldType,jdbcType=INTEGER}, #{fieldUnit,jdbcType=VARCHAR},
-      #{isStatistics,jdbcType=INTEGER},#{fieldTooltip,jdbcType=VARCHAR},
+      #{isStatistics,jdbcType=INTEGER}, #{isFinanceStatistics,jdbcType=INTEGER},#{fieldTooltip,jdbcType=VARCHAR},
       #{fieldDefaultValue,jdbcType=VARCHAR}, #{fieldSelectValueType,jdbcType=INTEGER}, 
       #{seqX,jdbcType=INTEGER}, #{seqY,jdbcType=INTEGER}, #{requiredType,jdbcType=INTEGER},
       #{dateFormatType,jdbcType=INTEGER}, #{arrangeType,jdbcType=INTEGER},
@@ -84,6 +86,9 @@
       </if>
       <if test="isStatistics != null" >
         is_statistics = #{isStatistics,jdbcType=INTEGER},
+      </if>
+      <if test="isFinanceStatistics != null" >
+        is_finance_statistics = #{isFinanceStatistics,jdbcType=INTEGER},
       </if>
       <if test="field_unit != null" >
         field_type = #{fieldUnit,jdbcType=VARCHAR},
@@ -135,6 +140,7 @@
       arrange_type = #{arrangeType,jdbcType=INTEGER},
       field_unit = #{fieldUnit,jdbcType=VARCHAR},
       is_statistics = #{isStatistics,jdbcType=INTEGER},
+      is_finance_statistics = #{isFinanceStatistics,jdbcType=INTEGER},
       field_tooltip = #{fieldTooltip,jdbcType=VARCHAR},
       field_default_value = #{fieldDefaultValue,jdbcType=VARCHAR},
       field_select_value_type = #{fieldSelectValueType,jdbcType=INTEGER},
@@ -158,6 +164,7 @@
     <result column="field_type" property="fieldType" jdbcType="INTEGER" />
     <result column="field_unit" property="fieldUnit" jdbcType="VARCHAR" />
     <result column="is_statistics" property="isStatistics" jdbcType="INTEGER" />
+    <result column="is_finance_statistics" property="isFinanceStatistics" jdbcType="INTEGER" />
     <result column="field_tooltip" property="fieldTooltip" jdbcType="VARCHAR" />
     <result column="field_default_value" property="fieldDefaultValue" jdbcType="VARCHAR" />
     <result column="field_select_value_type" property="fieldSelectValueType" jdbcType="INTEGER" />

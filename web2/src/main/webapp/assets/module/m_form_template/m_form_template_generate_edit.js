@@ -1,11 +1,11 @@
 /**
- * 审批管理-审批表单预览
- * Created by wrb on 2018/9/19.
+ * 表单生成界面，并保存
+ * Created by wrb on 2018/9/20.
  */
 ;(function ($, window, document, undefined) {
 
     "use strict";
-    var pluginName = "m_form_template_preview",
+    var pluginName = "m_form_template_generate_edit",
         defaults = {
              isDialog:true
             ,type:1//1=我的审批
@@ -30,54 +30,32 @@
         init: function () {
             var that = this;
 
-            var html = template('m_form_template/m_form_template_preview',{
-                title:that._title,
-                subTitle:that._subTitle,
-                dataInfo:that.settings.dataInfo
-            });
-            that.renderDialog(html,function () {
+            var option = {};
+            option.url = restApi.url_initDynamicAudit;
+            option.postData = {
+                formId:that.settings.dataInfo.formId
+            };
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
 
-
-                console.log(that.settings.dataInfo)
-                if(that.settings.dataInfo && that.settings.dataInfo && that.settings.dataInfo.fieldList){
-                    
-                    var j = -1;
-                    $.each(that.settings.dataInfo.fieldList,function (i,item) {
-
-                        if(i==j)
-                            return true;
-
-                        if(item.fieldType==4){//时间区间，需要合并一个组件
-                            j = i+1;
-                            item.fieldTitle2 = that.settings.dataInfo.fieldList[i+1].fieldTitle;
-                            item.fieldTooltip2 = that.settings.dataInfo.fieldList[i+1].fieldTooltip;
-                        }
-                        var iHtml = template('m_form_template/m_form_template_itemForEdit',item);
-                        $(that.element).find('form').append(iHtml);
-
-                        if(item.detailFieldList!=null && item.detailFieldList.length>0){
-
-                            var subJ = -1;
-                            $.each(item.detailFieldList,function (subI,subItem) {
-
-                                if(subI==subJ)
-                                    return true;
-
-                                if(subItem.fieldType==4){//时间区间，需要合并一个组件
-                                    subJ = subI+1;
-                                    subItem.fieldTitle2 = item.detailFieldList[i+1].fieldTitle;
-                                    subItem.fieldTooltip2 = item.detailFieldList[i+1].fieldTooltip;
-                                }
-                                var iHtml = template('m_form_template/m_form_template_itemForEdit',subItem);
-                                $(that.element).find('.form-item[data-type="9"] .panel form').append(iHtml);
-                            });
-                        }
+                    var html = template('m_form_template/m_form_template_generate_edit',{
+                        title:that._title,
+                        subTitle:that._subTitle,
+                        dataInfo:that.settings.dataInfo
                     });
-                }
-                that.renderICheckOrSelect();
+                    that.renderDialog(html,function () {
 
-                return false;
+                        that.renderICheckOrSelect();
+                        console.log(that.settings.dataInfo)
+
+                        return false;
+                    });
+
+                } else {
+                    S_layer.error(response.info);
+                }
             });
+
         }
         //渲染列表内容
         ,renderDialog:function (html,callBack) {

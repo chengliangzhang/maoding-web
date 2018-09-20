@@ -817,7 +817,8 @@
                        });
                        break;
                    case 'formPreview'://预览
-
+                        //先预存数据
+                        that.storeFieldData();
                         var dataInfo = that.getSaveData();
                         dataInfo.formGroupList = that._baseData.formGroupList;//分组基础数据
                         $('body').m_form_template_preview({

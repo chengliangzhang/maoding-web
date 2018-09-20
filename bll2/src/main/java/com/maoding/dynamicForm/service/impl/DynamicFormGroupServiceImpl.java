@@ -3,10 +3,7 @@ package com.maoding.dynamicForm.service.impl;
 import com.maoding.commonModule.dto.AuditCopyDataDTO;
 import com.maoding.commonModule.service.AuditCopyService;
 import com.maoding.core.base.service.NewBaseService;
-import com.maoding.core.util.BeanUtils;
-import com.maoding.core.util.DigitUtils;
-import com.maoding.core.util.ObjectUtils;
-import com.maoding.core.util.StringUtils;
+import com.maoding.core.util.*;
 import com.maoding.dynamicForm.dao.DynamicFormDao;
 import com.maoding.dynamicForm.dao.DynamicFormGroupDao;
 import com.maoding.dynamicForm.dto.FormDTO;
@@ -120,7 +117,19 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
         dto.setGroupName("其他模板");
         DynamicFormGroupEntity formGroup= dynamicFormGroupDao.selectTypeId(dto);
 
-        processTypeService.updateDynamicFormType(entity.getId(),formGroup.getId());
+        //如果历史数据或者没有其他模板，则会自动创建“其他模板”
+        if (StringUtil.isNullOrEmpty(formGroup) || 1==formGroup.getDeleted()){
+            DynamicFormGroupEntity groupEntity = new DynamicFormGroupEntity();
+            groupEntity.initEntity();
+            groupEntity.setCompanyId(entity.getCurrentCompanyId());
+            groupEntity.setGroupName("其他模板");
+            groupEntity.setIsEdit(0);
+            groupEntity.setSeq(dynamicFormGroupDao.selectMaxSeq(entity.getCurrentCompanyId())+1);
+            dynamicFormGroupDao.insert(groupEntity);
+            processTypeService.updateDynamicFormType(entity.getId(),groupEntity.getId());
+        }else{
+            processTypeService.updateDynamicFormType(entity.getId(),formGroup.getId());
+        }
     }
 
     @Override

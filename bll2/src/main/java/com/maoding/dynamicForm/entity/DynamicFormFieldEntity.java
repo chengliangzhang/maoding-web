@@ -19,6 +19,9 @@ public class DynamicFormFieldEntity extends BaseEntity{
     //0:不参与统计，1：参与统计（用于分条件设置，是否选择该字段作为流程中的条件判断）
     private Integer isStatistics;
 
+    //是否参与财务统计（0：不参与，1：参与）
+    private Integer isFinanceStatistics ;
+
     //字段的单位
     private String fieldUnit;
 
@@ -167,5 +170,13 @@ public class DynamicFormFieldEntity extends BaseEntity{
 
     public void setArrangeType(Integer arrangeType) {
         this.arrangeType = arrangeType;
+    }
+
+    public Integer getIsFinanceStatistics() {
+        return isFinanceStatistics;
+    }
+
+    public void setIsFinanceStatistics(Integer isFinanceStatistics) {
+        this.isFinanceStatistics = isFinanceStatistics;
     }
 }

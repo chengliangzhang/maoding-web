@@ -106,7 +106,7 @@
 
 
 
-  <resultMap id="DynamicFormFieldMap" type="com.maoding.dynamicForm.dto.DynamicFormFieldValueDTO">
+  <resultMap id="DynamicFormFieldMap"  type="com.maoding.dynamicForm.dto.DynamicFormFieldValueDTO">
     <id column="field_value_id" property="id" jdbcType="VARCHAR" />
     <result column="form_id" property="formId" jdbcType="VARCHAR" />
     <result column="id" property="fieldId" jdbcType="VARCHAR" />
@@ -117,6 +117,7 @@
     <result column="field_type" property="fieldType" jdbcType="INTEGER" />
     <result column="field_unit" property="fieldUnit" jdbcType="VARCHAR" />
     <result column="is_statistics" property="isStatistics" jdbcType="INTEGER" />
+    <result column="is_finance_statistics" property="isFinanceStatistics" jdbcType="INTEGER" />
     <result column="field_tooltip" property="fieldTooltip" jdbcType="VARCHAR" />
     <result column="field_default_value" property="fieldDefaultValue" jdbcType="VARCHAR" />
     <result column="field_select_value_type" property="fieldSelectValueType" jdbcType="INTEGER" />

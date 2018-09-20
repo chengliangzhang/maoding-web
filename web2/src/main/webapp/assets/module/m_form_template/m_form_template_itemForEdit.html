@@ -1,4 +1,4 @@
-{{if type==1}}
+{{if fieldType==1}}
 <div class="col-xs-12 form-item" data-type="1">
     <div class="form-group">
         <label class="col-24-xs-3 control-label">
@@ -12,7 +12,7 @@
         </div>
     </div>
 </div>
-{{else if type==2}}
+{{else if fieldType==2}}
 <div class="col-xs-12 form-item " data-type="2">
     <div class="form-group">
         <label class="col-24-xs-3 control-label">
@@ -26,7 +26,7 @@
         </div>
     </div>
 </div>
-{{else if type==3}}
+{{else if fieldType==3}}
 <div class="col-xs-12 form-item " data-type="3">
     <div class="form-group">
         <label class="col-24-xs-3 control-label">
@@ -45,7 +45,7 @@
         </div>
     </div>
 </div>
-{{else if type==4}}
+{{else if fieldType==4}}
 <div class="col-xs-12 form-item " data-type="4">
     <div class="form-group">
         <label class="col-24-xs-3 control-label">
@@ -55,52 +55,54 @@
             {{/if}}
         </label>
         <div class="col-24-xs-9">
-            <!-- col-24-xs-10 -->
-            <div class="{{fieldSelectValueType==1?'col-24-xs-24':'col-24-xs-10'}} p-r-none time-box">
-                <div class="input-group">
-                    <input type="text" class="form-control start-time" placeholder="{{fieldTooltip?fieldTooltip:'请选择日期'}}" readonly="" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="">
-                    <span class="input-group-addon "><i class="icon-append fa fa-calendar"></i></span>
+            <div class="row">
+                <!-- col-24-xs-10 -->
+                <div class="{{dateFormatType==1?'col-24-xs-24':'col-24-xs-14 p-r-none'}}  time-box">
+                    <div class="input-group">
+                        <input type="text" class="form-control start-time" placeholder="{{fieldTooltip?fieldTooltip:'请选择日期'}}" readonly="" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="">
+                        <span class="input-group-addon "><i class="icon-append fa fa-calendar"></i></span>
+                    </div>
                 </div>
-            </div>
-            <div class="col-24-xs-7 no-padding time-hh" style="{{fieldSelectValueType==1 || fieldSelectValueType==3?'display: none;':''}}">
-                <select class="form-control">
-                    <option value="01">1</option>
-                    <option value="02">2</option>
-                    <option value="03">3</option>
-                    <option value="04">4</option>
-                    <option value="05">5</option>
-                    <option value="06">6</option>
-                    <option value="07">7</option>
-                    <option value="08">8</option>
-                    <option value="09" selected>9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                    <option value="18">18</option>
-                    <option value="19">19</option>
-                    <option value="20">20</option>
-                    <option value="21">21</option>
-                    <option value="22">22</option>
-                    <option value="23">23</option>
-                    <option value="24">24</option>
-                </select>
-            </div>
-            <div class="col-24-xs-7 no-padding time-mm" style="{{fieldSelectValueType==1 || fieldSelectValueType==3?'display: none;':''}}">
-                <select class="form-control">
-                    <option>0</option>
-                    <option>30</option>
-                </select>
-            </div>
-            <div class="col-24-xs-7 no-padding am-pm" style="{{fieldSelectValueType==1 || fieldSelectValueType==2?'display: none;':''}}">
-                <select class="form-control">
-                    <option>上午</option>
-                    <option>下午</option>
-                </select>
+                <div class="col-24-xs-5 p-l-xs p-r-none time-hh" style="{{dateFormatType==1 || dateFormatType==3?'display: none;':''}}">
+                    <select class="form-control no-padding" >
+                        <option value="01">1</option>
+                        <option value="02">2</option>
+                        <option value="03">3</option>
+                        <option value="04">4</option>
+                        <option value="05">5</option>
+                        <option value="06">6</option>
+                        <option value="07">7</option>
+                        <option value="08">8</option>
+                        <option value="09" selected>9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                    </select>
+                </div>
+                <div class="col-24-xs-5 p-l-xs time-mm" style="{{dateFormatType==1 || dateFormatType==3?'display: none;':''}}">
+                    <select class="form-control no-padding">
+                        <option>0</option>
+                        <option>30</option>
+                    </select>
+                </div>
+                <div class="col-24-xs-10 p-l-xs am-pm" style="{{dateFormatType==1 || dateFormatType==2?'display: none;':''}}">
+                    <select class="form-control no-padding">
+                        <option>上午</option>
+                        <option>下午</option>
+                    </select>
+                </div>
             </div>
         </div>
         <label class="col-24-xs-3 control-label">
@@ -110,56 +112,58 @@
             {{/if}}
         </label>
         <div class="col-24-xs-9">
-            <div class="col-24-xs-24 p-r-none time-box">
-                <div class="input-group">
-                    <input type="text" class="form-control end-time" placeholder="{{fieldTooltip2?fieldTooltip2:'请选择日期'}}" readonly="" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="">
-                    <span class="input-group-addon "><i class="icon-append fa fa-calendar"></i></span>
+            <div class="row">
+                <div class="{{dateFormatType==1?'col-24-xs-24':'col-24-xs-14 p-r-none'}}  time-box">
+                    <div class="input-group">
+                        <input type="text" class="form-control end-time" placeholder="{{fieldTooltip2?fieldTooltip2:'请选择日期'}}" readonly="" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="">
+                        <span class="input-group-addon "><i class="icon-append fa fa-calendar"></i></span>
+                    </div>
                 </div>
-            </div>
-            <div class="col-24-xs-7 no-padding time-hh" style="{{fieldSelectValueType==1 || fieldSelectValueType==3?'display: none;':''}}">
-                <select class="form-control">
-                    <option value="01">1</option>
-                    <option value="02">2</option>
-                    <option value="03">3</option>
-                    <option value="04">4</option>
-                    <option value="05">5</option>
-                    <option value="06">6</option>
-                    <option value="07">7</option>
-                    <option value="08">8</option>
-                    <option value="09" selected>9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                    <option value="18">18</option>
-                    <option value="19">19</option>
-                    <option value="20">20</option>
-                    <option value="21">21</option>
-                    <option value="22">22</option>
-                    <option value="23">23</option>
-                    <option value="24">24</option>
-                </select>
-            </div>
-            <div class="col-24-xs-7 no-padding time-mm" style="{{fieldSelectValueType==1 || fieldSelectValueType==3?'display: none;':''}}">
-                <select class="form-control">
-                    <option>0</option>
-                    <option>30</option>
-                </select>
-            </div>
-            <div class="col-24-xs-7 no-padding am-pm" style="{{fieldSelectValueType==1 || fieldSelectValueType==2?'display: none;':''}}">
-                <select class="form-control">
-                    <option>上午</option>
-                    <option>下午</option>
-                </select>
+                <div class="col-24-xs-5 p-l-xs p-r-none time-hh" style="{{dateFormatType==1 || dateFormatType==3?'display: none;':''}}">
+                    <select class="form-control no-padding">
+                        <option value="01">1</option>
+                        <option value="02">2</option>
+                        <option value="03">3</option>
+                        <option value="04">4</option>
+                        <option value="05">5</option>
+                        <option value="06">6</option>
+                        <option value="07">7</option>
+                        <option value="08">8</option>
+                        <option value="09" selected>9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                    </select>
+                </div>
+                <div class="col-24-xs-5 p-l-xs time-mm" style="{{dateFormatType==1 || dateFormatType==3?'display: none;':''}}">
+                    <select class="form-control no-padding">
+                        <option>0</option>
+                        <option>30</option>
+                    </select>
+                </div>
+                <div class="col-24-xs-10 p-l-xs am-pm" style="{{dateFormatType==1 || dateFormatType==2?'display: none;':''}}">
+                    <select class="form-control no-padding">
+                        <option>上午</option>
+                        <option>下午</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
 </div>
-{{else if type==5}}
+{{else if fieldType==5}}
 <div class="col-xs-12 form-item " data-type="5" data-key="{{itemKey}}">
     <div class="form-group">
         <label class="col-24-xs-3 control-label">
@@ -180,7 +184,7 @@
         </div>
     </div>
 </div>
-{{else if type==6}}
+{{else if fieldType==6}}
 <div class="col-xs-12 form-item " data-type="6" data-key="{{itemKey}}">
     <div class="form-group">
         <label class="col-24-xs-3 control-label">
@@ -203,7 +207,7 @@
         </div>
     </div>
 </div>
-{{else if type==7}}
+{{else if fieldType==7}}
 <div class="col-xs-12 form-item " data-type="7" data-key="{{itemKey}}">
     <div class="form-group">
         <label class="col-24-xs-3 control-label">
@@ -226,7 +230,7 @@
         </div>
     </div>
 </div>
-{{else if type==8}}
+{{else if fieldType==8}}
 <div class="col-xs-12 form-item " data-type="8" data-key="{{itemKey}}">
     <div class="form-group">
         <label class="col-24-xs-3 control-label">
@@ -249,7 +253,7 @@
         </div>
     </div>
 </div>
-{{else if type==9}}
+{{else if fieldType==9}}
 <div class="col-xs-12 form-item " data-type="9" data-key="{{itemKey}}">
     <div class="form-group">
         <div class="panel panel-default">
@@ -266,7 +270,7 @@
         </div>
     </div>
 </div>
-{{else if type==10}}
+{{else if fieldType==10}}
 <div class="col-xs-12 form-item " data-type="10" data-key="{{itemKey}}">
     <div class="form-group">
         <label class="col-24-xs-3 control-label">附件</label>
@@ -275,7 +279,7 @@
         </div>
     </div>
 </div>
-{{else if type==12}}
+{{else if fieldType==12}}
 <div class="col-xs-12 form-item " data-type="12" data-key="{{itemKey}}">
     <div class="form-group">
         <label class="col-24-xs-3 control-label">关联项目</label>
@@ -286,7 +290,7 @@
         </div>
     </div>
 </div>
-{{else if type==11}}
+{{else if fieldType==11}}
 <div class="col-xs-12 form-item " data-type="11" data-key="{{itemKey}}">
     <div class="form-group">
         <label class="col-24-xs-3 control-label">关联审批</label>
@@ -297,7 +301,7 @@
         </div>
     </div>
 </div>
-{{else if type==13}}
+{{else if fieldType==13}}
 <div class="col-xs-12 form-item " data-type="13" data-key="{{itemKey}}">
     <div class="form-group">
         <label class="col-24-xs-3 control-label">
@@ -307,7 +311,7 @@
         </div>
     </div>
 </div>
-{{else if type==14}}
+{{else if fieldType==14}}
 <div class="col-xs-12 form-item " data-type="14" data-key="{{itemKey}}">
     <div class="hr-line-dashed m-t-none m-b-sm"></div>
 </div>
