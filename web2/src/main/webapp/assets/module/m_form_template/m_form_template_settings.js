@@ -379,7 +379,7 @@
 
             return dataInfo;
         }
-        ,save:function () {
+        ,save:function (status) {
             var that = this;
             var option = {};
             option.url = restApi.url_saveDynamicForm ;
@@ -387,6 +387,9 @@
 
             if(that._baseData && that._baseData.id!=null)
                 option.postData.id = that._baseData.id;
+
+            if(status)
+                option.postData.status = status;
 
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
@@ -835,6 +838,16 @@
                            return false;
                        }
                        that.save();
+                       break;
+                   case 'saveAndEnable'://保存并启用
+
+                       //先预存数据
+                       that.storeFieldData();
+                       if(that._$contentForm.find('.form-item').length==0){
+                           S_toastr.warning('请选择控件！');
+                           return false;
+                       }
+                       that.save(1);
                        break;
                }
 
