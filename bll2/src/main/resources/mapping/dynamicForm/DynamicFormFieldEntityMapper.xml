@@ -195,6 +195,11 @@
           and field_list.field_pid is null
         </otherwise>
       </choose>
+      <if test="toCondition == 1">
+        and field_list.required_type = 1
+        and ((field_list.field_pid is null)
+            or (field_list.field_pid is not null and field_list.is_statistics = 1))
+      </if>
     order by field_list.seq_y,seq_x
   </select>
 

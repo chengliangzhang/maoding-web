@@ -10,6 +10,9 @@ import com.maoding.core.constant.ExpenseConst;
 import com.maoding.core.constant.ProcessTypeConst;
 import com.maoding.core.constant.ProjectCostConst;
 import com.maoding.core.util.*;
+import com.maoding.dynamicForm.dao.DynamicFormFieldDao;
+import com.maoding.dynamicForm.dto.DynamicFormFieldDTO;
+import com.maoding.dynamicForm.dto.FormFieldQueryDTO;
 import com.maoding.dynamicForm.service.DynamicFormGroupService;
 import com.maoding.exception.CustomException;
 import com.maoding.financial.dto.AuditBaseDTO;
@@ -79,6 +82,9 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
     @Autowired
     private DynamicFormGroupService dynamicFormGroupService;
 
+    @Autowired
+    private DynamicFormFieldDao dynamicFormFieldDao;
+
     private static final String auditIdKey = "auditId";
 
     @Override
@@ -128,10 +134,8 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getCurrentCompanyId()),"!currentCompanyId不能为空");
             TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),"!key不能为空");
             ProcessDefineQueryDTO query = BeanUtils.createFrom(prepareRequest,ProcessDefineQueryDTO.class);
-            List<ProcessDefineDTO> processList = listProcessDefine(query);
-            TraceUtils.check(ObjectUtils.isNotEmpty(processList) && processList.size() == 1,"~查询流程结果有误");
-            if (ObjectUtils.isNotEmpty(processList)){
-                ProcessDefineDTO process = ObjectUtils.getFirst(processList);
+            ProcessDefineDTO process = processTypeDao.getProcessDefine(query);
+            if (ObjectUtils.isNotEmpty(process)){
                 if (prepareRequest.getType() == null){
                     prepareRequest.setType(process.getType());
                 }
@@ -150,8 +154,15 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         //从流程引擎中读取流程定义
         ProcessDefineDetailDTO processDefineDetail  = this.workflowService.prepareProcessDefine(prepareRequest);
 
-
         if(processDefineDetail!=null){
+            //设置条件列表
+            FormFieldQueryDTO fieldQuery = BeanUtils.createFrom(prepareRequest,FormFieldQueryDTO.class);
+            fieldQuery.setFormId(prepareRequest.getKey());
+            fieldQuery.setToCondition(1);
+            List<DynamicFormFieldDTO> fieldList = dynamicFormFieldDao.listFormField(fieldQuery);
+            List<ConditionDTO> conditionList = BeanUtils.createListFrom(fieldList,ConditionDTO.class);
+            processDefineDetail.setOptionalConditionList(conditionList);
+
             //重新组织一下数据，设置人员头像
             this.setUserInfo(processDefineDetail);
             //添加变量名和单位

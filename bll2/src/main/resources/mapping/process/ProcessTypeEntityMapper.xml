@@ -148,12 +148,12 @@
         <result column="id" property="key"/>
         <result column="form_name" property="name"/>
         <result column="status" property="isActive"/>
-        <result column="type_setting" property="type"/>
+        <result column="type" property="type"/>
         <result column="documentation" property="documentation"/>
-        <result column="var_name" property="varName"/>
-        <result column="var_unit" property="varUnit"/>
+        <result column="field_title" property="varName"/>
+        <result column="field_unit" property="varUnit"/>
         <result column="is_system" property="isSystem"/>
-      <result column="process_status" property="status"/>
+      <result column="status" property="status"/>
     </resultMap>
 
     <resultMap id="ProcessDefineGroupMap" type="com.maoding.activiti.dto.ProcessDefineGroupDTO">
@@ -184,33 +184,39 @@
   <!-- 获取流程列表 -->
   <select id="listProcessDefine" resultMap="ProcessDefineMap" parameterType="com.maoding.activiti.dto.ProcessDefineQueryDTO">
     select
-      if(process_ordered.company_id is null,1,0) as is_system,
-      process_ordered.*
-    from (
-      select
-        if(process_type.id is null,null,1) as type_setting,
-        <choose>
-          <when test="currentCompanyId != null">
-            concat(#{currentCompanyId},'_',process_type.id,'_1') as process_id,
-          </when>
-          <otherwise>
-            concat(ifnull(concat(process_type.company_id,'_'),''),process_type.id,'_1') as process_id,
+      <choose>
+        <when test="needConditionFieldInfo == 1">
+          field_list.field_title,
+          field_list.field_unit,
+        </when>
+        <otherwise>
+          null as field_title,
+          null as field_unit,
         </otherwise>
-        </choose>
-        process_type.*
-      from maoding_dynamic_form process_type
-      <where>
-        <if test="currentCompanyId != null">
-          and (process_type.company_id is null or process_type.company_id = #{currentCompanyId})
-        </if>
-        <if test="key != null">
-          and (process_type.id = #{key})
-        </if>
-      </where>
-      order by process_type.company_id desc
-    ) process_ordered
-    group by ifnull(process_ordered.seq,process_ordered.id)
-    order by ifnull(process_ordered.seq,9999)
+      </choose>
+      form_list.form_name,
+      form_list.documentation,
+      concat(process_type.company_id,'_',process_type.id,'_',process_type.type) as process_id,
+      process_type.*
+    from maoding_process_type process_type
+      left join maoding_dynamic_form form_list on (
+        form_list.deleted = 0
+        and form_list.id = process_type.form_id
+      )
+      <if test="needConditionFieldInfo == 1">
+        left join maoding_dynamic_form_field field_list on (
+          field_list.deleted = 0
+          and field_list.id = process_type.condition_field_id
+        )
+      </if>
+    where process_type.deleted = 0 and process_type.status = 1
+      <if test="currentCompanyId != null">
+        and process_type.company_id = #{currentCompanyId}
+      </if>
+      <if test="key != null">
+        and process_type.form_id = #{key}
+      </if>
+
   </select>
 
   <select id="selectByTargetType" resultMap="BaseResultMap" parameterType="com.maoding.dynamicForm.dto.SaveDynamicFormDTO">

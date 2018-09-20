@@ -18,10 +18,19 @@ public class ProcessDefineQueryDTO extends CoreQueryDTO {
     /** 流程分类关键字，定义见ProcessTypeConst.PROCESS_TYPE_xxx */
     private String key;
 
-    /**
-     * 1:启用，0：未启用
-     */
+    /** 流程是否启用：1:启用，0：未启用 */
     private String status;
+
+    /** 是否需要查找条件字段信息 **/
+    private Integer needConditionFieldInfo;
+
+    public Integer getNeedConditionFieldInfo() {
+        return needConditionFieldInfo;
+    }
+
+    public void setNeedConditionFieldInfo(Integer needConditionFieldInfo) {
+        this.needConditionFieldInfo = needConditionFieldInfo;
+    }
 
     public String getKey() {
         return key;
