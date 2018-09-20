@@ -3,9 +3,7 @@ package com.maoding.dynamicForm.dto;
 import com.maoding.financial.dto.AuditBaseDTO;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SaveDynamicAuditDTO extends AuditBaseDTO {
 

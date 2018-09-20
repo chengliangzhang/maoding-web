@@ -174,7 +174,7 @@
     <result column="date_format_type" property="dateFormatType" jdbcType="INTEGER" />
     <result column="arrange_type" property="arrangeType" jdbcType="INTEGER" />
     <collection property="detailFieldList" ofType="com.maoding.dynamicForm.dto.DynamicFormFieldDTO"
-                select="listFormField" column="{fieldPid=id}"
+                select="listFormFieldByPid" column="{fieldPid=id}" fetchType="eager"
     />
   </resultMap>
 
@@ -201,15 +201,12 @@
 
 
   <!-- 查找动态表单控件信息 -->
-  <select id="listFormFieldByFormId" resultMap="DynamicFormFieldMap" parameterType="com.maoding.dynamicForm.dto.FormFieldQueryDTO">
+  <select id="listFormFieldByPid" resultType="com.maoding.dynamicForm.dto.DynamicFormFieldDTO" parameterType="com.maoding.dynamicForm.dto.FormFieldQueryDTO">
     select
     field_list.*
     from maoding_dynamic_form_field field_list
     where field_list.deleted = 0
-    and field_list.field_pid is null
-    <if test="formId != null">
-      and field_list.form_id = #{formId}
-    </if>
+      and field_list.field_pid = #{fieldPid}
     order by field_list.seq_y,seq_x
   </select>
 

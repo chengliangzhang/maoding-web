@@ -2,6 +2,8 @@ package com.maoding.dynamicForm.dao.impl;
 
 
 import com.maoding.core.base.dao.GenericDao;
+import com.maoding.core.util.ObjectUtils;
+import com.maoding.core.util.TraceUtils;
 import com.maoding.dynamicForm.dao.DynamicFormDao;
 import com.maoding.dynamicForm.dto.FormDTO;
 import com.maoding.dynamicForm.dto.FormQueryDTO;
@@ -26,6 +28,13 @@ public class DynamicFormDaoImpl extends GenericDao<DynamicFormEntity> implements
     @Override
     public List<FormDTO> listForm(FormQueryDTO query) {
         return sqlSession.selectList("DynamicFormEntityMapper.listForm",query);
+    }
+
+    @Override
+    public FormDTO getForm(FormQueryDTO query) {
+        List<FormDTO> formList = listForm(query);
+        TraceUtils.check(formList == null || formList.size() == 1,"~查询出的表单个数有误");
+        return ObjectUtils.getFirst(formList);
     }
 
     @Override

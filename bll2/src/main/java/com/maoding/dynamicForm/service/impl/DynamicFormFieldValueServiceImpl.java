@@ -5,15 +5,15 @@ import com.maoding.commonModule.dto.QueryCopyRecordDTO;
 import com.maoding.commonModule.service.CopyRecordService;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.constant.NetFileType;
-import com.maoding.core.util.DateUtils;
-import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
+import com.maoding.core.util.TraceUtils;
 import com.maoding.dynamicForm.dao.DynamicFormDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldDao;
 import com.maoding.dynamicForm.dao.DynamicFormFieldValueDao;
 import com.maoding.dynamicForm.dto.DynamicFormFieldValueDTO;
 import com.maoding.dynamicForm.dto.FormFieldQueryDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicAuditDTO;
+import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldSelectableValueEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldValueEntity;
 import com.maoding.dynamicForm.service.DynamicFormFieldValueService;
@@ -27,7 +27,10 @@ import com.maoding.project.service.ProjectSkyDriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 动态表单自定义的数据层接口- 自定义数据字段- 可选择提供
@@ -146,6 +149,14 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         }
         //3.查询流程 返回流程标识，给前端控制是否要给审批人，以及按钮显示的控制
         Map<String,Object> processData = processService.getCurrentTaskUser(new AuditEditDTO(id,null,null),auditList,conditionValue);
+
+        //4. 查询表单名称
+        DynamicFormEntity formEntity = dynamicFormDao.selectById(dto.getFormId());
+        TraceUtils.check(formEntity != null,"~没有查询到表单");
+        if (formEntity != null){
+            result.put("formName",formEntity.getFormName());
+        }
+
         result.put("dynamicAudit",dynamicAudit);
         result.put("expAttachList",expAttachList);
         result.put("ccCompanyUserList",ccCompanyUserList);
