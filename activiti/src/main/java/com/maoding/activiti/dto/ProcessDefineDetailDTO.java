@@ -38,6 +38,17 @@ public class ProcessDefineDetailDTO extends CoreShowDTO {
     /** 当前设置的可选条件 **/
     private String conditionFieldId;
 
+    /** 启动数字条件单位 */
+    private String unit;
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
     public List<ConditionDTO> getOptionalConditionList() {
         return optionalConditionList;
     }
