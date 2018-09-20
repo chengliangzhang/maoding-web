@@ -131,6 +131,12 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
+  <update id="updateDynamicFormType" parameterType="java.util.Map" >
+    update maoding_process_type
+    set form_type = #{newFormType}
+    where form_type = #{oldFormType} and deleted = 0
+  </update>
+
     <!-- 流程名称属性定义 -->
     <resultMap id="ProcessDefineMap" type="com.maoding.activiti.dto.ProcessDefineDTO">
         <id column="process_type_id" property="id"/>

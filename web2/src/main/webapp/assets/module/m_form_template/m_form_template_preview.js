@@ -38,6 +38,9 @@
             that.renderDialog(html,function () {
 
                 that.renderICheckOrSelect();
+
+                //if(that.settings.dataInfo && that.settings.dataInfo)
+
             });
         }
         //渲染列表内容

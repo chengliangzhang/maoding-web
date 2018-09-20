@@ -19,6 +19,12 @@ public class DynamicFormFieldValueEntity extends BaseEntity{
      // 删除标识
     private Integer deleted;
 
+    //明细中用于分组的编号
+    private Integer groupNum;
+
+    //字段值2（备注额外的值）
+    private String fieldValue2;
+
     public String getMainId() {
         return mainId;
     }
@@ -39,7 +45,7 @@ public class DynamicFormFieldValueEntity extends BaseEntity{
         return fieldValue;
     }
 
-    public<T> void  setFieldValue(String fieldValue) {
+    public void  setFieldValue(String fieldValue) {
         this.fieldValue = fieldValue == null ? null : fieldValue.trim();
     }
 
@@ -63,5 +69,21 @@ public class DynamicFormFieldValueEntity extends BaseEntity{
     public void initEntity() {
         super.initEntity();
         this.deleted = 0;
+    }
+
+    public Integer getGroupNum() {
+        return groupNum;
+    }
+
+    public void setGroupNum(Integer groupNum) {
+        this.groupNum = groupNum;
+    }
+
+    public String getFieldValue2() {
+        return fieldValue2;
+    }
+
+    public void setFieldValue2(String fieldValue2) {
+        this.fieldValue2 = fieldValue2;
     }
 }

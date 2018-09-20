@@ -170,6 +170,9 @@
             left join maoding_process_type process_type on (
               process_type.deleted = 0
               and process_type.form_type = group_list.id
+              <if test="status != null">
+                  and process_type.status = #{status}
+              </if>
             )
             left join maoding_dynamic_form form_list on (
               form_list.deleted = 0

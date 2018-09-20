@@ -1,8 +1,10 @@
 package com.maoding.dynamicForm.service.impl;
 
 import com.maoding.commonModule.dao.ConstDao;
+import com.maoding.commonModule.dto.AuditCopyDataDTO;
 import com.maoding.commonModule.dto.WidgetDTO;
 import com.maoding.commonModule.dto.WidgetPropertyDTO;
+import com.maoding.commonModule.service.AuditCopyService;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.util.*;
 import com.maoding.dynamicForm.dao.*;
@@ -11,6 +13,7 @@ import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldSelectableValueEntity;
 import com.maoding.dynamicForm.entity.DynamicFormGroupEntity;
+import com.maoding.dynamicForm.service.DynamicFormGroupService;
 import com.maoding.dynamicForm.service.DynamicFormService;
 import com.maoding.process.dao.ProcessTypeDao;
 import com.maoding.process.entity.ProcessTypeEntity;
@@ -37,16 +40,19 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
     private DynamicFormFieldSelectableValueDao dynamicFormFieldSelectableValueDao;
 
     @Autowired
-    private DynamicFormFieldValueDao dynamicFormFieldValueDao;
+    private DynamicFormGroupDao dynamicFormGroupDao;
 
     @Autowired
-    private DynamicFormGroupDao dynamicFormGroupDao;
+    private DynamicFormGroupService dynamicFormGroupService;
 
     @Autowired
     private ProcessTypeDao processTypeDao;
 
     @Autowired
     private ConstDao constDao;
+
+    @Autowired
+    private AuditCopyService auditCopyService;
 
     /**
      * 作者：FYT
@@ -67,8 +73,8 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         int seq = 1;
         for (DynamicFormFieldDTO formFieldDTO:  dto.getFieldList()){
             formFieldDTO.setFormId(formId);
-            formFieldDTO.setId(saveDynamicFormField(formFieldDTO));
             formFieldDTO.setSeqY(seq++);
+            formFieldDTO.setId(saveDynamicFormField(formFieldDTO));
             //保存明细表
             int seq2 = 1;
             for(DynamicFormFieldDTO formFieldDTO2: formFieldDTO.getDetailFieldList()) {
@@ -79,10 +85,10 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
             }
         }
 
-
         if(processTypeEntity==null){
             if(StringUtil.isNullOrEmpty(dto.getFormType())){
                 //查询其他模板，插入到其他模板中
+                dto.setFormType(dynamicFormGroupService.getOtherDynamicFormGroup(dto.getCurrentCompanyId()).getId());
             }
             processTypeEntity = new ProcessTypeEntity();
             processTypeEntity.initEntity();
@@ -127,73 +133,6 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         return dynamicFormFieldEntity.getId();
     }
 
-
-
-    /**
-     * 作者：FYT
-     * 日期：2018/9/14
-     * 描述：保存/修改审核表单模板(暂时未启用接口)
-     * @return
-     * @throws Exception
-     */
-    public int saveAndUpdateDynamicFormField(SaveDynamicFormDTO dto){
-
-         //保存主表(外层审核表)
-         FormDTO form = createForm(dto);
-        TraceUtils.check(form != null);
-        String formId = form.getId();
-         //保存主表的子表（控件表）
-         for (DynamicFormFieldDTO formFieldDTO:  dto.getFieldList()){
-             formFieldDTO.setFormId(formId);
-             formFieldDTO.setId(saveAndUpdateDynamicFormField(formFieldDTO,dto.getId(),formId));
-             //保存明细表
-             for(DynamicFormFieldDTO formFieldDTO2: formFieldDTO.getDetailFieldList()) {
-                 formFieldDTO2.setFormId(formId);
-                 formFieldDTO2.setFieldPid(formFieldDTO.getId());
-                     saveAndUpdateDynamicFormField(formFieldDTO2,dto.getId(),formId);
-             }
-         }
-         return 1;
-     }
-
-    private String saveAndUpdateDynamicFormField(DynamicFormFieldDTO formFieldDTO,String dtoId,String entityId){
-        //将DTO对象复制到entity
-        DynamicFormFieldEntity dynamicFormFieldEntity = BeanUtils.createFrom(formFieldDTO,DynamicFormFieldEntity.class);
-        //如果之前有设置，则逻辑删除后再重新添加
-        if (dtoId.equals(entityId)) {
-            dynamicFormFieldEntity.setDeleted(1);
-            dynamicFormFieldDao.updateById(dynamicFormFieldEntity);
-        }
-
-        //补充entity缺失值
-        dynamicFormFieldEntity.initEntity();
-        dynamicFormFieldEntity.setDeleted(0);
-        //添加到数据库
-        dynamicFormFieldDao.insert(dynamicFormFieldEntity);
-
-        //控件相同属性多个值，即遍历添加
-        List<DynamicFormFieldSelectedValueDTO> dynamicFormFieldSelectedValueList = formFieldDTO.getFieldSelectedValueList();
-        //如果之前有设置，则逻辑删除后再重新添加
-        if (dtoId.equals(entityId)){
-            for (DynamicFormFieldSelectedValueDTO valueDTO: dynamicFormFieldSelectedValueList){
-                DynamicFormFieldSelectableValueEntity dynamicFormFieldSelectableValueEntity = BeanUtils.createFrom(valueDTO,DynamicFormFieldSelectableValueEntity.class);
-                dynamicFormFieldSelectableValueEntity.setDeleted(1);
-                dynamicFormFieldSelectableValueDao.updateById(dynamicFormFieldSelectableValueEntity);
-            }
-        }
-        int seq = 1;
-        for (DynamicFormFieldSelectedValueDTO valueDTO: dynamicFormFieldSelectedValueList){
-            DynamicFormFieldSelectableValueEntity dynamicFormFieldSelectableValueEntity = BeanUtils.createFrom(valueDTO,DynamicFormFieldSelectableValueEntity.class);
-            dynamicFormFieldSelectableValueEntity.initEntity();
-            dynamicFormFieldSelectableValueEntity.setFieldId(dynamicFormFieldEntity.getId());
-            dynamicFormFieldSelectableValueEntity.setDeleted(0);
-            dynamicFormFieldSelectableValueEntity.setSeq(seq++);
-            dynamicFormFieldSelectableValueDao.insert(dynamicFormFieldSelectableValueEntity);
-        }
-        return dynamicFormFieldEntity.getId();
-    }
-
-
     /**
      * 描述       查询动态窗口模板
      * 日期       2018/9/13
@@ -203,7 +142,8 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
      */
     @Override
     public List<FormDTO> listForm(@NotNull FormQueryDTO query) {
-        return dynamicFormDao.listForm(query);
+        List<FormDTO> formList = dynamicFormDao.listForm(query);
+        return formList;
     }
 
     /**
@@ -235,14 +175,23 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         if (ObjectUtils.isNotEmpty(fieldList)){
             fieldList.forEach(field->{
                 if (DigitUtils.parseInt(field.getRequiredType()) != 0){
-                    FormFieldOptionalQueryDTO optionalQuery = new FormFieldOptionalQueryDTO();
-                    optionalQuery.setFieldId(field.getId());
-                    field.setFieldSelectedValueList(dynamicFormFieldSelectableValueDao.listOptional(optionalQuery));
+                    field.setFieldSelectedValueList(listOptional(field.getId()));
                 }
+                field.getDetailFieldList().stream().forEach(child->{
+                    if (DigitUtils.parseInt(child.getRequiredType()) != 0) {
+                        child.setFieldSelectedValueList(listOptional(child.getId()));
+                    }
+                });
             });
         }
         form.setFieldList(fieldList);
         return form;
+    }
+
+    private List<DynamicFormFieldSelectedValueDTO> listOptional(String fieldId){
+        FormFieldOptionalQueryDTO optionalQuery = new FormFieldOptionalQueryDTO();
+        optionalQuery.setFieldId(fieldId);
+        return dynamicFormFieldSelectableValueDao.listOptional(optionalQuery);
     }
 
     /**
@@ -277,7 +226,6 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
     public List<DynamicFormFieldDTO> changeFormDetail(SaveDynamicFormDTO request) {
         return null;
     }
-
 
     /**
      * 描述       准备用于编辑的动态窗口

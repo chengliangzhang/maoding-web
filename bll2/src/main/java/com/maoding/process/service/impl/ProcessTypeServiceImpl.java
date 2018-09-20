@@ -113,8 +113,7 @@ public class ProcessTypeServiceImpl extends NewBaseService implements ProcessTyp
     @Override
     public int updateDynamicFormType(String oldFormTypeId,String newFormTypeId) throws Exception{
         //return processTypeDao.updateById(processTypeEntity);
-       // return processTypeDao.updateDynamicFormType();
-        return 0;
+        return processTypeDao.updateDynamicFormType(oldFormTypeId,newFormTypeId);
     }
 
     /**

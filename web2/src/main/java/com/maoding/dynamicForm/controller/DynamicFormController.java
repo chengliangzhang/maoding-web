@@ -180,6 +180,7 @@ public class DynamicFormController extends BaseController {
         } else {
             FormGroupQueryDTO groupQuery = BeanUtils.createFrom(query,FormGroupQueryDTO.class);
             groupQuery.setIsIncludeForm(1);
+            groupQuery.setNeedCC(1);
             List<FormGroupDTO> groupList = dynamicFormGroupService.listFormGroup(groupQuery);
             ajaxMessage.setData(groupList);
         }
@@ -199,8 +200,11 @@ public class DynamicFormController extends BaseController {
     @ResponseBody
     public AjaxMessage listActiveForm(@RequestBody FormQueryDTO query) throws Exception {
         updateCurrentUserInfo(query);
-        query.setUseGroup(1);
-        query.setStatus(1);
-        return listForm(query);
+        FormGroupQueryDTO groupQuery = BeanUtils.createFrom(query,FormGroupQueryDTO.class);
+        groupQuery.setIsIncludeForm(1);
+        groupQuery.setStatus(1);
+        groupQuery.setNeedCC(0);
+        List<FormGroupDTO> groupList = dynamicFormGroupService.listFormGroup(groupQuery);
+        return AjaxMessage.succeed(groupList);
     }
 }

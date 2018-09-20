@@ -161,8 +161,42 @@
     <if test="fieldPid != null">
       and field_list.field_pid = #{fieldPid}
     </if>
+    order by field_list.seq_y,seq_x
   </select>
 
 
+  <resultMap id="DynamicFormFieldMap"  type="com.maoding.dynamicForm.dto.DynamicFormFieldDTO">
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="form_id" property="formId" jdbcType="VARCHAR" />
+    <result column="field_pid" property="fieldPid" jdbcType="VARCHAR" />
+    <result column="field_title" property="fieldTitle" jdbcType="VARCHAR" />
+    <result column="field_type" property="fieldType" jdbcType="INTEGER" />
+    <result column="field_unit" property="fieldUnit" jdbcType="VARCHAR" />
+    <result column="is_statistics" property="isStatistics" jdbcType="INTEGER" />
+    <result column="field_tooltip" property="fieldTooltip" jdbcType="VARCHAR" />
+    <result column="field_default_value" property="fieldDefaultValue" jdbcType="VARCHAR" />
+    <result column="field_select_value_type" property="fieldSelectValueType" jdbcType="INTEGER" />
+    <result column="seq_x" property="seqX" jdbcType="INTEGER" />
+    <result column="seq_y" property="seqY" jdbcType="INTEGER" />
+    <result column="required_type" property="requiredType" jdbcType="INTEGER" />
+    <result column="date_format_type" property="dateFormatType" jdbcType="INTEGER" />
+    <result column="arrange_type" property="arrangeType" jdbcType="INTEGER" />
+    <collection property="detailFieldList" ofType="com.maoding.dynamicForm.dto.DynamicFormFieldDTO"
+                select="listFormField" column="{fieldPid=id}" fetchType="eager"
+    />
+  </resultMap>
+
+  <!-- 查找动态表单控件信息 -->
+  <select id="listFormFieldByFormId" resultMap="DynamicFormFieldMap" parameterType="com.maoding.dynamicForm.dto.FormFieldQueryDTO">
+    select
+    field_list.*
+    from maoding_dynamic_form_field field_list
+    where field_list.deleted = 0
+    and field_list.field_pid is null
+    <if test="formId != null">
+      and field_list.form_id = #{formId}
+    </if>
+    order by field_list.seq_y,seq_x
+  </select>
 
 </mapper>

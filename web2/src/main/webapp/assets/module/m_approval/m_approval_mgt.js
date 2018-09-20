@@ -42,10 +42,10 @@
             var that = this;
             var option = {};
             option.classId = '#content-right';
-            option.url = restApi.url_listProcessDefine;
+            option.url = restApi.url_listForm;
             option.postData = {};
-            option.accountId = that._currentUserId;
-            option.currentCompanyId = that._currentCompanyId;
+            option.postData.accountId = that._currentUserId;
+            option.postData.currentCompanyId = that._currentCompanyId;
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
                     that._dataList = response.data;
@@ -119,7 +119,7 @@
                 }else{//当前是子集
 
                     pidDataItem = getObjectInArray(that._dataList,dataPid);
-                    dataItem = getObjectInArray(pidDataItem.processDefineList,dataId);
+                    dataItem = getObjectInArray(pidDataItem.formList,dataId);
                 }
 
                switch (dataAction){
@@ -136,6 +136,17 @@
 
                        $('body').m_form_template_settings({
                            type:1,
+                           saveCallBack:function () {
+                               that.init();
+                           }
+                       },true);
+                       return false;
+                       break;
+                   case 'editApproval'://编辑审批
+
+                       $('body').m_form_template_settings({
+                           type:1,
+                           id:dataItem.formId,
                            saveCallBack:function () {
                                that.init();
                            }

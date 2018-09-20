@@ -15,6 +15,28 @@ public class FormGroupQueryDTO extends CoreQueryDTO {
     /** 是否包含表单 **/
     private Integer isIncludeForm;
 
+    /** 表单是否启用:0-仅包含未启用表单，1-仅包含启用表单 **/
+    private Integer status;
+
+    /** 是否需要抄送人员：0-不需要，1-需要 **/
+    private Integer needCC;
+
+    public Integer getNeedCC() {
+        return needCC;
+    }
+
+    public void setNeedCC(Integer needCC) {
+        this.needCC = needCC;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public Integer getIsIncludeForm() {
         return isIncludeForm;
     }

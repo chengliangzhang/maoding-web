@@ -52,4 +52,6 @@ public interface ProcessTypeDao extends BaseDao<ProcessTypeEntity> {
     //查询所有属于该分组的动态审批表
     List<ProcessTypeEntity> selectByCompanyIdFormType(FormGroupDTO formGroupDTO);
 
+    int updateDynamicFormType(String oldFormType,String newFormType);
+
 }

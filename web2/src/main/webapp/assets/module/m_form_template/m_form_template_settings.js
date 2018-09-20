@@ -9,6 +9,7 @@
         defaults = {
              isDialog:true
             ,type:1//1=我的审批
+            ,id:null//表单ID
             ,saveCallBack:null
         };
 
@@ -42,12 +43,14 @@
             var that = this;
             var option = {};
             option.url = restApi.url_prepareFormToEdit ;
-            option.postData = {
+            option.postData = {};
+            if(that.settings.id)
+                option.postData.id = that.settings.id;
 
-            };
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
 
+                    that._baseData = response.data;
                     var html = template('m_form_template/m_form_template_settings',{
                         title:that._title,
                         subTitle:that._subTitle,
@@ -61,6 +64,11 @@
 
                         $(that.element).css('overflow','initial');
                         $(that.element).parents('.layui-layer').css('overflow','auto');
+
+
+                        if(that.settings.id)
+                            that.renderBaseDataPage();
+
 
                         that.renderICheckOrSelect($(that.element).find('#propertyBox'));
                         that.bindActionClick();
@@ -128,6 +136,99 @@
                     callBack();
             }
 
+        }
+        ,renderBaseDataPage:function () {
+            var that = this;
+
+            if(that._baseData && that._baseData.fieldList && that._baseData.fieldList.length>0){
+
+                var j = -1;
+                $.each(that._baseData.fieldList,function (i,item) {
+
+                    if(i==j)
+                        return true;
+
+                    if(item.fieldType==4){//时间区间，需要合并一个组件
+                        j = i+1;
+                    }
+                    that.baseDateToConvert(item,that._baseData.fieldList[i+1]);
+
+                    if(item.detailFieldList!=null && item.detailFieldList.length>0){
+
+                        var subJ = -1;
+                        $.each(item.detailFieldList,function (subI,subItem) {
+
+                            if(subI==subJ)
+                                return true;
+
+                            if(item.fieldType==4){//时间区间，需要合并一个组件
+                                subJ = subI+1;
+                            }
+                            that.baseDateToConvert(subItem,item.detailFieldList[subI+1]);
+
+                        });
+                    }
+
+                });
+            }
+
+        }
+        ,baseDateToConvert:function (item,nextItem) {
+            var that = this;
+            var itemKey = item.id;
+            var html = template('m_form_template/m_form_template_item',{type:item.fieldType,itemKey:itemKey});
+            if(item.fieldPid!=null){
+                that._$contentForm.find('.form-item[data-type="9"] .panel-body').append(html);
+            }else{
+                that._$contentForm.append(html);
+            }
+
+
+            var dataItem = {};
+            dataItem.dataType = item.fieldType;
+            dataItem.itemKey = itemKey;
+            dataItem.dateType = item.dateFormatType;
+            dataItem.fieldTitle = item.fieldTitle;
+            dataItem.fieldTooltip = item.fieldTooltip;
+            dataItem.fieldUnit = item.fieldUnit;
+            dataItem.requiredType = item.requiredType;
+
+            if(item.fieldType==4){//时间区间，需要合并一个组件
+
+                dataItem.fieldTitle2 = nextItem.fieldTitle;
+                dataItem.fieldTooltip2 = nextItem.fieldTooltip;
+
+            }else if(item.fieldType==6 || item.fieldType==7 || item.fieldType==8){//下拉列表
+
+                dataItem.optional = item.fieldSelectValueType;
+                dataItem.iptOptional = [];
+                if(item.fieldSelectedValueList!=null && item.fieldSelectedValueList.length>0){
+
+                    $.each(item.fieldSelectedValueList,function (fi,fitem) {
+                        dataItem.iptOptional.push(fitem.selectableName);
+                    })
+                }
+
+            }else if(item.fieldType==11){//关联审批
+
+                dataItem.approvalAttr = item.fieldSelectValueType;
+                if(item.fieldSelectValueType.indexOf(',')>-1)
+                    dataItem.approvalAttr = item.fieldSelectValueType.split(',');
+
+            }else if(item.fieldType==12){//关联项目
+
+                dataItem.projectAttr = item.fieldSelectValueType;
+
+            }else if(item.fieldType==9){
+
+                $('.form-item[data-key="'+itemKey+'"] button[data-action="addItem"]').before('<div class="panel panel-default"><div class="panel-body"><form><h4 class="title-line"> 明细 </h4></form></div></div> ');
+
+            }
+
+            that._formFieldInfo.push(dataItem);
+            var $formItem = that._$contentForm.find('.form-item[data-key="'+itemKey+'"]');
+            that.bindFormItemClick($formItem);
+            $formItem.click();
         }
         //初始化iCheck
         ,renderICheckOrSelect:function ($ele,ifCheckedFun,ifUncheckedFun,ifClickedFun) {
@@ -225,7 +326,7 @@
                     clone.fieldTooltip = dataItem.fieldTooltip2;
                     formField.push(filterParam(clone));
 
-                }else if(type==6){//下拉列表
+                }else if(type==6 || type==7 || type==8){//下拉列表
 
                     newDataItem.fieldSelectValueType = dataItem.optional;
 
@@ -282,6 +383,9 @@
             var option = {};
             option.url = restApi.url_saveDynamicForm ;
             option.postData = that.getSaveData();
+
+            if(that._baseData && that._baseData.id!=null)
+                option.postData.id = that._baseData.id;
 
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {

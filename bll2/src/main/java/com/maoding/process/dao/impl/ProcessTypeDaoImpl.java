@@ -79,4 +79,12 @@ public class ProcessTypeDaoImpl extends GenericDao<ProcessTypeEntity> implements
         return sqlSession.selectList("ProcessTypeEntityMapper.selectByCompanyIdFormType",formGroupDTO);
     }
 
+    @Override
+    public int updateDynamicFormType(String oldFormType, String newFormType) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("oldFormType",oldFormType);
+        map.put("newFormType",newFormType);
+        return this.sqlSession.update("ProcessTypeEntityMapper.updateDynamicFormType",map);
+    }
+
 }

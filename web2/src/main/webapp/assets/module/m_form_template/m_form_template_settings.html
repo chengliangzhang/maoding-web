@@ -60,7 +60,7 @@
             <form role="form" data-property-type="1">
                 <div class="form-group">
                     <label>名称</label>
-                    <input placeholder="请输入表单名称" class="form-control" type="text" name="formName" value="{{subTitle}}">
+                    <input placeholder="请输入表单名称" class="form-control" type="text" name="formName" value="{{baseData.name?baseData.name:subTitle}}">
                 </div>
                 <div class="form-group">
                     <label>我的分组</label>
@@ -68,14 +68,18 @@
                         <option value="">请选择分组</option>
                         {{if baseData.formGroupList && baseData.formGroupList.length>0}}
                             {{each baseData.formGroupList as o i}}
-                                <option value="{{o.id}}">{{o.groupName}}</option>
+                                {{if baseData.formType==o.id}}
+                                    <option value="{{o.id}}" selected>{{o.groupName}}</option>
+                                {{else}}
+                                    <option value="{{o.id}}">{{o.groupName}}</option>
+                                {{/if}}
                             {{/each}}
                         {{/if}}
                     </select>
                 </div>
                 <div class="form-group">
                     <label>说明</label>
-                    <textarea placeholder="请输入表单说明" class="form-control" type="text" name="documentation"></textarea>
+                    <textarea placeholder="请输入表单说明" class="form-control" type="text" name="documentation">{{baseData.documentation}}</textarea>
                 </div>
             </form>
             <form role="form" data-property-type="2" style="display: none;">

@@ -23,6 +23,11 @@ public interface DynamicFormGroupService {
 
 
     /**
+     * 获取 groupName = 其他模板
+     */
+    DynamicFormGroupEntity getOtherDynamicFormGroup(String companyId);
+
+    /**
      * 初始化话分组
      */
     void initDynamicFormGroup(String companyId) throws Exception;

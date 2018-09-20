@@ -27,7 +27,7 @@ public class DynamicFormFieldDaoImpl extends GenericDao<DynamicFormFieldEntity> 
      */
     @Override
     public List<DynamicFormFieldDTO> listFormField(FormFieldQueryDTO query) {
-        return sqlSession.selectList("DynamicFormFieldEntityMapper.listFormField",query);
+        return sqlSession.selectList("DynamicFormFieldEntityMapper.listFormFieldByFormId",query);
     }
 
 

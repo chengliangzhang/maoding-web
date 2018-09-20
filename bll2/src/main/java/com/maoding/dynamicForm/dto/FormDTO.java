@@ -1,7 +1,9 @@
 package com.maoding.dynamicForm.dto;
 
+import com.maoding.commonModule.dto.AuditCopyDataDTO;
 import com.maoding.core.base.dto.BaseIdObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,6 +45,8 @@ public class FormDTO extends BaseIdObject {
 
     /** 控件列表 **/
     private List<DynamicFormFieldDTO> fieldList;
+
+    List<AuditCopyDataDTO> copyList = new ArrayList<>();
 
     public Integer getType() {
         return type;
@@ -122,5 +126,13 @@ public class FormDTO extends BaseIdObject {
 
     public void setFieldList(List<DynamicFormFieldDTO> fieldList) {
         this.fieldList = fieldList;
+    }
+
+    public List<AuditCopyDataDTO> getCopyList() {
+        return copyList;
+    }
+
+    public void setCopyList(List<AuditCopyDataDTO> copyList) {
+        this.copyList = copyList;
     }
 }

@@ -8,13 +8,15 @@
     <result column="field_value" property="fieldValue" jdbcType="VARCHAR" />
     <result column="field_value_pid" property="fieldValuePid" jdbcType="VARCHAR" />
     <result column="deleted" property="deleted" jdbcType="INTEGER" />
+    <result column="groupNum" property="groupNum" jdbcType="INTEGER" />
+    <result column="fieldValue2" property="fieldValue2" jdbcType="VARCHAR" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="create_by" property="createBy" jdbcType="VARCHAR" />
     <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
     <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, main_id, field_id, field_value,field_value_pid, deleted, create_date, create_by, update_date,
+    id, main_id, field_id, field_value,field_value_pid, deleted, groupNum, fieldValue2, create_date, create_by, update_date,
     update_by
   </sql>
   <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -37,7 +39,7 @@
   </delete>
   <insert id="insert" parameterType="com.maoding.dynamicForm.entity.DynamicFormFieldValueEntity" >
     insert into maoding_dynamic_form_field_value (id, main_id, field_id, 
-      field_value,field_value_pid, deleted, create_date,
+      field_value,field_value_pid, deleted, groupNum, fieldValue2, create_date,
       create_by, update_date, update_by
       )
     values (#{id,jdbcType=VARCHAR}, #{mainId,jdbcType=VARCHAR}, #{fieldId,jdbcType=VARCHAR}, 
@@ -64,6 +66,12 @@
       <if test="deleted != null" >
         deleted = #{deleted,jdbcType=INTEGER},
       </if>
+      <if test="groupNum != null" >
+        deleted = #{groupNum,jdbcType=INTEGER},
+      </if>
+      <if test="fieldValue2 != null" >
+        deleted = #{fieldValue2,jdbcType=INTEGER},
+      </if>
       <if test="createDate != null" >
         create_date = #{createDate,jdbcType=TIMESTAMP},
       </if>
@@ -86,6 +94,8 @@
       field_value = #{fieldValue,jdbcType=VARCHAR},
       field_value_pid = #{fieldValuePid,jdbcType=VARCHAR},
       deleted = #{deleted,jdbcType=INTEGER},
+      groupNum = #{groupNum,jdbcType=INTEGER},
+      fieldValue2 = #{fieldValue2,jdbcType=VARCHAR},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       create_by = #{createBy,jdbcType=VARCHAR},
       update_date = #{updateDate,jdbcType=TIMESTAMP},
@@ -114,12 +124,14 @@
     <result column="required_type" property="requiredType" jdbcType="INTEGER" />
     <result column="date_format_type" property="dateFormatType" jdbcType="INTEGER" />
     <result column="arrange_type" property="arrangeType" jdbcType="INTEGER" />
+    <result column="groupNum" property="groupNum" jdbcType="INTEGER" />
+    <result column="field_value2" property="field_value2" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- 查找动态表单控件信息 -->
   <select id="listFormFieldValueByFormId" resultMap="DynamicFormFieldMap" parameterType="com.maoding.dynamicForm.dto.FormFieldQueryDTO">
     select
-    field_list.*,fieldValue.id as field_value_id,fieldValue.field_value,fieldValue.field_value_pid
+    field_list.*,fieldValue.id as field_value_id,fieldValue.field_value,fieldValue.field_value_pid,fieldValue.groupNum,fieldValue.field_value2
     from maoding_dynamic_form_field field_list
     LEFT JOIN maoding_dynamic_form_field_value fieldValue on field_list.id = fieldValue.field_id and fieldValue.main_id =#{id}
     where field_list.deleted = 0

@@ -1,10 +1,15 @@
 package com.maoding.dynamicForm.service.impl;
 
+import com.maoding.commonModule.dto.AuditCopyDataDTO;
+import com.maoding.commonModule.service.AuditCopyService;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.util.BeanUtils;
+import com.maoding.core.util.DigitUtils;
+import com.maoding.core.util.ObjectUtils;
 import com.maoding.core.util.StringUtils;
 import com.maoding.dynamicForm.dao.DynamicFormDao;
 import com.maoding.dynamicForm.dao.DynamicFormGroupDao;
+import com.maoding.dynamicForm.dto.FormDTO;
 import com.maoding.dynamicForm.dto.FormGroupDTO;
 import com.maoding.dynamicForm.dto.FormGroupEditDTO;
 import com.maoding.dynamicForm.dto.FormGroupQueryDTO;
@@ -31,6 +36,8 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
     @Autowired
     private ProcessTypeService processTypeService;
 
+    @Autowired
+    private AuditCopyService auditCopyService;
 
     /**
      * 描述       添加及更改动态窗口群组
@@ -82,6 +89,17 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
         updateDynamicFormType(request);
         return dynamicFormGroupDao.updateById(updatedEntity);
     }
+
+    @Override
+    public DynamicFormGroupEntity getOtherDynamicFormGroup(String companyId) {
+        //通过companyId 和 is_edit=0  和 group_name=其他模板  查询出对应的type_id
+        FormGroupDTO dto = new FormGroupDTO();
+        dto.setCompanyId(companyId);
+        dto.setIsEdit(0);
+        dto.setGroupName("其他模板");
+        return dynamicFormGroupDao.selectTypeId(dto);
+    }
+
     //如果组删除，会被分配到其他模板（等同于未分组），并且状态是不可编辑
     private void updateDynamicFormType(FormGroupEditDTO entity) throws Exception{
 
@@ -148,6 +166,18 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
      */
     @Override
     public List<FormGroupDTO> listFormGroup(FormGroupQueryDTO query) {
-        return dynamicFormGroupDao.listFormGroup(query);
+        List<FormGroupDTO> groupList = dynamicFormGroupDao.listFormGroup(query);
+        if (DigitUtils.isTrue(query.getNeedCC()) && ObjectUtils.isNotEmpty(groupList)){
+            groupList.forEach(group->{
+                List<FormDTO> formList = group.getFormList();
+                if (ObjectUtils.isNotEmpty(formList)){
+                    formList.forEach(form->{
+                        List<AuditCopyDataDTO> list = auditCopyService.listAuditCopy(form.getId());
+                        form.setCopyList(list);
+                    });
+                }
+            });
+        }
+        return groupList;
     }
 }
