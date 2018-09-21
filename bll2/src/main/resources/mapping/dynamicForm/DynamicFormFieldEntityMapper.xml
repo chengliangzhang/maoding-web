@@ -183,6 +183,12 @@
     select
       field_list.*
     from maoding_dynamic_form_field field_list
+      <if test="toCondition == 1">
+        inner join md_type_widget widget_type on (
+          widget_type.type_id = field_list.field_type
+          and widget_type.is_condition = 1
+        )
+      </if>
     where deleted = 0
       <if test="formId != null">
         and field_list.form_id = #{formId}

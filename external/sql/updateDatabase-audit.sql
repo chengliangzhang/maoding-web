@@ -338,24 +338,21 @@ CREATE PROCEDURE `initConst`()
   BEGIN
     -- -- 常量
     delete from md_list_const where classic_id = 49;
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,0,'可选控件',  '1.允许输入;2.允许输入字母;3.允许输入换行;4.允许选择格式;5.是时间选择框;6.允许复选;7.允许上传;8.允许嵌套;9.获取数据接口;10.可设置的属性;11.图标关键字');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,1,'单行文本',  '1;1;0;0;0;0;0;0;;1,2,3;icon-danhangwenben');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,2,'多行文本',  '1;1;1;0;0;0;0;0;;1,2,3;icon-duohangwenben');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,3,'日期',     '0;0;0;0;1;0;0;0;;1,2,14,3;icon-riqi');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,4,'日期区间',  '0;0;0;0;1;0;0;0;;1,10,11,12,13,14,3;icon-riqiqujian');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,5,'数字',     '1;0;0;0;0;0;0;0;;1,2,3;icon-shuzi');
---    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,6,'金额',     '1;0;0;0;0;0;0;0;;1,2,6,3;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,6,'下拉列表', '0;0;0;0;0;0;0;0;;1,2,4,5,3;icon-xialaliebiao');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,7,'单选框',   '0;0;0;0;0;0;0;0;;1,2,4,5,3;icon-danxuankuang');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,8,'复选框',   '0;0;0;0;0;1;0;0;;1,2,4,5,3;icon-fuxuankuang');
-
---     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,10,'富文本',  '1;1;1;1;0;0;0;0;;1,2,3;');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,9,'明细',   '0;0;0;0;0;0;0;1;;1;icon-mingxi');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,10,'附件',   '0;0;0;0;0;0;1;0;;1,2,5,3;icon-fujian');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,11,'关联审批', '0;0;0;0;0;0;0;0;iWork/finance/getExpBaseData;1,2,15,3;icon-shenpi');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,12,'关联项目', '0;0;0;0;0;0;0;0;iWork/finance/getProjectList;1,2,15,3;icon-xiangmu');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,13,'纯文本',  '1;1;1;0;0;0;0;0;;1,2,3;icon-chunwenben');
-    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,14,'分割线', '0;0;0;0;0;0;0;0;;1;icon-fengexian');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,0,'可选控件',  '1.允许输入;2.允许输入字母;3.允许输入换行;4.允许选择格式;5.是时间选择框;6.允许复选;7.允许上传;8.允许嵌套;9.获取数据接口;10.可设置的属性;11.图标关键字;12.允许作为条件');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,1,'单行文本',  '1;1;0;0;0;0;0;0;;1,2,3;icon-danhangwenben;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,2,'多行文本',  '1;1;1;0;0;0;0;0;;1,2,3;icon-duohangwenben;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,3,'日期',     '0;0;0;0;1;0;0;0;;1,2,14,3;icon-riqi;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,4,'日期区间',  '0;0;0;0;1;0;0;0;;1,10,11,12,13,14,3;icon-riqiqujian;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,5,'数字',     '1;0;0;0;0;0;0;0;;1,2,3;icon-shuzi;1');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,6,'下拉列表', '0;0;0;0;0;0;0;0;;1,2,4,5,3;icon-xialaliebiao;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,7,'单选框',   '0;0;0;0;0;0;0;0;;1,2,4,5,3;icon-danxuankuang;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,8,'复选框',   '0;0;0;0;0;1;0;0;;1,2,4,5,3;icon-fuxuankuang;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,9,'明细',   '0;0;0;0;0;0;0;1;;1;icon-mingxi;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,10,'附件',   '0;0;0;0;0;0;1;0;;1,2,5,3;icon-fujian;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,11,'关联审批', '0;0;0;0;0;0;0;0;iWork/finance/getExpBaseData;1,2,15,3;icon-shenpi;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,12,'关联项目', '0;0;0;0;0;0;0;0;iWork/finance/getProjectList;1,2,15,3;icon-xiangmu;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,13,'纯文本',  '1;1;1;0;0;0;0;0;;1,2,3;icon-chunwenben;');
+    REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (49,14,'分割线', '0;0;0;0;0;0;0;0;;1;icon-fengexian;');
     -- -- 类型
     REPLACE INTO md_list_const (classic_id,code_id,title,extra) VALUES (0,49,'可选控件','md_type_widget');
 
@@ -407,7 +404,11 @@ CREATE PROCEDURE `initConst`()
         substring(widget_type.extra,
                   char_length(substring_index(widget_type.extra,';',10))+2,
                   char_length(substring_index(widget_type.extra,';',11)) - char_length(substring_index(widget_type.extra,';',10))-1)
-          as icon_key
+          as icon_key,
+        substring(widget_type.extra,
+                  char_length(substring_index(widget_type.extra,';',11))+2,
+                  char_length(substring_index(widget_type.extra,';',12)) - char_length(substring_index(widget_type.extra,';',11))-1)
+          as is_condition
       from
         md_list_const widget_type
       where

@@ -134,6 +134,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getCurrentCompanyId()),"!currentCompanyId不能为空");
             TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),"!key不能为空");
             ProcessDefineQueryDTO query = BeanUtils.createFrom(prepareRequest,ProcessDefineQueryDTO.class);
+            query.setNeedConditionFieldInfo(1);
             ProcessDefineDTO process = processTypeDao.getProcessDefine(query);
             if (ObjectUtils.isNotEmpty(process)){
                 if (prepareRequest.getType() == null){
@@ -160,7 +161,8 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             fieldQuery.setFormId(prepareRequest.getKey());
             fieldQuery.setToCondition(1);
             List<DynamicFormFieldDTO> fieldList = dynamicFormFieldDao.listFormField(fieldQuery);
-            List<ConditionDTO> conditionList = BeanUtils.createListFrom(fieldList,ConditionDTO.class);
+            List<ConditionDTO> conditionList = convertToConditionList(fieldList);
+
             processDefineDetail.setOptionalConditionList(conditionList);
 
             //重新组织一下数据，设置人员头像
@@ -172,10 +174,23 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         return processDefineDetail;
     }
 
+    //转换为conditionList
+    private List<ConditionDTO> convertToConditionList(List<DynamicFormFieldDTO> fieldList){
+        List<ConditionDTO> conditionList = new ArrayList<>();
+        for (DynamicFormFieldDTO field : fieldList) {
+            ConditionDTO condition = BeanUtils.createFrom(field,ConditionDTO.class);
+            condition.setName(field.getFieldTitle());
+            condition.setUnit(field.getFieldUnit());
+            conditionList.add(condition);
+        }
+        return conditionList;
+    }
+
     //准备流程时的申请数据需要从数据库中补全
     private boolean isNeedFill(ProcessDetailPrepareDTO prepareRequest){
         return (prepareRequest.getType() == null)
                 || (StringUtils.isEmpty(prepareRequest.getName()))
+                || (StringUtils.isEmpty(prepareRequest.getConditionFieldId()))
                 || (StringUtils.isEmpty(prepareRequest.getVarName()))
                 || (StringUtils.isEmpty(prepareRequest.getVarUnit()));
     }
