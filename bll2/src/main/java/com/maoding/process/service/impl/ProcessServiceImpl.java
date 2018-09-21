@@ -369,6 +369,9 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         } else {
             processTypeDao.insert(typeEntity);
         }
+
+        TraceUtils.check(DigitUtils.parseInt(editRequest.getType()) != ProcessTypeConst.PROCESS_TYPE_CONDITION
+            || StringUtils.isNotEmpty(editRequest.getConditionFieldId()),"!conditionFieldId在设置条件流程时不能为空");
         return BeanUtils.createFrom(typeEntity,ProcessDefineDTO.class);
     }
 
