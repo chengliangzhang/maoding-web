@@ -25,6 +25,17 @@ public class DynamicFormEntity extends BaseEntity{
     /** 说明 **/
     private String documentation;
 
+    /** 图标 **/
+    private String iconKey;
+
+    public String getIconKey() {
+        return iconKey;
+    }
+
+    public void setIconKey(String iconKey) {
+        this.iconKey = iconKey;
+    }
+
     public String getDocumentation() {
         return documentation;
     }

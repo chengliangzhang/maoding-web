@@ -43,7 +43,18 @@ public class ProcessDefineDTO<T> extends CoreShowDTO {
     /**0:未启用，1：启用',**/
     private Integer status;
 
+    /** 设置的条件字段编号 **/
+    private String conditionFieldId;
+
     List<T> copyList = new ArrayList<>(); //对象的类型为AuditCopyDataDTO，由于AuditCopyDataDTO 在bill2层。所以此处用Object接收
+
+    public String getConditionFieldId() {
+        return conditionFieldId;
+    }
+
+    public void setConditionFieldId(String conditionFieldId) {
+        this.conditionFieldId = conditionFieldId;
+    }
 
     public Integer getIsSystem() {
         return isSystem;

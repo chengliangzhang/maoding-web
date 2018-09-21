@@ -122,8 +122,8 @@ BEGIN
     `documentation` varchar(255) DEFAULT NULL COMMENT '说明',
     `var_name` varchar(40) DEFAULT NULL COMMENT '分条件流程变量名称',
     `var_unit` varchar(10) DEFAULT NULL COMMENT '分条件流程变量单位',
-    `is_system` int(1) DEFAULT NULL COMMENT '是否系统类型',
-    
+    `icon_key` varchar(40) DEFAULT NULL COMMENT '图标关键字',
+
     `deleted` int(1) DEFAULT 0 COMMENT '删除标识',
     `create_date` datetime DEFAULT NULL COMMENT '创建时间',
     `create_by` char(32) DEFAULT NULL COMMENT '创建者用户编号',
@@ -132,6 +132,9 @@ BEGIN
     PRIMARY KEY (`id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='动态表单主表';
 
+  if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_dynamic_form' and column_name='icon_key') then
+    alter table maoding_dynamic_form add column `icon_key` varchar(40) DEFAULT NULL COMMENT '图标关键字';
+  end if;
   if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_dynamic_form' and column_name='form_code') then
     alter table maoding_dynamic_form add column `form_code` varchar(40) DEFAULT NULL COMMENT '关键字';
   end if;
@@ -557,8 +560,8 @@ CREATE PROCEDURE `initConst`()
 
     -- -- 自定义常量
     delete from maoding_dynamic_form where company_id is null;
-    REPLACE INTO maoding_dynamic_form (id,create_date,update_date,deleted,`status`,form_name,form_type,documentation,seq,var_name,var_unit)
-      SELECT type_code,now(),now(),0,1,type_name,concat('54-',group_type_id),documentation,type_id,var_name,var_unit
+    REPLACE INTO maoding_dynamic_form (id,create_date,update_date,deleted,`status`,form_name,form_type,documentation,seq,var_name,var_unit,icon_key)
+      SELECT type_code,now(),now(),0,1,type_name,concat('54-',group_type_id),documentation,type_id,var_name,var_unit,icon_key
       FROM md_type_form;
   END;
 call initConst();

@@ -43,10 +43,21 @@ public class FormDTO extends BaseIdObject {
     /** 是否系统表单 **/
     private Integer isSystem;
 
+    /** 图标关键字 **/
+    private String iconKey;
+
     /** 控件列表 **/
     private List<DynamicFormFieldDTO> fieldList;
 
     List<AuditCopyDataDTO> copyList = new ArrayList<>();
+
+    public String getIconKey() {
+        return iconKey;
+    }
+
+    public void setIconKey(String iconKey) {
+        this.iconKey = iconKey;
+    }
 
     public Integer getType() {
         return type;

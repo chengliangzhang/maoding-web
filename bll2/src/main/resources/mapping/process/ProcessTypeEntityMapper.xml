@@ -144,8 +144,8 @@
 
     <!-- 流程名称属性定义 -->
     <resultMap id="ProcessDefineMap" type="com.maoding.activiti.dto.ProcessDefineDTO">
-        <id column="process_type_id" property="id"/>
-        <result column="id" property="key"/>
+        <id column="process_id" property="id"/>
+        <result column="target_type" property="key"/>
         <result column="form_name" property="name"/>
         <result column="status" property="isActive"/>
         <result column="type" property="type"/>
@@ -154,6 +154,7 @@
         <result column="field_unit" property="varUnit"/>
         <result column="is_system" property="isSystem"/>
       <result column="status" property="status"/>
+      <result column="condition_field_id" property="conditionFieldId"/>
     </resultMap>
 
     <resultMap id="ProcessDefineGroupMap" type="com.maoding.activiti.dto.ProcessDefineGroupDTO">
@@ -196,7 +197,8 @@
       </choose>
       form_list.form_name,
       form_list.documentation,
-      concat(process_type.company_id,'_',process_type.id,'_',process_type.type) as process_id,
+      if(form_list.id is null,null,if(form_list.company_id is null,1,0)) as is_system,
+      concat(process_type.company_id,'_',process_type.target_type,'_',process_type.type) as process_id,
       process_type.*
     from maoding_process_type process_type
       left join maoding_dynamic_form form_list on (
@@ -213,8 +215,11 @@
       <if test="currentCompanyId != null">
         and process_type.company_id = #{currentCompanyId}
       </if>
+      <if test="formId != null">
+        and process_type.form_id = #{formId}
+      </if>
       <if test="key != null">
-        and process_type.form_id = #{key}
+        and process_type.target_type = #{key}
       </if>
 
   </select>

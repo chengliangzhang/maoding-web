@@ -129,19 +129,33 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
     @Override
     public ProcessDefineDetailDTO prepareProcessDefine(ProcessDetailPrepareDTO prepareRequest) throws Exception {
+        //查找已有的流程设置
+        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getCurrentCompanyId()),"!currentCompanyId不能为空");
+        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),"!key不能为空");
+        ProcessDefineQueryDTO query = BeanUtils.createFrom(prepareRequest,ProcessDefineQueryDTO.class);
+        query.setNeedConditionFieldInfo(1);
+        //前端传来的key目前是formId，为兼容进行更改
+        query.setKey(null);
+        query.setFormId(prepareRequest.getKey());
+        ProcessDefineDTO process = processTypeDao.getProcessDefine(query);
+
+        //目前前端传递来的key为form_id，需更改为target_type
+        if (ObjectUtils.isNotEmpty(process)){
+            prepareRequest.setKey(process.getKey());
+        }
+
+
         //如果没有设置type字段等信息，从数据库内读取流程属性，并补充相应信息
         if (isNeedFill(prepareRequest)) {
-            TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getCurrentCompanyId()),"!currentCompanyId不能为空");
-            TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),"!key不能为空");
-            ProcessDefineQueryDTO query = BeanUtils.createFrom(prepareRequest,ProcessDefineQueryDTO.class);
-            query.setNeedConditionFieldInfo(1);
-            ProcessDefineDTO process = processTypeDao.getProcessDefine(query);
             if (ObjectUtils.isNotEmpty(process)){
                 if (prepareRequest.getType() == null){
                     prepareRequest.setType(process.getType());
                 }
                 if (StringUtils.isEmpty(prepareRequest.getName())){
                     prepareRequest.setName(process.getName());
+                }
+                if (StringUtils.isEmpty(prepareRequest.getConditionFieldId())){
+                    prepareRequest.setConditionFieldId(process.getConditionFieldId());
                 }
                 if (StringUtils.isEmpty(prepareRequest.getVarName())){
                     prepareRequest.setVarName(process.getVarName());
@@ -156,6 +170,28 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         ProcessDefineDetailDTO processDefineDetail  = this.workflowService.prepareProcessDefine(prepareRequest);
 
         if(processDefineDetail!=null){
+            //复制已有流程属性
+            if (process != null){
+                if (processDefineDetail.getId() == null){
+                    processDefineDetail.setId(process.getId());
+                }
+                if (processDefineDetail.getDocumentation() == null){
+                    processDefineDetail.setDocumentation(process.getDocumentation());
+                }
+                if (processDefineDetail.getType() == null){
+                    processDefineDetail.setType(process.getType());
+                }
+                if (StringUtils.isEmpty(processDefineDetail.getName())){
+                    processDefineDetail.setName(process.getName());
+                }
+                if (StringUtils.isEmpty(processDefineDetail.getConditionFieldId())){
+                    processDefineDetail.setConditionFieldId(process.getConditionFieldId());
+                }
+                if (StringUtils.isEmpty(processDefineDetail.getUnit())){
+                    processDefineDetail.setUnit(process.getVarName());
+                }
+            }
+
             //设置条件列表
             FormFieldQueryDTO fieldQuery = BeanUtils.createFrom(prepareRequest,FormFieldQueryDTO.class);
             fieldQuery.setFormId(prepareRequest.getKey());
@@ -229,12 +265,13 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
     @Override
     public ProcessDefineDetailDTO changeProcessDefine(ProcessDefineDetailEditDTO editRequest) {
+        //查找已有的流程设置
+        ProcessDefineQueryDTO query = BeanUtils.createFrom(editRequest,ProcessDefineQueryDTO.class);
+        query.setNeedConditionFieldInfo(1);
+        ProcessDefineDTO process = processTypeDao.getProcessDefine(query);
+
         if (isNeedFill(editRequest)){
-            ProcessDefineQueryDTO query = BeanUtils.createFrom(editRequest,ProcessDefineQueryDTO.class);
-            List<ProcessDefineDTO> processList = listProcessDefine(query);
-            TraceUtils.check(ObjectUtils.isNotEmpty(processList) && processList.size() == 1,"~查询流程结果有误");
-            if (ObjectUtils.isNotEmpty(processList)){
-                ProcessDefineDTO process = ObjectUtils.getFirst(processList);
+            if (ObjectUtils.isNotEmpty(process)){
                 if (editRequest.getType() == null){
                     editRequest.setType(process.getType());
                 }

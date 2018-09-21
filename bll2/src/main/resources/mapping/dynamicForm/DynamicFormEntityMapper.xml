@@ -9,6 +9,7 @@
     <result column="seq" property="seq" jdbcType="INTEGER" />
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="documentation" property="documentation" jdbcType="VARCHAR" />
+    <result column="icon_key" property="iconKey" jdbcType="VARCHAR" />
     <result column="deleted" property="deleted" jdbcType="INTEGER" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="create_by" property="createBy" jdbcType="VARCHAR" />
@@ -17,7 +18,7 @@
   </resultMap>
   <sql id="Base_Column_List" >
     id, form_name, company_id, form_type, seq, status,documentation, deleted, create_date, create_by,
-    update_date, update_by
+    update_date, update_by, icon_key
   </sql>
   <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -39,11 +40,12 @@
   </delete>
   <insert id="insert" parameterType="com.maoding.dynamicForm.entity.DynamicFormEntity" >
     insert into maoding_dynamic_form (id, form_name, company_id, 
-      form_type, seq, status, documentation,
+      form_type, seq, status, documentation,icon_key
       deleted, create_date, create_by, 
       update_date, update_by)
     values (#{id,jdbcType=VARCHAR}, #{formName,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, 
       #{formType,jdbcType=VARCHAR}, #{seq,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{documentation,jdbcType=VARCHAR},
+      #{iconKey,jdbcType=VARCHAR},
       #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
       #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
   </insert>
@@ -68,6 +70,9 @@
       </if>
       <if test="documentation != null" >
         documentation = #{documentation,jdbcType=VARCHAR},
+      </if>
+      <if test="iconKey != null" >
+        icon_key = #{iconKey,jdbcType=VARCHAR},
       </if>
       <if test="deleted != null" >
         deleted = #{deleted,jdbcType=INTEGER},
@@ -95,6 +100,7 @@
       seq = #{seq,jdbcType=INTEGER},
       status = #{status,jdbcType=INTEGER},
       documentation = #{documentation,jdbcType=VARCHAR},
+      icon_key = #{iconKey,jdbcType=VARCHAR},
       deleted = #{deleted,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       create_by = #{createBy,jdbcType=VARCHAR},
@@ -113,6 +119,7 @@
     <result column="documentation" property="documentation"/>
     <result column="process_status" property="status"/>
     <result column="form_is_system" property="isSystem"/>
+    <result column="icon_key" property="iconKey"/>
   </resultMap>
 
   <!-- 查询动态表单模板 -->
