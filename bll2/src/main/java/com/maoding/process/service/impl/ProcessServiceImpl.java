@@ -127,14 +127,47 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         return true;
     }
 
+    
+    //通过companyId和key查找process信息
+    private ProcessDefineDTO getProcessDefineByCompanyIdAndKey(String companyId,String key){
+        ProcessDefineQueryDTO query = new ProcessDefineQueryDTO();
+        query.setCurrentCompanyId(companyId);
+        query.setKey(key);
+        query.setNeedConditionFieldInfo(1);
+        return processTypeDao.getProcessDefine(query);
+    }
+
+    //复制已有流程属性
+    private void copyProperty(ProcessDefineDTO orig,ProcessDefineDetailDTO dest){
+        if ((orig != null) && (dest != null)){
+            if (dest.getId() == null){
+                dest.setId(orig.getId());
+            }
+            if (dest.getDocumentation() == null){
+                dest.setDocumentation(orig.getDocumentation());
+            }
+            if (dest.getType() == null){
+                dest.setType(orig.getType());
+            }
+            if (StringUtils.isEmpty(dest.getName())){
+                dest.setName(orig.getName());
+            }
+            if (StringUtils.isEmpty(dest.getConditionFieldId())){
+                dest.setConditionFieldId(orig.getConditionFieldId());
+            }
+            if (StringUtils.isEmpty(dest.getUnit())){
+                dest.setUnit(orig.getVarName());
+            }
+        }
+        
+    }
+    
     @Override
     public ProcessDefineDetailDTO prepareProcessDefine(ProcessDetailPrepareDTO prepareRequest) throws Exception {
         //查找已有的流程设置
         TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getCurrentCompanyId()),"!currentCompanyId不能为空");
         TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),"!key不能为空");
-        ProcessDefineQueryDTO query = BeanUtils.createFrom(prepareRequest,ProcessDefineQueryDTO.class);
-        query.setNeedConditionFieldInfo(1);
-        ProcessDefineDTO process = processTypeDao.getProcessDefine(query);
+        ProcessDefineDTO process = getProcessDefineByCompanyIdAndKey(prepareRequest.getCurrentCompanyId(),prepareRequest.getKey());
 
         //如果没有设置type字段等信息，从数据库内读取流程属性，并补充相应信息
         if (isNeedFill(prepareRequest)) {
@@ -162,26 +195,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
 
         if(processDefineDetail!=null){
             //复制已有流程属性
-            if (process != null){
-                if (processDefineDetail.getId() == null){
-                    processDefineDetail.setId(process.getId());
-                }
-                if (processDefineDetail.getDocumentation() == null){
-                    processDefineDetail.setDocumentation(process.getDocumentation());
-                }
-                if (processDefineDetail.getType() == null){
-                    processDefineDetail.setType(process.getType());
-                }
-                if (StringUtils.isEmpty(processDefineDetail.getName())){
-                    processDefineDetail.setName(process.getName());
-                }
-                if (StringUtils.isEmpty(processDefineDetail.getConditionFieldId())){
-                    processDefineDetail.setConditionFieldId(process.getConditionFieldId());
-                }
-                if (StringUtils.isEmpty(processDefineDetail.getUnit())){
-                    processDefineDetail.setUnit(process.getVarName());
-                }
-            }
+            copyProperty(process,processDefineDetail);
 
             //设置条件列表
             FormFieldQueryDTO fieldQuery = BeanUtils.createFrom(prepareRequest,FormFieldQueryDTO.class);
@@ -257,9 +271,9 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
     @Override
     public ProcessDefineDetailDTO changeProcessDefine(ProcessDefineDetailEditDTO editRequest) {
         //查找已有的流程设置
-        ProcessDefineQueryDTO query = BeanUtils.createFrom(editRequest,ProcessDefineQueryDTO.class);
-        query.setNeedConditionFieldInfo(1);
-        ProcessDefineDTO process = processTypeDao.getProcessDefine(query);
+        TraceUtils.check(StringUtils.isNotEmpty(editRequest.getCurrentCompanyId()),"!currentCompanyId不能为空");
+        TraceUtils.check(StringUtils.isNotEmpty(editRequest.getKey()),"!key不能为空");
+        ProcessDefineDTO process = getProcessDefineByCompanyIdAndKey(editRequest.getCurrentCompanyId(),editRequest.getKey());
 
         if (isNeedFill(editRequest)){
             if (ObjectUtils.isNotEmpty(process)){
@@ -269,6 +283,9 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
                 if (StringUtils.isEmpty(editRequest.getName())){
                     editRequest.setName(process.getName());
                 }
+                if (StringUtils.isEmpty(editRequest.getConditionFieldId())){
+                    editRequest.setConditionFieldId(process.getConditionFieldId());
+                }
                 if (StringUtils.isEmpty(editRequest.getVarName())){
                     editRequest.setVarName(process.getVarName());
                 }
@@ -277,9 +294,13 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
                 }
             }
         }
+
         ProcessDefineDetailDTO processDefineDetail = workflowService.changeProcessDefine(editRequest);
-        syncProcessType(editRequest);
+        process = updateProcessType(editRequest);
         if(processDefineDetail!=null){
+            //复制已有流程属性
+            copyProperty(process,processDefineDetail);
+
             //重新组织一下数据，设置人员头像
             this.setUserInfo(processDefineDetail);
         }
@@ -289,29 +310,80 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
     @Override
     public void deleteProcessDefine(ProcessDefineQueryDTO deleteRequest) {
         this.workflowService.deleteProcessDefine(deleteRequest);
+        ProcessDefineDetailEditDTO request = BeanUtils.createFrom(deleteRequest,ProcessDefineDetailEditDTO.class);
+        int type;
+        if(ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY.equals(deleteRequest.getKey())){
+            type = ProcessTypeConst.TYPE_NOT_PROCESS;
+        } else {
+            type = ProcessTypeConst.TYPE_FREE;
+        }
+        request.setType(type);
+
         //把类型库内流程设定为自由流程
-        syncProcessType(ProcessTypeConst.TYPE_FREE,
-                deleteRequest.getCurrentCompanyId(),
-                deleteRequest.getKey(),
-                deleteRequest.getAccountId(),
-                false);
+        updateProcessType(request);
     }
 
-    //同步流程类型数据表内的流程类型，如果指定类型，更新数据库，如果没有指定，返回数据库内的类型
-    private int syncProcessType(ProcessDetailPrepareDTO prepareRequest){
-        TraceUtils.check(prepareRequest != null,"!参数错误");
-        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getCurrentCompanyId()),"!参数错误");
-        TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),"!参数错误");
-        return syncProcessType(prepareRequest.getType(),prepareRequest.getCurrentCompanyId(),
-                prepareRequest.getKey(),prepareRequest.getAccountId(),isConditionType(prepareRequest));
+    private ProcessDefineDTO updateProcessType(ProcessDefineDetailEditDTO editRequest){
+        TraceUtils.check(editRequest != null);
+
+        //计算要保存到数据库内的流程类型
+        int type = getRealType(DigitUtils.parseInt(editRequest.getType()),editRequest.getKey(),editRequest.getConditionFieldId());
+
+        //从数据库内读取当前的流程信息
+        String companyId = editRequest.getCurrentCompanyId();
+        String key = editRequest.getKey();
+        TraceUtils.check(StringUtils.isNotEmpty(companyId),"!currentCompanyId不能为空");
+        TraceUtils.check(StringUtils.isNotEmpty(key),"!key不能为空");
+        ProcessTypeEntity typeEntity = processTypeDao
+                .getCurrentProcessType(editRequest.getCurrentCompanyId(),editRequest.getKey());
+
+        //如果数据库内没有流程信息，新建一条，否则更改已有的流程信息
+        boolean found;
+        if (typeEntity == null) {
+            typeEntity = new ProcessTypeEntity();
+            typeEntity.initEntity();
+            typeEntity.setCreateBy(editRequest.getAccountId());
+            found = false;
+        } else {
+            typeEntity.resetUpdateDate();
+            typeEntity.setUpdateBy(editRequest.getAccountId());
+            found = true;
+        }
+
+        //设置其他属性
+        //所属组织
+        typeEntity.setCompanyId(companyId);
+        //设置此类型为启用状态
+        typeEntity.setStatus(1);
+        //设置此类型为未删除状态
+        typeEntity.setDeleted(0);
+        //设置流程关键字
+        typeEntity.setTargetType(key);
+        //设置类型
+        typeEntity.setType(type);
+        //设置条件字段
+        typeEntity.setConditionFieldId(editRequest.getConditionFieldId());
+
+        if (found) {
+            processTypeDao.updateById(typeEntity);
+        } else {
+            processTypeDao.insert(typeEntity);
+        }
+        return BeanUtils.createFrom(typeEntity,ProcessDefineDTO.class);
     }
 
-    private int syncProcessType(ProcessDefineDetailEditDTO editRequest){
-        TraceUtils.check(editRequest != null,"!参数错误");
-        TraceUtils.check(StringUtils.isNotEmpty(editRequest.getCurrentCompanyId()),"!参数错误");
-        TraceUtils.check(StringUtils.isNotEmpty(editRequest.getKey()),"!参数错误");
-        return syncProcessType(editRequest.getType(),editRequest.getCurrentCompanyId(),
-                editRequest.getKey(),editRequest.getAccountId(),isConditionType(editRequest));
+    //检查并设置有效流程
+    private int getRealType(int type, String key, String conditionFieldId){
+        //如果不是有效流程类型
+        if (isNotInvalid(type,conditionFieldId)){
+            //对于付款申请，如果没有流程，则默认为无流程，其他的默认为自由流程
+            if(ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY.equals(key)){
+                type = ProcessTypeConst.TYPE_NOT_PROCESS;
+            } else {
+                type = ProcessTypeConst.TYPE_FREE;
+            }
+        }
+        return type;
     }
 
 
@@ -339,57 +411,10 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         return ProcessTypeConst.PROCESS_TYPE_CONDITION.equals(type);
     }
 
-    private int syncProcessType(Integer type,String companyId,String key,String accountId,boolean isConditionType){
-        //从数据库内读取当前的流程类型
-        ProcessTypeEntity typeEntity = processTypeDao
-                .getCurrentProcessType(companyId,key);
-
-        //如果数据库内没有类型值，或者指定了类型，保存到数据库
-        if ((typeEntity == null) || ObjectUtils.isNotEmpty(type)) {
-            boolean isFound = true;
-            if (typeEntity == null) {
-                isFound = false;
-                typeEntity = new ProcessTypeEntity();
-                typeEntity.initEntity();
-                typeEntity.setCompanyId(companyId);
-                typeEntity.setCreateBy(accountId);
-            } else {
-                typeEntity.setUpdateBy(accountId);
-            }
-            //设置此类型为启用状态
-            typeEntity.setStatus(1);
-            //设置此类型为未删除状态
-            typeEntity.setDeleted(0);
-            //设置业务类型
-            typeEntity.setTargetType(key);
-            //设置类型
-            if (isNotInvalid(type)){
-                if(ProcessTypeConst.PROCESS_TYPE_PROJECT_PAY_APPLY.equals(key)){//对于付款申请，如果没有流程，则默认为无流程，其他的默认为自由流程
-                    typeEntity.setType(ProcessTypeConst.TYPE_NOT_PROCESS);
-                }else {
-                    if (isConditionType) {
-                        typeEntity.setType(ProcessTypeConst.PROCESS_TYPE_CONDITION);
-                    } else {
-                        typeEntity.setType(ProcessTypeConst.TYPE_FREE);
-                    }
-                }
-            } else {
-                typeEntity.setType(type);
-            }
-
-            if (isFound) {
-                processTypeDao.updateById(typeEntity);
-            } else {
-                processTypeDao.insert(typeEntity);
-            }
-        }
-        return typeEntity.getType();
-
-    }
-    private boolean isNotInvalid(Integer type){
-        return (type == null)
-                || (type < ProcessTypeConst.TYPE_NOT_PROCESS)
-                || (type > ProcessTypeConst.PROCESS_TYPE_CONDITION);
+    private boolean isNotInvalid(int type, String conditionFieldId){
+        return (type < ProcessTypeConst.TYPE_NOT_PROCESS)
+                || (type > ProcessTypeConst.PROCESS_TYPE_CONDITION)
+                || ((type == ProcessTypeConst.PROCESS_TYPE_CONDITION) && StringUtils.isEmpty(conditionFieldId));
     }
 
     //根据用户编号获取用户信息
