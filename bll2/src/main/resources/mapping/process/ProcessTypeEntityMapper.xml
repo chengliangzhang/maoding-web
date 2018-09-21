@@ -45,7 +45,7 @@
     <if test="formId!=null">
       and form_id =  #{formId}
     </if>
-    and status = 1
+   --  and status = 1
     order by create_date desc
   </select>
 

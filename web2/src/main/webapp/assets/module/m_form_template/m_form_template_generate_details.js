@@ -163,7 +163,59 @@
 
                         break;
 
+                    case 'agree'://同意
+                        var option = {};
+                        option.dataInfo = {
+                            id:that.settings.dataInfo.id,
+                            processFlag:that._dataInfo.processFlag
+                        };
+                        option.doType = 1;
+                        option.saveCallBack = function () {
+                            that.init();
+                            if(that.settings.closeCallBack)
+                                that.settings.closeCallBack();
+                        };
+                        console.log(option);
+                        $('body').m_approval_operational_comments(option,true);
 
+                        break;
+                    case 'returnBack'://退回
+
+                        var option = {};
+                        option.dataInfo = {
+                            id:that.settings.dataInfo.id,
+                            processFlag:that._dataInfo.processFlag
+                        };
+                        option.doType = 2;
+                        option.saveCallBack = function () {
+                            that.init();
+                            if(that.settings.closeCallBack)
+                                that.settings.closeCallBack();
+                        };
+                        $('body').m_approval_operational_comments(option,true);
+
+                        break;
+                    case 'cancellation'://撤销
+
+                        var option = {};
+                        option.dataInfo = {
+                            id:that.settings.dataInfo.id,
+                            processFlag:that._dataInfo.processFlag
+                        };
+                        option.doType = 3;
+                        option.saveCallBack = function () {
+                            that.init();
+                            if(that.settings.closeCallBack)
+                                that.settings.closeCallBack();
+                        };
+                        $('body').m_approval_operational_comments(option,true);
+
+                        break;
+                    case 'preview'://查看文件
+
+                        window.open($this.attr('data-src'));
+
+                        break;
                 }
 
             });

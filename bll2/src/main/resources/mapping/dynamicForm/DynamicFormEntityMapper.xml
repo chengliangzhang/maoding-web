@@ -40,7 +40,7 @@
   </delete>
   <insert id="insert" parameterType="com.maoding.dynamicForm.entity.DynamicFormEntity" >
     insert into maoding_dynamic_form (id, form_name, company_id, 
-      form_type, seq, status, documentation,icon_key
+      form_type, seq, status, documentation,icon_key,
       deleted, create_date, create_by, 
       update_date, update_by)
     values (#{id,jdbcType=VARCHAR}, #{formName,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR}, 

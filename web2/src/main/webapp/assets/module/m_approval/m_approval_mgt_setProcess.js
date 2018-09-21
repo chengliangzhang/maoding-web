@@ -84,9 +84,12 @@
                         name:response.data.name,
                         key:response.data.key,
                         fixedProcess:that._editFixedProcess,
-                        condProcess:that._editCondProcess
+                        condProcess:that._editCondProcess,
+                        optionalConditionList:that._processDetail.optionalConditionList
                     });
                     $(that.element).html(html);
+
+
                     if(callBack)
                         callBack(response.data);
 
