@@ -29,6 +29,7 @@
 
         this._auditList = [];//审批人
         this._ccCompanyUserList = [];//抄送人
+        this._deleteAttachList = [];//编辑才用，已有删除的集合
 
         this.init();
     }
@@ -289,6 +290,44 @@
 
             };
             that._uploadmgrContainer.m_uploadmgr(option, true);
+        }
+        ,bindAttachDelele: function () {
+            var that = this;
+            $.each($('#showFileLoading').find('a[data-action="deleteAttach"]'), function (i, o) {
+                $(o).off('click.deleteAttach').on('click.deleteAttach', function () {
+                    var netFileId = $(this).attr('data-net-file-id');
+                    var type = $(this).attr('data-type');
+
+                    var ajaxDelete = function () {
+                        var ajaxOption = {};
+                        ajaxOption.classId = '.file-list:eq(0)';
+                        ajaxOption.url = restApi.url_attachment_delete;
+                        ajaxOption.postData = {
+                            id: netFileId,
+                            accountId: that._currentUserId
+                        };
+                        m_ajax.postJson(ajaxOption, function (res) {
+                            if (res.code === '0') {
+                                S_toastr.success("删除成功");
+                            } else if (res.code === '1') {
+                                S_layer.error(res.msg);
+                            }
+                        });
+                    };
+
+                    if(type==-1){
+                        that._deleteAttachList.push(netFileId);
+                    }else{
+                        ajaxDelete();
+                    }
+                    $(this).closest('span').remove();
+                })
+            });
+            $.each($('#showFileLoading').find('a[data-action="preview"]'), function (i, o) {
+                $(o).off('click.preview').on('click.preview', function () {
+                    window.open($(this).attr('data-src'));
+                })
+            });
         }
         ,recursiveData:function ($formItem,item) {
 

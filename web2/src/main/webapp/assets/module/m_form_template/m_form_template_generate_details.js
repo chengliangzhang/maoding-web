@@ -21,6 +21,7 @@
         this._name = pluginName;
         this._currentUserId = window.currentUserId;
         this._currentCompanyId = window.currentCompanyId;
+        this._currentCompanyUserId = window.currentCompanyUserId;
 
         this._uploadmgrContainer = null;
         this._uuid = UUID.genV4().hexNoDelim;//targetId
@@ -184,7 +185,7 @@
                         var option = {};
                         option.dataInfo = {
                             id:that.settings.dataInfo.id,
-                            processFlag:that._dataInfo.processFlag
+                            processFlag:that._baseData.processFlag
                         };
                         option.doType = 2;
                         option.saveCallBack = function () {

@@ -115,7 +115,7 @@
 </form>
 <div class="footer border-b-radius text-right">
     <button class="btn btn-default" data-action="cancel">取消</button>
-    {{if dataInfo && dataInfo.auditFlag=='1'}}
+    {{if dataInfo && dataInfo.dynamicAudit.auditFlag==1}}
     <button class="btn btn-primary" data-action="agree">同意</button>
     <button class="btn btn-success" data-action="returnBack">退回</button>
     {{/if}}

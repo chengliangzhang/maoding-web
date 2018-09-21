@@ -220,6 +220,9 @@ public class ExpMainDTO extends AuditBaseDTO {
     /** 收款方公司名称 */
     private String enterpriseName;
 
+    /**自定义表单的名称**/
+    private String formName;
+
     private List<String> deleteAttachList = new ArrayList<>();
 
 
@@ -579,5 +582,13 @@ public class ExpMainDTO extends AuditBaseDTO {
 
     public void setRole(ExpFinanceRoleDTO role) {
         this.role = role;
+    }
+
+    public String getFormName() {
+        return formName;
+    }
+
+    public void setFormName(String formName) {
+        this.formName = formName;
     }
 }

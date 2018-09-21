@@ -670,7 +670,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
      */
     @Override
     public  Map<String,Object>  getCurrentProcess(AuditEditDTO dto) {
-        String processDefineId = null;
+        ProcessDefDTO processDefine = null;
         Map<String,Object> result = new HashMap<>();
         result.put("processFlag","1");//返回到前端的标识，1：代表是自由流程，需要前端传递审批人
         result.put("conditionList",new ArrayList<>());//首先默认返回个空数组
@@ -685,25 +685,25 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             }
             if(!"2".equals((String)result.get("processFlag"))){
                 if(!(processType==null || ProcessTypeConst.TYPE_FREE == processType.getType())){
-                    processDefineId = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getAppOrgId()),dto.getAppOrgId());
+                    processDefine = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getAppOrgId()),dto.getAppOrgId());
                 }
             }
         }else {
             ProcessInstanceRelationEntity instanceRelation = processInstanceRelationDao.getProcessInstanceRelation(dto.getMainId());
             if(instanceRelation!=null){
-                processDefineId = workflowService.getProcessDefineIdByProcessInstanceId(instanceRelation.getProcessInstanceId());
+                processDefine = workflowService.getProcessDefineIdByProcessInstanceId(instanceRelation.getProcessInstanceId());
             }
         }
-        if(!StringUtil.isNullOrEmpty(processDefineId) && !processDefineId.contains(ProcessTypeConst.PROCESS_TYPE_FREE)){
+        if(processDefine!=null && !StringUtil.isNullOrEmpty(processDefine.getId()) && !processDefine.getKey().contains(ProcessTypeConst.PROCESS_TYPE_FREE)){
             List<UserTaskNodeDTO> userList = new ArrayList<>();
             ProcessDetailPrepareDTO detailPrepareDTO = new ProcessDetailPrepareDTO();
-            detailPrepareDTO.setSrcProcessDefineId(processDefineId);
+            detailPrepareDTO.setSrcProcessDefineId(processDefine.getId());
             List<UserTaskDTO> userTaskList = this.workflowService.listFlowTaskUser(detailPrepareDTO);
             //todo 重新封装
             userList = this.getUserList(userTaskList);
             result.put("processFlag","0");//代表不是自由流程，不需要前端传递审批人
             result.put("conditionList",userList);
-            String key = processDefineId.split(":")[0];
+            String key = processDefine.getKey();
             result.put("processType",key.substring(key.lastIndexOf("_")+1));
         }
         return result;
@@ -772,23 +772,23 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
     @Override
     public List<UserTaskNodeDTO> getUserListForAudit(AuditEditDTO dto) {
         List<UserTaskNodeDTO> userList = new ArrayList<>();
-        String processDefineId = null;
+        ProcessDefDTO processDefine = null;
         if(StringUtil.isNullOrEmpty(dto.getMainId())){
             ProcessTypeEntity processType = this.processTypeDao.getCurrentProcessType(dto.getAppOrgId(),dto.getAuditType());
             if(processType==null || ProcessTypeConst.TYPE_FREE == processType.getType()){
                 return userList;
             }else {
-                processDefineId = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getAppOrgId()),dto.getAppOrgId());
+                processDefine = workflowService.getProcessDefineIdByProcessKey(this.getProcessKey(dto.getAuditType(),dto.getAppOrgId()),dto.getAppOrgId());
             }
         }else {
             ProcessInstanceRelationEntity instanceRelation = processInstanceRelationDao.getProcessInstanceRelation(dto.getMainId());
             if(instanceRelation!=null){
-                processDefineId = workflowService.getProcessDefineIdByProcessInstanceId(instanceRelation.getProcessInstanceId());
+                processDefine = workflowService.getProcessDefineIdByProcessInstanceId(instanceRelation.getProcessInstanceId());
             }
         }
-        if(!StringUtil.isNullOrEmpty(processDefineId) && !processDefineId.equals(ProcessTypeConst.PROCESS_TYPE_FREE)){
+        if(processDefine!=null && !StringUtil.isNullOrEmpty(processDefine.getId()) && !processDefine.getKey().equals(ProcessTypeConst.PROCESS_TYPE_FREE)){
             ProcessDetailPrepareDTO detailPrepareDTO = new ProcessDetailPrepareDTO();
-            detailPrepareDTO.setSrcProcessDefineId(processDefineId);
+            detailPrepareDTO.setSrcProcessDefineId(processDefine.getId());
             List<UserTaskDTO> userTaskList = this.workflowService.listFlowTaskUser(detailPrepareDTO);
             //todo 重新封装
             userList = this.getUserList(userTaskList);

@@ -12,7 +12,7 @@
     <result column="is_finance_statistics" property="isFinanceStatistics" jdbcType="INTEGER" />
     <result column="field_tooltip" property="fieldTooltip" jdbcType="VARCHAR" />
     <result column="field_default_value" property="fieldDefaultValue" jdbcType="VARCHAR" />
-    <result column="field_select_value_type" property="fieldSelectValueType" jdbcType="INTEGER" />
+    <result column="field_select_value_type" property="fieldSelectValueType" jdbcType="VARCHAR" />
     <result column="seq_x" property="seqX" jdbcType="INTEGER" />
     <result column="seq_y" property="seqY" jdbcType="INTEGER" />
     <result column="required_type" property="requiredType" jdbcType="INTEGER" />
@@ -56,7 +56,7 @@
     values (#{id,jdbcType=VARCHAR}, #{formId,jdbcType=VARCHAR}, #{fieldPid,jdbcType=VARCHAR}, 
       #{fieldTitle,jdbcType=VARCHAR}, #{fieldType,jdbcType=INTEGER}, #{fieldUnit,jdbcType=VARCHAR},
       #{isStatistics,jdbcType=INTEGER}, #{isFinanceStatistics,jdbcType=INTEGER},#{fieldTooltip,jdbcType=VARCHAR},
-      #{fieldDefaultValue,jdbcType=VARCHAR}, #{fieldSelectValueType,jdbcType=INTEGER}, 
+      #{fieldDefaultValue,jdbcType=VARCHAR}, #{fieldSelectValueType,jdbcType=VARCHAR},
       #{seqX,jdbcType=INTEGER}, #{seqY,jdbcType=INTEGER}, #{requiredType,jdbcType=INTEGER},
       #{dateFormatType,jdbcType=INTEGER}, #{arrangeType,jdbcType=INTEGER},
       #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
@@ -100,7 +100,7 @@
         field_default_value = #{fieldDefaultValue,jdbcType=VARCHAR},
       </if>
       <if test="fieldSelectValueType != null" >
-        field_select_value_type = #{fieldSelectValueType,jdbcType=INTEGER},
+        field_select_value_type = #{fieldSelectValueType,jdbcType=VARCHAR},
       </if>
       <if test="seqX != null" >
         seq_x = #{seqX,jdbcType=INTEGER},
@@ -143,7 +143,7 @@
       is_finance_statistics = #{isFinanceStatistics,jdbcType=INTEGER},
       field_tooltip = #{fieldTooltip,jdbcType=VARCHAR},
       field_default_value = #{fieldDefaultValue,jdbcType=VARCHAR},
-      field_select_value_type = #{fieldSelectValueType,jdbcType=INTEGER},
+      field_select_value_type = #{fieldSelectValueType,jdbcType=VARCHAR},
       seq_x = #{seqX,jdbcType=INTEGER},
       seq_y = #{seqY,jdbcType=INTEGER},
       required_type = #{requiredType,jdbcType=INTEGER},
@@ -167,7 +167,7 @@
     <result column="is_finance_statistics" property="isFinanceStatistics" jdbcType="INTEGER" />
     <result column="field_tooltip" property="fieldTooltip" jdbcType="VARCHAR" />
     <result column="field_default_value" property="fieldDefaultValue" jdbcType="VARCHAR" />
-    <result column="field_select_value_type" property="fieldSelectValueType" jdbcType="INTEGER" />
+    <result column="field_select_value_type" property="fieldSelectValueType" jdbcType="VARCHAR" />
     <result column="seq_x" property="seqX" jdbcType="INTEGER" />
     <result column="seq_y" property="seqY" jdbcType="INTEGER" />
     <result column="required_type" property="requiredType" jdbcType="INTEGER" />

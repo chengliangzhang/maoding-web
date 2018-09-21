@@ -236,7 +236,7 @@ public interface WorkflowService {
      * @date 2018/8/02
      * @description 根据当前流程实例id获取流程的id
      **/
-    String getProcessDefineIdByProcessInstanceId(String processInstanceId);
+    ProcessDefDTO getProcessDefineIdByProcessInstanceId(String processInstanceId);
 	
 	/**
      * 保存自由流程
@@ -250,7 +250,7 @@ public interface WorkflowService {
      * @date 2018/8/02
      * @description 根据当前流程实例id获取流程的id
      **/
-    String getProcessDefineIdByProcessKey(String processKey,String companyId);
+    ProcessDefDTO getProcessDefineIdByProcessKey(String processKey,String companyId);
 
 
     /**

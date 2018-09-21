@@ -1189,8 +1189,8 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     }
 
     @Override
-    public String getProcessDefineIdByProcessInstanceId(String processInstanceId) {
-        return getProcessByProcessInstanceId(processInstanceId).getId();
+    public ProcessDefDTO getProcessDefineIdByProcessInstanceId(String processInstanceId) {
+        return getProcessByProcessInstanceId(processInstanceId);
     }
 
     public String saveFreeProcess() throws Exception {
@@ -1279,17 +1279,20 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
 
     @Override
-    public String getProcessDefineIdByProcessKey(String processKey,String companyId) {
+    public ProcessDefDTO getProcessDefineIdByProcessKey(String processKey,String companyId) {
+         ProcessDefDTO def = new ProcessDefDTO();
         ProcessDefinitionQuery processDefinitionQuery = this.repositoryService.createProcessDefinitionQuery()
                 .processDefinitionKey(processKey)
                 .processDefinitionTenantId(companyId);
         if(processDefinitionQuery!=null){
             List<ProcessDefinition> processDefinitionList = processDefinitionQuery.active().orderByProcessDefinitionVersion().desc().list();//latestVersion().singleResult();
             if(!CollectionUtils.isEmpty(processDefinitionList)){
-                return processDefinitionList.get(0).getId();
+
+                def.setId(processDefinitionList.get(0).getId());
+                def.setKey(processDefinitionList.get(0).getKey());
             }
         }
-        return null;
+        return def;
     }
 
 

@@ -120,7 +120,7 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         dynamicFormFieldEntity.initEntity();
         dynamicFormFieldEntity.setDeleted(0);
         if(!CollectionUtils.isEmpty(formFieldDTO.getFieldSelectedValueList()) && StringUtils.isEmpty(formFieldDTO.getFieldSelectValueType())){
-            formFieldDTO.setFieldSelectValueType("0");//默认从自定义中获取数据
+            dynamicFormFieldEntity.setFieldSelectValueType("0");//默认从自定义中获取数据
         }
         //添加到数据库
         dynamicFormFieldDao.insert(dynamicFormFieldEntity);

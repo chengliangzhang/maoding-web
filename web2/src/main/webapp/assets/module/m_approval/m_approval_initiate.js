@@ -75,7 +75,7 @@
 
                        var formId = $this.attr('data-form-id');
 
-                       if(formId=='leave'){
+                       /*if(formId=='leave'){
 
                            var option = {};
                            option.doType = 3;
@@ -95,9 +95,9 @@
 
                        }else if (formId=='costApply'){
 
-                           /*var option = {};
+                           /!*var option = {};
                            option.doType = 2;
-                           $('body').m_approval_cost_add(option,true);*/
+                           $('body').m_approval_cost_add(option,true);*!/
 
                            var option = {};
                            var data = {};
@@ -115,7 +115,13 @@
                            };
                            $('body').m_form_template_generate_edit(option,true);
 
-                       }
+                       }*/
+                       var option = {};
+                       var data = {};
+                       option.dataInfo = {
+                           formId : formId
+                       };
+                       $('body').m_form_template_generate_edit(option,true);
 
                        return false;
                        break;

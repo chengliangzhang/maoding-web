@@ -28,6 +28,4 @@ public interface DynamicFormDao extends BaseDao<DynamicFormEntity> {
 
     List<DynamicFormEntity> listDynamicFormByType(String formType);
 
-    //通知接口
-    DynamicFormEntity getMessageByFormId(String FormId);
 }

@@ -11,6 +11,7 @@ import com.maoding.core.constant.CopyTargetType;
 import com.maoding.core.constant.NetFileType;
 import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.BeanUtils;
+import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
 import com.maoding.dynamicForm.dao.DynamicFormFieldValueDao;
 import com.maoding.dynamicForm.dto.*;
@@ -253,8 +254,10 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
             field.setFieldValueText(this.projectDao.getProjectName(id));
         }
         if(field.getFieldType()==11){//如果是审批数据
-            AuditCommonDTO expMainDTO = expMainService.getAuditDataById(id);
-            field.setFieldValueText(expMainDTO.getUserName()+"的"+expMainDTO.getExpTypeName()+"申请");
+            if(!StringUtils.isEmpty(id)){
+                AuditCommonDTO expMainDTO = expMainService.getAuditDataById(id);
+                field.setFieldValueText(expMainDTO.getUserName()+"的"+expMainDTO.getExpTypeName()+"申请");
+            }
         }
     }
 

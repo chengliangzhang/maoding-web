@@ -38,6 +38,8 @@ public class MessageJsonDTO {
 
     private String auditPersonName;//审核人
 
+    private String formName;//自定义审核表名
+
     /*****************报销****************/
     private String expUserName;//报销人
 
@@ -322,5 +324,13 @@ public class MessageJsonDTO {
 
     public void setAuditPersonName(String auditPersonName) {
         this.auditPersonName = auditPersonName;
+    }
+
+    public String getFormName() {
+        return formName;
+    }
+
+    public void setFormName(String formName) {
+        this.formName = formName;
     }
 }

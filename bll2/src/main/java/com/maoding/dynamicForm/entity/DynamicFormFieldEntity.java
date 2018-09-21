@@ -32,7 +32,7 @@ public class DynamicFormFieldEntity extends BaseEntity{
     private String fieldDefaultValue;
 
     // 默认值0(由数据字典提供，如果为0，则从maoding_dynamic_form_field_selectable_value 去获取
-    private Integer fieldSelectValueType;
+    private String fieldSelectValueType;
 
     //横坐标排序（如果x相同，则排成一行）
     private Integer seqX;
@@ -100,11 +100,11 @@ public class DynamicFormFieldEntity extends BaseEntity{
         this.fieldDefaultValue = fieldDefaultValue == null ? null : fieldDefaultValue.trim();
     }
 
-    public Integer getFieldSelectValueType() {
+    public String getFieldSelectValueType() {
         return fieldSelectValueType;
     }
 
-    public void setFieldSelectValueType(Integer fieldSelectValueType) {
+    public void setFieldSelectValueType(String fieldSelectValueType) {
         this.fieldSelectValueType = fieldSelectValueType;
     }
 

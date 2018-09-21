@@ -477,7 +477,7 @@ input.form-control[readonly] {
     width: 54px;
     display: block;
 }
-.icon-circle-border{
+.icon-circle-out.active{
     border: solid 2px #4765a0;
     display: block;
     border-radius: 50%;

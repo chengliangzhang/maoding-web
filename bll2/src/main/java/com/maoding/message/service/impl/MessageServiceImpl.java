@@ -24,10 +24,12 @@ import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.financial.dao.ExpAuditDao;
 import com.maoding.financial.dao.ExpMainDao;
 import com.maoding.financial.dao.LeaveDetailDao;
+import com.maoding.financial.dto.AuditCommonDTO;
 import com.maoding.financial.dto.ExpMainDTO;
 import com.maoding.financial.entity.ExpAuditEntity;
 import com.maoding.financial.entity.ExpMainEntity;
 import com.maoding.financial.entity.LeaveDetailEntity;
+import com.maoding.financial.service.ExpMainService;
 import com.maoding.hxIm.dto.ImSendMessageDTO;
 import com.maoding.invoice.service.InvoiceService;
 import com.maoding.message.dao.MessageDao;
@@ -137,7 +139,7 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
     private ZInfoDAO zInfoDAO;
 
     @Autowired
-    private DynamicFormDao dynamicFormDao;
+    private ExpMainService expMainService;
 
     @Value("${fastdfs.url}")
     protected String fastdfsUrl;
@@ -590,20 +592,26 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
             /**
              put("249","%expUserName% 提交了，“%formName%”的审批，请您审批。");// XXX 提交了，“XXX”的审批，请您审批。
              put("250","%sendUserName% 拒绝了你的“%formName%”的审批申请，退回原因：%reason%。");// XXX 拒绝了你的 XXX 的审批申请，退回原因：XXXX。
-             put("250","你提交“%formName%”的审批，已完成审批。");//  你提交了 XXX 的审批，已完成审批。
-             put("251","%sendUserName%同意并转交了%expUserName%的“%formName%”审批申请，请你审批。");//  XXX 同意并转交 X某的XXX审批申请，请你审批。
+             put("251","你提交“%formName%”的审批，已完成审批。");//  你提交了 XXX 的审批，已完成审批。
+             put("252","%sendUserName%同意并转交了%expUserName%的“%formName%”审批申请，请你审批。");//  XXX 同意并转交 X某的XXX审批申请，请你审批。
+             put("253","%expUserName% 你申请的“%formName%”审批,共计%expAmount%元，财务已拨款，请知晓。");//  XXX 你申请的 XXX审批申请，共计XX元，财务已拨款，请知晓。"
+             put("254","%expUserName% 你申请的“%formName%”审批,共计%expAmount%元，审批未通过，原因：%reason%。");//  XXX 你申请的 XXX审批申请，共计XX元，审批未通过，原因：XX"
              **/
             case SystemParameters.MESSAGE_TYPE_249:
             case SystemParameters.MESSAGE_TYPE_250:
             case SystemParameters.MESSAGE_TYPE_251:
             case SystemParameters.MESSAGE_TYPE_252:
-                DynamicFormEntity FormEntity = dynamicFormDao.getMessageByFormId(targetId);
-                if(FormEntity!=null){
-                    para.put("formName", FormEntity.getFormName());
+            case SystemParameters.MESSAGE_TYPE_253:
+            case SystemParameters.MESSAGE_TYPE_254:
+            case SystemParameters.MESSAGE_TYPE_255:
+                AuditCommonDTO auditCommonDTO = expMainService.getAuditDataById (targetId);
+                if(auditCommonDTO!=null){
+                    para.put("formName",auditCommonDTO.getExpTypeName());//自定义审批表名
+                    //金额
                 }
-                para.put("expUserName", getExpUserName(targetId));
+                para.put("expUserName", getExpUserName(targetId));//申请人
                 //查询审批原因
-                if(messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_250){
+                if(messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_250 || messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_254){
                     ExpAuditEntity recallAudit = this.expAuditDao.selectLastRecallAudit(messageEntity.getTargetId());
                     if(recallAudit!=null){
                         para.put("reason",recallAudit.getAuditMessage());
@@ -1636,6 +1644,7 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
                 .replaceAll("%reminderTime%", getValue(dto.getReminderTime()))
 
                 .replaceAll("%projectName%", getValue(dto.getProjectName()))
+                .replaceAll("%formName%", getValue(dto.getFormName()))
                 .replaceAll("%taskName%", getValue(dto.getTaskName()))
 
                 .replaceAll("%startTime1%", getValue(dto.getStartTime1()))

@@ -16,7 +16,9 @@ import com.maoding.core.constant.*;
 import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.core.util.StringUtils;
+import com.maoding.dynamicForm.dao.DynamicFormDao;
 import com.maoding.dynamicForm.dto.SaveDynamicAuditDTO;
+import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.enterprise.dto.EnterpriseSearchQueryDTO;
 import com.maoding.enterprise.service.EnterpriseService;
 import com.maoding.exception.CustomException;
@@ -137,6 +139,9 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
 
     @Autowired
     private ProjectCostService projectCostService;
+
+    @Autowired
+    private DynamicFormDao dynamicFormDao;
 
     /**
      * 方法描述：报销增加或者修改
@@ -1644,7 +1649,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
             return list.get(0);
         }
         return new AuditCommonDTO();
-
     }
+
 }
 

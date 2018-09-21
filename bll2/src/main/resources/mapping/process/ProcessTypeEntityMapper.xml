@@ -217,7 +217,8 @@
           and field_list.id = process_type.condition_field_id
         )
       </if>
-    where process_type.deleted = 0 and process_type.status = 1
+    where process_type.deleted = 0
+    -- and process_type.status = 1
       <if test="currentCompanyId != null">
         and process_type.company_id = #{currentCompanyId}
       </if>
