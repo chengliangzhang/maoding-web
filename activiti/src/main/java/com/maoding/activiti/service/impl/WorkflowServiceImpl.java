@@ -757,7 +757,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
     private <T> String getProcessDefineKey(String companyId, String key, T type){
         return ProcessTypeConst.ID_PREFIX_PROCESS + companyId + ProcessTypeConst.ID_SPLIT
                 + key + ProcessTypeConst.ID_SPLIT
-                + type.toString();
+                + DigitUtils.parseInt(type);
     }
     
     //通过输入参数组合成流程, 兼容的其他参数类型

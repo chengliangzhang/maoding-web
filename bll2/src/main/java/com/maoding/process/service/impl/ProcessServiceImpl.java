@@ -134,16 +134,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),"!key不能为空");
         ProcessDefineQueryDTO query = BeanUtils.createFrom(prepareRequest,ProcessDefineQueryDTO.class);
         query.setNeedConditionFieldInfo(1);
-        //前端传来的key目前是formId，为兼容进行更改
-        query.setKey(null);
-        query.setFormId(prepareRequest.getKey());
         ProcessDefineDTO process = processTypeDao.getProcessDefine(query);
-
-        //目前前端传递来的key为form_id，需更改为target_type
-        if (ObjectUtils.isNotEmpty(process)){
-            prepareRequest.setKey(process.getKey());
-        }
-
 
         //如果没有设置type字段等信息，从数据库内读取流程属性，并补充相应信息
         if (isNeedFill(prepareRequest)) {
