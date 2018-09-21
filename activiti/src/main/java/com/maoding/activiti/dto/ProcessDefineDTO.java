@@ -46,7 +46,18 @@ public class ProcessDefineDTO<T> extends CoreShowDTO {
     /** 设置的条件字段编号 **/
     private String conditionFieldId;
 
+    /** 用于作为存储财务拨款条件的字段id **/
+    private String financeFieldId;
+
     List<T> copyList = new ArrayList<>(); //对象的类型为AuditCopyDataDTO，由于AuditCopyDataDTO 在bill2层。所以此处用Object接收
+
+    public String getFinanceFieldId() {
+        return financeFieldId;
+    }
+
+    public void setFinanceFieldId(String financeFieldId) {
+        this.financeFieldId = financeFieldId;
+    }
 
     public String getConditionFieldId() {
         return conditionFieldId;

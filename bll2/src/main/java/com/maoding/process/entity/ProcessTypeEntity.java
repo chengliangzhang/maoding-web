@@ -27,6 +27,9 @@ public class ProcessTypeEntity extends BaseEntity {
      */
     private String conditionFieldId;
 
+    /** 动态表单中，用于作为存储财务拨款条件的字段id **/
+    private String financeFieldId;
+
     /**
      * （1：自由流程，2：固定流程，3：分条件流程）
      */
@@ -51,6 +54,14 @@ public class ProcessTypeEntity extends BaseEntity {
      * 1:删除，0：有效
      */
     private Integer deleted;
+
+    public String getFinanceFieldId() {
+        return financeFieldId;
+    }
+
+    public void setFinanceFieldId(String financeFieldId) {
+        this.financeFieldId = financeFieldId;
+    }
 
     public String getCompanyId() {
         return companyId;

@@ -6,6 +6,7 @@
     <result column="company_id" property="companyId" jdbcType="VARCHAR" />
     <result column="target_type" property="targetType" jdbcType="VARCHAR" />
     <result column="condition_field_id" property="conditionFieldId" jdbcType="VARCHAR" />
+    <result column="finance_field_id" property="financeFieldId" jdbcType="VARCHAR" />
     <result column="form_id" property="formId" jdbcType="VARCHAR" />
     <result column="form_type" property="formType" jdbcType="VARCHAR" />
     <result column="notice_type" property="noticeType" jdbcType="INTEGER" />
@@ -21,7 +22,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, company_id, target_type, condition_field_id,status,type, deleted,form_id,notice_type,seq,form_type,
+    id, company_id, target_type, condition_field_id,status,type, deleted,form_id,notice_type,seq,form_type,finance_field_id,
      create_date, create_by, update_date, update_by
   </sql>
 
@@ -55,14 +56,14 @@
 
   <insert id="insert" parameterType="com.maoding.process.entity.ProcessTypeEntity" >
     insert into maoding_process_type (id, company_id, target_type, condition_field_id,
-      status,type, deleted,form_id,notice_type,seq,form_type,
+      status,type, deleted,form_id,notice_type,seq,form_type,finance_field_id,
       create_date,create_by, update_date, update_by
       )
     values (#{id,jdbcType=VARCHAR}, #{companyId,jdbcType=VARCHAR},
      #{targetType,jdbcType=VARCHAR}, #{conditionFieldId,jdbcType=VARCHAR},
       #{status,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{deleted,jdbcType=INTEGER},
        #{formId,jdbcType=VARCHAR}, #{noticeType,jdbcType=INTEGER},
-        #{seq,jdbcType=INTEGER}, #{formType,jdbcType=VARCHAR},
+        #{seq,jdbcType=INTEGER}, #{formType,jdbcType=VARCHAR},#{financeFieldId,jdbcType=VARCHAR},
       #{createDate,jdbcType=TIMESTAMP},
       #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
       )
@@ -79,6 +80,9 @@
       </if>
       <if test="conditionFieldId != null" >
         condition_field_id = #{conditionFieldId,jdbcType=VARCHAR},
+      </if>
+      <if test="financeFieldId != null" >
+        finance_field_id = #{financeFieldId,jdbcType=VARCHAR},
       </if>
       <if test="status != null" >
         status = #{status,jdbcType=INTEGER},
@@ -122,6 +126,7 @@
     set company_id = #{companyId,jdbcType=VARCHAR},
       target_type = #{targetType,jdbcType=VARCHAR},
       condition_field_id = #{conditionFieldId,jdbcType=VARCHAR},
+      finance_field_id = #{financeFieldId,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER},
       type = #{type,jdbcType=INTEGER},
       deleted = #{deleted,jdbcType=INTEGER},
@@ -153,8 +158,9 @@
         <result column="field_title" property="varName"/>
         <result column="field_unit" property="varUnit"/>
         <result column="is_system" property="isSystem"/>
-      <result column="status" property="status"/>
-      <result column="condition_field_id" property="conditionFieldId"/>
+        <result column="status" property="status"/>
+        <result column="condition_field_id" property="conditionFieldId"/>
+        <result column="finance_field_id" property="financeFieldId"/>
     </resultMap>
 
     <resultMap id="ProcessDefineGroupMap" type="com.maoding.activiti.dto.ProcessDefineGroupDTO">

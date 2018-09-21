@@ -9,15 +9,20 @@ CREATE PROCEDURE `update_table`()
       `target_type` varchar(32) DEFAULT NULL COMMENT '业务类型',
       `type` int(1) DEFAULT '0' COMMENT '流程类型（1：自由流程，2：固定流程，3：分条件流程）',
       `status` int(1) DEFAULT '0' COMMENT '0:未启用，1：启用',
+      `finance_field_id` varchar(32) DEFAULT NULL COMMENT '动态表单中，用于作为存储财务拨款条件的字段id',
+      `condition_field_id` varchar(32) DEFAULT NULL COMMENT '动态表单中，用于作为条件流程的字段id',
+
       `deleted` int(1) DEFAULT '0' COMMENT '删除标识',
       `create_date` datetime DEFAULT NULL,
       `create_by` varchar(50) DEFAULT NULL,
       `update_date` datetime DEFAULT NULL,
       `update_by` varchar(50) DEFAULT NULL,
-      `condition_field_id` varchar(32) DEFAULT NULL COMMENT '动态表单中，用于作为条件流程的字段id',
       PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='流程与业务表的关联表';
 
+    if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_process_type' and column_name='finance_field_id') then
+      alter table maoding_process_type add column `finance_field_id` varchar(32) DEFAULT NULL COMMENT '动态表单中，用于作为存储财务拨款条件的字段id';
+    end if;
     if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_process_type' and column_name='target_type') then
       alter table maoding_process_type add column `target_type` varchar(32) DEFAULT NULL COMMENT '业务类型';
     elseif exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_process_type' and column_name='target_type' and character_maximum_length<32) then
