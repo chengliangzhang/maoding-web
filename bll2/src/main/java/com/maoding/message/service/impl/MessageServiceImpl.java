@@ -19,6 +19,8 @@ import com.maoding.core.util.JsonUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.deliver.entity.DeliverEntity;
 import com.maoding.dynamic.dao.ZInfoDAO;
+import com.maoding.dynamicForm.dao.DynamicFormDao;
+import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.financial.dao.ExpAuditDao;
 import com.maoding.financial.dao.ExpMainDao;
 import com.maoding.financial.dao.LeaveDetailDao;
@@ -133,6 +135,9 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
 
     @Autowired
     private ZInfoDAO zInfoDAO;
+
+    @Autowired
+    private DynamicFormDao dynamicFormDao;
 
     @Value("${fastdfs.url}")
     protected String fastdfsUrl;
@@ -568,7 +573,6 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
             case SystemParameters.MESSAGE_TYPE_239:
                 LeaveDetailEntity leaveDetail = leaveDetailDao.getLeaveDetailByMainId(targetId);
                 if(leaveDetail!=null){
-                    para.put("address", leaveDetail.getAddress());
                     para.put("leaveTypeName",this.getLeaveTypeName(leaveDetail.getLeaveType()));
                     para.put("startTime1", DateUtils.date2Str(leaveDetail.getStartTime(),DateUtils.time_sdf_slash));
                     para.put("endTime1", DateUtils.date2Str(leaveDetail.getEndTime(),DateUtils.time_sdf_slash));
@@ -582,6 +586,31 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
                     }
                 }
                 break;
+
+            /**
+             put("249","%expUserName% 提交了，“%formName%”的审批，请您审批。");// XXX 提交了，“XXX”的审批，请您审批。
+             put("250","%sendUserName% 拒绝了你的“%formName%”的审批申请，退回原因：%reason%。");// XXX 拒绝了你的 XXX 的审批申请，退回原因：XXXX。
+             put("250","你提交“%formName%”的审批，已完成审批。");//  你提交了 XXX 的审批，已完成审批。
+             put("251","%sendUserName%同意并转交了%expUserName%的“%formName%”审批申请，请你审批。");//  XXX 同意并转交 X某的XXX审批申请，请你审批。
+             **/
+            case SystemParameters.MESSAGE_TYPE_249:
+            case SystemParameters.MESSAGE_TYPE_250:
+            case SystemParameters.MESSAGE_TYPE_251:
+            case SystemParameters.MESSAGE_TYPE_252:
+                DynamicFormEntity FormEntity = dynamicFormDao.getMessageByFormId(targetId);
+                if(FormEntity!=null){
+                    para.put("formName", FormEntity.getFormName());
+                }
+                para.put("expUserName", getExpUserName(targetId));
+                //查询审批原因
+                if(messageEntity.getMessageType()==SystemParameters.MESSAGE_TYPE_250){
+                    ExpAuditEntity recallAudit = this.expAuditDao.selectLastRecallAudit(messageEntity.getTargetId());
+                    if(recallAudit!=null){
+                        para.put("reason",recallAudit.getAuditMessage());
+                    }
+                }
+                break;
+
 //            //财务拨款（报销，费用）
 //            put("234","你申请的报销“%expName%”共计%expAmount%元，财务已拨款。");
 //            put("235","你申请的费用“%expName%”共计%expAmount%元，财务已拨款。");

@@ -595,13 +595,12 @@
     </select>
 
 
-    <select id="getAuditDataForWeb" resultType="com.maoding.financial.dto.ExpMainDTO" parameterType="com.maoding.financial.dto.QueryAuditDTO">
+    <select id="getAuditDataForWeb" resultType="com.maoding.financial.dto.AuditCommonDTO" parameterType="com.maoding.financial.dto.QueryAuditDTO">
         SELECT
             exp_main.id,
             exp_main.company_user_id AS companyUserId,
             exp_main.exp_date,
             exp_main.version_num AS versionNum,
-            exp_main.exp_flag as expFlag,
             company_user.user_name AS userName,
             exp_main.exp_no AS expNo,
             exp_main.approve_status AS approveStatus,
@@ -655,6 +654,9 @@
         </if>
         <if test="userNameLike!=null">
             AND company_user.user_name LIKE  '%' #{userNameLike} '%'
+        </if>
+        <if test="mainId!=null">
+            AND exp_main.id = #{mainId}
         </if>
         GROUP BY exp_main.id
         order by exp_main.exp_date DESC , exp_main.create_date DESC

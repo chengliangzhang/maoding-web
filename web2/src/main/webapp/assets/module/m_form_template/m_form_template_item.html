@@ -210,8 +210,14 @@
 {{else if type==9}}
 <div class="col-xs-12 form-item " data-type="9" data-key="{{itemKey}}">
     <div class="form-group">
-        <label class="col-24-xs-3 control-label">明细</label>
-        <div class="col-24-xs-21">
+        <div class="panel panel-default" style="min-height: 100px;margin-left:45px;">
+            <div class="panel-body">
+                <form>
+                    <h4 class="title-line"> 明细 <span class="fc-v1-grey fw-normal">(可拖入左侧多个控件，不包括明细、附件控件)</span></h4>
+                </form>
+            </div>
+        </div>
+        <div class="col-24-xs-21 col-24-xs-offset-3">
             <button class="btn btn-primary btn-sm" data-action="addItem" title="添加明细"><i class="fa fa-plus"></i>&nbsp;添加明细</button>
         </div>
     </div>

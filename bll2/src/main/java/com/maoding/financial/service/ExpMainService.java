@@ -226,6 +226,8 @@ public interface ExpMainService extends BaseService<ExpMainEntity>{
      */
     void sendMessageForAudit(String mainId, String companyId, String companyUserId,String type,String accountId,String auditId,String approveStatus) throws Exception;
 
+    List<AuditDTO> getAuditList(String id, ExpMainEntity expMainEntity) throws Exception;
+
     /**
      * 待审批的,我提交的(type=1:我提交的，type=2：待审核的,type=3:我已经审核的)
      */
@@ -236,7 +238,7 @@ public interface ExpMainService extends BaseService<ExpMainEntity>{
      */
     List<AuditDataDTO> getPassAuditData(QueryAuditDTO query) throws Exception;
 
-    CorePageDTO<ExpMainDTO> getAuditDataForWeb(QueryAuditDTO dto)throws Exception;
+    CorePageDTO<AuditCommonDTO> getAuditDataForWeb(QueryAuditDTO dto)throws Exception;
 
     Map<String, Object> getAuditDetailForExp( QueryAuditDTO query) throws Exception;
 
@@ -244,5 +246,7 @@ public interface ExpMainService extends BaseService<ExpMainEntity>{
     List<ExpMainDTO> getAuditDataDetail(QueryAuditDTO dto);
 
     void saveExpMain(ExpMainEntity mainEntity, AuditBaseDTO dto) throws Exception;
+
+    AuditCommonDTO getAuditDataById(String id);
 
 }

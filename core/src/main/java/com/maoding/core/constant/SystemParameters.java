@@ -427,6 +427,12 @@ public interface SystemParameters {
             put("238","%expUserName% 提交的请假申请，请假类型：%leaveTypeName%，请假时间：%startTime1% - %endTime1%，已完成审批，请知晓");//ok
             put("239","%expUserName% 提交的出差申请，出差地：%address%，出差时间：%startTime1% - %endTime1%，已完成审批，请知晓");
 
+            /***********自定义报销部分***********/
+            put("249","%expUserName% 提交了，“%formName%”的审批，请您审批。");// XXX 提交了，“XXX”的审批，请您审批。
+            put("250","%sendUserName% 拒绝了你的“%formName%”的审批申请，退回原因：%reason%。");// XXX 拒绝了你的 XXX 的审批申请，退回原因：XXXX。
+            put("250","你提交“%formName%”的审批，已完成审批。");//  你提交了 XXX 的审批，已完成审批。
+            put("251","%sendUserName%同意并转交了%expUserName%的“%formName%”审批申请，请你审批。");//  XXX 同意并转交 X某的XXX审批申请，请你审批。
+
             //财务审核不通过（报销，费用）
             put("247","%expUserName% 你申请的报销,“%expName%”,共计%expAmount%元，审批未通过，原因：%reason%。");
             put("248","%expUserName% 你申请的费用,“%expName%”,共计%expAmount%元，审批未通过，原因：%reason%。");
@@ -708,6 +714,11 @@ public interface SystemParameters {
             put("238",new MessageTemplate("%expUserName% 提交的请假申请，请假类型：%leaveTypeName%，请假时间：%startTime1% - %endTime1%，已完成审批，请知晓",1));//ok
             put("239",new MessageTemplate("%expUserName% 提交的出差申请，出差地：%address%，出差时间：%startTime1% - %endTime1%，已完成审批，请知晓",1));
 
+            put("249",new MessageTemplate("%expUserName% 提交了，“%formName%”的审批，请您审批。",1));
+            put("250",new MessageTemplate("%sendUserName% 拒绝了你的“%formName%”的审批申请，退回原因：%reason%。",1));
+            put("251",new MessageTemplate("你提交“%formName%”的审批，已完成审批。",1));
+            put("252",new MessageTemplate("%sendUserName%同意并转交了%expUserName%的“%formName%”审批申请，请你审批。",1));
+
             //许佳迪，提交的付款申请“卯丁科技大厦：定金支付10%。”的技术审查费付款16.88万元，请你及时审批
             put("243",new MessageTemplate("%sendUserName% 提交的付款申请“%projectName%：%feeDescription%。”的%expName%付款%fee%万元，请你及时审批。",0));
             put("244",new MessageTemplate("你提交的付款申请“%projectName%：%feeDescription%。”的%expName%付款%fee%万元，已完成审批。",1));
@@ -936,6 +947,12 @@ public interface SystemParameters {
     int MESSAGE_TYPE_237 = 237;//费用
     int MESSAGE_TYPE_238 = 238;//请假
     int MESSAGE_TYPE_239 = 239;//出差
+
+    //自定义报销
+    int MESSAGE_TYPE_249 = 249;//审批提交
+    int MESSAGE_TYPE_250 = 250;//审批拒绝
+    int MESSAGE_TYPE_251 = 251;//审批完成
+    int MESSAGE_TYPE_252 = 252;//审批转批
 
     //财务拨款
     int MESSAGE_TYPE_234 = 234;//您申请的报销“办公费用”共计1200元，财务已拨款。

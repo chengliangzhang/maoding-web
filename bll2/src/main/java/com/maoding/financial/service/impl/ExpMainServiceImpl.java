@@ -1188,7 +1188,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
     }
 
 
-    private List<AuditDTO> getAuditList(String id, ExpMainEntity expMainEntity) throws Exception {
+    public List<AuditDTO> getAuditList(String id, ExpMainEntity expMainEntity) throws Exception {
         Map<String,Object> param = new HashMap<>();
         param.put("id",id);
         List<AuditDTO> auditList = expAuditDao.selectAuditByMainId(param);
@@ -1265,10 +1265,8 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
                 if( "8".equals(approveStatus)){
                     messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_247);
                 }
-            }
-
-            //费用
-            if(ExpenseConst.TYPE_COST_APPLY.equals(type)) {
+            }else if(ExpenseConst.TYPE_COST_APPLY.equals(type)) {
+                //费用
                 if ( "0".equals(approveStatus)) {//提交
                     messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_222);
                 }
@@ -1291,10 +1289,8 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
                 if( "8".equals(approveStatus)){
                     messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_248);
                 }
-            }
-
-            //请假
-            if(ExpenseConst.TYPE_LEAVE.equals(type)) {
+            }else if(ExpenseConst.TYPE_LEAVE.equals(type)) {
+                //请假
                 if ( "0".equals(approveStatus)) {//提交
                     messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_226);
                 }
@@ -1310,11 +1306,8 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
                 if ( "7".equals(approveStatus)) {//提交
                     messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_238);
                 }
-            }
-
-            //出差
-            if (ExpenseConst.TYPE_ON_BUSINESS.equals(type)){
-
+            }else if (ExpenseConst.TYPE_ON_BUSINESS.equals(type)){
+                //出差
                 if( "0".equals(approveStatus)){//提交
                     messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_230);
                 }
@@ -1330,10 +1323,8 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
                 if( "7".equals(approveStatus)){//提交
                     messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_239);
                 }
-            }
-
-            //付款申请
-            if (ExpenseConst.TYPE_PROJECT_PAY_APPLY.equals(type)) {
+            }else if (ExpenseConst.TYPE_PROJECT_PAY_APPLY.equals(type)) {
+                //付款申请
                 if ( "0".equals(approveStatus)) {//提交
                     messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_243);
                 }
@@ -1345,6 +1336,20 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
                 }
                 if ( "3".equals(approveStatus)) {//同意并转交
                     messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_246);
+                }
+            }else{
+            //其他申请（自定义申请）
+                if ( "0".equals(approveStatus)) {//提交
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_249);
+                }
+                if ( "1".equals(approveStatus)) {//拒绝
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_250);
+                }
+                if ( "2".equals(approveStatus)) {//同意
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_251);
+                }
+                if ( "3".equals(approveStatus)) {//同意并转交
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_252);
                 }
             }
 
@@ -1366,9 +1371,9 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
      * @throws Exception
      */
     @Override
-    public CorePageDTO<ExpMainDTO> getAuditDataForWeb(QueryAuditDTO dto) throws Exception {
-        CorePageDTO<ExpMainDTO> page = new CorePageDTO<>();
-        List<ExpMainDTO> list = new ArrayList<>();
+    public CorePageDTO<AuditCommonDTO> getAuditDataForWeb(QueryAuditDTO dto) throws Exception {
+        CorePageDTO<AuditCommonDTO> page = new CorePageDTO<>();
+        List<AuditCommonDTO> list = new ArrayList<>();
         //页面审批管理：我申请的（type=1）
         if ("1".equals(dto.getType())){
             dto.setCompanyUserId(dto.getCurrentCompanyUserId());
@@ -1629,5 +1634,17 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         this.processService.startProcessInstance(activitiDTO);
     }
 
+
+    @Override
+    public AuditCommonDTO getAuditDataById(String id) {
+        QueryAuditDTO queryAuditDTO = new QueryAuditDTO();
+        queryAuditDTO.setMainId(id);
+        List<AuditCommonDTO> list = this.expMainDao.getAuditDataForWeb(queryAuditDTO);
+        if(!CollectionUtils.isEmpty(list)){
+            return list.get(0);
+        }
+        return new AuditCommonDTO();
+
+    }
 }
 

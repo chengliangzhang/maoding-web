@@ -185,7 +185,7 @@ public class ExpMainDaoImpl extends GenericDao<ExpMainEntity> implements ExpMain
     }
 
     @Override
-    public List<ExpMainDTO> getAuditDataForWeb(QueryAuditDTO dto) {
+    public List<AuditCommonDTO> getAuditDataForWeb(QueryAuditDTO dto) {
         return this.sqlSession.selectList("GetExpMainPageMapper.getAuditDataForWeb",dto);
     }
 

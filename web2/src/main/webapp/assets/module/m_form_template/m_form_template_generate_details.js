@@ -44,7 +44,11 @@
                 if (response.code == '0') {
 
                     that._dataInfo = response.data;
-                    var html = template('m_form_template/m_form_template_generate_details',{dataInfo:that._dataInfo});
+                    that._dataInfo.dialogHeight = 'height:'+(600-100)+'px';
+                    var html = template('m_form_template/m_form_template_generate_details',{
+                        dataInfo:that._dataInfo,
+                        currentCompanyUserId:that._currentCompanyUserId
+                    });
                     that.renderDialog(html,function () {
 
                         that.bindActionClick();

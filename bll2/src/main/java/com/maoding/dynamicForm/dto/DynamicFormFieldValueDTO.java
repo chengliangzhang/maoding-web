@@ -12,7 +12,14 @@ public class DynamicFormFieldValueDTO extends DynamicFormFieldBaseDTO{
 
     private String fieldId;
 
+    /**
+     * 控件的value值
+     */
     private String fieldValue;
+    /**
+     * 控件的value值所对应的文本，因为fieldValue 有可能是id
+     */
+    private String fieldValueText;
 
     private String fieldValuePid;
 
@@ -91,5 +98,13 @@ public class DynamicFormFieldValueDTO extends DynamicFormFieldBaseDTO{
 
     public void setFieldSelectedValueList(Object fieldSelectedValueList) {
         this.fieldSelectedValueList = fieldSelectedValueList;
+    }
+
+    public String getFieldValueText() {
+        return fieldValueText;
+    }
+
+    public void setFieldValueText(String fieldValueText) {
+        this.fieldValueText = fieldValueText;
     }
 }

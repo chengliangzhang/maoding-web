@@ -158,7 +158,7 @@ public interface ExpMainDao extends BaseDao<ExpMainEntity> {
      * @param dto
      * @return
      */
-    List<ExpMainDTO> getAuditDataForWeb(QueryAuditDTO dto);
+    List<AuditCommonDTO> getAuditDataForWeb(QueryAuditDTO dto);
 
     /**
      * 我申请的报销/费用   的分页

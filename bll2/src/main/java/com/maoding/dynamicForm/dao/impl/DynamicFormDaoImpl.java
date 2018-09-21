@@ -41,4 +41,9 @@ public class DynamicFormDaoImpl extends GenericDao<DynamicFormEntity> implements
     public List<DynamicFormEntity> listDynamicFormByType(String formType) {
         return sqlSession.selectList("DynamicFormEntityMapper.listDynamicFormByType",formType);
     }
+
+    @Override
+    public DynamicFormEntity getMessageByFormId(String FormId) {
+        return sqlSession.selectOne("DynamicFormEntityMapper.selectById",FormId);
+    }
 }
