@@ -144,6 +144,7 @@
       <result column="process_status" property="status"/>
       <result column="form_is_system" property="isSystem"/>
       <result column="process_type" property="type"/>
+      <result column="icon_key" property="iconKey"/>
     </collection>
   </resultMap>
 
@@ -158,6 +159,7 @@
               form_list.id as form_id,
               form_list.form_name,
               form_list.documentation,
+              form_list.icon_key,
               if(form_list.id is null,null,if(form_list.company_id is null,1,0)) as form_is_system,
             </if>
             group_list.*
