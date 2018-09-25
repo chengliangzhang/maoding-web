@@ -1,6 +1,7 @@
 package com.maoding.financial.dao.impl;
 
 import com.maoding.core.base.dao.GenericDao;
+import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.financial.dao.ExpMainDao;
 import com.maoding.financial.dto.*;
 import com.maoding.financial.entity.ExpMainEntity;
@@ -187,6 +188,11 @@ public class ExpMainDaoImpl extends GenericDao<ExpMainEntity> implements ExpMain
     @Override
     public List<AuditCommonDTO> getAuditDataForWeb(QueryAuditDTO dto) {
         return this.sqlSession.selectList("GetExpMainPageMapper.getAuditDataForWeb",dto);
+    }
+
+    @Override
+    public List<CoreShowDTO> listAuditTypeName(QueryAuditDTO query) {
+        return this.sqlSession.selectList("GetExpMainPageMapper.listAuditTypeName",query);
     }
 
     @Override

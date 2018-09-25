@@ -33,4 +33,7 @@ public class CompanyBillType {
 
     //其他业务收入
     public static final Integer FEE_TYPE_FIX_OTHER_INCOME  = 8;
+
+    //自定义审批表申请
+    public static final Integer FEE_TYPE_DYNAMIC  = 9;
 }

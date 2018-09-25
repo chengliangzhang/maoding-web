@@ -707,8 +707,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
         if (pointList.size() > n) {
             conditionBuilder.append(pointList.get(n))
-                    .append(">")
-                    .append(key);
+                    .append(">conditionFieldId");
         }
 
         if ((pointList.size() > n) && (n > 0)){
@@ -716,8 +715,7 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
         }
 
         if (n > 0){
-            conditionBuilder.append(key)
-                    .append(">=")
+            conditionBuilder.append("conditionFieldId>=")
                     .append(pointList.get(n-1));
         }
         conditionBuilder.append("}");

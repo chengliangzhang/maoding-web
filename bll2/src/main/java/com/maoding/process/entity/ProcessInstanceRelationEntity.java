@@ -11,6 +11,39 @@ public class ProcessInstanceRelationEntity extends BaseEntity{
     private String targetType;
 
     private Integer deleted;
+    
+    /** 动态表单中，用于作为存储财务拨款条件的字段id **/
+    private String financeFieldId;
+    
+    /** 动态表单中，用于作为条件流程的字段id **/
+    private String conditionFieldId;
+
+    /** 动态表单模板的编号 **/
+    private String processTypeId;
+
+    public String getProcessTypeId() {
+        return processTypeId;
+    }
+
+    public void setProcessTypeId(String processTypeId) {
+        this.processTypeId = processTypeId;
+    }
+
+    public String getFinanceFieldId() {
+        return financeFieldId;
+    }
+
+    public void setFinanceFieldId(String financeFieldId) {
+        this.financeFieldId = financeFieldId;
+    }
+
+    public String getConditionFieldId() {
+        return conditionFieldId;
+    }
+
+    public void setConditionFieldId(String conditionFieldId) {
+        this.conditionFieldId = conditionFieldId;
+    }
 
     public ProcessInstanceRelationEntity(){
 

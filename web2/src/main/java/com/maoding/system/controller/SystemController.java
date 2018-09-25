@@ -6,9 +6,7 @@ import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.component.sms.SmsSender;
 import com.maoding.core.component.sms.bean.Sms;
 import com.maoding.core.constant.SystemParameters;
-import com.maoding.core.util.MD5Helper;
-import com.maoding.core.util.SecurityCodeUtil;
-import com.maoding.core.util.StringUtil;
+import com.maoding.core.util.*;
 import com.maoding.message.service.UpdateNotifyService;
 import com.maoding.org.dto.CompanyDTO;
 import com.maoding.org.dto.CompanyUserLiteDTO;
@@ -48,7 +46,10 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 深圳市设计同道技术有限公司
@@ -181,6 +182,25 @@ public class SystemController extends BaseController{
 			return ajaxResponseError("发送验证码失败");
 		}
 	}
+
+	/**
+	 * 描述       获取最后发送的验证码（明文）
+	 * 日期       2018/9/25
+	 * @author   张成亮
+	 **/
+	@RequestMapping(value = "/getSecurityCode", method = RequestMethod.POST)
+	@ResponseBody
+	public AjaxMessage getSecurityCode(@RequestBody String cellphone) {
+		String code = getFromSession(cellphone, String.class);
+		long timeout = System.currentTimeMillis() - getFromSession(cellphone + "-timeout", long.class)
+				- SystemParameters.SECURITY_CODE_10_MAX_LIVE_TIME;
+		if (StringUtils.isNotEmpty(code) && timeout < 0){
+			return AjaxMessage.succeed(code);
+		} else {
+			return AjaxMessage.succeed(null);
+		}
+	}
+
 	
 	/**
 	 * 方法描述：检查验证码 作 者：TangY 日 期：2016年7月7日-下午7:22:46

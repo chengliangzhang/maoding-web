@@ -91,11 +91,13 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
     public String startProcessInstance(ActivitiDTO dto) throws Exception {
         String processInstanceId = null;
         //获取流程的key值，确定启动哪个流程
-        String processKey = this.getProcessKey(dto.getTargetType(),dto.getCurrentCompanyId());
+        ProcessTypeEntity processType = processTypeDao.getCurrentProcessType(dto.getCurrentCompanyId(),dto.getTargetType());
+        String processKey = getProcessKey(processType);
         if(ProcessTypeConst.PROCESS_TYPE_FREE.equals(processKey)
                 && (!dto.getParam().containsKey("approveUser") || StringUtil.isNullOrEmpty(dto.getParam().get("approveUser")))){
             return null;
         }
+
         if(processKey != null){
             //启动流程
             WorkActionDTO workAction = new WorkActionDTO();
@@ -108,8 +110,16 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             processInstanceId = workflowService.startProcess(workAction).getId();
             //保存审核记录
             saveAudit(dto.getBusinessKey(),dto,true);
+
             //保存流程实例与业务表的关系
             ProcessInstanceRelationEntity instanceRelation = new ProcessInstanceRelationEntity(dto.getBusinessKey(),processInstanceId,dto.getTargetType());
+            //保存流程实例内的流程模板信息
+            if (processType != null) {
+                instanceRelation.setProcessTypeId(processType.getId());
+                instanceRelation.setConditionFieldId(processType.getConditionFieldId());
+                instanceRelation.setFinanceFieldId(processType.getFinanceFieldId());
+            }
+
             processInstanceRelationDao.insert(instanceRelation);
             return processInstanceId;
         }
@@ -169,6 +179,14 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         TraceUtils.check(StringUtils.isNotEmpty(prepareRequest.getKey()),"!key不能为空");
         ProcessDefineDTO process = getProcessDefineByCompanyIdAndKey(prepareRequest.getCurrentCompanyId(),prepareRequest.getKey());
 
+        //查找可以设置的条件列表
+        FormFieldQueryDTO fieldQuery = BeanUtils.createFrom(prepareRequest,FormFieldQueryDTO.class);
+        fieldQuery.setFormId(prepareRequest.getKey());
+        fieldQuery.setToCondition(1);
+        List<DynamicFormFieldDTO> fieldList = dynamicFormFieldDao.listFormField(fieldQuery);
+        List<ConditionDTO> conditionList = convertToConditionList(fieldList);
+
+
         //如果没有设置type字段等信息，从数据库内读取流程属性，并补充相应信息
         if (isNeedFill(prepareRequest)) {
             if (ObjectUtils.isNotEmpty(process)){
@@ -181,11 +199,15 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
                 if (StringUtils.isEmpty(prepareRequest.getConditionFieldId())){
                     prepareRequest.setConditionFieldId(process.getConditionFieldId());
                 }
-                if (StringUtils.isEmpty(prepareRequest.getVarName())){
-                    prepareRequest.setVarName(process.getVarName());
-                }
-                if (StringUtils.isEmpty(prepareRequest.getVarUnit())) {
-                    prepareRequest.setVarUnit(process.getVarUnit());
+                if (StringUtils.isEmpty(prepareRequest.getVarName()) && StringUtils.isEmpty(prepareRequest.getVarUnit())){
+                    ConditionDTO firstCondition = ObjectUtils.getFirst(conditionList);
+                    if (firstCondition != null) {
+                        prepareRequest.setVarName(firstCondition.getName());
+                        prepareRequest.setVarUnit(firstCondition.getUnit());
+                    } else {
+                        prepareRequest.setVarName(process.getVarName());
+                        prepareRequest.setVarUnit(process.getVarUnit());
+                    }
                 }
             }
         }
@@ -197,13 +219,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             //复制已有流程属性
             copyProperty(process,processDefineDetail);
 
-            //设置条件列表
-            FormFieldQueryDTO fieldQuery = BeanUtils.createFrom(prepareRequest,FormFieldQueryDTO.class);
-            fieldQuery.setFormId(prepareRequest.getKey());
-            fieldQuery.setToCondition(1);
-            List<DynamicFormFieldDTO> fieldList = dynamicFormFieldDao.listFormField(fieldQuery);
-            List<ConditionDTO> conditionList = convertToConditionList(fieldList);
-
+            //设置可以设置的条件列表
             processDefineDetail.setOptionalConditionList(conditionList);
 
             //重新组织一下数据，设置人员头像
@@ -361,8 +377,27 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         typeEntity.setTargetType(key);
         //设置类型
         typeEntity.setType(type);
-        //设置条件字段
-        typeEntity.setConditionFieldId(editRequest.getConditionFieldId());
+        //设置条件字段，如果conditionFieldId为空，设置conditionFieldId为第一个条件，并且进行提示
+        if ((DigitUtils.parseInt(editRequest.getType()) == ProcessTypeConst.PROCESS_TYPE_CONDITION) && (StringUtils.isEmpty(editRequest.getConditionFieldId()))) {
+            //设置流程为条件流程，且没有指定conditionFieldId
+            //查找可以设置的条件列表
+            FormFieldQueryDTO fieldQuery = BeanUtils.createFrom(editRequest,FormFieldQueryDTO.class);
+            fieldQuery.setFormId(editRequest.getKey());
+            fieldQuery.setToCondition(1);
+            List<DynamicFormFieldDTO> fieldList = dynamicFormFieldDao.listFormField(fieldQuery);
+            if (ObjectUtils.isNotEmpty(fieldList)){
+                DynamicFormFieldDTO firstField = ObjectUtils.getFirst(fieldList);
+                if (firstField != null){
+                    typeEntity.setConditionFieldId(firstField.getId());
+                    TraceUtils.check(false,"!conditionFieldId在设置条件流程时不能为空，已设置conditionFieldId为默认");
+                } else {
+                    TraceUtils.check(false,"!conditionFieldId在设置条件流程时不能为空，且无法找到默认的conditionFieldId");
+                }
+            }
+        } else {
+            //正常设置条件字段
+            typeEntity.setConditionFieldId(editRequest.getConditionFieldId());
+        }
 
         if (found) {
             processTypeDao.updateById(typeEntity);
@@ -370,8 +405,6 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
             processTypeDao.insert(typeEntity);
         }
 
-        TraceUtils.check(DigitUtils.parseInt(editRequest.getType()) != ProcessTypeConst.PROCESS_TYPE_CONDITION
-            || StringUtils.isNotEmpty(editRequest.getConditionFieldId()),"!conditionFieldId在设置条件流程时不能为空");
         return BeanUtils.createFrom(typeEntity,ProcessDefineDTO.class);
     }
 
@@ -523,11 +556,15 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
     private String getProcessKey(String targetType,String companyId){
         //如果是自由流程，则启动系统中的默认的流程
         ProcessTypeEntity processType = this.processTypeDao.getCurrentProcessType(companyId,targetType);
+        return getProcessKey(processType);
+    }
+
+    private String getProcessKey(ProcessTypeEntity processType ){
+        //如果是自由流程，则启动系统中的默认的流程
         if(processType==null || ProcessTypeConst.TYPE_FREE == processType.getType()){
             return ProcessTypeConst.PROCESS_TYPE_FREE;
         }
         return "p_"+processType.getCompanyId()+"_"+processType.getTargetType()+"_"+processType.getType();
-       // return processType.getCompanyId()+"_"+processType.getTargetType()+"_"+processType.getType();
     }
 
     /**

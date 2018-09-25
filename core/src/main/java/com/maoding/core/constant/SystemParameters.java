@@ -716,10 +716,10 @@ public interface SystemParameters {
             put("238",new MessageTemplate("%expUserName% 提交的请假申请，请假类型：%leaveTypeName%，请假时间：%startTime1% - %endTime1%，已完成审批，请知晓",1));//ok
             put("239",new MessageTemplate("%expUserName% 提交的出差申请，出差地：%address%，出差时间：%startTime1% - %endTime1%，已完成审批，请知晓",1));
             /***********自定义审批***********/
-            put("249",new MessageTemplate("%expUserName% 提交了，“%formName%”的审批，请您审批。",1));
+            put("249",new MessageTemplate("%expUserName% 提交了，“%formName%”的审批，请您审批。",0));
             put("250",new MessageTemplate("%sendUserName% 拒绝了你的“%formName%”的审批申请，退回原因：%reason%。",1));
             put("251",new MessageTemplate("你提交“%formName%”的审批，已完成审批。",1));
-            put("252",new MessageTemplate("%sendUserName%同意并转交了%expUserName%的“%formName%”审批申请，请你审批。",1));
+            put("252",new MessageTemplate("%sendUserName%同意并转交了%expUserName%的“%formName%”审批申请，请你审批。",0));
             put("253",new MessageTemplate("%expUserName% 你申请的“%formName%”审批,共计%expAmount%元，财务已拨款，请知晓。",1));
             put("254",new MessageTemplate("%expUserName% 你申请的“%formName%”审批,共计%expAmount%元，审批未通过，原因：%reason%。",1));
             put("255",new MessageTemplate("你申请的“%formName%”审批,共计%expAmount%元，财务已拨款。",1));
@@ -959,7 +959,7 @@ public interface SystemParameters {
     int MESSAGE_TYPE_250 = 250;//审批拒绝
     int MESSAGE_TYPE_251 = 251;//审批完成
     int MESSAGE_TYPE_252 = 252;//审批转批
-    int MESSAGE_TYPE_253 = 253;//审批财务同意
+    int MESSAGE_TYPE_253 = 253;//审批财务同意(抄送)
     int MESSAGE_TYPE_254 = 254;//审批财务不同意
     int MESSAGE_TYPE_255 = 255;//财务拨款
 

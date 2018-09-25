@@ -204,6 +204,7 @@ public class DynamicFormController extends BaseController {
         groupQuery.setIsIncludeForm(1);
         groupQuery.setStatus(1);
         groupQuery.setNeedCC(0);
+        groupQuery.setNotIncludeGroupName("项目审批");
         List<FormGroupDTO> groupList = dynamicFormGroupService.listFormGroup(groupQuery);
         return AjaxMessage.succeed(groupList);
     }

@@ -2,6 +2,7 @@ package com.maoding.financial.dao;
 
 import com.maoding.core.base.dao.BaseDao;
 import com.maoding.core.base.dto.CorePageDTO;
+import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.financial.dto.*;
 import com.maoding.financial.entity.ExpMainEntity;
 import com.maoding.invoice.dto.InvoiceDTO;
@@ -159,6 +160,11 @@ public interface ExpMainDao extends BaseDao<ExpMainEntity> {
      * @return
      */
     List<AuditCommonDTO> getAuditDataForWeb(QueryAuditDTO dto);
+
+    /**
+     * 获取查询列表中的审批类型
+     */
+    List<CoreShowDTO> listAuditTypeName(QueryAuditDTO query);
 
     /**
      * 我申请的报销/费用   的分页

@@ -15,6 +15,12 @@ import com.maoding.core.constant.CompanyBillType;
 import com.maoding.core.constant.ExpCategoryConst;
 import com.maoding.core.util.DateUtils;
 import com.maoding.core.util.StringUtil;
+import com.maoding.dynamicForm.dao.DynamicFormFieldValueDao;
+import com.maoding.dynamicForm.dto.DynamicFormFieldValueDTO;
+import com.maoding.dynamicForm.dto.FormFieldQueryDTO;
+import com.maoding.dynamicForm.dto.SaveDynamicAuditDTO;
+import com.maoding.dynamicForm.service.DynamicFormFieldValueService;
+import com.maoding.exception.CustomException;
 import com.maoding.financial.dao.ExpCategoryDao;
 import com.maoding.financial.dao.ExpDetailDao;
 import com.maoding.financial.dao.ExpFixedDao;
@@ -22,11 +28,13 @@ import com.maoding.financial.dao.ExpMainDao;
 import com.maoding.financial.dto.ExpFixedDataDTO;
 import com.maoding.financial.dto.ExpMainDTO;
 import com.maoding.financial.entity.ExpDetailEntity;
+import com.maoding.financial.entity.ExpMainEntity;
 import com.maoding.org.dao.CompanyDao;
 import com.maoding.org.dao.CompanyUserDao;
 import com.maoding.org.entity.CompanyEntity;
 import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.org.service.CompanyService;
+import com.maoding.process.entity.ProcessTypeEntity;
 import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.entity.ProjectEntity;
 import org.apache.commons.lang3.StringUtils;
@@ -72,6 +80,12 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
     @Autowired
     private CompanyBillDetailDao companyBillDetailDao;
 
+    @Autowired
+    private DynamicFormFieldValueDao dynamicFormFieldValueDao;
+
+    @Autowired
+    private DynamicFormFieldValueService dynamicFormFieldValueService;
+
     @Override
     public synchronized int saveCompanyBill(SaveCompanyBillDTO dto) throws Exception {
 
@@ -88,7 +102,10 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
             this.saveExpFee(dto,bill);
         }else if(dto.getFeeType() ==CompanyBillType.FEE_TYPE_EXP_FIX || dto.getFeeType() ==CompanyBillType.FEE_TYPE_FIX_OTHER_INCOME){ //固定支出,其他收入
             this.saveFixFee(dto,bill);
-        }else {
+        }else if(dto.getFeeType() ==CompanyBillType.FEE_TYPE_DYNAMIC){//自定义审批表单
+            this.saveDynamicFee(dto,bill);
+        }
+        else {
             if(dto.getFeeType()==CompanyBillType.DIRECTION_PAYEE){//合同回款
                 //合同回款的付款方为甲方
                 bill.setPayerName(this.projectDao.getEnterpriseNameByProjectId(dto.getProjectId()));
@@ -367,5 +384,60 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
         companyBillDao.deleteById(billId);
         companyBillRelationDao.deleteById(billId);
         companyBillDetailDao.deleteCompanyBillDetailByBillId(billId);
+    }
+
+    /**
+     * 自定义审批单
+     * @param dto
+     * @param mainBill
+     * @throws Exception
+     */
+    private void saveDynamicFee(SaveCompanyBillDTO dto,CompanyBillEntity mainBill) throws Exception {
+
+        if( dto.getTargetId()==null){
+            throw new CustomException("参数错误");
+        }
+        //todo 1.封装保存CompanyBillEntity
+//        private String companyId;//所属组织id
+//        private BigDecimal fee;//总金额
+//        private Integer feeType;//费用类型（参考CompanyBillType）
+//        private Integer payType;//收支类型（1：收，2：支）
+//        private Integer feeUnit;//金额的单位（1：万元，2：元）目前统一用元
+//        private String billDescription;//费用描述
+//        private String paymentDate;//费用日期
+//        private String invoiceNo;//发票号
+
+        FormFieldQueryDTO queryDTO = new FormFieldQueryDTO();
+        ExpMainEntity mainEntity = expMainDao.selectById(dto.getTargetId());//dto.getTargetId()就是mainId
+        queryDTO.setId(mainEntity.getId());//mainId
+        queryDTO.setFormId(mainEntity.getType());//formId
+
+
+        //1.查询模板+数据
+        List<DynamicFormFieldValueDTO> fieldList = dynamicFormFieldValueService.listFormFieldValueByFormId(queryDTO);
+
+        fieldList.forEach(f ->{
+
+            if(f.getFieldType()==9){
+
+            }
+        });
+        mainBill.setCompanyId(dto.getCompanyId());
+//        mainBill.setFee();//做到这
+        mainBill.setFeeType(9);
+//        mainBill.setPayType();
+        mainBill.setFeeUnit(2);
+//        mainBill.setBillDescription();
+//        mainBill.setPaymentDate();
+//        mainBill.setInvoiceNo();
+
+
+        //todo 2.封装保存CompanyBillDetailEntity
+        //组织账单详情
+        CompanyBillDetailEntity BillDetail = new CompanyBillDetailEntity();
+
+        //todo 3.封装保存CompanyBillRelationEntity
+        //保存关联的字段
+        CompanyBillRelationEntity billRelation = new CompanyBillRelationEntity();
     }
 }

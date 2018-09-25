@@ -26,7 +26,9 @@ import com.maoding.financial.entity.ExpMainEntity;
 import com.maoding.financial.service.ExpCategoryService;
 import com.maoding.financial.service.ExpMainService;
 import com.maoding.org.dto.CompanyUserDataDTO;
+import com.maoding.process.dao.ProcessInstanceRelationDao;
 import com.maoding.process.dao.ProcessTypeDao;
+import com.maoding.process.entity.ProcessInstanceRelationEntity;
 import com.maoding.process.entity.ProcessTypeEntity;
 import com.maoding.process.service.ProcessService;
 import com.maoding.project.dao.ProjectDao;
@@ -85,7 +87,18 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
     @Autowired
     private ProjectDao projectDao;
 
+    @Autowired
+    private ProcessInstanceRelationDao processInstanceRelationDao;
+
     private Integer detailType = 9;
+
+
+    void validateSaveAuditDetail(SaveDynamicAuditDTO dto) throws Exception{
+        if(StringUtils.isEmpty(dto.getType())){
+            throw new CustomException("参数错误");
+        }
+    }
+
     /**
      * 作者：FYT
      * 日期：2018/9/13
@@ -95,6 +108,10 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
      */
     @Override
     public int saveAuditDetail(SaveDynamicAuditDTO dto) throws Exception {
+        validateSaveAuditDetail(dto);
+        ProcessTypeEntity processType = processTypeDao.getCurrentProcessTypeByFormId(dto.getCurrentCompanyId(),dto.getType());
+        String conditionFieldId = processType.getConditionFieldId();
+        double conditionFieldValue = 0;
 
         //todo 1.添加审批表单主表的记录
         ExpMainEntity mainEntity = new ExpMainEntity();
@@ -106,6 +123,9 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         String mainId = mainEntity.getId();
         //todo 2.添加页面上的fieldId 对应的 value
         for(DynamicFormFieldValueDTO valueDTO: dto.getFieldList()) {
+            if(valueDTO.getFieldId().equals(conditionFieldId)){
+                conditionFieldValue = conditionFieldValue + Double.parseDouble(valueDTO.getFieldValue());
+            }
             valueDTO.setMainId(mainId);
             if (valueDTO.getFieldType() == detailType) {//如果是明细
                 DynamicFormFieldValueEntity fieldValue = this.saveDynamicFormFieldValue(valueDTO);
@@ -116,6 +136,9 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
                 double filedValue = 0;
                 for(int i = 0;i<valueDTO.getDetailFieldList().size();i++,groupNum++){
                     for(DynamicFormFieldValueDTO detailDTO:valueDTO.getDetailFieldList().get(i)){
+                        if(detailDTO.getFieldId().equals(conditionFieldId)){
+                            conditionFieldValue = conditionFieldValue + Double.parseDouble(detailDTO.getFieldValue());
+                        }
                         detailDTO.setMainId(mainId);
                         detailDTO.setGroupNum(groupNum);
                         detailDTO.setFieldValuePid(fieldValuePid);
@@ -137,6 +160,9 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         }
 
         //todo 4.插入主表记录，因为，在插入主表记录的时候，要启动流程，分条件流程还需要携带条件值，所有放在最后插入
+        if(StringUtils.isNotEmpty(conditionFieldId)){
+            dto.setConditionFieldValue(conditionFieldValue);
+        }
         this.expMainService.saveExpMain(mainEntity,dto);
         //处理抄送人
         List<String> companyUserIdList = new ArrayList<>();
@@ -161,6 +187,7 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
     public Map<String,Object> initDynamicAudit(FormFieldQueryDTO dto) throws Exception {
         String id = dto.getId();
         String targetType = null;
+        String conditionFieldId = null;
         AuditCommonDTO expMainDTO = new AuditCommonDTO();
         if(StringUtils.isNotEmpty(id)){
             expMainDTO = expMainService.getAuditDataById(id);
@@ -172,6 +199,7 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
                 throw new CustomException("参数错误");
             }
             targetType =  processType.getTargetType();
+            conditionFieldId = processType.getConditionFieldId();
         }
         String conditionValue = null;
         List<AuditDTO> auditList = null;
@@ -180,7 +208,7 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         Map<String,Object> result = new HashMap<>();
         //1.查询模板+数据
         List<DynamicFormFieldValueDTO> fieldList = dynamicFormFieldValueDao.listFormFieldValueByFormId(dto);
-        SaveDynamicAuditDTO dynamicAudit = this.handleDynamicFormField(fieldList,dto);
+        SaveDynamicAuditDTO dynamicAudit = this.handleDynamicFormField(fieldList,dto,conditionFieldId);
         dynamicAudit.setType(dto.getFormId());
         //2.把数据匹配上
         if(StringUtils.isNotEmpty(id)){
@@ -204,7 +232,7 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         AuditEditDTO audit = BeanUtils.createFrom(dto,AuditEditDTO.class);
         audit.setMainId(dto.getId());
         audit.setAuditType(targetType);//此处是用于新增审批单的时候， 查找相应的流程，如果是详情界面，则不需要，直接通过id去找相应的流程实例
-        Map<String,Object> processData = processService.getCurrentTaskUser(audit,auditList,conditionValue);
+        Map<String,Object> processData = processService.getCurrentTaskUser(audit,auditList,this.getConditionValue(dto.getId()));
         dynamicAudit.setAttachList(expAttachList);
         dynamicAudit.setCcCompanyUserList(ccCompanyUserList);
         dynamicAudit.setAuditList(auditList);
@@ -213,6 +241,35 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         result.put("formName",this.dynamicFormService.getFormName(dto.getFormId()));
         result.putAll(processData);
         return result;
+    }
+
+    @Override
+    public List<DynamicFormFieldValueDTO> listFormFieldValueByFormId(FormFieldQueryDTO dto) throws Exception {
+        List<DynamicFormFieldValueDTO> fieldList = dynamicFormFieldValueDao.listFormFieldValueByFormId(dto);
+        this.handleDynamicFormField(fieldList,dto,null);
+        return fieldList;
+    }
+
+    /**
+     * 如果mainId不为null，表示是查询详情，查询getConditionValue 中的参数conditionFieldId必须要从ProcessInstanceRelationEntity 中获取
+     * 如果mainId为null，直接返回null就好了。
+     * getConditionValue：主要用于分条件流程 条件值获取，便于详情中获取auditList
+     */
+    public String getConditionValue(String mainId){
+        ProcessInstanceRelationEntity instanceRelation = this.processInstanceRelationDao.getProcessInstanceRelation(mainId);
+        if(instanceRelation!=null && StringUtils.isEmpty(instanceRelation.getConditionFieldId()) || StringUtils.isEmpty(mainId)){
+            return null;
+        }
+        return dynamicFormFieldValueDao.getConditionValue(mainId,instanceRelation.getConditionFieldId())+"";
+    }
+
+
+    public void setStatisticalCondition(DynamicFormFieldValueDTO dto,String conditionFieldId){
+        if(StringUtils.isNotEmpty(conditionFieldId)) {
+            if(dto.getFieldId().equals(conditionFieldId)){
+                dto.setStatisticalCondition(1);//设置为分条件统计的字段
+            }
+        }
     }
 
     public Integer getAuditFlag(String approveStatus,String currentCompanyUserId,List<AuditDTO> auditList){
@@ -226,22 +283,24 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
     }
 
     public Integer getIsEdit(AuditCommonDTO commonDTO,String currentCompanyUserId){
-        String approveStatus = commonDTO.getApproveStatus();
-        Integer expFlag = commonDTO.getExpFlag();
-        String expCompanyUserId = commonDTO.getCompanyUserId();
-        if(("2".equals(approveStatus) || "3".equals(approveStatus)) && expFlag!=null && expFlag != 1){
-            if(currentCompanyUserId!=null && currentCompanyUserId.equals(expCompanyUserId)){
-                return 1;//处于审批的状态
-            }
-        }
+        //以下屏蔽，暂时不做编辑功能
+//        String approveStatus = commonDTO.getApproveStatus();
+//        Integer expFlag = commonDTO.getExpFlag();
+//        String expCompanyUserId = commonDTO.getCompanyUserId();
+//        if(("2".equals(approveStatus) || "3".equals(approveStatus)) && expFlag!=null && expFlag != 1){
+//            if(currentCompanyUserId!=null && currentCompanyUserId.equals(expCompanyUserId)){
+//                return 1;//处于可编辑的状态
+//            }
+//        }
         return 0;
     }
 
-    private SaveDynamicAuditDTO handleDynamicFormField(List<DynamicFormFieldValueDTO> fieldList,FormFieldQueryDTO dto) throws Exception{
+    public SaveDynamicAuditDTO handleDynamicFormField(List<DynamicFormFieldValueDTO> fieldList,FormFieldQueryDTO dto,String conditionFieldId) throws Exception{
         SaveDynamicAuditDTO dynamicAudit = new SaveDynamicAuditDTO();
         Map<String,Object> valueMap = new HashMap<>();
         for(DynamicFormFieldValueDTO field:fieldList){
             this.setSelectValue(field,dto,valueMap);
+            this.setStatisticalCondition(field,conditionFieldId);
             if(field.getFieldType()==9){
                 List<List<DynamicFormFieldValueDTO>> detailFieldValueList = new ArrayList<>();
                 dto.setFieldPid(field.getFieldId());
@@ -249,6 +308,7 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
                 Map<String,List<DynamicFormFieldValueDTO>> detailMap = new HashMap<>();
                 for(DynamicFormFieldValueDTO val:detailList){
                     this.setSelectValue(val,dto,valueMap);
+                    this.setStatisticalCondition(val,conditionFieldId);
                     String key = val.getGroupNum()+"";
                     if(detailMap.containsKey(key)){
                         detailMap.get(key).add(val);

@@ -33,7 +33,42 @@ CREATE PROCEDURE `update_table`()
   END;
 call update_table();
 
-    -- 报销主表
+-- 流程与业务表的关联表
+DROP PROCEDURE IF EXISTS `update_table`;
+CREATE PROCEDURE `update_table`()
+  BEGIN
+    CREATE TABLE IF NOT EXISTS `maoding_process_instance_relation` (
+      `id` varchar(32) NOT NULL COMMENT '流程ID',
+      `target_id` varchar(32) DEFAULT NULL COMMENT '关联的对象的id',
+      `process_instance_id` varchar(64) DEFAULT NULL COMMENT '流程实例id',
+      `target_type` varchar(32) DEFAULT NULL COMMENT '业务类型',
+      `finance_field_id` varchar(32) DEFAULT NULL COMMENT '动态表单中，用于作为存储财务拨款条件的字段id',
+      `condition_field_id` varchar(32) DEFAULT NULL COMMENT '动态表单中，用于作为条件流程的字段id',
+      `process_type_id` varchar(32) DEFAULT NULL COMMENT '动态表单模板的编号',
+
+      `deleted` int(1) DEFAULT '0' COMMENT '删除标识',
+      `create_date` datetime DEFAULT NULL,
+      `create_by` varchar(50) DEFAULT NULL,
+      `update_date` datetime DEFAULT NULL,
+      `update_by` varchar(50) DEFAULT NULL,
+      PRIMARY KEY (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='流程与业务表的关联表';
+
+    if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='process_type_id' and column_name='finance_field_id') then
+      alter table maoding_process_instance_relation add column `process_type_id` varchar(32) DEFAULT NULL COMMENT '动态表单模板的编号';
+    end if;
+    if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_process_instance_relation' and column_name='finance_field_id') then
+      alter table maoding_process_instance_relation add column `finance_field_id` varchar(32) DEFAULT NULL COMMENT '动态表单中，用于作为存储财务拨款条件的字段id';
+    end if;
+    if not exists (select 1 from information_schema.COLUMNS where TABLE_SCHEMA=database() and table_name='maoding_process_instance_relation' and column_name='condition_field_id') then
+      alter table maoding_process_instance_relation add column `condition_field_id` varchar(32) DEFAULT NULL COMMENT '动态表单中，用于作为条件流程的字段id';
+    end if;
+
+    call createIndex('maoding_process_instance_relation');
+  END;
+call update_table();
+
+-- 报销主表
 DROP PROCEDURE IF EXISTS `update_table`;
 CREATE PROCEDURE `update_table`()
   BEGIN

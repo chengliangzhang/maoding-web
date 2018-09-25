@@ -29,5 +29,10 @@ public class DynamicFormFieldDaoImpl extends GenericDao<DynamicFormFieldEntity> 
         return sqlSession.selectList("DynamicFormFieldEntityMapper.listFormField",query);
     }
 
+    @Override
+    public String getDefaultFieldTitle(String fieldType) {
+        return sqlSession.selectOne("DynamicFormFieldEntityMapper.getDefaultFieldTitle",fieldType);
+    }
+
 
 }

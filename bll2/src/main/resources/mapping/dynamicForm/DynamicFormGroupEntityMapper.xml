@@ -178,9 +178,15 @@
             )
           </if>
         where group_list.deleted = 0
-            <if test="currentCompanyId != null">
-                and group_list.company_id = #{currentCompanyId}
-            </if>
+        <if test="currentCompanyId != null">
+            and group_list.company_id = #{currentCompanyId}
+        </if>
+        <if test="isEdit != null">
+          and group_list.is_edit = #{isEdit}
+        </if>
+        <if test="notIncludeGroupName != null">
+          and not position(group_list.group_name in #{notIncludeGroupName})
+        </if>
         order by group_list.seq
             <if test="isIncludeForm == 1">
                 ,process_type.seq

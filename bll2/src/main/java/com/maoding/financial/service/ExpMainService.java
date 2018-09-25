@@ -1,6 +1,7 @@
 package com.maoding.financial.service;
 
 import com.maoding.core.base.dto.CorePageDTO;
+import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.base.service.BaseService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.financial.dto.*;
@@ -242,6 +243,11 @@ public interface ExpMainService extends BaseService<ExpMainEntity>{
 
     Map<String, Object> getAuditDetailForExp( QueryAuditDTO query) throws Exception;
 
+
+    /**
+     * 审批类型筛选列表
+     */
+    List<CoreShowDTO> listAuditTypeName(QueryAuditDTO query) throws Exception;
 
     List<ExpMainDTO> getAuditDataDetail(QueryAuditDTO dto);
 

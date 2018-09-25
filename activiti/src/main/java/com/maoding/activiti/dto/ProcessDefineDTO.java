@@ -14,7 +14,10 @@ import java.util.List;
  * 描述: 
  **/
 public class ProcessDefineDTO<T> extends CoreShowDTO {
-    /** id: 流程编号 */
+    /** id: 格式为companyId_key_type的流程编号 */
+
+    /** 流程编号 **/
+    private String processId;
 
     /** 流程说明 */
     private String documentation;
@@ -50,6 +53,14 @@ public class ProcessDefineDTO<T> extends CoreShowDTO {
     private String financeFieldId;
 
     List<T> copyList = new ArrayList<>(); //对象的类型为AuditCopyDataDTO，由于AuditCopyDataDTO 在bill2层。所以此处用Object接收
+
+    public String getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
 
     public String getFinanceFieldId() {
         return financeFieldId;

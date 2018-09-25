@@ -150,17 +150,7 @@
                         }
 
 
-                        $(that.element).find('.form-item[data-type="5"][data-statistics="1"] input').on('keyup',function () {
-                            var expAmout = 0;
-                            $(that.element).find('.form-item[data-type="5"][data-statistics="1"] input').each(function () {
-                                expAmout = expAmout + ($(this).val()-0);
-                            });
-                            $(that.element).find('#isShowStatistics #expAmount').html(expAmout);
-                            if(that._dataInfo.processType=='3'){
-                                console.log('that._dataInfo.processType==3')
-                                that.renderApprover();
-                            }
-                        });
+                        that.inputKeyup();
 
                         //编辑
                         if(that.settings.dataInfo.id){
@@ -277,22 +267,37 @@
             }
 
         }
+        ,inputKeyup:function () {
+            var that = this;
+            //是否出现统计
+            $(that.element).find('.form-item[data-type="5"][data-statistics="1"] input').on('keyup',function () {
+                var expAmout = 0,isShowStatistics=0;
+                $(that.element).find('.form-item[data-type="5"][data-statistics="1"] input').each(function () {
+                    expAmout = expAmout + ($(this).val()-0);
+                    isShowStatistics++;
+                });
+                if(isShowStatistics>0){
+                    $(that.element).find('#isShowStatistics').show();
+                    $(that.element).find('#isShowStatistics #expAmount').html(expAmout);
+                }
+                $(that.element).find('#isShowStatistics #expAmount').html(expAmout);
+            });
+            //用于分条件，流程变化
+            $(that.element).find('.form-item[data-type="5"][data-statistical-condition="1"]').on('keyup',function () {
+                if(that._dataInfo.processType=='3'){
+                    console.log('that._dataInfo.processType==3');
+                    that.renderApprover();
+                }
+            });
+        }
         ,renderApprover:function () {
             var that = this;
             var expAmout = 0,userList = [];
 
-            var isShowStatistics = 0;
-            $(that.element).find('.form-item[data-type="5"][data-statistics="1"] input').each(function () {
+            $(that.element).find('.form-item[data-type="5"][data-statistical-condition="1"] input').each(function () {
 
                 expAmout = expAmout + ($(this).val()-0);
-                isShowStatistics++;
             });
-            if(isShowStatistics>0){
-                $(that.element).find('#isShowStatistics').show();
-                $(that.element).find('#isShowStatistics #expAmount').html(expAmout);
-            }
-
-
 
             if(that._dataInfo.processType=='2'  && that._dataInfo.conditionList!=null && that._dataInfo.conditionList.length>0){//固定流程
 
@@ -590,18 +595,7 @@
                             return false;
                         });
                         that.save_itemValidate($this.parent().prev());
-
-                        $(that.element).find('.form-item[data-type="5"][data-statistics="1"] input').on('keyup',function () {
-                            var expAmout = 0;
-                            $(that.element).find('.form-item[data-type="5"][data-statistics="1"] input').each(function () {
-                                expAmout = expAmout + ($(this).val()-0);
-                            });
-                            $(that.element).find('#isShowStatistics #expAmount').html(expAmout);
-                            if(that._dataInfo.processType=='3'){
-                                console.log('that._dataInfo.processType==3')
-                                that.renderApprover();
-                            }
-                        });
+                        that.inputKeyup();
                         return false;
                         break;
                     case 'addCcUser'://添加抄送人

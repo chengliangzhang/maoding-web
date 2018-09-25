@@ -6,6 +6,10 @@
     <result column="target_id" property="targetId" jdbcType="VARCHAR" />
     <result column="process_instance_id" property="processInstanceId" jdbcType="VARCHAR" />
     <result column="target_type" property="targetType" jdbcType="VARCHAR" />
+    <result column="finance_field_id" property="financeFieldId" jdbcType="VARCHAR" />
+    <result column="condition_field_id" property="conditionFieldId" jdbcType="VARCHAR" />
+    <result column="process_type_id" property="processTypeId" jdbcType="VARCHAR" />
+
     <result column="deleted" property="deleted" jdbcType="INTEGER" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="create_by" property="createBy" jdbcType="VARCHAR" />
@@ -13,7 +17,8 @@
     <result column="update_by" property="updateBy" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, target_id, process_instance_id, target_type, deleted, create_date, create_by, 
+    id, target_id, process_instance_id, target_type, finance_field_id, condition_field_id, process_type_id,
+    deleted, create_date, create_by,
     update_date, update_by
   </sql>
   <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -36,11 +41,13 @@
   </delete>
   <insert id="insert" parameterType="com.maoding.process.entity.ProcessInstanceRelationEntity" >
     insert into maoding_process_instance_relation (id, target_id, process_instance_id, 
-      target_type, deleted, create_date, 
+      target_type, finance_field_id, condition_field_id, process_type_id,
+      deleted, create_date,
       create_by, update_date, update_by
       )
     values (#{id,jdbcType=VARCHAR}, #{targetId,jdbcType=VARCHAR}, #{processInstanceId,jdbcType=VARCHAR}, 
-      #{targetType,jdbcType=VARCHAR}, #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP},
+      #{targetType,jdbcType=VARCHAR}, #{financeFieldId,jdbcType=VARCHAR}, #{conditionFieldId,jdbcType=VARCHAR}, #{processTypeId,jdbcType=VARCHAR},
+      #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP},
       #{createBy,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
       )
   </insert>
@@ -56,6 +63,15 @@
       </if>
       <if test="targetType != null" >
         target_type = #{targetType,jdbcType=VARCHAR},
+      </if>
+      <if test="financeFieldId != null" >
+        finance_field_id = #{financeFieldId,jdbcType=VARCHAR},
+      </if>
+      <if test="conditionFieldId != null" >
+        condition_field_id = #{conditionFieldId,jdbcType=VARCHAR},
+      </if>
+      <if test="processTypeId != null" >
+          process_type_id = #{processTypeId,jdbcType=VARCHAR},
       </if>
       <if test="deleted != null" >
         deleted = #{deleted,jdbcType=INTEGER},
@@ -80,6 +96,9 @@
     set target_id = #{targetId,jdbcType=VARCHAR},
       process_instance_id = #{processInstanceId,jdbcType=VARCHAR},
       target_type = #{targetType,jdbcType=VARCHAR},
+      finance_field_id = #{financeFieldId,jdbcType=VARCHAR},
+      condition_field_id = #{conditionFieldId,jdbcType=VARCHAR},
+      process_type_id = #{processTypeId,jdbcType=VARCHAR},
       deleted = #{deleted,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       create_by = #{createBy,jdbcType=VARCHAR},

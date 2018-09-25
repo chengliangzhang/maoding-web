@@ -33,6 +33,14 @@
     where main_id = #{mainId} and deleted = 0
   </select>
 
+  <select id="getConditionValue" resultType="java.lang.Double" parameterType="java.util.Map" >
+    select ifnull(sum(field_value),0)
+    from maoding_dynamic_form_field_value
+    where main_id = #{mainId}
+    and field_id = #{conditionFieldId}
+    and deleted = 0
+  </select>
+
   <delete id="deleteById" parameterType="java.lang.String" >
     delete from maoding_dynamic_form_field_value
     where id = #{id,jdbcType=VARCHAR}

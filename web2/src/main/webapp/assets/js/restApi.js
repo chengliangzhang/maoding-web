@@ -388,5 +388,6 @@ var restApi = {
     , url_listActiveForm:window.rootPath+'/iWork/dynamicForm/listActiveForm'
     , url_initDynamicAudit:window.rootPath+'/iWork/dynamicAudit/initDynamicAudit'
     , url_saveDynamicAudit:window.rootPath+'/iWork/dynamicAudit/saveDynamicAudit'
+    , url_listAuditTypeName:window.rootPath+'/iWork/finance/listAuditTypeName'
 
 };

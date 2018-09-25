@@ -633,7 +633,7 @@
             AND exp_main.approve_status = #{approveStatus}
         </if>
         <if test="expType!=null">
-            AND exp_main.type = #{expType}
+            AND find_in_set(form.form_name , #{expType})
         </if>
         <if test="type=='2'.toString()">
            and exp_audit.approve_status = '0' and exp_audit.is_new='Y'
@@ -664,6 +664,51 @@
         <include refid="CommonMapper.limitSQL"/>
     </select>
 
+
+    <select id="listAuditTypeName" resultType="com.maoding.core.base.dto.CoreShowDTO" parameterType="com.maoding.financial.dto.QueryAuditDTO">
+        SELECT DISTINCT form.form_name as name, form.form_name as id
+        from maoding_web_exp_main exp_main
+        INNER JOIN maoding_web_company_user company_user on exp_main.company_user_id = company_user.id
+        <if test="type=='7'.toString()">
+            INNER JOIN maoding_copy_record copy on exp_main.id = copy.target_id
+        </if>
+        LEFT JOIN maoding_web_exp_audit exp_audit on exp_main.id = exp_audit.main_id
+        INNER JOIN maoding_dynamic_form form ON
+        IF ( exp_main.type = 1,'expense',
+        IF ( exp_main.type = 2,'costApply',
+        IF ( exp_main.type = 3,'leave',
+        IF ( exp_main.type = 4,'onBusiness',
+        IF ( exp_main.type = 5,'projectPayApply', exp_main.type
+        ) ) ) ) ) = form.id
+        WHERE
+        1 = 1
+        AND exp_main.approve_status != '4'
+        <if test="companyUserId!=null">
+            AND exp_main.company_user_id =#{companyUserId}
+        </if>
+        <if test="expType!=null">
+            AND find_in_set(form.form_name , #{expType})
+        </if>
+        <if test="type=='2'.toString()">
+            and exp_audit.approve_status = '0' and exp_audit.is_new='Y'
+            AND (exp_main.approve_status = '0' or exp_main.approve_status = '5')
+        </if>
+        <if test="type=='3'.toString()">
+            and exp_audit.approve_status != 0
+        </if>
+        <if test="auditPerson!=null">
+            AND exp_audit.audit_person =#{auditPerson}
+        </if>
+        <if test="type=='4'.toString()">
+            and copy.deleted = 0
+            and copy.company_user_id = #{ccCompanyUserId}
+            and (exp_main.approve_status = 6 and 3> exp_main.type or exp_main.approve_status = 1 and exp_main.type >2 )
+        </if >
+        <if test="type=='5'.toString()">
+            AND exp_main.approve_status = 1 and exp_main.type = 4
+        </if>
+    </select>
+
 <!--页面 审批管理 我申请的，待我审批，我已审批，抄送我的，分页功能-->
     <select id="getAuditDataForWebCount" resultType="java.lang.Integer" parameterType="com.maoding.financial.dto.QueryAuditDTO">
         SELECT
@@ -684,7 +729,7 @@
             AND exp_main.approve_status = #{approveStatus}
         </if>
         <if test="expType!=null">
-            AND exp_main.type = #{expType}
+            AND find_in_set(form.form_name , #{expType})
         </if>
         <if test="companyUserId!=null">
             AND exp_main.company_user_id =#{companyUserId}

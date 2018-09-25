@@ -13,6 +13,7 @@ import com.maoding.dynamicForm.dto.FormGroupQueryDTO;
 import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.dynamicForm.entity.DynamicFormGroupEntity;
 import com.maoding.dynamicForm.service.DynamicFormGroupService;
+import com.maoding.exception.CustomException;
 import com.maoding.process.entity.ProcessTypeEntity;
 import com.maoding.process.service.ProcessTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,6 +165,9 @@ public class DynamicFormGroupServiceImpl extends NewBaseService implements Dynam
 
     @Override
     public void initDynamicFormGroup(String companyId) throws Exception {
+        if(StringUtils.isEmpty(companyId)){
+            throw new CustomException("参数错误");
+        }
         if(!this.dynamicFormGroupDao.isInitFormGroup(companyId)){
             List<DynamicFormGroupEntity> list = dynamicFormGroupDao.listDefaultFormGroup();
             for(DynamicFormGroupEntity group:list){

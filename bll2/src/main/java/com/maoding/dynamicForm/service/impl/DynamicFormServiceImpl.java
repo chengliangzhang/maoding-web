@@ -115,6 +115,10 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
 
     //保存审核表单模板:复制对象抽取的方法
     private String saveDynamicFormField(DynamicFormFieldDTO formFieldDTO){
+        //如果前端没有填充fieldTitle,后台做补充操作
+        if(StringUtils.isEmpty(formFieldDTO.getFieldTitle())){
+            formFieldDTO.setFieldTitle(dynamicFormFieldDao.getDefaultFieldTitle(formFieldDTO.getFieldType()+""));
+        }
         //将DTO对象复制到entity
         DynamicFormFieldEntity dynamicFormFieldEntity = BeanUtils.createFrom(formFieldDTO,DynamicFormFieldEntity.class);
         //补充entity缺失值

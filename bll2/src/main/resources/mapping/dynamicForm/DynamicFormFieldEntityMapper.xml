@@ -178,6 +178,12 @@
     />
   </resultMap>
 
+  <select id="getDefaultFieldTitle" resultType="java.lang.String"  parameterType="java.lang.String">
+    select widget_type.type_name
+    FROM md_type_widget widget_type
+    where widget_type.type_id = #{fieldType}
+  </select>
+
   <!-- 查找动态表单控件信息 -->
   <select id="listFormField" resultMap="DynamicFormFieldMap" parameterType="com.maoding.dynamicForm.dto.FormFieldQueryDTO">
     select

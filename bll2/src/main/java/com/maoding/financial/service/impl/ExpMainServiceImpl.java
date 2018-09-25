@@ -9,6 +9,7 @@ import com.maoding.companybill.service.CompanyBalanceService;
 import com.maoding.companybill.service.CompanyBillService;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.dto.CorePageDTO;
+import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.bean.ResponseBean;
@@ -718,6 +719,10 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
             if (type == 2) {//提交
                 m.setMessageType(SystemParameters.MESSAGE_TYPE_237);
             }
+            //报销类别：1=报销申请，2=费用申请,3请假，4出差,5=项目费用申请,其他为自定义审批表
+            if(type!=1 && type!=2 && type!=3 && type!=4 && type!=5){
+                m.setMessageType(SystemParameters.MESSAGE_TYPE_253);
+            }
             this.messageService.sendMessageForCopy(m);
         }
         return i;
@@ -1388,22 +1393,7 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
     public CorePageDTO<AuditCommonDTO> getAuditDataForWeb(QueryAuditDTO dto) throws Exception {
         CorePageDTO<AuditCommonDTO> page = new CorePageDTO<>();
         List<AuditCommonDTO> list = new ArrayList<>();
-        //页面审批管理：我申请的（type=1）
-        if ("1".equals(dto.getType())){
-            dto.setCompanyUserId(dto.getCurrentCompanyUserId());
-        }
-        //页面审批管理：待我审批（type=2）
-        if ("2".equals(dto.getType())){
-            dto.setAuditPerson(dto.getCurrentCompanyUserId());
-        }
-        //页面审批管理：我已审批（type=3）
-        if("3".equals(dto.getType())){
-            dto.setAuditPerson(dto.getCurrentCompanyUserId());
-        }
-        //页面审批管理：抄送我的（type=4）
-        if("4".equals(dto.getType())){
-            dto.setCcCompanyUserId(dto.getCurrentCompanyUserId());
-        }
+        setQuery(dto);
         list = expMainDao.getAuditDataForWeb(dto);
         int count = expMainDao.getAuditDataForWebCount(dto);
         page.setData(list);
@@ -1412,7 +1402,6 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         page.setTotal(count);
         return page;
     }
-
 
     /**
      * 方法描述：根据companyId查询所有有效项目(我要报销 选择项目下拉框 )app
@@ -1666,5 +1655,30 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
         return new AuditCommonDTO();
     }
 
+    @Override
+    public List<CoreShowDTO> listAuditTypeName(QueryAuditDTO query) throws Exception {
+        setQuery(query);
+        return this.expMainDao.listAuditTypeName(query);
+    }
+
+
+    private void setQuery(QueryAuditDTO dto){
+        //页面审批管理：我申请的（type=1）
+        if ("1".equals(dto.getType())){
+            dto.setCompanyUserId(dto.getCurrentCompanyUserId());
+        }
+        //页面审批管理：待我审批（type=2）
+        if ("2".equals(dto.getType())){
+            dto.setAuditPerson(dto.getCurrentCompanyUserId());
+        }
+        //页面审批管理：我已审批（type=3）
+        if("3".equals(dto.getType())){
+            dto.setAuditPerson(dto.getCurrentCompanyUserId());
+        }
+        //页面审批管理：抄送我的（type=4）
+        if("4".equals(dto.getType())){
+            dto.setCcCompanyUserId(dto.getCurrentCompanyUserId());
+        }
+    }
 }
 

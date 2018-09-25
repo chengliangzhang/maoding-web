@@ -21,5 +21,10 @@ public interface DynamicFormFieldDao extends BaseDao<DynamicFormFieldEntity> {
      **/
     List<DynamicFormFieldDTO> listFormField(FormFieldQueryDTO query);
 
+    /**
+     * 获取控件的默认的名称
+     */
+    String getDefaultFieldTitle(String fieldType);
+
 
 }

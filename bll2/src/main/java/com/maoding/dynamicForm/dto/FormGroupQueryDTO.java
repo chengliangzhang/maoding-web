@@ -18,6 +18,11 @@ public class FormGroupQueryDTO extends CoreQueryDTO {
     /** 表单是否启用:0-仅包含未启用表单，1-仅包含启用表单 **/
     private Integer status;
 
+    /**isEdit ：1 = 可编辑的表单，0：不可编辑的表单  */
+    private Integer isEdit;
+
+    private String notIncludeGroupName;
+
     /** 是否需要抄送人员：0-不需要，1-需要 **/
     private Integer needCC;
 
@@ -43,5 +48,21 @@ public class FormGroupQueryDTO extends CoreQueryDTO {
 
     public void setIsIncludeForm(Integer isIncludeForm) {
         this.isIncludeForm = isIncludeForm;
+    }
+
+    public Integer getIsEdit() {
+        return isEdit;
+    }
+
+    public void setIsEdit(Integer isEdit) {
+        this.isEdit = isEdit;
+    }
+
+    public String getNotIncludeGroupName() {
+        return notIncludeGroupName;
+    }
+
+    public void setNotIncludeGroupName(String notIncludeGroupName) {
+        this.notIncludeGroupName = notIncludeGroupName;
     }
 }

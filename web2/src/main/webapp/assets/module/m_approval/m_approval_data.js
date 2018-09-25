@@ -31,6 +31,7 @@
             this._title = '抄送我的';
         }
         this._filterData = {};
+        this._expTypeList = [];//筛选-类型
         this.init();
     }
 
@@ -40,7 +41,9 @@
             var that = this;
             var html = template('m_approval/m_approval_data', {title:that._title});
             $(that.element).html(html);
-            that.renderDataList();
+            that.getListAuditTypeName(function () {
+                that.renderDataList();
+            });
         }
 
         //加载数据
@@ -150,8 +153,24 @@
                 $('body').m_form_template_generate_edit(option,true);
 
                 return false;
-
-
+            });
+        }
+        //获取类型
+        ,getListAuditTypeName:function (callBack) {
+            var that = this;
+            var option = {};
+            option.url = restApi.url_listAuditTypeName;
+            option.postData = {
+                type:that.settings.doType
+            };
+            m_ajax.postJson(option, function (response) {
+                if (response.code == '0') {
+                    that._expTypeList = response.data;
+                    if(callBack)
+                        callBack();
+                } else {
+                    S_layer.error(response.info);
+                }
             });
         }
         //筛选事件
@@ -170,13 +189,7 @@
                         if(id=='filter_expType'){
 
                             //1=报销申请，2=费用申请,3请假，4出差,5=项目费用申请
-                            selectList = [
-                                {id:1,name:'报销申请'},
-                                {id:2,name:'费用申请'},
-                                {id:3,name:'请假'},
-                                {id:4,name:'出差'},
-                                {id:5,name:'项目费用申请'}
-                            ];
+                            selectList = that._expTypeList;
                         }
                         else if(id=='filter_approveStatus'){
 

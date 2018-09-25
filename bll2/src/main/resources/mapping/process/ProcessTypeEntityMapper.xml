@@ -149,7 +149,8 @@
 
     <!-- 流程名称属性定义 -->
     <resultMap id="ProcessDefineMap" type="com.maoding.activiti.dto.ProcessDefineDTO">
-        <id column="process_id" property="id"/>
+        <id column="process_full_id" property="id"/>
+        <result column="id" property="processId"/>
         <result column="target_type" property="key"/>
         <result column="form_name" property="name"/>
         <result column="status" property="isActive"/>
@@ -204,7 +205,7 @@
       form_list.form_name,
       form_list.documentation,
       if(form_list.id is null,null,if(form_list.company_id is null,1,0)) as is_system,
-      concat(process_type.company_id,'_',process_type.target_type,'_',process_type.type) as process_id,
+      concat(process_type.company_id,'_',process_type.target_type,'_',process_type.type) as process_full_id,
       process_type.*
     from maoding_process_type process_type
       left join maoding_dynamic_form form_list on (
