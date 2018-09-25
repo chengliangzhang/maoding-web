@@ -16,9 +16,9 @@
         </td>
         <td>
             <div class="btn-group">
+                <button  class="btn btn-link btn-xs fc-dark-blue" data-action="editGroup" title="编辑名称"><i class="icon iconfont icon-bianji"></i></button>
                 <button type="button" class="btn btn-link btn-xs fc-dark-blue dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><i class="icon iconfont icon-gengduo"></i></button>
                 <ul class="dropdown-menu">
-                    <li><a href="javascript:void(0);" data-action="editGroup">编辑名称</a></li>
                     <li><a href="javascript:void(0);" data-action="delGroup">删除分组</a></li>
                 </ul>
             </div>
@@ -72,6 +72,7 @@
                         <li><a href="javascript:void(0);" data-action="delApproval">删除</a></li>
                     </ul>
                 </div>
+                <i class="icon-separation-line"></i>
                 {{if pi>0}}
                     <button class="btn btn-link btn-xs fc-dark-blue" data-action="sortUp" ><i class="iconfont icon-xiangshang"></i></button>
                 {{/if}}

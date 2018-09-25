@@ -98,8 +98,12 @@ template.helper('_momentFormat', function (datetime, pattern) {
 
     }else {
         var m = moment(datetime);
-        if (m.isValid())
-            return moment(datetime).locale("zh-cn").format(pattern);
+        if(datetime.length>10){
+            return moment(datetime.substring(0,10)).locale("zh-cn").format(pattern) + '' + datetime.substring(10,datetime.length);
+        }else{
+            if (m.isValid())
+                return moment(datetime).locale("zh-cn").format(pattern);
+        }
         return '';
     }
 

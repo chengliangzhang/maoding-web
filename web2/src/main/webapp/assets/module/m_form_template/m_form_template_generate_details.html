@@ -4,8 +4,14 @@
         {{if p.fieldType!=10}}
         <div class="form-group">
             <label class="col-sm-2 text-right">{{p.fieldTitle?p.fieldTitle:'标题'}}：</label>
-            <div class="col-sm-10">
-                {{p.fieldValueText?p.fieldValueText:''}}
+            <div class="col-sm-10" data-statistics="{{p.isStatistics?p.isStatistics:''}}" data-value="{{p.fieldValueText?p.fieldValueText:''}}" data-field-unit="{{p.fieldUnit?p.fieldUnit:''}}">
+                {{if p.fieldType==4}}
+                    {{_momentFormat(p.fieldValueText,'YYYY/MM/DD')}}
+                {{else if p.fieldType==5 && (p.fieldUnit=='元' || p.fieldUnit=='万元')}}
+                    {{_expNumberFilter(p.fieldValueText)}}
+                {{else}}
+                    {{p.fieldValueText?p.fieldValueText:''}}
+                {{/if}}
             </div>
         </div>
         {{/if}}
@@ -20,8 +26,14 @@
                     {{each c as cc cci}}
                     <div class="form-group">
                         <label class="col-sm-2 text-right">{{cc.fieldTitle?cc.fieldTitle:'标题'}}：</label>
-                        <div class="col-sm-10">
-                            {{cc.fieldValueText?cc.fieldValueText:''}}
+                        <div class="col-sm-10" data-statistics="{{cc.isStatistics?cc.isStatistics:''}}" data-value="{{cc.fieldValueText?cc.fieldValueText:''}}" data-field-unit="{{cc.fieldUnit?cc.fieldUnit:''}}">
+                            {{if cc.fieldType==4}}
+                                {{_momentFormat(cc.fieldValueText,'YYYY/MM/DD')}}
+                            {{else if cc.fieldType==5 && (cc.fieldUnit=='元' || cc.fieldUnit=='万元')}}
+                                {{_expNumberFilter(cc.fieldValueText)}}
+                            {{else}}
+                                {{cc.fieldValueText?cc.fieldValueText:''}}
+                            {{/if}}
                         </div>
                     </div>
                     {{/each}}
@@ -31,6 +43,16 @@
         {{/if}}
     {{/each}}
     {{/if}}
+
+    <div id="isShowStatistics" style="display: none;">
+        <div class="hr-line-dashed m-t-none m-b-sm"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">总计：</label>
+            <div class="col-sm-10 p-t-7">
+                <span id="expAmount">{{dataInfo?dataInfo.totalExpAmount:'0'}}</span>
+            </div>
+        </div>
+    </div>
 
     {{if dataInfo && dataInfo.dynamicAudit && dataInfo.dynamicAudit.attachList!=null && dataInfo.dynamicAudit.attachList.length>0}}
     <div class="form-group">

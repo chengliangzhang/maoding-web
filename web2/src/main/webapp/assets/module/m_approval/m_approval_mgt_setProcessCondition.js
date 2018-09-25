@@ -65,6 +65,24 @@
                     callBack();
             }
         }
+        //初始化iCheck
+        ,renderICheck:function () {
+            var that = this;
+
+            var ifChecked = function (e) {
+
+            };
+            var ifUnchecked = function (e) {
+
+            };
+            var ifClicked = function (e) {
+
+            };
+            $(that.element).find('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue'
+            }).on('ifUnchecked.s', ifUnchecked).on('ifChecked.s', ifChecked).on('ifClicked',ifClicked);
+        }
         //渲染列表内容
         ,initHtmlData:function () {
             var that =this;
@@ -73,7 +91,7 @@
 
                 that.bindActionClick();
                 that.submit_validate();
-
+                that.renderICheck();
                 if(that.settings.processData && that.settings.processData.flowTaskGroupList!=null && that.settings.processData.flowTaskGroupList.length>0){
                     $.each(that.settings.processData.flowTaskGroupList,function (i,item) {
                         if(i>1 && i<that.settings.processData.flowTaskGroupList.length-1){
@@ -103,8 +121,9 @@
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
 
+                    var optionalCondition = $(that.element).find('input[name="optionalCondition"]').val();
                     if(that.settings.oKCallBack)
-                        that.settings.oKCallBack(response.data.flowTaskGroupList);
+                        that.settings.oKCallBack(response.data.flowTaskGroupList,optionalCondition);
 
                 } else {
                     S_layer.error(response.info);

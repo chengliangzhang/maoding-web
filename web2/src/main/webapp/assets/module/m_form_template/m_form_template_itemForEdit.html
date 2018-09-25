@@ -9,7 +9,7 @@
             ：
         </label>
         <div class="col-xs-10">
-            <input type="text" class="form-control" name="item_input" value="" placeholder="{{fieldTooltip?fieldTooltip:'请输入单行文本'}}">
+            <input type="text" class="form-control" name="{{fieldId}}" value="{{fieldValue?fieldValue:''}}" placeholder="{{fieldTooltip?fieldTooltip:'请输入单行文本'}}">
         </div>
     </div>
 </div>
@@ -24,7 +24,7 @@
             ：
         </label>
         <div class="col-xs-10">
-            <textarea type="text" class="form-control" name="item_textarea" placeholder="{{fieldTooltip?fieldTooltip:'请输入多行文本'}}"></textarea>
+            <textarea type="text" class="form-control" name="{{fieldId}}" placeholder="{{fieldTooltip?fieldTooltip:'请输入多行文本'}}">{{fieldValue?fieldValue:''}}</textarea>
         </div>
     </div>
 </div>
@@ -40,7 +40,7 @@
         </label>
         <div class="col-xs-10">
             <div class="input-group">
-                <input type="text" class="form-control" name="item_input" placeholder="{{fieldTooltip?fieldTooltip:'请选择日期'}}" readonly="" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="">
+                <input type="text" class="form-control" name="{{fieldId}}" placeholder="{{fieldTooltip?fieldTooltip:'请选择日期'}}" readonly="" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="{{fieldValue?fieldValue:''}}">
                 <span class="input-group-addon ">
                     <i class="icon-append fa fa-calendar"></i>
                 </span>
@@ -58,12 +58,12 @@
             {{/if}}
             ：
         </label>
-        <div class="col-xs-4"  data-type="4" data-field-id="{{fieldId}}">
+        <div class="col-xs-4"  data-type="4" data-field-id="{{fieldId}}" data-format-type="{{dateFormatType}}" data-value="{{fieldValue?fieldValue:''}}">
             <div class="row">
                 <!-- col-24-xs-10 -->
                 <div class="{{dateFormatType==1?'col-24-xs-24':'col-24-xs-13 p-r-none'}}  time-box">
                     <div class="input-group">
-                        <input type="text" class="form-control start-time" name="item_input" placeholder="{{fieldTooltip?fieldTooltip:'请选择日期'}}" readonly="" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="">
+                        <input type="text" class="form-control start-time" name="{{fieldId}}" placeholder="{{fieldTooltip?fieldTooltip:'请选择日期'}}" readonly="" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="">
                         <span class="input-group-addon "><i class="icon-append fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -118,9 +118,9 @@
         </label>
         <div class="col-xs-4" data-type="4" data-field-id="{{fieldId2}}">
             <div class="row">
-                <div class="{{dateFormatType==1?'col-24-xs-24':'col-24-xs-13 p-r-none'}}  time-box">
+                <div class="{{dateFormatType==1?'col-24-xs-24':'col-24-xs-13 p-r-none'}}  time-box" data-format-type="{{dateFormatType}}" data-value="{{fieldValue2?fieldValue2:''}}">
                     <div class="input-group">
-                        <input type="text" class="form-control end-time" name="item_input" placeholder="{{fieldTooltip2?fieldTooltip2:'请选择日期'}}" readonly="" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="">
+                        <input type="text" class="form-control end-time" name="{{fieldId2}}" placeholder="{{fieldTooltip2?fieldTooltip2:'请选择日期'}}" readonly="" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd'})" value="">
                         <span class="input-group-addon "><i class="icon-append fa fa-calendar"></i></span>
                     </div>
                 </div>
@@ -169,7 +169,7 @@
     </div>
 </div>
 {{else if fieldType==5}}
-<div class="col-xs-12 form-item " data-type="5" data-key="{{itemKey}}" data-field-id="{{fieldId}}">
+<div class="col-xs-12 form-item " data-type="5" data-key="{{itemKey}}" data-field-id="{{fieldId}}" data-statistics="{{isStatistics?isStatistics:''}}" data-field-unit="{{fieldUnit?fieldUnit:''}}">
     <div class="form-group">
         <label class="col-xs-2 control-label">
             {{fieldTitle?fieldTitle:'数字'}}
@@ -180,7 +180,7 @@
         </label>
         <div class="col-xs-10">
             <div class="input-group full-width">
-                <input type="text" class="form-control" name="item_input" placeholder="{{fieldTooltip?fieldTooltip:'请输入数字'}}" >
+                <input type="text" class="form-control" name="{{fieldId}}"  placeholder="{{fieldTooltip?fieldTooltip:'请输入数字'}}" value="{{fieldValue?fieldValue:''}}">
                 {{if fieldUnit!=null && fieldUnit!=''}}
                 <span class="input-group-addon ">
                     {{fieldUnit}}
@@ -201,13 +201,17 @@
             ：
         </label>
         <div class="col-xs-10">
-            <select name="item_select">
+            <select name="{{fieldId}}">
                 {{if fieldSelectedValueList && fieldSelectedValueList.length>0 && fieldSelectedValueList[0].child!=null}}
                     {{each fieldSelectedValueList as p }}
                         <optgroup data-select2-id="{{p.id}}" label="{{p.name}}">
                             {{if p.child!=null && p.child.length>0}}
                                 {{each p.child as c }}
-                                    <option value="{{c.id}}">{{c.name}}</option>
+                                    {{if fieldValue==c.id}}
+                                        <option value="{{c.id}}" selected>{{c.name}}</option>
+                                    {{else}}
+                                        <option value="{{c.id}}">{{c.name}}</option>
+                                    {{/if}}
                                 {{/each}}
                             {{/if}}
                         </optgroup>
@@ -217,7 +221,12 @@
                         <option value="">{{fieldTooltip}}</option>
                     {{/if}}
                     {{each fieldSelectedValueList as o}}
-                        <option value="{{o.id}}">{{o.name}}</option>
+                        {{if fieldValue==o.id}}
+                            <option value="{{o.id}}" selected>{{o.name}}</option>
+                        {{else}}
+                            <option value="{{o.id}}">{{o.name}}</option>
+                        {{/if}}
+
                     {{/each}}
                 {{/if}}
             </select>
@@ -239,7 +248,11 @@
                 {{each fieldSelectedValueList as o}}
                     <div class="pull-left m-r-xs m-t-xs">
                         <label class="i-checks i-checks-label fw-normal">
-                            <input type="radio"  name="item_radio" value="{{o.id}}"/>
+                            {{if fieldValue==o.id}}
+                                <input type="radio"  name="{{fieldId}}" value="{{o.id}}" checked/>
+                            {{else}}
+                                <input type="radio"  name="{{fieldId}}" value="{{o.id}}"/>
+                            {{/if}}
                             <span class="i-checks-span">{{o.name}}</span>
                         </label>
                     </div>
@@ -263,7 +276,11 @@
                 {{each fieldSelectedValueList as o}}
                     <div class="pull-left m-r-xs m-t-xs">
                         <label class="i-checks i-checks-label fw-normal">
-                            <input type="checkbox" name="item_checkbox" value="{{o.id}}"/>
+                            {{if fieldValue && fieldValue.indexOf(o.id)>-1}}
+                                <input type="checkbox" name="{{fieldId}}" value="{{o.id}}" checked/>
+                            {{else}}
+                                <input type="checkbox" name="{{fieldId}}" value="{{o.id}}"/>
+                            {{/if}}
                             <span class="i-checks-span">{{o.name}}</span>
                         </label>
                     </div>
@@ -292,6 +309,19 @@
         </div>
     </div>
 </div>
+{{else if fieldType=='panelBody9'}}
+<div class="panel panel-default">
+    <div class="panel-body">
+        <form>
+            <h4 class="title-line">
+                明细(<span data-action="panelIndex">{{panelIndex?panelIndex:'1'}}</span>)
+                <a class="curp pull-right {{panelIndex==null || panelIndex==1?'hide':''}}" href="javascript:void(0)"  data-action="delItem" title="删除明细">
+                    <i class="glyphicon glyphicon-remove fc-red"></i>
+                </a>
+            </h4>
+        </form>
+    </div>
+</div>
 {{else if fieldType==10}}
 <div class="col-xs-12 form-item " data-type="10" data-key="{{itemKey}}" data-field-id="{{fieldId}}">
     <div class="form-group">
@@ -313,7 +343,7 @@
     <div class="form-group">
         <label class="col-xs-2 control-label">关联项目：</label>
         <div class="col-xs-10">
-            <select name="item_select">
+            <select name="{{fieldId}}">
                 {{if fieldTooltip && fieldTooltip!=''}}
                     <option value="">{{fieldTooltip}}</option>
                 {{else}}
@@ -321,7 +351,11 @@
                 {{/if}}
                 {{if fieldSelectedValueList && fieldSelectedValueList.length>0}}
                     {{each fieldSelectedValueList as o}}
-                        <option value="{{o.id}}">{{o.name}}</option>
+                        {{if fieldValue==o.id}}
+                            <option value="{{o.id}}" selected>{{o.name}}</option>
+                        {{else}}
+                            <option value="{{o.id}}">{{o.name}}</option>
+                        {{/if}}
                     {{/each}}
                 {{/if}}
             </select>
@@ -333,7 +367,7 @@
     <div class="form-group">
         <label class="col-xs-2 control-label">关联审批：</label>
         <div class="col-xs-10">
-            <select name="item_select">
+            <select name="{{fieldId}}">
                 {{if fieldTooltip && fieldTooltip!=''}}
                     <option value="">{{fieldTooltip}}</option>
                 {{else}}
@@ -341,7 +375,12 @@
                 {{/if}}
                 {{if fieldSelectedValueList && fieldSelectedValueList.length>0}}
                     {{each fieldSelectedValueList as o}}
-                        <option value="{{o.id}}">{{o.name}}</option>
+                        {{if fieldValue==o.id}}
+                            <option value="{{o.id}}" selected>{{o.name}}</option>
+                        {{else}}
+                            <option value="{{o.id}}">{{o.name}}</option>
+                        {{/if}}
+
                     {{/each}}
                 {{/if}}
             </select>

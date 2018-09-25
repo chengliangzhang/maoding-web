@@ -3,6 +3,15 @@
 </form>
 <div class="clearfix"></div>
 <form class="form-horizontal m">
+    <div id="isShowStatistics" style="display: none;">
+        <div class="hr-line-dashed m-t-none m-b-sm"></div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">总计：</label>
+            <div class="col-sm-10 p-t-7">
+                <span id="expAmount">{{dataInfo?dataInfo.totalExpAmount:'0'}}</span>
+            </div>
+        </div>
+    </div>
     <div class="hr-line-dashed m-t-none m-b-sm"></div>
     <div class="form-group">
         <label class="col-sm-2 control-label">审批人：</label>

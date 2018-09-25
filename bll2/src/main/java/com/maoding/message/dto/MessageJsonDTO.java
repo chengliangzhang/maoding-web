@@ -1,5 +1,7 @@
 package com.maoding.message.dto;
 
+import com.maoding.core.util.StringUtil;
+
 /**
  * Created by sandy on 2017/9/25.
  */
@@ -207,6 +209,10 @@ public class MessageJsonDTO {
     }
 
     public String getExpAmount() {
+
+        if(StringUtil.isNullOrEmpty(expAmount)){
+            expAmount = "0";
+        }
         return expAmount;
     }
 

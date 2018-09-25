@@ -10,6 +10,7 @@
              isDialog:true
             ,type:1//1=我的审批
             ,dataInfo:null
+            ,closeCallBack:null
         };
 
     // The actual plugin constructor
@@ -53,7 +54,19 @@
                     that.renderDialog(html,function () {
 
                         that.bindActionClick();
-                        that.fileUpload();
+                        var expAmout = 0,isShowStatistics=false,fieldUnit = '';
+                        $(that.element).find('div[data-statistics="1"]').each(function () {
+                            expAmout = expAmout + ($(this).attr('data-value')-0);
+                            fieldUnit = $(this).attr('data-field-unit');
+                            isShowStatistics = true;
+                        });
+                        if(isShowStatistics){
+                            $(that.element).find('#isShowStatistics').show();
+                            if(fieldUnit=='元'||fieldUnit=='万元')
+                                expAmout = expNumberFilter(expAmout);
+                            $(that.element).find('#isShowStatistics #expAmount').html(expAmout+''+fieldUnit);
+                        }
+
                         return false;
                     });
 
@@ -112,46 +125,6 @@
                 width:'100%',
                 language: "zh-CN"
             });
-        }
-        //上传附件
-        ,fileUpload:function () {
-            var that =this;
-            var option = {};
-            that._uploadmgrContainer = $(that.element).find('.uploadmgrContainer:eq(0)');
-            option.server = restApi.url_attachment_uploadExpenseAttach;
-            option.accept={
-                title: '上传附件',
-                extensions: 'jpg,jpeg,png,bmp',
-                mimeTypes: 'image/jpg,image/jpeg,image/png,image/bmp'
-            };
-            option.btnPickText = '<i class="fa fa-upload"></i>&nbsp;上传附件';
-            option.ifCloseItemFinished = true;
-            option.boxClass = 'no-borders';
-            option.isShowBtnClose = false;
-            option.uploadBeforeSend = function (object, data, headers) {
-                data.companyId = that._currentCompanyId;
-                data.accountId = that._currentUserId;
-                data.targetId = that._uuid;
-            };
-            option.uploadSuccessCallback = function (file, response) {
-                console.log(response);
-                var fileData = {
-                    netFileId: response.data.netFileId,
-                    fileName: response.data.fileName,
-                    fullPath: that._fastdfsUrl + response.data.fastdfsGroup + '/' + response.data.fastdfsPath
-                };
-                var $uploadItem = that._uploadmgrContainer.find('.uploadItem_' + file.id + ':eq(0)');
-                if (!isNullOrBlank(fileData.netFileId)) {
-                    $uploadItem.find('.span_status:eq(0)').html('上传成功');
-                    var html = template('m_common/m_attach', fileData);
-                    $('#showFileLoading').append(html);
-                    that.bindAttachDelele();
-                } else {
-                    $uploadItem.find('.span_status:eq(0)').html('上传失败');
-                }
-
-            };
-            that._uploadmgrContainer.m_uploadmgr(option, true);
         }
         ,bindActionClick:function () {
             var that = this;

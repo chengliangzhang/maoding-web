@@ -193,14 +193,16 @@
       <if test="formId != null">
         and field_list.form_id = #{formId}
       </if>
-      <choose>
-        <when test="fieldPid != null">
-          and field_list.field_pid = #{fieldPid}
-        </when>
-        <otherwise>
-          and field_list.field_pid is null
-        </otherwise>
-      </choose>
+      <if test="toCondition != 1">
+        <choose>
+          <when test="fieldPid != null">
+            and field_list.field_pid = #{fieldPid}
+          </when>
+          <otherwise>
+            and field_list.field_pid is null
+          </otherwise>
+        </choose>
+      </if>
       <if test="toCondition == 1">
         and field_list.required_type = 1
         and ((field_list.field_pid is null)

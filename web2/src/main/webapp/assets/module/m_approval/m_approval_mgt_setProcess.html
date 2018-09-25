@@ -74,7 +74,7 @@
                 </div>
                 <div class="m-t-xs">
                     <label class="i-checks">
-                        {{if optionalConditionList && optionalConditionList.length>0 && optionalConditionList[0].id!=null}}
+                        {{if optionalConditionList && optionalConditionList.length>0}}
                             <input class="ck"  name="iCheck" type="radio" data-type="3"  />
                         {{else}}
                             <input class="ck"  name="iCheck" type="radio" data-type="3"  disabled/>
@@ -84,7 +84,7 @@
                     </label>
                     <span class="fc-v1-grey">（申请人提交的表单会进入相应审批条件设置的审批流程）</span>
 
-                    {{if optionalConditionList && optionalConditionList.length>0 && optionalConditionList[0].id!=null}}
+                    {{if optionalConditionList && optionalConditionList.length>0}}
                         <a class="btn btn-link" data-action="setApprovalCondition" data-type="3" style="display: none;">设置审批条件</a>
                     {{else}}
                         <span class="fc-v1-grey">（当前没有可选的分组条件,不能选择此项！）</span>

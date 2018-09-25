@@ -68,6 +68,21 @@
         <label>单位</label>
         <input placeholder="请输入单位" class="form-control" type="text" name="fieldUnit" value="{{formFieldInfo?formFieldInfo.fieldUnit:''}}">
     </div>
+        {{if formFieldInfo.isShowStatistics==1}}
+        <div class="form-group">
+            <label>是否参与统计</label>
+            <div class="">
+                <label class="i-checks i-checks-label fw-normal">
+                    {{if formFieldInfo&&formFieldInfo.isStatistics==1}}
+                    <input type="checkbox"  name="isStatistics" value="1" checked/>
+                    {{else}}
+                    <input type="checkbox"  name="isStatistics" value="1"/>
+                    {{/if}}
+                    <span class="i-checks-span">参与统计</span>
+                </label>
+            </div>
+        </div>
+        {{/if}}
     {{/if}}
 
     {{if type==6}}

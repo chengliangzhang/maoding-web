@@ -14,6 +14,11 @@ public class AuditCommonDTO extends BaseIdObject {
     private String expNo;
 
     /**
+     * 0:没有任何操作，1:退回记录重新提交,2:新生成记录
+     */
+    private Integer expFlag;
+
+    /**
      * 申请人id
      */
     private String companyUserId;
@@ -140,5 +145,13 @@ public class AuditCommonDTO extends BaseIdObject {
 
     public void setExpDate(Date expDate) {
         this.expDate = expDate;
+    }
+
+    public Integer getExpFlag() {
+        return expFlag;
+    }
+
+    public void setExpFlag(Integer expFlag) {
+        this.expFlag = expFlag;
     }
 }

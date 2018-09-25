@@ -31,10 +31,16 @@
                                 {{if p.formList && p.formList.length>0}}
                                     {{each p.formList as c ci }}
                                     <div class="col-md-2 m-b-sm">
-                                        <span class="badge badge-primary p-sm b-r-xl">
-                                            <i class="fa fa-calendar f-s-xl"></i>
+                                        {{if c.iconKey=='icon-baoxiao' || c.iconKey=='icon-qianbao' || c.iconKey=='icon-shuju'}}
+                                        <span class="icon-circle bg-v1-yellow">
+                                        {{else if c.iconKey=='icon-rili' || c.iconKey=='icon-gongwenbao' || c.iconKey=='icon-renyuan'}}
+                                        <span class="icon-circle bg-v2-blue">
+                                        {{else}}
+                                        <span class="icon-circle">
+                                        {{/if}}
+                                            <i class="icon iconfont {{c.iconKey?c.iconKey:'icon-zidingyibankuai'}}" ></i>
                                         </span>
-                                        <a class="btn btn-link" data-action="initiate" data-form-id="{{c.formId}}" data-issystem="{{c.isSystem}}">{{c.name}}</a>
+                                        <a class="btn btn-link vertical-super" data-action="initiate" data-form-id="{{c.formId}}" data-issystem="{{c.isSystem}}">{{c.name}}</a>
                                     </div>
                                     {{/each}}
                                 {{/if}}

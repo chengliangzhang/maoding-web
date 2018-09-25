@@ -160,14 +160,18 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
     @Override
     public Map<String,Object> initDynamicAudit(FormFieldQueryDTO dto) throws Exception {
         String id = dto.getId();
+        String targetType = null;
         AuditCommonDTO expMainDTO = new AuditCommonDTO();
         if(StringUtils.isNotEmpty(id)){
             expMainDTO = expMainService.getAuditDataById(id);
             dto.setFormId(expMainDTO.getType());
         }
-        ProcessTypeEntity processType = this.processTypeDao.getCurrentProcessTypeByFormId(dto.getCurrentCompanyId(),dto.getFormId());
-        if(processType==null){
-            throw new CustomException("参数错误");
+        if(dto.getId()==null ){//如果是新增审批单，必需要存在processType
+            ProcessTypeEntity processType = this.processTypeDao.getCurrentProcessTypeByFormId(dto.getCurrentCompanyId(),dto.getFormId());
+            if( processType==null){
+                throw new CustomException("参数错误");
+            }
+            targetType =  processType.getTargetType();
         }
         String conditionValue = null;
         List<AuditDTO> auditList = null;
@@ -190,6 +194,8 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
             //查询审批记录
             auditList = this.expMainService.getAuditList(id,null);//暂时不需要expMainEntity
             dynamicAudit.setAuditFlag(this.getAuditFlag(expMainDTO.getApproveStatus(),dto.getCurrentCompanyUserId(),auditList));//请务必跟在getAuditList后面，不要移动位置
+            dynamicAudit.setIsEdit(this.getIsEdit(expMainDTO,dto.getCurrentCompanyUserId()));
+            dynamicAudit.setId(id);
         }else {
             //查询模板中的知会人,待处理
             ccCompanyUserList = auditCopyService.listAuditCopyUser(dto.getCurrentCompanyId(),dto.getFormId());
@@ -197,13 +203,14 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         //3.查询流程 返回流程标识，给前端控制是否要给审批人，以及按钮显示的控制
         AuditEditDTO audit = BeanUtils.createFrom(dto,AuditEditDTO.class);
         audit.setMainId(dto.getId());
-        audit.setAuditType(processType.getTargetType());
+        audit.setAuditType(targetType);//此处是用于新增审批单的时候， 查找相应的流程，如果是详情界面，则不需要，直接通过id去找相应的流程实例
         Map<String,Object> processData = processService.getCurrentTaskUser(audit,auditList,conditionValue);
         dynamicAudit.setAttachList(expAttachList);
         dynamicAudit.setCcCompanyUserList(ccCompanyUserList);
         dynamicAudit.setAuditList(auditList);
         dynamicAudit.setBaseAuditData(expMainDTO);
         result.put("dynamicAudit",dynamicAudit);
+        result.put("formName",this.dynamicFormService.getFormName(dto.getFormId()));
         result.putAll(processData);
         return result;
     }
@@ -212,6 +219,18 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         if(("0".equals(approveStatus) || "5".equals(approveStatus)) && !CollectionUtils.isEmpty(auditList)){
             AuditDTO auditDTO = auditList.get(auditList.size()-1);
             if(currentCompanyUserId!=null && currentCompanyUserId.equals(auditDTO.getCompanyUserId())){
+                return 1;//处于审批的状态
+            }
+        }
+        return 0;
+    }
+
+    public Integer getIsEdit(AuditCommonDTO commonDTO,String currentCompanyUserId){
+        String approveStatus = commonDTO.getApproveStatus();
+        Integer expFlag = commonDTO.getExpFlag();
+        String expCompanyUserId = commonDTO.getCompanyUserId();
+        if(("2".equals(approveStatus) || "3".equals(approveStatus)) && expFlag!=null && expFlag != 1){
+            if(currentCompanyUserId!=null && currentCompanyUserId.equals(expCompanyUserId)){
                 return 1;//处于审批的状态
             }
         }

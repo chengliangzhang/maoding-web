@@ -73,26 +73,33 @@
         }
         ,bindTrClick:function () {
             var that = this;
-            $(that.element).find('tr').off('click').on('click',function () {
+            $(that.element).find('tbody tr').off('click').on('click',function () {
                 var $this = $(this);
                 var type = $this.attr('data-type');
                 var dataId = $this.attr('data-id');
 
                 if(type==1 || type==2 ){
 
-                    /*var option = {};
-                    option.doType = type;
-                    option.id = dataId;
-                    option.closeCallBack = function () {
-                        that.renderDataList();
-                    };
-                    $('body').m_approval_cost_details(option,true);*/
                     var option = {};
-                    var data = {};
-                    option.dataInfo = {
-                        id : dataId
+                    option.url = restApi.url_getAuditDetailForExp;
+                    option.postData = {
+                        id:dataId
                     };
-                    $('body').m_form_template_generate_details(option,true);
+                    m_ajax.postJson(option, function (response) {
+                        if (response.code == '0') {
+
+                            var option = {};
+                            option.doType = dataType;
+                            option.dataInfo = response.data;
+                            option.saveCallBack = function () {
+                                that.renderDataList();
+                            };
+                            $('body').m_approval_cost_add(option,true);
+
+                        } else {
+                            S_dialog.error(response.info);
+                        }
+                    });
 
                 }else if(type==3 || type==4){
 
@@ -118,6 +125,9 @@
                     option.dataInfo = {
                         id : dataId
                     };
+                    option.closeCallBack = function () {
+                        that.renderDataList();
+                    };
                     $('body').m_form_template_generate_details(option,true);
                 }
 
@@ -129,65 +139,17 @@
 
                 var $this = $(this),dataType = $this.closest('tr').attr('data-type'),dataId = $this.closest('tr').attr('data-id');
 
-                switch (dataType){
-                    case '1':
-                    case '2':
+                var option = {};
+                var data = {};
+                option.dataInfo = {
+                    id : dataId
+                };
+                option.saveCallBack = function () {
+                    that.renderDataList();
+                };
+                $('body').m_form_template_generate_edit(option,true);
 
-                        var option = {};
-                        option.url = restApi.url_getAuditDetailForExp;
-                        option.postData = {
-                            id:dataId
-                        };
-                        m_ajax.postJson(option, function (response) {
-                            if (response.code == '0') {
-
-                                var option = {};
-                                option.doType = dataType;
-                                option.dataInfo = response.data;
-                                option.saveCallBack = function () {
-                                    that.renderDataList();
-                                };
-                                $('body').m_approval_cost_add(option,true);
-
-                            } else {
-                                S_layer.error(response.info);
-                            }
-                        });
-
-                        return false;
-                        break;
-
-                    case '3':
-                    case '4':
-
-                        var option = {};
-                        option.url = restApi.url_getLeaveDetailForWeb;
-                        option.postData = {
-                            id:dataId
-                        };
-                        m_ajax.postJson(option, function (response) {
-                            if (response.code == '0') {
-
-                                var option = {};
-                                option.doType = dataType;
-                                option.dataInfo = response.data;
-                                option.saveCallBack = function () {
-                                    that.renderDataList();
-                                };
-                                $('body').m_approval_leave_add(option,true);
-
-                            } else {
-                                S_layer.error(response.info);
-                            }
-                        });
-
-                        return false;
-                        break;
-                    case '5':
-
-
-                        break;
-                }
+                return false;
 
 
             });

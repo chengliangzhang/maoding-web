@@ -289,6 +289,12 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
     //转换工作流引擎内流程模型对象为ProcessDefineDetailDTO
     private ProcessDefineDetailDTO toProcessDefineDetailDTO(Process process,String varName,String varUnit){
+        if(varUnit==null){
+            varUnit = "";//以免全部为null
+        }
+        if(varName==null){
+            varName = "";//以免全部为null
+        }
         //检查参数
         TraceUtils.check(ObjectUtils.isNotEmpty(process),"!参数错误");
 
@@ -349,6 +355,12 @@ public class WorkflowServiceImpl extends NewBaseService implements WorkflowServi
 
     //把taskListMap转换为排好序的路径序列
     private List<FlowTaskGroupDTO> toOrderedFlowTaskGroupList(List<FlowTaskGroupDTO> taskGroupList,String varName,String varUnit){
+        if(varUnit==null){
+            varUnit = "";//以免全部为null
+        }
+        if(varName==null){
+            varName = "";//以免全部为null
+        }
         List<FlowTaskGroupDTO> dstList = new ArrayList<>();
         if (ObjectUtils.isNotEmpty(taskGroupList)){
             //添加默认路径

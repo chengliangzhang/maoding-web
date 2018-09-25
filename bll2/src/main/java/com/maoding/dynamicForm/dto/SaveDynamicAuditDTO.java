@@ -30,6 +30,11 @@ public class SaveDynamicAuditDTO extends AuditBaseDTO {
     private Integer auditFlag;//需要审批
 
     /**
+     * 1:可编辑 = 1，其他不可编辑
+     */
+    private Integer isEdit;//可编辑 = 1
+
+    /**
      * 抄送人
      */
     private List<CompanyUserDataDTO> ccCompanyUserList = new ArrayList<>();
@@ -112,4 +117,13 @@ public class SaveDynamicAuditDTO extends AuditBaseDTO {
     public Integer getAuditFlag() {
         return auditFlag;
     }
+
+    public Integer getIsEdit() {
+        return isEdit;
+    }
+
+    public void setIsEdit(Integer isEdit) {
+        this.isEdit = isEdit;
+    }
+
 }

@@ -1347,14 +1347,23 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
                 if ( "0".equals(approveStatus)) {//提交
                     messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_249);
                 }
-                if ( "1".equals(approveStatus)) {//拒绝
+                if ( "2".equals(approveStatus)) {//拒绝
                     messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_250);
                 }
-                if ( "2".equals(approveStatus)) {//同意
+                if ( "1".equals(approveStatus)) {//同意
                     messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_251);
                 }
                 if ( "3".equals(approveStatus)) {//同意并转交
                     messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_252);
+                }
+                if ( "7".equals(approveStatus)) {//财务已拨款(抄送)
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_253);
+                }
+                if ( "5".equals(approveStatus)) {//财务审批未通过
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_254);
+                }
+                if ( "6".equals(approveStatus)) {//财务已拨款
+                    messageEntity.setMessageType(SystemParameters.MESSAGE_TYPE_255);
                 }
             }
 
@@ -1603,6 +1612,12 @@ public class ExpMainServiceImpl extends GenericService<ExpMainEntity> implements
     @Override
     public void saveExpMain(ExpMainEntity entity, AuditBaseDTO dto) throws Exception {
 
+        if(!StringUtils.isEmpty(dto.getId())){//如果是编辑，则要把原有的记录的expFlag设置为1，以免下次再可编辑
+            ExpMainEntity exp = new ExpMainEntity();
+            exp.setId(dto.getId());
+            exp.setExpFlag(1);
+            this.expMainDao.updateById(exp);
+        }
         String userId = dto.getAccountId();
         String companyId = dto.getCurrentCompanyId();
         String type = null;

@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="<%=rootPath %>/assets/css/bootstrap_ext.min.css">
 <link rel="stylesheet" href="<%=rootPath %>/assets/lib/jquery.spinner/css/bootstrap-spinner.min.css">
 <link rel="stylesheet" href="<%=rootPath %>/assets/lib/font-awesome/css/font-awesome.min.css">
-<link rel="stylesheet" href="<%=rootPath %>/assets/lib/icon/iconfont.min.css">
+<link rel="stylesheet" href="<%=rootPath %>/assets/lib/icon/iconfont.min.css?v=1">
 
 <link rel="stylesheet" href="<%=rootPath %>/assets/lib/layer/theme/default/layer.css">
 <link rel="stylesheet" href="<%=rootPath %>/assets/lib/toastr/toastr.min.css">

@@ -15,7 +15,7 @@ public class ProcessDetailPrepareDTO extends CoreEditDTO {
     /** 流程名称 */
     private String name;
 
-    /** 流程键值，定义见ProcessTypeConst.PROCESS_TYPE_xxx */
+    /** 前端传递过来的是formId，过滤的时候一定要用form_id过滤 */
     private String key;
 
     /** 流程类型，定义见ProcessTypeConst.TYPE_xxx */

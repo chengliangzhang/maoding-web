@@ -226,7 +226,7 @@
         and process_type.form_id = #{formId}
       </if>
       <if test="key != null">
-        and process_type.target_type = #{key}
+        and process_type.form_id = #{key}
       </if>
 
   </select>

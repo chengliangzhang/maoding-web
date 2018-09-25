@@ -8,6 +8,27 @@
         </div>
     </div>
     <div class="form-group">
+        <div class="col-md-12">
+            <p>请选择分组条件</p>
+            <p class="">
+                {{if processData.optionalConditionList && processData.optionalConditionList.length>0}}
+                {{each processData.optionalConditionList as o i}}
+                    <div class="pull-left m-r-xs m-t-xs">
+                        <label class="i-checks i-checks-label fw-normal">
+                            {{if i==0}}
+                            <input type="radio"  name="optionalCondition" value="{{o.id}}" checked/>
+                            {{else}}
+                            <input type="radio"  name="optionalCondition" value="{{o.id}}"/>
+                            {{/if}}
+                            <span class="i-checks-span">{{o.name?o.name:'数字'}}</span>
+                        </label>
+                    </div>
+                    {{/each}}
+            {{/if}}
+            </p>
+        </div>
+    </div>
+    <div class="form-group">
         <div class="col-md-2 m-b-xs">
             <input class="form-control input-sm" type="text" name="conditionalVal">
         </div>

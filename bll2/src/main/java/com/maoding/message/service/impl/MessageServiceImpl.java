@@ -596,6 +596,7 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
              put("252","%sendUserName%同意并转交了%expUserName%的“%formName%”审批申请，请你审批。");//  XXX 同意并转交 X某的XXX审批申请，请你审批。
              put("253","%expUserName% 你申请的“%formName%”审批,共计%expAmount%元，财务已拨款，请知晓。");//  XXX 你申请的 XXX审批申请，共计XX元，财务已拨款，请知晓。"
              put("254","%expUserName% 你申请的“%formName%”审批,共计%expAmount%元，审批未通过，原因：%reason%。");//  XXX 你申请的 XXX审批申请，共计XX元，审批未通过，原因：XX"
+             put("255","你申请的“%formName%”共计%expAmount%元，财务已拨款。");
              **/
             case SystemParameters.MESSAGE_TYPE_249:
             case SystemParameters.MESSAGE_TYPE_250:
@@ -604,6 +605,7 @@ public class MessageServiceImpl extends GenericService<MessageEntity> implements
             case SystemParameters.MESSAGE_TYPE_253:
             case SystemParameters.MESSAGE_TYPE_254:
             case SystemParameters.MESSAGE_TYPE_255:
+
                 AuditCommonDTO auditCommonDTO = expMainService.getAuditDataById (targetId);
                 if(auditCommonDTO!=null){
                     para.put("formName",auditCommonDTO.getExpTypeName());//自定义审批表名

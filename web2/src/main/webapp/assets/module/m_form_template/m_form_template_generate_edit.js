@@ -41,9 +41,13 @@
 
             var option = {};
             option.url = restApi.url_initDynamicAudit;
-            option.postData = {
-                formId:that.settings.dataInfo.formId
-            };
+            option.postData = {};
+            if(that.settings.dataInfo && that.settings.dataInfo.formId)
+                option.postData.formId = that.settings.dataInfo.formId;
+
+            if(that.settings.dataInfo && that.settings.dataInfo.id)
+                option.postData.id = that.settings.dataInfo.id;
+
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
 
@@ -65,6 +69,8 @@
                                     item.fieldId2 = fieldList[i+1].fieldId;
                                     item.fieldTitle2 = fieldList[i+1].fieldTitle;
                                     item.fieldTooltip2 = fieldList[i+1].fieldTooltip;
+                                    item.fieldValue2 = fieldList[i+1].fieldValue;
+                                    item.dateFormatType2 = fieldList[i+1].dateFormatType;
                                 }
 
                                 if(item.fieldType!=9){
@@ -78,11 +84,20 @@
                                     $.each(item.detailFieldList,function (panelI,panelItem) {
 
                                         var panelInfo = {};
-                                        panelInfo.panelIndex = $(that.element).find('.form-item[data-type="9"]').length+1;
+                                        panelInfo.panelIndex = $(that.element).find('.form-item[data-type="9"] .panel').length+1;
                                         panelInfo.fieldType = 9;
                                         panelInfo.fieldId = item.fieldId;
-                                        var iHtml = template('m_form_template/m_form_template_itemForEdit',panelInfo);
-                                        $(that.element).find('form').eq(0).append(iHtml);
+
+                                        var $panel = $(that.element).find('.form-item[data-type="9"][data-field-id="'+item.fieldId+'"]');
+                                        if($panel.length>0){
+                                            panelInfo.fieldType = 'panelBody9';
+                                            var iHtml = template('m_form_template/m_form_template_itemForEdit',panelInfo);
+                                            $panel.find('button[data-action="addItem"]').parent().before(iHtml);
+                                        }else{
+                                            var iHtml = template('m_form_template/m_form_template_itemForEdit',panelInfo);
+                                            $(that.element).find('form').eq(0).append(iHtml);
+                                        }
+
 
                                         if(panelItem!=null && panelItem.length>0){
                                             var subJ = -1;
@@ -96,9 +111,11 @@
                                                     subItem.fieldId2 = panelItem[subI+1].fieldId;
                                                     subItem.fieldTitle2 = panelItem[subI+1].fieldTitle;
                                                     subItem.fieldTooltip2 = panelItem[subI+1].fieldTooltip;
+                                                    subItem.fieldValue2 = panelItem[subI+1].fieldValue;
+                                                    subItem.dateFormatType2 = panelItem[subI+1].dateFormatType;
                                                 }
                                                 var iHtml = template('m_form_template/m_form_template_itemForEdit',subItem);
-                                                $(that.element).find('.form-item[data-type="9"]:last .panel form').append(iHtml);
+                                                $(that.element).find('.form-item[data-type="9"]:last .panel:eq('+panelI+') form').append(iHtml);
                                             });
                                         }
 
@@ -110,8 +127,12 @@
                         }
                         that.renderICheckOrSelect($(that.element));
                         that.bindActionClick();
+                        that.save_validate();
+                        $(that.element).find('.form-item .panel').each(function () {
+                            that.save_itemValidate($(this));
+                        });
                         that.fileUpload();
-                        that.renderApprover();
+
                         if(that._dataInfo.dynamicAudit.ccCompanyUserList){
 
                             that._ccCompanyUserList = [];
@@ -127,6 +148,74 @@
                             $(that.element).find('#ccUserListBox').html(html);
                             that.ccBoxDeal();
                         }
+
+
+                        $(that.element).find('.form-item[data-type="5"][data-statistics="1"] input').on('keyup',function () {
+                            var expAmout = 0;
+                            $(that.element).find('.form-item[data-type="5"][data-statistics="1"] input').each(function () {
+                                expAmout = expAmout + ($(this).val()-0);
+                            });
+                            $(that.element).find('#isShowStatistics #expAmount').html(expAmout);
+                            if(that._dataInfo.processType=='3'){
+                                console.log('that._dataInfo.processType==3')
+                                that.renderApprover();
+                            }
+                        });
+
+                        //编辑
+                        if(that.settings.dataInfo.id){
+
+                            //时间区间
+                            $(that.element).find('div[data-format-type]').each(function () {
+
+                                var value = $(this).attr('data-value'),formatType = $(this).attr('data-format-type');
+                                $(this).find('input').val(value.substring(0,10));
+                                if(formatType==2 || formatType==3){
+                                    $(this).find('select').eq(0).val(value.substring(11,13)).trigger('change');
+                                }
+                                if(formatType==2){
+                                    $(this).find('select').eq(1).val(value.substring(14,16)).trigger('change');
+                                }
+
+                            });
+                            if(that._dataInfo.dynamicAudit.attachList){
+
+                                $.each(that._dataInfo.dynamicAudit.attachList,function (i,item) {
+                                    var fileData = {};
+                                    fileData.fullPath = item.fileFullPath;
+                                    fileData.netFileId = item.id;
+                                    fileData.fileName = item.fileName;
+                                    fileData.type = -1;//代表已存在
+                                    var html = template('m_common/m_attach', fileData);
+                                    $('#showFileLoading').append(html);
+                                    that.bindAttachDelele();
+                                })
+                            }
+
+                            if(that._dataInfo.dynamicAudit.auditList && that._dataInfo.processFlag=='1'){
+
+                                that._auditList = [];
+                                $.each(that._dataInfo.dynamicAudit.auditList,function (i,item) {
+                                    if(i==that._dataInfo.dynamicAudit.auditList.length-1){//取最后一条
+                                        that._auditList.push({
+                                            id:item.companyUserId,
+                                            userName:item.userName,
+                                            userId:item.userId,
+                                            fileFullPath:item.fileFullPath
+                                        })
+                                    }
+                                });
+                                var html = template('m_approval/m_approval_cost_add_approver', {userList: that._auditList});
+                                $(that.element).find('#approverBox').html(html);
+                            }else{
+                                that.renderApprover();
+                            }
+
+                        }else{
+                            that.renderApprover();
+                        }
+
+
                         return false;
                     });
 
@@ -151,6 +240,26 @@
                         
                     },
                     ok:function () {
+
+
+                        var error = [];
+                        var flag = $(that.element).find('form').valid();
+
+                        $(that.element).find('.panel.panel-default form').each(function (i) {
+                            if(!$(this).valid()){
+                                error.push(i);
+                            }
+                        });
+                        if(error.length>0){
+                            flag = false;
+                        }
+                        if (!flag) {
+                            return false;
+                        }
+                        if(!(that._dataInfo.processType=='2' || that._dataInfo.processType=='3') && (that._auditList==null || that._auditList[0]==null) ){//不存在流程
+                            S_toastr.error('请选择审批人！');
+                            return false;
+                        }
                         that.save();
                     }
 
@@ -172,10 +281,18 @@
             var that = this;
             var expAmout = 0,userList = [];
 
-            $(that.element).find('.form-item[data-type="9"] input').each(function () {
+            var isShowStatistics = 0;
+            $(that.element).find('.form-item[data-type="5"][data-statistics="1"] input').each(function () {
 
                 expAmout = expAmout + ($(this).val()-0);
+                isShowStatistics++;
             });
+            if(isShowStatistics>0){
+                $(that.element).find('#isShowStatistics').show();
+                $(that.element).find('#isShowStatistics #expAmount').html(expAmout);
+            }
+
+
 
             if(that._dataInfo.processType=='2'  && that._dataInfo.conditionList!=null && that._dataInfo.conditionList.length>0){//固定流程
 
@@ -382,7 +499,7 @@
         ,save:function () {
             var that = this;
             var $data = that._dataInfo;
-            var fieldList = that._dataInfo.dynamicAudit.fieldList;
+            var fieldList =  $.extend(true, [], that._dataInfo.dynamicAudit.fieldList);
             $.each(fieldList,function (i,item) {
                 var $formItem = $(that.element).find('div[data-field-id="'+item.fieldId+'"]');
 
@@ -390,10 +507,11 @@
 
                 if(item.detailFieldList!=null && item.detailFieldList.length>0){
 
+                    var detailFieldListLen = item.detailFieldList.length;
                     $.each(item.detailFieldList,function (panelI,panelItem) {
 
                         $.each(panelItem,function (subI,subItem) {
-                            var $subFormItem = $(that.element).find('div[data-field-id="'+item.fieldId+'"] .panel div[data-field-id="'+subItem.fieldId+'"]');
+                            var $subFormItem = $(that.element).find('div[data-field-id="'+item.fieldId+'"] .panel:eq('+panelI+') div[data-field-id="'+subItem.fieldId+'"]');
                             subItem = that.recursiveData($subFormItem,subItem);
                         });
                     });
@@ -401,20 +519,19 @@
                     var $panel = $(that.element).find('div[data-field-id="'+item.fieldId+'"] .panel');
                     var detailsLen = $panel.length;
                     //明细多于1
-                    if(detailsLen>1){
-                        $panel.each(function (i) {
-                            if(i==0)
+                    if(detailsLen>detailFieldListLen){
+                        var detailFieldList = $.extend(true, {}, item.detailFieldList[0]);
+                        $panel.each(function (pi) {
+                            if(pi<detailFieldListLen)
                                 return true;
                             var itemArr = [];
-                            $.each(item.detailFieldList,function (panelI,panelItem) {
 
-                                $.each(panelItem,function (subI,subItem) {
+                            $.each(detailFieldList,function (subI,subItem) {
 
-                                    var $ssubFormItem = $(that.element).find('div[data-field-id="'+item.fieldId+'"] .panel:eq('+i+') div[data-field-id="'+subItem.fieldId+'"]');
-                                    itemArr.push(that.recursiveData($ssubFormItem,subItem)) ;
-                                });
-                                item.detailFieldList.push(itemArr);
+                                var $ssubFormItem = $(that.element).find('div[data-field-id="'+item.fieldId+'"] .panel:eq('+pi+') div[data-field-id="'+subItem.fieldId+'"]');
+                                itemArr.push(that.recursiveData($ssubFormItem,subItem)) ;
                             });
+                            item.detailFieldList.push(itemArr);
 
                         });
                     }
@@ -434,6 +551,9 @@
             option.classId = '#content-right';
             option.url = restApi.url_saveDynamicAudit;
             option.postData = $data.dynamicAudit;
+
+            if(that.settings.dataInfo && that.settings.dataInfo.id)
+                option.postData.id = that.settings.dataInfo.id;
 
             console.log(option);
             m_ajax.postJson(option, function (response) {
@@ -468,6 +588,19 @@
                                 $(this).html(i+1);
                             });
                             return false;
+                        });
+                        that.save_itemValidate($this.parent().prev());
+
+                        $(that.element).find('.form-item[data-type="5"][data-statistics="1"] input').on('keyup',function () {
+                            var expAmout = 0;
+                            $(that.element).find('.form-item[data-type="5"][data-statistics="1"] input').each(function () {
+                                expAmout = expAmout + ($(this).val()-0);
+                            });
+                            $(that.element).find('#isShowStatistics #expAmount').html(expAmout);
+                            if(that._dataInfo.processType=='3'){
+                                console.log('that._dataInfo.processType==3')
+                                that.renderApprover();
+                            }
                         });
                         return false;
                         break;
@@ -506,6 +639,80 @@
                 }
 
             });
+        }
+        ,validateOptions:function ($ele,options) {
+
+            $ele.each(function (i) {
+                var $this = $(this);
+                var spanRed = $this.find('span.fc-red').length;
+                var type = $this.attr('data-type');
+                var key = $this.attr('data-field-id');
+                if(type==4){//时间
+                    $this.find('div[data-type="4"]').each(function () {
+                        if(spanRed>0){
+                            key = $(this).attr('data-field-id');
+                            options.rules[key]={required: true};
+                            options.messages[key]={required: '不为空！'};
+                        }
+                    });
+                }else if(type==5){//数字
+                    if(spanRed>0){
+                        options.rules[key]={
+                            required: true,
+                            number:true
+                        };
+                        options.messages[key]={
+                            required: '不为空！',
+                            number:'请输入数字!'
+                        };
+                    }else{
+                        options.rules[key]={
+                            number:true
+                        };
+                        options.messages[key]={
+                            number:'请输入数字!'
+                        };
+                    }
+                }else{
+                    if(spanRed>0){
+                        options.rules[key]={required: true};
+                        options.messages[key]={required: '不为空！'};
+                    }
+                }
+            });
+            return options;
+        }
+        ,save_validate:function(){
+            var that = this;
+
+            var options = {};
+            options.rules = {};
+            options.messages = {};
+            options = that.validateOptions($(that.element).find('form#fieldForm>div.form-item'),options);
+            options.errorPlacement=function (error, element) { //指定错误信息位置
+                console.log(element)
+                if(element.closest('div[data-type="4"]').length>0){
+                    error.appendTo(element.parent().parent());
+                }else{
+                    error.appendTo(element.closest('.col-xs-10'));
+                }
+
+            };
+            $(that.element).find('form#fieldForm').validate(options);
+
+        }
+        ,save_itemValidate:function($ele){
+            var that = this;
+            var options = {};
+            options.rules = {};
+            options.messages = {};
+            options = that.validateOptions($ele.find('form .form-item'),options);
+
+            options.errorPlacement=function (error, element) { //指定错误信息位置
+                console.log(element)
+                error.appendTo(element.closest('.col-xs-10'));
+            };
+            $ele.find('form').validate(options);
         }
 
     });

@@ -606,7 +606,8 @@
             exp_main.approve_status AS approveStatus,
             s.type_name AS approveStatusName,
             exp_main.type,
-            form.form_name as expTypeName
+            form.form_name as expTypeName,
+            exp_main.exp_flag as expFlag
         FROM
             maoding_web_exp_main exp_main
         INNER JOIN maoding_web_company_user company_user ON exp_main.company_user_id = company_user.id

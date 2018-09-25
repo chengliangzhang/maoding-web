@@ -332,6 +332,9 @@ body label.error {
 .v-middle, .table > tbody > tr > td.v-middle, .table > thead > tr > th.v-middle {
     vertical-align: middle !important;;
 }
+.vertical-super{
+    vertical-align: super;
+}
 
 .text-line-through {
     text-decoration: line-through !important;
@@ -488,8 +491,8 @@ input.form-control[readonly] {
     width: 50px;
     height: 50px;
     clear: both;
-    display: block;
-    padding: 10px 15px;
+    display: inline-block;
+    padding: 9px 13px;
     border-radius: 50%;
     color: #fff;
     background-color: #00bebc;
@@ -883,7 +886,7 @@ i.icon-sm{
 
 .icon-separation-line::before{
     padding: 0 10px;
-    color: #666;
+    color: #a5a5a5;
     content: "|";
 }
 

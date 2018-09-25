@@ -335,7 +335,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
         TraceUtils.check(StringUtils.isNotEmpty(companyId),"!currentCompanyId不能为空");
         TraceUtils.check(StringUtils.isNotEmpty(key),"!key不能为空");
         ProcessTypeEntity typeEntity = processTypeDao
-                .getCurrentProcessType(editRequest.getCurrentCompanyId(),editRequest.getKey());
+                .getCurrentProcessTypeByFormId(editRequest.getCurrentCompanyId(),editRequest.getKey());
 
         //如果数据库内没有流程信息，新建一条，否则更改已有的流程信息
         boolean found;
@@ -714,7 +714,7 @@ public class ProcessServiceImpl extends NewBaseService implements ProcessService
     public Map<String,Object> getCurrentTaskUser(AuditEditDTO dto, List<AuditDTO> auditList, String value) throws Exception{
         Map<String,Object>  result = getCurrentProcess(dto);
         String processType = result.get("processType").toString();
-        if("0".equals(result.get("processFlag")) ){
+        if("0".equals(result.get("processFlag")) && !StringUtils.isEmpty(value)){//必须要判断type！=null，一下是用于处理已经产生的审批单的审批记录的数据
             List<UserTaskNodeDTO> taskList = (List<UserTaskNodeDTO>)result.get("conditionList");
             List<CompanyUserAppDTO> userList = this.getUserList(taskList,value,processType);
             int index = 0;

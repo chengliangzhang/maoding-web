@@ -1,11 +1,7 @@
 package com.maoding.dynamicForm.service;
 
-import com.maoding.core.base.service.BaseService;
-import com.maoding.core.base.service.NewBaseService;
 import com.maoding.dynamicForm.dto.FormFieldQueryDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicAuditDTO;
-import com.maoding.dynamicForm.dto.SaveDynamicFormDTO;
-import com.maoding.dynamicForm.entity.DynamicFormFieldSelectableValueEntity;
 
 import java.util.Map;
 
@@ -15,7 +11,6 @@ import java.util.Map;
 public interface DynamicFormFieldValueService  {
 
     int saveAuditDetail(SaveDynamicAuditDTO dto) throws Exception;
-
 
     /**
      * 新增表单，编辑表单，处理初始化数据

@@ -213,21 +213,12 @@ public class ExpAuditServiceImpl extends GenericService<ExpAuditEntity> implemen
      * @param accountId （当前用户id）
      */
     private void sendMessageForCopy(String targetId,String expType,String currentCompanyId,String accountId) throws Exception{
-        Integer type = Integer.parseInt(expType);
-        if(type>2){
-            //推送
-            //推送抄送消息
-            SendMessageDTO m = new SendMessageDTO();
-            m.setTargetId(targetId);
-            m.setCurrentCompanyId(currentCompanyId);
-            m.setAccountId(accountId);
-            if(type==3 ){//请假
-                m.setMessageType(SystemParameters.MESSAGE_TYPE_238);
-            }
-            if(type==4){//出差
-                m.setMessageType(SystemParameters.MESSAGE_TYPE_239);
-            }
-            this.messageService.sendMessageForCopy(m);
-        }
+        //推送抄送消息
+        SendMessageDTO m = new SendMessageDTO();
+        m.setTargetId(targetId);
+        m.setCurrentCompanyId(currentCompanyId);
+        m.setAccountId(accountId);
+        m.setMessageType(SystemParameters.MESSAGE_TYPE_253);
+        this.messageService.sendMessageForCopy(m);
     }
 }

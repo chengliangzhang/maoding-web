@@ -432,9 +432,8 @@ public interface SystemParameters {
             put("250","%sendUserName% 拒绝了你的“%formName%”的审批申请，退回原因：%reason%。");// XXX 拒绝了你的 XXX 的审批申请，退回原因：XXXX。
             put("251","你提交“%formName%”的审批，已完成审批。");//  你提交了 XXX 的审批，已完成审批。
             put("252","%sendUserName%同意并转交了%expUserName%的“%formName%”审批申请，请你审批。");//  XXX 同意并转交 X某的XXX审批申请，请你审批。
-            put("253","%expUserName% 你申请的“%formName%”审批,共计%expAmount%元，财务已拨款，请知晓。");//  XXX 你申请的 XXX审批申请，共计XX元，审批未通过，原因：XX"
+            put("253","%expUserName% 你申请的“%formName%”审批,共计%expAmount%元，财务已拨款，请知晓。");//  XXX 你申请的 XXX审批申请，共计XX元，财务已拨款，请知晓。"
             put("254","%expUserName% 你申请的“%formName%”审批,共计%expAmount%元，审批未通过，原因：%reason%。");//  XXX 你申请的 XXX审批申请，共计XX元，审批未通过，原因：XX"
-            put("255","你申请的“%formName%”共计%expAmount%元，财务已拨款。");
 
             //财务审核不通过（报销，费用）
             put("247","%expUserName% 你申请的报销,“%expName%”,共计%expAmount%元，审批未通过，原因：%reason%。");

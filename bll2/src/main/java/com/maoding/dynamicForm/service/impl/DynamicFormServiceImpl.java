@@ -107,6 +107,7 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         }else{
             processTypeEntity.setFormType(dto.getFormType());//业务类型
             processTypeEntity.setFormId(formId);
+            processTypeEntity.setStatus(dto.getStatus());
             processTypeDao.updateById(processTypeEntity);
         }
         return 1;
@@ -357,6 +358,16 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
 
         return 1;
     }
+
+    @Override
+    public String getFormName(String id) {
+        DynamicFormEntity formEntity = this.dynamicFormDao.selectById(id);
+        if(formEntity!=null){
+            return formEntity.getFormName();
+        }
+        return "";
+    }
+
     private void exchangeValue(DynamicFormGroupEntity entity1,DynamicFormGroupEntity entity2){
 
         Integer dtoSeq = entity1.getSeq();

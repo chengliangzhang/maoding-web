@@ -27,6 +27,9 @@ public class SaveDynamicFormDTO extends BaseDTO {
     /*排序*/
     private Integer seq;
 
+    /**图标*/
+    private String iconKey;
+
     public String getDocumentation() {
         return documentation;
     }
@@ -85,5 +88,11 @@ public class SaveDynamicFormDTO extends BaseDTO {
         this.seq = seq;
     }
 
+    public String getIconKey() {
+        return iconKey;
+    }
 
+    public void setIconKey(String iconKey) {
+        this.iconKey = iconKey;
+    }
 }

@@ -33,7 +33,7 @@
 
         this._formFieldInfo = [];//预存的json，
         this._baseData = {};//
-
+        this._isStatisticsList = [];
         this.init();
     }
 
@@ -192,6 +192,7 @@
             dataItem.fieldTooltip = item.fieldTooltip;
             dataItem.fieldUnit = item.fieldUnit;
             dataItem.requiredType = item.requiredType;
+            dataItem.isStatistics = item.isStatistics;
 
             if(item.fieldType==4){//时间区间，需要合并一个组件
 
@@ -313,8 +314,11 @@
                     fieldTooltip:dataItem.fieldTooltip,
                     arrangeType:dataItem.arrangeType,
                     requiredType:dataItem.requiredType,
-                    seqX:'2'
+                    isStatistics:dataItem.isStatistics
                 };
+                if(!isNullOrBlank(dataItem.isStatistics))
+                    that._isStatisticsList.push({itemKey:itemKey,isStatistics:dataItem.isStatistics})
+
                 if(type==4){//时间区间，需要拆成两个组件
 
                     newDataItem.dateFormatType = dataItem.dateType;
@@ -323,6 +327,7 @@
                     var clone = $.extend(true, {}, newDataItem);
                     clone.fieldTitle = dataItem.fieldTitle2;
                     clone.fieldTooltip = dataItem.fieldTooltip2;
+                    clone.seqX = '2';
                     formField.push(filterParam(clone));
 
                 }else if(type==6 || type==7 || type==8){//下拉列表
@@ -369,6 +374,7 @@
         ,getSaveData:function () {
             var that = this;
             var dataInfo = {};
+            that._isStatisticsList = [];
             //表单属性
             dataInfo = $(that.element).find('#propertyBox form[data-property-type="1"]').serializeObject();
 
@@ -390,6 +396,11 @@
 
             if(status)
                 option.postData.status = status;
+
+            if(that._isStatisticsList && that._isStatisticsList.length>1){
+                S_toastr.warning('数字控件只能一项参与统计！');
+                return false;
+            }
 
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
@@ -569,6 +580,9 @@
                     formFieldInfo.approvalAttr = formFieldInfo.approvalAttr.join(',');
                 }
             }
+            if($activeFormItem.closest('.panel').length>0)
+                formFieldInfo.isShowStatistics = 1;
+            
             var html = template('m_form_template/m_form_template_item_property',{type:type,itemKey:itemKey,formFieldInfo:formFieldInfo});
             that._$propertyForm.html(html);
 
@@ -812,6 +826,9 @@
                 $(that.element).find('.icon-circle-out').removeClass('active');
                 $(this).parent().addClass('active');
             });
+            $(that.element).find('input[name="formName"]').on('keyup',function () {
+                $(that.element).find('h4#formName').html($(this).val());
+            });
 
             $(that.element).find('a[data-action],button[data-action]').on('click',function () {
                var $this = $(this);
@@ -842,7 +859,10 @@
                            S_toastr.warning('请选择控件！');
                            return false;
                        }
-                       that.save();
+
+                       if(that.save()===false)
+                           return false;
+
                        break;
                    case 'saveAndEnable'://保存并启用
 

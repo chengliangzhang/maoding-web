@@ -29,6 +29,9 @@ public class DynamicFormFieldValueDTO extends DynamicFormFieldBaseDTO{
     //字段值2（备注额外的值）
     private String fieldValue2;
 
+    //参与分条件流程的字段：1=作为条件流程的字段，0=不作为条件流程的字段
+    private Integer statisticalCondition;
+
     /**
      * 控件选择值
      */
@@ -106,5 +109,13 @@ public class DynamicFormFieldValueDTO extends DynamicFormFieldBaseDTO{
 
     public void setFieldValueText(String fieldValueText) {
         this.fieldValueText = fieldValueText;
+    }
+
+    public Integer getStatisticalCondition() {
+        return statisticalCondition;
+    }
+
+    public void setStatisticalCondition(Integer statisticalCondition) {
+        this.statisticalCondition = statisticalCondition;
     }
 }

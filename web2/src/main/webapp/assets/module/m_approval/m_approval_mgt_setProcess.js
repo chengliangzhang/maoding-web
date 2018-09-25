@@ -23,6 +23,9 @@
         this._processDetail = null;//当前流程信息
         this._editFixedProcess = [];//固定流程保存数据
         this._editCondProcess = [];//条件流程保存数据
+
+        this._optionalCondition = null;
+
         this.init();
     }
 
@@ -50,6 +53,8 @@
                 if (response.code == '0') {
 
                     that._processDetail = $.extend(true, {}, response.data);
+
+                    that._optionalCondition = that._processDetail.conditionFieldId;
 
                     //生成固定流程保存数据
                     if(that._processDetail.type==2){
@@ -171,6 +176,8 @@
             option.postData = that._processDetail;
             option.postData.type = type;
 
+            option.postData.conditionFieldId = that._optionalCondition;
+
             m_ajax.postJson(option, function (response) {
                 if (response.code == '0') {
 
@@ -277,12 +284,13 @@
                         var option = {};
                         option.type = $this.attr('data-type');
                         option.processData = that._processDetail;
-                        option.oKCallBack = function (data) {
+                        option.oKCallBack = function (data,optionalCondition) {
 
                             that._editCondProcess = data;
                             var html = template('m_approval/m_approval_mgt_setProcess_flow',{flowTaskGroupList:data});
                             $(that.element).find('#flowTaskGroupList').html(html);
                             that.bindActionClick();//重新绑定事件
+                            that._optionalCondition = optionalCondition;
                         };
                         $('body').m_approval_mgt_setProcessCondition(option,true);
                         break;
