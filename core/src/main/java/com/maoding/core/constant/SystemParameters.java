@@ -715,7 +715,7 @@ public interface SystemParameters {
             put("237",new MessageTemplate("%expUserName% 提交的费用申请，“%expName%”，共计%expAmount%元，财务已拨款，请知晓。",1));//ok
             put("238",new MessageTemplate("%expUserName% 提交的请假申请，请假类型：%leaveTypeName%，请假时间：%startTime1% - %endTime1%，已完成审批，请知晓",1));//ok
             put("239",new MessageTemplate("%expUserName% 提交的出差申请，出差地：%address%，出差时间：%startTime1% - %endTime1%，已完成审批，请知晓",1));
-
+            /***********自定义审批***********/
             put("249",new MessageTemplate("%expUserName% 提交了，“%formName%”的审批，请您审批。",1));
             put("250",new MessageTemplate("%sendUserName% 拒绝了你的“%formName%”的审批申请，退回原因：%reason%。",1));
             put("251",new MessageTemplate("你提交“%formName%”的审批，已完成审批。",1));
