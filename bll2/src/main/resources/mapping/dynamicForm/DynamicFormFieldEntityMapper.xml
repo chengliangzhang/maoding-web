@@ -13,6 +13,7 @@
     <result column="field_tooltip" property="fieldTooltip" jdbcType="VARCHAR" />
     <result column="field_default_value" property="fieldDefaultValue" jdbcType="VARCHAR" />
     <result column="field_select_value_type" property="fieldSelectValueType" jdbcType="VARCHAR" />
+    <result column="is_fee_type" property="isFeeType" jdbcType="INTEGER" />
     <result column="seq_x" property="seqX" jdbcType="INTEGER" />
     <result column="seq_y" property="seqY" jdbcType="INTEGER" />
     <result column="required_type" property="requiredType" jdbcType="INTEGER" />
@@ -29,7 +30,7 @@
   <sql id="Base_Column_List" >
     id, form_id, field_pid, field_title, field_type,field_unit,is_statistics,is_finance_statistics,
      field_tooltip, field_default_value,
-    field_select_value_type, seq_x, seq_y, required_type,date_format_type,arrange_type,
+    field_select_value_type, is_fee_type, seq_x, seq_y, required_type,date_format_type,arrange_type,
      deleted, create_date, create_by,
     update_date, update_by
   </sql>
@@ -49,14 +50,14 @@
   <insert id="insert" parameterType="com.maoding.dynamicForm.entity.DynamicFormFieldEntity" >
     insert into maoding_dynamic_form_field (id, form_id, field_pid, 
       field_title, field_type, field_unit,is_statistics,is_finance_statistics,
-      field_tooltip,field_default_value, field_select_value_type,
+      field_tooltip,field_default_value, field_select_value_type,is_fee_type,
       seq_x, seq_y, required_type, date_format_type,arrange_type,
       deleted, create_date, create_by, 
       update_date, update_by)
     values (#{id,jdbcType=VARCHAR}, #{formId,jdbcType=VARCHAR}, #{fieldPid,jdbcType=VARCHAR}, 
       #{fieldTitle,jdbcType=VARCHAR}, #{fieldType,jdbcType=INTEGER}, #{fieldUnit,jdbcType=VARCHAR},
       #{isStatistics,jdbcType=INTEGER}, #{isFinanceStatistics,jdbcType=INTEGER},#{fieldTooltip,jdbcType=VARCHAR},
-      #{fieldDefaultValue,jdbcType=VARCHAR}, #{fieldSelectValueType,jdbcType=VARCHAR},
+      #{fieldDefaultValue,jdbcType=VARCHAR}, #{fieldSelectValueType,jdbcType=VARCHAR}, #{isFeeType,jdbcType=INTEGER}
       #{seqX,jdbcType=INTEGER}, #{seqY,jdbcType=INTEGER}, #{requiredType,jdbcType=INTEGER},
       #{dateFormatType,jdbcType=INTEGER}, #{arrangeType,jdbcType=INTEGER},
       #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
@@ -102,6 +103,9 @@
       <if test="fieldSelectValueType != null" >
         field_select_value_type = #{fieldSelectValueType,jdbcType=VARCHAR},
       </if>
+      <if test="isFeeType != null" >
+        is_fee_type = #{isFeeType,jdbcType=INTEGER},
+      </if>
       <if test="seqX != null" >
         seq_x = #{seqX,jdbcType=INTEGER},
       </if>
@@ -144,6 +148,7 @@
       field_tooltip = #{fieldTooltip,jdbcType=VARCHAR},
       field_default_value = #{fieldDefaultValue,jdbcType=VARCHAR},
       field_select_value_type = #{fieldSelectValueType,jdbcType=VARCHAR},
+      is_fee_type = #{isFeeType,jdbcType=INTEGER},
       seq_x = #{seqX,jdbcType=INTEGER},
       seq_y = #{seqY,jdbcType=INTEGER},
       required_type = #{requiredType,jdbcType=INTEGER},
@@ -168,6 +173,7 @@
     <result column="field_tooltip" property="fieldTooltip" jdbcType="VARCHAR" />
     <result column="field_default_value" property="fieldDefaultValue" jdbcType="VARCHAR" />
     <result column="field_select_value_type" property="fieldSelectValueType" jdbcType="VARCHAR" />
+    <result column="is_fee_type" property="isFeeType" jdbcType="INTEGER" />
     <result column="seq_x" property="seqX" jdbcType="INTEGER" />
     <result column="seq_y" property="seqY" jdbcType="INTEGER" />
     <result column="required_type" property="requiredType" jdbcType="INTEGER" />
@@ -177,6 +183,7 @@
                 select="listFormFieldByPid" column="{fieldPid=id}" fetchType="eager"
     />
   </resultMap>
+
 
   <select id="getDefaultFieldTitle" resultType="java.lang.String"  parameterType="java.lang.String">
     select widget_type.type_name

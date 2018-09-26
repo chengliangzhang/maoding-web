@@ -36,6 +36,8 @@ public class DynamicFormFieldBaseDTO {
     /** 默认值0(由数据字典提供，如果为0，则从maoding_dynamic_form_field_selectable_value 去获取,如果有多个，用逗号隔开 **/
     private String fieldSelectValueType;
 
+    private Integer isFeeType;
+
     /** 横坐标排序（如果x相同，则排成一行） **/
     private Integer seqX;
 
@@ -192,5 +194,13 @@ public class DynamicFormFieldBaseDTO {
 
     public void setIsFinanceStatistics(Integer isFinanceStatistics) {
         this.isFinanceStatistics = isFinanceStatistics;
+    }
+
+    public Integer getIsFeeType() {
+        return isFeeType;
+    }
+
+    public void setIsFeeType(Integer isFeeType) {
+        this.isFeeType = isFeeType;
     }
 }
