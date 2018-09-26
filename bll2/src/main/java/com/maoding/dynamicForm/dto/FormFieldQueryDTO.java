@@ -21,6 +21,8 @@ public class FormFieldQueryDTO extends CoreQueryDTO {
     /** 用于条件设置 **/
     private Integer toCondition;
 
+    private Integer selectType;
+
     public Integer getToCondition() {
         return toCondition;
     }
@@ -45,4 +47,11 @@ public class FormFieldQueryDTO extends CoreQueryDTO {
         this.fieldPid = fieldPid;
     }
 
+    public Integer getSelectType() {
+        return selectType;
+    }
+
+    public void setSelectType(Integer selectType) {
+        this.selectType = selectType;
+    }
 }

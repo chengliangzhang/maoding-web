@@ -7,21 +7,20 @@ import com.maoding.companybill.dto.SaveCompanyBillDTO;
 import com.maoding.companybill.entity.CompanyBillDetailEntity;
 import com.maoding.companybill.entity.CompanyBillEntity;
 import com.maoding.companybill.entity.CompanyBillRelationEntity;
-import com.maoding.companybill.service.CompanyBalanceService;
 import com.maoding.companybill.service.CompanyBillService;
 import com.maoding.core.base.dto.BaseDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.constant.CompanyBillType;
 import com.maoding.core.constant.ExpCategoryConst;
 import com.maoding.core.util.DateUtils;
+import com.maoding.core.util.DigitUtils;
 import com.maoding.core.util.StringUtil;
 import com.maoding.dynamicForm.dao.DynamicFormFieldValueDao;
 import com.maoding.dynamicForm.dto.DynamicFormFieldValueDTO;
 import com.maoding.dynamicForm.dto.FormFieldQueryDTO;
-import com.maoding.dynamicForm.dto.SaveDynamicAuditDTO;
+import com.maoding.dynamicForm.entity.DynamicFormFieldValueEntity;
 import com.maoding.dynamicForm.service.DynamicFormFieldValueService;
 import com.maoding.exception.CustomException;
-import com.maoding.financial.dao.ExpCategoryDao;
 import com.maoding.financial.dao.ExpDetailDao;
 import com.maoding.financial.dao.ExpFixedDao;
 import com.maoding.financial.dao.ExpMainDao;
@@ -31,13 +30,9 @@ import com.maoding.financial.entity.ExpDetailEntity;
 import com.maoding.financial.entity.ExpMainEntity;
 import com.maoding.org.dao.CompanyDao;
 import com.maoding.org.dao.CompanyUserDao;
-import com.maoding.org.entity.CompanyEntity;
-import com.maoding.org.entity.CompanyUserEntity;
 import com.maoding.org.service.CompanyService;
-import com.maoding.process.entity.ProcessTypeEntity;
 import com.maoding.project.dao.ProjectDao;
 import com.maoding.project.entity.ProjectEntity;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -90,44 +85,43 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
     public synchronized int saveCompanyBill(SaveCompanyBillDTO dto) throws Exception {
 
         CompanyBillEntity bill = new CompanyBillEntity();
-        BaseDTO.copyFields(dto,bill);
+        BaseDTO.copyFields(dto, bill);
         bill.initEntity();
         bill.setDeleted(0);
-        ProjectEntity project =  projectDao.selectById(dto.getProjectId());
+        ProjectEntity project = projectDao.selectById(dto.getProjectId());
         bill.setOperatorName(companyUserDao.getUserName(dto.getOperatorId()));
-        bill.setProjectName(project!=null?project.getProjectName():null);
+        bill.setProjectName(project != null ? project.getProjectName() : null);
         bill.setPayeeName(companyDao.getCompanyName(dto.getToCompanyId()));
         bill.setPayerName(companyDao.getCompanyName(dto.getFromCompanyId()));
-        if(dto.getFeeType()==CompanyBillType.FEE_TYPE_EXPENSE || dto.getFeeType()==CompanyBillType.FEE_TYPE_EXP_APPLY){//报销，费用
-            this.saveExpFee(dto,bill);
-        }else if(dto.getFeeType() ==CompanyBillType.FEE_TYPE_EXP_FIX || dto.getFeeType() ==CompanyBillType.FEE_TYPE_FIX_OTHER_INCOME){ //固定支出,其他收入
-            this.saveFixFee(dto,bill);
-        }else if(dto.getFeeType() ==CompanyBillType.FEE_TYPE_DYNAMIC){//自定义审批表单
-            this.saveDynamicFee(dto,bill);
-        }
-        else {
-            if(dto.getFeeType()==CompanyBillType.DIRECTION_PAYEE){//合同回款
+        if (dto.getFeeType() == CompanyBillType.FEE_TYPE_EXPENSE || dto.getFeeType() == CompanyBillType.FEE_TYPE_EXP_APPLY) {//报销，费用
+            this.saveExpFee(dto, bill);
+        } else if (dto.getFeeType() == CompanyBillType.FEE_TYPE_EXP_FIX || dto.getFeeType() == CompanyBillType.FEE_TYPE_FIX_OTHER_INCOME) { //固定支出,其他收入
+            this.saveFixFee(dto, bill);
+        } else if (dto.getFeeType() == CompanyBillType.FEE_TYPE_DYNAMIC) {//自定义审批表单
+            this.saveDynamicFee(dto, bill);
+        } else {
+            if (dto.getFeeType() == CompanyBillType.DIRECTION_PAYEE) {//合同回款
                 //合同回款的付款方为甲方
                 bill.setPayerName(this.projectDao.getEnterpriseNameByProjectId(dto.getProjectId()));
-                dto.setFromCompanyId(project!=null?project.getConstructCompany():null);
+                dto.setFromCompanyId(project != null ? project.getConstructCompany() : null);
             }
-            this.saveProjectFee(dto,bill);
+            this.saveProjectFee(dto, bill);
         }
-        if(!StringUtil.isNullOrEmpty(bill.getPaymentDate())){
+        if (!StringUtil.isNullOrEmpty(bill.getPaymentDate())) {
             bill.setPaymentDate(DateUtils.formatDateString(bill.getPaymentDate()));
         }
 
         //查询该记录是否已经存在，若存在则不添加，防止网络差，引起前端反应慢，用户多点的情形
-        if(bill.getFeeType()!= CompanyBillType.FEE_TYPE_EXP_FIX
-                && bill.getFeeType()!= CompanyBillType.FEE_TYPE_FIX_OTHER_INCOME
-                && !CollectionUtils.isEmpty(companyBillDao.getCompanyBillByTargetId(dto))){
+        if (bill.getFeeType() != CompanyBillType.FEE_TYPE_EXP_FIX
+                && bill.getFeeType() != CompanyBillType.FEE_TYPE_FIX_OTHER_INCOME
+                && !CollectionUtils.isEmpty(companyBillDao.getCompanyBillByTargetId(dto))) {
             return 0;
         }
         //保存主表数据
         companyBillDao.insert(bill);
         //保存关联的字段
         CompanyBillRelationEntity billRelation = new CompanyBillRelationEntity();
-        BaseDTO.copyFields(dto,billRelation);
+        BaseDTO.copyFields(dto, billRelation);
         billRelation.initEntity();
         billRelation.setId(bill.getId());//必须设置bill.getId(),主键关联//
         return companyBillRelationDao.insert(billRelation);
@@ -136,10 +130,10 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
     public synchronized int saveCompanyBillForFix(SaveCompanyBillDTO dto) throws Exception {
         //从这里设置日期，如果是历史数据的话，创建日期为输入月份的最后一天，如果是当前月的话，创建日期为当下的时间
         Date create = null;
-        if(DateUtils.isThisMonth(DateUtils.str2Date(dto.getPaymentDate()+"-01"))){
+        if (DateUtils.isThisMonth(DateUtils.str2Date(dto.getPaymentDate() + "-01"))) {
             create = DateUtils.getDate();
-        }else {
-            create =  DateUtils.getLastDayOfMonth(dto.getPaymentDate());
+        } else {
+            create = DateUtils.getLastDayOfMonth(dto.getPaymentDate());
         }
         //todo 支出部分
         dto.setFeeType(CompanyBillType.FEE_TYPE_EXP_FIX);
@@ -167,33 +161,33 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
     /**
      * 报销，费用申请，业务处理
      */
-    private void saveExpFee(SaveCompanyBillDTO dto,CompanyBillEntity bill) throws Exception {
+    private void saveExpFee(SaveCompanyBillDTO dto, CompanyBillEntity bill) throws Exception {
 
         ExpMainDTO exp = expMainDao.selectByIdWithUserName(dto.getTargetId());
         List<ExpDetailEntity> detailList = expDetailDao.selectByMainId(dto.getTargetId());
         BigDecimal sum = new BigDecimal("0");
         String projectName = "";
         String desc = "";
-        for (ExpDetailEntity detail:detailList){
+        for (ExpDetailEntity detail : detailList) {
             CompanyBillDetailEntity billDetail = new CompanyBillDetailEntity();
             billDetail.initEntity();
             billDetail.setBillId(bill.getId());
-            billDetail.setFee(detail.getExpAmount()==null?new BigDecimal("0"):detail.getExpAmount());
+            billDetail.setFee(detail.getExpAmount() == null ? new BigDecimal("0") : detail.getExpAmount());
             billDetail.setExpTypeParentName(detail.getExpPName());
             billDetail.setExpTypeName(detail.getExpName());
             billDetail.setFeeDescription(detail.getExpUse());
             billDetail.setSeq(detail.getSeq());
-            desc+=detail.getExpPName()+"-"+detail.getExpName()+";";
-            if(!StringUtil.isNullOrEmpty(detail.getProjectId())){
+            desc += detail.getExpPName() + "-" + detail.getExpName() + ";";
+            if (!StringUtil.isNullOrEmpty(detail.getProjectId())) {
                 billDetail.setProjectName(projectDao.getProjectName(detail.getProjectId()));
-                projectName+= billDetail.getProjectName()+",";
+                projectName += billDetail.getProjectName() + ",";
             }
             sum = sum.add(billDetail.getFee());
             companyBillDetailDao.insert(billDetail);
         }
         bill.setFee(sum);
-        bill.setProjectName(StringUtil.isNullOrEmpty(projectName)?null:projectName.substring(0,projectName.length()-1));
-        bill.setBillDescription(StringUtil.isNullOrEmpty(desc)?null:desc.substring(0,desc.length()-1));
+        bill.setProjectName(StringUtil.isNullOrEmpty(projectName) ? null : projectName.substring(0, projectName.length() - 1));
+        bill.setBillDescription(StringUtil.isNullOrEmpty(desc) ? null : desc.substring(0, desc.length() - 1));
         bill.setPayeeName(exp.getUserName());
         bill.setFeeUnit(2);
     }
@@ -201,19 +195,19 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
     /**
      * 项目费用（合同回款，合作设计费，技术审查费，其他收支）业务处理
      */
-    private void saveProjectFee(SaveCompanyBillDTO dto,CompanyBillEntity bill) throws Exception {
+    private void saveProjectFee(SaveCompanyBillDTO dto, CompanyBillEntity bill) throws Exception {
         CompanyBillDetailEntity billDetail = new CompanyBillDetailEntity();
         billDetail.initEntity();
         billDetail.setBillId(bill.getId());
         billDetail.setProjectName(bill.getProjectName());
         billDetail.setFee(bill.getFee().multiply(new BigDecimal("10000"))); //万元 转成 元
         billDetail.setFeeDescription(bill.getBillDescription());
-        if(dto.getPayType()==CompanyBillType.DIRECTION_PAYEE){
+        if (dto.getPayType() == CompanyBillType.DIRECTION_PAYEE) {
             billDetail.setExpTypeParentName(ExpCategoryConst.EXP_MAIN_INCOME);
-        }else {
+        } else {
             billDetail.setExpTypeParentName(ExpCategoryConst.EXP_DIRECT_COST);
         }
-        switch (bill.getFeeType()){
+        switch (bill.getFeeType()) {
             case 1:
                 billDetail.setExpTypeName(ExpCategoryConst.EXP_PROJECT_CONTRACT);
                 break;
@@ -237,47 +231,47 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
     /**
      * 固定支出 业务处理
      */
-    private void saveFixFee(SaveCompanyBillDTO dto,CompanyBillEntity mainBill) throws Exception {
+    private void saveFixFee(SaveCompanyBillDTO dto, CompanyBillEntity mainBill) throws Exception {
         Date createDate = dto.getCreateDate();
-        if(createDate==null) {
+        if (createDate == null) {
             createDate = DateUtils.getDate();
         }
-        List<ExpFixedDataDTO> detailList = expfixedDao.getExpFixedByExpDate(dto.getCompanyId(),dto.getPaymentDate());
+        List<ExpFixedDataDTO> detailList = expfixedDao.getExpFixedByExpDate(dto.getCompanyId(), dto.getPaymentDate());
         BigDecimal sum = new BigDecimal("0");
         //先删除原来的数据
         deleteCompanyBillForFixData(dto);
         //处理收入部分的数据
-        if(dto.getFeeType()==CompanyBillType.FEE_TYPE_FIX_OTHER_INCOME){
-            for (ExpFixedDataDTO detail:detailList){
-                if(detail.getExpTypeParentName().contains("收入") && detail.getExpAmount()!=null){
-                    sum = sum.add(saveCompanyBillDetail(detail,ExpCategoryConst.EXP_OTHER_INCOME,detail.getExpTypeParentName(),mainBill.getId(),createDate));
+        if (dto.getFeeType() == CompanyBillType.FEE_TYPE_FIX_OTHER_INCOME) {
+            for (ExpFixedDataDTO detail : detailList) {
+                if (detail.getExpTypeParentName().contains("收入") && detail.getExpAmount() != null) {
+                    sum = sum.add(saveCompanyBillDetail(detail, ExpCategoryConst.EXP_OTHER_INCOME, detail.getExpTypeParentName(), mainBill.getId(), createDate));
                 }
             }
             mainBill.setFee(sum);
             mainBill.setBillDescription(ExpCategoryConst.EXP_OTHER_INCOME);
             mainBill.setFeeUnit(2);
             mainBill.setCreateDate(createDate);
-        }else {//处理支出部分的数据
+        } else {//处理支出部分的数据
             List<ExpFixedDataDTO> shareExpList = new ArrayList<>();
-            for (ExpFixedDataDTO detail:detailList){
-                if(detail.getExpTypeParentName().contains("分摊") && detail.getExpAmount()!=null){
+            for (ExpFixedDataDTO detail : detailList) {
+                if (detail.getExpTypeParentName().contains("分摊") && detail.getExpAmount() != null) {
                     shareExpList.add(detail);
                     continue;
                 }
-                if(detail.getExpTypeParentName().contains("收入") && detail.getExpAmount()!=null){
+                if (detail.getExpTypeParentName().contains("收入") && detail.getExpAmount() != null) {
                     continue;
                 }
-                sum = sum.add(saveCompanyBillDetail(detail,ExpCategoryConst.EXP_FIXED_COST,detail.getExpTypeParentName(),mainBill.getId(),createDate));
+                sum = sum.add(saveCompanyBillDetail(detail, ExpCategoryConst.EXP_FIXED_COST, detail.getExpTypeParentName(), mainBill.getId(), createDate));
             }
             mainBill.setFee(sum);
             mainBill.setBillDescription(ExpCategoryConst.EXP_FIXED_COST);
             mainBill.setFeeUnit(2);
             mainBill.setCreateDate(createDate);
             //todo 处理分摊数据,把数据保存到对方的收入方
-            if(!CollectionUtils.isEmpty(shareExpList)){
+            if (!CollectionUtils.isEmpty(shareExpList)) {
                 //查询分摊到那个组织下
                 String toCompanyId = this.companyService.getRootCompanyId(dto.getCompanyId());
-                if(!StringUtil.isNullOrEmpty(toCompanyId)){
+                if (!StringUtil.isNullOrEmpty(toCompanyId)) {
                     String fromCompanyName = companyDao.getCompanyName(dto.getCompanyId());
                     String toCompanyName = companyDao.getCompanyName(toCompanyId);
                     BigDecimal sum1 = new BigDecimal("0");
@@ -292,8 +286,8 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
                     bill.setPayerName(fromCompanyName);
                     bill.setPayeeName(toCompanyName);
 
-                    for (ExpFixedDataDTO detail:shareExpList){
-                        sum1 = sum1.add(saveCompanyBillDetail(detail,ExpCategoryConst.EXP_FIXED_COST,detail.getExpTypeParentName(),bill.getId(),createDate));
+                    for (ExpFixedDataDTO detail : shareExpList) {
+                        sum1 = sum1.add(saveCompanyBillDetail(detail, ExpCategoryConst.EXP_FIXED_COST, detail.getExpTypeParentName(), bill.getId(), createDate));
 
                     }
                     bill.setFee(sum1);
@@ -322,8 +316,8 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
                     //下面的收付方组织和上面的对应
                     bill.setPayerName(fromCompanyName);
                     bill.setPayeeName(toCompanyName);
-                    for (ExpFixedDataDTO detail:shareExpList){
-                        sum1 = sum1.add(saveCompanyBillDetail(detail,ExpCategoryConst.EXP_OTHER_INCOME,ExpCategoryConst.EXP_OTHER_INCOME,bill.getId(),createDate));
+                    for (ExpFixedDataDTO detail : shareExpList) {
+                        sum1 = sum1.add(saveCompanyBillDetail(detail, ExpCategoryConst.EXP_OTHER_INCOME, ExpCategoryConst.EXP_OTHER_INCOME, bill.getId(), createDate));
                     }
                     bill.setFee(sum1);
                     bill.setBillDescription(ExpCategoryConst.EXP_OTHER_INCOME);
@@ -342,11 +336,11 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
     /**
      * 保存费用详情数据
      */
-    private BigDecimal saveCompanyBillDetail(ExpFixedDataDTO detail,String desc,String expTypeParentName,String billId,Date createDate) throws Exception {
+    private BigDecimal saveCompanyBillDetail(ExpFixedDataDTO detail, String desc, String expTypeParentName, String billId, Date createDate) throws Exception {
         CompanyBillDetailEntity billDetail = new CompanyBillDetailEntity();
         billDetail.initEntity();
         billDetail.setBillId(billId);
-        billDetail.setFee(detail.getExpAmount()==null?new BigDecimal("0"):detail.getExpAmount());
+        billDetail.setFee(detail.getExpAmount() == null ? new BigDecimal("0") : detail.getExpAmount());
         billDetail.setExpTypeParentName(expTypeParentName);
         billDetail.setExpTypeName(detail.getExpTypeName());
         billDetail.setFeeDescription(desc);
@@ -359,19 +353,19 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
     /**
      * 处理删除固定支出费用
      */
-    private void deleteCompanyBillForFixData(SaveCompanyBillDTO dto) throws Exception{
+    private void deleteCompanyBillForFixData(SaveCompanyBillDTO dto) throws Exception {
         List<CompanyBillEntity> list = null;
-        if(dto.getFeeType()==CompanyBillType.FEE_TYPE_FIX_OTHER_INCOME){
+        if (dto.getFeeType() == CompanyBillType.FEE_TYPE_FIX_OTHER_INCOME) {
             dto.setIgnoreCompanyId("0");
         }
         list = companyBillDao.getCompanyBillIgnoreCompanyRelation(dto);
-        if(!CollectionUtils.isEmpty(list)){
-            for(CompanyBillEntity bill:list){
+        if (!CollectionUtils.isEmpty(list)) {
+            for (CompanyBillEntity bill : list) {
                 //先删targetId = bill.getId（）的数据
                 SaveCompanyBillDTO billQuery = new SaveCompanyBillDTO();
                 billQuery.setTargetId(bill.getId());
                 List<CompanyBillEntity> list1 = companyBillDao.getCompanyBillByTargetId(billQuery);
-                for(CompanyBillEntity bill2:list1){
+                for (CompanyBillEntity bill2 : list1) {
                     deleteByBillId(bill2.getId());
                 }
                 //再删除直接关联的数据
@@ -380,64 +374,82 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
         }
     }
 
-    private void deleteByBillId(String billId){
+    private void deleteByBillId(String billId) {
         companyBillDao.deleteById(billId);
         companyBillRelationDao.deleteById(billId);
         companyBillDetailDao.deleteCompanyBillDetailByBillId(billId);
     }
 
     /**
-     * 自定义审批单
+     * 保存自定义审批单，金额相关至bill财务表
+     *
      * @param dto
      * @param mainBill
      * @throws Exception
      */
-    private void saveDynamicFee(SaveCompanyBillDTO dto,CompanyBillEntity mainBill) throws Exception {
+    private void saveDynamicFee(SaveCompanyBillDTO dto, CompanyBillEntity mainBill) throws Exception {
 
-        if( dto.getTargetId()==null){
+        if (dto.getTargetId() == null) {
             throw new CustomException("参数错误");
         }
-        //todo 1.封装保存CompanyBillEntity
-//        private String companyId;//所属组织id
-//        private BigDecimal fee;//总金额
-//        private Integer feeType;//费用类型（参考CompanyBillType）
-//        private Integer payType;//收支类型（1：收，2：支）
-//        private Integer feeUnit;//金额的单位（1：万元，2：元）目前统一用元
-//        private String billDescription;//费用描述
-//        private String paymentDate;//费用日期
-//        private String invoiceNo;//发票号
-
+        //1.封装保存CompanyBillEntity
         FormFieldQueryDTO queryDTO = new FormFieldQueryDTO();
         ExpMainEntity mainEntity = expMainDao.selectById(dto.getTargetId());//dto.getTargetId()就是mainId
         queryDTO.setId(mainEntity.getId());//mainId
         queryDTO.setFormId(mainEntity.getType());//formId
+        double feeSum = 0;
+        Integer seq = 0;
 
-
-        //1.查询模板+数据
+        //1.查询模板+数据获取feeSum
         List<DynamicFormFieldValueDTO> fieldList = dynamicFormFieldValueService.listFormFieldValueByFormId(queryDTO);
+        for (DynamicFormFieldValueDTO field : fieldList) {
+            List<List<DynamicFormFieldValueDTO>> detailFieldList = field.getDetailFieldList();
+            for (List<DynamicFormFieldValueDTO> detailList : detailFieldList) {
+                for (DynamicFormFieldValueDTO list : detailList) {
+                    if(list.getFieldValue()=="5" && list.getIsStatistics()==1){
+                        // 2.封装保存CompanyBillDetailEntity组织账单详情
+                        CompanyBillDetailEntity billDetail = new CompanyBillDetailEntity();
+                        billDetail.initEntity();
+                        billDetail.setBillId(mainBill.getId());//主记录id
+                        feeSum += DigitUtils.parseDouble(list.getFieldValue());
+                        double billFee = 0;
+                        billFee = DigitUtils.parseDouble(list.getFieldValue());
+                        BigDecimal billDetailFee = new BigDecimal(billFee);
+                        billDetail.setFee(billDetailFee);
 
-        fieldList.forEach(f ->{
-
-            if(f.getFieldType()==9){
-
+                        String value = list.getFieldValue();
+                        if (list.getFieldType() == 6 && null != list.getFieldType()){
+                            if (value.contains("-")){
+                                String[] result = value.split("-");
+                                billDetail.setExpTypeName(result[0]);//费用父类型
+                                billDetail.setExpTypeName(result[1]);//费用类型
+                            }else{
+                                billDetail.setExpTypeName("");
+                                billDetail.setExpTypeName(value);
+                            }
+                        }
+                        if (list.getFieldType() == 2){//费用描述
+                            billDetail.setFeeDescription(list.getFieldValue());
+                        }
+                        if (list.getFieldType() == 12){//关联项目
+                            ProjectEntity projectEntity = projectDao.selectById(list.getFieldValue());
+                            if (null != projectEntity.getProjectName()) {
+                                billDetail.setProjectName(projectEntity.getProjectName());//关联的项目名称
+                            }
+                        }
+                        billDetail.setSeq(seq++);//排序
+                        companyBillDetailDao.insert(billDetail);
+                    }
+                }
             }
-        });
+        }
         mainBill.setCompanyId(dto.getCompanyId());
-//        mainBill.setFee();//做到这
-        mainBill.setFeeType(9);
-//        mainBill.setPayType();
-        mainBill.setFeeUnit(2);
-//        mainBill.setBillDescription();
-//        mainBill.setPaymentDate();
-//        mainBill.setInvoiceNo();
-
-
-        //todo 2.封装保存CompanyBillDetailEntity
-        //组织账单详情
-        CompanyBillDetailEntity BillDetail = new CompanyBillDetailEntity();
-
-        //todo 3.封装保存CompanyBillRelationEntity
-        //保存关联的字段
-        CompanyBillRelationEntity billRelation = new CompanyBillRelationEntity();
+        BigDecimal fee = new BigDecimal(feeSum);
+        mainBill.setFee(fee);//总金额
+        mainBill.setFeeType(CompanyBillType.FEE_TYPE_DYNAMIC);//费用类型9（参考CompanyBillType）
+        mainBill.setFeeUnit(2);//金额的单位（1：万元，2：元）目前统一用元
+        mainBill.setPayType(dto.getPayType());//收款or支出
+        mainBill.setBillDescription(dto.getBillDescription());//费用描述
+        mainBill.setPaymentDate(dto.getPaymentDate());//费用日期
     }
 }

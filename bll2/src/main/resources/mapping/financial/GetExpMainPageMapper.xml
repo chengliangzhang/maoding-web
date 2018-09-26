@@ -626,6 +626,9 @@
         WHERE
 	      1 = 1
         AND exp_main.approve_status != '4'
+        <if test="type==null and companyId!=null">
+            AND exp_main.company_id = #{companyId}
+        </if>
         <if test="companyUserId!=null">
             AND exp_main.company_user_id =#{companyUserId}
         </if>
@@ -683,6 +686,9 @@
         WHERE
         1 = 1
         AND exp_main.approve_status != '4'
+        <if test="type==null and companyId!=null">
+            AND exp_main.company_id = #{companyId}
+        </if>
         <if test="companyUserId!=null">
             AND exp_main.company_user_id =#{companyUserId}
         </if>

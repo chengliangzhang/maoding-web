@@ -3,6 +3,7 @@ package com.maoding.financial.dto;
 import com.beust.jcommander.internal.Lists;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.maoding.core.base.dto.BaseDTO;
+import com.maoding.core.constant.ExpenseConst;
 import com.maoding.project.entity.ProjectSkyDriveEntity;
 import org.apache.ibatis.type.Alias;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -54,30 +55,7 @@ public class LeaveDetailDTO extends BaseDTO implements Serializable {
     }
 
     public String getTypeName() {
-        Integer type = Integer.parseInt(getType());
-        if (1 == type) {
-            typeName = "年假";
-        } else if (2 == type) {
-            typeName = "事假";
-        } else if (3 == type) {
-            typeName = "病假";
-        } else if (4 == type) {
-            typeName = "调休假";
-        } else if (5 == type) {
-            typeName = "婚假";
-        } else if (6 == type) {
-            typeName = "产假";
-        } else if (7 == type) {
-            typeName = "陪产假";
-        } else if (8 == type) {
-            typeName = "丧假";
-        } else if (9 == type) {
-            typeName = "其他";
-        } else if (10 == type) {
-            typeName = "出差";
-        } else {
-            typeName = "其他";
-        }
+        typeName = ExpenseConst.getTypeName(getType());
         return typeName;
     }
 

@@ -1,6 +1,8 @@
 package com.maoding.dynamicForm.service;
 
+import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.dynamicForm.dto.*;
+import com.maoding.financial.dto.QueryAuditDTO;
 
 import java.util.List;
 
@@ -80,4 +82,12 @@ public interface DynamicFormService {
     int updateDynamicFormSeq (FormGroupEditDTO dto) throws  Exception;
 
     String getFormName(String id) ;
+
+    /**
+     * 动态表单编辑时，下拉框，选择系统默认的数据，点击按钮查询系统中默认的数据的接口
+     * selectType = 1，报销， 2 = 费用，3 = 请假类型
+     */
+    Object listSystemDefaultSelect(FormFieldQueryDTO query) throws Exception;
+
+    List<CoreShowDTO> listAuditType(QueryAuditDTO query);
 }

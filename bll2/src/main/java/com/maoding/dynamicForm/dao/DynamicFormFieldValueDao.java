@@ -20,4 +20,5 @@ public interface DynamicFormFieldValueDao extends BaseDao<DynamicFormFieldValueE
     List<DynamicFormFieldValueDTO> listFormFieldValueByFormId(FormFieldQueryDTO query);
 
     double getConditionValue(String mainId,String conditionFieldId);
+
 }

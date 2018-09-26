@@ -4,6 +4,7 @@ import com.maoding.commonModule.dao.ConstDao;
 import com.maoding.commonModule.dto.WidgetDTO;
 import com.maoding.commonModule.dto.WidgetPropertyDTO;
 import com.maoding.commonModule.service.AuditCopyService;
+import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.base.service.NewBaseService;
 import com.maoding.core.util.*;
 import com.maoding.dynamicForm.dao.DynamicFormDao;
@@ -15,8 +16,11 @@ import com.maoding.dynamicForm.entity.DynamicFormEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldEntity;
 import com.maoding.dynamicForm.entity.DynamicFormFieldSelectableValueEntity;
 import com.maoding.dynamicForm.entity.DynamicFormGroupEntity;
+import com.maoding.dynamicForm.service.DynamicFormFieldValueService;
 import com.maoding.dynamicForm.service.DynamicFormGroupService;
 import com.maoding.dynamicForm.service.DynamicFormService;
+import com.maoding.financial.dao.ExpMainDao;
+import com.maoding.financial.dto.QueryAuditDTO;
 import com.maoding.process.dao.ProcessTypeDao;
 import com.maoding.process.entity.ProcessTypeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +59,10 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
     private ConstDao constDao;
 
     @Autowired
-    private AuditCopyService auditCopyService;
+    private ExpMainDao expMainDao;
+
+    @Autowired
+    private DynamicFormFieldValueService dynamicFormFieldValueService;
 
     /**
      * 作者：FYT
@@ -372,6 +379,26 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         return "";
     }
 
+    @Override
+    public Object listSystemDefaultSelect(FormFieldQueryDTO query) throws Exception {
+        if(query.getSelectType()==null){
+            return null;
+        }
+        if(query.getSelectType()==1 || query.getSelectType()==2){
+            return this.dynamicFormFieldValueService.getExpList(query);
+        }
+        if(query.getSelectType()==3){
+            return this.dynamicFormFieldValueService.getLeaveTypeList();
+        }
+        return null;
+    }
+
+    @Override
+    public List<CoreShowDTO> listAuditType(QueryAuditDTO query) {
+        query.setCompanyId(query.getCurrentCompanyId());
+        return expMainDao.listAuditTypeName(query);
+    }
+
     private void exchangeValue(DynamicFormGroupEntity entity1,DynamicFormGroupEntity entity2){
 
         Integer dtoSeq = entity1.getSeq();
@@ -382,5 +409,7 @@ public class DynamicFormServiceImpl extends NewBaseService implements DynamicFor
         entity1.setSeq(dtoSeq);
         entity2.setSeq(dto2Seq);
     }
+
+
 
 }

@@ -1,5 +1,6 @@
 package com.maoding.dynamicForm.service;
 
+import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.dynamicForm.dto.DynamicFormFieldValueDTO;
 import com.maoding.dynamicForm.dto.FormFieldQueryDTO;
 import com.maoding.dynamicForm.dto.SaveDynamicAuditDTO;
@@ -23,4 +24,8 @@ public interface DynamicFormFieldValueService  {
      * 查询数据
      */
     List<DynamicFormFieldValueDTO> listFormFieldValueByFormId(FormFieldQueryDTO dto) throws Exception;
+
+    List<Map<String,Object>> getExpList(FormFieldQueryDTO dto) throws Exception;
+
+    List<CoreShowDTO> getLeaveTypeList();
 }

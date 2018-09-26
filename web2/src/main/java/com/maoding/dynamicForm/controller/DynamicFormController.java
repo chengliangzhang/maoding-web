@@ -2,12 +2,14 @@ package com.maoding.dynamicForm.controller;
 
 import com.maoding.commonModule.dto.SaveAuditCopyDTO;
 import com.maoding.core.base.controller.BaseController;
+import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.bean.AjaxMessage;
 import com.maoding.core.util.BeanUtils;
 import com.maoding.dynamicForm.dto.*;
 import com.maoding.dynamicForm.service.DynamicFormFieldValueService;
 import com.maoding.dynamicForm.service.DynamicFormGroupService;
 import com.maoding.dynamicForm.service.DynamicFormService;
+import com.maoding.financial.dto.QueryAuditDTO;
 import com.maoding.process.service.ProcessService;
 import com.maoding.process.service.ProcessTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -207,5 +209,27 @@ public class DynamicFormController extends BaseController {
         groupQuery.setNotIncludeGroupName("项目审批");
         List<FormGroupDTO> groupList = dynamicFormGroupService.listFormGroup(groupQuery);
         return AjaxMessage.succeed(groupList);
+    }
+
+
+    /**
+     * 动态表单编辑时，下拉框，选择系统默认的数据，点击按钮查询系统中默认的数据的接口
+     * selectType = 1，报销， 2 = 费用，3 = 请假类型
+     */
+    @RequestMapping(value = "/listSystemDefaultSelect", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage listSystemDefaultSelect(@RequestBody FormFieldQueryDTO query) throws Exception {
+        updateCurrentUserInfo(query);
+        return AjaxMessage.succeed(dynamicFormService.listSystemDefaultSelect(query));
+    }
+
+    /**
+     * 动态表单编辑时，审批控件，请求数据
+     */
+    @RequestMapping(value = "/listAuditType", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxMessage listAuditType(@RequestBody QueryAuditDTO query) throws Exception {
+        updateCurrentUserInfo(query);
+        return AjaxMessage.succeed(dynamicFormService.listAuditType(query));
     }
 }

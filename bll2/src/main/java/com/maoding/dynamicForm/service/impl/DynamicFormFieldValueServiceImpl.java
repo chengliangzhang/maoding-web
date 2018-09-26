@@ -8,6 +8,7 @@ import com.maoding.commonModule.service.CopyRecordService;
 import com.maoding.core.base.dto.CoreShowDTO;
 import com.maoding.core.base.service.GenericService;
 import com.maoding.core.constant.CopyTargetType;
+import com.maoding.core.constant.ExpenseConst;
 import com.maoding.core.constant.NetFileType;
 import com.maoding.core.constant.SystemParameters;
 import com.maoding.core.util.BeanUtils;
@@ -48,7 +49,7 @@ import java.util.Map;
 /**
  * 动态表单自定义的数据层接口- 自定义数据字段- 可选择提供
  */
-@Service("dynamicFormFieldSelectableValueService")
+@Service("dynamicFormFieldValueService")
 public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicFormFieldSelectableValueEntity> implements DynamicFormFieldValueService {
 
     @Autowired
@@ -329,13 +330,20 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
     private void setFiledValueText(DynamicFormFieldValueDTO field){
         String id = field.getFieldValue();
         field.setFieldValueText(field.getFieldValue());
-        if(field.getFieldType()==12){//如果是项目
-            field.setFieldValueText(this.projectDao.getProjectName(id));
-        }
-        if(field.getFieldType()==11){//如果是审批数据
-            if(!StringUtils.isEmpty(id)){
-                AuditCommonDTO expMainDTO = expMainService.getAuditDataById(id);
-                field.setFieldValueText(expMainDTO.getUserName()+"的"+expMainDTO.getExpTypeName()+"申请");
+        if(StringUtils.isNotEmpty(id)) {
+            if (field.getFieldType() == 12) {//如果是项目
+                field.setFieldValueText(this.projectDao.getProjectName(id));
+            }
+            if (field.getFieldType() == 11) {//如果是审批数据
+                if (!StringUtils.isEmpty(id)) {
+                    AuditCommonDTO expMainDTO = expMainService.getAuditDataById(id);
+                    field.setFieldValueText(expMainDTO.getUserName() + "的" + expMainDTO.getExpTypeName() + "申请");
+                }
+            }
+            if (field.getFieldType() == 6) {
+                if ("3".equals(field.getFieldSelectValueType())) {
+                    field.setFieldValueText(ExpenseConst.getTypeName(id));
+                }
             }
         }
     }
@@ -373,7 +381,14 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         }
 
         if(field.getFieldType()==11){//todo 从审批表中获取数据,过后处理
-
+            String key = field.getFieldType()+"_"+field.getFieldSelectValueType();
+            if(valueMap.containsKey(key)){
+                field.setFieldSelectedValueList(valueMap.get(key));
+            }else {
+                List<CoreShowDTO> selectList = getAuditTypeList(dto,field.getFieldSelectValueType());
+                field.setFieldSelectedValueList(selectList);
+                valueMap.put(key,selectList);
+            }
         }
         if(field.getFieldType()==12){//从我的项目中获取
             String key = field.getFieldType()+"_"+field.getFieldSelectValueType();
@@ -387,7 +402,7 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         }
     }
 
-    private List<Map<String,Object>> getExpList(FormFieldQueryDTO dto) throws Exception{
+    public List<Map<String,Object>> getExpList(FormFieldQueryDTO dto) throws Exception{
         List<ExpTypeDTO> selectList =  expCategoryService.getExpCategoryTypeList(dto.getCurrentCompanyId(),dto.getAccountId());
         List<Map<String,Object>> list = new ArrayList<>();
         selectList.stream().forEach(s->{
@@ -404,6 +419,15 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         return list;
     }
 
+    public List<CoreShowDTO> getLeaveTypeList(){
+        List<CoreShowDTO> list = new ArrayList<>();
+        List<DataDictionaryEntity> selectList = this.dataDictionaryService.getSubDataByCode(SystemParameters.LEAVE);
+        selectList.stream().forEach(s->{
+            list.add(new CoreShowDTO(s.getVl(),s.getName()));
+        });
+        return list;
+    }
+
     private List<CoreShowDTO> getProjectList(FormFieldQueryDTO dto,String fieldSelectValueType){
         List<ProjectDTO> selectList =  expMainService.getProjectListWS(dto.getCurrentCompanyId(),dto.getAccountId(),fieldSelectValueType);
         List<CoreShowDTO> list = new ArrayList<>();
@@ -413,14 +437,19 @@ public class DynamicFormFieldValueServiceImpl extends GenericService<DynamicForm
         return list;
     }
 
-    private List<CoreShowDTO> getLeaveTypeList(){
+
+    private List<CoreShowDTO> getAuditTypeList(FormFieldQueryDTO dto,String fieldSelectValueType){
         List<CoreShowDTO> list = new ArrayList<>();
-        List<DataDictionaryEntity> selectList = this.dataDictionaryService.getSubDataByCode(SystemParameters.LEAVE);
-        selectList.stream().forEach(s->{
-            list.add(new CoreShowDTO(s.getVl(),s.getName()));
+        QueryAuditDTO query = new QueryAuditDTO();
+        query.setCompanyId(dto.getCurrentCompanyId());
+        query.setExpTypes(fieldSelectValueType);
+        List<AuditCommonDTO> auditList = expMainDao.getAuditDataForWeb(query);
+        auditList.stream().forEach(audit->{
+            list.add(new CoreShowDTO(audit.getId(),audit.getUserName()+"的"+audit.getExpTypeName()+"，单号："+audit.getExpNo()));
         });
         return list;
     }
+
 
     private List<CoreShowDTO> getDynamicFormFieldSelectedList(String fieldId){
         List<CoreShowDTO> list = new ArrayList<>();

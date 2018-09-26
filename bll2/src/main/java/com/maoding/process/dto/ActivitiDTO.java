@@ -25,7 +25,7 @@ public class ActivitiDTO extends AuditBaseDTO {
         this.setAccountId(accountId);
         this.setAppOrgId(companyId);
         if(param!=null ){
-            this.param.put(this.getTargetType(),param);
+            this.param.put("conditionFieldId",param);
         }
     }
 

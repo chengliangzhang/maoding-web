@@ -428,7 +428,7 @@ public interface SystemParameters {
             put("239","%expUserName% 提交的出差申请，出差地：%address%，出差时间：%startTime1% - %endTime1%，已完成审批，请知晓");
 
             /***********自定义报销部分***********/
-            put("249","%expUserName% 提交了，“%formName%”的审批，请您审批。");// XXX 提交了，“XXX”的审批，请您审批。
+            put("249","%expUserName% 提交了“%formName%”的审批，请您审批。");// XXX 提交了，“XXX”的审批，请您审批。
             put("250","%sendUserName% 拒绝了你的“%formName%”的审批申请，退回原因：%reason%。");// XXX 拒绝了你的 XXX 的审批申请，退回原因：XXXX。
             put("251","你提交“%formName%”的审批，已完成审批。");//  你提交了 XXX 的审批，已完成审批。
             put("252","%sendUserName%同意并转交了%expUserName%的“%formName%”审批申请，请你审批。");//  XXX 同意并转交 X某的XXX审批申请，请你审批。
@@ -716,7 +716,7 @@ public interface SystemParameters {
             put("238",new MessageTemplate("%expUserName% 提交的请假申请，请假类型：%leaveTypeName%，请假时间：%startTime1% - %endTime1%，已完成审批，请知晓",1));//ok
             put("239",new MessageTemplate("%expUserName% 提交的出差申请，出差地：%address%，出差时间：%startTime1% - %endTime1%，已完成审批，请知晓",1));
             /***********自定义审批***********/
-            put("249",new MessageTemplate("%expUserName% 提交了，“%formName%”的审批，请您审批。",0));
+            put("249",new MessageTemplate("%expUserName% 提交了“%formName%”的审批，请您审批。",0));
             put("250",new MessageTemplate("%sendUserName% 拒绝了你的“%formName%”的审批申请，退回原因：%reason%。",1));
             put("251",new MessageTemplate("你提交“%formName%”的审批，已完成审批。",1));
             put("252",new MessageTemplate("%sendUserName%同意并转交了%expUserName%的“%formName%”审批申请，请你审批。",0));
