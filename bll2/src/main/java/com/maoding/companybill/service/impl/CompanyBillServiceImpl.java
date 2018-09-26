@@ -399,6 +399,7 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
         queryDTO.setFormId(mainEntity.getType());//formId
         double feeSum = 0;
         Integer seq = 0;
+        boolean flag = false;
 
         //1.查询模板+数据获取feeSum
         List<DynamicFormFieldValueDTO> fieldList = dynamicFormFieldValueService.listFormFieldValueByFormId(queryDTO);
@@ -406,7 +407,13 @@ public class CompanyBillServiceImpl extends NewBaseService implements CompanyBil
             List<List<DynamicFormFieldValueDTO>> detailFieldList = field.getDetailFieldList();
             for (List<DynamicFormFieldValueDTO> detailList : detailFieldList) {
                 for (DynamicFormFieldValueDTO list : detailList) {
-                    if(list.getFieldValue()=="5" && list.getIsStatistics()==1){
+                    //list.getFieldType()==5 代表是数字类型的 list.getIsStatistics()==1 代表是参与统计的
+                    if(list.getFieldType()==5 && list.getIsStatistics()==1) {
+                        flag = true;
+                    }
+                }
+                if (flag) {//如果有统计金额数据，则封装组织账单详情
+                    for (DynamicFormFieldValueDTO list : detailList) {
                         // 2.封装保存CompanyBillDetailEntity组织账单详情
                         CompanyBillDetailEntity billDetail = new CompanyBillDetailEntity();
                         billDetail.initEntity();
