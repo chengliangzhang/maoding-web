@@ -129,6 +129,7 @@
     <result column="field_tooltip" property="fieldTooltip" jdbcType="VARCHAR" />
     <result column="field_default_value" property="fieldDefaultValue" jdbcType="VARCHAR" />
     <result column="field_select_value_type" property="fieldSelectValueType" jdbcType="INTEGER" />
+    <result column="is_fee_type" property="isFeeType" jdbcType="INTEGER" />
     <result column="seq_x" property="seqX" jdbcType="INTEGER" />
     <result column="seq_y" property="seqY" jdbcType="INTEGER" />
     <result column="required_type" property="requiredType" jdbcType="INTEGER" />

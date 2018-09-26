@@ -7,7 +7,7 @@ public class DynamicFormFieldSelectedValueDTO extends BaseIdObject{
     //动态字段表id（maoding_dynamic_form_field的id）
     private String fieldId;
 
-    //值（例如：select 下拉框对应的value，如果前端并没有设置，后台默认为vlaue = name）
+    //值（例如：select 下拉框对应的value，如果前端并没有设置，后台默认为value = name）
     private String selectableValue;
 
     //名称（显示在外面的名称）

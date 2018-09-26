@@ -1,8 +1,5 @@
 package com.maoding.dynamicForm.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /*
 * 保存审核表单样式DTO
 */
@@ -58,6 +55,17 @@ public class DynamicFormFieldBaseDTO {
 
     /** 图标标志 **/
     private String iconKey;
+
+    /** 是否费用分类 **/
+    private Integer isFeeClassic;
+
+    public Integer getIsFeeClassic() {
+        return isFeeClassic;
+    }
+
+    public void setIsFeeClassic(Integer isFeeClassic) {
+        this.isFeeClassic = isFeeClassic;
+    }
 
     public String getIconKey() {
         return iconKey;

@@ -51,8 +51,19 @@ public class DynamicFormFieldEntity extends BaseEntity{
     //对于有候选值的数据的排列方式，重点是checkbox，radio（0：横向，1：纵向），默认为横向
     private Integer arrangeType;
 
+    //是否用于费用分类
+    private Integer isFeeClassic;
+
     //删除标识
     private Integer deleted;
+
+    public Integer getIsFeeClassic() {
+        return isFeeClassic;
+    }
+
+    public void setIsFeeClassic(Integer isFeeClassic) {
+        this.isFeeClassic = isFeeClassic;
+    }
 
     public String getFormId() {
         return formId;

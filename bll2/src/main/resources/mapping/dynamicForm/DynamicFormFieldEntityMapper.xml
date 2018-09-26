@@ -51,15 +51,15 @@
     insert into maoding_dynamic_form_field (id, form_id, field_pid, 
       field_title, field_type, field_unit,is_statistics,is_finance_statistics,
       field_tooltip,field_default_value, field_select_value_type,is_fee_type,
-      seq_x, seq_y, required_type, date_format_type,arrange_type,
+      seq_x, seq_y, required_type, date_format_type,arrange_type,is_fee_classic,
       deleted, create_date, create_by, 
       update_date, update_by)
     values (#{id,jdbcType=VARCHAR}, #{formId,jdbcType=VARCHAR}, #{fieldPid,jdbcType=VARCHAR}, 
       #{fieldTitle,jdbcType=VARCHAR}, #{fieldType,jdbcType=INTEGER}, #{fieldUnit,jdbcType=VARCHAR},
       #{isStatistics,jdbcType=INTEGER}, #{isFinanceStatistics,jdbcType=INTEGER},#{fieldTooltip,jdbcType=VARCHAR},
-      #{fieldDefaultValue,jdbcType=VARCHAR}, #{fieldSelectValueType,jdbcType=VARCHAR}, #{isFeeType,jdbcType=INTEGER}
+      #{fieldDefaultValue,jdbcType=VARCHAR}, #{fieldSelectValueType,jdbcType=VARCHAR}, #{isFeeType,jdbcType=INTEGER},
       #{seqX,jdbcType=INTEGER}, #{seqY,jdbcType=INTEGER}, #{requiredType,jdbcType=INTEGER},
-      #{dateFormatType,jdbcType=INTEGER}, #{arrangeType,jdbcType=INTEGER},
+      #{dateFormatType,jdbcType=INTEGER}, #{arrangeType,jdbcType=INTEGER}, #{isFeeClassic,jdbcType=INTEGER},
       #{deleted,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
       #{updateDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
   </insert>
@@ -115,6 +115,9 @@
       <if test="requiredType != null" >
         required_type = #{requiredType,jdbcType=INTEGER},
       </if>
+      <if test="isFeeClassic != null" >
+        is_fee_classic = #{isFeeClassic,jdbcType=INTEGER},
+      </if>
       <if test="deleted != null" >
         deleted = #{deleted,jdbcType=INTEGER},
       </if>
@@ -152,6 +155,7 @@
       seq_x = #{seqX,jdbcType=INTEGER},
       seq_y = #{seqY,jdbcType=INTEGER},
       required_type = #{requiredType,jdbcType=INTEGER},
+      is_fee_classic = #{isFeeClassic,jdbcType=INTEGER},
       deleted = #{deleted,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP},
       create_by = #{createBy,jdbcType=VARCHAR},
@@ -177,6 +181,7 @@
     <result column="seq_x" property="seqX" jdbcType="INTEGER" />
     <result column="seq_y" property="seqY" jdbcType="INTEGER" />
     <result column="required_type" property="requiredType" jdbcType="INTEGER" />
+    <result column="is_fee_classic" property="isFeeClassic" jdbcType="INTEGER" />
     <result column="date_format_type" property="dateFormatType" jdbcType="INTEGER" />
     <result column="arrange_type" property="arrangeType" jdbcType="INTEGER" />
     <collection property="detailFieldList" ofType="com.maoding.dynamicForm.dto.DynamicFormFieldDTO"
